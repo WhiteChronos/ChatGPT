@@ -5,12 +5,13 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: engineering-governance-${{ github.ref }}
+  group: engineering-governance-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -21,13 +22,16 @@ jobs:
       PYTHONPATH: ${{ github.workspace }}
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUNBUFFERED: '1'
+      CI: 'true'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
           cache: pip
@@ -37,18 +41,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
+          python -m pip check
 
       - name: Verify CI environment contract
         run: |
           test "$PYTHONPATH" = "$GITHUB_WORKSPACE"
           python -c "import pipeline.validate_engineering; import pipeline.agents_v4_4"
 
-      - name: Compile validators
-        run: |
-          python -m py_compile pipeline/validate_engineering.py
-          python -m py_compile pipeline/agents_v4_4.py
+      - name: Compile Python sources
+        run: python -m compileall -q pipeline tests
 
-      - name: Run regression tests
+      - name: Run CI contract regression test
+        run: python -m pytest -q tests/test_ci_workflow_contract.py
+
+      - name: Run full regression suite
         run: python -m pytest -q
 
       - name: Verify governance assets
@@ -57,6 +63,7 @@ jobs:
           test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
           test -f memory/MEMORY_POLICY.md
           test -f memory/LESSON_CI_PYTHONPATH_2026-08-24.md
+          test -f memory/LESSON_CI_EXPRESSION_INTERPOLATION_2026-08-24.md
           test -f schemas/governance_v4_4.schema.json
 
       - name: Enforce v4.4 golden constants
@@ -65,8 +72,3 @@ jobs:
           grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
           grep -q '"external_mm": {"const": 12}' schemas/governance_v4_4.schema.json
           grep -q '"aspect_ratio": {"const": 1}' schemas/governance_v4_4.schema.json
-
-      - name: Prevent PYTHONPATH regression
-        run: |
-          grep -Fq 'PYTHONPATH: ${{ github.workspace }}' .github/workflows/engineering-governance.yml
-          grep -Fq 'run: python -m pytest -q' .github/workflows/engineering-governance.yml
