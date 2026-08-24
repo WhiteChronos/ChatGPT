@@ -24,14 +24,24 @@ jobs:
       - name: Install test dependency
         run: python -m pip install --upgrade pip pytest
 
-      - name: Compile validator
-        run: python -m py_compile pipeline/validate_engineering.py
+      - name: Compile validators
+        run: |
+          python -m py_compile pipeline/validate_engineering.py
+          python -m py_compile pipeline/agents_v4_4.py
 
       - name: Run regression tests
         run: pytest -q
 
-      - name: Verify golden rule file exists
-        run: test -f governance/REGRA_DE_OURO.md
+      - name: Verify governance assets
+        run: |
+          test -f governance/REGRA_DE_OURO.md
+          test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          test -f memory/MEMORY_POLICY.md
+          test -f schemas/governance_v4_4.schema.json
 
-      - name: Verify memory policy exists
-        run: test -f memory/MEMORY_POLICY.md
+      - name: Enforce v4.4 golden constants
+        run: |
+          grep -q "12 mm" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          grep -q '"external_mm": {"const": 12}' schemas/governance_v4_4.schema.json
+          grep -q '"aspect_ratio": {"const": 1}' schemas/governance_v4_4.schema.json
