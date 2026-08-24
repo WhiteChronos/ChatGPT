@@ -1,0 +1,189 @@
+#!/usr/bin/env python3
+"""Validador determinístico para regras de engenharia do projeto AUTOMAÇÃO.
+
+O objetivo não é substituir revisão de engenharia. O script impede regressões conhecidas,
+força rastreabilidade e bloqueia representações que violem a Regra de Ouro.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+ALLOWED_FAMILIES = {
+    "DISCRETE",
+    "SHARED_DISPLAY",
+    "COMPUTER",
+    "PLC",
+}
+
+ALLOWED_LOCATIONS = {
+    "FIELD",
+    "MAIN_PANEL",
+    "BEHIND_PANEL",
+    "LOCAL_PANEL",
+}
+
+ALLOWED_STATUSES = {
+    "CONFIRMADO",
+    "CONFIRMADO_COM_RESSALVA",
+    "PROPOSTO",
+    "CONFLITANTE",
+    "TBD",
+    "NÃO_APLICÁVEL",
+}
+
+CRITICAL_SIGNAL_ROLES = {"CMD", "RUN", "FAULT", "AVAILABLE"}
+
+
+@dataclass(frozen=True)
+class Finding:
+    code: str
+    severity: str
+    message: str
+    item_id: str | None = None
+
+
+def _num(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)) and math.isfinite(float(value)):
+        return float(value)
+    return None
+
+
+def validate_symbol(symbol: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    sid = str(symbol.get("id", "UNKNOWN"))
+    family = symbol.get("family")
+    location = symbol.get("location")
+
+    if family not in ALLOWED_FAMILIES:
+        findings.append(Finding("DM-FAMILY", "CRITICAL", f"Família inválida: {family!r}", sid))
+
+    if location not in ALLOWED_LOCATIONS:
+        findings.append(Finding("DM-LOCATION", "CRITICAL", f"Localização inválida: {location!r}", sid))
+
+    w = _num(symbol.get("external_width_mm"))
+    h = _num(symbol.get("external_height_mm"))
+    d = _num(symbol.get("external_diameter_mm"))
+
+    if family == "DISCRETE":
+        if d != 12.0:
+            findings.append(Finding("DM-12MM", "CRITICAL", f"Círculo deve possuir Ø12 mm; recebido {d!r}", sid))
+    else:
+        if w != 12.0 or h != 12.0:
+            findings.append(Finding("DM-12MM", "CRITICAL", f"Envoltória deve ser 12 x 12 mm; recebido {w!r} x {h!r}", sid))
+
+    if w is not None and h is not None and abs(w - h) > 1e-9:
+        findings.append(Finding("DM-DISTORTION", "CRITICAL", "Símbolo achatado/alongado: proporção externa não é 1:1", sid))
+
+    expected_lines = {
+        "FIELD": "NONE",
+        "MAIN_PANEL": "SINGLE_SOLID",
+        "BEHIND_PANEL": "SINGLE_DASHED",
+        "LOCAL_PANEL": "DOUBLE_SOLID",
+    }
+    if location in expected_lines and symbol.get("location_line") != expected_lines[location]:
+        findings.append(
+            Finding(
+                "DM-LOCATION-LINE",
+                "CRITICAL",
+                f"Linha de localização incompatível. Esperado {expected_lines[location]}",
+                sid,
+            )
+        )
+
+    if not symbol.get("source_document") and symbol.get("status") in {"CONFIRMADO", "CONFIRMADO_COM_RESSALVA"}:
+        findings.append(Finding("TRACE-SOURCE", "HIGH", "Símbolo confirmado sem documento-fonte", sid))
+
+    return findings
+
+
+def validate_signal(signal: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    sid = str(signal.get("id", "UNKNOWN"))
+    for field in ("origin", "destination", "signal_type", "direction", "purpose"):
+        if not signal.get(field):
+            findings.append(Finding("SIG-ORPHAN", "CRITICAL", f"Sinal sem {field}", sid))
+    if signal.get("status") not in ALLOWED_STATUSES:
+        findings.append(Finding("STATUS", "HIGH", f"Status inválido: {signal.get('status')!r}", sid))
+    return findings
+
+
+def validate_equipment_logic(equipment: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    eid = str(equipment.get("id", "UNKNOWN"))
+    if equipment.get("redundant_pair"):
+        roles = set(equipment.get("signal_roles", []))
+        missing = CRITICAL_SIGNAL_ROLES - roles
+        if missing:
+            findings.append(
+                Finding(
+                    "REDUNDANCY-SIGNALS",
+                    "CRITICAL",
+                    f"Equipamento redundante sem sinais independentes: {', '.join(sorted(missing))}",
+                    eid,
+                )
+            )
+        if not equipment.get("transfer_logic"):
+            findings.append(Finding("REDUNDANCY-TRANSFER", "CRITICAL", "Falta lógica de transferência A/B", eid))
+    return findings
+
+
+def validate_interlock(item: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    iid = str(item.get("id", "UNKNOWN"))
+    required = ("cause", "condition", "affected_equipment", "effect", "feedback", "reset", "safe_state", "evidence")
+    missing = [field for field in required if not item.get(field)]
+    if missing:
+        findings.append(Finding("INT-INCOMPLETE", "CRITICAL", f"Intertravamento incompleto: {', '.join(missing)}", iid))
+    return findings
+
+
+def validate_document(doc: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    if doc.get("understanding_status") not in {"APROVADO", "APROVADO_COM_RESSALVAS"}:
+        findings.append(Finding("DOC-UNDERSTANDING", "CRITICAL", "Entendimento do documento ainda não aprovado", str(doc.get("id", "UNKNOWN"))))
+    return findings
+
+
+def validate_project(data: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    for doc in data.get("documents", []):
+        findings.extend(validate_document(doc))
+    for symbol in data.get("symbols", []):
+        findings.extend(validate_symbol(symbol))
+    for signal in data.get("signals", []):
+        findings.extend(validate_signal(signal))
+    for equipment in data.get("equipment", []):
+        findings.extend(validate_equipment_logic(equipment))
+    for interlock in data.get("interlocks", []):
+        findings.extend(validate_interlock(interlock))
+    return findings
+
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        print("uso: validate_engineering.py <arquivo.json>", file=sys.stderr)
+        return 2
+
+    path = Path(sys.argv[1])
+    data = json.loads(path.read_text(encoding="utf-8"))
+    findings = validate_project(data)
+
+    for f in findings:
+        item = f" [{f.item_id}]" if f.item_id else ""
+        print(f"{f.severity} {f.code}{item}: {f.message}")
+
+    critical = [f for f in findings if f.severity == "CRITICAL"]
+    print(f"findings={len(findings)} critical={len(critical)}")
+    return 1 if critical else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
