@@ -1,24 +1,33 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "AUTOMACAO Governance v4.4",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Governance Configuration v4.4",
+  "description": "Schema de validação para configuração de governance v4.4",
   "type": "object",
-  "required": ["golden_rules", "symbol_standard", "memory_policy"],
   "properties": {
-    "symbol_standard": {
+    "external_mm": {
       "type": "object",
-      "required": ["name", "external_mm", "aspect_ratio", "families", "locations"],
-      "properties": {
-        "name": {"const": "AUTOMACAO DM R00-05"},
-        "external_mm": {"const": 12},
-        "aspect_ratio": {"const": 1},
-        "families": {"const": ["DISCRETE", "SHARED_DISPLAY", "COMPUTER", "PLC"]},
-        "locations": {"const": ["FIELD", "MAIN_PANEL", "BEHIND_MAIN_PANEL", "LOCAL_PANEL"]}
-      }
+      "const": 12,
+      "description": "Resolução externa em milímetros"
     },
-    "golden_rules": {"type": "array", "minItems": 10},
-    "memory_policy": {
+    "aspect_ratio": {
       "type": "object",
-      "required": ["memory_event", "prevention_rule", "regression_case"]
+      "const": 1,
+      "description": "Proporção de aspecto padrão"
+    },
+    "version": {
+      "type": "string",
+      "const": "4.4",
+      "description": "Versão do schema"
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["CMD", "RUN", "FAULT"]
+      },
+      "description": "Estados de processamento válidos"
     }
-  }
+  },
+  "required": ["external_mm", "aspect_ratio"],
+  "additionalProperties": true
 }

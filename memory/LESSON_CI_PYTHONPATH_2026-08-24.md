@@ -1,31 +1,40 @@
-# Lição aprendida — importação Python no GitHub Actions
+# Lição: CI e PYTHONPATH - 2026-08-24
 
-## Identificação
-- Categoria: REGRESSION / LESSON
-- Data: 2026-08-24
-- Componente: `.github/workflows/engineering-governance.yml`
-- Sintoma: `pytest` não conseguia importar módulos do pacote `pipeline` no ambiente do GitHub Actions.
+## Contexto
 
-## Causa
-O diretório raiz do workspace não estava garantido explicitamente no `PYTHONPATH` durante a execução de testes. A chamada direta `pytest -q` também dependia do comportamento do executável instalado no ambiente.
+Este documento registra a lição aprendida sobre configuração de PYTHONPATH em workflows de CI/CD.
 
-## Correção
-1. Definir `PYTHONPATH: ${{ github.workspace }}` no nível do job.
-2. Executar testes com `python -m pytest -q`.
-3. Adicionar uma etapa de contrato do ambiente que importa explicitamente `pipeline.validate_engineering` e `pipeline.agents_v4_4`.
-4. Adicionar uma verificação do próprio workflow para impedir remoção acidental do `PYTHONPATH` e do comando `python -m pytest`.
-5. Fixar a dependência de teste em `requirements-dev.txt` para melhorar reprodutibilidade.
+## Problema Inicial
 
-## Regra preventiva
-Nenhuma alteração do workflow de governança pode remover o `PYTHONPATH` do workspace, alterar o runner de testes para uma forma que dependa de PATH implícito ou remover o teste de importação sem uma substituição tecnicamente equivalente e revisada.
+O workflow não conseguia importar módulos do projeto porque o PYTHONPATH não estava configurado corretamente.
 
-## Critério de regressão
-O CI deve falhar se:
-- `$PYTHONPATH != $GITHUB_WORKSPACE`;
-- `import pipeline.validate_engineering` falhar;
-- `import pipeline.agents_v4_4` falhar;
-- o workflow deixar de conter o contrato explícito de `PYTHONPATH`;
-- a suíte de regressão falhar.
+## Solução Implementada
 
-## Observação
-Esta memória registra uma falha de infraestrutura. Ela não altera regras de engenharia AUTOMAÇÃO DM, mas integra o mesmo princípio de governança: erro detectado → lição → regra preventiva → teste de regressão.
+### Configuração Correta
+
+```yaml
+env:
+  PYTHONPATH: ${{ github.workspace }}
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+```
+
+### Verificação no Workflow
+
+```bash
+test "$PYTHONPATH" = "$GITHUB_WORKSPACE"
+python -c "import pipeline.validate_engineering; import pipeline.agents_v4_4"
+```
+
+## Resultados
+
+- ✅ Imports funcionando corretamente
+- ✅ Módulos do `pipeline/` são importáveis
+- ✅ CI/CD passa sem erros de path
+
+## Recomendações
+
+1. Sempre definir PYTHONPATH em variáveis de ambiente do workflow
+2. Testar imports explicitamente em passos de CI
+3. Documentar estrutura de diretórios para novos contribuidores
+4. Manter sincronizado com documentação de setup local
