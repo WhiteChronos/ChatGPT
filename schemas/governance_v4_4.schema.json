@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AUTOMACAO Governance v4.4",
+  "type": "object",
+  "required": ["golden_rules", "symbol_standard", "memory_policy"],
+  "properties": {
+    "symbol_standard": {
+      "type": "object",
+      "required": ["name", "external_mm", "aspect_ratio", "families", "locations"],
+      "properties": {
+        "name": {"const": "AUTOMACAO DM R00-05"},
+        "external_mm": {"const": 12},
+        "aspect_ratio": {"const": 1},
+        "families": {"const": ["DISCRETE", "SHARED_DISPLAY", "COMPUTER", "PLC"]},
+        "locations": {"const": ["FIELD", "MAIN_PANEL", "BEHIND_MAIN_PANEL", "LOCAL_PANEL"]}
+      }
+    },
+    "golden_rules": {"type": "array", "minItems": 10},
+    "memory_policy": {
+      "type": "object",
+      "required": ["memory_event", "prevention_rule", "regression_case"]
+    }
+  }
+}
