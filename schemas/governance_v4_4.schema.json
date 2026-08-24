@@ -1,33 +1,37 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Governance Configuration v4.4",
-  "description": "Schema de validação para configuração de governance v4.4",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AUTOMACAO Governance v4.4",
   "type": "object",
+  "required": ["golden_rules", "symbol_standard", "memory_policy"],
   "properties": {
-    "external_mm": {
+    "symbol_standard": {
       "type": "object",
-      "const": 12,
-      "description": "Resolução externa em milímetros"
-    },
-    "aspect_ratio": {
-      "type": "object",
-      "const": 1,
-      "description": "Proporção de aspecto padrão"
-    },
-    "version": {
-      "type": "string",
-      "const": "4.4",
-      "description": "Versão do schema"
-    },
-    "states": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": ["CMD", "RUN", "FAULT"]
+      "required": ["name", "external_mm", "aspect_ratio", "families", "locations"],
+      "properties": {
+        "name": {"const": "AUTOMACAO DM R00-05"},
+        "external_mm": {"const": 12},
+        "aspect_ratio": {"const": 1},
+        "families": {"const": ["DISCRETE", "SHARED_DISPLAY", "COMPUTER", "PLC"]},
+        "locations": {"const": ["FIELD", "MAIN_PANEL", "BEHIND_MAIN_PANEL", "LOCAL_PANEL"]}
       },
-      "description": "Estados de processamento válidos"
+      "additionalProperties": false
+    },
+    "golden_rules": {
+      "type": "array",
+      "minItems": 10,
+      "items": {"type": "string"}
+    },
+    "memory_policy": {
+      "type": "object",
+      "required": ["memory_event", "prevention_rule", "regression_case"],
+      "properties": {
+        "memory_event": {"type": "string", "minLength": 1},
+        "prevention_rule": {"type": "string", "minLength": 1},
+        "regression_case": {"type": "string", "minLength": 1}
+      }
+    },
+    "critical_signal_roles": {
+      "const": ["CMD", "RUN", "FAULT", "AVAILABLE"]
     }
-  },
-  "required": ["external_mm", "aspect_ratio"],
-  "additionalProperties": true
+  }
 }
