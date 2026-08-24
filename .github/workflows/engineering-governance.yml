@@ -9,9 +9,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: engineering-governance-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,9 +30,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
-      - name: Install test dependency
-        run: python -m pip install --upgrade pip pytest
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Verify CI environment contract
+        run: |
+          test "$PYTHONPATH" = "$GITHUB_WORKSPACE"
+          python -c "import pipeline.validate_engineering; import pipeline.agents_v4_4"
 
       - name: Compile validators
         run: |
@@ -30,15 +49,14 @@ jobs:
           python -m py_compile pipeline/agents_v4_4.py
 
       - name: Run regression tests
-        run: pytest -q
-        env:
-          PYTHONPATH: ${{ github.workspace }}
+        run: python -m pytest -q
 
       - name: Verify governance assets
         run: |
           test -f governance/REGRA_DE_OURO.md
           test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
           test -f memory/MEMORY_POLICY.md
+          test -f memory/LESSON_CI_PYTHONPATH_2026-08-24.md
           test -f schemas/governance_v4_4.schema.json
 
       - name: Enforce v4.4 golden constants
@@ -47,3 +65,8 @@ jobs:
           grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
           grep -q '"external_mm": {"const": 12}' schemas/governance_v4_4.schema.json
           grep -q '"aspect_ratio": {"const": 1}' schemas/governance_v4_4.schema.json
+
+      - name: Prevent PYTHONPATH regression
+        run: |
+          grep -Fq 'PYTHONPATH: ${{ github.workspace }}' .github/workflows/engineering-governance.yml
+          grep -Fq 'run: python -m pytest -q' .github/workflows/engineering-governance.yml
