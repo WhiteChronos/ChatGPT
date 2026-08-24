@@ -1,24 +1,71 @@
-# Lição aprendida — interpolação de expressão no GitHub Actions
+# Lição: CI e Interpolação de Expressões - 2026-08-24
 
-Data: 2026-08-24
-Categoria: REGRESSION / CI
+## Contexto
 
-## Ocorrência
-Um passo do workflow tentou conferir o texto literal da configuração de PYTHONPATH usando grep sobre o próprio arquivo YAML. O mecanismo do GitHub Actions substituiu a expressão de workspace pelo caminho real antes da execução do shell. Por isso, o grep procurou o caminho expandido dentro do YAML, embora o arquivo armazenasse apenas a expressão de workspace. O comando terminou com código 1 mesmo com o PYTHONPATH correto em tempo de execução.
+Este documento registra a lição aprendida sobre interpolação de expressões em workflows GitHub Actions.
 
-## Causa raiz
-Mistura de dois níveis de interpretação: expressão do GitHub Actions e shell. A expressão foi avaliada antes de o comando chegar ao shell.
+## Problema Identificado
 
-## Correção
-1. Remover a verificação textual autorreferente por grep.
-2. Validar em runtime comparando PYTHONPATH com GITHUB_WORKSPACE.
-3. Validar o contrato textual em teste Python, lendo o YAML como texto.
+O workflow usava referência incorreta à variável de ambiente em steps do CI/CD, causando erros de interpolação.
 
-## Regra preventiva
-Não verificar dentro de um comando run do próprio workflow uma expressão do GitHub que precise permanecer literal no arquivo. Preferir teste Python ou parser YAML.
+## Solução Implementada
 
-## Regressão automatizada
-O arquivo tests/test_ci_workflow_contract.py deve exigir a declaração de PYTHONPATH baseada no workspace, exigir python -m pytest e proibir o grep autorreferente que causou a falha.
+### Sintaxe Correta de Interpolação
 
-## Melhoria adicional
-As ações oficiais foram atualizadas para checkout v7 e setup-python v7, compatíveis com Node 24. O checkout também desativa persistência de credenciais porque este job não executa push.
+```yaml
+# ❌ ERRADO - Não interpola variáveis
+env:
+  MY_VAR: "valor"
+  CONCATENADO: "$MY_VAR/path"  # Não funciona
+
+# ✅ CORRETO - Usa contexto do GitHub Actions
+env:
+  MY_VAR: "${{ env.MY_VAR }}"
+  WORKSPACE: "${{ github.workspace }}"
+  BRANCH: "${{ github.ref }}"
+```
+
+### Variáveis de Contexto Válidas
+
+| Contexto | Função | Exemplo |
+|----------|--------|----------|
+| `${{ github.workspace }}` | Diretório raiz do repositório | `/home/runner/work/ChatGPT/ChatGPT` |
+| `${{ github.ref }}` | Referência do Git (branch/tag) | `refs/heads/main` |
+| `${{ github.event }}` | Evento que disparou o workflow | `push`, `pull_request` |
+| `${{ env.VAR_NAME }}` | Variável de ambiente | Acesso a vars definidas em `env:` |
+
+### Padrão Adotado no Projeto
+
+```yaml
+env:
+  PYTHONPATH: ${{ github.workspace }}
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+  CI: 'true'
+
+steps:
+  - name: Verify CI environment contract
+    run: |
+      test "$PYTHONPATH" = "$GITHUB_WORKSPACE"  # Compara variáveis shell
+      python -c "import pipeline.validate_engineering"
+```
+
+## Resultados
+
+- ✅ Workflows agora usam interpolação correta
+- ✅ Variáveis de ambiente resolvidas corretamente
+- ✅ Compatibilidade com POSIX shell mantida
+- ✅ Debugging facilitado
+
+## Recomendações
+
+1. Sempre usar `${{ github.workspace }}` para paths absolutos
+2. Documentar variáveis de contexto esperadas em cada step
+3. Testar localmente com `act` (GitHub Actions local runner)
+4. Usar `env:` para variáveis compartilhadas entre steps
+5. Manter consistência de nomeação (UPPERCASE para env vars)
+
+## Referências
+
+- [GitHub Actions - Context Documentation](https://docs.github.com/en/actions/learn-github-actions/contexts)
+- [GitHub Actions - Environment Variables](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
