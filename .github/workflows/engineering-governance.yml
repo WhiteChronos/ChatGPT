@@ -61,14 +61,19 @@ jobs:
         run: |
           test -f governance/REGRA_DE_OURO.md
           test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          test -f governance/DOCUMENT_LAYOUT_POLICY_v4_5.md
           test -f memory/MEMORY_POLICY.md
           test -f memory/LESSON_CI_PYTHONPATH_2026-08-24.md
           test -f memory/LESSON_CI_EXPRESSION_INTERPOLATION_2026-08-24.md
           test -f schemas/governance_v4_4.schema.json
 
-      - name: Enforce v4.4 golden constants
+      - name: Enforce golden constants and document controls
         run: |
           grep -q "12 mm" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
           grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          grep -q "arquivo original aprovado é a matriz de layout" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          grep -q "paginação é dinâmica" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
+          grep -q "DataSheetConsistencyAgent" pipeline/agents_v4_4.py
+          grep -q "document_layout_immutable" pipeline/agents_v4_4.py
           grep -q '"external_mm": {"const": 12}' schemas/governance_v4_4.schema.json
           grep -q '"aspect_ratio": {"const": 1}' schemas/governance_v4_4.schema.json

@@ -38,6 +38,28 @@ ALLOWED_STATUSES = {
 }
 
 CRITICAL_SIGNAL_ROLES = {"CMD", "RUN", "FAULT", "AVAILABLE"}
+CONTROLLED_DOCUMENT_TYPES = {"MD", "ET", "LI", "FD"}
+ALLOWED_DOCUMENT_CHANGES = {"TEXT", "TECHNICAL_VALUES", "TEXTUAL_QUANTITIES", "APPROVED_IMAGES"}
+DYNAMIC_PAGINATION_CHANGES = {"PAGE_NUMBER", "TOTAL_PAGES", "TOC_PAGE_REFERENCE"}
+FORBIDDEN_LAYOUT_CHANGES = {
+    "MARGINS",
+    "TABLE_GEOMETRY",
+    "COLUMN_WIDTHS",
+    "ROW_HEIGHTS",
+    "MERGES",
+    "BORDERS",
+    "STYLES",
+    "FONTS",
+    "STRUCTURAL_ALIGNMENT",
+    "HEADERS",
+    "FOOTERS",
+    "LOGO",
+    "SIGNATURE",
+    "PRINT_AREA",
+    "PAGE_ORIENTATION",
+    "PAGE_SCALE",
+    "SECTION_STRUCTURE",
+}
 
 
 @dataclass(frozen=True)
@@ -145,10 +167,65 @@ def validate_interlock(item: dict[str, Any]) -> list[Finding]:
     return findings
 
 
+def validate_document_layout(doc: dict[str, Any]) -> list[Finding]:
+    """Valida o contrato de layout para MD, ET, LI e FD.
+
+    O template original é a matriz. Alterações de layout são proibidas. A única exceção
+    estrutural automática é a paginação dinâmica necessária para refletir a quantidade
+    real de folhas e, quando aplicável, as referências de página do sumário.
+    """
+    findings: list[Finding] = []
+    did = str(doc.get("id", "UNKNOWN"))
+    doc_type = str(doc.get("document_type", "")).upper()
+    if doc_type not in CONTROLLED_DOCUMENT_TYPES:
+        return findings
+
+    if doc.get("layout_immutable") is not True:
+        findings.append(Finding("DOC-LAYOUT-LOCK", "CRITICAL", "Documento controlado sem layout_immutable=true", did))
+
+    if not doc.get("template_fingerprint"):
+        findings.append(Finding("DOC-TEMPLATE-FINGERPRINT", "CRITICAL", "Documento controlado sem fingerprint do template original", did))
+
+    changes = set(doc.get("changes", []))
+    forbidden = changes & FORBIDDEN_LAYOUT_CHANGES
+    if forbidden:
+        findings.append(
+            Finding(
+                "DOC-LAYOUT-MUTATION",
+                "CRITICAL",
+                f"Alteração de layout proibida: {', '.join(sorted(forbidden))}",
+                did,
+            )
+        )
+
+    unknown = changes - ALLOWED_DOCUMENT_CHANGES - DYNAMIC_PAGINATION_CHANGES - FORBIDDEN_LAYOUT_CHANGES
+    if unknown:
+        findings.append(Finding("DOC-CHANGE-TYPE", "HIGH", f"Tipo de alteração não governado: {', '.join(sorted(unknown))}", did))
+
+    if doc.get("final_page_count") is not None and doc.get("declared_total_pages") != doc.get("final_page_count"):
+        findings.append(
+            Finding(
+                "DOC-PAGINATION",
+                "CRITICAL",
+                "Total de folhas declarado não corresponde à quantidade final renderizada",
+                did,
+            )
+        )
+
+    if doc_type in {"LI", "FD"} and doc.get("datasheet_layout_immutable") is not True:
+        findings.append(Finding("DATASHEET-LAYOUT-LOCK", "CRITICAL", "LI/FD sem bloqueio explícito do layout interno", did))
+
+    if doc_type in {"LI", "FD"} and doc.get("reference_validation_required") is not True:
+        findings.append(Finding("DATASHEET-REFERENCE", "HIGH", "LI/FD sem validação obrigatória contra desenhos/documentos de referência", did))
+
+    return findings
+
+
 def validate_document(doc: dict[str, Any]) -> list[Finding]:
     findings: list[Finding] = []
     if doc.get("understanding_status") not in {"APROVADO", "APROVADO_COM_RESSALVAS"}:
         findings.append(Finding("DOC-UNDERSTANDING", "CRITICAL", "Entendimento do documento ainda não aprovado", str(doc.get("id", "UNKNOWN"))))
+    findings.extend(validate_document_layout(doc))
     return findings
 
 
