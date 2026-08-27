@@ -47,6 +47,7 @@ def test_li_and_fd_require_datasheet_contract():
     li = _base_doc(
         id="LI-TEST",
         document_type="LI",
+        document_subtype="OTHER",
         datasheet_layout_immutable=False,
         reference_validation_required=False,
     )

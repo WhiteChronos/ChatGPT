@@ -14,20 +14,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-ALLOWED_FAMILIES = {
-    "DISCRETE",
-    "SHARED_DISPLAY",
-    "COMPUTER",
-    "PLC",
-}
+from pipeline.li_io_standard import validate_li_io_document
 
-ALLOWED_LOCATIONS = {
-    "FIELD",
-    "MAIN_PANEL",
-    "BEHIND_PANEL",
-    "LOCAL_PANEL",
-}
-
+ALLOWED_FAMILIES = {"DISCRETE", "SHARED_DISPLAY", "COMPUTER", "PLC"}
+ALLOWED_LOCATIONS = {"FIELD", "MAIN_PANEL", "BEHIND_PANEL", "LOCAL_PANEL"}
 ALLOWED_STATUSES = {
     "CONFIRMADO",
     "CONFIRMADO_COM_RESSALVA",
@@ -36,10 +26,15 @@ ALLOWED_STATUSES = {
     "TBD",
     "NÃO_APLICÁVEL",
 }
-
 CRITICAL_SIGNAL_ROLES = {"CMD", "RUN", "FAULT", "AVAILABLE"}
 CONTROLLED_DOCUMENT_TYPES = {"MD", "ET", "LI", "FD"}
-ALLOWED_DOCUMENT_CHANGES = {"TEXT", "TECHNICAL_VALUES", "TEXTUAL_QUANTITIES", "APPROVED_IMAGES"}
+ALLOWED_DOCUMENT_CHANGES = {
+    "TEXT",
+    "TECHNICAL_VALUES",
+    "TEXTUAL_QUANTITIES",
+    "AUTHORIZED_FORMULAS",
+    "APPROVED_IMAGES",
+}
 DYNAMIC_PAGINATION_CHANGES = {"PAGE_NUMBER", "TOTAL_PAGES", "TOC_PAGE_REFERENCE"}
 FORBIDDEN_LAYOUT_CHANGES = {
     "MARGINS",
@@ -48,8 +43,10 @@ FORBIDDEN_LAYOUT_CHANGES = {
     "ROW_HEIGHTS",
     "MERGES",
     "BORDERS",
+    "FILLS",
     "STYLES",
     "FONTS",
+    "FONT_SIZES",
     "STRUCTURAL_ALIGNMENT",
     "HEADERS",
     "FOOTERS",
@@ -59,6 +56,7 @@ FORBIDDEN_LAYOUT_CHANGES = {
     "PAGE_ORIENTATION",
     "PAGE_SCALE",
     "SECTION_STRUCTURE",
+    "TEMPLATE_SHEET_COUNT_COPY",
 }
 
 
@@ -86,20 +84,17 @@ def validate_symbol(symbol: dict[str, Any]) -> list[Finding]:
 
     if family not in ALLOWED_FAMILIES:
         findings.append(Finding("DM-FAMILY", "CRITICAL", f"Família inválida: {family!r}", sid))
-
     if location not in ALLOWED_LOCATIONS:
         findings.append(Finding("DM-LOCATION", "CRITICAL", f"Localização inválida: {location!r}", sid))
 
     w = _num(symbol.get("external_width_mm"))
     h = _num(symbol.get("external_height_mm"))
     d = _num(symbol.get("external_diameter_mm"))
-
     if family == "DISCRETE":
         if d != 12.0:
             findings.append(Finding("DM-12MM", "CRITICAL", f"Círculo deve possuir Ø12 mm; recebido {d!r}", sid))
-    else:
-        if w != 12.0 or h != 12.0:
-            findings.append(Finding("DM-12MM", "CRITICAL", f"Envoltória deve ser 12 x 12 mm; recebido {w!r} x {h!r}", sid))
+    elif w != 12.0 or h != 12.0:
+        findings.append(Finding("DM-12MM", "CRITICAL", f"Envoltória deve ser 12 x 12 mm; recebido {w!r} x {h!r}", sid))
 
     if w is not None and h is not None and abs(w - h) > 1e-9:
         findings.append(Finding("DM-DISTORTION", "CRITICAL", "Símbolo achatado/alongado: proporção externa não é 1:1", sid))
@@ -111,18 +106,10 @@ def validate_symbol(symbol: dict[str, Any]) -> list[Finding]:
         "LOCAL_PANEL": "DOUBLE_SOLID",
     }
     if location in expected_lines and symbol.get("location_line") != expected_lines[location]:
-        findings.append(
-            Finding(
-                "DM-LOCATION-LINE",
-                "CRITICAL",
-                f"Linha de localização incompatível. Esperado {expected_lines[location]}",
-                sid,
-            )
-        )
+        findings.append(Finding("DM-LOCATION-LINE", "CRITICAL", f"Linha de localização incompatível. Esperado {expected_lines[location]}", sid))
 
     if not symbol.get("source_document") and symbol.get("status") in {"CONFIRMADO", "CONFIRMADO_COM_RESSALVA"}:
         findings.append(Finding("TRACE-SOURCE", "HIGH", "Símbolo confirmado sem documento-fonte", sid))
-
     return findings
 
 
@@ -144,14 +131,7 @@ def validate_equipment_logic(equipment: dict[str, Any]) -> list[Finding]:
         roles = set(equipment.get("signal_roles", []))
         missing = CRITICAL_SIGNAL_ROLES - roles
         if missing:
-            findings.append(
-                Finding(
-                    "REDUNDANCY-SIGNALS",
-                    "CRITICAL",
-                    f"Equipamento redundante sem sinais independentes: {', '.join(sorted(missing))}",
-                    eid,
-                )
-            )
+            findings.append(Finding("REDUNDANCY-SIGNALS", "CRITICAL", f"Equipamento redundante sem sinais independentes: {', '.join(sorted(missing))}", eid))
         if not equipment.get("transfer_logic"):
             findings.append(Finding("REDUNDANCY-TRANSFER", "CRITICAL", "Falta lógica de transferência A/B", eid))
     return findings
@@ -168,12 +148,6 @@ def validate_interlock(item: dict[str, Any]) -> list[Finding]:
 
 
 def validate_document_layout(doc: dict[str, Any]) -> list[Finding]:
-    """Valida o contrato de layout para MD, ET, LI e FD.
-
-    O template original é a matriz. Alterações de layout são proibidas. A única exceção
-    estrutural automática é a paginação dinâmica necessária para refletir a quantidade
-    real de folhas e, quando aplicável, as referências de página do sumário.
-    """
     findings: list[Finding] = []
     did = str(doc.get("id", "UNKNOWN"))
     doc_type = str(doc.get("document_type", "")).upper()
@@ -182,41 +156,28 @@ def validate_document_layout(doc: dict[str, Any]) -> list[Finding]:
 
     if doc.get("layout_immutable") is not True:
         findings.append(Finding("DOC-LAYOUT-LOCK", "CRITICAL", "Documento controlado sem layout_immutable=true", did))
-
     if not doc.get("template_fingerprint"):
-        findings.append(Finding("DOC-TEMPLATE-FINGERPRINT", "CRITICAL", "Documento controlado sem fingerprint do template original", did))
+        findings.append(Finding("DOC-TEMPLATE-FINGERPRINT", "CRITICAL", "Documento controlado sem fingerprint do padrão visual", did))
 
     changes = set(doc.get("changes", []))
     forbidden = changes & FORBIDDEN_LAYOUT_CHANGES
     if forbidden:
-        findings.append(
-            Finding(
-                "DOC-LAYOUT-MUTATION",
-                "CRITICAL",
-                f"Alteração de layout proibida: {', '.join(sorted(forbidden))}",
-                did,
-            )
-        )
+        findings.append(Finding("DOC-LAYOUT-MUTATION", "CRITICAL", f"Alteração de layout proibida: {', '.join(sorted(forbidden))}", did))
 
     unknown = changes - ALLOWED_DOCUMENT_CHANGES - DYNAMIC_PAGINATION_CHANGES - FORBIDDEN_LAYOUT_CHANGES
     if unknown:
         findings.append(Finding("DOC-CHANGE-TYPE", "HIGH", f"Tipo de alteração não governado: {', '.join(sorted(unknown))}", did))
 
     if doc.get("final_page_count") is not None and doc.get("declared_total_pages") != doc.get("final_page_count"):
-        findings.append(
-            Finding(
-                "DOC-PAGINATION",
-                "CRITICAL",
-                "Total de folhas declarado não corresponde à quantidade final renderizada",
-                did,
-            )
-        )
+        findings.append(Finding("DOC-PAGINATION", "CRITICAL", "Total declarado não corresponde à quantidade final renderizada", did))
 
     if doc_type in {"LI", "FD"} and doc.get("datasheet_layout_immutable") is not True:
         findings.append(Finding("DATASHEET-LAYOUT-LOCK", "CRITICAL", "LI/FD sem bloqueio explícito do layout interno", did))
-
     if doc_type in {"LI", "FD"} and doc.get("reference_validation_required") is not True:
-        findings.append(Finding("DATASHEET-REFERENCE", "HIGH", "LI/FD sem validação obrigatória contra desenhos/documentos de referência", did))
+        findings.append(Finding("DATASHEET-REFERENCE", "HIGH", "LI/FD sem validação obrigatória contra documentos de referência", did))
+
+    if doc_type == "LI" and doc.get("sheet_count_source") == "VISUAL_TEMPLATE":
+        findings.append(Finding("DOC-TEMPLATE-SHEET-COUNT", "CRITICAL", "Quantidade de abas copiada indevidamente do modelo visual", did))
 
     return findings
 
@@ -226,6 +187,8 @@ def validate_document(doc: dict[str, Any]) -> list[Finding]:
     if doc.get("understanding_status") not in {"APROVADO", "APROVADO_COM_RESSALVAS"}:
         findings.append(Finding("DOC-UNDERSTANDING", "CRITICAL", "Entendimento do documento ainda não aprovado", str(doc.get("id", "UNKNOWN"))))
     findings.extend(validate_document_layout(doc))
+    for finding in validate_li_io_document(doc):
+        findings.append(Finding(finding.code, finding.severity, finding.message, finding.item_id))
     return findings
 
 
@@ -248,16 +211,13 @@ def main() -> int:
     if len(sys.argv) != 2:
         print("uso: validate_engineering.py <arquivo.json>", file=sys.stderr)
         return 2
-
     path = Path(sys.argv[1])
     data = json.loads(path.read_text(encoding="utf-8"))
     findings = validate_project(data)
-
-    for f in findings:
-        item = f" [{f.item_id}]" if f.item_id else ""
-        print(f"{f.severity} {f.code}{item}: {f.message}")
-
-    critical = [f for f in findings if f.severity == "CRITICAL"]
+    for finding in findings:
+        item = f" [{finding.item_id}]" if finding.item_id else ""
+        print(f"{finding.severity} {finding.code}{item}: {finding.message}")
+    critical = [finding for finding in findings if finding.severity == "CRITICAL"]
     print(f"findings={len(findings)} critical={len(critical)}")
     return 1 if critical else 0
 

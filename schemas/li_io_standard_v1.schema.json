@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/li_io_standard_v1.schema.json",
+  "title": "Padrão de LI de Entradas e Saídas",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "standard_id",
+    "status",
+    "document_family",
+    "document_subtype",
+    "private_asset_alias",
+    "canonical_sha256",
+    "layout_fingerprint_sha256",
+    "canonical_archetype_count",
+    "sheet_count_policy",
+    "pagination_policy",
+    "layout_lock",
+    "archetype_signatures",
+    "allowed_mutations",
+    "forbidden_mutations"
+  ],
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "standard_id": {
+      "const": "LI_IO_PETROBRAS_AUTOMACAO_V1_0"
+    },
+    "status": {
+      "enum": ["ACTIVE", "SUPERSEDED", "DRAFT"]
+    },
+    "document_family": {
+      "const": "LI"
+    },
+    "document_subtype": {
+      "const": "ENTRADAS_E_SAIDAS"
+    },
+    "private_asset_alias": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canonical_size_bytes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "layout_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canonical_archetype_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "canonical_sheet_count_is_not_target_constraint": {
+      "const": true
+    },
+    "sheet_count_policy": {
+      "const": "TARGET_DOCUMENT_DRIVEN"
+    },
+    "template_sheet_count_forced": {
+      "const": false
+    },
+    "pagination_policy": {
+      "const": "DYNAMIC_TOTAL_EQUALS_FINAL_SHEET_COUNT"
+    },
+    "layout_lock": {
+      "const": "TEXT_ONLY"
+    },
+    "binary_storage_policy": {
+      "const": "PRIVATE_DATACENTER_ONLY"
+    },
+    "archetype_signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "sheet_key",
+          "archetype",
+          "structural_signature_sha256",
+          "style_signature_sha256"
+        ],
+        "properties": {
+          "sheet_key": {"type": "string"},
+          "archetype": {"type": "string"},
+          "structural_signature_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "style_signature_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "allowed_mutations": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "forbidden_mutations": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "pagination_cells": {"type": "object"},
+    "sheet_archetypes": {"type": "object"}
+  },
+  "additionalProperties": true
+}

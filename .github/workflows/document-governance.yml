@@ -1,0 +1,104 @@
+name: Document Governance v4.6
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: document-governance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-li-io-standard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Compile governance code
+        run: python -m compileall -q pipeline tests
+
+      - name: Verify required assets
+        run: |
+          test -f governance/LI_IO_STANDARD_v1_0.md
+          test -f governance/PROMPT_MESTRE_LI_ENTRADA_SAIDA_v1_0.md
+          test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_6.md
+          test -f governance/DOCUMENT_LAYOUT_POLICY_v4_6.md
+          test -f governance/PLUGIN_SECURITY_POLICY.md
+          test -f datacenter/LI_IO_STANDARD.json
+          test -f datasheet/LI_IO_DATA_SHEET.json
+          test -f schemas/li_io_standard_v1.schema.json
+          test -f plugins/document_tooling_registry.json
+          test -f pipeline/li_io_standard.py
+          test -f pipeline/apply_li_io_text_patch.py
+          test -f pipeline/xlsx_layout_guard.py
+          test -f pipeline/audit_document_plugins.py
+
+      - name: Verify immutable constants
+        run: |
+          grep -q 'TARGET_DOCUMENT_DRIVEN' datacenter/LI_IO_STANDARD.json
+          grep -q 'TEXT_ONLY' datacenter/LI_IO_STANDARD.json
+          grep -q 'BLOCK_ON_ANY_FAILURE' datacenter/LI_IO_STANDARD.json
+          grep -q 'auto_install_forbidden' plugins/document_tooling_registry.json
+          grep -q 'sheet_count_target_driven' pipeline/agents_v4_6.py
+          grep -q 'linha genérica' governance/LI_IO_STANDARD_v1_0.md
+
+      - name: Validate JSON assets
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in [
+              'datacenter/LI_IO_STANDARD.json',
+              'datasheet/LI_IO_DATA_SHEET.json',
+              'plugins/document_tooling_registry.json',
+              'schemas/governance_v4_6.schema.json',
+              'schemas/li_io_standard_v1.schema.json',
+          ]:
+              json.loads(Path(name).read_text(encoding='utf-8'))
+          PY
+
+      - name: Validate plugin registry offline
+        run: |
+          python -m pipeline.audit_document_plugins \
+            --registry plugins/document_tooling_registry.json \
+            --offline \
+            --out document_tooling_audit_offline.json
+
+      - name: Run regression tests
+        run: python -m pytest -q
+
+      - name: Upload QA evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: document-governance-evidence
+          path: document_tooling_audit_offline.json
+          if-no-files-found: warn

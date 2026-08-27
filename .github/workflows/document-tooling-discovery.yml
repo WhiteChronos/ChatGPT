@@ -1,0 +1,42 @@
+name: Document Tooling Discovery
+
+on:
+  schedule:
+    - cron: '17 3 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-public-github-tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Audit registry and discover candidates
+        run: |
+          python -m pipeline.audit_document_plugins \
+            --registry plugins/document_tooling_registry.json \
+            --out document_tooling_audit.json
+
+      - name: Upload discovery report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: document-tooling-audit
+          path: document_tooling_audit.json
+          if-no-files-found: error
