@@ -68,7 +68,7 @@ jobs:
           grep -q 'BLOCK_ON_ANY_FAILURE' datacenter/LI_IO_STANDARD.json
           grep -q 'auto_install_forbidden' plugins/document_tooling_registry.json
           grep -q 'sheet_count_target_driven' pipeline/agents_v4_6.py
-          grep -q 'nota genérica' governance/LI_IO_STANDARD_v1_0.md
+          grep -q 'linha genérica' governance/LI_IO_STANDARD_v1_0.md
 
       - name: Validate JSON assets
         run: |
