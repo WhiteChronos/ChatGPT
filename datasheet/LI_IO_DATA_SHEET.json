@@ -1,0 +1,105 @@
+{
+  "data_sheet_version": "1.0.0",
+  "data_sheet_id": "LI_IO_DATA_SHEET_V1_0",
+  "standard_id": "LI_IO_PETROBRAS_AUTOMACAO_V1_0",
+  "status": "ACTIVE",
+  "document_type": "LI",
+  "document_subtype": "ENTRADAS_E_SAIDAS",
+  "layout_policy": "TEXT_ONLY_WITH_DYNAMIC_PAGINATION",
+  "sheet_count_policy": "TARGET_DOCUMENT_DRIVEN",
+  "quality_mode": "BLOCK_ON_ANY_FAILURE",
+  "required_point_fields": [
+    "identification",
+    "io_type",
+    "service",
+    "source_document",
+    "origin",
+    "destination",
+    "direction",
+    "purpose"
+  ],
+  "conditional_point_fields": [
+    "physical_address",
+    "power_supply",
+    "contact_or_output_type",
+    "operation",
+    "redundancy",
+    "controller_or_panel",
+    "notes"
+  ],
+  "allowed_io_types": [
+    "AI",
+    "AO",
+    "DI",
+    "DO",
+    "COM"
+  ],
+  "signal_integrity": {
+    "orphan_signal_forbidden": true,
+    "full_document_code_required": true,
+    "invented_data_forbidden": true,
+    "tbd_when_unsupported": true,
+    "cmd_run_fault_available_separate": true,
+    "interlock_cause_effect_safe_state_evidence_required": true
+  },
+  "layout_integrity": {
+    "cell_dimensions_immutable": true,
+    "merges_immutable": true,
+    "borders_immutable": true,
+    "fills_immutable": true,
+    "fonts_immutable": true,
+    "font_sizes_immutable": true,
+    "alignment_immutable": true,
+    "print_settings_immutable": true,
+    "sheet_count_from_target": true,
+    "text_condensation_before_format_change": true
+  },
+  "communications": {
+    "native_protocol_must_be_distinguished_from_integration_protocol": true,
+    "physical_medium_required_when_known": true,
+    "gateway_switch_controller_path_must_be_explicit": true,
+    "availability_wording": "QUANDO DISPONÍVEL/APLICÁVEL AO EQUIPAMENTO",
+    "architecture_notes_sheet_only": true
+  },
+  "summary": {
+    "used_count_required": true,
+    "installed_reserve_required": true,
+    "total_formula_required": true,
+    "invariant": "USED_PLUS_RESERVE_EQUALS_TOTAL",
+    "cross_check_against_point_sheets": true,
+    "cross_check_against_controller_data_sheet": true
+  },
+  "reference_document_families": {
+    "architecture": "DE",
+    "descriptive_memorial": "MD",
+    "technical_specification": "ET",
+    "controller_data_sheet": "FD",
+    "material_list": "LI_MATERIAL",
+    "io_list": "LI_IO"
+  },
+  "sheet_roles": {
+    "COVER": {
+      "notes_allowed": false
+    },
+    "POINT_LIST": {
+      "notes_allowed": "POINT_SPECIFIC_ONLY"
+    },
+    "NOTES_SUMMARY_REFERENCES": {
+      "notes_allowed": true
+    },
+    "MEMORY_MAP": {
+      "notes_allowed": false,
+      "generic_note_row_forbidden": true
+    }
+  },
+  "required_evidence": [
+    "source_inventory",
+    "comment_traceability",
+    "changed_cell_list",
+    "layout_signature_report",
+    "pagination_report",
+    "formula_report",
+    "rendered_sheet_images",
+    "visual_qa_result"
+  ]
+}

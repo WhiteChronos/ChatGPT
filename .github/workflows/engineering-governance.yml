@@ -17,7 +17,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       PYTHONPATH: ${{ github.workspace }}
       PYTHONDONTWRITEBYTECODE: '1'
@@ -46,7 +46,7 @@ jobs:
       - name: Verify CI environment contract
         run: |
           test "$PYTHONPATH" = "$GITHUB_WORKSPACE"
-          python -c "import pipeline.validate_engineering; import pipeline.agents_v4_4"
+          python -c "import pipeline.validate_engineering; import pipeline.agents_v4_6; import pipeline.li_io_standard; import pipeline.apply_li_io_text_patch; import pipeline.xlsx_layout_guard"
 
       - name: Compile Python sources
         run: python -m compileall -q pipeline tests
@@ -60,20 +60,28 @@ jobs:
       - name: Verify governance assets
         run: |
           test -f governance/REGRA_DE_OURO.md
-          test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
-          test -f governance/DOCUMENT_LAYOUT_POLICY_v4_5.md
-          test -f memory/MEMORY_POLICY.md
-          test -f memory/LESSON_CI_PYTHONPATH_2026-08-24.md
-          test -f memory/LESSON_CI_EXPRESSION_INTERPOLATION_2026-08-24.md
-          test -f schemas/governance_v4_4.schema.json
+          test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_6.md
+          test -f governance/PROMPT_MESTRE_LI_ENTRADA_SAIDA_v1_0.md
+          test -f governance/DOCUMENT_LAYOUT_POLICY_v4_6.md
+          test -f governance/LI_IO_STANDARD_v1_0.md
+          test -f governance/PLUGIN_SECURITY_POLICY.md
+          test -f datacenter/LI_IO_STANDARD.json
+          test -f datasheet/LI_IO_DATA_SHEET.json
+          test -f plugins/document_tooling_registry.json
+          test -f memory/LESSON_LI_IO_MODEL_2026-08-27.md
+          test -f schemas/governance_v4_6.schema.json
+          test -f schemas/li_io_standard_v1.schema.json
 
-      - name: Enforce golden constants and document controls
+      - name: Enforce golden constants and LI E/S controls
         run: |
-          grep -q "12 mm" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
-          grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
-          grep -q "arquivo original aprovado é a matriz de layout" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
-          grep -q "paginação é dinâmica" governance/PROMPT_MESTRE_AUTOMACAO_v4_4.md
-          grep -q "DataSheetConsistencyAgent" pipeline/agents_v4_4.py
-          grep -q "document_layout_immutable" pipeline/agents_v4_4.py
-          grep -q '"external_mm": {"const": 12}' schemas/governance_v4_4.schema.json
-          grep -q '"aspect_ratio": {"const": 1}' schemas/governance_v4_4.schema.json
+          grep -q "12 mm" governance/PROMPT_MESTRE_AUTOMACAO_v4_6.md
+          grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_6.md
+          grep -q "LI_IO_PETROBRAS_AUTOMACAO_V1_0" governance/LI_IO_STANDARD_v1_0.md
+          grep -q "TARGET_DOCUMENT_DRIVEN" governance/LI_IO_STANDARD_v1_0.md
+          grep -q "quantidade de abas nunca deve ser copiada" governance/PROMPT_MESTRE_AUTOMACAO_v4_6.md
+          grep -q "LITextPatchAgent" pipeline/agents_v4_6.py
+          grep -q "font_signature_required" pipeline/agents_v4_6.py
+          grep -q "plugin_auto_install_forbidden" pipeline/agents_v4_6.py
+          grep -q '"auto_install_forbidden": true' plugins/document_tooling_registry.json
+          grep -q '"external_mm"' schemas/governance_v4_6.schema.json
+          grep -q '"aspect_ratio"' schemas/governance_v4_6.schema.json
