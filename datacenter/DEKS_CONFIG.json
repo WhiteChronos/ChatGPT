@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "system_id": "DEKS-PID-AUTOMATION",
+  "name": "Digital Engineering Knowledge System",
+  "version": "1.0.0",
+  "language_default": "pt-BR",
+  "source_of_truth": {
+    "glossary": "datacenter/GLOSSARY_MASTER.json",
+    "sources": "datacenter/GLOSSARY_SOURCES.json",
+    "datasheet": "datasheet/GLOSSARY_ENTRY_DATA_SHEET.json"
+  },
+  "documentation": {
+    "engine": "mkdocs-material",
+    "config": "mkdocs.yml",
+    "docs_dir": "docs",
+    "generated_dir": "docs/generated",
+    "site_dir": "site",
+    "interactive_search": true,
+    "client_side_filters": true,
+    "mermaid_explanatory_diagrams": true,
+    "normative_symbols_as_svg": true
+  },
+  "reading_levels": [
+    "consulta_rapida",
+    "engenharia",
+    "referencia"
+  ],
+  "knowledge_domains": [
+    "process",
+    "piping",
+    "instrumentation",
+    "automation",
+    "electrical",
+    "hvac",
+    "sdai",
+    "sis_esd_fg",
+    "digital_engineering"
+  ],
+  "governance": {
+    "github_is_normative_authority": false,
+    "auto_promote_technical_content": false,
+    "require_source_traceability": true,
+    "require_evidence_class": true,
+    "require_review_for_normative_change": true,
+    "block_orphan_internal_relationships": false
+  },
+  "publication": {
+    "build_artifact": true,
+    "github_pages_ready": true,
+    "auto_deploy_pages": false,
+    "publish_only_after_ci_pass": true
+  }
+}
