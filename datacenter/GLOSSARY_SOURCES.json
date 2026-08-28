@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-08-28",
+  "policy": {
+    "github_is_normative_authority": false,
+    "auto_promote_technical_content": false,
+    "require_evidence_class": true,
+    "require_source_reference": true
+  },
+  "sources": [
+    {
+      "id": "GH-DEXPI-SPEC",
+      "type": "github_repository",
+      "repository": "DEXPI/Specification",
+      "default_branch": "master",
+      "role": ["pid_data_model", "dexpi_reference", "interchange_model"],
+      "authority": "software_model_reference",
+      "normative": false,
+      "enabled": true
+    },
+    {
+      "id": "GH-PYDEXPI",
+      "type": "github_repository",
+      "repository": "process-intelligence-research/pyDEXPI",
+      "default_branch": "master",
+      "role": ["python_model", "parsing", "graph", "validation_reference"],
+      "authority": "open_source_implementation",
+      "normative": false,
+      "enabled": true
+    }
+  ]
+}
