@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from pipeline.build_interactive_glossary import (
     MASTER,
@@ -10,7 +15,6 @@ from pipeline.build_interactive_glossary import (
     load_json,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs" / "glossario-interativo.md"
 
 
