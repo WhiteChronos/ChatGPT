@@ -15,6 +15,7 @@ on:
       - 'datacenter/GLOSSARY_*.json'
       - 'datacenter/DEKS_*.json'
       - 'datacenter/INGESTION_*.json'
+      - 'ingestion/**'
       - 'datasheet/GLOSSARY_ENTRY_DATA_SHEET.json'
       - 'schemas/deks_config_v1_1.schema.json'
       - 'schemas/ingestion_*.schema.json'
@@ -106,6 +107,10 @@ jobs:
           test -f datacenter/INGESTION_SOURCE_REGISTRY.json
           test -f datacenter/INGESTION_REVIEW_QUEUE.json
           test -f datacenter/INGESTION_STATUS.json
+          test -f datacenter/INGESTION_PIPELINE_PLAN.json
+          test -f ingestion/staging/BATCH-9b569f7c07625955.json
+          test -f ingestion/staging/BATCH-c1bb0237fbc5ef53.json
+          test -f ingestion/staging/BATCH-9e6d8528ff88108b.json
           test -f datasheet/GLOSSARY_ENTRY_DATA_SHEET.json
           test -f schemas/deks_config_v1_1.schema.json
           test -f schemas/ingestion_batch_v1.schema.json
@@ -120,7 +125,7 @@ jobs:
           grep -q '"github_is_normative_authority": false' datacenter/DEKS_CONFIG.json
           grep -q '"auto_approve": false' datacenter/DEKS_CONFIG.json
           grep -q '"auto_approval": false' datacenter/INGESTION_SOURCE_REGISTRY.json
-          grep -q '"auto_approval": false' datacenter/INGESTION_REVIEW_QUEUE.json
+          grep -q '"auto_approval":false' datacenter/INGESTION_REVIEW_QUEUE.json
 
       - name: Upload interactive site artifact
         uses: actions/upload-artifact@v4
