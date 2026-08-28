@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whitechronos.example/schemas/ingestion_batch_v1.schema.json",
+  "title": "DEKS Knowledge Ingestion Batch",
+  "type": "object",
+  "required": ["schema_version", "batch_id", "source_id", "created_at", "records"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "batch_id": {"type": "string", "minLength": 8},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_revision": {"type": ["string", "null"]},
+    "created_at": {"type": "string", "minLength": 1},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ingestion_id",
+          "entity_type",
+          "external_id",
+          "payload",
+          "provenance",
+          "evidence_class",
+          "review_status",
+          "auto_promoted"
+        ],
+        "properties": {
+          "ingestion_id": {"type": "string", "minLength": 8},
+          "entity_type": {
+            "enum": [
+              "glossary_entry",
+              "tag",
+              "symbol",
+              "pid_object",
+              "instrument_index_item",
+              "io_item",
+              "cause_effect",
+              "datasheet",
+              "source"
+            ]
+          },
+          "external_id": {"type": "string", "minLength": 1},
+          "payload": {"type": "object"},
+          "provenance": {
+            "type": "object",
+            "required": ["source_id"],
+            "properties": {
+              "source_id": {"type": "string", "minLength": 1},
+              "document": {"type": ["string", "null"]},
+              "revision": {"type": ["string", "null"]},
+              "page": {"type": ["integer", "string", "null"]},
+              "sheet": {"type": ["integer", "string", "null"]},
+              "row": {"type": ["integer", "string", "null"]},
+              "column": {"type": ["integer", "string", "null"]},
+              "field": {"type": ["string", "null"]},
+              "locator": {"type": ["string", "null"]}
+            },
+            "additionalProperties": true
+          },
+          "evidence_class": {
+            "enum": [
+              "E1_PROJECT_DRAWING",
+              "E2_PROJECT_DOCUMENT",
+              "E3_FORMAL_CONFIRMATION",
+              "E4_OFFICIAL_STANDARD",
+              "E5_MANUFACTURER",
+              "E6_ACADEMIC_BOOK_PAPER",
+              "E7_GITHUB_OPEN_SOURCE",
+              "E0_NO_EVIDENCE"
+            ]
+          },
+          "review_status": {"const": "REVIEW_REQUIRED"},
+          "auto_promoted": {"const": false}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
