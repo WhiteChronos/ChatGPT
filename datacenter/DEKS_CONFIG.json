@@ -1,13 +1,15 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "system_id": "DEKS-PID-AUTOMATION",
   "name": "Digital Engineering Knowledge System",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "language_default": "pt-BR",
   "source_of_truth": {
     "glossary": "datacenter/GLOSSARY_MASTER.json",
     "sources": "datacenter/GLOSSARY_SOURCES.json",
-    "datasheet": "datasheet/GLOSSARY_ENTRY_DATA_SHEET.json"
+    "datasheet": "datasheet/GLOSSARY_ENTRY_DATA_SHEET.json",
+    "ingestion_sources": "datacenter/INGESTION_SOURCE_REGISTRY.json",
+    "ingestion_review_queue": "datacenter/INGESTION_REVIEW_QUEUE.json"
   },
   "documentation": {
     "engine": "mkdocs-material",
@@ -43,6 +45,29 @@
     "require_evidence_class": true,
     "require_review_for_normative_change": true,
     "block_orphan_internal_relationships": false
+  },
+  "ingestion": {
+    "engine": "pipeline/knowledge_ingestion.py",
+    "batch_schema": "schemas/ingestion_batch_v1.schema.json",
+    "source_registry_schema": "schemas/ingestion_source_registry_v1.schema.json",
+    "supported_formats": [
+      "json",
+      "csv"
+    ],
+    "supported_entity_types": [
+      "glossary_entry",
+      "tag",
+      "symbol",
+      "pid_object",
+      "instrument_index_item",
+      "io_item",
+      "cause_effect",
+      "datasheet",
+      "source"
+    ],
+    "auto_approve": false,
+    "staging_required": true,
+    "review_required": true
   },
   "publication": {
     "build_artifact": true,
