@@ -27,6 +27,26 @@
       "authority": "open_source_implementation",
       "normative": false,
       "enabled": true
+    },
+    {
+      "id": "GH-MKDOCS-MATERIAL",
+      "type": "github_repository",
+      "repository": "squidfunk/mkdocs-material",
+      "default_branch": "master",
+      "role": ["documentation_engine", "search_ui", "navigation_ui"],
+      "authority": "open_source_tooling",
+      "normative": false,
+      "enabled": true
+    },
+    {
+      "id": "GH-MERMAID",
+      "type": "github_repository",
+      "repository": "mermaid-js/mermaid",
+      "default_branch": "develop",
+      "role": ["explanatory_diagrams", "knowledge_map", "architecture_visualization"],
+      "authority": "open_source_tooling",
+      "normative": false,
+      "enabled": true
     }
   ]
 }
