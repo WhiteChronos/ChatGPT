@@ -1,0 +1,94 @@
+:root {
+  --deks-gap: 1rem;
+}
+
+.deks-hero-grid,
+.deks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--deks-gap);
+  margin: 1rem 0 1.5rem;
+}
+
+.deks-hero-card,
+.deks-card {
+  display: block;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: var(--md-default-bg-color);
+  text-decoration: none;
+}
+
+.deks-hero-card:hover,
+.deks-card:hover {
+  border-color: var(--md-accent-fg-color);
+}
+
+.deks-hero-card strong,
+.deks-hero-card span {
+  display: block;
+}
+
+.deks-hero-card span {
+  margin-top: 0.35rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.deks-controls input,
+.deks-controls select {
+  width: 100%;
+  min-height: 2.5rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.35rem;
+  padding: 0.45rem 0.6rem;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+}
+
+.deks-result-count {
+  margin: 0.5rem 0 1rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-card[hidden] {
+  display: none;
+}
+
+.deks-card h3 {
+  margin-top: 0;
+}
+
+.deks-card small {
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.deks-chip {
+  display: inline-block;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: var(--md-code-bg-color);
+  font-size: 0.8rem;
+}
+
+@media print {
+  .deks-controls,
+  .md-header,
+  .md-sidebar {
+    display: none !important;
+  }
+}
