@@ -1,0 +1,91 @@
+name: Glossary Engine
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'governance/PROMPT_MESTRE_GLOSSARIO_GITHUB_v1_0.md'
+      - 'pipeline/glossary_engine.py'
+      - 'pipeline/sync_glossary_sources.py'
+      - 'datacenter/GLOSSARY_*.json'
+      - 'datasheet/GLOSSARY_ENTRY_DATA_SHEET.json'
+      - 'tests/test_glossary_engine.py'
+      - '.github/workflows/glossary-engine.yml'
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: glossary-engine-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Synchronize approved GitHub glossary sources
+        run: python pipeline/sync_glossary_sources.py
+
+      - name: Validate glossary datacenter and datasheet
+        run: python pipeline/glossary_engine.py
+
+      - name: Compile glossary pipeline
+        run: python -m compileall -q pipeline tests
+
+      - name: Run glossary regression tests
+        run: python -m pytest -q tests/test_glossary_engine.py
+
+      - name: Verify glossary governance assets
+        run: |
+          test -f governance/PROMPT_MESTRE_GLOSSARIO_GITHUB_v1_0.md
+          test -f datacenter/GLOSSARY_SOURCES.json
+          test -f datacenter/GLOSSARY_MASTER.json
+          test -f datacenter/GLOSSARY_SOURCE_STATE.json
+          test -f datacenter/GLOSSARY_CANDIDATES.json
+          test -f datacenter/GLOSSARY_STATUS.json
+          test -f datasheet/GLOSSARY_ENTRY_DATA_SHEET.json
+          grep -q 'GitHub NÃO é autoridade normativa' governance/PROMPT_MESTRE_GLOSSARIO_GITHUB_v1_0.md
+          grep -q '"github_is_normative_authority": false' datacenter/GLOSSARY_SOURCES.json
+
+      - name: Commit automatically refreshed source metadata
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          if git diff --quiet -- datacenter/GLOSSARY_SOURCE_STATE.json datacenter/GLOSSARY_CANDIDATES.json datacenter/GLOSSARY_STATUS.json; then
+            echo 'No glossary metadata changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add datacenter/GLOSSARY_SOURCE_STATE.json datacenter/GLOSSARY_CANDIDATES.json datacenter/GLOSSARY_STATUS.json
+          git commit -m 'chore(glossary): refresh GitHub source state [skip ci]'
+          git push
