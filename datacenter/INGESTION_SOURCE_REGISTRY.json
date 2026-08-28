@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "DEKS-INGESTION-SOURCES",
+  "auto_approval": false,
+  "sources": [
+    {
+      "source_id": "PROJECT_GLOSSARY_REV4_2",
+      "name": "Glossário Mestre Multidisciplinar de Fluxogramas Rev4.2",
+      "source_type": "project_document",
+      "authority_tier": 1,
+      "default_evidence_class": "E2_PROJECT_DOCUMENT",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["glossary_entry", "tag", "symbol", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    },
+    {
+      "source_id": "AUTOMACAO_DM_R00_05",
+      "name": "AUTOMAÇÃO DM R00-05",
+      "source_type": "project_standard",
+      "authority_tier": 1,
+      "default_evidence_class": "E2_PROJECT_DOCUMENT",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["symbol", "tag", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    },
+    {
+      "source_id": "PROJECT_PID",
+      "name": "P&ID / Fluxogramas de Projeto",
+      "source_type": "project_drawing",
+      "authority_tier": 1,
+      "default_evidence_class": "E1_PROJECT_DRAWING",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["pid_object", "tag", "symbol", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    },
+    {
+      "source_id": "PROJECT_INSTRUMENT_INDEX",
+      "name": "Instrument Index",
+      "source_type": "project_table",
+      "authority_tier": 2,
+      "default_evidence_class": "E2_PROJECT_DOCUMENT",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["instrument_index_item", "tag", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    },
+    {
+      "source_id": "PROJECT_IO_LIST",
+      "name": "I/O List",
+      "source_type": "project_table",
+      "authority_tier": 2,
+      "default_evidence_class": "E2_PROJECT_DOCUMENT",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["io_item", "tag", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    },
+    {
+      "source_id": "PROJECT_CAUSE_EFFECT",
+      "name": "Cause & Effect / Matriz de Intertravamentos",
+      "source_type": "project_table",
+      "authority_tier": 2,
+      "default_evidence_class": "E2_PROJECT_DOCUMENT",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["cause_effect", "tag", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    },
+    {
+      "source_id": "PROJECT_DATASHEETS",
+      "name": "Datasheets de Engenharia",
+      "source_type": "project_document",
+      "authority_tier": 2,
+      "default_evidence_class": "E2_PROJECT_DOCUMENT",
+      "allowed_formats": ["json", "csv"],
+      "allowed_entity_types": ["datasheet", "tag", "source"],
+      "enabled": false,
+      "status": "REGISTERED_PENDING_FILE"
+    }
+  ]
+}
