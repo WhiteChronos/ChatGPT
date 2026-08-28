@@ -112,7 +112,7 @@ def entry_page(entry: dict[str, Any], term_to_path: dict[str, str]) -> str:
 
 ---
 
-[Voltar ao índice do glossário](../index.md)
+[Voltar ao índice do glossário](index.md)
 """
 
 
