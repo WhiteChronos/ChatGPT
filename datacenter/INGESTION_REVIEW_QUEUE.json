@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "queue_id": "DEKS-INGESTION-REVIEW",
+  "auto_approval": false,
+  "allowed_statuses": [
+    "REVIEW_REQUIRED",
+    "APPROVED",
+    "REJECTED"
+  ],
+  "items": []
+}
