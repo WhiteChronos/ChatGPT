@@ -8,7 +8,7 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "datacenter" / "DEKS_CONFIG.json"
-CONFIG_SCHEMA = ROOT / "schemas" / "deks_config_v1.schema.json"
+CONFIG_SCHEMA = ROOT / "schemas" / "deks_config_v1_1.schema.json"
 MASTER = ROOT / "datacenter" / "GLOSSARY_MASTER.json"
 SOURCES = ROOT / "datacenter" / "GLOSSARY_SOURCES.json"
 STATUS = ROOT / "datacenter" / "DEKS_STATUS.json"
@@ -33,7 +33,8 @@ def validate() -> tuple[list[str], list[str]]:
         location = ".".join(str(part) for part in issue.path) or "<root>"
         errors.append(f"DEKS_CONFIG {location}: {issue.message}")
 
-    for label, relative_path in config.get("source_of_truth", {}).items():
+    source_of_truth = config.get("source_of_truth", {})
+    for label, relative_path in source_of_truth.items():
         path = resolve_repo_path(relative_path)
         if not path.exists():
             errors.append(f"source_of_truth ausente ({label}): {relative_path}")
@@ -49,6 +50,43 @@ def validate() -> tuple[list[str], list[str]]:
         errors.append("GitHub não pode ser autoridade normativa no DEKS")
     if governance.get("auto_promote_technical_content") is not False:
         errors.append("promoção automática de conteúdo técnico deve permanecer desabilitada")
+
+    ingestion = config.get("ingestion", {})
+    for key in ("engine", "batch_schema", "source_registry_schema"):
+        relative_path = ingestion.get(key)
+        if not relative_path:
+            errors.append(f"ingestion.{key} ausente")
+        elif not resolve_repo_path(relative_path).exists():
+            errors.append(f"ingestion.{key} não encontrado: {relative_path}")
+    if ingestion.get("auto_approve") is not False:
+        errors.append("Knowledge Ingestion não pode aprovar itens automaticamente")
+    if ingestion.get("staging_required") is not True:
+        errors.append("Knowledge Ingestion deve exigir staging")
+    if ingestion.get("review_required") is not True:
+        errors.append("Knowledge Ingestion deve exigir revisão técnica")
+    if set(ingestion.get("supported_formats", [])) != {"json", "csv"}:
+        errors.append("Knowledge Ingestion v1.1 deve suportar exatamente JSON e CSV")
+
+    ingestion_sources_path = source_of_truth.get("ingestion_sources")
+    if ingestion_sources_path and resolve_repo_path(ingestion_sources_path).exists():
+        ingestion_sources = load_json(resolve_repo_path(ingestion_sources_path))
+        if ingestion_sources.get("auto_approval") is not False:
+            errors.append("registro de fontes de ingestão não pode habilitar auto_approval")
+        ingestion_source_ids = [item.get("source_id") for item in ingestion_sources.get("sources", [])]
+        if len(ingestion_source_ids) != len(set(ingestion_source_ids)):
+            errors.append("registro de fontes de ingestão contém source_id duplicado")
+
+    ingestion_queue_path = source_of_truth.get("ingestion_review_queue")
+    if ingestion_queue_path and resolve_repo_path(ingestion_queue_path).exists():
+        ingestion_queue = load_json(resolve_repo_path(ingestion_queue_path))
+        if ingestion_queue.get("auto_approval") is not False:
+            errors.append("fila de revisão de ingestão não pode habilitar auto_approval")
+        allowed_statuses = set(ingestion_queue.get("allowed_statuses", []))
+        for item in ingestion_queue.get("items", []):
+            if item.get("review_status") not in allowed_statuses:
+                errors.append(
+                    f"fila de ingestão contém status inválido para {item.get('ingestion_id', '<sem-id>')}"
+                )
 
     master = load_json(MASTER)
     sources = load_json(SOURCES)
@@ -92,13 +130,13 @@ def validate() -> tuple[list[str], list[str]]:
 
 def write_status(errors: list[str], warnings: list[str]) -> None:
     payload = {
-        "engine": "DEKS_ENGINE_V1_0",
+        "engine": "DEKS_ENGINE_V1_1",
         "ok": not errors,
         "error_count": len(errors),
         "warning_count": len(warnings),
         "errors": errors,
         "warnings": warnings,
-        "note": "O DEKS valida governança, configuração e rastreabilidade. Relações ainda não cadastradas são avisos até que o datacenter seja expandido.",
+        "note": "O DEKS v1.1 valida governança, rastreabilidade e a camada Knowledge Ingestion. Relações ainda não cadastradas permanecem como avisos até expansão do datacenter.",
     }
     STATUS.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
