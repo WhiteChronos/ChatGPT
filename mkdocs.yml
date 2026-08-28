@@ -61,6 +61,7 @@ nav:
   - Como usar: usage.md
   - Arquitetura DEKS: architecture.md
   - Governança: governance.md
+  - Knowledge Ingestion: knowledge-ingestion.md
   - Glossário:
       - Índice interativo: generated/glossary/index.md
       - Mapa de conhecimento: generated/knowledge-map.md
