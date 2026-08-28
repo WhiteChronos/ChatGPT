@@ -9,10 +9,18 @@
       "source_type": "project_document",
       "authority_tier": 1,
       "default_evidence_class": "E2_PROJECT_DOCUMENT",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["glossary_entry", "tag", "symbol", "source"],
-      "enabled": false,
-      "status": "REGISTERED_PENDING_FILE"
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "glossary_entry",
+        "tag",
+        "symbol",
+        "source"
+      ],
+      "enabled": true,
+      "status": "ACTIVE"
     },
     {
       "source_id": "AUTOMACAO_DM_R00_05",
@@ -20,10 +28,17 @@
       "source_type": "project_standard",
       "authority_tier": 1,
       "default_evidence_class": "E2_PROJECT_DOCUMENT",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["symbol", "tag", "source"],
-      "enabled": false,
-      "status": "REGISTERED_PENDING_FILE"
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "symbol",
+        "tag",
+        "source"
+      ],
+      "enabled": true,
+      "status": "ACTIVE"
     },
     {
       "source_id": "PROJECT_PID",
@@ -31,10 +46,18 @@
       "source_type": "project_drawing",
       "authority_tier": 1,
       "default_evidence_class": "E1_PROJECT_DRAWING",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["pid_object", "tag", "symbol", "source"],
-      "enabled": false,
-      "status": "REGISTERED_PENDING_FILE"
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "pid_object",
+        "tag",
+        "symbol",
+        "source"
+      ],
+      "enabled": true,
+      "status": "ACTIVE"
     },
     {
       "source_id": "PROJECT_INSTRUMENT_INDEX",
@@ -42,8 +65,15 @@
       "source_type": "project_table",
       "authority_tier": 2,
       "default_evidence_class": "E2_PROJECT_DOCUMENT",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["instrument_index_item", "tag", "source"],
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "instrument_index_item",
+        "tag",
+        "source"
+      ],
       "enabled": false,
       "status": "REGISTERED_PENDING_FILE"
     },
@@ -53,8 +83,15 @@
       "source_type": "project_table",
       "authority_tier": 2,
       "default_evidence_class": "E2_PROJECT_DOCUMENT",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["io_item", "tag", "source"],
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "io_item",
+        "tag",
+        "source"
+      ],
       "enabled": false,
       "status": "REGISTERED_PENDING_FILE"
     },
@@ -64,8 +101,15 @@
       "source_type": "project_table",
       "authority_tier": 2,
       "default_evidence_class": "E2_PROJECT_DOCUMENT",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["cause_effect", "tag", "source"],
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "cause_effect",
+        "tag",
+        "source"
+      ],
       "enabled": false,
       "status": "REGISTERED_PENDING_FILE"
     },
@@ -75,8 +119,15 @@
       "source_type": "project_document",
       "authority_tier": 2,
       "default_evidence_class": "E2_PROJECT_DOCUMENT",
-      "allowed_formats": ["json", "csv"],
-      "allowed_entity_types": ["datasheet", "tag", "source"],
+      "allowed_formats": [
+        "json",
+        "csv"
+      ],
+      "allowed_entity_types": [
+        "datasheet",
+        "tag",
+        "source"
+      ],
       "enabled": false,
       "status": "REGISTERED_PENDING_FILE"
     }
