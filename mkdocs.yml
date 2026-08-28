@@ -1,0 +1,70 @@
+site_name: Digital Engineering Knowledge System
+site_description: Glossário técnico data-centric para P&ID, instrumentação, automação, processo, tubulação e disciplinas correlatas.
+site_url: https://whitechronos.github.io/ChatGPT/
+repo_url: https://github.com/WhiteChronos/ChatGPT
+repo_name: WhiteChronos/ChatGPT
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: pt-BR
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Usar tema escuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Usar tema claro
+
+plugins:
+  - search:
+      lang:
+        - pt
+        - en
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra_javascript:
+  - assets/javascripts/deks-filter.js
+  - assets/javascripts/mermaid-init.js
+
+nav:
+  - Início: index.md
+  - Como usar: usage.md
+  - Arquitetura DEKS: architecture.md
+  - Governança: governance.md
+  - Glossário:
+      - Índice interativo: generated/glossary/index.md
+      - Mapa de conhecimento: generated/knowledge-map.md
+  - Fontes: generated/sources.md
+  - Estado do sistema: generated/status.md
+
+strict: true
