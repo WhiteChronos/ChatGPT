@@ -54,6 +54,7 @@ extra_css:
 
 extra_javascript:
   - assets/javascripts/deks-filter.js
+  - assets/javascripts/interactive-glossary.js
   - assets/javascripts/mermaid-init.js
 
 nav:
@@ -61,8 +62,10 @@ nav:
   - Como usar: usage.md
   - Arquitetura DEKS: architecture.md
   - Governança: governance.md
+  - Knowledge Ingestion: knowledge-ingestion.md
   - Glossário:
-      - Índice interativo: generated/glossary/index.md
+      - Glossário técnico interativo: generated/glossary/interactive.md
+      - Índice canônico: generated/glossary/index.md
       - Mapa de conhecimento: generated/knowledge-map.md
   - Fontes: generated/sources.md
   - Estado do sistema: generated/status.md

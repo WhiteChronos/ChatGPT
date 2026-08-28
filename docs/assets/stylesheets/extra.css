@@ -85,10 +85,318 @@
   font-size: 0.8rem;
 }
 
+/* Interactive glossary */
+.deks-glossary-hero {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 0 0 1rem;
+  background: linear-gradient(135deg, var(--md-default-bg-color), var(--md-code-bg-color));
+}
+
+.deks-glossary-hero h2 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: clamp(1.15rem, 2.2vw, 1.65rem);
+}
+
+.deks-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.deks-metric {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.65rem;
+  padding: 0.9rem;
+  background: var(--md-default-bg-color);
+}
+
+.deks-metric strong,
+.deks-metric span {
+  display: block;
+}
+
+.deks-metric strong {
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.deks-metric span {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-governance-callout {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  border-left: 0.25rem solid var(--md-accent-fg-color);
+  background: var(--md-code-bg-color);
+}
+
+.deks-scope-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0.75rem;
+}
+
+.deks-scope-button,
+.deks-reset-button,
+.deks-open-entry,
+.deks-detail-panel-toolbar button {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  cursor: pointer;
+}
+
+.deks-scope-button:hover,
+.deks-reset-button:hover,
+.deks-open-entry:hover,
+.deks-detail-panel-toolbar button:hover {
+  border-color: var(--md-accent-fg-color);
+}
+
+.deks-scope-button.is-active {
+  border-color: var(--md-primary-fg-color);
+  background: var(--md-code-bg-color);
+  font-weight: 700;
+}
+
+.deks-glossary-controls {
+  grid-template-columns: minmax(260px, 2fr) repeat(5, minmax(150px, 1fr));
+  align-items: center;
+}
+
+.deks-result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.deks-result-row .deks-result-count {
+  margin: 0;
+}
+
+.deks-glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+  margin: 0.75rem 0 1.5rem;
+}
+
+.deks-glossary-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: var(--md-default-bg-color);
+  box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.04);
+}
+
+.deks-glossary-card:hover {
+  border-color: var(--md-accent-fg-color);
+}
+
+.deks-glossary-card[hidden] {
+  display: none;
+}
+
+.deks-glossary-card h3 {
+  margin: 0.75rem 0 0.45rem;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.deks-glossary-card p {
+  margin: 0 0 0.65rem;
+}
+
+.deks-glossary-card-staging {
+  border-style: dashed;
+}
+
+.deks-card-topline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.deks-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 999px;
+  background: var(--md-code-bg-color);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.deks-badge-approved {
+  border-style: solid;
+}
+
+.deks-badge-review {
+  border-style: dashed;
+}
+
+.deks-card-meta {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-open-entry {
+  align-self: flex-start;
+  margin-top: 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 0.76rem;
+}
+
+.deks-symbol-svg {
+  display: block;
+  width: 92px;
+  height: 92px;
+  margin: 0.5rem auto 0.25rem;
+  color: var(--md-default-fg-color);
+}
+
+.deks-dimension-note {
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-empty-state {
+  padding: 1.25rem;
+  border: 1px dashed var(--md-default-fg-color--lightest);
+  border-radius: 0.6rem;
+  text-align: center;
+  color: var(--md-default-fg-color--light);
+}
+
+.deks-detail-panel {
+  position: fixed;
+  top: 4.25rem;
+  right: 1rem;
+  bottom: 1rem;
+  width: min(680px, calc(100vw - 2rem));
+  z-index: 15;
+  overflow: auto;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: var(--md-default-bg-color);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.18);
+}
+
+.deks-detail-panel[hidden] {
+  display: none;
+}
+
+.deks-detail-panel-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 0 0.5rem;
+  background: var(--md-default-bg-color);
+}
+
+.deks-detail-banner {
+  margin-bottom: 0.8rem;
+  padding: 0.65rem 0.75rem;
+  border-left: 0.25rem solid var(--md-accent-fg-color);
+  background: var(--md-code-bg-color);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.deks-detail-review {
+  border-left-style: dashed;
+}
+
+.deks-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.deks-detail-table th,
+.deks-detail-table td {
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding: 0.55rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+.deks-detail-table th {
+  width: 30%;
+  font-size: 0.78rem;
+}
+
+.deks-detail-table pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 1100px) {
+  .deks-glossary-controls {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .deks-result-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .deks-detail-panel {
+    top: 3.75rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: calc(100vw - 1rem);
+  }
+}
+
 @media print {
   .deks-controls,
+  .deks-scope-tabs,
+  .deks-result-row,
+  .deks-open-entry,
+  .deks-detail-panel,
   .md-header,
   .md-sidebar {
     display: none !important;
+  }
+
+  .deks-glossary-card {
+    break-inside: avoid;
+    box-shadow: none;
   }
 }

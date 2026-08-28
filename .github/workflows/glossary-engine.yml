@@ -6,19 +6,27 @@ on:
     paths:
       - 'governance/PROMPT_MESTRE_GLOSSARIO_GITHUB_v1_0.md'
       - 'governance/PROMPT_MESTRE_DEKS_v1_0.md'
+      - 'governance/PROMPT_MESTRE_DEKS_KNOWLEDGE_INGESTION_v1_1.md'
       - 'pipeline/glossary_engine.py'
       - 'pipeline/sync_glossary_sources.py'
       - 'pipeline/deks_engine.py'
       - 'pipeline/build_deks_docs.py'
+      - 'pipeline/build_interactive_glossary.py'
+      - 'pipeline/knowledge_ingestion.py'
       - 'datacenter/GLOSSARY_*.json'
       - 'datacenter/DEKS_*.json'
+      - 'datacenter/INGESTION_*.json'
+      - 'ingestion/**'
       - 'datasheet/GLOSSARY_ENTRY_DATA_SHEET.json'
-      - 'schemas/deks_config_v1.schema.json'
+      - 'schemas/deks_config_v1_1.schema.json'
+      - 'schemas/ingestion_*.schema.json'
       - 'docs/**'
       - 'mkdocs.yml'
       - 'requirements-dev.txt'
       - 'tests/test_glossary_engine.py'
       - 'tests/test_deks_engine.py'
+      - 'tests/test_knowledge_ingestion.py'
+      - 'tests/test_interactive_glossary.py'
       - '.github/workflows/glossary-engine.yml'
   pull_request:
     branches: [main]
@@ -71,14 +79,20 @@ jobs:
       - name: Validate Digital Engineering Knowledge System
         run: python pipeline/deks_engine.py
 
+      - name: Validate DEKS Knowledge Ingestion layer
+        run: python pipeline/knowledge_ingestion.py --validate-registry
+
       - name: Generate interactive DEKS documentation
         run: python pipeline/build_deks_docs.py
+
+      - name: Generate technical interactive glossary
+        run: python pipeline/build_interactive_glossary.py
 
       - name: Compile Python sources
         run: python -m compileall -q pipeline tests
 
       - name: Run glossary and DEKS regression tests
-        run: python -m pytest -q tests/test_glossary_engine.py tests/test_deks_engine.py
+        run: python -m pytest -q tests/test_glossary_engine.py tests/test_deks_engine.py tests/test_knowledge_ingestion.py tests/test_interactive_glossary.py
 
       - name: Build interactive documentation in strict mode
         run: mkdocs build --strict
@@ -87,6 +101,7 @@ jobs:
         run: |
           test -f governance/PROMPT_MESTRE_GLOSSARIO_GITHUB_v1_0.md
           test -f governance/PROMPT_MESTRE_DEKS_v1_0.md
+          test -f governance/PROMPT_MESTRE_DEKS_KNOWLEDGE_INGESTION_v1_1.md
           test -f datacenter/GLOSSARY_SOURCES.json
           test -f datacenter/GLOSSARY_MASTER.json
           test -f datacenter/GLOSSARY_SOURCE_STATE.json
@@ -94,14 +109,32 @@ jobs:
           test -f datacenter/GLOSSARY_STATUS.json
           test -f datacenter/DEKS_CONFIG.json
           test -f datacenter/DEKS_STATUS.json
+          test -f datacenter/INGESTION_SOURCE_REGISTRY.json
+          test -f datacenter/INGESTION_REVIEW_QUEUE.json
+          test -f datacenter/INGESTION_STATUS.json
+          test -f datacenter/INGESTION_PIPELINE_PLAN.json
+          test -f ingestion/staging/BATCH-9b569f7c07625955.json
+          test -f ingestion/staging/BATCH-c1bb0237fbc5ef53.json
+          test -f ingestion/staging/BATCH-9e6d8528ff88108b.json
           test -f datasheet/GLOSSARY_ENTRY_DATA_SHEET.json
-          test -f schemas/deks_config_v1.schema.json
+          test -f schemas/deks_config_v1_1.schema.json
+          test -f schemas/ingestion_batch_v1.schema.json
+          test -f schemas/ingestion_source_registry_v1.schema.json
+          test -f docs/knowledge-ingestion.md
           test -f docs/generated/glossary/index.md
+          test -f docs/generated/glossary/interactive.md
           test -f docs/generated/knowledge-map.md
+          test -f docs/assets/javascripts/interactive-glossary.js
           test -f site/index.html
           grep -q 'GitHub NÃO é autoridade normativa' governance/PROMPT_MESTRE_GLOSSARIO_GITHUB_v1_0.md
+          grep -q 'INGESTÃO NÃO É APROVAÇÃO' governance/PROMPT_MESTRE_DEKS_KNOWLEDGE_INGESTION_v1_1.md
           grep -q '"github_is_normative_authority": false' datacenter/GLOSSARY_SOURCES.json
           grep -q '"github_is_normative_authority": false' datacenter/DEKS_CONFIG.json
+          grep -q '"auto_approve": false' datacenter/DEKS_CONFIG.json
+          grep -q '"auto_approval": false' datacenter/INGESTION_SOURCE_REGISTRY.json
+          grep -q '"auto_approval":false' datacenter/INGESTION_REVIEW_QUEUE.json
+          grep -q 'STAGING — NÃO APROVADO' docs/generated/glossary/interactive.md
+          grep -q 'BASE APROVADA' docs/generated/glossary/interactive.md
 
       - name: Upload interactive site artifact
         uses: actions/upload-artifact@v4
@@ -114,12 +147,12 @@ jobs:
       - name: Commit automatically refreshed source metadata
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
-          if git diff --quiet -- datacenter/GLOSSARY_SOURCE_STATE.json datacenter/GLOSSARY_CANDIDATES.json datacenter/GLOSSARY_STATUS.json datacenter/DEKS_STATUS.json; then
+          if git diff --quiet -- datacenter/GLOSSARY_SOURCE_STATE.json datacenter/GLOSSARY_CANDIDATES.json datacenter/GLOSSARY_STATUS.json datacenter/DEKS_STATUS.json datacenter/INGESTION_STATUS.json; then
             echo 'No glossary/DEKS metadata changes to commit.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add datacenter/GLOSSARY_SOURCE_STATE.json datacenter/GLOSSARY_CANDIDATES.json datacenter/GLOSSARY_STATUS.json datacenter/DEKS_STATUS.json
+          git add datacenter/GLOSSARY_SOURCE_STATE.json datacenter/GLOSSARY_CANDIDATES.json datacenter/GLOSSARY_STATUS.json datacenter/DEKS_STATUS.json datacenter/INGESTION_STATUS.json
           git commit -m 'chore(deks): refresh knowledge source state [skip ci]'
           git push

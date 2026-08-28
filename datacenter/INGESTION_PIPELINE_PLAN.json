@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "DEKS-V1.1-KNOWLEDGE-INGESTION-SEQUENCE",
+  "canonical_write_policy": "FORBIDDEN_BY_INGESTION",
+  "auto_approval": false,
+  "target": "ingestion/staging",
+  "sequence": [
+    {
+      "order": 1,
+      "stage": "Glossário Rev4.2",
+      "source_id": "PROJECT_GLOSSARY_REV4_2",
+      "state": "STAGED_REVIEW_REQUIRED",
+      "batch_id": "BATCH-9b569f7c07625955",
+      "coverage": {
+        "records": 20,
+        "scope": "núcleo de governança, documentos, tags cautelares e funções de intertravamento"
+      },
+      "source_evidence": "Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf"
+    },
+    {
+      "order": 2,
+      "stage": "AUTOMAÇÃO DM",
+      "source_id": "AUTOMACAO_DM_R00_05",
+      "state": "STAGED_REVIEW_REQUIRED",
+      "batch_id": "BATCH-c1bb0237fbc5ef53",
+      "coverage": {
+        "records": 17,
+        "symbol_matrix_cells": 16,
+        "dimension_rule": "12 mm explícito somente para instrumento discreto em campo na folha de referência; demais células não recebem dimensão explícita por inferência"
+      },
+      "source_evidence": "AUTOMAÇÃO DM R00-05.pdf"
+    },
+    {
+      "order": 3,
+      "stage": "tags/símbolos",
+      "source_ids": [
+        "PROJECT_GLOSSARY_REV4_2",
+        "AUTOMACAO_DM_R00_05"
+      ],
+      "state": "STAGED_REVIEW_REQUIRED",
+      "coverage": {
+        "tag_semantics": "Rev4.2",
+        "symbol_matrix": "AUTOMAÇÃO DM R00-05",
+        "no_invented_tags": true
+      }
+    },
+    {
+      "order": 4,
+      "stage": "P&ID / fluxogramas",
+      "source_id": "PROJECT_PID",
+      "state": "STAGED_PARTIAL_REVIEW_REQUIRED",
+      "batch_id": "BATCH-9e6d8528ff88108b",
+      "coverage": {
+        "records": 3,
+        "available_document": "DE-0244.00-8210-944-TP7-003 Rev.D",
+        "confirmed_objects": [
+          "AC-0244.0002",
+          "AC-0244.0003"
+        ],
+        "restriction": "metadados e objetos explicitamente identificados; equivalência com P&ID não presumida"
+      },
+      "pending": "P&ID HVAC DE-0244.00-8210-175-TP7-004 é referenciado, mas seu conteúdo não foi disponibilizado como fonte autônoma nesta ingestão."
+    },
+    {
+      "order": 5,
+      "stage": "Instrument Index / I/O",
+      "source_ids": [
+        "PROJECT_INSTRUMENT_INDEX",
+        "PROJECT_IO_LIST"
+      ],
+      "state": "PENDING_SOURCE_FILE",
+      "enabled": false,
+      "pending": "Há referências documentais a listas, porém não há conteúdo autônomo suficiente para importar linhas do Instrument Index ou da I/O List."
+    },
+    {
+      "order": 6,
+      "stage": "C&E",
+      "source_id": "PROJECT_CAUSE_EFFECT",
+      "state": "PENDING_SOURCE_FILE",
+      "enabled": false,
+      "pending": "DE-0244.00-8210-800-TP7-007 é citado como Matriz de Causa e Efeito, mas a matriz não foi disponibilizada como fonte autônoma nesta ingestão."
+    },
+    {
+      "order": 7,
+      "stage": "datasheets",
+      "source_id": "PROJECT_DATASHEETS",
+      "state": "PENDING_SOURCE_FILE",
+      "enabled": false,
+      "pending": "FD-0244.00-8210-800-TP7-001 é citado como Folha de Dados de Instrumento, mas o conteúdo do datasheet não foi disponibilizado como fonte autônoma nesta ingestão."
+    }
+  ],
+  "guards": {
+    "all_staged_records_review_status": "REVIEW_REQUIRED",
+    "all_staged_records_auto_promoted": false,
+    "canonical_glossary_path": "datacenter/GLOSSARY_MASTER.json",
+    "canonical_glossary_modified_by_this_sequence": false
+  }
+}
