@@ -1,4 +1,4 @@
-name: Document Governance v4.6
+name: Document Governance v4.7
 
 on:
   push:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate-li-io-standard:
+  validate-document-standards:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -49,16 +49,21 @@ jobs:
         run: |
           test -f governance/LI_IO_STANDARD_v1_0.md
           test -f governance/PROMPT_MESTRE_LI_ENTRADA_SAIDA_v1_0.md
-          test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_6.md
+          test -f governance/MD_AUTOMATION_STANDARD_v1_0.md
+          test -f governance/PROMPT_MESTRE_MD_AUTOMACAO_v1_0.md
+          test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md
           test -f governance/DOCUMENT_LAYOUT_POLICY_v4_6.md
           test -f governance/PLUGIN_SECURITY_POLICY.md
           test -f datacenter/LI_IO_STANDARD.json
+          test -f datacenter/MD_AUTOMATION_STANDARD.json
           test -f datasheet/LI_IO_DATA_SHEET.json
-          test -f schemas/li_io_standard_v1.schema.json
+          test -f datasheet/MD_AUTOMATION_DATA_SHEET.json
           test -f plugins/document_tooling_registry.json
           test -f pipeline/li_io_standard.py
           test -f pipeline/apply_li_io_text_patch.py
           test -f pipeline/xlsx_layout_guard.py
+          test -f pipeline/md_revision_standard.py
+          test -f pipeline/agents_v4_7.py
           test -f pipeline/audit_document_plugins.py
 
       - name: Verify immutable constants
@@ -66,9 +71,14 @@ jobs:
           grep -q 'TARGET_DOCUMENT_DRIVEN' datacenter/LI_IO_STANDARD.json
           grep -q 'TEXT_ONLY' datacenter/LI_IO_STANDARD.json
           grep -q 'BLOCK_ON_ANY_FAILURE' datacenter/LI_IO_STANDARD.json
+          grep -q 'MD_AUTOMATION_PETROBRAS_V1_0' datacenter/MD_AUTOMATION_STANDARD.json
+          grep -q 'paragraph_spacing_immutable' datacenter/MD_AUTOMATION_STANDARD.json
+          grep -q 'clear_legacy_gray_before_current_revision' datacenter/MD_AUTOMATION_STANDARD.json
+          grep -q 'continuous_across_text_runs' datacenter/MD_AUTOMATION_STANDARD.json
           grep -q 'auto_install_forbidden' plugins/document_tooling_registry.json
-          grep -q 'sheet_count_target_driven' pipeline/agents_v4_6.py
+          grep -q 'md_current_gray_continuous' pipeline/agents_v4_7.py
           grep -q 'linha genérica' governance/LI_IO_STANDARD_v1_0.md
+          grep -q 'D9D9D9' governance/MD_AUTOMATION_STANDARD_v1_0.md
 
       - name: Validate JSON assets
         run: |
@@ -77,7 +87,9 @@ jobs:
           from pathlib import Path
           for name in [
               'datacenter/LI_IO_STANDARD.json',
+              'datacenter/MD_AUTOMATION_STANDARD.json',
               'datasheet/LI_IO_DATA_SHEET.json',
+              'datasheet/MD_AUTOMATION_DATA_SHEET.json',
               'plugins/document_tooling_registry.json',
               'schemas/governance_v4_6.schema.json',
               'schemas/li_io_standard_v1.schema.json',
