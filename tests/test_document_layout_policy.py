@@ -12,6 +12,15 @@ def _base_doc(**overrides):
         "changes": ["TEXT", "TOTAL_PAGES", "TOC_PAGE_REFERENCE"],
         "final_page_count": 12,
         "declared_total_pages": 12,
+        "paragraph_spacing_immutable": True,
+        "font_immutable": True,
+        "legacy_gray_cleared": True,
+        "current_revision_gray_continuous": True,
+        "current_changes_marked": True,
+        "toc_revision_marking_consistent": True,
+        "render_all_pages": True,
+        "inspect_all_pages": True,
+        "current_revision_change_map": ["COMMENT-1"],
     }
     doc.update(overrides)
     return doc
@@ -41,6 +50,17 @@ def test_controlled_document_rejects_wrong_total_pages():
     findings = validate_project({"documents": [_base_doc(declared_total_pages=11)]})
     codes = {f.code for f in findings}
     assert "DOC-PAGINATION" in codes
+    assert "MD_PAGINATION_MISMATCH" in codes
+
+
+def test_md_rejects_spacing_mutation_and_legacy_gray():
+    findings = validate_project({"documents": [_base_doc(
+        paragraph_spacing_immutable=False,
+        legacy_gray_cleared=False,
+    )]})
+    codes = {f.code for f in findings}
+    assert "MD_PARAGRAPH_SPACING_MUTATION" in codes
+    assert "MD_LEGACY_GRAY_PRESENT" in codes
 
 
 def test_li_and_fd_require_datasheet_contract():

@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.li_io_standard import validate_li_io_document
+from pipeline.md_revision_standard import validate_md_document_metadata
 
 ALLOWED_FAMILIES = {"DISCRETE", "SHARED_DISPLAY", "COMPUTER", "PLC"}
 ALLOWED_LOCATIONS = {"FIELD", "MAIN_PANEL", "BEHIND_PANEL", "LOCAL_PANEL"}
@@ -57,6 +58,10 @@ FORBIDDEN_LAYOUT_CHANGES = {
     "PAGE_SCALE",
     "SECTION_STRUCTURE",
     "TEMPLATE_SHEET_COUNT_COPY",
+    "PARAGRAPH_SPACING",
+    "LINE_SPACING",
+    "INDENTS",
+    "TABS",
 }
 
 
@@ -188,6 +193,8 @@ def validate_document(doc: dict[str, Any]) -> list[Finding]:
         findings.append(Finding("DOC-UNDERSTANDING", "CRITICAL", "Entendimento do documento ainda não aprovado", str(doc.get("id", "UNKNOWN"))))
     findings.extend(validate_document_layout(doc))
     for finding in validate_li_io_document(doc):
+        findings.append(Finding(finding.code, finding.severity, finding.message, finding.item_id))
+    for finding in validate_md_document_metadata(doc):
         findings.append(Finding(finding.code, finding.severity, finding.message, finding.item_id))
     return findings
 

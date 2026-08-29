@@ -1,0 +1,72 @@
+{
+  "id": "MD_AUTOMATION_PETROBRAS_V1_0",
+  "status": "ACTIVE",
+  "document_type": "MD",
+  "discipline": "AUTOMACAO",
+  "canonical_model": {
+    "name": "MD-0249.00-6000-800-RPJ-001=C.docx",
+    "storage": "PRIVATE_CONTROLLED_STORAGE",
+    "public_binary_forbidden": true,
+    "source_sha256": "ba2afe44af37bae1e0e1557052a1041085a9c952f21e9377c46ab9dea757fdea",
+    "approved_gray_normalized_output_sha256": "a294d1882469dfbc93d62195423d47088e4e26993e84ad3cee951aed5cfe976a"
+  },
+  "layout_fingerprint": {
+    "paragraph_properties_sha256": "1291fedec7249ea5b1d21e3977fac64bdbfc2f4382650f83a5d30f62f0b8084c",
+    "table_properties_sha256": "eb04243ef63982665c8e0bbbe78d1579c58154636333f9db20b33250b69b59cb",
+    "row_properties_sha256": "6ca115053fb9438969803868c00559397c8233a0a9adf6d17031bf71cc857f05",
+    "cell_properties_sha256": "b114ad0dbd87bb2b7bd13f7cecd7bfdfccdacef112910ec2cce47e97150d39b8",
+    "section_properties_sha256": "8c5cd720cb8adda93c868e4bee400dcc8e7bae9e7f0f1c90354970fa2af979d5",
+    "styles_sha256": "0f5bae5aedbaa51c4c1c525df13e9d2c1b358a1577147bde289a5084047ba742",
+    "numbering_sha256": "74bbd51eb93b4add2995a8d86490528d9f30b78c4732673ac3fd13db910b6acc",
+    "settings_sha256": "55c53552c1e21cfebdd7970eff9cb3074adc48c8e9d1248fbeed40610eb41d2f",
+    "theme_sha256": "03d2301f7b79d3777e1edbe6ad7f8b73bfbe9d79bd306813a1524444c13ade6e",
+    "header1_sha256": "a79e0f8f51d174a0ca9d96384a88da32cde4ec1d3687c20755fe54b4d4774fa7",
+    "header2_sha256": "ebd1e468b443e360aee5bbed32cc005da36f9e7f75be4c85cfea72d21ca3cbb6",
+    "footer1_sha256": "8c9b1c84b8d4cb3f30c6725d4debb111b0f1068266f472624a79753f1fd9c3a0",
+    "footer2_sha256": "f95d30f7939aebfe5040174e20dc56ed144b22eb01499749bbc538e910cf82f2",
+    "paragraph_count_reference": 570,
+    "table_count_reference": 2,
+    "media_count_reference": 10
+  },
+  "editing_policy": {
+    "mode": "TEXT_ONLY",
+    "target_document_is_physical_matrix_on_revision": true,
+    "canonical_model_is_presentation_reference": true,
+    "paragraph_spacing_immutable": true,
+    "line_spacing_immutable": true,
+    "indentation_immutable": true,
+    "tabs_immutable": true,
+    "alignment_immutable": true,
+    "font_immutable": true,
+    "font_size_immutable": true,
+    "style_immutable": true,
+    "tables_immutable": true,
+    "sections_immutable": true,
+    "headers_footers_immutable": true,
+    "images_geometry_immutable": true,
+    "dynamic_exceptions": ["PAGE_NUMBER", "TOTAL_PAGES", "TOC_PAGE_REFERENCE"]
+  },
+  "revision_gray_policy": {
+    "color": "D9D9D9",
+    "clear_legacy_gray_before_current_revision": true,
+    "current_revision_only": true,
+    "current_change_map_required": true,
+    "continuous_across_text_runs": true,
+    "shade_existing_interword_spaces": true,
+    "artificial_spacing_for_gray_forbidden": true,
+    "toc_current_change_marking_required": true
+  },
+  "quality_gates": {
+    "package_validation_required": true,
+    "structural_diff_required": true,
+    "render_all_pages": true,
+    "inspect_all_pages_100_percent": true,
+    "block_on_any_critical_finding": true
+  },
+  "governance": {
+    "standard": "governance/MD_AUTOMATION_STANDARD_v1_0.md",
+    "prompt": "governance/PROMPT_MESTRE_MD_AUTOMACAO_v1_0.md",
+    "script": "pipeline/md_revision_standard.py",
+    "data_sheet": "datasheet/MD_AUTOMATION_DATA_SHEET.json"
+  }
+}
