@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "pipeline_id": "AUT-PANEL-GITHUB-QUALITY-V1.0",
+  "release_statuses": ["APROVADO", "CONDICIONADO", "HOLD", "REPROVADO"],
+  "github_quality": {
+    "workflow": ".github/workflows/aut-panel-quality.yml",
+    "pull_request_required": true,
+    "block_on_rejected": true,
+    "block_release_on_hold": true,
+    "artifact_manifest_required": true
+  },
+  "stages": [
+    {"order": 10, "id": "INIT", "input": ["project_request"], "output": ["project_structure"], "gates": ["project_id", "revision"]},
+    {"order": 20, "id": "INGEST", "input": ["MD", "ET", "LI", "PDF", "XLSX", "images"], "output": ["document_manifest"], "gates": ["sha256", "source_registration"]},
+    {"order": 30, "id": "EXTRACT", "input": ["document_manifest"], "output": ["candidate_requirements"], "gates": ["evidence_link"]},
+    {"order": 40, "id": "REVIEW_INPUT", "input": ["candidate_requirements"], "output": ["confirmed_requirements"], "gates": ["human_review"]},
+    {"order": 50, "id": "DATACENTER", "input": ["confirmed_requirements", "manufacturer_documents"], "output": ["verified_catalog"], "gates": ["manufacturer", "model", "document", "page_section", "consultation_date"]},
+    {"order": 60, "id": "MODEL", "input": ["confirmed_requirements", "verified_catalog"], "output": ["canonical_project"], "gates": ["json_schema", "units", "reference_integrity"]},
+    {"order": 70, "id": "TOPOLOGY", "input": ["canonical_project"], "output": ["electrical_automation_topology"], "gates": ["controller_io_compatibility", "power_paths"]},
+    {"order": 80, "id": "CALCULATE", "input": ["electrical_automation_topology"], "output": ["loads", "io", "terminals", "thermal", "space"], "gates": ["deterministic_rules"]},
+    {"order": 90, "id": "SELECT", "input": ["calculation_results", "verified_catalog"], "output": ["selected_components"], "gates": ["exact_part_number", "lifecycle"]},
+    {"order": 100, "id": "LAYOUT", "input": ["selected_components", "canonical_project"], "output": ["physical_layout"], "gates": ["GR-018", "GR-027", "reserve"]},
+    {"order": 110, "id": "RENDER", "input": ["physical_layout"], "output": ["SVG", "datasheet"], "gates": ["GR-021", "GR-022", "GR-023", "GR-024", "GR-025", "GR-026"]},
+    {"order": 120, "id": "QA", "input": ["all_outputs"], "output": ["qa_report", "artifact_manifest"], "gates": ["schema", "unit_tests", "hashes", "cross_consistency"]},
+    {"order": 130, "id": "RELEASE", "input": ["qa_report", "artifact_manifest"], "output": ["release_package"], "gates": ["APROVADO", "no_HOLD", "pull_request_review"]}
+  ]
+}

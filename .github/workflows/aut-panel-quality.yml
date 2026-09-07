@@ -1,0 +1,101 @@
+name: AUT Panel Quality
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/aut-panel-quality.yml'
+      - 'governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md'
+      - 'schemas/aut_panel_project_v1.schema.json'
+      - 'pipeline/aut_panel_control.py'
+      - 'pipeline/AUT_PANEL_PIPELINE.json'
+      - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
+      - 'datasheet/AUT_PANEL_DATA_SHEET.json'
+      - 'tests/test_aut_panel_control.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aut-panel-quality.yml'
+      - 'governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md'
+      - 'schemas/aut_panel_project_v1.schema.json'
+      - 'pipeline/aut_panel_control.py'
+      - 'pipeline/AUT_PANEL_PIPELINE.json'
+      - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
+      - 'datasheet/AUT_PANEL_DATA_SHEET.json'
+      - 'tests/test_aut_panel_control.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aut-panel-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Immutable geometry and engineering gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Compile sources
+        run: python -m compileall -q pipeline tests
+
+      - name: Run regression tests
+        run: python -m pytest -q tests/test_aut_panel_control.py
+
+      - name: Run controlled pipeline
+        run: |
+          rm -rf build/aut-panel
+          python pipeline/aut_panel_control.py pipeline \
+            --project datasheet/AUT_PANEL_DATA_SHEET.json \
+            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG.json \
+            --pipeline pipeline/AUT_PANEL_PIPELINE.json \
+            --schema schemas/aut_panel_project_v1.schema.json \
+            --output-dir build/aut-panel \
+            --allow-hold
+
+      - name: Verify artifact hashes
+        run: |
+          python pipeline/aut_panel_control.py verify-artifacts \
+            --manifest build/aut-panel/manifest.json \
+            --output-dir build/aut-panel
+
+      - name: Publish QA summary
+        if: always()
+        run: |
+          if test -f build/aut-panel/qa_report.md; then
+            cat build/aut-panel/qa_report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload controlled artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aut-panel-quality-${{ github.sha }}
+          path: build/aut-panel
+          if-no-files-found: error
+          retention-days: 30

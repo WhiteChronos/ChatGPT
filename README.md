@@ -42,6 +42,23 @@ Documentos e módulos:
 
 O binário oficial permanece no Data Center privado. O repositório público contém somente manifesto redigido, hashes, regras, esquemas e testes.
 
+## Padrão AUT — painéis de automação e controle
+
+Model ID:
+
+`AUT-PAINEL-COMPACT-V2.4`
+
+O sistema `AUT Panel Quality` liga o Data Sheet, o catálogo do Data Center, o motor determinístico e o GitHub Actions. A vista frontal externa é a geometria-mestra; vista interna frontal, porta e lateral são verificadas em milímetros, sem escala individual ou distorção. `REPROVADO` falha o CI e `HOLD` bloqueia a emissão formal.
+
+Documentos e módulos:
+
+- `governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md`;
+- `datacenter/AUT_PANEL_COMPONENT_CATALOG.json`;
+- `datasheet/AUT_PANEL_DATA_SHEET.json`;
+- `pipeline/AUT_PANEL_PIPELINE.json`;
+- `pipeline/aut_panel_control.py`;
+- `.github/workflows/aut-panel-quality.yml`.
+
 ## Catálogo permanente de ferramentas
 
 O catálogo em `plugins/document_tooling_registry.json` reúne ferramentas públicas do GitHub para DOCX, XLSX, PDF, OOXML, CAD, renderização, extração, comparação e segurança. Ele é curado e extensível; não existe uma lista finita de “todos os plugins” do GitHub.

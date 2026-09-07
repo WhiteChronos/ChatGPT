@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "project": {
+    "id": "AUT-PANEL-REFERENCE-001",
+    "title": "Painel de automação e controle com UTR",
+    "revision": "R00",
+    "engineering_level": "BASIC",
+    "standard_id": "AUT-PAINEL-COMPACT-V2.4"
+  },
+  "enclosure": {
+    "catalog_id": "PENDING-ENCLOSURE-800X600X300",
+    "manufacturer": "PENDENTE",
+    "family": "Gabinete de automação",
+    "model": "800x600x300-PENDENTE",
+    "external_mm": {"width": 600, "height": 800, "depth": 300},
+    "mounting_plate_mm": {"width": 550, "height": 750},
+    "minimum_free_reserve_percent": 25,
+    "ip_rating": null,
+    "ik_rating": null
+  },
+  "render": {
+    "px_per_mm": 2.0,
+    "single_global_scale": true,
+    "aspect_equal": true,
+    "allow_component_scale_override": false,
+    "allow_stretch": false,
+    "canvas_policy": "grow_only",
+    "front_external_master_geometry": true
+  },
+  "views": {
+    "front_external_mm": {"width": 600, "height": 800},
+    "front_internal_mm": {"width": 600, "height": 800},
+    "side_external_mm": {"width": 300, "height": 800}
+  },
+  "layout": {
+    "fixed_occupied_area_mm2": 80000,
+    "bottom_zone": {
+      "cable_exit_height_mm": 65,
+      "lower_wireway_height_mm": 50,
+      "minimum_bend_clearance_mm": 25,
+      "terminal_zone_bottom_y_mm": 150,
+      "cable_glands_count": 10
+    }
+  },
+  "architecture": {
+    "controller_type": "RTU",
+    "controller_catalog_id": "RTU-PENDING",
+    "io_catalog_ids": ["RTU-DI-PENDING", "RTU-DO-PENDING", "RTU-AI-PENDING", "RTU-RTD-PENDING"],
+    "protocols": ["Ethernet industrial", "Modbus TCP", "Modbus RTU"]
+  },
+  "placements": [
+    {"instance_id": "UPS01", "catalog_id": "ADEL-CBI2420A", "surface": "mounting_plate", "x_mm": 120, "y_mm": 600, "rotation_deg": 0},
+    {"instance_id": "GW01", "catalog_id": "TRANE-FIACNXYEKIT", "surface": "mounting_plate", "x_mm": 30, "y_mm": 380, "rotation_deg": 0},
+    {"instance_id": "HMI01", "catalog_id": "SCHNEIDER-HMIST6200", "surface": "door", "x_mm": 232.75, "y_mm": 500, "rotation_deg": 0}
+  ]
+}
