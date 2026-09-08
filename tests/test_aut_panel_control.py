@@ -5,8 +5,10 @@ import json
 import sqlite3
 from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 from pipeline import aut_panel_control as aut
+from pipeline import aut_panel_standard as std
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -111,3 +113,37 @@ def test_datacenter_sqlite_e_criado(tmp_path):
         referencias = banco.execute("SELECT COUNT(*) FROM references_docs").fetchone()[0]
     assert produtos >= 12
     assert referencias >= 10
+
+
+def test_gr034_esta_no_datasheet_e_pipeline():
+    projeto = projeto_valido()
+    pipeline = carregar("pipeline/AUT_PANEL_PIPELINE.json")
+    contract = projeto["production_contract"]
+    assert contract["golden_rule"] == "GR-034"
+    assert contract["bom_before_render"] is True
+    assert pipeline["golden_rules"]["GR-034"]["enforcement"]["bom_before_render"] is True
+    assert pipeline["standard_sequence"].index("BOM") < pipeline["standard_sequence"].index("RENDER_IMAGE")
+
+
+def test_gr034_bloqueia_imagem_sem_bom(tmp_path):
+    with pytest.raises(RuntimeError, match="GR-034"):
+        std.gerar_imagem_pos_bom(
+            projeto_valido(),
+            catalogo_validado(),
+            tmp_path / "AUT_PANEL_BOM.json",
+            tmp_path / "AUT_PANEL_LAYOUT.svg",
+        )
+
+
+def test_gr034_bom_gera_imagem_na_ordem_correta(tmp_path):
+    projeto = projeto_valido()
+    catalogo = catalogo_validado()
+    bom_json, bom_csv = std.gerar_bom(projeto, catalogo, tmp_path)
+    assert bom_json.exists()
+    assert bom_csv.exists()
+    image = tmp_path / "AUT_PANEL_LAYOUT.svg"
+    std.gerar_imagem_pos_bom(projeto, catalogo, bom_json, image)
+    assert image.exists()
+    dados = json.loads(bom_json.read_text(encoding="utf-8"))
+    assert dados["golden_rule"] == "GR-034"
+    assert dados["must_precede_render"] is True
