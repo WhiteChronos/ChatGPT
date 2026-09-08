@@ -4,7 +4,7 @@
   "title": "AUT Panel Project",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "project", "enclosure", "render", "views", "layout", "architecture", "placements"],
+  "required": ["schema_version", "project", "production_contract", "enclosure", "render", "views", "layout", "architecture", "placements"],
   "properties": {
     "schema_version": {"const": "1.0"},
     "project": {
@@ -17,6 +17,18 @@
         "revision": {"type": "string", "pattern": "^R[0-9]{2}$"},
         "engineering_level": {"enum": ["CONCEPTUAL", "BASIC", "EXECUTIVE"]},
         "standard_id": {"const": "AUT-PAINEL-COMPACT-V2.4"}
+      }
+    },
+    "production_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["golden_rule", "bom_before_render", "bom_is_render_source", "image_must_match_bom", "bom_change_invalidates_existing_image"],
+      "properties": {
+        "golden_rule": {"const": "GR-034"},
+        "bom_before_render": {"const": true},
+        "bom_is_render_source": {"const": true},
+        "image_must_match_bom": {"const": true},
+        "bom_change_invalidates_existing_image": {"const": true}
       }
     },
     "enclosure": {
