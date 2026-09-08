@@ -8,9 +8,11 @@ on:
       - 'governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md'
       - 'schemas/aut_panel_project_v1.schema.json'
       - 'pipeline/aut_panel_control.py'
+      - 'pipeline/aut_panel_standard.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
+      - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'tests/test_aut_panel_control.py'
   push:
     branches: [main]
@@ -19,9 +21,11 @@ on:
       - 'governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md'
       - 'schemas/aut_panel_project_v1.schema.json'
       - 'pipeline/aut_panel_control.py'
+      - 'pipeline/aut_panel_standard.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
+      - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'tests/test_aut_panel_control.py'
   workflow_dispatch:
 
@@ -34,7 +38,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Immutable geometry and engineering gates
+    name: Immutable geometry, power chain, image-before-BOM
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -67,29 +71,53 @@ jobs:
       - name: Run regression tests
         run: python -m pytest -q tests/test_aut_panel_control.py
 
-      - name: Run controlled pipeline
+      - name: Run PN-AUT-01 standard pipeline
         run: |
-          rm -rf build/aut-panel
-          python pipeline/aut_panel_control.py pipeline \
+          rm -rf build/aut-panel/PN-AUT-01
+          python pipeline/aut_panel_standard.py \
             --project datasheet/AUT_PANEL_DATA_SHEET.json \
             --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG.json \
             --pipeline pipeline/AUT_PANEL_PIPELINE.json \
             --schema schemas/aut_panel_project_v1.schema.json \
-            --output-dir build/aut-panel \
+            --output-dir build/aut-panel/PN-AUT-01 \
+            --allow-hold
+
+      - name: Run PN-AUT-02 standard pipeline
+        run: |
+          rm -rf build/aut-panel/PN-AUT-02
+          python pipeline/aut_panel_standard.py \
+            --project datasheet/PN-AUT-02_DATA_SHEET.json \
+            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG.json \
+            --pipeline pipeline/AUT_PANEL_PIPELINE.json \
+            --schema schemas/aut_panel_project_v1.schema.json \
+            --output-dir build/aut-panel/PN-AUT-02 \
             --allow-hold
 
       - name: Verify artifact hashes
         run: |
           python pipeline/aut_panel_control.py verify-artifacts \
-            --manifest build/aut-panel/manifest.json \
-            --output-dir build/aut-panel
+            --manifest build/aut-panel/PN-AUT-01/manifest.json \
+            --output-dir build/aut-panel/PN-AUT-01
+          python pipeline/aut_panel_control.py verify-artifacts \
+            --manifest build/aut-panel/PN-AUT-02/manifest.json \
+            --output-dir build/aut-panel/PN-AUT-02
+
+      - name: Verify standard output order
+        run: |
+          test -f build/aut-panel/PN-AUT-01/AUT_PANEL_LAYOUT.svg
+          test -f build/aut-panel/PN-AUT-01/AUT_PANEL_BOM.json
+          test -f build/aut-panel/PN-AUT-02/AUT_PANEL_LAYOUT.svg
+          test -f build/aut-panel/PN-AUT-02/AUT_PANEL_BOM.json
 
       - name: Publish QA summary
         if: always()
         run: |
-          if test -f build/aut-panel/qa_report.md; then
-            cat build/aut-panel/qa_report.md >> "$GITHUB_STEP_SUMMARY"
-          fi
+          for report in build/aut-panel/*/qa_report.md; do
+            if test -f "$report"; then
+              cat "$report" >> "$GITHUB_STEP_SUMMARY"
+              printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
 
       - name: Upload controlled artifacts
         if: always()
