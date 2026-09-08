@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "project": {
+    "id": "PN-AUT-02",
+    "title": "Painel de Automação HVAC - UTR remota + IHM",
+    "revision": "R01",
+    "engineering_level": "BASIC",
+    "standard_id": "AUT-PAINEL-COMPACT-V2.4"
+  },
+  "enclosure": {
+    "catalog_id": "SCHNEIDER-NSYCRN54250",
+    "manufacturer": "Schneider Electric",
+    "family": "PanelSeT CRN",
+    "model": "NSYCRN54250",
+    "external_mm": {"width": 400, "height": 500, "depth": 250},
+    "mounting_plate_mm": {"width": 350, "height": 450},
+    "minimum_free_reserve_percent": 20,
+    "ip_rating": "IP66",
+    "ik_rating": null
+  },
+  "render": {
+    "px_per_mm": 2.0,
+    "single_global_scale": true,
+    "aspect_equal": true,
+    "allow_component_scale_override": false,
+    "allow_stretch": false,
+    "canvas_policy": "grow_only",
+    "front_external_master_geometry": true
+  },
+  "views": {
+    "front_external_mm": {"width": 400, "height": 500},
+    "front_internal_mm": {"width": 400, "height": 500},
+    "side_external_mm": {"width": 250, "height": 500}
+  },
+  "layout": {
+    "fixed_occupied_area_mm2": 35000,
+    "bottom_zone": {
+      "cable_exit_height_mm": 45,
+      "lower_wireway_height_mm": 40,
+      "minimum_bend_clearance_mm": 20,
+      "terminal_zone_bottom_y_mm": 115,
+      "cable_glands_count": 8
+    }
+  },
+  "architecture": {
+    "controller_type": "RTU",
+    "controller_catalog_id": "SIEMENS-RTU-REF",
+    "io_catalog_ids": [],
+    "protocols": ["Industrial Ethernet", "Modbus TCP"]
+  },
+  "placements": [
+    {"instance_id": "QF01", "catalog_id": "SCHNEIDER-ACTI9-IC60N-REF", "surface": "mounting_plate", "x_mm": 20, "y_mm": 390, "rotation_deg": 0},
+    {"instance_id": "PS01", "catalog_id": "PULS-CPS241", "surface": "mounting_plate", "x_mm": 80, "y_mm": 390, "rotation_deg": 0},
+    {"instance_id": "UPS01", "catalog_id": "ADEL-CBI2420A", "surface": "mounting_plate", "x_mm": 160, "y_mm": 300, "rotation_deg": 0},
+    {"instance_id": "BAT01", "catalog_id": "BATTERY-24V-2X12V7AH-REF", "surface": "mounting_plate", "x_mm": 20, "y_mm": 300, "rotation_deg": 0},
+    {"instance_id": "RTU01", "catalog_id": "SIEMENS-RTU-REF", "surface": "mounting_plate", "x_mm": 20, "y_mm": 210, "rotation_deg": 0},
+    {"instance_id": "SW01", "catalog_id": "SIEMENS-SCALANCE-X208-REF", "surface": "mounting_plate", "x_mm": 220, "y_mm": 210, "rotation_deg": 0},
+    {"instance_id": "XT01", "catalog_id": "PHOENIX-PT25-3209510", "surface": "mounting_plate", "x_mm": 20, "y_mm": 125, "rotation_deg": 0},
+    {"instance_id": "HMI01", "catalog_id": "SCHNEIDER-HMIST6500", "surface": "door", "x_mm": 80, "y_mm": 300, "rotation_deg": 0}
+  ]
+}
