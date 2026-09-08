@@ -16,6 +16,12 @@ def carregar(relativo: str):
 
 
 def catalogo_validado():
+    """Synthetic validation fixture for deterministic geometry/rule tests.
+
+    Production catalog records may intentionally remain PENDING_REFERENCE/HOLD.
+    Unit tests promote them synthetically so rule behavior can be tested without
+    pretending production evidence is complete.
+    """
     catalogo = carregar("datacenter/AUT_PANEL_COMPONENT_CATALOG.json")
     ref = {
         "reference_id": "TEST-REF",
@@ -23,39 +29,32 @@ def catalogo_validado():
         "title": "Synthetic dimensional record",
         "document_code": "TEST",
         "revision": "R00",
-        "publication_date": "2026-09-07",
+        "publication_date": "2026-09-08",
         "page_section": "test fixture",
         "source_tier": "INTERNAL_REFERENCE",
         "official_url": None,
-        "consultation_date": "2026-09-07",
+        "consultation_date": "2026-09-08",
         "validation_status": "VALID"
     }
-    dimensoes = {
-        "PENDING-ENCLOSURE-800X600X300": {"width": 600, "height": 800, "depth": 300},
-        "RTU-PENDING": {"width": 55, "height": 125, "depth": 75},
-        "RTU-DI-PENDING": {"width": 30, "height": 125, "depth": 75},
-        "RTU-DO-PENDING": {"width": 30, "height": 125, "depth": 75},
-        "RTU-AI-PENDING": {"width": 30, "height": 125, "depth": 75},
-        "RTU-RTD-PENDING": {"width": 30, "height": 125, "depth": 75}
-    }
     for item in catalogo["components"]:
+        item["engineering_status"] = "VALIDATED"
         item["lifecycle_status"] = "ACTIVE"
-        if item["catalog_id"] in dimensoes:
-            item["engineering_status"] = "VALIDATED"
-            item["dimensions_mm"] = dimensoes[item["catalog_id"]]
+        if not item.get("references"):
             item["references"] = [copy.deepcopy(ref)]
     return catalogo
 
 
 def projeto_valido():
-    projeto = carregar("datasheet/AUT_PANEL_DATA_SHEET.json")
-    projeto["enclosure"]["manufacturer"] = "Synthetic Test Manufacturer"
-    projeto["enclosure"]["model"] = "TEST-800X600X300"
-    return projeto
+    return carregar("datasheet/AUT_PANEL_DATA_SHEET.json")
 
 
 def test_datasheet_obedece_schema():
     erros = list(Draft202012Validator(carregar("schemas/aut_panel_project_v1.schema.json")).iter_errors(carregar("datasheet/AUT_PANEL_DATA_SHEET.json")))
+    assert not erros, [erro.message for erro in erros]
+
+
+def test_datasheet_pn_aut_02_obedece_schema():
+    erros = list(Draft202012Validator(carregar("schemas/aut_panel_project_v1.schema.json")).iter_errors(carregar("datasheet/PN-AUT-02_DATA_SHEET.json")))
     assert not erros, [erro.message for erro in erros]
 
 
@@ -89,7 +88,7 @@ def test_zona_inferior_insuficiente_gera_hold():
 
 def test_colisao_e_reprovada():
     projeto = projeto_valido()
-    projeto["placements"].append({"instance_id": "UPS02", "catalog_id": "ADEL-CBI2420A", "surface": "mounting_plate", "x_mm": 120, "y_mm": 600, "rotation_deg": 0})
+    projeto["placements"].append({"instance_id": "UPS02", "catalog_id": "ADEL-CBI2420A", "surface": "mounting_plate", "x_mm": 250, "y_mm": 580, "rotation_deg": 0})
     resultados = aut.avaliar(projeto, catalogo_validado())
     assert aut.status_final(resultados) == aut.REPROVADO
     assert any(x.regra == "GR-018" and x.resultado == "FAIL" for x in resultados)
@@ -110,5 +109,5 @@ def test_datacenter_sqlite_e_criado(tmp_path):
     with sqlite3.connect(saida) as banco:
         produtos = banco.execute("SELECT COUNT(*) FROM products").fetchone()[0]
         referencias = banco.execute("SELECT COUNT(*) FROM references_docs").fetchone()[0]
-    assert produtos >= 9
-    assert referencias >= 4
+    assert produtos >= 12
+    assert referencias >= 10
