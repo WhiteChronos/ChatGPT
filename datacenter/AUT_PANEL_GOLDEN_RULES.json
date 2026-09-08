@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "standard_id": "AUT-PAINEL-COMPACT-V2.4",
+  "registry_type": "GOLDEN_RULES",
+  "scope": ["PN-AUT-01", "PN-AUT-02", "future_AUT_panels"],
+  "rules": [
+    {
+      "id": "GR-034",
+      "name": "Lista de Material antes da imagem do quadro",
+      "status": "MANDATORY",
+      "approved_for_project_standard": true,
+      "rule": "A Lista de Material canônica deve ser elaborada, validada e congelada antes da geração da imagem do quadro.",
+      "data_center_contract": {
+        "bom_must_reference_datacenter_catalog_ids": true,
+        "every_bom_line_requires_reference_model": true,
+        "render_must_reference_only_bom_catalog_ids": true,
+        "render_must_not_add_unlisted_components": true,
+        "render_must_not_omit_bom_components": true,
+        "bom_revision_change_invalidates_prior_render": true,
+        "missing_reference_or_exact_model_can_force_hold": true
+      },
+      "required_sequence": [
+        "DATACENTER",
+        "DATASHEET",
+        "SELECT",
+        "BOM",
+        "LAYOUT",
+        "RENDER_IMAGE",
+        "QA",
+        "RELEASE"
+      ],
+      "quality_gate": "HOLD_OR_REPROVADO_IF_IMAGE_IS_NOT_DERIVED_FROM_CURRENT_BOM"
+    }
+  ]
+}
