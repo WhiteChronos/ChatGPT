@@ -11,6 +11,7 @@ on:
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
+      - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'tests/test_aut_panel_control.py'
@@ -24,6 +25,7 @@ on:
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
+      - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'tests/test_aut_panel_control.py'
@@ -38,7 +40,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Immutable geometry, power chain, image-before-BOM
+    name: Immutable geometry, power chain, BOM-before-image
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -102,12 +104,26 @@ jobs:
             --manifest build/aut-panel/PN-AUT-02/manifest.json \
             --output-dir build/aut-panel/PN-AUT-02
 
-      - name: Verify standard output order
+      - name: Verify GR-034 production order
         run: |
-          test -f build/aut-panel/PN-AUT-01/AUT_PANEL_LAYOUT.svg
-          test -f build/aut-panel/PN-AUT-01/AUT_PANEL_BOM.json
-          test -f build/aut-panel/PN-AUT-02/AUT_PANEL_LAYOUT.svg
-          test -f build/aut-panel/PN-AUT-02/AUT_PANEL_BOM.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          for panel in ("PN-AUT-01", "PN-AUT-02"):
+              root = Path("build/aut-panel") / panel
+              bom = root / "AUT_PANEL_BOM.json"
+              image = root / "AUT_PANEL_LAYOUT.svg"
+              manifest = root / "manifest.json"
+              assert bom.exists(), f"{panel}: BOM ausente"
+              assert image.exists(), f"{panel}: imagem ausente"
+              data = json.loads(bom.read_text(encoding="utf-8"))
+              assert data.get("golden_rule") == "GR-034", f"{panel}: BOM sem GR-034"
+              assert data.get("must_precede_render") is True, f"{panel}: precedência BOM->imagem não declarada"
+              man = json.loads(manifest.read_text(encoding="utf-8"))
+              names = [item["path"] for item in man["outputs"]]
+              assert names.index("AUT_PANEL_BOM.json") < names.index("AUT_PANEL_LAYOUT.svg"), f"{panel}: manifesto viola BOM antes da imagem"
+          PY
 
       - name: Publish QA summary
         if: always()
