@@ -1,7 +1,50 @@
 {
-  "schema_version": "1.0",
-  "pipeline_id": "AUT-PANEL-GITHUB-QUALITY-V1.0",
+  "schema_version": "1.1",
+  "pipeline_id": "AUT-PANEL-GITHUB-QUALITY-V1.1",
+  "standard_id": "AUT-PAINEL-COMPACT-V2.4",
   "release_statuses": ["APROVADO", "CONDICIONADO", "HOLD", "REPROVADO"],
+  "standard_sequence": [
+    "DATACENTER",
+    "DATASHEET",
+    "SELECT",
+    "LAYOUT",
+    "RENDER_IMAGE",
+    "BOM",
+    "QA",
+    "RELEASE"
+  ],
+  "mandatory_panel_rules": {
+    "independent_panel_model": true,
+    "front_external_master_geometry": true,
+    "single_global_px_per_mm": true,
+    "aspect_equal": true,
+    "canvas_grow_only": true,
+    "lower_cable_zone_required": true,
+    "power_supply_required": true,
+    "dc_ups_required": true,
+    "battery_required": true,
+    "hmi_required_when_project_defined": true,
+    "render_before_bom": true,
+    "bom_must_use_same_catalog_as_render": true,
+    "reference_model_required_for_every_bom_line": true,
+    "hold_when_exact_model_or_evidence_is_missing": true
+  },
+  "panel_standards": {
+    "PN-AUT-01": {
+      "role": "MASTER_PLC_VRF",
+      "floor": "1",
+      "enclosure_external_mm": {"width": 600, "height": 800, "depth": 300},
+      "mounting_plate_mm": {"width": 550, "height": 750},
+      "mandatory_categories": ["power_supply", "dc_ups", "battery", "plc_controller", "hmi", "industrial_switch", "vrf_gateway", "terminal", "protective_device"]
+    },
+    "PN-AUT-02": {
+      "role": "REMOTE_RTU",
+      "floor": "2",
+      "enclosure_external_mm": {"width": 400, "height": 500, "depth": 250},
+      "mounting_plate_mm": {"width": 350, "height": 450},
+      "mandatory_categories": ["power_supply", "dc_ups", "battery", "rtu_controller", "hmi", "industrial_switch", "terminal", "protective_device"]
+    }
+  },
   "github_quality": {
     "workflow": ".github/workflows/aut-panel-quality.yml",
     "pull_request_required": true,
@@ -10,18 +53,19 @@
     "artifact_manifest_required": true
   },
   "stages": [
-    {"order": 10, "id": "INIT", "input": ["project_request"], "output": ["project_structure"], "gates": ["project_id", "revision"]},
+    {"order": 10, "id": "INIT", "input": ["project_request"], "output": ["project_structure"], "gates": ["project_id", "revision", "panel_id"]},
     {"order": 20, "id": "INGEST", "input": ["MD", "ET", "LI", "PDF", "XLSX", "images"], "output": ["document_manifest"], "gates": ["sha256", "source_registration"]},
     {"order": 30, "id": "EXTRACT", "input": ["document_manifest"], "output": ["candidate_requirements"], "gates": ["evidence_link"]},
     {"order": 40, "id": "REVIEW_INPUT", "input": ["candidate_requirements"], "output": ["confirmed_requirements"], "gates": ["human_review"]},
-    {"order": 50, "id": "DATACENTER", "input": ["confirmed_requirements", "manufacturer_documents"], "output": ["verified_catalog"], "gates": ["manufacturer", "model", "document", "page_section", "consultation_date"]},
-    {"order": 60, "id": "MODEL", "input": ["confirmed_requirements", "verified_catalog"], "output": ["canonical_project"], "gates": ["json_schema", "units", "reference_integrity"]},
-    {"order": 70, "id": "TOPOLOGY", "input": ["canonical_project"], "output": ["electrical_automation_topology"], "gates": ["controller_io_compatibility", "power_paths"]},
-    {"order": 80, "id": "CALCULATE", "input": ["electrical_automation_topology"], "output": ["loads", "io", "terminals", "thermal", "space"], "gates": ["deterministic_rules"]},
-    {"order": 90, "id": "SELECT", "input": ["calculation_results", "verified_catalog"], "output": ["selected_components"], "gates": ["exact_part_number", "lifecycle"]},
+    {"order": 50, "id": "DATACENTER", "input": ["confirmed_requirements", "manufacturer_documents"], "output": ["verified_catalog"], "gates": ["manufacturer", "reference_model", "document", "page_section", "consultation_date"]},
+    {"order": 60, "id": "DATASHEET", "input": ["confirmed_requirements", "verified_catalog"], "output": ["canonical_project"], "gates": ["json_schema", "units", "reference_integrity", "panel_independence"]},
+    {"order": 70, "id": "TOPOLOGY", "input": ["canonical_project"], "output": ["electrical_automation_topology"], "gates": ["controller_io_compatibility", "power_paths", "source_ups_battery_chain"]},
+    {"order": 80, "id": "CALCULATE", "input": ["electrical_automation_topology"], "output": ["loads", "io", "terminals", "thermal", "space", "battery_autonomy"], "gates": ["deterministic_rules"]},
+    {"order": 90, "id": "SELECT", "input": ["calculation_results", "verified_catalog"], "output": ["selected_components"], "gates": ["reference_model", "exact_part_number_or_hold", "lifecycle"]},
     {"order": 100, "id": "LAYOUT", "input": ["selected_components", "canonical_project"], "output": ["physical_layout"], "gates": ["GR-018", "GR-027", "reserve"]},
-    {"order": 110, "id": "RENDER", "input": ["physical_layout"], "output": ["SVG", "datasheet"], "gates": ["GR-021", "GR-022", "GR-023", "GR-024", "GR-025", "GR-026"]},
-    {"order": 120, "id": "QA", "input": ["all_outputs"], "output": ["qa_report", "artifact_manifest"], "gates": ["schema", "unit_tests", "hashes", "cross_consistency"]},
-    {"order": 130, "id": "RELEASE", "input": ["qa_report", "artifact_manifest"], "output": ["release_package"], "gates": ["APROVADO", "no_HOLD", "pull_request_review"]}
+    {"order": 110, "id": "RENDER_IMAGE", "input": ["physical_layout"], "output": ["AUT_PANEL_LAYOUT.svg"], "gates": ["GR-021", "GR-022", "GR-023", "GR-024", "GR-025", "GR-026"]},
+    {"order": 120, "id": "BOM", "input": ["physical_layout", "verified_catalog", "AUT_PANEL_LAYOUT.svg"], "output": ["AUT_PANEL_BOM.json", "AUT_PANEL_BOM.csv"], "gates": ["render_exists", "same_catalog_as_render", "reference_model_on_every_line"]},
+    {"order": 130, "id": "QA", "input": ["all_outputs"], "output": ["qa_report", "artifact_manifest"], "gates": ["schema", "unit_tests", "hashes", "cross_consistency", "image_before_bom"]},
+    {"order": 140, "id": "RELEASE", "input": ["qa_report", "artifact_manifest"], "output": ["release_package"], "gates": ["APROVADO", "no_HOLD", "pull_request_review", "two_agent_source_validation"]}
   ]
 }
