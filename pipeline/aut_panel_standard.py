@@ -18,23 +18,42 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
-from aut_panel_control import (
-    HOLD,
-    Resultado,
-    avaliar,
-    carregar_json,
-    gerar_datasheet,
-    gerar_relatorio,
-    gerar_sqlite,
-    gerar_svg,
-    indice_catalogo,
-    manifesto,
-    salvar_json,
-    sha256,
-    status_final,
-    validar_schema,
-    verificar_manifesto,
-)
+try:
+    from .aut_panel_control import (
+        HOLD,
+        Resultado,
+        avaliar,
+        carregar_json,
+        gerar_datasheet,
+        gerar_relatorio,
+        gerar_sqlite,
+        gerar_svg,
+        indice_catalogo,
+        manifesto,
+        salvar_json,
+        sha256,
+        status_final,
+        validar_schema,
+        verificar_manifesto,
+    )
+except ImportError:
+    from aut_panel_control import (
+        HOLD,
+        Resultado,
+        avaliar,
+        carregar_json,
+        gerar_datasheet,
+        gerar_relatorio,
+        gerar_sqlite,
+        gerar_svg,
+        indice_catalogo,
+        manifesto,
+        salvar_json,
+        sha256,
+        status_final,
+        validar_schema,
+        verificar_manifesto,
+    )
 
 MANDATORY_POWER_CATEGORIES = {"power_supply", "dc_ups", "battery"}
 GOLDEN_RULE_BOM_BEFORE_IMAGE = "GR-034"
@@ -154,7 +173,6 @@ def gerar_bom(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], saida: Pa
         "project_id": (projeto.get("project") or {}).get("id"),
         "golden_rule": GOLDEN_RULE_BOM_BEFORE_IMAGE,
         "must_precede_render": True,
-        "catalog_sha256": None,
         "lines": linhas,
     })
 
