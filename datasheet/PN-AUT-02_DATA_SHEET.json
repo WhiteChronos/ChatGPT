@@ -7,6 +7,13 @@
     "engineering_level": "BASIC",
     "standard_id": "AUT-PAINEL-COMPACT-V2.4"
   },
+  "production_contract": {
+    "golden_rule": "GR-034",
+    "bom_before_render": true,
+    "bom_is_render_source": true,
+    "image_must_match_bom": true,
+    "bom_change_invalidates_existing_image": true
+  },
   "enclosure": {
     "catalog_id": "SCHNEIDER-NSYCRN54250",
     "manufacturer": "Schneider Electric",
