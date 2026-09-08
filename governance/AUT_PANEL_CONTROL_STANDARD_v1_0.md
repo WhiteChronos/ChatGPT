@@ -34,6 +34,10 @@ A sequência padrão é:
 
 É proibido gerar a imagem como fonte para posterior criação da BOM. Se a imagem evidenciar necessidade de componente adicional, o fluxo deve retornar à BOM, revisar a lista, invalidar a imagem anterior e renderizar novamente.
 
+## Regra de autorização para mudança de padrão
+
+Depois de aprovado um padrão visual, dimensional ou de sequência, ele não pode ser alterado automaticamente. Qualquer mudança futura no padrão exige autorização explícita do responsável do projeto antes da alteração do Pipeline, Script, Data Center, Data Sheet ou padrão visual. Correções estritamente necessárias para manter consistência com uma alteração já autorizada podem ser aplicadas dentro do mesmo escopo de mudança.
+
 Para gabinete 800 × 600 × 300 mm (A × L × P):
 
 - frontal externa = 600 × 800 mm;
