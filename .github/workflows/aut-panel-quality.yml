@@ -10,8 +10,11 @@ on:
       - 'pipeline/aut_panel_control.py'
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
-      - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
+      - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
+      - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
+      - 'li/PN-AUT-01_LI.json'
+      - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'tests/test_aut_panel_control.py'
@@ -24,8 +27,11 @@ on:
       - 'pipeline/aut_panel_control.py'
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
-      - 'datacenter/AUT_PANEL_COMPONENT_CATALOG.json'
+      - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
+      - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
+      - 'li/PN-AUT-01_LI.json'
+      - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'tests/test_aut_panel_control.py'
@@ -40,101 +46,81 @@ concurrency:
 
 jobs:
   quality:
-    name: Immutable geometry, power chain, BOM-before-image
+    name: LI quantities, geometry and drawing parity
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       PYTHONPATH: ${{ github.workspace }}
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUNBUFFERED: '1'
-
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: requirements-dev.txt
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
           python -m pip check
-
       - name: Compile sources
         run: python -m compileall -q pipeline tests
-
       - name: Run regression tests
         run: python -m pytest -q tests/test_aut_panel_control.py
-
       - name: Run PN-AUT-01 standard pipeline
         run: |
           rm -rf build/aut-panel/PN-AUT-01
           python pipeline/aut_panel_standard.py \
             --project datasheet/AUT_PANEL_DATA_SHEET.json \
-            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG.json \
+            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json \
             --pipeline pipeline/AUT_PANEL_PIPELINE.json \
             --schema schemas/aut_panel_project_v1.schema.json \
+            --li li/PN-AUT-01_LI.json \
+            --quantity-standard datacenter/AUT_PANEL_PANEL_QUANTITIES.json \
             --output-dir build/aut-panel/PN-AUT-01 \
             --allow-hold
-
       - name: Run PN-AUT-02 standard pipeline
         run: |
           rm -rf build/aut-panel/PN-AUT-02
           python pipeline/aut_panel_standard.py \
             --project datasheet/PN-AUT-02_DATA_SHEET.json \
-            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG.json \
+            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json \
             --pipeline pipeline/AUT_PANEL_PIPELINE.json \
             --schema schemas/aut_panel_project_v1.schema.json \
+            --li li/PN-AUT-02_LI.json \
+            --quantity-standard datacenter/AUT_PANEL_PANEL_QUANTITIES.json \
             --output-dir build/aut-panel/PN-AUT-02 \
             --allow-hold
-
-      - name: Verify artifact hashes
+      - name: Verify artifact hashes and LI-before-drawing order
         run: |
-          python pipeline/aut_panel_control.py verify-artifacts \
-            --manifest build/aut-panel/PN-AUT-01/manifest.json \
-            --output-dir build/aut-panel/PN-AUT-01
-          python pipeline/aut_panel_control.py verify-artifacts \
-            --manifest build/aut-panel/PN-AUT-02/manifest.json \
-            --output-dir build/aut-panel/PN-AUT-02
-
-      - name: Verify GR-034 production order
-        run: |
+          python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-01/manifest.json --output-dir build/aut-panel/PN-AUT-01
+          python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-02/manifest.json --output-dir build/aut-panel/PN-AUT-02
           python - <<'PY'
           import json
           from pathlib import Path
-
           for panel in ("PN-AUT-01", "PN-AUT-02"):
               root = Path("build/aut-panel") / panel
-              bom = root / "AUT_PANEL_BOM.json"
-              image = root / "AUT_PANEL_LAYOUT.svg"
-              manifest = root / "manifest.json"
-              assert bom.exists(), f"{panel}: BOM ausente"
-              assert image.exists(), f"{panel}: imagem ausente"
-              data = json.loads(bom.read_text(encoding="utf-8"))
-              assert data.get("golden_rule") == "GR-034", f"{panel}: BOM sem GR-034"
-              assert data.get("must_precede_render") is True, f"{panel}: precedência BOM->imagem não declarada"
-              man = json.loads(manifest.read_text(encoding="utf-8"))
-              names = [item["path"] for item in man["outputs"]]
-              assert names.index("AUT_PANEL_BOM.json") < names.index("AUT_PANEL_LAYOUT.svg"), f"{panel}: manifesto viola BOM antes da imagem"
+              man = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+              names = [x["path"] for x in man["outputs"]]
+              assert names.index("AUT_PANEL_LI.json") < names.index("AUT_PANEL_BOM.json") < names.index("AUT_PANEL_LAYOUT.svg")
+              li = json.loads((root / "AUT_PANEL_LI.json").read_text(encoding="utf-8"))
+              bom = json.loads((root / "AUT_PANEL_BOM.json").read_text(encoding="utf-8"))
+              lq = {x["tag"]: x["quantity"] for x in li["lines"]}
+              bq = {x["li_tag"]: x["quantity"] for x in bom["lines"]}
+              assert lq == bq
           PY
-
       - name: Publish QA summary
         if: always()
         run: |
           for report in build/aut-panel/*/qa_report.md; do
-            if test -f "$report"; then
-              cat "$report" >> "$GITHUB_STEP_SUMMARY"
-              printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
-            fi
+            if test -f "$report"; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; printf '\n\n' >> "$GITHUB_STEP_SUMMARY"; fi
           done
-
       - name: Upload controlled artifacts
         if: always()
         uses: actions/upload-artifact@v4
