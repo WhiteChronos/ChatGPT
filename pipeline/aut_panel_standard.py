@@ -4,8 +4,9 @@
 Extends ``aut_panel_control.py`` with the project-wide panel standard:
 - independent canonical model per panel;
 - mandatory 24 Vdc power supply + DC-UPS + battery;
-- render the physical panel image before generating the BOM;
-- generate BOM from exactly the same catalog records used by the render;
+- GR-034: generate and validate the canonical BOM before rendering the panel image;
+- render only components already present in the BOM;
+- generate BOM and image from exactly the same Data Center records;
 - require a reference model on every BOM line; exact model may remain HOLD.
 """
 from __future__ import annotations
@@ -36,6 +37,7 @@ from aut_panel_control import (
 )
 
 MANDATORY_POWER_CATEGORIES = {"power_supply", "dc_ups", "battery"}
+GOLDEN_RULE_BOM_BEFORE_IMAGE = "GR-034"
 
 
 def _panel_standard(pipeline: Mapping[str, Any], panel_id: str) -> Mapping[str, Any]:
@@ -99,13 +101,27 @@ def validar_padrao(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], pipe
         "Todas as linhas possuem modelo de referência." if model_ok else "Há componente sem modelo de referência.",
         {"instances_without_reference_model": missing_model},
     ))
+
+    contract = projeto.get("production_contract") or {}
+    gr034_ok = (
+        contract.get("golden_rule") == GOLDEN_RULE_BOM_BEFORE_IMAGE
+        and contract.get("bom_before_render") is True
+        and contract.get("bom_is_render_source") is True
+        and contract.get("image_must_match_bom") is True
+        and contract.get("bom_change_invalidates_existing_image") is True
+    )
+    resultados.append(Resultado(
+        GOLDEN_RULE_BOM_BEFORE_IMAGE,
+        "PASS" if gr034_ok else "HOLD",
+        "INFO" if gr034_ok else HOLD,
+        "Contrato BOM antes da imagem validado." if gr034_ok else "Data Sheet não declara integralmente a Regra de Ouro GR-034.",
+        {"production_contract": contract},
+    ))
     return resultados
 
 
-def gerar_bom(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], saida: Path, image_path: Path) -> tuple[Path, Path]:
-    if not image_path.exists():
-        raise RuntimeError("A imagem do quadro deve ser gerada antes da BOM.")
-
+def gerar_bom(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], saida: Path) -> tuple[Path, Path]:
+    """Generate the canonical BOM before any image is produced."""
     indice = indice_catalogo(catalogo)
     linhas = []
     for pos in projeto.get("placements", []):
@@ -134,10 +150,11 @@ def gerar_bom(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], saida: Pa
 
     bom_json = saida / "AUT_PANEL_BOM.json"
     salvar_json(bom_json, {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "project_id": (projeto.get("project") or {}).get("id"),
-        "generated_after": image_path.name,
-        "render_sha256": sha256(image_path),
+        "golden_rule": GOLDEN_RULE_BOM_BEFORE_IMAGE,
+        "must_precede_render": True,
+        "catalog_sha256": None,
         "lines": linhas,
     })
 
@@ -151,6 +168,28 @@ def gerar_bom(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], saida: Pa
             x["reference_ids"] = ";".join(row["reference_ids"])
             writer.writerow(x)
     return bom_json, bom_csv
+
+
+def _bom_pairs(bom: Mapping[str, Any]) -> list[tuple[str, str]]:
+    return [(str(x.get("instance_id")), str(x.get("catalog_id"))) for x in bom.get("lines", [])]
+
+
+def _project_pairs(projeto: Mapping[str, Any]) -> list[tuple[str, str]]:
+    return [(str(x.get("instance_id")), str(x.get("catalog_id"))) for x in projeto.get("placements", [])]
+
+
+def gerar_imagem_pos_bom(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], bom_path: Path, image_path: Path) -> None:
+    """Render only after the canonical BOM exists and exactly matches the layout source."""
+    if not bom_path.exists():
+        raise RuntimeError("GR-034: a Lista de Material deve existir antes da geração da imagem do quadro.")
+    bom = carregar_json(bom_path)
+    if bom.get("golden_rule") != GOLDEN_RULE_BOM_BEFORE_IMAGE or bom.get("must_precede_render") is not True:
+        raise RuntimeError("GR-034: BOM sem contrato obrigatório de precedência sobre a imagem.")
+    if str(bom.get("project_id")) != str((projeto.get("project") or {}).get("id")):
+        raise RuntimeError("GR-034: BOM pertence a outro painel/projeto.")
+    if _bom_pairs(bom) != _project_pairs(projeto):
+        raise RuntimeError("GR-034: imagem bloqueada porque BOM e Data Sheet não possuem as mesmas instâncias/componentes.")
+    gerar_svg(projeto, catalogo, image_path)
 
 
 def executar(args: argparse.Namespace) -> int:
@@ -173,23 +212,24 @@ def executar(args: argparse.Namespace) -> int:
     db_path = output / "AUT_PANEL_DATACENTER.sqlite3"
     gerar_sqlite(catalogo, db_path)
 
-    # Standard order is intentional and audited: IMAGE first, BOM second.
+    # GR-034 — immutable production order: BOM first, panel image second.
+    bom_json, bom_csv = gerar_bom(projeto, catalogo, output)
     image_path = output / "AUT_PANEL_LAYOUT.svg"
-    gerar_svg(projeto, catalogo, image_path)
-    bom_json, bom_csv = gerar_bom(projeto, catalogo, output, image_path)
+    gerar_imagem_pos_bom(projeto, catalogo, bom_json, image_path)
 
     estado = status_final(resultados)
     man = manifesto(
         output,
         [project_path, catalog_path, pipeline_path, schema_path],
-        [qa_json, qa_md, ds_path, db_path, image_path, bom_json, bom_csv],
+        [qa_json, qa_md, ds_path, db_path, bom_json, bom_csv, image_path],
         estado,
     )
     verificar_manifesto(man, output)
     print(json.dumps({
         "status": estado,
         "project_id": (projeto.get("project") or {}).get("id"),
-        "sequence": ["AUT_PANEL_LAYOUT.svg", "AUT_PANEL_BOM.json", "AUT_PANEL_BOM.csv"],
+        "golden_rule": GOLDEN_RULE_BOM_BEFORE_IMAGE,
+        "sequence": ["AUT_PANEL_BOM.json", "AUT_PANEL_BOM.csv", "AUT_PANEL_LAYOUT.svg"],
         "manifest": str(man),
     }, ensure_ascii=False))
     if estado == "REPROVADO":
