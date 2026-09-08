@@ -1,35 +1,15 @@
 {
-  "schema_version": "1.0",
-  "standard_id": "AUT-PAINEL-COMPACT-V2.4",
-  "registry_type": "GOLDEN_RULES",
-  "scope": ["PN-AUT-01", "PN-AUT-02", "future_AUT_panels"],
-  "rules": [
-    {
-      "id": "GR-034",
-      "name": "Lista de Material antes da imagem do quadro",
-      "status": "MANDATORY",
-      "approved_for_project_standard": true,
-      "rule": "A Lista de Material canônica deve ser elaborada, validada e congelada antes da geração da imagem do quadro.",
-      "data_center_contract": {
-        "bom_must_reference_datacenter_catalog_ids": true,
-        "every_bom_line_requires_reference_model": true,
-        "render_must_reference_only_bom_catalog_ids": true,
-        "render_must_not_add_unlisted_components": true,
-        "render_must_not_omit_bom_components": true,
-        "bom_revision_change_invalidates_prior_render": true,
-        "missing_reference_or_exact_model_can_force_hold": true
-      },
-      "required_sequence": [
-        "DATACENTER",
-        "DATASHEET",
-        "SELECT",
-        "BOM",
-        "LAYOUT",
-        "RENDER_IMAGE",
-        "QA",
-        "RELEASE"
-      ],
-      "quality_gate": "HOLD_OR_REPROVADO_IF_IMAGE_IS_NOT_DERIVED_FROM_CURRENT_BOM"
-    }
-  ]
+  "schema_version":"1.1",
+  "standard_id":"AUT-PAINEL-COMPACT-V2.4",
+  "registry_type":"GOLDEN_RULES",
+  "scope":["PN-AUT-01","PN-AUT-02","future_AUT_panels"],
+  "rules":[
+    {"id":"GR-034","name":"LI/BOM antes do desenho","status":"MANDATORY","approved_for_project_standard":true,"rule":"A LI quantitativa deve ser congelada antes da BOM; a BOM deve existir antes do layout e da imagem do quadro."},
+    {"id":"GR-035","name":"Paridade quantitativa LI x desenho","status":"MANDATORY","approved_for_project_standard":true,"rule":"Cada item marcado como desenhável na LI deve existir no Data Sheet/layout e no desenho exatamente com o mesmo catalog_id e a mesma quantidade."},
+    {"id":"GR-036","name":"Mudança de quantidade invalida artefatos posteriores","status":"MANDATORY","approved_for_project_standard":true,"rule":"Qualquer alteração de quantidade ou catalog_id na LI invalida automaticamente BOM, layout e imagem anteriores e exige nova geração e QA."},
+    {"id":"GR-037","name":"IHM na porta","status":"MANDATORY","approved_for_project_standard":true,"rule":"A IHM local deve permanecer instalada na tampa/porta do quadro."},
+    {"id":"GR-038","name":"Sem distorção de componentes","status":"MANDATORY","approved_for_project_standard":true,"rule":"Nunca reduzir ou distorcer dimensões de componentes para caber; reorganizar ou ampliar o gabinete."}
+  ],
+  "required_sequence":["DATACENTER","DATASHEET","SELECT","LI_QUANTITY","BOM","LAYOUT","RENDER_IMAGE","QA","RELEASE"],
+  "quantity_contract":{"li_is_single_quantity_source":true,"bom_quantity_equals_li":true,"layout_quantity_equals_li":true,"render_quantity_equals_li":true,"li_revision_change_invalidates_downstream":true}
 }
