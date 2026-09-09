@@ -18,12 +18,15 @@ def reset_schema(conn):
     conn.commit()
 
 
-def seed_comment(conn, *, batch_id="B1", expected_count=1, required_doc=None):
+def seed_comment(conn, *, batch_id="B1", expected_count=1, required_doc=None, preflight_status="READY_TO_GENERATE"):
     with conn.cursor() as cur:
         cur.execute("insert into projects(project_id, project_name) values ('P1', 'Projeto 1')")
         cur.execute(
-            "insert into comment_batches(batch_id, project_id, source_formal_comment_count) values (%s, 'P1', %s)",
-            (batch_id, expected_count),
+            """
+            insert into comment_batches(batch_id, project_id, source_formal_comment_count, preflight_status)
+            values (%s, 'P1', %s, %s)
+            """,
+            (batch_id, expected_count, preflight_status),
         )
         cur.execute(
             """
@@ -61,6 +64,45 @@ def test_batch_integrity_rejects_missing_comment():
         with pytest.raises(psycopg.Error):
             with conn.cursor() as cur:
                 cur.execute("select assert_comment_batch_integrity('B1')")
+
+
+def test_preflight_rejects_open_question():
+    with psycopg.connect(DB_URL) as conn:
+        reset_schema(conn)
+        seed_comment(conn, preflight_status="WAITING_CLARIFICATION")
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                insert into clarification_questions(
+                  batch_id, question_id, topic, question_text, why_needed, status
+                ) values ('B1', 'Q01', 'Escopo', 'Qual requisito prevalece?', 'Falta decisão', 'OPEN')
+                """
+            )
+        conn.commit()
+
+        with pytest.raises(psycopg.Error):
+            with conn.cursor() as cur:
+                cur.execute("select assert_preflight_resolved('B1')")
+
+
+def test_preflight_accepts_resolved_question():
+    with psycopg.connect(DB_URL) as conn:
+        reset_schema(conn)
+        seed_comment(conn, preflight_status="READY_TO_GENERATE")
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                insert into clarification_questions(
+                  batch_id, question_id, topic, question_text, why_needed,
+                  status, resolution, resolution_type, resolved_by, resolved_at
+                ) values (
+                  'B1', 'Q01', 'Escopo', 'Qual requisito prevalece?', 'Falta decisão',
+                  'RESOLVED', 'Compatibilizar como erro', 'CONFIRMED_ERROR', 'USER', now()
+                )
+                """
+            )
+            cur.execute("select assert_preflight_resolved('B1')")
+        conn.commit()
 
 
 def test_checked_without_evidence_is_rejected():
