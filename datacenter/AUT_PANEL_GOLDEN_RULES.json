@@ -1,15 +1,20 @@
 {
-  "schema_version":"1.1",
+  "schema_version":"1.2",
   "standard_id":"AUT-PAINEL-COMPACT-V2.4",
   "registry_type":"GOLDEN_RULES",
   "scope":["PN-AUT-01","PN-AUT-02","future_AUT_panels"],
+  "document_standard_registry":"datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json",
   "rules":[
     {"id":"GR-034","name":"LI/BOM antes do desenho","status":"MANDATORY","approved_for_project_standard":true,"rule":"A LI quantitativa deve ser congelada antes da BOM; a BOM deve existir antes do layout e da imagem do quadro."},
     {"id":"GR-035","name":"Paridade quantitativa LI x desenho","status":"MANDATORY","approved_for_project_standard":true,"rule":"Cada item marcado como desenhável na LI deve existir no Data Sheet/layout e no desenho exatamente com o mesmo catalog_id e a mesma quantidade."},
     {"id":"GR-036","name":"Mudança de quantidade invalida artefatos posteriores","status":"MANDATORY","approved_for_project_standard":true,"rule":"Qualquer alteração de quantidade ou catalog_id na LI invalida automaticamente BOM, layout e imagem anteriores e exige nova geração e QA."},
     {"id":"GR-037","name":"IHM na porta","status":"MANDATORY","approved_for_project_standard":true,"rule":"A IHM local deve permanecer instalada na tampa/porta do quadro."},
-    {"id":"GR-038","name":"Sem distorção de componentes","status":"MANDATORY","approved_for_project_standard":true,"rule":"Nunca reduzir ou distorcer dimensões de componentes para caber; reorganizar ou ampliar o gabinete."}
+    {"id":"GR-038","name":"Sem distorção de componentes","status":"MANDATORY","approved_for_project_standard":true,"rule":"Nunca reduzir ou distorcer dimensões de componentes para caber; reorganizar ou ampliar o gabinete."},
+    {"id":"GR-039","name":"Padrão único de Excel","status":"MANDATORY","approved_for_project_standard":true,"rule":"PN-AUT-01 é o template mestre de planilha. PN-AUT-02 e futuros quadros devem manter a mesma ordem de abas, blocos, cabeçalhos, sistema visual, fórmulas-base, congelamentos e organização; apenas dados técnicos específicos do painel podem variar."},
+    {"id":"GR-040","name":"Padrão visual único da imagem","status":"MANDATORY","approved_for_project_standard":true,"rule":"Cada painel deve ser elaborado em uma imagem própria, seguindo a composição visual aprovada: título/modelo, dimensões, aplicação, vista interna frontal, vista externa/porta, vista lateral, lista técnica, arquitetura de conexão, níveis funcionais, características, aplicações, referências visuais e rodapé. A IHM permanece na porta."},
+    {"id":"GR-041","name":"Padrão aprovado imutável sem autorização","status":"MANDATORY","approved_for_project_standard":true,"rule":"Nenhuma alteração do padrão de Excel ou de imagem pode ser feita sem autorização explícita do responsável do projeto. Desvio não autorizado bloqueia a emissão e é REPROVADO."}
   ],
   "required_sequence":["DATACENTER","DATASHEET","SELECT","LI_QUANTITY","BOM","LAYOUT","RENDER_IMAGE","QA","RELEASE"],
-  "quantity_contract":{"li_is_single_quantity_source":true,"bom_quantity_equals_li":true,"layout_quantity_equals_li":true,"render_quantity_equals_li":true,"li_revision_change_invalidates_downstream":true}
+  "quantity_contract":{"li_is_single_quantity_source":true,"bom_quantity_equals_li":true,"layout_quantity_equals_li":true,"render_quantity_equals_li":true,"li_revision_change_invalidates_downstream":true},
+  "document_contract":{"workbook_template_id":"XLSX-PN-AUT-01-MASTER-R02","image_visual_standard_id":"IMG-AUT-PANEL-MASTER-V1","explicit_authorization_required_for_standard_change":true}
 }
