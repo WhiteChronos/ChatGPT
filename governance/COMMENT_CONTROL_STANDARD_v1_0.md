@@ -1,126 +1,178 @@
-# Padrão de Controle de Comentários Técnicos v1.0
+# Padrão de Controle de Comentários Técnicos v1.1
 
 ## Objetivo
 
-Padronizar a compilação, rastreabilidade, verificação, memória técnica e análise de comentários de engenharia. O padrão é único e pode ser aplicado a qualquer disciplina ou tipo documental.
+Padronizar compilação, verificação, rastreabilidade, memória e emissão de comentários técnicos. O padrão é único e aplicável a qualquer disciplina ou tipo documental.
 
 ## Regra-mestra
 
-1. A quantidade de comentários formais da origem deve ser exatamente igual à quantidade de registros da tabela principal.
-2. Nenhum comentário pode ser omitido, fundido ou eliminado por constar como atendido em relatório anterior.
+1. A quantidade de comentários formais da origem deve ser exatamente igual à quantidade de registros formais da tabela principal.
+2. Nenhum comentário formal pode ser omitido, fundido ou eliminado por constar como atendido em relatório anterior.
 3. Todo comentário nasce com `status_control = UNCHECKED` e representação visual `☐`.
-4. `☑` somente é permitido após verificação humana e evidência documental registrada.
-5. Se um comentário afetar mais de um documento, todos os documentos aplicáveis devem possuir evidência antes do fechamento.
-6. Novas divergências ficam separadas da contagem dos comentários formais.
-7. Toda correção relevante gera memória, regra preventiva e teste de regressão.
-8. Hipótese não pode ser registrada como erro: quando faltar evidência conclusiva, o achado deve ser tratado como DÚVIDA.
+4. `☑` somente é permitido após verificação humana conforme processo de fechamento.
+5. Novas divergências ficam separadas da contagem dos comentários formais.
+6. Toda dúvida de interpretação deve ser resolvida **antes** da geração de Excel, Word, PDF, Power BI ou pacote de emissão.
+7. Perguntas e dúvidas nunca são exportadas como linhas da planilha final.
+8. Toda correção de lógica relevante gera memória, regra preventiva e teste de regressão.
 
-## Erro x dúvida
+## Gate de pré-verificação — dúvida antes da elaboração
 
-- **ERRO**: não conformidade diretamente observável ou demonstrável por evidência documental. Exemplos: código/título errado, índice quebrado, texto pertencente a outro item, incompatibilidade matemática, faixa sobreposta ou contradição inequívoca entre documentos que tratam do mesmo requisito.
-- **DÚVIDA**: situação cuja conclusão depende de informação ausente, decisão de engenharia, confirmação de escopo, equivalência técnica, requisito de compra, CAD/DWG, documento de referência não fornecido ou outra evidência ainda indisponível.
-- Se houver incerteza material, prevalece DÚVIDA. O sistema deve indicar o dado necessário para resolver a questão.
-- Diferença entre referências comerciais com expressão “ou similar técnico” não é erro automático; confirmar equivalência antes de reprovar.
-- Objetivos formais fornecidos pelo solicitante permanecem como objetivos de verificação e não são descartados nem reclassificados como atendidos automaticamente.
+O sistema opera em duas camadas:
 
-## Regras de prevenção de falsos positivos
+### Camada interna de análise
 
-- Símbolo de descida somente é exigido quando existir mudança real para cota inferior. Mudança gráfica permanecendo em nível alto não caracteriza descida.
-- Elementos, textos, ambientes e tags de outras disciplinas usados como referência devem ficar em cinza; elementos da disciplina de Automação permanecem no padrão próprio.
-- Impressão deve ser avaliada por tamanho/padrão de folha, enquadramento, escala, cortes, margens e legibilidade. Espaço vazio por menor quantidade de conteúdo não constitui erro por si só.
-- Em correções de formatação de ET/MD, preservar o texto técnico fornecido; corrigir apresentação sem reinventar conteúdo técnico.
-- Quando não houver Matriz de Causa e Efeito aplicável ao projeto, não criar uma. Registrar apenas a explicação objetiva da não aplicabilidade quando solicitada.
+Pode conter:
+- candidatos a erro;
+- hipóteses;
+- dúvidas;
+- perguntas de esclarecimento;
+- comparações ainda não conclusivas.
 
-## Campos mínimos
+Essa camada não é um documento de entrega.
 
-- project_id
-- comment_id
-- source_comment_id
-- severity: GRAVE | ALTO | LEVE
-- document_code
-- revision
-- page_or_item
-- original_comment
-- compiled_action
-- origin_type: FORMAL_COMMENT | NEW_DIVERGENCE
-- status_control: UNCHECKED | CHECKED
-- evidence_text
-- evidence_document
-- evidence_revision
-- evidence_location
-- responsible
-- created_at
-- verified_at
-- verifier
+### Camada de emissão
 
-## Semântica do status
+Só pode conter:
+- objetivos formais fornecidos pelo solicitante;
+- erros confirmados por evidência documental ou comparação inequívoca;
+- ações objetivas de correção;
+- status de atendimento `☐ / ☑`.
 
-- `UNCHECKED` = ☐ = ainda não confirmado como atendido.
-- `CHECKED` = ☑ = atendimento confirmado com evidência suficiente.
+É proibido emitir:
+- `DÚVIDA`;
+- `A CONFIRMAR`;
+- perguntas em vermelho ou em qualquer outra cor;
+- hipóteses;
+- alternativas não resolvidas;
+- conclusões condicionais que dependam de resposta do solicitante.
 
-É proibido transformar automaticamente uma indicação textual como “100% atendido” em `CHECKED`.
+## Fluxo obrigatório
 
-## Criticidade
+`ANALYZE -> RESOLVE_FROM_SOURCES -> ASK_IF_NEEDED -> RESOLVE_QUESTIONS -> CLASSIFY -> VALIDATE -> GENERATE`
 
-- `GRAVE`: segurança, intertravamento, filosofia operacional, função essencial, risco de execução/configuração incorreta.
-- `ALTO`: incompatibilidade técnica relevante ou documental com impacto no projeto.
-- `LEVE`: correção editorial, referência, identificação, paginação ou ajuste sem impacto funcional relevante.
+Se houver pergunta aberta, o estado deve ser `WAITING_CLARIFICATION` e o pipeline deve parar.
+
+Após resposta do solicitante, a dúvida recebe uma resolução:
+- `CONFIRMED_ERROR` — entra como erro;
+- `DISMISSED` — é descartada da emissão;
+- `FORMAL_OBJECTIVE` — entra somente por determinação explícita do solicitante.
+
+Somente com zero perguntas abertas o lote pode mudar para `READY_TO_GENERATE`.
+
+## Regra de classificação
+
+### ERRO
+
+Usar somente quando a não conformidade for diretamente observável ou demonstrável. Exemplos:
+- número ou título incorreto;
+- índice quebrado;
+- quantidade matematicamente incompatível;
+- contradição funcional objetiva;
+- valores/faixas incompatíveis para o mesmo serviço;
+- divergência inequívoca entre documentos que deveriam ser coerentes.
+
+Uma divergência pode ser registrada como erro mesmo que ainda não esteja definido qual valor deve prevalecer. Nesse caso, a ação deve ser “corrigir/compatibilizar”, nunca uma pergunta na planilha.
+
+### DÚVIDA INTERNA
+
+Usar quando faltar evidência suficiente para concluir. Deve ser sanada antes da emissão e nunca aparece no artefato final.
+
+## Regras de interpretação incorporadas
+
+- Símbolo de descida somente quando houver mudança real para cota inferior.
+- Elementos de outras disciplinas usados como referência devem ficar em cinza conforme padrão gráfico do projeto.
+- Espaço em branco causado por menor quantidade de informação não caracteriza erro de impressão.
+- Formatação deve ser corrigida sem alterar conteúdo técnico válido sem necessidade.
+- Ausência de conteúdo em um tipo documental não é erro apenas porque outro documento possui esse conteúdo; considerar a função específica de ET, FD, LI, MD e DE.
+- “Ou similar técnico” permite referências comerciais diferentes; somente classificar como erro quando houver incompatibilidade técnica demonstrada.
+- Nomenclatura de pavimentos e escopo físico devem seguir o projeto, não convenções inferidas.
+- Texto semelhante/copiad​o não é erro por si só; avaliar se a função técnica descrita é incompatível.
+
+## Campos mínimos da emissão
+
+- `comment_id`
+- `severity`: GRAVE | ALTO | LEVE
+- `document_code`
+- `revision`
+- `page_or_item`
+- `original_comment` ou resumo do objetivo/erro
+- `compiled_action`
+- `finding_basis`
+- `source_location`
+- `origin_type`: FORMAL_COMMENT | NEW_DIVERGENCE
+- `status_control`: UNCHECKED | CHECKED
+
+## Campos internos de pré-verificação
+
+- `question_id`
+- `topic`
+- `question_text`
+- `why_needed`
+- `related_documents`
+- `status`: OPEN | RESOLVED | DISMISSED
+- `resolution`
+- `resolution_type`: CONFIRMED_ERROR | DISMISSED | FORMAL_OBJECTIVE
+- `resolved_by`
+- `resolved_at`
+
+Esses campos nunca são exportados para a planilha final.
+
+## Padrão do Excel
+
+A aba principal deve conter somente:
+
+1. ID
+2. Grau
+3. Documento(s)
+4. Objetivo / Erro
+5. O que precisa ser verificado / atendido
+6. Evidência / constatação na revisão analisada
+7. Fonte / localização
+8. Comentário atendido
+
+Regras visuais:
+- quebra automática de texto;
+- altura confortável;
+- alinhamento vertical superior;
+- borda externa preta grossa;
+- bordas internas pretas normais;
+- `☐ / ☑` centralizado, 22 pt;
+- todos iniciam em `☐`.
+
+Não criar colunas `Tipo`, `Evidência de atendimento`, `Responsável` ou `Data verificação`.
+Não criar abas `Confronto_IO` ou `Verificacao`.
+Não inserir dúvidas ou perguntas na planilha.
 
 ## Gate de integridade
 
-O pipeline deve bloquear a emissão quando qualquer uma das condições abaixo ocorrer:
+O pipeline deve bloquear a emissão quando qualquer condição ocorrer:
 
 - `formal_comment_count != registered_formal_comment_count`;
 - comentário formal duplicado ou ausente;
-- `CHECKED` sem evidência;
-- comentário multi-documento sem evidência de todos os documentos requeridos;
+- pergunta de esclarecimento aberta;
 - nova divergência misturada à contagem formal;
 - grau fora do domínio permitido;
-- achado marcado como ERRO sem evidência documental suficiente para sustentar a conclusão.
+- tentativa de exportar texto classificado como dúvida/pergunta.
 
 Modo padrão: `BLOCK_ON_ANY_FAILURE`.
 
 ## Memória técnica
 
-Cada erro corrigido deve gerar três artefatos vinculados:
+Cada erro de interpretação corrigido deve gerar:
 
 1. ocorrência (`LESSON` ou `REGRESSION`);
 2. regra preventiva (`RULE`);
 3. teste automatizado (`TEST`).
 
+Respostas do solicitante que resolvem dúvidas devem ser persistidas como `DECISION`, vinculadas ao tema e aos documentos, para evitar repetir a mesma pergunta quando o contexto for equivalente.
+
 A memória é histórica e não substitui documento contratual ou normativo.
 
-## Analítica
+## Analítica e CI/CD
 
-O sistema deve calcular, no mínimo:
+O sistema mantém estatística, risco baseline, Power BI e CI/CD. Os pipelines de GitHub Actions e GitLab CI devem validar, além dos testes existentes:
 
-- total de comentários formais;
-- total pendente e confirmado;
-- distribuição por grau;
-- idade média e mediana dos comentários;
-- tempo médio de fechamento;
-- taxa de reabertura;
-- taxa de comentários sem evidência;
-- taxa de comentários multi-documento;
-- taxa de regressão por documento e disciplina;
-- índice de risco de atraso/recorrência.
-
-## Análise preditiva
-
-Até existir volume histórico suficiente para treinamento estatístico validado, a previsão deve ser tratada como `RISK_SCORE_BASELINE`, baseada em fatores explícitos e auditáveis. O sistema não deve apresentar heurística como modelo treinado.
-
-## Power BI
-
-O pipeline deve disponibilizar datasets tabulares estáveis para Power BI, sem depender da planilha Excel como fonte de verdade. A fonte de verdade é o banco de dados.
-
-## CI/CD
-
-GitHub Actions e GitLab CI devem executar:
-
-1. validação de schema;
-2. testes unitários;
-3. testes de integridade de quantidade;
-4. testes de status/evidência;
-5. regressões conhecidas;
-6. lint/compilação;
-7. geração de artefatos analíticos quando aplicável.
+- nenhuma pergunta aberta antes da geração;
+- nenhuma linha de planilha contendo `DÚVIDA`, `A CONFIRMAR` ou pergunta interna;
+- ausência das colunas e abas proibidas;
+- regressões conhecidas de interpretação.
