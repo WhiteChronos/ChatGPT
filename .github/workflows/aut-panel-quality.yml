@@ -5,37 +5,53 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/aut-panel-quality.yml'
+      - 'requirements-dev.txt'
       - 'governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md'
+      - 'governance/golden_rules.yaml'
       - 'schemas/aut_panel_project_v1.schema.json'
       - 'pipeline/aut_panel_control.py'
       - 'pipeline/aut_panel_standard.py'
+      - 'pipeline/render_panel_scaled.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
+      - 'pipeline/pipeline.yaml'
+      - 'templates/panel_template.yaml'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
+      - 'datacenter/datacenter.yaml'
       - 'li/PN-AUT-01_LI.json'
       - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
+      - 'datasheet/datasheet.yaml'
       - 'tests/test_aut_panel_control.py'
   push:
     branches: [main]
     paths:
       - '.github/workflows/aut-panel-quality.yml'
+      - 'requirements-dev.txt'
       - 'governance/AUT_PANEL_CONTROL_STANDARD_v1_0.md'
+      - 'governance/golden_rules.yaml'
       - 'schemas/aut_panel_project_v1.schema.json'
       - 'pipeline/aut_panel_control.py'
       - 'pipeline/aut_panel_standard.py'
+      - 'pipeline/render_panel_scaled.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
+      - 'pipeline/pipeline.yaml'
+      - 'templates/panel_template.yaml'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
+      - 'datacenter/datacenter.yaml'
       - 'li/PN-AUT-01_LI.json'
       - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
+      - 'datasheet/datasheet.yaml'
       - 'tests/test_aut_panel_control.py'
   workflow_dispatch:
 
@@ -48,7 +64,7 @@ concurrency:
 
 jobs:
   quality:
-    name: LI quantities, master workbook and approved drawing template
+    name: Immutable LI, load balance, workbook and approved drawing template
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -73,6 +89,28 @@ jobs:
           python -m pip check
       - name: Compile sources
         run: python -m compileall -q pipeline tests
+      - name: Validate immutable YAML contracts and master prompt
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          files = [
+              'governance/golden_rules.yaml',
+              'pipeline/pipeline.yaml',
+              'templates/panel_template.yaml',
+              'datacenter/datacenter.yaml',
+              'datasheet/datasheet.yaml',
+          ]
+          for name in files:
+              data = yaml.safe_load(Path(name).read_text(encoding='utf-8'))
+              assert isinstance(data, dict), name
+              assert data.get('status') == 'LOCKED_APPROVED_STANDARD', name
+              assert data.get('immutable') is True, name
+          prompt = Path('prompts/PROMPT_MASTER_AUT_PANEL.md').read_text(encoding='utf-8')
+          assert 'PROMPT-MASTER-AUT-PANEL-V1' in prompt
+          assert 'LI_QUANTITY → LOAD_BALANCE → BOM → LAYOUT → RENDER_IMAGE' in prompt
+          assert 'XLSX-PN-AUT-01-MASTER-R02' in prompt
+          PY
       - name: Run regression tests
         run: python -m pytest -q tests/test_aut_panel_control.py
       - name: Run PN-AUT-01 standard pipeline
@@ -101,6 +139,24 @@ jobs:
             --document-standard datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json \
             --output-dir build/aut-panel/PN-AUT-02 \
             --allow-hold
+      - name: Enforce immutable render contract PN-AUT-01
+        run: |
+          python pipeline/render_panel_scaled.py \
+            --panel-id PN-AUT-01 \
+            --li li/PN-AUT-01_LI.json \
+            --project datasheet/AUT_PANEL_DATA_SHEET.json \
+            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json \
+            --output build/aut-panel/PN-AUT-01/AUT_PANEL_LAYOUT_IMMUTABLE.svg \
+            --contract-output build/aut-panel/PN-AUT-01/immutable_render_contract.json
+      - name: Enforce immutable render contract PN-AUT-02
+        run: |
+          python pipeline/render_panel_scaled.py \
+            --panel-id PN-AUT-02 \
+            --li li/PN-AUT-02_LI.json \
+            --project datasheet/PN-AUT-02_DATA_SHEET.json \
+            --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json \
+            --output build/aut-panel/PN-AUT-02/AUT_PANEL_LAYOUT_IMMUTABLE.svg \
+            --contract-output build/aut-panel/PN-AUT-02/immutable_render_contract.json
       - name: Verify artifact hashes, LI order and locked templates
         run: |
           python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-01/manifest.json --output-dir build/aut-panel/PN-AUT-01
@@ -109,23 +165,28 @@ jobs:
           import json
           from pathlib import Path
           approved = {
-              "PN-AUT-01": "IMG-PN-AUT-01-APPROVED-V1",
-              "PN-AUT-02": "IMG-PN-AUT-02-APPROVED-V1",
+              'PN-AUT-01': ('IMG-PN-AUT-01-APPROVED-V1', 'd5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402'),
+              'PN-AUT-02': ('IMG-PN-AUT-02-APPROVED-V1', 'daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89'),
           }
-          for panel in ("PN-AUT-01", "PN-AUT-02"):
-              root = Path("build/aut-panel") / panel
-              man = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
-              names = [x["path"] for x in man["outputs"]]
-              assert names.index("AUT_PANEL_LI.json") < names.index("AUT_PANEL_BOM.json") < names.index("AUT_PANEL_LAYOUT.svg")
-              li = json.loads((root / "AUT_PANEL_LI.json").read_text(encoding="utf-8"))
-              bom = json.loads((root / "AUT_PANEL_BOM.json").read_text(encoding="utf-8"))
-              lq = {x["tag"]: x["quantity"] for x in li["lines"]}
-              bq = {x["li_tag"]: x["quantity"] for x in bom["lines"]}
+          for panel in ('PN-AUT-01', 'PN-AUT-02'):
+              root = Path('build/aut-panel') / panel
+              man = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+              names = [x['path'] for x in man['outputs']]
+              assert names.index('AUT_PANEL_LI.json') < names.index('AUT_PANEL_BOM.json') < names.index('AUT_PANEL_LAYOUT.svg')
+              li = json.loads((root / 'AUT_PANEL_LI.json').read_text(encoding='utf-8'))
+              bom = json.loads((root / 'AUT_PANEL_BOM.json').read_text(encoding='utf-8'))
+              lq = {x['tag']: x['quantity'] for x in li['lines']}
+              bq = {x['li_tag']: x['quantity'] for x in bom['lines']}
               assert lq == bq
-              svg = (root / "AUT_PANEL_LAYOUT.svg").read_text(encoding="utf-8")
-              assert "GR-039 WORKBOOK_TEMPLATE XLSX-PN-AUT-01-MASTER-R02" in svg
-              assert f"GR-040 IMAGE_TEMPLATE {approved[panel]}" in svg
-              assert "GR-041 STANDARD_LOCKED true" in svg
+              svg = (root / 'AUT_PANEL_LAYOUT.svg').read_text(encoding='utf-8')
+              assert 'GR-039 WORKBOOK_TEMPLATE XLSX-PN-AUT-01-MASTER-R02' in svg
+              assert f'GR-040 IMAGE_TEMPLATE {approved[panel][0]}' in svg
+              assert 'GR-041 STANDARD_LOCKED true' in svg
+              contract = json.loads((root / 'immutable_render_contract.json').read_text(encoding='utf-8'))
+              assert contract['status'] == 'VALIDATED_FOR_RENDER'
+              assert contract['workbook_template_id'] == 'XLSX-PN-AUT-01-MASTER-R02'
+              assert contract['image_template_id'] == approved[panel][0]
+              assert contract['approved_image_sha256'] == approved[panel][1]
           PY
       - name: Publish QA summary
         if: always()
