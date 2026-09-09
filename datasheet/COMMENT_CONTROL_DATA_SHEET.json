@@ -1,0 +1,61 @@
+{
+  "model_id": "COMMENT_CONTROL_V1_0",
+  "purpose": "Controle de comentários técnicos com rastreabilidade, evidência, memória e analítica.",
+  "primary_table_columns": [
+    "comment_id",
+    "severity",
+    "document_location",
+    "compiled_action",
+    "verification_evidence",
+    "comment_checked"
+  ],
+  "allowed_severity": ["GRAVE", "ALTO", "LEVE"],
+  "status_mapping": {
+    "UNCHECKED": "☐",
+    "CHECKED": "☑"
+  },
+  "initial_status": "UNCHECKED",
+  "automatic_checked_forbidden": true,
+  "checked_requires_human_confirmation": true,
+  "checked_requires_evidence": true,
+  "formal_comment_count_must_equal_registered_count": true,
+  "merge_comments_forbidden": true,
+  "omit_comments_forbidden": true,
+  "new_divergences_separate": true,
+  "excel": {
+    "wrap_text": true,
+    "vertical_alignment": "top",
+    "outer_border": "thick_black",
+    "inner_border": "thin_black",
+    "checkbox_font_size_pt": 22,
+    "checkbox_horizontal_alignment": "center",
+    "checkbox_vertical_alignment": "center",
+    "checkbox_values": ["☐", "☑"]
+  },
+  "verification": {
+    "required_evidence_fields": [
+      "evidence_document",
+      "evidence_revision",
+      "evidence_location",
+      "evidence_text"
+    ],
+    "multi_document_requires_all_evidence": true
+  },
+  "analytics": {
+    "dimensions": ["project", "document", "severity", "status", "responsible", "age_bucket"],
+    "measures": [
+      "formal_comment_count",
+      "new_divergence_count",
+      "checked_count",
+      "unchecked_count",
+      "checked_rate",
+      "mean_age_days",
+      "median_age_days",
+      "mean_close_days",
+      "reopen_rate",
+      "evidence_gap_rate",
+      "regression_rate",
+      "risk_score"
+    ]
+  }
+}
