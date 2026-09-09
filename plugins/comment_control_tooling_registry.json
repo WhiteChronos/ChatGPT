@@ -1,0 +1,42 @@
+{
+  "registry_id": "COMMENT_CONTROL_TOOLING_V1_0",
+  "policy": "discover_review_pin_test_before_adopt",
+  "auto_install_forbidden": true,
+  "tools": [
+    {
+      "name": "OpenAI Agents SDK Python",
+      "repository": "https://github.com/openai/openai-agents-python",
+      "purpose": ["agent orchestration", "structured output", "evaluation path"],
+      "status": "ADOPTED",
+      "integration": "pipeline/comment_control_agent.py"
+    },
+    {
+      "name": "Pydantic",
+      "repository": "https://github.com/pydantic/pydantic",
+      "purpose": ["typed contracts", "schema validation", "structured output validation"],
+      "status": "ADOPTED",
+      "integration": "pipeline/comment_control_agent.py"
+    },
+    {
+      "name": "Great Expectations",
+      "repository": "https://github.com/fivetran/great_expectations",
+      "purpose": ["data quality expectations", "dataset validation"],
+      "status": "CANDIDATE",
+      "decision": "Deterministic native validators remain primary until the dataset grows enough to justify an additional framework."
+    },
+    {
+      "name": "Evidently",
+      "repository": "https://github.com/evidentlyai/evidently",
+      "purpose": ["model monitoring", "data drift", "quality dashboards"],
+      "status": "CANDIDATE",
+      "decision": "Evaluate after a trained predictive model replaces RISK_SCORE_BASELINE."
+    },
+    {
+      "name": "Microsoft Power BI plugin",
+      "provider": "OpenAI Plugin Directory",
+      "purpose": ["analytics", "dashboard exploration", "visualization"],
+      "status": "AVAILABLE_FOR_CONNECTION",
+      "integration": "docs/COMMENT_CONTROL_POWERBI.md"
+    }
+  ]
+}

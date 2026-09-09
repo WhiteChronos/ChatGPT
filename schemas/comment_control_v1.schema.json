@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/comment_control_v1.schema.json",
+  "title": "Comment Control Record",
+  "type": "object",
+  "required": [
+    "project_id",
+    "comment_id",
+    "severity",
+    "original_comment",
+    "compiled_action",
+    "origin_type",
+    "status_control"
+  ],
+  "properties": {
+    "project_id": {"type": "string", "minLength": 1},
+    "comment_id": {"type": "string", "pattern": "^(C[0-9]{2,}|ND[0-9]{2,})$"},
+    "source_comment_id": {"type": ["string", "null"]},
+    "severity": {"enum": ["GRAVE", "ALTO", "LEVE"]},
+    "document_code": {"type": ["string", "null"]},
+    "revision": {"type": ["string", "null"]},
+    "page_or_item": {"type": ["string", "null"]},
+    "original_comment": {"type": "string", "minLength": 1},
+    "compiled_action": {"type": "string", "minLength": 1},
+    "finding_basis": {"type": ["string", "null"]},
+    "source_location": {"type": ["string", "null"]},
+    "origin_type": {"enum": ["FORMAL_COMMENT", "NEW_DIVERGENCE"]},
+    "status_control": {"enum": ["UNCHECKED", "CHECKED"]},
+    "evidence_text": {"type": ["string", "null"]},
+    "evidence_document": {"type": ["string", "null"]},
+    "evidence_revision": {"type": ["string", "null"]},
+    "evidence_location": {"type": ["string", "null"]},
+    "required_documents": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "verified_documents": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "responsible": {"type": ["string", "null"]},
+    "verifier": {"type": ["string", "null"]},
+    "created_at": {"type": ["string", "null"], "format": "date-time"},
+    "verified_at": {"type": ["string", "null"], "format": "date-time"},
+    "reopened_count": {"type": "integer", "minimum": 0},
+    "due_date": {"type": ["string", "null"], "format": "date"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status_control": {"const": "CHECKED"}}, "required": ["status_control"]},
+      "then": {
+        "required": ["evidence_text", "verified_at", "verifier"],
+        "properties": {
+          "evidence_text": {"type": "string", "minLength": 1},
+          "verified_at": {"type": "string", "format": "date-time"},
+          "verifier": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

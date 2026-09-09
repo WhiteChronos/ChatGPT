@@ -42,9 +42,49 @@ Documentos e módulos:
 
 O binário oficial permanece no Data Center privado. O repositório público contém somente manifesto redigido, hashes, regras, esquemas e testes.
 
+## Sistema inteligente de controle de comentários
+
+Model ID:
+
+`COMMENT_CONTROL_V1_0`
+
+Princípio operacional:
+
+**o agente interpreta; o pipeline determinístico governa; o banco preserva; o humano confirma.**
+
+Regras centrais:
+
+- preservar 100% dos comentários formais e a ordem da origem;
+- todos os comentários começam como `UNCHECKED` / `☐`;
+- nunca converter automaticamente “atendido” do relatório em `CHECKED` / `☑`;
+- `☑` exige confirmação humana e evidência documental suficiente;
+- comentários multi-documento exigem evidência de todos os documentos aplicáveis;
+- novas divergências ficam separadas da contagem formal;
+- operar em `BLOCK_ON_ANY_FAILURE`.
+
+Componentes:
+
+- `governance/COMMENT_CONTROL_STANDARD_v1_0.md`;
+- `datasheet/COMMENT_CONTROL_DATA_SHEET.json`;
+- `schemas/comment_control_v1.schema.json`;
+- `datacenter/comment_control_schema.sql`;
+- `pipeline/comment_control_agent.py`;
+- `pipeline/comment_control_pipeline.py`;
+- `pipeline/comment_control_runner.py`;
+- `pipeline/comment_control_excel.py`;
+- `pipeline/comment_control_analytics.py`;
+- `pipeline/comment_control_export_powerbi.py`;
+- `docs/COMMENT_CONTROL_ARCHITECTURE.md`;
+- `docs/COMMENT_CONTROL_POWERBI.md`;
+- `evals/`;
+- `.github/workflows/comment-control.yml`;
+- `.gitlab-ci.yml`.
+
 ## Catálogo permanente de ferramentas
 
 O catálogo em `plugins/document_tooling_registry.json` reúne ferramentas públicas do GitHub para DOCX, XLSX, PDF, OOXML, CAD, renderização, extração, comparação e segurança. Ele é curado e extensível; não existe uma lista finita de “todos os plugins” do GitHub.
+
+O registro `plugins/comment_control_tooling_registry.json` documenta as ferramentas avaliadas especificamente para o controle de comentários, incluindo agentes, validação de dados, observabilidade e visualização.
 
 O workflow mensal `document-tooling-discovery.yml` pesquisa novas candidatas. Descoberta não significa aprovação e nenhuma ferramenta é instalada automaticamente. Promoção para uso exige revisão de licença, segurança, manutenção, versão/commit fixo, sandbox e testes de regressão.
 
@@ -54,9 +94,10 @@ O workflow mensal `document-tooling-discovery.yml` pesquisa novas candidatas. De
 - `memory/`: decisões, lições aprendidas, conflitos e pendências;
 - `schemas/`: contratos de dados e validação;
 - `pipeline/`: validadores, agentes e aplicação textual controlada;
-- `datacenter/`: manifestos redigidos e fingerprints de modelos privados;
-- `datasheet/`: regras de consistência para LI e FD;
+- `datacenter/`: manifestos, schemas SQL e fingerprints de modelos privados;
+- `datasheet/`: contratos de dados e regras de consistência;
 - `plugins/`: catálogo de ferramentas externas;
+- `evals/`: avaliações do caminho real dos agentes;
 - `tests/`: testes de regressão;
 - `.github/`: workflows e processo de revisão.
 

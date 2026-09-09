@@ -1,0 +1,96 @@
+{
+  "model_id": "COMMENT_CONTROL_V1_2",
+  "purpose": "Controle de comentários técnicos com pré-verificação obrigatória, resolução de dúvidas antes da emissão, rastreabilidade, memória e analítica.",
+  "primary_table_columns": [
+    "comment_id",
+    "severity",
+    "document_location",
+    "issue_summary",
+    "compiled_action",
+    "finding_basis",
+    "source_location",
+    "comment_checked"
+  ],
+  "allowed_severity": ["GRAVE", "ALTO", "LEVE"],
+  "visible_record_types": ["FORMAL_OBJECTIVE", "CONFIRMED_ERROR"],
+  "status_mapping": {
+    "UNCHECKED": "☐",
+    "CHECKED": "☑"
+  },
+  "initial_status": "UNCHECKED",
+  "automatic_checked_forbidden": true,
+  "formal_comment_count_must_equal_registered_count": true,
+  "merge_comments_forbidden": true,
+  "omit_comments_forbidden": true,
+  "new_divergences_separate": true,
+  "preflight": {
+    "enabled": true,
+    "try_to_resolve_from_documents_first": true,
+    "unresolved_question_blocks_generation": true,
+    "questions_never_exported": true,
+    "questions_must_be_asked_before_artifact_generation": true,
+    "allowed_question_status": ["OPEN", "RESOLVED", "DISMISSED"],
+    "allowed_resolution_type": ["CONFIRMED_ERROR", "DISMISSED", "FORMAL_OBJECTIVE"],
+    "resolved_question_requires_resolution_text": true,
+    "resolved_question_requires_resolved_by": true,
+    "resolved_question_requires_resolved_at": true,
+    "ready_state_requires_open_question_count": 0,
+    "resume_from_preflight_payload_supported": true,
+    "forbidden_export_markers": ["DÚVIDA", "DUVIDA", "A CONFIRMAR", "PERGUNTA"]
+  },
+  "excel": {
+    "main_sheet": "Controle_Geral",
+    "wrap_text": true,
+    "vertical_alignment": "top",
+    "outer_border": "thick_black",
+    "inner_border": "thin_black",
+    "checkbox_font_size_pt": 22,
+    "checkbox_horizontal_alignment": "center",
+    "checkbox_vertical_alignment": "center",
+    "checkbox_values": ["☐", "☑"],
+    "all_initial_status_unchecked": true,
+    "forbidden_columns": [
+      "Tipo",
+      "Evidência de atendimento",
+      "Responsável",
+      "Data verificação"
+    ],
+    "forbidden_sheets": ["Confronto_IO", "Verificacao", "VERIFICAÇÃO"],
+    "clarification_rows_forbidden": true
+  },
+  "finding_rules": {
+    "error_requires_observable_or_demonstrable_nonconformity": true,
+    "different_document_types_need_not_repeat_content": true,
+    "similar_technical_reference_difference_is_not_error_by_itself": true,
+    "existing_equipment_model_variation_is_not_error_without_mandatory_conflict": true,
+    "requester_confirmed_project_terminology_is_authoritative_for_compatibility": true,
+    "confirmed_dual_interface_requirement_must_be_consistent_across_same_project": true,
+    "white_space_due_to_less_content_is_not_print_error": true,
+    "floor_naming_must_follow_project_not_assumption": true,
+    "copied_or_similar_text_is_not_error_without_functional_incompatibility": true
+  },
+  "verification": {
+    "checked_requires_human_confirmation": true,
+    "checked_requires_evidence_in_datacenter": true,
+    "multi_document_requires_all_evidence": true,
+    "closing_evidence_is_not_an_excel_column": true
+  },
+  "analytics": {
+    "dimensions": ["project", "document", "severity", "status", "age_bucket"],
+    "measures": [
+      "formal_comment_count",
+      "new_divergence_count",
+      "checked_count",
+      "unchecked_count",
+      "checked_rate",
+      "mean_age_days",
+      "median_age_days",
+      "mean_close_days",
+      "reopen_rate",
+      "regression_rate",
+      "risk_score",
+      "clarification_count",
+      "clarification_resolution_time"
+    ]
+  }
+}
