@@ -1,0 +1,33 @@
+stages:
+  - validate
+  - test
+
+variables:
+  PYTHONPATH: "$CI_PROJECT_DIR"
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUNBUFFERED: "1"
+
+comment_control_validate:
+  stage: validate
+  image: python:3.12-slim
+  script:
+    - python -m pip install --upgrade pip
+    - python -m pip install pytest==8.4.1 jsonschema==4.25.1 'pydantic>=2.8,<3'
+    - python -m compileall -q pipeline tests
+    - python - <<'PY'
+      import json
+      from pathlib import Path
+      for path in [Path('schemas/comment_control_v1.schema.json'), Path('datasheet/COMMENT_CONTROL_DATA_SHEET.json')]:
+          json.loads(path.read_text(encoding='utf-8'))
+          print('OK', path)
+      PY
+    - grep -q 'BLOCK_ON_ANY_FAILURE' governance/COMMENT_CONTROL_STANDARD_v1_0.md
+    - grep -q 'CC-COUNT-INTEGRITY' pipeline/comment_control_pipeline.py
+
+comment_control_tests:
+  stage: test
+  image: python:3.12-slim
+  script:
+    - python -m pip install --upgrade pip
+    - python -m pip install pytest==8.4.1 'pydantic>=2.8,<3'
+    - python -m pytest -q tests/test_comment_control.py
