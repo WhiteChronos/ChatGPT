@@ -40,17 +40,44 @@ def upsert_project(conn: Any, project_id: str, project_name: str | None = None) 
         )
 
 
-def insert_comment(conn: Any, record: dict[str, Any]) -> int:
+def upsert_batch(conn: Any, payload: dict[str, Any]) -> str:
+    batch_id = payload.get("batch_id")
+    if not batch_id:
+        raise ValueError("batch_id obrigatório para persistência")
+
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            insert into comment_batches(
+              batch_id, project_id, source_name, source_hash, source_formal_comment_count
+            ) values (%s, %s, %s, %s, %s)
+            on conflict(batch_id) do update set
+              source_name = excluded.source_name,
+              source_hash = excluded.source_hash,
+              source_formal_comment_count = excluded.source_formal_comment_count
+            """,
+            (
+                batch_id,
+                payload["project_id"],
+                payload.get("source_name"),
+                payload.get("source_hash"),
+                payload["source_formal_comment_count"],
+            ),
+        )
+    return str(batch_id)
+
+
+def insert_comment(conn: Any, batch_id: str, record: dict[str, Any]) -> int:
     with conn.cursor() as cur:
         cur.execute(
             """
             insert into comments(
-              project_id, comment_id, source_comment_id, severity, document_code,
+              batch_id, project_id, comment_id, source_comment_id, severity, document_code,
               revision, page_or_item, original_comment, compiled_action,
               origin_type, status_control, responsible, verifier, created_at,
               verified_at, reopened_count, due_date
             ) values (
-              %(project_id)s, %(comment_id)s, %(source_comment_id)s, %(severity)s,
+              %(batch_id)s, %(project_id)s, %(comment_id)s, %(source_comment_id)s, %(severity)s,
               %(document_code)s, %(revision)s, %(page_or_item)s,
               %(original_comment)s, %(compiled_action)s, %(origin_type)s,
               %(status_control)s, %(responsible)s, %(verifier)s,
@@ -58,7 +85,7 @@ def insert_comment(conn: Any, record: dict[str, Any]) -> int:
               %(verified_at)s::timestamptz, coalesce(%(reopened_count)s, 0),
               %(due_date)s::date
             )
-            on conflict(project_id, comment_id, origin_type) do update set
+            on conflict(batch_id, comment_id, origin_type) do update set
               severity = excluded.severity,
               document_code = excluded.document_code,
               revision = excluded.revision,
@@ -70,6 +97,7 @@ def insert_comment(conn: Any, record: dict[str, Any]) -> int:
             returning comment_pk
             """,
             {
+                "batch_id": batch_id,
                 "project_id": record.get("project_id"),
                 "comment_id": record.get("comment_id"),
                 "source_comment_id": record.get("source_comment_id"),
@@ -102,10 +130,17 @@ def replace_required_documents(conn: Any, comment_pk: int, documents: list[str])
             )
 
 
+def assert_batch_integrity(conn: Any, batch_id: str) -> None:
+    with conn.cursor() as cur:
+        cur.execute("select assert_comment_batch_integrity(%s)", (batch_id,))
+
+
 def persist_payload(payload: dict[str, Any], database_url: str | None = None) -> None:
     with connect(database_url) as conn:
         upsert_project(conn, payload["project_id"])
+        batch_id = upsert_batch(conn, payload)
         for record in payload.get("comments", []):
-            pk = insert_comment(conn, record)
+            pk = insert_comment(conn, batch_id, record)
             replace_required_documents(conn, pk, record.get("required_documents") or [])
+        assert_batch_integrity(conn, batch_id)
         conn.commit()
