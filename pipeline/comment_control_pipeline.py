@@ -9,9 +9,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from jsonschema import Draft202012Validator, FormatChecker
+
 ALLOWED_SEVERITY = {"GRAVE", "ALTO", "LEVE"}
 ALLOWED_STATUS = {"UNCHECKED", "CHECKED"}
 ALLOWED_ORIGIN = {"FORMAL_COMMENT", "NEW_DIVERGENCE"}
+SCHEMA_PATH = Path(__file__).resolve().parents[1] / "schemas" / "comment_control_v1.schema.json"
 
 
 @dataclass(frozen=True)
@@ -26,9 +29,25 @@ def _formal_comments(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return [r for r in payload.get("comments", []) if r.get("origin_type") == "FORMAL_COMMENT"]
 
 
+def _schema_validator() -> Draft202012Validator:
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    return Draft202012Validator(schema, format_checker=FormatChecker())
+
+
+def validate_schema(record: dict[str, Any]) -> list[Finding]:
+    cid = str(record.get("comment_id", "UNKNOWN"))
+    findings: list[Finding] = []
+    for error in sorted(_schema_validator().iter_errors(record), key=lambda item: list(item.path)):
+        location = ".".join(str(part) for part in error.path) or "record"
+        findings.append(Finding("CC-SCHEMA", "CRITICAL", f"{location}: {error.message}", cid))
+    return findings
+
+
 def validate_record(record: dict[str, Any]) -> list[Finding]:
     findings: list[Finding] = []
     cid = str(record.get("comment_id", "UNKNOWN"))
+    findings.extend(validate_schema(record))
+
     if record.get("severity") not in ALLOWED_SEVERITY:
         findings.append(Finding("CC-SEVERITY", "CRITICAL", "Grau inválido", cid))
     if record.get("status_control") not in ALLOWED_STATUS:
@@ -43,6 +62,8 @@ def validate_record(record: dict[str, Any]) -> list[Finding]:
     if record.get("status_control") == "CHECKED":
         if not record.get("evidence_text"):
             findings.append(Finding("CC-CHECKED-EVIDENCE", "CRITICAL", "☑ sem evidência documental", cid))
+        if not record.get("verified_at") or not record.get("verifier"):
+            findings.append(Finding("CC-HUMAN-VERIFY", "CRITICAL", "☑ sem registro do verificador/data", cid))
         required = set(record.get("required_documents") or [])
         verified = set(record.get("verified_documents") or [])
         missing = required - verified
@@ -82,13 +103,17 @@ def validate_payload(payload: dict[str, Any]) -> list[Finding]:
             Finding("CC-DUPLICATE", "CRITICAL", f"Comentários duplicados: {', '.join(map(str, duplicate_ids))}")
         )
 
-    automatically_checked = [r.get("comment_id") for r in comments if r.get("status_control") == "CHECKED" and not r.get("verified_at")]
+    automatically_checked = [
+        r.get("comment_id")
+        for r in comments
+        if r.get("status_control") == "CHECKED" and (not r.get("verified_at") or not r.get("verifier"))
+    ]
     if automatically_checked:
         findings.append(
             Finding(
                 "CC-AUTO-CHECK",
                 "CRITICAL",
-                "Status CHECKED sem registro explícito de verificação humana: " + ", ".join(map(str, automatically_checked)),
+                "Status CHECKED sem verificação humana explícita: " + ", ".join(map(str, automatically_checked)),
             )
         )
 
@@ -103,7 +128,14 @@ def gate(payload: dict[str, Any]) -> None:
         raise ValueError(f"BLOCK_ON_ANY_FAILURE\n{text}")
 
 
-def append_memory_event(memory_path: Path, *, category: str, description: str, origin: str, regression_test: str | None = None) -> None:
+def append_memory_event(
+    memory_path: Path,
+    *,
+    category: str,
+    description: str,
+    origin: str,
+    regression_test: str | None = None,
+) -> None:
     event = {
         "id": f"MEM-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')}",
         "created_at": datetime.now(timezone.utc).isoformat(),
