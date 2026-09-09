@@ -9,6 +9,7 @@ on:
       - 'schemas/comment_control_v1.schema.json'
       - 'datasheet/COMMENT_CONTROL_DATA_SHEET.json'
       - 'datacenter/comment_control_schema.sql'
+      - 'datacenter/migrations/*.sql'
       - 'governance/COMMENT_CONTROL_STANDARD_v1_0.md'
       - 'governance/PROMPT_MESTRE_CONTROLE_COMENTARIOS_v1_0.md'
       - 'docs/comment-control-agent-prompt.md'
@@ -71,13 +72,17 @@ jobs:
         run: |
           grep -q 'BLOCK_ON_ANY_FAILURE' governance/COMMENT_CONTROL_STANDARD_v1_0.md
           grep -q 'WAITING_CLARIFICATION' governance/COMMENT_CONTROL_STANDARD_v1_0.md
+          grep -q 'preflight_payload.json' governance/COMMENT_CONTROL_STANDARD_v1_0.md
           grep -q 'questions_never_exported' datasheet/COMMENT_CONTROL_DATA_SHEET.json
+          grep -q 'resolved_question_requires_resolution_text' datasheet/COMMENT_CONTROL_DATA_SHEET.json
           grep -q 'unresolved_question_blocks_generation' datasheet/COMMENT_CONTROL_DATA_SHEET.json
-          grep -q 'assert_preflight_resolved' datacenter/comment_control_schema.sql
           grep -q 'CC-CLARIFICATION-OPEN' pipeline/comment_control_pipeline.py
+          grep -q 'CC-CLARIFICATION-RESOLUTION' pipeline/comment_control_pipeline.py
+          grep -q 'apply_clarification_resolutions' pipeline/comment_control_clarification.py
           grep -q 'clarification_questions' pipeline/comment_control_agent.py
           grep -q 'checkbox_font_size_pt' datasheet/COMMENT_CONTROL_DATA_SHEET.json
-          grep -q 'Perguntas, hipóteses, textos' docs/comment-control-agent-prompt.md
+          grep -q 'Gate obrigatório de dúvida antes da elaboração' docs/comment-control-agent-prompt.md
+          grep -q 'enforce_clarification_resolution_integrity' datacenter/migrations/20260909_clarification_resolution_integrity.sql
 
       - name: Agent import smoke test
         if: ${{ env.HAS_OPENAI_KEY == 'true' }}
