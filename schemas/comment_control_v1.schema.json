@@ -22,6 +22,8 @@
     "page_or_item": {"type": ["string", "null"]},
     "original_comment": {"type": "string", "minLength": 1},
     "compiled_action": {"type": "string", "minLength": 1},
+    "finding_basis": {"type": ["string", "null"]},
+    "source_location": {"type": ["string", "null"]},
     "origin_type": {"enum": ["FORMAL_COMMENT", "NEW_DIVERGENCE"]},
     "status_control": {"enum": ["UNCHECKED", "CHECKED"]},
     "evidence_text": {"type": ["string", "null"]},
