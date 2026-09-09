@@ -1,0 +1,90 @@
+schema_version: "1.0"
+registry_id: GOLDEN-RULES-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+change_control:
+  explicit_user_authorization_required: true
+  unauthorized_change_status: REPROVADO
+  authorization_evidence_required: true
+  rule: >-
+    Nenhuma regra, estrutura de LI/Excel, composição visual, dimensão mestre,
+    ordem do pipeline ou template aprovado pode ser alterado sem autorização
+    explícita do responsável do projeto.
+required_rules:
+  - id: GR-021
+    name: Vista frontal externa é a geometria-mestra
+    severity_on_violation: REPROVADO
+    rule: A vista frontal externa/porta define largura e altura externas do gabinete.
+  - id: GR-022
+    name: Vista interna frontal preserva o contorno externo
+    severity_on_violation: REPROVADO
+    rule: A vista interna frontal deve ter exatamente a mesma largura e altura externas da vista frontal externa.
+  - id: GR-023
+    name: Vista lateral real
+    severity_on_violation: REPROVADO
+    rule: A vista lateral deve ser profundidade externa x altura externa.
+  - id: GR-024
+    name: Escala global única
+    severity_on_violation: REPROVADO
+    rule: Todas as vistas usam um único PX_PER_MM; escala por vista é proibida.
+  - id: GR-025
+    name: Proporção 1:1
+    severity_on_violation: REPROVADO
+    rule: É proibida escala individual ou distorção de componentes.
+  - id: GR-026
+    name: Canvas grow-only
+    severity_on_violation: REPROVADO
+    rule: O canvas cresce para acomodar o quadro; o quadro nunca é comprimido.
+  - id: GR-027
+    name: Zona inferior normativa
+    severity_on_violation: HOLD
+    rule: Bornes, canaleta inferior, curvatura/saída de cabos e prensa-cabos devem permanecer em zonas distintas.
+  - id: GR-034
+    name: LI e BOM antes do desenho
+    severity_on_violation: REPROVADO
+    rule: A LI quantitativa é congelada antes da BOM; a BOM é validada antes do layout e da imagem.
+  - id: GR-035
+    name: Paridade quantitativa
+    severity_on_violation: REPROVADO
+    rule: catalog_id e quantidade devem ser idênticos entre LI, BOM, Data Sheet/layout e desenho.
+  - id: GR-036
+    name: Mudança da LI invalida artefatos posteriores
+    severity_on_violation: REPROVADO
+    rule: Alterar quantidade, catalog_id ou revisão da LI invalida BOM, layout, desenho, carga e QA anteriores.
+  - id: GR-037
+    name: IHM na porta
+    severity_on_violation: REPROVADO
+    rule: A IHM local fica obrigatoriamente instalada na porta/tampa frontal externa.
+  - id: GR-038
+    name: Sem distorção para caber
+    severity_on_violation: REPROVADO
+    rule: Se faltar espaço, reorganizar ou ampliar o gabinete; nunca reduzir ou deformar componentes.
+  - id: GR-039
+    name: PN-AUT-01 é o template mestre de Excel
+    severity_on_violation: REPROVADO
+    rule: PN-AUT-02 e futuros quadros devem manter a estrutura documental e visual do workbook mestre do PN-AUT-01.
+  - id: GR-040
+    name: Imagem individual no padrão visual aprovado
+    severity_on_violation: REPROVADO
+    rule: Cada painel possui uma imagem própria e deve seguir seu template visual aprovado, sem recomposição automática.
+  - id: GR-041
+    name: Padrão aprovado imutável
+    severity_on_violation: REPROVADO
+    rule: Nenhum padrão aprovado pode ser alterado sem autorização explícita do usuário.
+  - id: GR-042
+    name: Baseline da LI imutável
+    severity_on_violation: REPROVADO
+    rule: LI-PN-AUT-01-R02 e LI-PN-AUT-02-R02 são baselines congeladas; mudança exige nova revisão e autorização explícita.
+  - id: GR-043
+    name: Estrutura do workbook imutável
+    severity_on_violation: REPROVADO
+    rule: Ordem de abas, dimensões de planilha, freeze panes, mesclagens, larguras e alturas-base devem seguir o fingerprint estrutural mestre.
+  - id: GR-044
+    name: Fingerprint visual aprovado
+    severity_on_violation: REPROVADO
+    rule: O template de imagem deve apontar para o fingerprint SHA-256 da referência aprovada do painel no Data Center privado.
+  - id: GR-045
+    name: Prompt mestre obrigatório
+    severity_on_violation: REPROVADO
+    rule: Toda elaboração automática de LI, layout ou imagem deve carregar PROMPT-MASTER-AUT-PANEL-V1 sem reescrever suas regras imutáveis.
