@@ -6,6 +6,16 @@ create table if not exists projects (
   created_at timestamptz not null default now()
 );
 
+create table if not exists comment_batches (
+  batch_id text primary key,
+  project_id text not null references projects(project_id) on delete cascade,
+  source_name text,
+  source_hash text,
+  source_formal_comment_count integer not null check (source_formal_comment_count >= 0),
+  created_at timestamptz not null default now(),
+  unique(project_id, source_hash)
+);
+
 create table if not exists documents (
   document_id bigserial primary key,
   project_id text not null references projects(project_id) on delete cascade,
@@ -20,6 +30,7 @@ create table if not exists documents (
 
 create table if not exists comments (
   comment_pk bigserial primary key,
+  batch_id text not null references comment_batches(batch_id) on delete cascade,
   project_id text not null references projects(project_id) on delete cascade,
   comment_id text not null,
   source_comment_id text,
@@ -37,8 +48,12 @@ create table if not exists comments (
   verified_at timestamptz,
   reopened_count integer not null default 0 check (reopened_count >= 0),
   due_date date,
-  unique(project_id, comment_id, origin_type)
+  unique(batch_id, comment_id, origin_type)
 );
+
+create index if not exists idx_comments_project_status on comments(project_id, status_control);
+create index if not exists idx_comments_batch_origin on comments(batch_id, origin_type);
+create index if not exists idx_comments_document on comments(project_id, document_code);
 
 create table if not exists comment_required_documents (
   comment_pk bigint not null references comments(comment_pk) on delete cascade,
@@ -57,6 +72,8 @@ create table if not exists comment_evidence (
   verified_by text,
   verified_at timestamptz not null default now()
 );
+
+create index if not exists idx_comment_evidence_comment on comment_evidence(comment_pk);
 
 create table if not exists technical_memory (
   memory_id bigserial primary key,
@@ -98,9 +115,14 @@ create or replace function enforce_checked_comment_evidence()
 returns trigger language plpgsql as $$
 begin
   if new.status_control = 'CHECKED' then
+    if new.verifier is null or new.verified_at is null then
+      raise exception 'CHECKED requires human verifier and verified_at';
+    end if;
+
     if not exists (select 1 from comment_evidence e where e.comment_pk = new.comment_pk) then
       raise exception 'CHECKED requires evidence';
     end if;
+
     if exists (
       select 1
       from comment_required_documents r
@@ -124,8 +146,37 @@ after insert or update of status_control on comments
 deferrable initially deferred
 for each row execute function enforce_checked_comment_evidence();
 
+create or replace function assert_comment_batch_integrity(p_batch_id text)
+returns void language plpgsql as $$
+declare
+  expected_count integer;
+  actual_count integer;
+begin
+  select source_formal_comment_count
+    into expected_count
+    from comment_batches
+   where batch_id = p_batch_id;
+
+  if expected_count is null then
+    raise exception 'Unknown comment batch: %', p_batch_id;
+  end if;
+
+  select count(*)
+    into actual_count
+    from comments
+   where batch_id = p_batch_id
+     and origin_type = 'FORMAL_COMMENT';
+
+  if actual_count <> expected_count then
+    raise exception 'Formal comment count mismatch for batch %: expected %, actual %',
+      p_batch_id, expected_count, actual_count;
+  end if;
+end;
+$$;
+
 create or replace view vw_comment_control_powerbi as
 select
+  c.batch_id,
   c.project_id,
   c.comment_id,
   c.origin_type,
@@ -153,14 +204,24 @@ group by c.comment_pk;
 
 create or replace view vw_comment_integrity as
 select
-  project_id,
-  count(*) filter (where origin_type = 'FORMAL_COMMENT') as formal_comment_count,
-  count(*) filter (where origin_type = 'NEW_DIVERGENCE') as new_divergence_count,
-  count(*) filter (where status_control = 'UNCHECKED') as unchecked_count,
-  count(*) filter (where status_control = 'CHECKED') as checked_count,
-  count(*) filter (
-    where status_control = 'CHECKED'
-      and not exists (select 1 from comment_evidence e where e.comment_pk = comments.comment_pk)
-  ) as checked_without_evidence
-from comments
-group by project_id;
+  b.batch_id,
+  b.project_id,
+  b.source_name,
+  b.source_hash,
+  b.source_formal_comment_count,
+  count(c.comment_pk) filter (where c.origin_type = 'FORMAL_COMMENT') as registered_formal_comment_count,
+  count(c.comment_pk) filter (where c.origin_type = 'NEW_DIVERGENCE') as new_divergence_count,
+  count(c.comment_pk) filter (where c.status_control = 'UNCHECKED') as unchecked_count,
+  count(c.comment_pk) filter (where c.status_control = 'CHECKED') as checked_count,
+  count(c.comment_pk) filter (
+    where c.status_control = 'CHECKED'
+      and not exists (select 1 from comment_evidence e where e.comment_pk = c.comment_pk)
+  ) as checked_without_evidence,
+  case
+    when count(c.comment_pk) filter (where c.origin_type = 'FORMAL_COMMENT') = b.source_formal_comment_count
+      then 'OK'
+    else 'ERRO'
+  end as formal_count_integrity
+from comment_batches b
+left join comments c on c.batch_id = b.batch_id
+group by b.batch_id;
