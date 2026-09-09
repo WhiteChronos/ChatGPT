@@ -1,35 +1,36 @@
-"""Gera o Excel de controle de comentários no padrão aprovado.
+"""Gera o Excel de controle no padrão aprovado.
 
-Regras visuais principais:
-- todos os comentários formais são preservados;
-- status inicial ☐;
-- coluna de status centralizada e 22 pt;
-- borda externa preta grossa e bordas internas pretas finas;
+Regras:
+- dúvidas/perguntas nunca entram no Excel;
+- todos os objetivos formais e erros confirmados começam em ☐;
+- coluna de status centralizada em 22 pt;
+- borda externa preta grossa e internas pretas finas;
 - texto com quebra automática e altura confortável;
-- novas divergências em aba separada;
-- verificação recalculada por fórmulas quando o usuário altera ☐/☑;
-- ☑ sem evidência fica visualmente sinalizado.
+- sem colunas de responsável/evidência de atendimento/data;
+- sem abas Confronto_IO ou Verificacao.
 """
 
 from __future__ import annotations
 
 import json
+from copy import copy
 from pathlib import Path
 from typing import Any
 
 from openpyxl import Workbook
-from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.worksheet.datavalidation import DataValidation
 
 from pipeline.comment_control_pipeline import gate
 
 HEADERS = [
-    "Nº / Comentário",
+    "ID",
     "Grau",
-    "Documento / Local",
-    "O que precisa ser atendido",
-    "Evidência da verificação",
+    "Documento(s)",
+    "Objetivo / Erro",
+    "O que precisa ser verificado / atendido",
+    "Evidência / constatação na revisão analisada",
+    "Fonte / localização",
     "Comentário atendido",
 ]
 
@@ -39,23 +40,13 @@ HEADER_FILL = PatternFill("solid", fgColor="1F4E78")
 HEADER_FONT = Font(color="FFFFFF", bold=True, size=11)
 BODY_FONT = Font(color="000000", size=11)
 CHECK_FONT = Font(color="000000", size=22, bold=True)
-ERROR_FILL = PatternFill("solid", fgColor="FFC7CE")
-WARNING_FILL = PatternFill("solid", fgColor="FFF2CC")
-OK_FILL = PatternFill("solid", fgColor="C6EFCE")
+ERROR_FILL = PatternFill("solid", fgColor="F4CCCC")
+ERROR_FONT = Font(color="9C0006", bold=True, size=11)
+SECTION_FILL = PatternFill("solid", fgColor="D9EAF7")
 
 
 def document_location(record: dict[str, Any]) -> str:
     parts = [record.get("document_code"), record.get("revision"), record.get("page_or_item")]
-    return " — ".join(str(p).strip() for p in parts if p)
-
-
-def evidence_text(record: dict[str, Any]) -> str:
-    parts = [
-        record.get("evidence_document"),
-        record.get("evidence_revision"),
-        record.get("evidence_location"),
-        record.get("evidence_text"),
-    ]
     return " — ".join(str(p).strip() for p in parts if p)
 
 
@@ -73,141 +64,152 @@ def _apply_table_border(ws, min_row: int, max_row: int, min_col: int, max_col: i
             cell.border = Border(top=top, bottom=bottom, left=left, right=right)
 
 
-def _row_height(action: str, location: str, evidence: str) -> float:
-    longest = max(len(action or ""), len(location or ""), len(evidence or ""))
-    approx_lines = max(2, min(9, (longest // 70) + 1))
-    return max(34.0, approx_lines * 18.0)
+def _row_height(values: list[str]) -> float:
+    longest = max((len(value or "") for value in values), default=0)
+    approx_lines = max(2, min(10, (longest // 75) + 1))
+    return max(36.0, approx_lines * 18.0)
 
 
-def _setup_sheet(ws, title: str, records: list[dict[str, Any]]) -> None:
-    ws.title = title
+def _records(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    return [*payload.get("comments", []), *payload.get("new_divergences", [])]
+
+
+def _setup_main_sheet(ws, payload: dict[str, Any]) -> None:
+    ws.title = "Controle_Geral"
     ws.sheet_view.showGridLines = False
-    ws.freeze_panes = "A2"
-    ws.append(HEADERS)
+    ws.freeze_panes = "A5"
 
-    for cell in ws[1]:
+    formal_count = len(payload.get("comments", []))
+    error_count = len(payload.get("new_divergences", []))
+    ws.merge_cells("A1:H1")
+    ws["A1"] = "CONTROLE DE VERIFICAÇÃO"
+    ws["A1"].font = Font(bold=True, size=14)
+    ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
+    ws.row_dimensions[1].height = 28
+
+    ws.merge_cells("A2:H2")
+    ws["A2"] = (
+        f"{formal_count} objetivos formais + {error_count} erros confirmados. "
+        "Dúvidas são resolvidas antes da emissão e nunca aparecem nesta planilha. Todos iniciam em ☐."
+    )
+    ws["A2"].alignment = Alignment(wrap_text=True, vertical="center")
+    ws["A2"].font = Font(size=10, italic=True)
+    ws.row_dimensions[2].height = 34
+
+    for idx, value in enumerate(HEADERS, start=1):
+        cell = ws.cell(4, idx, value)
         cell.fill = HEADER_FILL
         cell.font = HEADER_FONT
         cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    ws.row_dimensions[1].height = 34
+    ws.row_dimensions[4].height = 42
 
     status_validation = DataValidation(type="list", formula1='"☐,☑"', allow_blank=False)
     status_validation.error = "Selecione somente ☐ ou ☑."
     status_validation.errorTitle = "Status inválido"
-    status_validation.prompt = "☐ = não confirmado | ☑ = confirmado com evidência"
+    status_validation.prompt = "☐ = não confirmado | ☑ = confirmado"
     status_validation.promptTitle = "Comentário atendido"
     ws.add_data_validation(status_validation)
 
-    for record in records:
+    for record in _records(payload):
         location = document_location(record)
-        evidence = evidence_text(record)
+        objective = str(record.get("original_comment") or "")
         action = str(record.get("compiled_action") or "")
+        finding_basis = str(record.get("finding_basis") or "")
+        source_location = str(record.get("source_location") or "")
         ws.append([
             record.get("comment_id"),
             record.get("severity"),
             location,
+            objective,
             action,
-            evidence,
+            finding_basis,
+            source_location,
             visual_status(record),
         ])
         r = ws.max_row
-        ws.row_dimensions[r].height = _row_height(action, location, evidence)
+        ws.row_dimensions[r].height = _row_height([location, objective, action, finding_basis, source_location])
 
-        for c in range(1, 6):
+        for c in range(1, 8):
             ws.cell(r, c).font = BODY_FONT
             ws.cell(r, c).alignment = Alignment(vertical="top", wrap_text=True)
 
-        status_cell = ws.cell(r, 6)
+        if record.get("origin_type") == "NEW_DIVERGENCE":
+            ws.cell(r, 4).fill = ERROR_FILL
+            ws.cell(r, 4).font = ERROR_FONT
+
+        status_cell = ws.cell(r, 8)
         status_cell.font = CHECK_FONT
         status_cell.alignment = Alignment(horizontal="center", vertical="center")
         status_validation.add(status_cell)
 
-    ws.column_dimensions["A"].width = 18
-    ws.column_dimensions["B"].width = 14
-    ws.column_dimensions["C"].width = 43
-    ws.column_dimensions["D"].width = 86
-    ws.column_dimensions["E"].width = 50
-    ws.column_dimensions["F"].width = 23
+    ws.column_dimensions["A"].width = 13
+    ws.column_dimensions["B"].width = 12
+    ws.column_dimensions["C"].width = 36
+    ws.column_dimensions["D"].width = 55
+    ws.column_dimensions["E"].width = 72
+    ws.column_dimensions["F"].width = 68
+    ws.column_dimensions["G"].width = 45
+    ws.column_dimensions["H"].width = 22
 
-    if ws.max_row >= 2:
-        _apply_table_border(ws, 1, ws.max_row, 1, 6)
-        # Evidência ausente com ☑: vermelho. Evidência presente com ☐: amarelo para revisão.
-        ws.conditional_formatting.add(
-            f"F2:F{ws.max_row}",
-            FormulaRule(formula=["AND($F2=\"☑\",LEN(TRIM($E2))=0)"], fill=ERROR_FILL),
-        )
-        ws.conditional_formatting.add(
-            f"E2:E{ws.max_row}",
-            FormulaRule(formula=["AND($F2=\"☐\",LEN(TRIM($E2))>0)"], fill=WARNING_FILL),
-        )
+    if ws.max_row >= 4:
+        _apply_table_border(ws, 4, ws.max_row, 1, 8)
 
-    ws.auto_filter.ref = f"A1:F{ws.max_row}"
-    ws.print_title_rows = "1:1"
+    ws.auto_filter.ref = f"A4:H{ws.max_row}"
+    ws.print_title_rows = "1:4"
+    ws.print_area = f"A1:H{ws.max_row}"
     ws.page_setup.orientation = "landscape"
     ws.page_setup.fitToWidth = 1
     ws.page_setup.fitToHeight = 0
     ws.sheet_properties.pageSetUpPr.fitToPage = True
-    ws.oddFooter.center.text = "Controle de Comentários Técnicos"
 
 
-def _verification_sheet(wb: Workbook, payload: dict[str, Any]) -> None:
-    ws = wb.create_sheet("VERIFICAÇÃO")
+def _setup_lists(wb: Workbook) -> None:
+    ws = wb.create_sheet("Listas")
+    ws["A1"] = "☐"
+    ws["A2"] = "☑"
+    ws.column_dimensions["A"].width = 10
+
+
+def _setup_rules(wb: Workbook) -> None:
+    ws = wb.create_sheet("Fontes_e_Regras")
     ws.sheet_view.showGridLines = False
-    formal_count = len(payload.get("comments", []))
-    source_count = int(payload.get("source_formal_comment_count", 0))
-    last_row = formal_count + 1
-
     rows = [
-        ("Controle", "Resultado"),
-        ("Comentários formais na origem", source_count),
-        ("Comentários formais registrados", f"=COUNTA('COMENTÁRIOS'!A2:A{last_row})"),
-        ("Comentários atendidos ☑", f'=COUNTIF(\'COMENTÁRIOS\'!F2:F{last_row},"☑")'),
-        ("Comentários pendentes ☐", f'=COUNTIF(\'COMENTÁRIOS\'!F2:F{last_row},"☐")'),
-        ("☑ com evidência", f'=COUNTIFS(\'COMENTÁRIOS\'!F2:F{last_row},"☑",\'COMENTÁRIOS\'!E2:E{last_row},"<>")'),
-        ("☑ sem evidência", f'=COUNTIFS(\'COMENTÁRIOS\'!F2:F{last_row},"☑",\'COMENTÁRIOS\'!E2:E{last_row},"")'),
-        ("Integridade da quantidade", '=IF(B2=B3,"OK","ERRO")'),
-        ("Integridade da verificação", '=IF(B7=0,"OK","ERRO")'),
-        ("Situação geral", '=IF(AND(B8="OK",B9="OK"),"OK","BLOQUEADO")'),
+        ["REGRA", "DESCRIÇÃO"],
+        ["Pré-verificação", "Toda dúvida deve ser sanada antes de gerar Excel, Word, PDF ou Power BI."],
+        ["Perguntas", "Perguntas e itens DÚVIDA/A CONFIRMAR são proibidos na planilha final."],
+        ["Erro", "Somente não conformidade diretamente observável ou demonstrável é apresentada como erro."],
+        ["Quantidade", "100% dos comentários formais da origem devem permanecer no controle."],
+        ["Status", "Todos os itens iniciam em ☐; ☑ somente após confirmação humana."],
+        ["Impressão", "Espaço em branco por menor quantidade de conteúdo não é erro por si só."],
+        ["Documentos diferentes", "ET, FD, LI, MD e DE não precisam repetir todo o conteúdo uns dos outros."],
+        ["Similar técnico", "Referências comerciais diferentes com 'ou similar técnico' não são erro por si só."],
     ]
     for row in rows:
         ws.append(row)
-
     for cell in ws[1]:
         cell.fill = HEADER_FILL
         cell.font = HEADER_FONT
-        cell.alignment = Alignment(horizontal="center", vertical="center")
-
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     for row in ws.iter_rows(min_row=2):
-        row[0].alignment = Alignment(vertical="top", wrap_text=True)
-        row[1].alignment = Alignment(horizontal="center", vertical="center")
-        row[1].font = BODY_FONT
-
-    ws.column_dimensions["A"].width = 44
-    ws.column_dimensions["B"].width = 24
+        for cell in row:
+            cell.alignment = Alignment(vertical="top", wrap_text=True)
+            cell.font = BODY_FONT
+    ws.column_dimensions["A"].width = 26
+    ws.column_dimensions["B"].width = 100
     _apply_table_border(ws, 1, ws.max_row, 1, 2)
-
-    ws.conditional_formatting.add("B8:B10", FormulaRule(formula=['B8="ERRO"'], fill=ERROR_FILL))
-    ws.conditional_formatting.add("B8:B10", FormulaRule(formula=['B9="ERRO"'], fill=ERROR_FILL))
-    ws.conditional_formatting.add("B10", FormulaRule(formula=['B10="BLOQUEADO"'], fill=ERROR_FILL))
-    ws.conditional_formatting.add("B8:B10", FormulaRule(formula=['B8="OK"'], fill=OK_FILL))
 
 
 def build_workbook(payload: dict[str, Any]) -> Workbook:
+    # gate também impede geração quando existir clarification_question aberta.
     gate(payload)
     wb = Workbook()
     wb.calculation.fullCalcOnLoad = True
     wb.calculation.forceFullCalc = True
     wb.calculation.calcMode = "auto"
 
-    ws = wb.active
-    _setup_sheet(ws, "COMENTÁRIOS", payload.get("comments", []))
-
-    divergences = payload.get("new_divergences", [])
-    if divergences:
-        ws_div = wb.create_sheet()
-        _setup_sheet(ws_div, "NOVAS DIVERGÊNCIAS", divergences)
-
-    _verification_sheet(wb, payload)
+    _setup_main_sheet(wb.active, payload)
+    _setup_lists(wb)
+    _setup_rules(wb)
     return wb
 
 
