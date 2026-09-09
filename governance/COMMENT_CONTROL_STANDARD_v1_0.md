@@ -13,6 +13,23 @@ Padronizar a compilação, rastreabilidade, verificação, memória técnica e a
 5. Se um comentário afetar mais de um documento, todos os documentos aplicáveis devem possuir evidência antes do fechamento.
 6. Novas divergências ficam separadas da contagem dos comentários formais.
 7. Toda correção relevante gera memória, regra preventiva e teste de regressão.
+8. Hipótese não pode ser registrada como erro: quando faltar evidência conclusiva, o achado deve ser tratado como DÚVIDA.
+
+## Erro x dúvida
+
+- **ERRO**: não conformidade diretamente observável ou demonstrável por evidência documental. Exemplos: código/título errado, índice quebrado, texto pertencente a outro item, incompatibilidade matemática, faixa sobreposta ou contradição inequívoca entre documentos que tratam do mesmo requisito.
+- **DÚVIDA**: situação cuja conclusão depende de informação ausente, decisão de engenharia, confirmação de escopo, equivalência técnica, requisito de compra, CAD/DWG, documento de referência não fornecido ou outra evidência ainda indisponível.
+- Se houver incerteza material, prevalece DÚVIDA. O sistema deve indicar o dado necessário para resolver a questão.
+- Diferença entre referências comerciais com expressão “ou similar técnico” não é erro automático; confirmar equivalência antes de reprovar.
+- Objetivos formais fornecidos pelo solicitante permanecem como objetivos de verificação e não são descartados nem reclassificados como atendidos automaticamente.
+
+## Regras de prevenção de falsos positivos
+
+- Símbolo de descida somente é exigido quando existir mudança real para cota inferior. Mudança gráfica permanecendo em nível alto não caracteriza descida.
+- Elementos, textos, ambientes e tags de outras disciplinas usados como referência devem ficar em cinza; elementos da disciplina de Automação permanecem no padrão próprio.
+- Impressão deve ser avaliada por tamanho/padrão de folha, enquadramento, escala, cortes, margens e legibilidade. Espaço vazio por menor quantidade de conteúdo não constitui erro por si só.
+- Em correções de formatação de ET/MD, preservar o texto técnico fornecido; corrigir apresentação sem reinventar conteúdo técnico.
+- Quando não houver Matriz de Causa e Efeito aplicável ao projeto, não criar uma. Registrar apenas a explicação objetiva da não aplicabilidade quando solicitada.
 
 ## Campos mínimos
 
@@ -58,7 +75,8 @@ O pipeline deve bloquear a emissão quando qualquer uma das condições abaixo o
 - `CHECKED` sem evidência;
 - comentário multi-documento sem evidência de todos os documentos requeridos;
 - nova divergência misturada à contagem formal;
-- grau fora do domínio permitido.
+- grau fora do domínio permitido;
+- achado marcado como ERRO sem evidência documental suficiente para sustentar a conclusão.
 
 Modo padrão: `BLOCK_ON_ANY_FAILURE`.
 
