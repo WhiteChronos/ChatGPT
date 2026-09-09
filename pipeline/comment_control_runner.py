@@ -1,8 +1,12 @@
 """Orquestração ponta a ponta do controle de comentários.
 
-Fluxo:
+Fluxo normal:
 material -> agente -> resolução interna -> gate de dúvidas -> validação determinística
 -> Excel governado -> persistência -> analítica.
+
+Fluxo de retomada:
+preflight_payload.json + respostas -> aplicação determinística das respostas -> gate
+-> geração dos artefatos.
 
 Nenhum artefato de entrega é gerado enquanto existir dúvida aberta.
 """
@@ -19,6 +23,7 @@ from typing import Any
 
 from pipeline.comment_control_agent import compile_comments, to_storage_payload
 from pipeline.comment_control_analytics import summarize
+from pipeline.comment_control_clarification import apply_clarification_resolutions
 from pipeline.comment_control_excel import export_excel
 from pipeline.comment_control_export_powerbi import export as export_powerbi
 from pipeline.comment_control_pipeline import ClarificationRequired, gate, open_clarification_questions
@@ -51,9 +56,17 @@ def _stamp_missing_dates(payload: dict[str, Any]) -> None:
 
 def _normalize_new_divergences(payload: dict[str, Any]) -> None:
     normalized: list[dict[str, Any]] = []
-    for idx, item in enumerate(payload.get("new_divergences", []), start=1):
+    used_ids: set[str] = set()
+    next_number = 1
+    for item in payload.get("new_divergences", []):
         row = dict(item)
-        row.setdefault("comment_id", f"ND{idx:02d}")
+        cid = str(row.get("comment_id") or "")
+        if not cid:
+            while f"ND{next_number:02d}" in used_ids:
+                next_number += 1
+            cid = f"ND{next_number:02d}"
+        used_ids.add(cid)
+        row["comment_id"] = cid
         row.setdefault("project_id", payload["project_id"])
         row.setdefault("severity", "ALTO")
         row.setdefault("origin_type", "NEW_DIVERGENCE")
@@ -80,6 +93,9 @@ def build_full_record_set(payload: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _write_preflight(output_dir: Path, payload: dict[str, Any]) -> None:
     questions = open_clarification_questions(payload)
+    (output_dir / "preflight_payload.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     (output_dir / "clarification_questions.json").write_text(
         json.dumps(questions, ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -99,22 +115,13 @@ def _write_preflight(output_dir: Path, payload: dict[str, Any]) -> None:
     )
 
 
-async def run(
-    report_path: str | Path,
-    project_id: str,
-    output_dir: str | Path,
+def _generate_artifacts(
+    payload: dict[str, Any],
+    output_dir: Path,
     *,
-    persist_database: bool = False,
+    source_report: str,
+    persist_database: bool,
 ) -> dict[str, Any]:
-    report_path = Path(report_path)
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    report_bytes = report_path.read_bytes()
-    report_text = report_bytes.decode("utf-8")
-    compilation = await compile_comments(report_text, project_id)
-    payload = to_storage_payload(compilation)
-    _attach_source_identity(payload, report_path, report_bytes)
     _normalize_new_divergences(payload)
     _stamp_missing_dates(payload)
 
@@ -146,11 +153,11 @@ async def run(
 
     payload["preflight_status"] = "GENERATED"
     audit = {
-        "project_id": project_id,
-        "batch_id": payload["batch_id"],
-        "source_hash": payload["source_hash"],
+        "project_id": payload["project_id"],
+        "batch_id": payload.get("batch_id"),
+        "source_hash": payload.get("source_hash"),
         "run_at": datetime.now(timezone.utc).isoformat(),
-        "source_report": str(report_path),
+        "source_report": source_report,
         "formal_comment_count": payload["source_formal_comment_count"],
         "registered_formal_comment_count": len(payload.get("comments", [])),
         "new_divergence_count": len(payload.get("new_divergences", [])),
@@ -176,16 +183,98 @@ async def run(
     return {"payload": payload, "analytics": analytics, "audit": audit}
 
 
+async def run(
+    report_path: str | Path,
+    project_id: str,
+    output_dir: str | Path,
+    *,
+    persist_database: bool = False,
+) -> dict[str, Any]:
+    report_path = Path(report_path)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    report_bytes = report_path.read_bytes()
+    report_text = report_bytes.decode("utf-8")
+    compilation = await compile_comments(report_text, project_id)
+    payload = to_storage_payload(compilation)
+    _attach_source_identity(payload, report_path, report_bytes)
+    _normalize_new_divergences(payload)
+    _stamp_missing_dates(payload)
+
+    questions = open_clarification_questions(payload)
+    if questions:
+        payload["preflight_status"] = "WAITING_CLARIFICATION"
+        _write_preflight(output_dir, payload)
+        if persist_database:
+            from pipeline.comment_control_db import persist_preflight
+
+            persist_preflight(payload)
+        raise ClarificationRequired(questions)
+
+    return _generate_artifacts(
+        payload,
+        output_dir,
+        source_report=str(report_path),
+        persist_database=persist_database,
+    )
+
+
+def resume(
+    payload_path: str | Path,
+    resolutions_path: str | Path,
+    output_dir: str | Path,
+    *,
+    persist_database: bool = False,
+    resolved_by: str | None = None,
+) -> dict[str, Any]:
+    payload_path = Path(payload_path)
+    resolutions_path = Path(resolutions_path)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    payload = json.loads(payload_path.read_text(encoding="utf-8"))
+    resolutions = json.loads(resolutions_path.read_text(encoding="utf-8"))
+    payload = apply_clarification_resolutions(payload, resolutions, resolved_by=resolved_by)
+
+    (output_dir / "resolved_preflight_payload.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    return _generate_artifacts(
+        payload,
+        output_dir,
+        source_report=str(payload.get("source_name") or payload_path),
+        persist_database=persist_database,
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("report")
-    parser.add_argument("--project", required=True)
+    parser.add_argument("report", nargs="?")
+    parser.add_argument("--project")
     parser.add_argument("--output-dir", default="out/comment-control")
     parser.add_argument("--persist-db", action="store_true")
+    parser.add_argument("--resume-payload")
+    parser.add_argument("--resolutions")
+    parser.add_argument("--resolved-by")
     args = parser.parse_args()
 
     try:
-        asyncio.run(run(args.report, args.project, args.output_dir, persist_database=args.persist_db))
+        if args.resume_payload:
+            if not args.resolutions:
+                parser.error("--resolutions é obrigatório com --resume-payload")
+            resume(
+                args.resume_payload,
+                args.resolutions,
+                args.output_dir,
+                persist_database=args.persist_db,
+                resolved_by=args.resolved_by,
+            )
+        else:
+            if not args.report or not args.project:
+                parser.error("report e --project são obrigatórios no fluxo inicial")
+            asyncio.run(run(args.report, args.project, args.output_dir, persist_database=args.persist_db))
     except ClarificationRequired as exc:
         print(str(exc))
         return 2
