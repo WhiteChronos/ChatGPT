@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "standard_id": "AUT-PANEL-DOCUMENT-V1.0",
+  "status": "LOCKED_APPROVED_STANDARD",
+  "workbook_master": {
+    "template_id": "XLSX-PN-AUT-01-MASTER-R02",
+    "master_panel": "PN-AUT-01",
+    "applies_to": ["PN-AUT-01", "PN-AUT-02", "future_AUT_panels"],
+    "required_sheet_order": [
+      "LI - Quantitativo",
+      "Lista de Material",
+      "Carga Geral",
+      "Balanço de Carga",
+      "Regras de Ouro",
+      "Verificação Visual",
+      "Referências"
+    ],
+    "required_template_parity": {
+      "same_sheet_order": true,
+      "same_section_structure": true,
+      "same_header_structure": true,
+      "same_color_and_style_system": true,
+      "same_column_layout": true,
+      "same_freeze_panes": true,
+      "same_formula_base": true,
+      "same_visual_hierarchy": true
+    },
+    "allowed_variations": [
+      "panel_id",
+      "panel_title",
+      "dimensions",
+      "technical_content",
+      "quantities",
+      "models",
+      "load_values",
+      "references"
+    ],
+    "rule": "PN-AUT-01 is the master Excel template. PN-AUT-02 and all future panels must use the same workbook presentation structure; only panel-specific engineering data may vary."
+  },
+  "image_master": {
+    "visual_standard_id": "IMG-AUT-PANEL-MASTER-V1",
+    "one_panel_per_image": true,
+    "approved_panel_templates": {
+      "PN-AUT-01": "IMG-PN-AUT-01-APPROVED-V1",
+      "PN-AUT-02": "IMG-PN-AUT-02-APPROVED-V1"
+    },
+    "required_blocks": [
+      "title_and_model",
+      "enclosure_and_mounting_plate_dimensions",
+      "application_block",
+      "front_internal_door_open",
+      "front_external_door",
+      "side_view_depth",
+      "technical_component_list",
+      "connection_architecture",
+      "functional_levels",
+      "panel_characteristics",
+      "applications_and_benefits",
+      "principal_component_visual_references",
+      "engineering_note_and_footer"
+    ],
+    "fixed_rules": {
+      "hmi_on_door": true,
+      "three_functional_levels_when_applicable": true,
+      "blue_white_engineering_identity": true,
+      "same_composition_as_approved_reference": true,
+      "no_unapproved_layout_recomposition": true,
+      "no_component_distortion": true
+    },
+    "rule": "Every panel image must follow its user-approved visual template and the common composition above. The image is not allowed to redesign the approved standard."
+  },
+  "change_control": {
+    "explicit_user_authorization_required": true,
+    "unauthorized_change_status": "REPROVADO",
+    "rule": "No workbook or image standard may be changed without explicit authorization from the project owner."
+  }
+}

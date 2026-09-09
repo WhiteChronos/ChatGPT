@@ -1,0 +1,26 @@
+{
+  "schema_version":"1.3",
+  "standard_id":"AUT-PAINEL-COMPACT-V2.4",
+  "registry_type":"GOLDEN_RULES",
+  "scope":["PN-AUT-01","PN-AUT-02","future_AUT_panels"],
+  "canonical_yaml_registry":"governance/golden_rules.yaml",
+  "document_standard_registry":"datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json",
+  "prompt_master":"prompts/PROMPT_MASTER_AUT_PANEL.md",
+  "rules":[
+    {"id":"GR-034","name":"LI/BOM antes do desenho","status":"MANDATORY","approved_for_project_standard":true,"rule":"A LI quantitativa deve ser congelada antes da BOM; a BOM deve existir antes do layout e da imagem do quadro."},
+    {"id":"GR-035","name":"Paridade quantitativa LI x desenho","status":"MANDATORY","approved_for_project_standard":true,"rule":"Cada item marcado como desenhável na LI deve existir no Data Sheet/layout e no desenho exatamente com o mesmo catalog_id e a mesma quantidade."},
+    {"id":"GR-036","name":"Mudança de quantidade invalida artefatos posteriores","status":"MANDATORY","approved_for_project_standard":true,"rule":"Qualquer alteração de quantidade, catalog_id ou revisão da LI invalida carga, BOM, layout, imagem e QA anteriores."},
+    {"id":"GR-037","name":"IHM na porta","status":"MANDATORY","approved_for_project_standard":true,"rule":"A IHM local deve permanecer instalada na tampa/porta do quadro."},
+    {"id":"GR-038","name":"Sem distorção de componentes","status":"MANDATORY","approved_for_project_standard":true,"rule":"Nunca reduzir ou distorcer dimensões de componentes para caber; reorganizar ou ampliar o gabinete."},
+    {"id":"GR-039","name":"Padrão único de Excel","status":"MANDATORY","approved_for_project_standard":true,"rule":"PN-AUT-01 é o template mestre de planilha. PN-AUT-02 e futuros quadros devem manter a mesma estrutura documental e visual; apenas dados técnicos específicos do painel podem variar."},
+    {"id":"GR-040","name":"Padrão visual único da imagem","status":"MANDATORY","approved_for_project_standard":true,"rule":"Cada painel deve ser elaborado em uma imagem própria seguindo a composição visual aprovada do respectivo painel; a IHM permanece na porta."},
+    {"id":"GR-041","name":"Padrão aprovado imutável sem autorização","status":"MANDATORY","approved_for_project_standard":true,"rule":"Nenhuma alteração do padrão de Excel, imagem, dimensão mestre ou sequência pode ocorrer sem autorização explícita do responsável. Desvio não autorizado é REPROVADO."},
+    {"id":"GR-042","name":"Baseline da LI imutável","status":"MANDATORY","approved_for_project_standard":true,"rule":"LI-PN-AUT-01-R02 e LI-PN-AUT-02-R02 são baselines congeladas. Mudança exige nova revisão e autorização explícita."},
+    {"id":"GR-043","name":"Estrutura do workbook imutável","status":"MANDATORY","approved_for_project_standard":true,"rule":"A estrutura do workbook deve corresponder ao fingerprint mestre c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc."},
+    {"id":"GR-044","name":"Fingerprint visual aprovado","status":"MANDATORY","approved_for_project_standard":true,"rule":"O template de imagem deve corresponder ao ID e ao SHA-256 da referência aprovada registrada no Data Center privado."},
+    {"id":"GR-045","name":"Prompt mestre obrigatório","status":"MANDATORY","approved_for_project_standard":true,"rule":"Toda elaboração automática de LI, carga, layout ou imagem deve carregar PROMPT-MASTER-AUT-PANEL-V1 sem reescrever suas regras imutáveis."}
+  ],
+  "required_sequence":["DATACENTER","DATASHEET","SELECT","LI_QUANTITY","LOAD_BALANCE","BOM","LAYOUT","RENDER_IMAGE","QA","RELEASE"],
+  "quantity_contract":{"li_is_single_quantity_source":true,"bom_quantity_equals_li":true,"layout_quantity_equals_li":true,"render_quantity_equals_li":true,"li_revision_change_invalidates_downstream":true},
+  "document_contract":{"workbook_template_id":"XLSX-PN-AUT-01-MASTER-R02","workbook_structural_fingerprint_sha256":"c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc","image_visual_standard_id":"IMG-AUT-PANEL-MASTER-V1","prompt_master_id":"PROMPT-MASTER-AUT-PANEL-V1","explicit_authorization_required_for_standard_change":true}
+}

@@ -1,0 +1,39 @@
+schema_version: "1.0"
+datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+production_contract:
+  golden_rules_id: GOLDEN-RULES-IMMUTABLE-V1
+  pipeline_id: AUT-PANEL-IMMUTABLE-V1.5
+  workbook_template_id: XLSX-PN-AUT-01-MASTER-R02
+  workbook_structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
+  image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V1
+  li_before_bom: true
+  load_balance_before_layout: true
+  bom_before_layout: true
+  layout_before_render: true
+  hmi_must_be_on_door: true
+  one_panel_per_image: true
+  no_distortion: true
+  standard_change_requires_explicit_user_authorization: true
+panels:
+  PN-AUT-01:
+    project_json: datasheet/AUT_PANEL_DATA_SHEET.json
+    li_id: LI-PN-AUT-01-R02
+    li_file: li/PN-AUT-01_LI.json
+    image_template_id: IMG-PN-AUT-01-APPROVED-V1
+    approved_image_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
+    enclosure_external_mm: {width: 600, height: 800, depth: 300}
+    mounting_plate_mm: {width: 550, height: 750}
+    hmi: {quantity: 1, surface: door}
+  PN-AUT-02:
+    project_json: datasheet/PN-AUT-02_DATA_SHEET.json
+    li_id: LI-PN-AUT-02-R02
+    li_file: li/PN-AUT-02_LI.json
+    image_template_id: IMG-PN-AUT-02-APPROVED-V1
+    approved_image_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
+    enclosure_external_mm: {width: 400, height: 500, depth: 250}
+    mounting_plate_mm: {width: 350, height: 450}
+    hmi: {quantity: 1, surface: door}
