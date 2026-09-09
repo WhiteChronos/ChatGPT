@@ -1,4 +1,4 @@
-# Padrão de Controle de Comentários Técnicos v1.1
+# Padrão de Controle de Comentários Técnicos v1.2
 
 ## Objetivo
 
@@ -14,6 +14,7 @@ Padronizar compilação, verificação, rastreabilidade, memória e emissão de 
 6. Toda dúvida de interpretação deve ser resolvida **antes** da geração de Excel, Word, PDF, Power BI ou pacote de emissão.
 7. Perguntas e dúvidas nunca são exportadas como linhas da planilha final.
 8. Toda correção de lógica relevante gera memória, regra preventiva e teste de regressão.
+9. Uma dúvida só é considerada resolvida quando houver `resolution`, `resolution_type`, `resolved_by` e `resolved_at` válidos.
 
 ## Gate de pré-verificação — dúvida antes da elaboração
 
@@ -57,7 +58,9 @@ Após resposta do solicitante, a dúvida recebe uma resolução:
 - `DISMISSED` — é descartada da emissão;
 - `FORMAL_OBJECTIVE` — entra somente por determinação explícita do solicitante.
 
-Somente com zero perguntas abertas o lote pode mudar para `READY_TO_GENERATE`.
+Somente com zero perguntas abertas e todas as respostas devidamente registradas o lote pode mudar para `READY_TO_GENERATE`.
+
+O pipeline deve permitir retomada do lote a partir do `preflight_payload.json`, aplicando as respostas do solicitante sem rerodar o agente e sem recriar as mesmas perguntas.
 
 ## Regra de classificação
 
@@ -85,8 +88,11 @@ Usar quando faltar evidência suficiente para concluir. Deve ser sanada antes da
 - Formatação deve ser corrigida sem alterar conteúdo técnico válido sem necessidade.
 - Ausência de conteúdo em um tipo documental não é erro apenas porque outro documento possui esse conteúdo; considerar a função específica de ET, FD, LI, MD e DE.
 - “Ou similar técnico” permite referências comerciais diferentes; somente classificar como erro quando houver incompatibilidade técnica demonstrada.
+- Modelos de equipamentos existentes podem variar por fabricante ou projeto; diferença de modelo não é erro isoladamente sem conflito obrigatório de especificação ou tag.
 - Nomenclatura de pavimentos e escopo físico devem seguir o projeto, não convenções inferidas.
-- Texto semelhante/copiad​o não é erro por si só; avaliar se a função técnica descrita é incompatível.
+- Texto semelhante/copiado não é erro por si só; avaliar se a função técnica descrita é incompatível.
+- Nomenclatura oficial confirmada pelo solicitante passa a ser referência de compatibilização para o projeto.
+- Quando o solicitante confirmar que um componente possui simultaneamente duas interfaces/protocolos, a omissão de uma delas em documento do mesmo conjunto é erro de compatibilização.
 
 ## Campos mínimos da emissão
 
@@ -150,6 +156,7 @@ O pipeline deve bloquear a emissão quando qualquer condição ocorrer:
 - `formal_comment_count != registered_formal_comment_count`;
 - comentário formal duplicado ou ausente;
 - pergunta de esclarecimento aberta;
+- pergunta marcada como resolvida sem metadados completos de resolução;
 - nova divergência misturada à contagem formal;
 - grau fora do domínio permitido;
 - tentativa de exportar texto classificado como dúvida/pergunta.
@@ -173,6 +180,7 @@ A memória é histórica e não substitui documento contratual ou normativo.
 O sistema mantém estatística, risco baseline, Power BI e CI/CD. Os pipelines de GitHub Actions e GitLab CI devem validar, além dos testes existentes:
 
 - nenhuma pergunta aberta antes da geração;
+- nenhuma pergunta resolvida sem metadados completos;
 - nenhuma linha de planilha contendo `DÚVIDA`, `A CONFIRMAR` ou pergunta interna;
 - ausência das colunas e abas proibidas;
 - regressões conhecidas de interpretação.
