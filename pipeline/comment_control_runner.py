@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -60,6 +61,13 @@ def _normalize_new_divergences(payload: dict[str, Any]) -> None:
     payload["new_divergences"] = normalized
 
 
+def _attach_source_identity(payload: dict[str, Any], report_path: Path, report_bytes: bytes) -> None:
+    source_hash = hashlib.sha256(report_bytes).hexdigest()
+    payload["source_name"] = report_path.name
+    payload["source_hash"] = source_hash
+    payload["batch_id"] = f"{payload['project_id']}:{source_hash[:20]}"
+
+
 def build_full_record_set(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return [*payload.get("comments", []), *payload.get("new_divergences", [])]
 
@@ -75,8 +83,11 @@ async def run(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    compilation = await compile_comments(report_path.read_text(encoding="utf-8"), project_id)
+    report_bytes = report_path.read_bytes()
+    report_text = report_bytes.decode("utf-8")
+    compilation = await compile_comments(report_text, project_id)
     payload = to_storage_payload(compilation)
+    _attach_source_identity(payload, report_path, report_bytes)
     _normalize_new_divergences(payload)
     _stamp_missing_dates(payload)
 
@@ -98,6 +109,8 @@ async def run(
 
     audit = {
         "project_id": project_id,
+        "batch_id": payload["batch_id"],
+        "source_hash": payload["source_hash"],
         "run_at": datetime.now(timezone.utc).isoformat(),
         "source_report": str(report_path),
         "formal_comment_count": payload["source_formal_comment_count"],
