@@ -33,14 +33,20 @@
     "responsible": {"type": ["string", "null"]},
     "verifier": {"type": ["string", "null"]},
     "created_at": {"type": ["string", "null"], "format": "date-time"},
-    "verified_at": {"type": ["string", "null"], "format": "date-time"}
+    "verified_at": {"type": ["string", "null"], "format": "date-time"},
+    "reopened_count": {"type": "integer", "minimum": 0},
+    "due_date": {"type": ["string", "null"], "format": "date"}
   },
   "allOf": [
     {
-      "if": {"properties": {"status_control": {"const": "CHECKED"}}},
+      "if": {"properties": {"status_control": {"const": "CHECKED"}}, "required": ["status_control"]},
       "then": {
-        "required": ["evidence_text"],
-        "properties": {"evidence_text": {"type": "string", "minLength": 1}}
+        "required": ["evidence_text", "verified_at", "verifier"],
+        "properties": {
+          "evidence_text": {"type": "string", "minLength": 1},
+          "verified_at": {"type": "string", "format": "date-time"},
+          "verifier": {"type": "string", "minLength": 1}
+        }
       }
     }
   ],
