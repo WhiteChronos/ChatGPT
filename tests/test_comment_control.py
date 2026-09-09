@@ -1,5 +1,6 @@
 from pipeline.comment_control_pipeline import validate_payload
 from pipeline.comment_control_analytics import summarize, risk_score_baseline
+from pipeline.comment_control_excel import build_workbook
 
 
 def base_payload():
@@ -94,3 +95,19 @@ def test_analytics_counts_only_formal_comments():
 def test_risk_score_is_bounded():
     score = risk_score_baseline(base_payload()["comments"][0])["score"]
     assert 0 <= score <= 1
+
+
+def test_excel_preserves_count_and_checkbox_style():
+    wb = build_workbook(base_payload())
+    ws = wb["COMENTÁRIOS"]
+    assert ws.max_row == 3
+    assert ws["A2"].value == "C01"
+    assert ws["A3"].value == "C02"
+    assert ws["F2"].value == "☐"
+    assert ws["F3"].value == "☐"
+    assert ws["F2"].alignment.horizontal == "center"
+    assert ws["F2"].alignment.vertical == "center"
+    assert ws["F2"].font.sz == 22
+    assert ws.column_dimensions["F"].width >= 20
+    assert ws["A1"].border.top.style == "thick"
+    assert ws["F3"].border.bottom.style == "thick"
