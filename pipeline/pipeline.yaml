@@ -1,0 +1,57 @@
+schema_version: "1.0"
+pipeline_id: AUT-PANEL-IMMUTABLE-V1.5
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+contracts:
+  golden_rules: governance/golden_rules.yaml
+  panel_template: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
+sequence:
+  - order: 10
+    id: DATACENTER
+    gate: [catalog_registered, quantity_baseline_registered, approved_template_fingerprint_registered]
+  - order: 20
+    id: DATASHEET
+    gate: [panel_registered, dimensions_locked, production_contract_locked, prompt_master_linked]
+  - order: 30
+    id: SELECT
+    gate: [reference_model_present, lifecycle_checked, technical_status_known]
+  - order: 40
+    id: LI_QUANTITY
+    gate: [li_exists, li_revision_matches_baseline, quantity_positive, quantity_registry_match]
+  - order: 50
+    id: LOAD_BALANCE
+    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present]
+  - order: 60
+    id: BOM
+    gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line]
+  - order: 70
+    id: LAYOUT
+    gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present]
+  - order: 80
+    id: RENDER_IMAGE
+    gate: [approved_template_id, approved_template_fingerprint, one_panel_per_image, no_unapproved_recomposition]
+  - order: 90
+    id: QA
+    gate: [li_bom_layout_render_parity, workbook_structure_fingerprint, render_contract_fingerprint, hashes]
+  - order: 100
+    id: RELEASE
+    gate: [no_REPROVADO, no_HOLD_for_release, source_validation_two_agents, reverification_done]
+invalidations:
+  li_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, RELEASE]
+  component_model_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, RELEASE]
+  enclosure_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, RELEASE]
+  approved_template_change:
+    requires_explicit_user_authorization: true
+    invalidates: [RENDER_IMAGE, QA, RELEASE]
+release_policy:
+  unauthorized_standard_change: REPROVADO
+  missing_exact_model_or_evidence: HOLD
+  geometric_distortion: REPROVADO
+  quantity_mismatch: REPROVADO
