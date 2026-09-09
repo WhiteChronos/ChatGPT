@@ -1,5 +1,6 @@
 import pytest
 
+from pipeline.comment_control_clarification import apply_clarification_resolutions
 from pipeline.comment_control_pipeline import ClarificationRequired, validate_payload
 from pipeline.comment_control_analytics import summarize, risk_score_baseline
 from pipeline.comment_control_excel import build_workbook
@@ -46,6 +47,25 @@ def base_payload():
     }
 
 
+def with_open_question(payload=None):
+    payload = payload or base_payload()
+    payload["clarification_questions"] = [
+        {
+            "question_id": "Q01",
+            "topic": "Escopo",
+            "question_text": "Qual requisito deve prevalecer?",
+            "why_needed": "Falta decisão de engenharia",
+            "related_documents": ["MD-1", "ET-1"],
+            "status": "OPEN",
+            "resolution": None,
+            "resolution_type": None,
+            "resolved_by": None,
+            "resolved_at": None,
+        }
+    ]
+    return payload
+
+
 def codes(payload):
     return {f.code for f in validate_payload(payload)}
 
@@ -84,20 +104,76 @@ def test_checked_multidocument_requires_all_documents():
 
 
 def test_open_clarification_blocks_generation():
-    payload = base_payload()
-    payload["clarification_questions"] = [
-        {
-            "question_id": "Q01",
-            "topic": "Escopo",
-            "question_text": "Qual requisito deve prevalecer?",
-            "why_needed": "Falta decisão de engenharia",
-            "related_documents": ["MD-1", "ET-1"],
-            "status": "OPEN",
-        }
-    ]
+    payload = with_open_question()
     assert "CC-CLARIFICATION-OPEN" in codes(payload)
     with pytest.raises(ClarificationRequired):
         build_workbook(payload)
+
+
+def test_resolved_question_without_resolution_metadata_still_blocks():
+    payload = with_open_question()
+    payload["clarification_questions"][0]["status"] = "RESOLVED"
+    assert "CC-CLARIFICATION-RESOLUTION" in codes(payload)
+    with pytest.raises(ValueError):
+        build_workbook(payload)
+
+
+def test_dismissed_clarification_creates_no_export_row():
+    payload = with_open_question()
+    resolved = apply_clarification_resolutions(
+        payload,
+        {
+            "resolved_by": "QA",
+            "answers": [
+                {
+                    "question_id": "Q01",
+                    "resolution": "A diferença é permitida pelo requisito do projeto.",
+                    "resolution_type": "DISMISSED",
+                }
+            ],
+        },
+    )
+    assert resolved["clarification_questions"][0]["status"] == "DISMISSED"
+    assert resolved["new_divergences"] == []
+    assert "CC-CLARIFICATION-OPEN" not in codes(resolved)
+    wb = build_workbook(resolved)
+    ws = wb["Controle_Geral"]
+    assert ws.max_row == 6
+
+
+def test_confirmed_error_resolution_creates_new_divergence_not_question_row():
+    payload = with_open_question()
+    resolved = apply_clarification_resolutions(
+        payload,
+        {
+            "resolved_by": "QA",
+            "answers": [
+                {
+                    "question_id": "Q01",
+                    "resolution": "O requisito deve estar presente nos dois documentos.",
+                    "resolution_type": "CONFIRMED_ERROR",
+                    "confirmed_error": {
+                        "severity": "ALTO",
+                        "document_code": "ET-1 × FD-1",
+                        "original_comment": "ERRO — requisito incompatível entre documentos.",
+                        "compiled_action": "Compatibilizar os dois documentos conforme a decisão aprovada.",
+                        "finding_basis": "A decisão do solicitante confirmou que ambos deveriam ser coerentes.",
+                        "source_location": "ET-1 e FD-1",
+                    },
+                }
+            ],
+        },
+    )
+    question = resolved["clarification_questions"][0]
+    assert question["status"] == "RESOLVED"
+    assert question["resolution_type"] == "CONFIRMED_ERROR"
+    assert len(resolved["new_divergences"]) == 1
+    assert resolved["new_divergences"][0]["comment_id"] == "ND01"
+    assert "?" not in resolved["new_divergences"][0]["original_comment"]
+    wb = build_workbook(resolved)
+    ws = wb["Controle_Geral"]
+    assert ws.max_row == 7
+    assert ws["A7"].value == "ND01"
 
 
 def test_question_marker_in_new_divergence_is_forbidden():
