@@ -11,6 +11,8 @@ on:
       - 'datacenter/comment_control_schema.sql'
       - 'governance/COMMENT_CONTROL_STANDARD_v1_0.md'
       - 'governance/PROMPT_MESTRE_CONTROLE_COMENTARIOS_v1_0.md'
+      - 'docs/comment-control-agent-prompt.md'
+      - 'memory/LESSON_CLARIFICATION_BEFORE_ARTIFACT_2026-09-09.md'
       - '.github/workflows/comment-control.yml'
   pull_request:
     branches: [main]
@@ -68,11 +70,14 @@ jobs:
       - name: Verify governance invariants
         run: |
           grep -q 'BLOCK_ON_ANY_FAILURE' governance/COMMENT_CONTROL_STANDARD_v1_0.md
-          grep -q 'Todos os comentários são criados inicialmente como' governance/PROMPT_MESTRE_CONTROLE_COMENTARIOS_v1_0.md
-          grep -q 'automatic_checked_forbidden' datasheet/COMMENT_CONTROL_DATA_SHEET.json
-          grep -q 'CHECKED requires evidence' datacenter/comment_control_schema.sql
-          grep -q 'CC-COUNT-INTEGRITY' pipeline/comment_control_pipeline.py
+          grep -q 'WAITING_CLARIFICATION' governance/COMMENT_CONTROL_STANDARD_v1_0.md
+          grep -q 'questions_never_exported' datasheet/COMMENT_CONTROL_DATA_SHEET.json
+          grep -q 'unresolved_question_blocks_generation' datasheet/COMMENT_CONTROL_DATA_SHEET.json
+          grep -q 'assert_preflight_resolved' datacenter/comment_control_schema.sql
+          grep -q 'CC-CLARIFICATION-OPEN' pipeline/comment_control_pipeline.py
+          grep -q 'clarification_questions' pipeline/comment_control_agent.py
           grep -q 'checkbox_font_size_pt' datasheet/COMMENT_CONTROL_DATA_SHEET.json
+          grep -q 'Perguntas e dúvidas nunca são conteúdo de planilha' docs/comment-control-agent-prompt.md
 
       - name: Agent import smoke test
         if: ${{ env.HAS_OPENAI_KEY == 'true' }}
