@@ -9,12 +9,14 @@ import pytest
 DB_URL = os.getenv("TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DB_URL, reason="TEST_DATABASE_URL ausente")
 SCHEMA = Path("datacenter/comment_control_schema.sql")
+CLARIFICATION_MIGRATION = Path("datacenter/migrations/20260909_clarification_resolution_integrity.sql")
 
 
 def reset_schema(conn):
     with conn.cursor() as cur:
         cur.execute("drop schema public cascade; create schema public;")
         cur.execute(SCHEMA.read_text(encoding="utf-8"))
+        cur.execute(CLARIFICATION_MIGRATION.read_text(encoding="utf-8"))
     conn.commit()
 
 
@@ -85,6 +87,21 @@ def test_preflight_rejects_open_question():
                 cur.execute("select assert_preflight_resolved('B1')")
 
 
+def test_resolved_question_without_metadata_is_rejected_by_datacenter():
+    with psycopg.connect(DB_URL) as conn:
+        reset_schema(conn)
+        seed_comment(conn, preflight_status="READY_TO_GENERATE")
+        with pytest.raises(psycopg.Error):
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    insert into clarification_questions(
+                      batch_id, question_id, topic, question_text, why_needed, status
+                    ) values ('B1', 'Q01', 'Escopo', 'Qual requisito prevalece?', 'Falta decisão', 'RESOLVED')
+                    """
+                )
+
+
 def test_preflight_accepts_resolved_question():
     with psycopg.connect(DB_URL) as conn:
         reset_schema(conn)
@@ -98,6 +115,26 @@ def test_preflight_accepts_resolved_question():
                 ) values (
                   'B1', 'Q01', 'Escopo', 'Qual requisito prevalece?', 'Falta decisão',
                   'RESOLVED', 'Compatibilizar como erro', 'CONFIRMED_ERROR', 'USER', now()
+                )
+                """
+            )
+            cur.execute("select assert_preflight_resolved('B1')")
+        conn.commit()
+
+
+def test_preflight_accepts_dismissed_question_with_complete_resolution():
+    with psycopg.connect(DB_URL) as conn:
+        reset_schema(conn)
+        seed_comment(conn, preflight_status="READY_TO_GENERATE")
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                insert into clarification_questions(
+                  batch_id, question_id, topic, question_text, why_needed,
+                  status, resolution, resolution_type, resolved_by, resolved_at
+                ) values (
+                  'B1', 'Q01', 'Referência comercial', 'Os modelos são equivalentes?', 'Falta decisão',
+                  'DISMISSED', 'Ambos são válidos conforme o equipamento existente', 'DISMISSED', 'USER', now()
                 )
                 """
             )
