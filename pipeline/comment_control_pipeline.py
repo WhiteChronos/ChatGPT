@@ -15,6 +15,7 @@ ALLOWED_SEVERITY = {"GRAVE", "ALTO", "LEVE"}
 ALLOWED_STATUS = {"UNCHECKED", "CHECKED"}
 ALLOWED_ORIGIN = {"FORMAL_COMMENT", "NEW_DIVERGENCE"}
 ALLOWED_QUESTION_STATUS = {"OPEN", "RESOLVED", "DISMISSED"}
+ALLOWED_RESOLUTION_TYPES = {"CONFIRMED_ERROR", "DISMISSED", "FORMAL_OBJECTIVE"}
 PROHIBITED_EXPORT_MARKERS = ("DÚVIDA", "DUVIDA", "A CONFIRMAR", "PERGUNTA")
 SCHEMA_PATH = Path(__file__).resolve().parents[1] / "schemas" / "comment_control_v1.schema.json"
 
@@ -123,6 +124,78 @@ def validate_record(record: dict[str, Any]) -> list[Finding]:
     return findings
 
 
+def _validate_clarification(question: dict[str, Any]) -> list[Finding]:
+    findings: list[Finding] = []
+    qid = str(question.get("question_id", "Q?"))
+    status = str(question.get("status", "OPEN")).upper()
+    resolution_type = question.get("resolution_type")
+
+    if status not in ALLOWED_QUESTION_STATUS:
+        findings.append(Finding("CC-QUESTION-STATUS", "CRITICAL", f"Status de dúvida inválido: {status}", qid))
+        return findings
+
+    if status == "OPEN":
+        findings.append(
+            Finding(
+                "CC-CLARIFICATION-OPEN",
+                "CRITICAL",
+                "Existe dúvida não sanada; a elaboração deve ser interrompida antes de gerar artefatos",
+                qid,
+            )
+        )
+        if any(question.get(field) for field in ("resolution", "resolution_type", "resolved_by", "resolved_at")):
+            findings.append(
+                Finding(
+                    "CC-CLARIFICATION-STATE",
+                    "CRITICAL",
+                    "Dúvida OPEN não pode conter dados de resolução",
+                    qid,
+                )
+            )
+        return findings
+
+    required = ("resolution", "resolution_type", "resolved_by", "resolved_at")
+    missing = [field for field in required if not question.get(field)]
+    if missing:
+        findings.append(
+            Finding(
+                "CC-CLARIFICATION-RESOLUTION",
+                "CRITICAL",
+                "Dúvida resolvida sem campos obrigatórios: " + ", ".join(missing),
+                qid,
+            )
+        )
+
+    if resolution_type not in ALLOWED_RESOLUTION_TYPES:
+        findings.append(
+            Finding(
+                "CC-CLARIFICATION-RESOLUTION-TYPE",
+                "CRITICAL",
+                f"Tipo de resolução inválido: {resolution_type!r}",
+                qid,
+            )
+        )
+    elif status == "DISMISSED" and resolution_type != "DISMISSED":
+        findings.append(
+            Finding(
+                "CC-CLARIFICATION-STATE",
+                "CRITICAL",
+                "Status DISMISSED exige resolution_type=DISMISSED",
+                qid,
+            )
+        )
+    elif status == "RESOLVED" and resolution_type == "DISMISSED":
+        findings.append(
+            Finding(
+                "CC-CLARIFICATION-STATE",
+                "CRITICAL",
+                "resolution_type=DISMISSED deve usar status DISMISSED",
+                qid,
+            )
+        )
+    return findings
+
+
 def validate_payload(payload: dict[str, Any]) -> list[Finding]:
     findings: list[Finding] = []
     comments = payload.get("comments", [])
@@ -130,25 +203,7 @@ def validate_payload(payload: dict[str, Any]) -> list[Finding]:
         findings.extend(validate_record(record))
 
     for question in payload.get("clarification_questions", []):
-        status = str(question.get("status", "OPEN")).upper()
-        if status not in ALLOWED_QUESTION_STATUS:
-            findings.append(
-                Finding(
-                    "CC-QUESTION-STATUS",
-                    "CRITICAL",
-                    f"Status de dúvida inválido: {status}",
-                    str(question.get("question_id", "Q?")),
-                )
-            )
-        if status == "OPEN":
-            findings.append(
-                Finding(
-                    "CC-CLARIFICATION-OPEN",
-                    "CRITICAL",
-                    "Existe dúvida não sanada; a elaboração deve ser interrompida antes de gerar artefatos",
-                    str(question.get("question_id", "Q?")),
-                )
-            )
+        findings.extend(_validate_clarification(question))
 
     formal = _formal_comments(payload)
     source_count = payload.get("source_formal_comment_count")
