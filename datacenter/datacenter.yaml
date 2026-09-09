@@ -1,0 +1,42 @@
+schema_version: "1.0"
+datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+canonical_sources:
+  component_catalog: datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json
+  quantity_registry: datacenter/AUT_PANEL_PANEL_QUANTITIES.json
+  document_standard_registry: datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json
+  golden_rules_yaml: governance/golden_rules.yaml
+  panel_template_yaml: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  pipeline_yaml: pipeline/pipeline.yaml
+  datasheet_yaml: datasheet/datasheet.yaml
+workbook_baseline:
+  template_id: XLSX-PN-AUT-01-MASTER-R02
+  master_panel: PN-AUT-01
+  structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
+panels:
+  PN-AUT-01:
+    li_id: LI-PN-AUT-01-R02
+    li_revision: R02
+    li_status: QUANTITY_FROZEN
+    li_file: li/PN-AUT-01_LI.json
+    workbook_snapshot_sha256: 47e85e1466246133fdf7a23e6ce3b036c7e979b2abd6c31c2964d00f78eb0d87
+    image_template_id: IMG-PN-AUT-01-APPROVED-V1
+    approved_image_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
+    datasheet_json: datasheet/AUT_PANEL_DATA_SHEET.json
+  PN-AUT-02:
+    li_id: LI-PN-AUT-02-R02
+    li_revision: R02
+    li_status: QUANTITY_FROZEN
+    li_file: li/PN-AUT-02_LI.json
+    workbook_snapshot_sha256: 2376433d865077d34b463a1bca9d1af85907bd85889f80aaabb8c7a5655e88c7
+    image_template_id: IMG-PN-AUT-02-APPROVED-V1
+    approved_image_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
+    datasheet_json: datasheet/PN-AUT-02_DATA_SHEET.json
+change_control:
+  standard_mutation_requires_user_authorization: true
+  quantity_change_requires_new_li_revision: true
+  image_template_change_requires_new_approved_template_revision: true
+  unauthorized_change_status: REPROVADO
