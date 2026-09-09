@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""AUT Panel Standard pipeline v1.3.
+"""AUT Panel Standard pipeline v1.4.
 
 Production contract:
 1. Data Center + Data Sheet
-2. Freeze LI with exact panel quantities
-3. Generate BOM from LI
-4. Validate layout quantities against LI
-5. Render panel drawing only after LI/BOM parity passes
+2. Lock document/image standards
+3. Freeze LI with exact panel quantities
+4. Generate BOM from LI
+5. Validate layout quantities against LI
+6. Render panel drawing only after LI/BOM/template parity passes
 
 Golden Rules:
 - GR-034: LI/BOM before drawing
@@ -14,6 +15,9 @@ Golden Rules:
 - GR-036: any LI quantity change invalidates previous BOM/layout/drawing
 - GR-037: HMI stays on the cabinet door
 - GR-038: never distort components to make them fit
+- GR-039: PN-AUT-01 workbook is the master Excel template
+- GR-040: panel image follows the approved visual template
+- GR-041: approved workbook/image standards cannot change without explicit authorization
 """
 from __future__ import annotations
 
@@ -41,6 +45,10 @@ GR034 = "GR-034"
 GR035 = "GR-035"
 GR036 = "GR-036"
 GR037 = "GR-037"
+GR038 = "GR-038"
+GR039 = "GR-039"
+GR040 = "GR-040"
+GR041 = "GR-041"
 MANDATORY_POWER_CATEGORIES = {"power_supply", "dc_ups", "battery"}
 
 
@@ -74,12 +82,82 @@ def _placement_map(projeto: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
     return out
 
 
+def validar_padroes_documentais(
+    projeto: Mapping[str, Any],
+    pipeline: Mapping[str, Any],
+    document_standard: Mapping[str, Any],
+) -> list[Resultado]:
+    resultados: list[Resultado] = []
+    panel_id = str((projeto.get("project") or {}).get("id") or "")
+    padrao = _panel_standard(pipeline, panel_id)
+    contract = projeto.get("production_contract") or {}
+    render = projeto.get("render") or {}
+
+    workbook = document_standard.get("workbook_master") or {}
+    workbook_id = str(workbook.get("template_id") or "")
+    gr039_ok = (
+        bool(workbook_id)
+        and workbook.get("master_panel") == "PN-AUT-01"
+        and padrao.get("workbook_template_id") == workbook_id
+        and contract.get("workbook_template_id") == workbook_id
+        and contract.get("workbook_template_must_match_master") is True
+        and GR039 in (contract.get("golden_rules") or [])
+    )
+    resultados.append(Resultado(
+        GR039, "PASS" if gr039_ok else "FAIL", "INFO" if gr039_ok else REPROVADO,
+        "Template mestre de Excel PN-AUT-01 validado." if gr039_ok else "Planilha não está contratada ao template mestre PN-AUT-01.",
+        {"expected_workbook_template_id": workbook_id, "actual": contract.get("workbook_template_id")},
+    ))
+
+    image = document_standard.get("image_master") or {}
+    image_standard_id = str(image.get("visual_standard_id") or "")
+    panel_templates = image.get("approved_panel_templates") or {}
+    expected_image_template = str(panel_templates.get(panel_id) or "")
+    gr040_ok = (
+        bool(image_standard_id)
+        and bool(expected_image_template)
+        and image.get("one_panel_per_image") is True
+        and padrao.get("image_template_id") == expected_image_template
+        and contract.get("image_visual_standard_id") == image_standard_id
+        and contract.get("image_template_id") == expected_image_template
+        and contract.get("image_template_must_match_approved") is True
+        and contract.get("one_panel_per_image") is True
+        and render.get("visual_standard_id") == image_standard_id
+        and render.get("visual_template_id") == expected_image_template
+        and render.get("one_panel_per_image") is True
+        and render.get("approved_reference_layout_locked") is True
+        and GR040 in (contract.get("golden_rules") or [])
+    )
+    resultados.append(Resultado(
+        GR040, "PASS" if gr040_ok else "FAIL", "INFO" if gr040_ok else REPROVADO,
+        "Padrão visual aprovado do painel validado." if gr040_ok else "Desenho não está contratado ao padrão visual aprovado.",
+        {"expected_visual_standard_id": image_standard_id, "expected_image_template_id": expected_image_template,
+         "actual_visual_standard_id": render.get("visual_standard_id"), "actual_image_template_id": render.get("visual_template_id")},
+    ))
+
+    change = document_standard.get("change_control") or {}
+    gr041_ok = (
+        change.get("explicit_user_authorization_required") is True
+        and change.get("unauthorized_change_status") == "REPROVADO"
+        and contract.get("standard_change_requires_explicit_authorization") is True
+        and render.get("approved_reference_layout_locked") is True
+        and GR041 in (contract.get("golden_rules") or [])
+    )
+    resultados.append(Resultado(
+        GR041, "PASS" if gr041_ok else "FAIL", "INFO" if gr041_ok else REPROVADO,
+        "Padrão aprovado bloqueado contra mudança sem autorização." if gr041_ok else "Controle de mudança do padrão aprovado está incompleto.",
+        {"change_control": change},
+    ))
+    return resultados
+
+
 def validar_li(
     projeto: Mapping[str, Any],
     catalogo: Mapping[str, Any],
     pipeline: Mapping[str, Any],
     li: Mapping[str, Any],
     quantity_registry: Mapping[str, Any],
+    document_standard: Mapping[str, Any] | None = None,
 ) -> list[Resultado]:
     resultados: list[Resultado] = []
     indice = indice_catalogo(catalogo)
@@ -192,6 +270,9 @@ def validar_li(
     resultados.append(Resultado(GR037, "PASS" if hmi_ok else "FAIL", "INFO" if hmi_ok else REPROVADO,
         "IHM posicionada na porta/tampa." if hmi_ok else "IHM deve estar na porta/tampa do quadro.",
         {"hmi_tags": hmi_tags}))
+
+    if document_standard is not None:
+        resultados.extend(validar_padroes_documentais(projeto, pipeline, document_standard))
     return resultados
 
 
@@ -219,8 +300,8 @@ def gerar_bom(li: Mapping[str, Any], catalogo: Mapping[str, Any], saida: Path) -
         })
     bom_json = saida / "AUT_PANEL_BOM.json"
     salvar_json(bom_json, {
-        "schema_version": "1.2", "project_id": li.get("project_id"), "li_id": li.get("li_id"),
-        "li_revision": li.get("revision"), "golden_rules": [GR034, GR035, GR036],
+        "schema_version": "1.3", "project_id": li.get("project_id"), "li_id": li.get("li_id"),
+        "li_revision": li.get("revision"), "golden_rules": [GR034, GR035, GR036, GR039, GR040, GR041],
         "quantity_source": "LI", "must_precede_render": True, "lines": linhas,
     })
     bom_csv = saida / "AUT_PANEL_BOM.csv"
@@ -253,7 +334,14 @@ def _project_render_pairs(projeto: Mapping[str, Any]) -> dict[str, tuple[str, in
     }
 
 
-def gerar_imagem_pos_li(projeto: Mapping[str, Any], catalogo: Mapping[str, Any], li: Mapping[str, Any], bom_path: Path, image_path: Path) -> None:
+def gerar_imagem_pos_li(
+    projeto: Mapping[str, Any],
+    catalogo: Mapping[str, Any],
+    li: Mapping[str, Any],
+    bom_path: Path,
+    image_path: Path,
+    document_standard: Mapping[str, Any] | None = None,
+) -> None:
     if not bom_path.exists():
         raise RuntimeError("GR-034: BOM deve existir antes do desenho.")
     bom = carregar_json(bom_path)
@@ -264,18 +352,40 @@ def gerar_imagem_pos_li(projeto: Mapping[str, Any], catalogo: Mapping[str, Any],
         raise RuntimeError("GR-035: BOM não possui as mesmas quantidades desenháveis da LI.")
     if _project_render_pairs(projeto) != expected:
         raise RuntimeError("GR-035: Data Sheet/layout não possui as mesmas quantidades da LI.")
+
+    contract = projeto.get("production_contract") or {}
+    render = projeto.get("render") or {}
+    if contract.get("standard_change_requires_explicit_authorization") is not True or render.get("approved_reference_layout_locked") is not True:
+        raise RuntimeError("GR-041: padrão aprovado deve permanecer bloqueado sem autorização explícita.")
+    if contract.get("one_panel_per_image") is not True or render.get("one_panel_per_image") is not True:
+        raise RuntimeError("GR-040: cada imagem deve representar apenas um painel.")
+    if document_standard is not None:
+        image = document_standard.get("image_master") or {}
+        panel_id = str((projeto.get("project") or {}).get("id") or "")
+        expected_template = str((image.get("approved_panel_templates") or {}).get(panel_id) or "")
+        if render.get("visual_standard_id") != image.get("visual_standard_id") or render.get("visual_template_id") != expected_template:
+            raise RuntimeError("GR-040: Data Sheet não referencia o padrão visual aprovado do painel.")
+
     gerar_svg(projeto, catalogo, image_path)
     with image_path.open("a", encoding="utf-8") as f:
         f.write("\n<!-- GR-035 LI_QUANTITIES " + json.dumps(expected, ensure_ascii=False, sort_keys=True) + " -->\n")
+        f.write("<!-- GR-039 WORKBOOK_TEMPLATE " + str(contract.get("workbook_template_id")) + " -->\n")
+        f.write("<!-- GR-040 IMAGE_TEMPLATE " + str(render.get("visual_template_id")) + " -->\n")
+        f.write("<!-- GR-041 STANDARD_LOCKED true -->\n")
 
 
 def executar(args: argparse.Namespace) -> int:
     project_path, catalog_path, pipeline_path = Path(args.project), Path(args.catalog), Path(args.pipeline)
     schema_path, li_path, q_path = Path(args.schema), Path(args.li), Path(args.quantity_standard)
+    document_standard_path = Path(args.document_standard)
     output = Path(args.output_dir); output.mkdir(parents=True, exist_ok=True)
     projeto, catalogo, pipeline = carregar_json(project_path), carregar_json(catalog_path), carregar_json(pipeline_path)
-    li, qreg = carregar_json(li_path), carregar_json(q_path)
-    resultados = validar_schema(projeto, carregar_json(schema_path)) + avaliar(projeto, catalogo) + validar_li(projeto, catalogo, pipeline, li, qreg)
+    li, qreg, docstd = carregar_json(li_path), carregar_json(q_path), carregar_json(document_standard_path)
+    resultados = (
+        validar_schema(projeto, carregar_json(schema_path))
+        + avaliar(projeto, catalogo)
+        + validar_li(projeto, catalogo, pipeline, li, qreg, docstd)
+    )
 
     qa_json, qa_md = gerar_relatorio(output, projeto, resultados)
     ds = gerar_datasheet(projeto, catalogo, resultados, sha256(project_path), sha256(catalog_path))
@@ -285,14 +395,16 @@ def executar(args: argparse.Namespace) -> int:
 
     bom_json, bom_csv = gerar_bom(li, catalogo, output)
     image_path = output / "AUT_PANEL_LAYOUT.svg"
-    gerar_imagem_pos_li(projeto, catalogo, li, bom_json, image_path)
+    gerar_imagem_pos_li(projeto, catalogo, li, bom_json, image_path, docstd)
 
     estado = status_final(resultados)
-    man = manifesto(output, [project_path,catalog_path,pipeline_path,schema_path,li_path,q_path],
+    man = manifesto(output, [project_path,catalog_path,pipeline_path,schema_path,li_path,q_path,document_standard_path],
         [qa_json,qa_md,ds_path,db_path,li_snapshot,bom_json,bom_csv,image_path], estado)
     verificar_manifesto(man, output)
     print(json.dumps({"status":estado,"project_id":(projeto.get("project") or {}).get("id"),
-        "sequence":["AUT_PANEL_LI.json","AUT_PANEL_BOM.json","AUT_PANEL_BOM.csv","AUT_PANEL_LAYOUT.svg"],"manifest":str(man)},ensure_ascii=False))
+        "sequence":["AUT_PANEL_LI.json","AUT_PANEL_BOM.json","AUT_PANEL_BOM.csv","AUT_PANEL_LAYOUT.svg"],
+        "workbook_template":(projeto.get("production_contract") or {}).get("workbook_template_id"),
+        "image_template":(projeto.get("render") or {}).get("visual_template_id"),"manifest":str(man)},ensure_ascii=False))
     if estado == REPROVADO: return 1
     if estado == HOLD and not args.allow_hold: return 2
     return 0
@@ -300,7 +412,7 @@ def executar(args: argparse.Namespace) -> int:
 
 def principal() -> int:
     p = argparse.ArgumentParser()
-    for flag in ("project","catalog","pipeline","schema","li","quantity-standard","output-dir"):
+    for flag in ("project","catalog","pipeline","schema","li","quantity-standard","document-standard","output-dir"):
         p.add_argument("--"+flag, required=True)
     p.add_argument("--allow-hold", action="store_true")
     try:
