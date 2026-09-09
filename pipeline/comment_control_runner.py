@@ -2,7 +2,7 @@
 
 Fluxo:
 relatório -> agente -> normalização -> gate determinístico -> persistência opcional
--> estatística -> exportação Power BI -> memória/log.
+-> estatística -> Excel governado -> Power BI -> memória/log.
 """
 
 from __future__ import annotations
@@ -16,21 +16,32 @@ from typing import Any
 
 from pipeline.comment_control_agent import compile_comments, to_storage_payload
 from pipeline.comment_control_analytics import summarize
+from pipeline.comment_control_excel import export_excel
 from pipeline.comment_control_export_powerbi import export as export_powerbi
 from pipeline.comment_control_pipeline import gate
+
+
+def _stamp_record_defaults(record: dict[str, Any], stamp: str) -> None:
+    record.setdefault("created_at", stamp)
+    record.setdefault("verified_at", None)
+    record.setdefault("verified_documents", [])
+    record.setdefault("required_documents", [])
+    record.setdefault("reopened_count", 0)
+    record.setdefault("responsible", None)
+    record.setdefault("verifier", None)
+    record.setdefault("due_date", None)
+    record.setdefault("evidence_text", None)
+    record.setdefault("evidence_document", None)
+    record.setdefault("evidence_revision", None)
+    record.setdefault("evidence_location", None)
 
 
 def _stamp_missing_dates(payload: dict[str, Any]) -> None:
     stamp = datetime.now(timezone.utc).isoformat()
     for record in payload.get("comments", []):
-        record.setdefault("created_at", stamp)
-        record.setdefault("verified_at", None)
-        record.setdefault("verified_documents", [])
-        record.setdefault("required_documents", [])
-        record.setdefault("reopened_count", 0)
-        record.setdefault("responsible", None)
-        record.setdefault("verifier", None)
-        record.setdefault("due_date", None)
+        _stamp_record_defaults(record, stamp)
+    for record in payload.get("new_divergences", []):
+        _stamp_record_defaults(record, stamp)
 
 
 def _normalize_new_divergences(payload: dict[str, Any]) -> None:
@@ -42,12 +53,9 @@ def _normalize_new_divergences(payload: dict[str, Any]) -> None:
         row.setdefault("severity", "ALTO")
         row.setdefault("origin_type", "NEW_DIVERGENCE")
         row.setdefault("status_control", "UNCHECKED")
+        row.setdefault("source_comment_id", None)
         row.setdefault("original_comment", row.get("description") or row.get("compiled_action") or "Nova divergência")
         row.setdefault("compiled_action", row.get("action") or row.get("original_comment"))
-        row.setdefault("created_at", datetime.now(timezone.utc).isoformat())
-        row.setdefault("required_documents", [])
-        row.setdefault("verified_documents", [])
-        row.setdefault("evidence_text", None)
         normalized.append(row)
     payload["new_divergences"] = normalized
 
@@ -72,7 +80,7 @@ async def run(
     _normalize_new_divergences(payload)
     _stamp_missing_dates(payload)
 
-    # Somente comentários formais entram no gate de contagem principal.
+    # O gate principal valida os comentários formais e impede perda de quantidade.
     gate(payload)
 
     records = build_full_record_set(payload)
@@ -81,9 +89,11 @@ async def run(
     payload_path = output_dir / "comment_control.json"
     analytics_path = output_dir / "comment_analytics.json"
     audit_path = output_dir / "audit_log.json"
+    excel_path = output_dir / "comment_control.xlsx"
 
     payload_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     analytics_path.write_text(json.dumps(analytics, ensure_ascii=False, indent=2), encoding="utf-8")
+    export_excel(payload, excel_path)
     export_powerbi(records, output_dir / "powerbi")
 
     audit = {
@@ -93,6 +103,7 @@ async def run(
         "formal_comment_count": payload["source_formal_comment_count"],
         "registered_formal_comment_count": len(payload.get("comments", [])),
         "new_divergence_count": len(payload.get("new_divergences", [])),
+        "excel_output": str(excel_path),
         "status": "OK",
         "rules": [
             "preserve_all_formal_comments",
