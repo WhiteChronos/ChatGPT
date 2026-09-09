@@ -1,8 +1,10 @@
 """Orquestração ponta a ponta do controle de comentários.
 
 Fluxo:
-relatório -> agente -> normalização -> gate determinístico -> persistência opcional
--> estatística -> Excel governado -> Power BI -> memória/log.
+material -> agente -> resolução interna -> gate de dúvidas -> validação determinística
+-> Excel governado -> persistência -> analítica.
+
+Nenhum artefato de entrega é gerado enquanto existir dúvida aberta.
 """
 
 from __future__ import annotations
@@ -19,7 +21,7 @@ from pipeline.comment_control_agent import compile_comments, to_storage_payload
 from pipeline.comment_control_analytics import summarize
 from pipeline.comment_control_excel import export_excel
 from pipeline.comment_control_export_powerbi import export as export_powerbi
-from pipeline.comment_control_pipeline import gate
+from pipeline.comment_control_pipeline import ClarificationRequired, gate, open_clarification_questions
 
 
 def _stamp_record_defaults(record: dict[str, Any], stamp: str) -> None:
@@ -35,6 +37,8 @@ def _stamp_record_defaults(record: dict[str, Any], stamp: str) -> None:
     record.setdefault("evidence_document", None)
     record.setdefault("evidence_revision", None)
     record.setdefault("evidence_location", None)
+    record.setdefault("finding_basis", None)
+    record.setdefault("source_location", None)
 
 
 def _stamp_missing_dates(payload: dict[str, Any]) -> None:
@@ -57,6 +61,8 @@ def _normalize_new_divergences(payload: dict[str, Any]) -> None:
         row.setdefault("source_comment_id", None)
         row.setdefault("original_comment", row.get("description") or row.get("compiled_action") or "Nova divergência")
         row.setdefault("compiled_action", row.get("action") or row.get("original_comment"))
+        row.setdefault("finding_basis", None)
+        row.setdefault("source_location", None)
         normalized.append(row)
     payload["new_divergences"] = normalized
 
@@ -70,6 +76,27 @@ def _attach_source_identity(payload: dict[str, Any], report_path: Path, report_b
 
 def build_full_record_set(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return [*payload.get("comments", []), *payload.get("new_divergences", [])]
+
+
+def _write_preflight(output_dir: Path, payload: dict[str, Any]) -> None:
+    questions = open_clarification_questions(payload)
+    (output_dir / "clarification_questions.json").write_text(
+        json.dumps(questions, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    (output_dir / "preflight_status.json").write_text(
+        json.dumps(
+            {
+                "project_id": payload["project_id"],
+                "batch_id": payload["batch_id"],
+                "status": "WAITING_CLARIFICATION",
+                "open_question_count": len(questions),
+                "artifact_generation": "BLOCKED",
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
 
 
 async def run(
@@ -91,7 +118,17 @@ async def run(
     _normalize_new_divergences(payload)
     _stamp_missing_dates(payload)
 
-    # O gate principal valida os comentários formais e impede perda de quantidade.
+    questions = open_clarification_questions(payload)
+    if questions:
+        payload["preflight_status"] = "WAITING_CLARIFICATION"
+        _write_preflight(output_dir, payload)
+        if persist_database:
+            from pipeline.comment_control_db import persist_preflight
+
+            persist_preflight(payload)
+        raise ClarificationRequired(questions)
+
+    payload["preflight_status"] = "READY_TO_GENERATE"
     gate(payload)
 
     records = build_full_record_set(payload)
@@ -107,6 +144,7 @@ async def run(
     export_excel(payload, excel_path)
     export_powerbi(records, output_dir / "powerbi")
 
+    payload["preflight_status"] = "GENERATED"
     audit = {
         "project_id": project_id,
         "batch_id": payload["batch_id"],
@@ -116,12 +154,14 @@ async def run(
         "formal_comment_count": payload["source_formal_comment_count"],
         "registered_formal_comment_count": len(payload.get("comments", [])),
         "new_divergence_count": len(payload.get("new_divergences", [])),
+        "open_clarification_count": 0,
         "excel_output": str(excel_path),
         "status": "OK",
         "rules": [
             "preserve_all_formal_comments",
             "all_initial_status_unchecked",
-            "checked_requires_human_evidence",
+            "clarifications_resolved_before_artifact",
+            "questions_never_exported",
             "new_divergences_separate",
             "block_on_any_failure",
         ],
@@ -144,7 +184,11 @@ def main() -> int:
     parser.add_argument("--persist-db", action="store_true")
     args = parser.parse_args()
 
-    asyncio.run(run(args.report, args.project, args.output_dir, persist_database=args.persist_db))
+    try:
+        asyncio.run(run(args.report, args.project, args.output_dir, persist_database=args.persist_db))
+    except ClarificationRequired as exc:
+        print(str(exc))
+        return 2
     return 0
 
 
