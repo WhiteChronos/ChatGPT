@@ -13,6 +13,7 @@ on:
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
+      - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
       - 'li/PN-AUT-01_LI.json'
       - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
@@ -30,6 +31,7 @@ on:
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
+      - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
       - 'li/PN-AUT-01_LI.json'
       - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
@@ -46,7 +48,7 @@ concurrency:
 
 jobs:
   quality:
-    name: LI quantities, geometry and drawing parity
+    name: LI quantities, master workbook and approved drawing template
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -83,6 +85,7 @@ jobs:
             --schema schemas/aut_panel_project_v1.schema.json \
             --li li/PN-AUT-01_LI.json \
             --quantity-standard datacenter/AUT_PANEL_PANEL_QUANTITIES.json \
+            --document-standard datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json \
             --output-dir build/aut-panel/PN-AUT-01 \
             --allow-hold
       - name: Run PN-AUT-02 standard pipeline
@@ -95,15 +98,20 @@ jobs:
             --schema schemas/aut_panel_project_v1.schema.json \
             --li li/PN-AUT-02_LI.json \
             --quantity-standard datacenter/AUT_PANEL_PANEL_QUANTITIES.json \
+            --document-standard datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json \
             --output-dir build/aut-panel/PN-AUT-02 \
             --allow-hold
-      - name: Verify artifact hashes and LI-before-drawing order
+      - name: Verify artifact hashes, LI order and locked templates
         run: |
           python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-01/manifest.json --output-dir build/aut-panel/PN-AUT-01
           python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-02/manifest.json --output-dir build/aut-panel/PN-AUT-02
           python - <<'PY'
           import json
           from pathlib import Path
+          approved = {
+              "PN-AUT-01": "IMG-PN-AUT-01-APPROVED-V1",
+              "PN-AUT-02": "IMG-PN-AUT-02-APPROVED-V1",
+          }
           for panel in ("PN-AUT-01", "PN-AUT-02"):
               root = Path("build/aut-panel") / panel
               man = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
@@ -114,6 +122,10 @@ jobs:
               lq = {x["tag"]: x["quantity"] for x in li["lines"]}
               bq = {x["li_tag"]: x["quantity"] for x in bom["lines"]}
               assert lq == bq
+              svg = (root / "AUT_PANEL_LAYOUT.svg").read_text(encoding="utf-8")
+              assert "GR-039 WORKBOOK_TEMPLATE XLSX-PN-AUT-01-MASTER-R02" in svg
+              assert f"GR-040 IMAGE_TEMPLATE {approved[panel]}" in svg
+              assert "GR-041 STANDARD_LOCKED true" in svg
           PY
       - name: Publish QA summary
         if: always()
