@@ -6,7 +6,9 @@ Regras visuais principais:
 - coluna de status centralizada e 22 pt;
 - borda externa preta grossa e bordas internas pretas finas;
 - texto com quebra automática e altura confortável;
-- novas divergências em aba separada.
+- novas divergências em aba separada;
+- verificação recalculada por fórmulas quando o usuário altera ☐/☑;
+- ☑ sem evidência fica visualmente sinalizado.
 """
 
 from __future__ import annotations
@@ -16,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from openpyxl import Workbook
-from openpyxl.formatting.rule import CellIsRule
+from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.worksheet.datavalidation import DataValidation
 
@@ -37,6 +39,9 @@ HEADER_FILL = PatternFill("solid", fgColor="1F4E78")
 HEADER_FONT = Font(color="FFFFFF", bold=True, size=11)
 BODY_FONT = Font(color="000000", size=11)
 CHECK_FONT = Font(color="000000", size=22, bold=True)
+ERROR_FILL = PatternFill("solid", fgColor="FFC7CE")
+WARNING_FILL = PatternFill("solid", fgColor="FFF2CC")
+OK_FILL = PatternFill("solid", fgColor="C6EFCE")
 
 
 def document_location(record: dict[str, Any]) -> str:
@@ -126,6 +131,15 @@ def _setup_sheet(ws, title: str, records: list[dict[str, Any]]) -> None:
 
     if ws.max_row >= 2:
         _apply_table_border(ws, 1, ws.max_row, 1, 6)
+        # Evidência ausente com ☑: vermelho. Evidência presente com ☐: amarelo para revisão.
+        ws.conditional_formatting.add(
+            f"F2:F{ws.max_row}",
+            FormulaRule(formula=["AND($F2=\"☑\",LEN(TRIM($E2))=0)"], fill=ERROR_FILL),
+        )
+        ws.conditional_formatting.add(
+            f"E2:E{ws.max_row}",
+            FormulaRule(formula=["AND($F2=\"☐\",LEN(TRIM($E2))>0)"], fill=WARNING_FILL),
+        )
 
     ws.auto_filter.ref = f"A1:F{ws.max_row}"
     ws.print_title_rows = "1:1"
@@ -138,22 +152,22 @@ def _setup_sheet(ws, title: str, records: list[dict[str, Any]]) -> None:
 
 def _verification_sheet(wb: Workbook, payload: dict[str, Any]) -> None:
     ws = wb.create_sheet("VERIFICAÇÃO")
-    formal = payload.get("comments", [])
-    checked = [r for r in formal if r.get("status_control") == "CHECKED"]
-    checked_without_evidence = [r for r in checked if not r.get("evidence_text")]
+    ws.sheet_view.showGridLines = False
+    formal_count = len(payload.get("comments", []))
+    source_count = int(payload.get("source_formal_comment_count", 0))
+    last_row = formal_count + 1
 
     rows = [
         ("Controle", "Resultado"),
-        ("Comentários formais na origem", payload.get("source_formal_comment_count", 0)),
-        ("Comentários formais registrados", len(formal)),
-        ("Comentários atendidos ☑", len(checked)),
-        ("Comentários pendentes ☐", len(formal) - len(checked)),
-        ("☑ sem evidência", len(checked_without_evidence)),
-        (
-            "Integridade da quantidade",
-            "OK" if payload.get("source_formal_comment_count") == len(formal) else "ERRO",
-        ),
-        ("Integridade da verificação", "OK" if not checked_without_evidence else "ERRO"),
+        ("Comentários formais na origem", source_count),
+        ("Comentários formais registrados", f"=COUNTA('COMENTÁRIOS'!A2:A{last_row})"),
+        ("Comentários atendidos ☑", f'=COUNTIF(\'COMENTÁRIOS\'!F2:F{last_row},"☑")'),
+        ("Comentários pendentes ☐", f'=COUNTIF(\'COMENTÁRIOS\'!F2:F{last_row},"☐")'),
+        ("☑ com evidência", f'=COUNTIFS(\'COMENTÁRIOS\'!F2:F{last_row},"☑",\'COMENTÁRIOS\'!E2:E{last_row},"<>")'),
+        ("☑ sem evidência", f'=COUNTIFS(\'COMENTÁRIOS\'!F2:F{last_row},"☑",\'COMENTÁRIOS\'!E2:E{last_row},"")'),
+        ("Integridade da quantidade", '=IF(B2=B3,"OK","ERRO")'),
+        ("Integridade da verificação", '=IF(B7=0,"OK","ERRO")'),
+        ("Situação geral", '=IF(AND(B8="OK",B9="OK"),"OK","BLOQUEADO")'),
     ]
     for row in rows:
         ws.append(row)
@@ -166,15 +180,25 @@ def _verification_sheet(wb: Workbook, payload: dict[str, Any]) -> None:
     for row in ws.iter_rows(min_row=2):
         row[0].alignment = Alignment(vertical="top", wrap_text=True)
         row[1].alignment = Alignment(horizontal="center", vertical="center")
+        row[1].font = BODY_FONT
 
     ws.column_dimensions["A"].width = 44
     ws.column_dimensions["B"].width = 24
     _apply_table_border(ws, 1, ws.max_row, 1, 2)
 
+    ws.conditional_formatting.add("B8:B10", FormulaRule(formula=['B8="ERRO"'], fill=ERROR_FILL))
+    ws.conditional_formatting.add("B8:B10", FormulaRule(formula=['B9="ERRO"'], fill=ERROR_FILL))
+    ws.conditional_formatting.add("B10", FormulaRule(formula=['B10="BLOQUEADO"'], fill=ERROR_FILL))
+    ws.conditional_formatting.add("B8:B10", FormulaRule(formula=['B8="OK"'], fill=OK_FILL))
+
 
 def build_workbook(payload: dict[str, Any]) -> Workbook:
     gate(payload)
     wb = Workbook()
+    wb.calculation.fullCalcOnLoad = True
+    wb.calculation.forceFullCalc = True
+    wb.calculation.calcMode = "auto"
+
     ws = wb.active
     _setup_sheet(ws, "COMENTÁRIOS", payload.get("comments", []))
 
