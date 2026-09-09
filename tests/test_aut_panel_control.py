@@ -26,9 +26,11 @@ def catalogo_validado():
     return catalogo
 
 def projeto_valido(): return carregar("datasheet/AUT_PANEL_DATA_SHEET.json")
+def projeto_pn02(): return carregar("datasheet/PN-AUT-02_DATA_SHEET.json")
 def li_valida(): return carregar("li/PN-AUT-01_LI.json")
 def qreg(): return carregar("datacenter/AUT_PANEL_PANEL_QUANTITIES.json")
 def pipeline(): return carregar("pipeline/AUT_PANEL_PIPELINE.json")
+def docstd(): return carregar("datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json")
 
 def test_datasheets_obedecem_schema():
     schema = carregar("schemas/aut_panel_project_v1.schema.json")
@@ -37,13 +39,13 @@ def test_datasheets_obedecem_schema():
         assert not erros, [erro.message for erro in erros]
 
 def test_gr035_li_e_layout_tem_paridade():
-    resultados = std.validar_li(projeto_valido(), catalogo_validado(), pipeline(), li_valida(), qreg())
+    resultados = std.validar_li(projeto_valido(), catalogo_validado(), pipeline(), li_valida(), qreg(), docstd())
     assert any(x.regra == "GR-035" and x.resultado == "PASS" for x in resultados)
 
 def test_gr035_quantidade_errada_reprova():
     projeto = projeto_valido()
     projeto["placements"][0]["quantity"] = 2
-    resultados = std.validar_li(projeto, catalogo_validado(), pipeline(), li_valida(), qreg())
+    resultados = std.validar_li(projeto, catalogo_validado(), pipeline(), li_valida(), qreg(), docstd())
     assert any(x.regra == "GR-035" and x.resultado == "FAIL" for x in resultados)
 
 def test_gr034_li_congelada_antes_bom():
@@ -64,12 +66,31 @@ def test_imagem_bloqueada_se_li_layout_divergirem(tmp_path):
     projeto = projeto_valido(); projeto["placements"][0]["quantity"] = 2
     bom_json, _ = std.gerar_bom(li_valida(), catalogo_validado(), tmp_path)
     with pytest.raises(RuntimeError, match="GR-035"):
-        std.gerar_imagem_pos_li(projeto, catalogo_validado(), li_valida(), bom_json, tmp_path / "layout.svg")
+        std.gerar_imagem_pos_li(projeto, catalogo_validado(), li_valida(), bom_json, tmp_path / "layout.svg", docstd())
 
 def test_hmi_permanece_na_porta():
     projeto = projeto_valido()
     hmi = next(x for x in projeto["placements"] if x["li_tag"] == "HMI-01")
     assert hmi["surface"] == "door"
+
+def test_gr039_pn02_usa_mesmo_template_excel_do_pn01():
+    p1, p2 = projeto_valido(), projeto_pn02()
+    assert p1["production_contract"]["workbook_template_id"] == "XLSX-PN-AUT-01-MASTER-R02"
+    assert p2["production_contract"]["workbook_template_id"] == p1["production_contract"]["workbook_template_id"]
+    resultados = std.validar_padroes_documentais(p2, pipeline(), docstd())
+    assert any(x.regra == "GR-039" and x.resultado == "PASS" for x in resultados)
+
+def test_gr040_templates_visuais_aprovados_por_painel():
+    resultados1 = std.validar_padroes_documentais(projeto_valido(), pipeline(), docstd())
+    resultados2 = std.validar_padroes_documentais(projeto_pn02(), pipeline(), docstd())
+    assert any(x.regra == "GR-040" and x.resultado == "PASS" for x in resultados1)
+    assert any(x.regra == "GR-040" and x.resultado == "PASS" for x in resultados2)
+
+def test_gr041_mudanca_de_padrao_sem_autorizacao_reprova():
+    projeto = projeto_valido()
+    projeto["production_contract"]["standard_change_requires_explicit_authorization"] = False
+    resultados = std.validar_padroes_documentais(projeto, pipeline(), docstd())
+    assert any(x.regra == "GR-041" and x.resultado == "FAIL" for x in resultados)
 
 def test_interno_600x600_em_gabinete_800x600_e_reprovado():
     projeto = projeto_valido(); projeto["views"]["front_internal_mm"]["height"] = 600
