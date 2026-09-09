@@ -1,0 +1,66 @@
+schema_version: "1.0"
+template_registry_id: AUT-PANEL-TEMPLATES-LOCKED-V1
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+workbook_master:
+  template_id: XLSX-PN-AUT-01-MASTER-R02
+  master_panel: PN-AUT-01
+  private_baseline_file: PN-AUT-01_LI_Materiais_Cargas_R02_PADRAO_UNICO.xlsx
+  private_baseline_sha256: 47e85e1466246133fdf7a23e6ce3b036c7e979b2abd6c31c2964d00f78eb0d87
+  structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
+  required_sheet_order:
+    - LI - Quantitativo
+    - Lista de Material
+    - Carga Geral
+    - Balanço de Carga
+    - Regras de Ouro
+    - Verificação Visual
+    - Referências
+  sheet_geometry:
+    LI - Quantitativo: {max_row: 37, max_column: 11, freeze_panes: A6, merged_ranges_count: 3}
+    Lista de Material: {max_row: 35, max_column: 11, freeze_panes: A8, merged_ranges_count: 2}
+    Carga Geral: {max_row: 42, max_column: 8, freeze_panes: A16, merged_ranges_count: 28}
+    Balanço de Carga: {max_row: 48, max_column: 23, freeze_panes: A14, merged_ranges_count: 42}
+    Regras de Ouro: {max_row: 11, max_column: 4, freeze_panes: A4, merged_ranges_count: 1}
+    Verificação Visual: {max_row: 14, max_column: 5, freeze_panes: A8, merged_ranges_count: 4}
+    Referências: {max_row: 9, max_column: 6, freeze_panes: null, merged_ranges_count: 1}
+image_standard:
+  visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  one_panel_per_image: true
+  required_blocks_in_order:
+    - title_and_model
+    - enclosure_and_mounting_plate_dimensions
+    - application_block
+    - front_internal_door_open
+    - front_external_door
+    - side_view_depth
+    - technical_component_list
+    - connection_architecture
+    - functional_levels
+    - panel_characteristics
+    - applications_and_benefits
+    - principal_component_visual_references
+    - engineering_note_and_footer
+  fixed_rules:
+    hmi_on_door: true
+    blue_white_engineering_identity: true
+    preserve_approved_composition: true
+    no_unapproved_recomposition: true
+    no_component_distortion: true
+panels:
+  PN-AUT-01:
+    image_template_id: IMG-PN-AUT-01-APPROVED-V1
+    approved_reference_private_file: 461cdb59-2cea-4946-9150-6ef5597ccf93.png
+    approved_reference_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
+    approved_reference_pixel_size: {width: 1448, height: 1086}
+    enclosure_external_mm: {width: 600, height: 800, depth: 300}
+    mounting_plate_mm: {width: 550, height: 750}
+    hmi_surface: door
+  PN-AUT-02:
+    image_template_id: IMG-PN-AUT-02-APPROVED-V1
+    approved_reference_private_file: 33eb3923-6eb5-4bf9-89af-373871b3e37f.png
+    approved_reference_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
+    approved_reference_pixel_size: {width: 1448, height: 1086}
+    enclosure_external_mm: {width: 400, height: 500, depth: 250}
+    mounting_plate_mm: {width: 350, height: 450}
+    hmi_surface: door
