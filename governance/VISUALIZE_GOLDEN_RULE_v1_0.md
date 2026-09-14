@@ -11,6 +11,8 @@ Establish the default presentation and review model for engineering documentatio
 
 A compliant output preserves all relevant evidence, assumptions, divergences, impacts, solutions, dependencies and closure criteria while organizing them into a visual hierarchy that is easy to inspect.
 
+Machine-enforced contract: `complete_not_summary = true`.
+
 ## Mandatory analysis stack
 Every engineering compatibility review SHALL apply, when relevant:
 
