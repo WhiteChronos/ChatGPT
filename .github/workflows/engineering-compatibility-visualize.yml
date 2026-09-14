@@ -1,0 +1,84 @@
+name: Engineering Compatibility Visualize Gate
+
+on:
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
+      - 'schemas/engineering_compatibility.schema.json'
+      - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
+      - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
+      - 'datasheet/projects/**/*.json'
+      - 'pipeline/engineering_compatibility_gate.py'
+      - 'tests/test_engineering_compatibility_gate.py'
+      - '.github/workflows/engineering-compatibility-visualize.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
+      - 'schemas/engineering_compatibility.schema.json'
+      - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
+      - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
+      - 'datasheet/projects/**/*.json'
+      - 'pipeline/engineering_compatibility_gate.py'
+      - 'tests/test_engineering_compatibility_gate.py'
+      - '.github/workflows/engineering-compatibility-visualize.yml'
+
+jobs:
+  golden-rule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Compile compatibility gate
+        run: python -m py_compile pipeline/engineering_compatibility_gate.py
+
+      - name: Validate JSON syntax
+        run: |
+          python -m json.tool datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json >/dev/null
+          python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
+          python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
+
+      - name: Validate datasheet template against schema
+        run: |
+          python - <<'PY'
+          import json
+          from jsonschema import Draft202012Validator
+          schema=json.load(open('schemas/engineering_compatibility.schema.json', encoding='utf-8'))
+          data=json.load(open('datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json', encoding='utf-8'))
+          Draft202012Validator(schema).validate(data)
+          print('Template schema: PASS')
+          PY
+
+      - name: Permanent Golden Rule regression tests
+        run: pytest -q tests/test_engineering_compatibility_gate.py
+
+      - name: Enforce Golden Rule on project datasheets
+        shell: bash
+        run: |
+          shopt -s nullglob globstar
+          files=(datasheet/projects/**/*.json)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo 'No project compatibility datasheets found; semantic gate skipped.'
+            exit 0
+          fi
+          rc=0
+          for file in "${files[@]}"; do
+            echo "Validating $file"
+            python pipeline/engineering_compatibility_gate.py "$file" || rc=1
+          done
+          exit $rc
+
+      - name: Verify Codex compatibility contract exists
+        run: |
+          grep -q 'VISUALIZE_GOLDEN_RULE_v1_0' AGENTS.md
+          grep -q 'engineering_compatibility_gate.py' AGENTS.md
+          grep -q 'complete_not_summary' governance/VISUALIZE_GOLDEN_RULE_v1_0.md

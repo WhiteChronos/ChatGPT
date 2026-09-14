@@ -1,0 +1,80 @@
+{
+  "model_id": "ENGINEERING_COMPATIBILITY_VISUALIZE_V1_0",
+  "status": "MANDATORY",
+  "mode": "BLOCK_ON_FAILURE",
+  "golden_rule": "governance/VISUALIZE_GOLDEN_RULE_v1_0.md",
+  "schema": "schemas/engineering_compatibility.schema.json",
+  "datasheet": "datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json",
+  "codex_contract": "AGENTS.md",
+  "source_policy": {
+    "raw_immutable": true,
+    "retain_sha256": true,
+    "retain_document_id": true,
+    "retain_revision": true,
+    "retain_location": true,
+    "allow_silent_reconciliation": false
+  },
+  "analysis_stack": [
+    "/factcheck",
+    "/thenvsnow",
+    "/comparison",
+    "/deepdive",
+    "/rootcause",
+    "/fivewhys",
+    "/audit",
+    "/redteam",
+    "/premortem",
+    "/viability",
+    "/actionplan",
+    "/visualize"
+  ],
+  "classifications": [
+    "VERIFIED",
+    "PARTIAL",
+    "DIVERGENT",
+    "NOT_VERIFIABLE",
+    "NOT_APPLICABLE"
+  ],
+  "severity": {
+    "CRITICAL": "red",
+    "HIGH": "orange",
+    "MEDIUM": "yellow",
+    "LOW": "blue",
+    "VERIFIED": "green",
+    "NOT_APPLICABLE": "gray"
+  },
+  "thresholds": {
+    "minimum_coverage_percent": 85,
+    "minimum_global_compatibility_percent": 80,
+    "block_on_open_critical": true,
+    "block_on_missing_mandatory_document": true,
+    "block_on_unreconciled_baseline": true
+  },
+  "compatibility": {
+    "exclude_not_applicable_from_denominator": true,
+    "exclude_not_verifiable_from_compatibility_denominator": true,
+    "not_verifiable_reduces_coverage": true,
+    "require_method_disclosure": true
+  },
+  "visualization": {
+    "complete_not_summary": true,
+    "mandatory_sections": [
+      "executive_gate",
+      "baseline_map",
+      "compatibility_by_discipline",
+      "compatibility_by_document",
+      "interfaces",
+      "complete_findings",
+      "feasibility",
+      "missing_evidence",
+      "action_plan",
+      "release_gate"
+    ]
+  },
+  "datacenter_layout": {
+    "raw": "datacenter/raw/<project>/<discipline>/<document>/<revision>/",
+    "normalized": "datacenter/normalized/<project>/",
+    "reports": "reports/<project>/",
+    "datasheets": "datasheet/projects/<project>/"
+  }
+}

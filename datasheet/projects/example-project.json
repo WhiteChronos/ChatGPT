@@ -1,0 +1,49 @@
+{
+  "project": "Example Project",
+  "baseline": {
+    "disciplines": [
+      "HVAC",
+      "ELECTRICAL",
+      "AUTOMATION"
+    ],
+    "documents": []
+  },
+  "coverage": 95.5,
+  "compatibility": {
+    "global": 92.0,
+    "by_discipline": {
+      "HVAC": 94.0,
+      "ELECTRICAL": 92.0,
+      "AUTOMATION": 90.0
+    },
+    "interface": 91.0,
+    "method": "Example passing datasheet. NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator; NOT_VERIFIABLE reduces coverage."
+  },
+  "blocking_missing_documents": [],
+  "release_gate": "PASS",
+  "visualization": {
+    "model": "VISUALIZE_GOLDEN_RULE_v1_0",
+    "complete_not_summary": true,
+    "severity_colors": {
+      "CRITICAL": "red",
+      "HIGH": "orange",
+      "MEDIUM": "yellow",
+      "LOW": "blue",
+      "VERIFIED": "green",
+      "NOT_APPLICABLE": "gray"
+    },
+    "mandatory_sections": [
+      "executive_gate",
+      "baseline_map",
+      "compatibility_by_discipline",
+      "compatibility_by_document",
+      "interfaces",
+      "complete_findings",
+      "feasibility",
+      "missing_evidence",
+      "action_plan",
+      "release_gate"
+    ]
+  },
+  "findings": []
+}
