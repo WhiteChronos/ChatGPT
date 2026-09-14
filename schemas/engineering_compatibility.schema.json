@@ -3,29 +3,59 @@
   "$id": "https://github.com/WhiteChronos/ChatGPT/schemas/engineering_compatibility.schema.json",
   "title": "Engineering Compatibility Datasheet",
   "type": "object",
-  "required": ["project", "baseline", "coverage", "compatibility", "findings"],
+  "required": ["project", "baseline", "coverage", "compatibility", "findings", "release_gate", "visualization"],
   "properties": {
-    "project": {"type": "string"},
+    "project": {"type": "string", "minLength": 1},
     "baseline": {
       "type": "object",
       "required": ["disciplines", "documents"],
       "properties": {
-        "disciplines": {"type": "array", "items": {"type": "string"}},
+        "disciplines": {"type": "array", "minItems": 1, "items": {"type": "string"}},
         "documents": {"type": "array", "items": {"$ref": "#/$defs/document"}}
-      }
+      },
+      "additionalProperties": true
     },
     "coverage": {"type": "number", "minimum": 0, "maximum": 100},
     "compatibility": {
       "type": "object",
-      "required": ["global", "by_discipline"],
+      "required": ["global", "by_discipline", "interface", "method"],
       "properties": {
         "global": {"type": "number", "minimum": 0, "maximum": 100},
         "by_discipline": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}},
         "interface": {"type": "number", "minimum": 0, "maximum": 100},
-        "method": {"type": "string"}
-      }
+        "method": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
     },
     "blocking_missing_documents": {"type": "array", "items": {"type": "string"}},
+    "release_gate": {"enum": ["PASS", "BLOCK"]},
+    "visualization": {
+      "type": "object",
+      "required": ["model", "complete_not_summary", "severity_colors", "mandatory_sections"],
+      "properties": {
+        "model": {"const": "VISUALIZE_GOLDEN_RULE_v1_0"},
+        "complete_not_summary": {"const": true},
+        "severity_colors": {
+          "type": "object",
+          "required": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "VERIFIED", "NOT_APPLICABLE"],
+          "properties": {
+            "CRITICAL": {"type": "string"},
+            "HIGH": {"type": "string"},
+            "MEDIUM": {"type": "string"},
+            "LOW": {"type": "string"},
+            "VERIFIED": {"type": "string"},
+            "NOT_APPLICABLE": {"type": "string"}
+          },
+          "additionalProperties": true
+        },
+        "mandatory_sections": {
+          "type": "array",
+          "minItems": 8,
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    },
     "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}}
   },
   "$defs": {
@@ -37,12 +67,14 @@
         "discipline": {"type": "string"},
         "revision": {"type": "string"},
         "source": {"type": "string"},
-        "sha256": {"type": "string"}
-      }
+        "sha256": {"type": "string"},
+        "status": {"type": "string"}
+      },
+      "additionalProperties": true
     },
     "evidence": {
       "type": "object",
-      "required": ["document_id", "location", "statement"],
+      "required": ["document_id", "revision", "location", "statement"],
       "properties": {
         "document_id": {"type": "string"},
         "revision": {"type": "string"},
@@ -50,31 +82,67 @@
         "tag": {"type": "string"},
         "statement": {"type": "string"},
         "value": {},
-        "unit": {"type": "string"}
-      }
+        "unit": {"type": "string"},
+        "source_hash": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "impacts": {
+      "type": "object",
+      "required": ["design", "procurement", "fabrication", "programming", "commissioning", "operation", "maintenance", "safety", "cost", "schedule"],
+      "properties": {
+        "design": {"type": "string"},
+        "procurement": {"type": "string"},
+        "fabrication": {"type": "string"},
+        "programming": {"type": "string"},
+        "commissioning": {"type": "string"},
+        "operation": {"type": "string"},
+        "maintenance": {"type": "string"},
+        "safety": {"type": "string"},
+        "cost": {"type": "string"},
+        "schedule": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "alternative": {
+      "type": "object",
+      "required": ["name", "feasibility", "pros", "cons"],
+      "properties": {
+        "name": {"type": "string"},
+        "feasibility": {"type": "string"},
+        "pros": {"type": "array", "items": {"type": "string"}},
+        "cons": {"type": "array", "items": {"type": "string"}},
+        "recommended": {"type": "boolean"}
+      },
+      "additionalProperties": true
     },
     "finding": {
       "type": "object",
-      "required": ["id", "severity", "classification", "disciplines", "evidence", "problem", "solution", "primary_document", "closure_criterion"],
+      "required": ["id", "severity", "classification", "status", "disciplines", "evidence", "problem", "root_cause", "impacts", "solution", "primary_document", "closure_criterion", "confidence"],
       "properties": {
-        "id": {"type": "string"},
+        "id": {"type": "string", "minLength": 1},
         "severity": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
         "classification": {"enum": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"]},
-        "disciplines": {"type": "array", "items": {"type": "string"}},
+        "status": {"enum": ["OPEN", "IN_REVIEW", "CLOSED", "WAIVED"]},
+        "disciplines": {"type": "array", "minItems": 1, "items": {"type": "string"}},
         "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
-        "problem": {"type": "string"},
-        "root_cause": {"type": "string"},
-        "impacts": {"type": "object", "additionalProperties": {"type": "string"}},
-        "solution": {"type": "string"},
-        "alternatives": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "feasibility": {"type": "string"}, "pros": {"type": "array", "items": {"type": "string"}}, "cons": {"type": "array", "items": {"type": "string"}}}}},
-        "primary_document": {"type": "string"},
+        "comparison": {"type": "string"},
+        "problem": {"type": "string", "minLength": 1},
+        "root_cause": {"type": "string", "minLength": 1},
+        "impacts": {"$ref": "#/$defs/impacts"},
+        "solution": {"type": "string", "minLength": 1},
+        "alternatives": {"type": "array", "items": {"$ref": "#/$defs/alternative"}},
+        "viability": {"type": "string"},
+        "primary_document": {"type": "string", "minLength": 1},
         "secondary_documents": {"type": "array", "items": {"type": "string"}},
         "proposed_text": {"type": "string"},
         "owner": {"type": "string"},
         "dependencies": {"type": "array", "items": {"type": "string"}},
-        "closure_criterion": {"type": "string"},
+        "closure_criterion": {"type": "string", "minLength": 1},
         "confidence": {"enum": ["HIGH", "MEDIUM", "LOW"]}
-      }
+      },
+      "additionalProperties": true
     }
-  }
+  },
+  "additionalProperties": true
 }
