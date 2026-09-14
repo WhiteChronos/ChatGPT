@@ -1,0 +1,102 @@
+{
+  "project": "TEMPLATE_PROJECT",
+  "baseline": {
+    "disciplines": ["HVAC", "ELECTRICAL", "AUTOMATION"],
+    "documents": []
+  },
+  "coverage": 0,
+  "compatibility": {
+    "global": 0,
+    "by_discipline": {
+      "HVAC": 0,
+      "ELECTRICAL": 0,
+      "AUTOMATION": 0
+    },
+    "interface": 0,
+    "method": "Declare weighting, denominator rules and exclusions. NOT_APPLICABLE and NOT_VERIFIABLE are excluded from compatibility denominator; NOT_VERIFIABLE reduces coverage."
+  },
+  "blocking_missing_documents": [],
+  "release_gate": "BLOCK",
+  "visualization": {
+    "model": "VISUALIZE_GOLDEN_RULE_v1_0",
+    "complete_not_summary": true,
+    "severity_colors": {
+      "CRITICAL": "red",
+      "HIGH": "orange",
+      "MEDIUM": "yellow",
+      "LOW": "blue",
+      "VERIFIED": "green",
+      "NOT_APPLICABLE": "gray"
+    },
+    "mandatory_sections": [
+      "executive_gate",
+      "baseline_map",
+      "compatibility_by_discipline",
+      "compatibility_by_document",
+      "interfaces",
+      "complete_findings",
+      "feasibility",
+      "missing_evidence",
+      "action_plan",
+      "release_gate"
+    ]
+  },
+  "findings": [
+    {
+      "id": "TEMPLATE-001",
+      "severity": "HIGH",
+      "classification": "DIVERGENT",
+      "status": "OPEN",
+      "disciplines": ["HVAC", "ELECTRICAL"],
+      "evidence": [
+        {
+          "document_id": "DOC-A",
+          "revision": "A",
+          "location": "Sheet 1 / TAG XX",
+          "tag": "XX",
+          "statement": "Documented source statement"
+        },
+        {
+          "document_id": "DOC-B",
+          "revision": "B",
+          "location": "Page 2 / Item 3",
+          "tag": "XX",
+          "statement": "Conflicting source statement"
+        }
+      ],
+      "comparison": "Explain source A versus source B without silently reconciling them.",
+      "problem": "Complete engineering description of the discrepancy.",
+      "root_cause": "Identified cause or explicit statement that root cause is not yet verifiable.",
+      "impacts": {
+        "design": "Impact or NONE",
+        "procurement": "Impact or NONE",
+        "fabrication": "Impact or NONE",
+        "programming": "Impact or NONE",
+        "commissioning": "Impact or NONE",
+        "operation": "Impact or NONE",
+        "maintenance": "Impact or NONE",
+        "safety": "Impact or NONE",
+        "cost": "Impact or NONE",
+        "schedule": "Impact or NONE"
+      },
+      "solution": "Primary engineering correction.",
+      "alternatives": [
+        {
+          "name": "Simpler alternative",
+          "feasibility": "MEDIUM",
+          "pros": ["Example advantage"],
+          "cons": ["Example limitation"],
+          "recommended": false
+        }
+      ],
+      "viability": "Compare current solution and alternatives for simplicity, lifecycle cost, maintainability and interfaces.",
+      "primary_document": "DOC-A",
+      "secondary_documents": ["DOC-B"],
+      "proposed_text": "Exact replacement/insertion text when applicable.",
+      "owner": "RESPONSIBLE_DISCIPLINE",
+      "dependencies": ["Required decision or missing document"],
+      "closure_criterion": "Objective evidence required to close the finding.",
+      "confidence": "HIGH"
+    }
+  ]
+}
