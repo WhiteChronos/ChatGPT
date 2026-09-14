@@ -12,6 +12,39 @@ Repositório de governança, memória técnica e validação para documentação
 - Dados de projeto confidenciais não são publicados neste repositório público.
 - O padrão visual é imutável; o conteúdo e a quantidade de folhas pertencem ao documento de destino.
 
+## Regra de Ouro — `/visualize`
+
+Model ID:
+
+`VISUALIZE_GOLDEN_RULE_v1_0`
+
+`/visualize` significa **conteúdo técnico completo apresentado visualmente**. Não é sinônimo de resumo.
+
+Toda compatibilização multidisciplinar e parecer técnico deve preservar evidências, comparações, causa-raiz, impactos, alternativas de viabilidade, documentos a ajustar, texto proposto, dependências e critérios de fechamento.
+
+Arquivos de controle:
+
+- `governance/VISUALIZE_GOLDEN_RULE_v1_0.md`;
+- `governance/CODEX_COMPATIBILITY_v1_0.md`;
+- `AGENTS.md`;
+- `schemas/engineering_compatibility.schema.json`;
+- `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`;
+- `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`;
+- `pipeline/engineering_compatibility_gate.py`;
+- `.github/workflows/engineering-compatibility-visualize.yml`.
+
+O pipeline opera em `BLOCK_ON_FAILURE` para incompatibilidades críticas abertas, cobertura insuficiente, documentos mandatórios ausentes, baseline não reconciliada ou compatibilidade abaixo do limiar definido.
+
+## Compatibilidade com Codex
+
+Codex e outros agentes de código devem ler `AGENTS.md` e a Regra de Ouro antes de alterar esquemas, cálculos de compatibilidade, relatórios, pipelines ou configuração do Data Center.
+
+Fluxo obrigatório:
+
+`/factcheck -> /thenvsnow -> /comparison -> /deepdive -> /rootcause -> /fivewhys -> /audit -> /redteam -> /premortem -> /viability -> /actionplan -> /visualize`
+
+O agente deve preservar a diferença entre fato de fonte, inferência de engenharia, conhecimento externo e hipótese não resolvida.
+
 ## Padrão definitivo — LI de Entradas e Saídas
 
 Model ID:
@@ -54,8 +87,8 @@ O workflow mensal `document-tooling-discovery.yml` pesquisa novas candidatas. De
 - `memory/`: decisões, lições aprendidas, conflitos e pendências;
 - `schemas/`: contratos de dados e validação;
 - `pipeline/`: validadores, agentes e aplicação textual controlada;
-- `datacenter/`: manifestos redigidos e fingerprints de modelos privados;
-- `datasheet/`: regras de consistência para LI e FD;
+- `datacenter/`: manifestos redigidos, fingerprints e configuração de compatibilização;
+- `datasheet/`: regras de consistência e registros estruturados de compatibilidade;
 - `plugins/`: catálogo de ferramentas externas;
 - `tests/`: testes de regressão;
 - `.github/`: workflows e processo de revisão.
