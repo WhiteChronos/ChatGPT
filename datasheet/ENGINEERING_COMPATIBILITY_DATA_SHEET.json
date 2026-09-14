@@ -2,9 +2,28 @@
   "project": "TEMPLATE_PROJECT",
   "baseline": {
     "disciplines": ["HVAC", "ELECTRICAL", "AUTOMATION"],
-    "documents": []
+    "documents": [
+      {
+        "id": "TEMPLATE-DOC-A",
+        "discipline": "HVAC",
+        "revision": "A",
+        "source": "synthetic://template/TEMPLATE-DOC-A/A",
+        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "status": "DRAFT"
+      }
+    ],
+    "reconciled": false,
+    "reconciliation_note": "Template baseline is intentionally unreconciled and must remain BLOCK until replaced with project evidence.",
+    "required_document_ids": ["TEMPLATE-DOC-A"]
   },
-  "coverage": 0,
+  "scope_summary": {
+    "VERIFIED": 0,
+    "PARTIAL": 0,
+    "DIVERGENT": 1,
+    "NOT_VERIFIABLE": 0,
+    "NOT_APPLICABLE": 0
+  },
+  "coverage": 100.0,
   "compatibility": {
     "global": 0,
     "by_discipline": {
@@ -12,8 +31,22 @@
       "ELECTRICAL": 0,
       "AUTOMATION": 0
     },
+    "by_document": {
+      "TEMPLATE-DOC-A": 0
+    },
     "interface": 0,
-    "method": "Declare weighting, denominator rules and exclusions. NOT_APPLICABLE and NOT_VERIFIABLE are excluded from compatibility denominator; NOT_VERIFIABLE reduces coverage."
+    "method": {
+      "name": "weighted_status_v1",
+      "formula": "100 * sum(status_weight * applicable_criterion) / applicable_criteria",
+      "denominator_definition": "Applicable criteria classified VERIFIED, PARTIAL or DIVERGENT; NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator.",
+      "exclude_not_applicable": true,
+      "exclude_not_verifiable": true,
+      "status_weights": {
+        "VERIFIED": 1.0,
+        "PARTIAL": 0.5,
+        "DIVERGENT": 0.0
+      }
+    }
   },
   "blocking_missing_documents": [],
   "release_gate": "BLOCK",
@@ -50,21 +83,15 @@
       "disciplines": ["HVAC", "ELECTRICAL"],
       "evidence": [
         {
-          "document_id": "DOC-A",
+          "document_id": "TEMPLATE-DOC-A",
           "revision": "A",
           "location": "Sheet 1 / TAG XX",
           "tag": "XX",
-          "statement": "Documented source statement"
-        },
-        {
-          "document_id": "DOC-B",
-          "revision": "B",
-          "location": "Page 2 / Item 3",
-          "tag": "XX",
-          "statement": "Conflicting source statement"
+          "statement": "Documented source statement",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         }
       ],
-      "comparison": "Explain source A versus source B without silently reconciling them.",
+      "comparison": "Explain source evidence versus the related engineering criterion without silently reconciling them.",
       "problem": "Complete engineering description of the discrepancy.",
       "root_cause": "Identified cause or explicit statement that root cause is not yet verifiable.",
       "impacts": {
@@ -80,6 +107,7 @@
         "schedule": "Impact or NONE"
       },
       "solution": "Primary engineering correction.",
+      "architecture_impact": true,
       "alternatives": [
         {
           "name": "Simpler alternative",
@@ -90,11 +118,11 @@
         }
       ],
       "viability": "Compare current solution and alternatives for simplicity, lifecycle cost, maintainability and interfaces.",
-      "primary_document": "DOC-A",
-      "secondary_documents": ["DOC-B"],
+      "primary_document": "TEMPLATE-DOC-A",
+      "secondary_documents": [],
       "proposed_text": "Exact replacement/insertion text when applicable.",
       "owner": "RESPONSIBLE_DISCIPLINE",
-      "dependencies": ["Required decision or missing document"],
+      "dependencies": ["Required decision or missing evidence"],
       "closure_criterion": "Objective evidence required to close the finding.",
       "confidence": "HIGH"
     }
