@@ -14,6 +14,13 @@
     "retain_location": true,
     "allow_silent_reconciliation": false
   },
+  "baseline_policy": {
+    "eligible_required_document_statuses": ["CURRENT", "APPROVED"]
+  },
+  "waiver_authorization": {
+    "require_external_approval_record": true,
+    "trusted_approval_records": {}
+  },
   "analysis_stack": [
     "/factcheck",
     "/thenvsnow",
@@ -40,6 +47,7 @@
     "HIGH": "orange",
     "MEDIUM": "yellow",
     "LOW": "blue",
+    "NOT_VERIFIABLE": "blue",
     "VERIFIED": "green",
     "NOT_APPLICABLE": "gray"
   },
