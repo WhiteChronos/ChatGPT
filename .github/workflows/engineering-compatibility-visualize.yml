@@ -5,11 +5,12 @@ on:
     paths:
       - 'AGENTS.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
+      - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
-      - 'pipeline/engineering_compatibility_gate.py'
+      - 'pipeline/engineering_compatibility*.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
   push:
@@ -17,11 +18,12 @@ on:
     paths:
       - 'AGENTS.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
+      - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
-      - 'pipeline/engineering_compatibility_gate.py'
+      - 'pipeline/engineering_compatibility*.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
 
@@ -38,24 +40,43 @@ jobs:
       - name: Install validation dependencies
         run: pip install -r requirements-dev.txt
 
-      - name: Compile compatibility gate
-        run: python -m py_compile pipeline/engineering_compatibility_gate.py
+      - name: Compile compatibility validators
+        run: |
+          python -m py_compile pipeline/engineering_compatibility_gate.py
+          python -m py_compile pipeline/engineering_compatibility.py
 
       - name: Validate JSON syntax
         run: |
           python -m json.tool datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json >/dev/null
           python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
           python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
+          python -m json.tool datasheet/projects/example-project.json >/dev/null
 
       - name: Validate datasheet template against schema
         run: |
           python - <<'PY'
           import json
-          from jsonschema import Draft202012Validator
+          from jsonschema import Draft202012Validator, FormatChecker
           schema=json.load(open('schemas/engineering_compatibility.schema.json', encoding='utf-8'))
           data=json.load(open('datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json', encoding='utf-8'))
-          Draft202012Validator(schema).validate(data)
+          Draft202012Validator(schema, format_checker=FormatChecker()).validate(data)
           print('Template schema: PASS')
+          PY
+
+      - name: Exercise permanent positive semantic gate
+        run: python pipeline/engineering_compatibility_gate.py
+
+      - name: Exercise compatibility report wrapper
+        run: |
+          python pipeline/engineering_compatibility.py \
+            datasheet/projects/example-project.json \
+            --summary /tmp/example-compatibility-summary.json
+          python - <<'PY'
+          import json
+          summary=json.load(open('/tmp/example-compatibility-summary.json', encoding='utf-8'))
+          assert summary['release_gate'] == 'PASS', summary
+          assert summary['validation_error_count'] == 0, summary
+          print('Wrapper summary: PASS')
           PY
 
       - name: Permanent Golden Rule regression tests
@@ -82,3 +103,4 @@ jobs:
           grep -q 'VISUALIZE_GOLDEN_RULE_v1_0' AGENTS.md
           grep -q 'engineering_compatibility_gate.py' AGENTS.md
           grep -q 'complete_not_summary' governance/VISUALIZE_GOLDEN_RULE_v1_0.md
+          grep -q 'ENGINEERING_COMPATIBILITY_VISUALIZE_V1_1' datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
