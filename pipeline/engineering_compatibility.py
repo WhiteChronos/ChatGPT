@@ -12,12 +12,20 @@ import json
 from pathlib import Path
 import sys
 
-from pipeline.engineering_compatibility_gate import (
-    DEFAULT_CONFIG,
-    DEFAULT_SCHEMA,
-    load_json,
-    validate_data,
-)
+try:  # Package import used by pytest and other Python callers.
+    from .engineering_compatibility_gate import (
+        DEFAULT_CONFIG,
+        DEFAULT_SCHEMA,
+        load_json,
+        validate_data,
+    )
+except ImportError:  # Direct CLI execution: python pipeline/engineering_compatibility.py
+    from engineering_compatibility_gate import (  # type: ignore
+        DEFAULT_CONFIG,
+        DEFAULT_SCHEMA,
+        load_json,
+        validate_data,
+    )
 
 
 def summarize(data: dict, errors: list[str]) -> dict:
