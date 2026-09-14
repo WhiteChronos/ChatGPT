@@ -10,6 +10,7 @@ on:
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility_gate.py'
+      - 'tests/test_engineering_compatibility_gate.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
   push:
     branches: [main]
@@ -21,6 +22,8 @@ on:
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility_gate.py'
+      - 'tests/test_engineering_compatibility_gate.py'
+      - '.github/workflows/engineering-compatibility-visualize.yml'
 
 jobs:
   golden-rule:
@@ -54,6 +57,9 @@ jobs:
           Draft202012Validator(schema).validate(data)
           print('Template schema: PASS')
           PY
+
+      - name: Permanent Golden Rule regression tests
+        run: pytest -q tests/test_engineering_compatibility_gate.py
 
       - name: Enforce Golden Rule on project datasheets
         shell: bash
