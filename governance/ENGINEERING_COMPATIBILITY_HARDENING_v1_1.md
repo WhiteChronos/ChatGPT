@@ -2,102 +2,91 @@
 
 ## Purpose
 
-This hardening release closes the review findings raised against the initial engineering compatibility implementation and converts them into machine-enforced validation rules.
-
-The canonical release validator is:
-
-`pipeline/engineering_compatibility_gate.py`
-
-The secondary helper `pipeline/engineering_compatibility.py` MUST delegate to the canonical validator and MUST NOT carry independent release thresholds or blocker logic.
+This hardening release converts review findings into machine-enforced controls. The canonical release validator is `pipeline/engineering_compatibility_gate.py`; secondary compatibility CLIs must delegate to it and must not duplicate release logic.
 
 ## Control matrix
 
 | ID | Review finding | Mandatory control in v1.1 |
 |---|---|---|
-| H-01 | Semantic gate could be skipped when no project datasheets existed | Permanent known-good fixture is executed directly with the no-argument canonical gate; empty-directory protection remains for project discovery. |
-| H-02 | Unreconciled baseline could still PASS | `baseline.reconciled` is mandatory and `block_on_unreconciled_baseline` is enforced semantically. |
+| H-01 | Semantic gate could be skipped when no project datasheets existed | Permanent known-good fixture is executed directly; empty-directory protection remains only for project discovery. |
+| H-02 | Unreconciled baseline could still PASS | `baseline.reconciled=true` is required for release. |
 | H-03 | Workflow did not trigger on every compatibility validator | Workflow paths cover `pipeline/engineering_compatibility*.py`. |
-| H-04 | SHA-256 provenance was optional | Baseline document `sha256` and evidence `source_hash` are mandatory, formatted and cross-checked. |
-| H-05 | CRITICAL findings could self-waive | `WAIVED` requires reason, approver, date/time and approval evidence. Open CRITICAL is based on status, not classification. |
-| H-06 | Severity colors could be remapped | Schema uses fixed constants: red/orange/yellow/blue/green/gray. |
-| H-07 | Lifecycle impacts could be blank | Every impact field is mandatory and non-empty; `NONE` is the explicit no-impact value. |
-| H-08 | Secondary validator used a hard-coded compatibility threshold | Secondary validator delegates to the canonical gate and therefore uses configured thresholds only. |
-| H-09 | Finding comparison was optional | `comparison` is mandatory and non-empty. |
-| H-10 | Compatibility denominator was not reproducible | `compatibility.method` is a structured object with formula, denominator definition, exclusions and status weights. |
-| H-11 | CRITICAL blocker logic ignored finding status | Canonical gate blocks severity CRITICAL with status `OPEN` or `IN_REVIEW` regardless of classification. |
-| H-12 | Discipline-level compatibility could omit in-scope disciplines | `compatibility.by_discipline` keys must exactly match `baseline.disciplines`. |
-| H-13 | NOT_VERIFIABLE did not reduce coverage | Coverage is recomputed from `scope_summary`; NOT_VERIFIABLE remains in the applicable denominator. |
-| H-14 | Failed validation could write a PASS summary | Summary release gate is derived from the complete validation error set. |
-| H-15 | Interface compatibility could fail while overall gate passed | Dedicated configured interface threshold is enforced. |
-| H-16 | PASS was possible with no source baseline | `baseline.documents` has at least one document and PASS requires baseline integrity. |
-| H-17 | Evidence identities could be empty | Evidence document ID, revision, location, statement and source hash are non-empty schema requirements. |
-| H-18 | Mandated no-argument gate command always failed | No-argument canonical gate now validates the permanent positive fixture. |
-| H-19 | NaN/Infinity could bypass numeric thresholds | Strict JSON loading rejects non-standard numeric constants; semantic validation also requires finite metrics. |
-| H-20 | Architecture findings could omit viability | `architecture_impact=true` conditionally requires alternatives and viability analysis. |
-| H-21 | Baseline documents did not have individual compatibility assessments | `compatibility.by_document` is mandatory and must exactly cover all baseline document IDs. |
+| H-04 | SHA-256 provenance was optional | Baseline `sha256` and evidence `source_hash` are mandatory and cross-checked. |
+| H-05 | CRITICAL findings could self-waive | WAIVED findings reference a trusted external approval record with `human_approved=true`; self-declared approver text is not authorization. |
+| H-06 | Severity colors could be remapped | Schema fixes red/orange/yellow/blue/green/gray semantics. |
+| H-07 | Lifecycle impacts could be blank | Every impact field is mandatory and nonblank; use `NONE` for no impact. |
+| H-08 | Secondary validator used independent thresholds | Secondary validator delegates to canonical gate. |
+| H-09 | Finding comparison was optional | `comparison` is mandatory and nonblank. |
+| H-10 | Compatibility denominator was not reproducible | Method, denominator exclusions and status weights are explicit. |
+| H-11 | CRITICAL blocker logic ignored status | CRITICAL with `OPEN` or `IN_REVIEW` blocks release. |
+| H-12 | Discipline compatibility could omit in-scope disciplines | `by_discipline` keys must exactly match baseline disciplines. |
+| H-13 | NOT_VERIFIABLE did not reduce coverage | Coverage is derived from structured assessment records; NOT_VERIFIABLE remains in the coverage denominator. |
+| H-14 | Failed validation could write PASS | Summary gate is derived from the complete error set. |
+| H-15 | Interface compatibility could fail independently | Interface score is separately recomputed and thresholded. |
+| H-16 | PASS was possible without baseline | Non-empty source baseline is mandatory. |
+| H-17 | Evidence identity fields could be empty | Evidence document/revision/location/statement/hash are mandatory and nonblank. |
+| H-18 | No-argument gate always failed | No-argument gate validates the permanent positive fixture. |
+| H-19 | NaN/Infinity could bypass thresholds | Strict JSON loading and finite-metric checks reject non-standard values. |
+| H-20 | Architecture findings could omit viability | Architecture-impact findings require alternatives and viability analysis. |
+| H-21 | Baseline documents lacked individual assessment | `by_document` must exactly cover baseline documents. |
+| H-22 | Declared scores were not tied to calculation inputs | `assessment_records` are authoritative; global, interface, discipline and document scores are recomputed from their classifications and status weights. |
+| H-23 | Hexadecimal hashes were compared case-sensitively | SHA-256 comparison is case-insensitive after schema validation. |
+| H-24 | Mandatory document could be DRAFT/SUPERSEDED and still count as present | Required documents must have an eligible status from `baseline_policy.eligible_required_document_statuses`. |
+| H-25 | Scope counts could be inflated with unsupported VERIFIED entries | `scope_summary` must exactly equal counts derived from `assessment_records`. |
+| H-26 | Findings could reference disciplines outside the baseline | Finding and assessment disciplines are validated against `baseline.disciplines`. |
+| H-27 | Mandatory evidence quality could not be represented | Every finding requires structured `evidence_quality.rating` and `evidence_quality.rationale`. |
+| H-28 | Whitespace-only finding text passed validation | Critical textual fields use nonblank string schema and semantic checks. |
+| H-29 | NOT_VERIFIABLE blue mapping was required by governance but rejected by schema | `NOT_VERIFIABLE: blue` is required by schema and configuration. |
+| H-30 | Findings and structured classification inventory could diverge | Every finding references `assessment_id`; its classification and discipline set must match the referenced assessment record. |
 
 ## Release invariants
 
-A `PASS` package must satisfy every invariant below:
+A `PASS` package must satisfy all of the following:
 
-1. At least one baseline source document exists.
-2. Baseline document IDs are unique.
-3. Every baseline source has revision, discipline, source and SHA-256 provenance.
-4. The baseline is explicitly reconciled.
-5. Mandatory document inventory and `blocking_missing_documents` are consistent.
-6. Coverage is reproducible from `scope_summary`.
-7. NOT_VERIFIABLE reduces coverage.
-8. Global compatibility meets the configured threshold.
-9. Interface compatibility meets the configured threshold.
-10. Every in-scope discipline has a compatibility score.
-11. Every baseline document has a compatibility score.
-12. Calculation method, denominator and status weights are explicit.
-13. Severity colors retain mandatory semantics.
-14. Open CRITICAL findings block release.
-15. WAIVED findings contain recorded human approval metadata.
-16. Evidence hashes match baseline source hashes.
-17. Evidence revisions match baseline document revisions.
-18. Lifecycle impact fields are explicit and non-empty.
-19. Architecture-impact findings include alternatives and viability analysis.
-20. Metrics are finite.
-21. Schema and semantic validation have zero errors.
+1. Baseline documents exist, have unique IDs, provenance and valid disciplines.
+2. The baseline is reconciled.
+3. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
+4. `assessment_records` are the authoritative complete criterion inventory.
+5. `scope_summary` exactly matches classifications derived from `assessment_records`.
+6. Coverage is recomputed from that inventory and meets threshold.
+7. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights.
+8. Every baseline discipline and document has a computed score.
+9. `NOT_VERIFIABLE` reduces coverage and is excluded from the compatibility denominator.
+10. Findings reference valid assessment records and cannot invent disciplines or classifications.
+11. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
+12. Every finding exposes evidence quality, confidence, comparison, root cause, lifecycle impacts, solution and objective closure criterion.
+13. Open CRITICAL findings block release.
+14. WAIVED findings require a trusted external human approval record.
+15. Architecture-impact findings include alternatives and viability.
+16. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
+17. Metrics are finite and schema + semantic validation return zero errors.
 
 ## Coverage formula
 
-Let:
+Let `V`, `P`, `D`, `NV`, `NA` be counts derived from `assessment_records`.
 
-- `V` = VERIFIED count
-- `P` = PARTIAL count
-- `D` = DIVERGENT count
-- `NV` = NOT_VERIFIABLE count
-- `NA` = NOT_APPLICABLE count
+`coverage = 100 * (V + P + D) / (V + P + D + NV)`
 
-Coverage is:
+`NA` is excluded from the coverage denominator. `NV` remains in the denominator and therefore reduces coverage.
 
-`100 * (V + P + D) / (V + P + D + NV)`
+## Compatibility formula
 
-`NA` is excluded from the coverage denominator. `NV` is included and therefore reduces coverage.
+For applicable assessment records only (`VERIFIED`, `PARTIAL`, `DIVERGENT`):
 
-## Compatibility denominator
+`compatibility = 100 * sum(status_weight) / applicable_record_count`
 
-The default compatibility policy excludes NOT_APPLICABLE and NOT_VERIFIABLE from the compatibility denominator and uses status weights:
+Default mandatory weights:
 
 - VERIFIED = 1.0
 - PARTIAL = 0.5
 - DIVERGENT = 0.0
 
-Project reports must publish the formula and denominator definition used.
+The same calculation is performed globally and for each discipline, document and interface subset. Declared values must match recomputed values within the configured tolerance.
+
+## Trusted waiver authorization
+
+`waiver.approval_record_id` must resolve to `waiver_authorization.trusted_approval_records` in the trusted configuration and that record must contain `human_approved=true`. Datasheet-authored approver names, timestamps or evidence strings do not create authorization by themselves.
 
 ## CI expectations
 
-The compatibility workflow SHALL:
-
-- compile both compatibility Python modules;
-- validate JSON syntax;
-- validate the datasheet template against the schema;
-- execute the permanent positive fixture through the canonical semantic gate;
-- execute the report-wrapper path;
-- run permanent regression tests;
-- validate every project datasheet when project files exist;
-- preserve the non-failing empty-directory guard for project discovery;
-- verify the Codex/Golden Rule machine contract.
+The compatibility workflow shall compile both compatibility modules, validate JSON syntax and schema, exercise the permanent positive fixture, exercise the report wrapper, run regression tests, validate every project datasheet found, preserve the empty-project discovery guard, and verify the Codex/Golden Rule contract.
