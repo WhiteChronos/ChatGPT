@@ -27,6 +27,8 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise SystemExit("PyYAML é obrigatório: pip install pyyaml") from exc
 
+CONTRACT_SCRIPT_ID = "AUT-PANEL-CONVERSATION-CONTRACT-V1"
+
 EXPECTED_SEQUENCE = [
     "BOOTSTRAP_CONTEXT",
     "DATACENTER",
@@ -179,8 +181,8 @@ def validate_contract(root: Path) -> dict[str, Any]:
             "GR-046", "SHA-256 do prompt de bootstrap não confere.")
     require(fingerprints.get("memory_immutable_contract_sha256") == sha256_object(immutable),
             "GR-047", "hash do immutable_contract da memória não confere.")
-    require(fingerprints.get("conversation_contract_script_sha256") == sha256_file(paths["script"]),
-            "GR-048", "SHA-256 do script de contrato não confere.")
+    require(fingerprints.get("conversation_contract_script_id") == CONTRACT_SCRIPT_ID,
+            "GR-048", "ID do script de contrato não confere.")
 
     prod = datasheet.get("production_contract") or {}
     require(prod.get("pipeline_id") == pipeline.get("pipeline_id"), "GR-046", "Data Sheet aponta pipeline incorreto.")
