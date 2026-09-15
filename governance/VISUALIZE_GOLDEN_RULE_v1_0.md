@@ -61,18 +61,52 @@ Use consistent severity encoding:
 
 The presentation SHOULD use cards, matrices, side-by-side comparisons, process flows, dependency trees, progress/gate panels and expandable detail sections. Color must support meaning, never decoration alone.
 
+These color mappings are machine-enforced and SHALL NOT be reassigned.
+
 ## Compatibility calculation
 Compatibility and coverage are separate metrics.
 
 Compatibility MUST exclude NOT_APPLICABLE and NOT_VERIFIABLE from the denominator unless a project-specific rule states otherwise.
 
-Coverage SHALL measure how much of the identified scope was effectively verifiable.
+Coverage SHALL measure how much of the applicable identified scope was effectively verifiable. `NOT_VERIFIABLE` remains in the coverage denominator and therefore reduces coverage. `NOT_APPLICABLE` is excluded from the coverage denominator.
 
 No global percentage may be published without:
 - calculation method;
+- explicit formula;
 - denominator definition;
+- status weights;
 - coverage value;
+- compatibility by discipline;
+- compatibility by baseline document;
+- interface compatibility;
 - list of blocking missing documents.
+
+## Source provenance
+Every baseline document SHALL contain:
+- document ID;
+- discipline;
+- revision;
+- source location;
+- SHA-256 hash;
+- baseline status.
+
+Every evidence record SHALL identify a baseline document and SHALL carry the same SHA-256 hash as that source document. Empty document IDs, revisions, locations, statements or provenance hashes are prohibited.
+
+## Baseline reconciliation
+A package may be released only when the current baseline is explicitly marked as reconciled with the latest approved revisions.
+
+The mandatory-document inventory SHALL be explicit. `blocking_missing_documents` must be derived from that inventory rather than trusted as an independent self-declaration.
+
+## Waiver integrity
+A CRITICAL finding is blocked whenever its status is `OPEN` or `IN_REVIEW`, regardless of classification.
+
+A finding may use status `WAIVED` only when the datasheet records:
+- waiver reason;
+- named human approver;
+- approval date/time;
+- approval evidence or reference.
+
+An agent SHALL NOT self-waive a finding.
 
 ## Feasibility and value engineering
 Every discrepancy with architectural or system-design impact SHALL evaluate at least:
@@ -87,17 +121,48 @@ Every discrepancy with architectural or system-design impact SHALL evaluate at l
 - failure modes;
 - impact on other disciplines.
 
+Architecture/system-design findings SHALL explicitly mark applicability and SHALL include at least one alternative plus a viability assessment.
+
+## Lifecycle impacts
+All lifecycle impact fields SHALL be non-empty. When there is no identified impact, use an explicit value such as `NONE`; blank fields are prohibited.
+
+Required lifecycle fields are:
+- design;
+- procurement;
+- fabrication;
+- programming;
+- commissioning;
+- operation;
+- maintenance;
+- safety;
+- cost;
+- schedule.
+
 ## Release gate
 A technical package SHALL be blocked when any of the following is true:
-- open CRITICAL divergence;
-- unresolved discipline interface that can invalidate fabrication/programming;
+- open CRITICAL finding;
+- unresolved discipline interface below the configured interface threshold;
 - missing mandatory source document;
-- compatibility below project threshold;
-- evidence/coverage below project threshold;
-- current baseline not reconciled with the latest approved revisions.
+- compatibility below the configured global threshold;
+- coverage below the configured coverage threshold;
+- current baseline not reconciled with the latest approved revisions;
+- baseline documents are absent;
+- provenance hashes are absent or inconsistent;
+- discipline or document compatibility scores are incomplete;
+- calculation method or denominator is not reproducible;
+- architecture-impact finding lacks viability analysis;
+- waiver metadata is incomplete;
+- any validation metric is NaN, Infinity or otherwise non-finite.
 
 ## Data-center rule
 Raw source documents are immutable and versioned. Normalized facts, findings and compatibility records are derived artifacts and must retain provenance back to the raw source.
+
+## Machine-enforced hardening v1.1
+The implementation described in `governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md` is part of this Golden Rule. The canonical validator is `pipeline/engineering_compatibility_gate.py`.
+
+Secondary validators, summary generators and report helpers SHALL delegate to the canonical gate and SHALL NOT duplicate independent thresholds or blocker logic.
+
+A validation failure SHALL never persist or publish a `PASS` summary.
 
 ## Codex rule
 Codex or any coding agent modifying this repository SHALL read this file before changing compatibility-analysis code, schemas, reports, pipelines or documentation. Generated outputs must satisfy this Golden Rule before merge.

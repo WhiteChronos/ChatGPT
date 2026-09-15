@@ -1,48 +1,414 @@
 from __future__ import annotations
 
-import json
+from copy import deepcopy
+import math
 from pathlib import Path
 
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator, FormatChecker
 
-from pipeline.engineering_compatibility_gate import validate_semantics
-
+from pipeline.engineering_compatibility import summarize
+from pipeline.engineering_compatibility_gate import (
+    DEFAULT_DATA,
+    load_json,
+    validate_data,
+    validate_semantics,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "schemas" / "engineering_compatibility.schema.json"
 CONFIG = ROOT / "datacenter" / "ENGINEERING_COMPATIBILITY_CONFIG.json"
 EXAMPLE = ROOT / "datasheet" / "projects" / "example-project.json"
+TEMPLATE = ROOT / "datasheet" / "ENGINEERING_COMPATIBILITY_DATA_SHEET.json"
 WORKFLOW = ROOT / ".github" / "workflows" / "engineering-compatibility-visualize.yml"
 
 
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+def schema_messages(data: dict) -> list[str]:
+    validator = Draft202012Validator(load_json(SCHEMA), format_checker=FormatChecker())
+    return [error.message for error in validator.iter_errors(data)]
+
+
+def config() -> dict:
+    return load_json(CONFIG)
+
+
+def example() -> dict:
+    return load_json(EXAMPLE)
+
+
+def template() -> dict:
+    return load_json(TEMPLATE)
+
+
+def make_example_finding(*, status: str = "CLOSED", severity: str = "HIGH") -> dict:
+    return {
+        "id": "TEST-001",
+        "assessment_id": "ASM-HVAC-001",
+        "severity": severity,
+        "classification": "VERIFIED",
+        "status": status,
+        "disciplines": ["HVAC"],
+        "evidence": [
+            {
+                "document_id": "EX-HVAC-001",
+                "revision": "A",
+                "location": "Sheet 1 / TAG TEST",
+                "tag": "TEST",
+                "statement": "Synthetic evidence for regression testing.",
+                "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+            }
+        ],
+        "evidence_quality": {
+            "rating": "HIGH",
+            "rationale": "Synthetic evidence is tied to the immutable regression source.",
+        },
+        "comparison": "Synthetic comparison against the coordinated project baseline.",
+        "problem": "Synthetic compatibility condition used only by the regression suite.",
+        "root_cause": "Synthetic root cause for regression testing.",
+        "impacts": {
+            "design": "NONE",
+            "procurement": "NONE",
+            "fabrication": "NONE",
+            "programming": "NONE",
+            "commissioning": "NONE",
+            "operation": "NONE",
+            "maintenance": "NONE",
+            "safety": "NONE",
+            "cost": "NONE",
+            "schedule": "NONE",
+        },
+        "solution": "Synthetic correction or accepted disposition.",
+        "architecture_impact": False,
+        "primary_document": "EX-HVAC-001",
+        "secondary_documents": [],
+        "proposed_text": "NONE",
+        "owner": "HVAC",
+        "dependencies": [],
+        "closure_criterion": "Regression condition is objectively satisfied.",
+        "confidence": "HIGH",
+    }
 
 
 def test_example_project_is_permanent_positive_regression_case() -> None:
-    """Option 1: the repository must always contain a known-good PASS datasheet."""
-    assert EXAMPLE.exists(), "Permanent positive example datasheet is missing"
-
-    schema = load_json(SCHEMA)
-    config = load_json(CONFIG)
-    data = load_json(EXAMPLE)
-
-    schema_errors = list(Draft202012Validator(schema).iter_errors(data))
-    assert schema_errors == [], [error.message for error in schema_errors]
-
-    semantic_errors = validate_semantics(data, config)
-    assert semantic_errors == []
+    data = example()
+    assert validate_data(data, load_json(SCHEMA), config()) == []
     assert data["release_gate"] == "PASS"
-    assert data["visualization"]["model"] == "VISUALIZE_GOLDEN_RULE_v1_0"
-    assert data["visualization"]["complete_not_summary"] is True
 
 
-def test_workflow_keeps_no_project_datasheet_protection() -> None:
-    """Option 2: an empty project directory must remain a non-failing condition."""
+def test_template_is_schema_valid_but_semantically_blocked() -> None:
+    data = template()
+    assert schema_messages(data) == []
+    errors = validate_semantics(data, config())
+    assert errors
+    assert any("non-current" in error or "not reconciled" in error for error in errors)
+
+
+def test_workflow_covers_both_validators_and_positive_fixture() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "pipeline/engineering_compatibility*.py" in workflow
+    assert "python pipeline/engineering_compatibility_gate.py" in workflow
+    assert "pytest -q tests/test_engineering_compatibility_gate.py" in workflow
 
-    assert "shopt -s nullglob globstar" in workflow
-    assert "files=(datasheet/projects/**/*.json)" in workflow
-    assert "if [ ${#files[@]} -eq 0 ]; then" in workflow
-    assert "No project compatibility datasheets found; semantic gate skipped." in workflow
-    assert "exit 0" in workflow
+
+def test_no_argument_gate_defaults_to_known_good_fixture() -> None:
+    assert DEFAULT_DATA == EXAMPLE
+
+
+def test_scope_summary_is_derived_from_assessment_records() -> None:
+    data = example()
+    data["scope_summary"]["VERIFIED"] = 100
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("scope_summary must equal counts derived" in error for error in errors)
+
+
+def test_declared_compatibility_cannot_ignore_status_weights() -> None:
+    data = example()
+    for record in data["assessment_records"]:
+        record["classification"] = "DIVERGENT"
+    data["scope_summary"] = {"VERIFIED": 0, "PARTIAL": 0, "DIVERGENT": 4, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0}
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("compatibility.global" in error and "computed 0.0000%" in error for error in errors)
+    assert any("compatibility.interface" in error and "computed 0.0000%" in error for error in errors)
+
+
+def test_not_verifiable_scope_reduces_coverage_and_cannot_be_diluted() -> None:
+    data = example()
+    data["assessment_records"][0]["classification"] = "NOT_VERIFIABLE"
+    data["scope_summary"] = {"VERIFIED": 3, "PARTIAL": 0, "DIVERGENT": 0, "NOT_VERIFIABLE": 1, "NOT_APPLICABLE": 0}
+    data["coverage"] = 100.0
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("coverage" in error and "computed 75.0000%" in error for error in errors)
+
+
+def test_assessment_records_require_provenance_evidence_and_quality() -> None:
+    data = example()
+    data["assessment_records"][0].pop("evidence")
+    messages = schema_messages(data)
+    assert any("'evidence' is a required property" in message for message in messages)
+
+    data = example()
+    data["assessment_records"][0].pop("evidence_quality")
+    messages = schema_messages(data)
+    assert any("'evidence_quality' is a required property" in message for message in messages)
+
+
+def test_assessment_evidence_hash_is_semantically_verified() -> None:
+    data = example()
+    data["assessment_records"][0]["evidence"][0]["source_hash"] = "0" * 64
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("assessment ASM-HVAC-001" in error and "source_hash" in error for error in errors)
+
+
+def test_issue_classified_assessment_requires_corresponding_finding() -> None:
+    data = example()
+    data["assessment_records"][0]["classification"] = "DIVERGENT"
+    data["scope_summary"] = {"VERIFIED": 3, "PARTIAL": 0, "DIVERGENT": 1, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0}
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("ASM-HVAC-001 classified DIVERGENT requires a corresponding finding" in error for error in errors)
+
+
+def test_interface_assessment_requires_at_least_two_disciplines() -> None:
+    data = example()
+    data["assessment_records"][0]["interface"] = True
+    assert schema_messages(data)
+
+
+def test_interface_assessment_requires_multidiscipline_evidence() -> None:
+    data = example()
+    interface_record = next(record for record in data["assessment_records"] if record["interface"])
+    interface_record["evidence"] = [interface_record["evidence"][0]]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("interface evidence must cover at least two distinct baseline disciplines" in error for error in errors)
+
+
+def test_uppercase_and_lowercase_sha256_are_equivalent() -> None:
+    data = example()
+    finding = make_example_finding()
+    data["baseline"]["documents"][0]["sha256"] = finding["evidence"][0]["source_hash"].upper()
+    data["findings"] = [finding]
+    assert validate_data(data, load_json(SCHEMA), config()) == []
+
+
+def test_mismatched_sha256_is_rejected() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding["evidence"][0]["source_hash"] = "0" * 64
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("source_hash does not match baseline sha256" in error for error in errors)
+
+
+def test_required_draft_document_is_treated_as_missing() -> None:
+    data = example()
+    data["baseline"]["documents"][0]["status"] = "DRAFT"
+    data["blocking_missing_documents"] = ["EX-HVAC-001"]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("missing or non-current" in error for error in errors)
+
+
+def test_required_draft_document_cannot_be_declared_present() -> None:
+    data = example()
+    data["baseline"]["documents"][0]["status"] = "DRAFT"
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("blocking_missing_documents must exactly match" in error for error in errors)
+
+
+def test_finding_discipline_outside_baseline_is_rejected() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding["disciplines"] = ["NUCLEAR"]
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("outside baseline.disciplines" in error for error in errors)
+
+
+def test_assessment_discipline_and_document_must_be_in_baseline() -> None:
+    data = example()
+    data["assessment_records"][0]["disciplines"] = ["NUCLEAR"]
+    data["assessment_records"][0]["document_ids"] = ["UNKNOWN-DOC"]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("assessment ASM-HVAC-001 uses discipline" in error for error in errors)
+    assert any("assessment ASM-HVAC-001 uses document" in error for error in errors)
+
+
+def test_finding_must_link_to_matching_assessment_record() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding["classification"] = "PARTIAL"
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("classification must match assessment" in error for error in errors)
+
+
+def test_evidence_quality_is_mandatory() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding.pop("evidence_quality")
+    data["findings"] = [finding]
+    assert any("'evidence_quality' is a required property" in message for message in schema_messages(data))
+
+
+def test_not_verifiable_color_mapping_is_mandatory_and_blue() -> None:
+    data = example()
+    del data["visualization"]["severity_colors"]["NOT_VERIFIABLE"]
+    assert any("'NOT_VERIFIABLE' is a required property" in message for message in schema_messages(data))
+
+    data = example()
+    data["visualization"]["severity_colors"]["NOT_VERIFIABLE"] = "red"
+    assert any("'blue' was expected" in message for message in schema_messages(data))
+
+
+def test_whitespace_only_required_finding_text_is_rejected() -> None:
+    for field in ("comparison", "root_cause", "solution", "closure_criterion"):
+        data = example()
+        finding = make_example_finding()
+        finding[field] = "   "
+        data["findings"] = [finding]
+        assert schema_messages(data), field
+
+
+def test_waiver_cannot_self_authorize() -> None:
+    data = example()
+    finding = make_example_finding(status="WAIVED", severity="CRITICAL")
+    finding["waiver"] = {"reason": "Synthetic waiver", "approval_record_id": "FAKE-APPROVAL"}
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("trusted human approval record" in error for error in errors)
+
+
+def test_trusted_human_approval_record_allows_waiver() -> None:
+    data = example()
+    finding = make_example_finding(status="WAIVED", severity="CRITICAL")
+    finding["waiver"] = {"reason": "Authorized synthetic waiver", "approval_record_id": "APR-TEST-001"}
+    data["findings"] = [finding]
+    cfg = deepcopy(config())
+    cfg["waiver_authorization"]["trusted_approval_records"]["APR-TEST-001"] = {
+        "human_approved": True,
+        "approver": "Chief Engineer",
+        "approved_at": "2026-09-14T21:00:00Z",
+        "evidence": "synthetic://approval/APR-TEST-001",
+    }
+    assert validate_data(data, load_json(SCHEMA), cfg) == []
+
+
+def test_open_critical_blocks_release() -> None:
+    data = example()
+    data["findings"] = [make_example_finding(status="OPEN", severity="CRITICAL")]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("open CRITICAL findings" in error for error in errors)
+
+
+def test_architecture_findings_require_viability_and_alternatives() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding["architecture_impact"] = True
+    data["findings"] = [finding]
+    messages = schema_messages(data)
+    assert any("'alternatives' is a required property" in message for message in messages)
+    assert any("'viability' is a required property" in message for message in messages)
+
+
+def test_non_finite_metrics_are_rejected_semantically() -> None:
+    data = example()
+    data["coverage"] = math.nan
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("coverage must be finite" in error for error in errors)
+
+
+def test_failed_validation_summary_can_never_report_pass() -> None:
+    data = example()
+    data["compatibility"]["global"] = 75.0
+    data["release_gate"] = "BLOCK"
+    errors = validate_data(data, load_json(SCHEMA), config())
+    assert errors
+    result = summarize(data, errors)
+    assert result["release_gate"] == "BLOCK"
+    assert result["validation_error_count"] == len(errors)
+
+
+def test_duplicate_assessment_content_cannot_inflate_scores() -> None:
+    data = example()
+    clone = deepcopy(data["assessment_records"][0])
+    clone["id"] = "ASM-HVAC-CLONE"
+    data["assessment_records"].append(clone)
+    data["scope_summary"]["VERIFIED"] = 5
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("duplicates assessment content" in error for error in errors)
+
+
+def test_assessment_evidence_must_cover_every_declared_scope() -> None:
+    data = example()
+    record = data["assessment_records"][0]
+    record["disciplines"] = ["HVAC", "ELECTRICAL"]
+    record["document_ids"] = ["EX-HVAC-001", "EX-ELE-001"]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("evidence must cover every declared discipline" in error for error in errors)
+    assert any("evidence must cover every declared document" in error for error in errors)
+
+
+def test_release_threshold_uses_recomputed_compatibility_not_declared_value() -> None:
+    data = example()
+    cfg = deepcopy(config())
+    cfg["thresholds"]["minimum_global_compatibility_percent"] = 87.54
+
+    data["assessment_records"][0]["classification"] = "PARTIAL"
+    data["scope_summary"] = {
+        "VERIFIED": 3,
+        "PARTIAL": 1,
+        "DIVERGENT": 0,
+        "NOT_VERIFIABLE": 0,
+        "NOT_APPLICABLE": 0,
+    }
+    data["compatibility"]["global"] = 87.54
+    data["compatibility"]["by_discipline"]["HVAC"] = 75.0
+    data["compatibility"]["by_document"]["EX-HVAC-001"] = 75.0
+    finding = make_example_finding()
+    finding["classification"] = "PARTIAL"
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, cfg)
+    assert not any("compatibility.global 87.5400% inconsistent" in error for error in errors)
+    assert any("global compatibility 87.50% below minimum 87.54%" in error for error in errors)
+
+
+def test_mandatory_governance_controls_cannot_be_disabled_by_config() -> None:
+    data = example()
+    cfg = deepcopy(config())
+    for flag in (
+        "block_on_open_critical",
+        "block_on_missing_mandatory_document",
+        "block_on_unreconciled_baseline",
+        "require_provenance_hash",
+    ):
+        cfg["thresholds"][flag] = False
+
+    data["baseline"]["reconciled"] = False
+    data["baseline"]["documents"][0]["status"] = "DRAFT"
+    data["blocking_missing_documents"] = ["EX-HVAC-001"]
+    data["assessment_records"][0]["evidence"][0]["source_hash"] = "0" * 64
+    data["findings"] = [make_example_finding(status="OPEN", severity="CRITICAL")]
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, cfg)
+    assert any("mandatory governance controls cannot be disabled" in error for error in errors)
+    assert any("baseline is not reconciled" in error for error in errors)
+    assert any("blocking mandatory documents are missing or non-current" in error for error in errors)
+    assert any("source_hash does not match baseline sha256" in error for error in errors)
+    assert any("open CRITICAL findings" in error for error in errors)

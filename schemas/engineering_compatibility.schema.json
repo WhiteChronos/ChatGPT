@@ -1,33 +1,50 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/WhiteChronos/ChatGPT/schemas/engineering_compatibility.schema.json",
-  "title": "Engineering Compatibility Datasheet",
+  "title": "Engineering Compatibility Datasheet v1.1",
   "type": "object",
-  "required": ["project", "baseline", "coverage", "compatibility", "findings", "release_gate", "visualization"],
+  "required": ["project", "baseline", "assessment_records", "scope_summary", "coverage", "compatibility", "blocking_missing_documents", "findings", "release_gate", "visualization"],
   "properties": {
-    "project": {"type": "string", "minLength": 1},
+    "project": {"$ref": "#/$defs/nonblank"},
     "baseline": {
       "type": "object",
-      "required": ["disciplines", "documents"],
+      "required": ["disciplines", "documents", "reconciled", "reconciliation_note", "required_document_ids"],
       "properties": {
-        "disciplines": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-        "documents": {"type": "array", "items": {"$ref": "#/$defs/document"}}
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "documents": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/document"}},
+        "reconciled": {"type": "boolean"},
+        "reconciliation_note": {"$ref": "#/$defs/nonblank"},
+        "required_document_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}}
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+    "assessment_records": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assessment_record"}},
+    "scope_summary": {
+      "type": "object",
+      "required": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"],
+      "properties": {
+        "VERIFIED": {"type": "integer", "minimum": 0},
+        "PARTIAL": {"type": "integer", "minimum": 0},
+        "DIVERGENT": {"type": "integer", "minimum": 0},
+        "NOT_VERIFIABLE": {"type": "integer", "minimum": 0},
+        "NOT_APPLICABLE": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
     },
     "coverage": {"type": "number", "minimum": 0, "maximum": 100},
     "compatibility": {
       "type": "object",
-      "required": ["global", "by_discipline", "interface", "method"],
+      "required": ["global", "by_discipline", "by_document", "interface", "method"],
       "properties": {
         "global": {"type": "number", "minimum": 0, "maximum": 100},
-        "by_discipline": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}},
+        "by_discipline": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}},
+        "by_document": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}},
         "interface": {"type": "number", "minimum": 0, "maximum": 100},
-        "method": {"type": "string", "minLength": 1}
+        "method": {"$ref": "#/$defs/calculation_method"}
       },
       "additionalProperties": false
     },
-    "blocking_missing_documents": {"type": "array", "items": {"type": "string"}},
+    "blocking_missing_documents": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
     "release_gate": {"enum": ["PASS", "BLOCK"]},
     "visualization": {
       "type": "object",
@@ -37,112 +54,147 @@
         "complete_not_summary": {"const": true},
         "severity_colors": {
           "type": "object",
-          "required": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "VERIFIED", "NOT_APPLICABLE"],
+          "required": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "NOT_VERIFIABLE", "VERIFIED", "NOT_APPLICABLE"],
           "properties": {
-            "CRITICAL": {"type": "string"},
-            "HIGH": {"type": "string"},
-            "MEDIUM": {"type": "string"},
-            "LOW": {"type": "string"},
-            "VERIFIED": {"type": "string"},
-            "NOT_APPLICABLE": {"type": "string"}
+            "CRITICAL": {"const": "red"},
+            "HIGH": {"const": "orange"},
+            "MEDIUM": {"const": "yellow"},
+            "LOW": {"const": "blue"},
+            "NOT_VERIFIABLE": {"const": "blue"},
+            "VERIFIED": {"const": "green"},
+            "NOT_APPLICABLE": {"const": "gray"}
           },
-          "additionalProperties": true
+          "additionalProperties": false
         },
-        "mandatory_sections": {
-          "type": "array",
-          "minItems": 8,
-          "items": {"type": "string"}
-        }
+        "mandatory_sections": {"type": "array", "minItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}}
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}}
   },
   "$defs": {
+    "nonblank": {"type": "string", "pattern": "\\S"},
     "document": {
       "type": "object",
-      "required": ["id", "discipline", "revision", "source"],
+      "required": ["id", "discipline", "revision", "source", "sha256", "status"],
       "properties": {
-        "id": {"type": "string"},
-        "discipline": {"type": "string"},
-        "revision": {"type": "string"},
-        "source": {"type": "string"},
-        "sha256": {"type": "string"},
-        "status": {"type": "string"}
+        "id": {"$ref": "#/$defs/nonblank"},
+        "discipline": {"$ref": "#/$defs/nonblank"},
+        "revision": {"$ref": "#/$defs/nonblank"},
+        "source": {"$ref": "#/$defs/nonblank"},
+        "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+        "status": {"enum": ["CURRENT", "APPROVED", "REFERENCE", "SUPERSEDED", "DRAFT"]}
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+    "assessment_record": {
+      "type": "object",
+      "required": ["id", "criterion", "classification", "disciplines", "document_ids", "interface", "evidence", "evidence_quality"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonblank"},
+        "criterion": {"$ref": "#/$defs/nonblank"},
+        "classification": {"enum": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"]},
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "document_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "interface": {"type": "boolean"},
+        "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+        "evidence_quality": {"$ref": "#/$defs/evidence_quality"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"interface": {"const": true}}, "required": ["interface"]},
+          "then": {"properties": {"disciplines": {"minItems": 2}}}
+        }
+      ],
+      "additionalProperties": false
     },
     "evidence": {
       "type": "object",
-      "required": ["document_id", "revision", "location", "statement"],
+      "required": ["document_id", "revision", "location", "statement", "source_hash"],
       "properties": {
-        "document_id": {"type": "string"},
-        "revision": {"type": "string"},
-        "location": {"type": "string"},
+        "document_id": {"$ref": "#/$defs/nonblank"},
+        "revision": {"$ref": "#/$defs/nonblank"},
+        "location": {"$ref": "#/$defs/nonblank"},
         "tag": {"type": "string"},
-        "statement": {"type": "string"},
+        "statement": {"$ref": "#/$defs/nonblank"},
         "value": {},
         "unit": {"type": "string"},
-        "source_hash": {"type": "string"}
+        "source_hash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+    "evidence_quality": {
+      "type": "object",
+      "required": ["rating", "rationale"],
+      "properties": {
+        "rating": {"enum": ["HIGH", "MEDIUM", "LOW"]},
+        "rationale": {"$ref": "#/$defs/nonblank"}
+      },
+      "additionalProperties": false
     },
     "impacts": {
       "type": "object",
       "required": ["design", "procurement", "fabrication", "programming", "commissioning", "operation", "maintenance", "safety", "cost", "schedule"],
       "properties": {
-        "design": {"type": "string"},
-        "procurement": {"type": "string"},
-        "fabrication": {"type": "string"},
-        "programming": {"type": "string"},
-        "commissioning": {"type": "string"},
-        "operation": {"type": "string"},
-        "maintenance": {"type": "string"},
-        "safety": {"type": "string"},
-        "cost": {"type": "string"},
-        "schedule": {"type": "string"}
+        "design": {"$ref": "#/$defs/nonblank"}, "procurement": {"$ref": "#/$defs/nonblank"}, "fabrication": {"$ref": "#/$defs/nonblank"},
+        "programming": {"$ref": "#/$defs/nonblank"}, "commissioning": {"$ref": "#/$defs/nonblank"}, "operation": {"$ref": "#/$defs/nonblank"},
+        "maintenance": {"$ref": "#/$defs/nonblank"}, "safety": {"$ref": "#/$defs/nonblank"}, "cost": {"$ref": "#/$defs/nonblank"}, "schedule": {"$ref": "#/$defs/nonblank"}
       },
       "additionalProperties": false
     },
     "alternative": {
       "type": "object",
-      "required": ["name", "feasibility", "pros", "cons"],
+      "required": ["name", "feasibility", "pros", "cons", "recommended"],
       "properties": {
-        "name": {"type": "string"},
-        "feasibility": {"type": "string"},
-        "pros": {"type": "array", "items": {"type": "string"}},
-        "cons": {"type": "array", "items": {"type": "string"}},
-        "recommended": {"type": "boolean"}
+        "name": {"$ref": "#/$defs/nonblank"}, "feasibility": {"$ref": "#/$defs/nonblank"},
+        "pros": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonblank"}},
+        "cons": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonblank"}}, "recommended": {"type": "boolean"}
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+    "waiver": {
+      "type": "object",
+      "required": ["reason", "approval_record_id"],
+      "properties": {"reason": {"$ref": "#/$defs/nonblank"}, "approval_record_id": {"$ref": "#/$defs/nonblank"}},
+      "additionalProperties": false
+    },
+    "calculation_method": {
+      "type": "object",
+      "required": ["name", "formula", "denominator_definition", "exclude_not_applicable", "exclude_not_verifiable", "status_weights"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonblank"}, "formula": {"$ref": "#/$defs/nonblank"}, "denominator_definition": {"$ref": "#/$defs/nonblank"},
+        "exclude_not_applicable": {"const": true}, "exclude_not_verifiable": {"const": true},
+        "status_weights": {
+          "type": "object", "required": ["VERIFIED", "PARTIAL", "DIVERGENT"],
+          "properties": {"VERIFIED": {"const": 1.0}, "PARTIAL": {"const": 0.5}, "DIVERGENT": {"const": 0.0}}, "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     },
     "finding": {
       "type": "object",
-      "required": ["id", "severity", "classification", "status", "disciplines", "evidence", "problem", "root_cause", "impacts", "solution", "primary_document", "closure_criterion", "confidence"],
+      "required": ["id", "assessment_id", "severity", "classification", "status", "disciplines", "evidence", "evidence_quality", "comparison", "problem", "root_cause", "impacts", "solution", "architecture_impact", "primary_document", "secondary_documents", "owner", "dependencies", "closure_criterion", "confidence"],
       "properties": {
-        "id": {"type": "string", "minLength": 1},
+        "id": {"$ref": "#/$defs/nonblank"}, "assessment_id": {"$ref": "#/$defs/nonblank"},
         "severity": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
         "classification": {"enum": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"]},
         "status": {"enum": ["OPEN", "IN_REVIEW", "CLOSED", "WAIVED"]},
-        "disciplines": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
         "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
-        "comparison": {"type": "string"},
-        "problem": {"type": "string", "minLength": 1},
-        "root_cause": {"type": "string", "minLength": 1},
-        "impacts": {"$ref": "#/$defs/impacts"},
-        "solution": {"type": "string", "minLength": 1},
-        "alternatives": {"type": "array", "items": {"$ref": "#/$defs/alternative"}},
-        "viability": {"type": "string"},
-        "primary_document": {"type": "string", "minLength": 1},
-        "secondary_documents": {"type": "array", "items": {"type": "string"}},
-        "proposed_text": {"type": "string"},
-        "owner": {"type": "string"},
-        "dependencies": {"type": "array", "items": {"type": "string"}},
-        "closure_criterion": {"type": "string", "minLength": 1},
-        "confidence": {"enum": ["HIGH", "MEDIUM", "LOW"]}
+        "evidence_quality": {"$ref": "#/$defs/evidence_quality"},
+        "comparison": {"$ref": "#/$defs/nonblank"}, "problem": {"$ref": "#/$defs/nonblank"}, "root_cause": {"$ref": "#/$defs/nonblank"},
+        "impacts": {"$ref": "#/$defs/impacts"}, "solution": {"$ref": "#/$defs/nonblank"}, "architecture_impact": {"type": "boolean"},
+        "alternatives": {"type": "array", "items": {"$ref": "#/$defs/alternative"}}, "viability": {"$ref": "#/$defs/nonblank"},
+        "primary_document": {"$ref": "#/$defs/nonblank"}, "secondary_documents": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "proposed_text": {"type": "string"}, "owner": {"$ref": "#/$defs/nonblank"}, "dependencies": {"type": "array", "items": {"$ref": "#/$defs/nonblank"}},
+        "closure_criterion": {"$ref": "#/$defs/nonblank"}, "confidence": {"enum": ["HIGH", "MEDIUM", "LOW"]}, "waiver": {"$ref": "#/$defs/waiver"}
       },
-      "additionalProperties": true
+      "allOf": [
+        {"if": {"properties": {"status": {"const": "WAIVED"}}, "required": ["status"]}, "then": {"required": ["waiver"]}},
+        {"if": {"properties": {"architecture_impact": {"const": true}}, "required": ["architecture_impact"]}, "then": {"required": ["alternatives", "viability"], "properties": {"alternatives": {"minItems": 1}}}}
+      ],
+      "additionalProperties": false
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

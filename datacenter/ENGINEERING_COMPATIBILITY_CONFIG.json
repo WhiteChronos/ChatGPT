@@ -1,5 +1,5 @@
 {
-  "model_id": "ENGINEERING_COMPATIBILITY_VISUALIZE_V1_0",
+  "model_id": "ENGINEERING_COMPATIBILITY_VISUALIZE_V1_1",
   "status": "MANDATORY",
   "mode": "BLOCK_ON_FAILURE",
   "golden_rule": "governance/VISUALIZE_GOLDEN_RULE_v1_0.md",
@@ -13,6 +13,13 @@
     "retain_revision": true,
     "retain_location": true,
     "allow_silent_reconciliation": false
+  },
+  "baseline_policy": {
+    "eligible_required_document_statuses": ["CURRENT", "APPROVED"]
+  },
+  "waiver_authorization": {
+    "require_external_approval_record": true,
+    "trusted_approval_records": {}
   },
   "analysis_stack": [
     "/factcheck",
@@ -40,21 +47,35 @@
     "HIGH": "orange",
     "MEDIUM": "yellow",
     "LOW": "blue",
+    "NOT_VERIFIABLE": "blue",
     "VERIFIED": "green",
     "NOT_APPLICABLE": "gray"
   },
   "thresholds": {
     "minimum_coverage_percent": 85,
     "minimum_global_compatibility_percent": 80,
+    "minimum_interface_compatibility_percent": 80,
+    "metric_tolerance_percent": 0.05,
     "block_on_open_critical": true,
     "block_on_missing_mandatory_document": true,
-    "block_on_unreconciled_baseline": true
+    "block_on_unreconciled_baseline": true,
+    "require_baseline_documents": true,
+    "require_provenance_hash": true,
+    "require_waiver_metadata": true,
+    "require_document_scores": true,
+    "require_discipline_scores": true,
+    "require_architecture_viability": true
   },
   "compatibility": {
     "exclude_not_applicable_from_denominator": true,
     "exclude_not_verifiable_from_compatibility_denominator": true,
     "not_verifiable_reduces_coverage": true,
-    "require_method_disclosure": true
+    "require_method_disclosure": true,
+    "required_status_weights": {
+      "VERIFIED": 1.0,
+      "PARTIAL": 0.5,
+      "DIVERGENT": 0.0
+    }
   },
   "visualization": {
     "complete_not_summary": true,
