@@ -12,6 +12,7 @@ on:
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'tests/test_engineering_compatibility_gate.py'
+      - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
   push:
     branches: [main]
@@ -25,6 +26,7 @@ on:
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'tests/test_engineering_compatibility_gate.py'
+      - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
 
 jobs:
@@ -80,7 +82,9 @@ jobs:
           PY
 
       - name: Permanent Golden Rule regression tests
-        run: pytest -q tests/test_engineering_compatibility_gate.py
+        run: |
+          pytest -q tests/test_engineering_compatibility_gate.py
+          pytest -q tests/test_engineering_compatibility_gate_codex_round4.py
 
       - name: Enforce Golden Rule on project datasheets
         shell: bash
