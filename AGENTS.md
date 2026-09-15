@@ -16,20 +16,28 @@ Codex SHALL:
 
 - preserve all source evidence and provenance;
 - require SHA-256 provenance for every baseline document and every evidence record;
+- compare valid hexadecimal SHA-256 digests case-insensitively;
 - never convert `/visualize` into a short summary;
 - keep compatibility and coverage as separate metrics;
-- derive coverage from the structured scope summary so `NOT_VERIFIABLE` reduces coverage;
-- classify every finding as VERIFIED, PARTIAL, DIVERGENT, NOT_VERIFIABLE or NOT_APPLICABLE;
+- treat `assessment_records` as the authoritative complete criterion inventory;
+- derive `scope_summary` from `assessment_records` so unsupported counts cannot inflate coverage;
+- derive coverage from structured assessment classifications so `NOT_VERIFIABLE` reduces coverage;
+- recompute global, interface, discipline and document compatibility from `assessment_records` and mandatory status weights;
+- classify every assessment as VERIFIED, PARTIAL, DIVERGENT, NOT_VERIFIABLE or NOT_APPLICABLE;
 - identify document, revision, sheet/page, TAG/location and evidence for every engineering claim;
 - require every baseline discipline and every baseline document to have an explicit compatibility score;
 - require a structured calculation method with denominator definition and status weights;
 - perform `/factcheck`, `/thenvsnow`, `/comparison`, `/deepdive`, `/rootcause`, `/audit`, `/redteam`, `/premortem`, `/viability` and `/actionplan` when relevant;
 - treat CRITICAL findings with status `OPEN` or `IN_REVIEW` as release blockers regardless of classification;
-- accept `WAIVED` findings only with recorded approver, reason, approval evidence and approval date/time;
-- block unreconciled baselines, missing mandatory documents and failed discipline interfaces;
+- accept `WAIVED` findings only when `waiver.approval_record_id` resolves to an independently trusted human approval record in configuration;
+- never accept self-declared waiver metadata as authorization;
+- block unreconciled baselines, missing mandatory documents, non-current mandatory documents and failed discipline interfaces;
+- validate finding and assessment disciplines against `baseline.disciplines`;
+- require structured evidence quality and confidence for every finding;
 - distinguish source-derived fact from inference and external knowledge;
 - evaluate simpler, safer, lower-cost and more maintainable alternatives when system architecture is involved;
-- require explicit lifecycle impact text for design, procurement, fabrication, programming, commissioning, operation, maintenance, safety, cost and schedule; use `NONE` when there is no impact;
+- require explicit nonblank lifecycle impact text for design, procurement, fabrication, programming, commissioning, operation, maintenance, safety, cost and schedule; use `NONE` when there is no impact;
+- require nonblank comparison, root cause, solution and closure criterion;
 - never overwrite raw Data Center sources;
 - reject NaN/Infinity and other non-standard numeric values;
 - validate generated datasheets against `schemas/engineering_compatibility.schema.json`;
@@ -44,7 +52,7 @@ python pipeline/engineering_compatibility_gate.py
 pytest -q tests/test_engineering_compatibility_gate.py
 ```
 
-The no-argument gate invocation intentionally validates the permanent known-good fixture at `datasheet/projects/example-project.json`. Real projects MUST also be validated explicitly:
+The no-argument gate validates the permanent known-good fixture at `datasheet/projects/example-project.json`. Real projects MUST also be validated explicitly:
 
 ```bash
 python pipeline/engineering_compatibility_gate.py datasheet/projects/<project>.json
@@ -58,6 +66,7 @@ Every final engineering report SHALL expose all relevant findings using a comple
 - coverage;
 - document-by-document assessment;
 - complete finding cards;
+- evidence quality and confidence;
 - evidence vs comparison;
 - root cause;
 - impact by lifecycle stage;
@@ -83,15 +92,18 @@ These color mappings are machine-enforced and must not be remapped.
 A datasheet may declare `PASS` only when all of the following are true:
 
 - baseline documents are present and the baseline is reconciled;
-- `blocking_missing_documents` exactly matches the mandatory document inventory and is empty;
-- coverage is reproducible from `scope_summary` and meets the configured threshold;
-- global and interface compatibility meet configured thresholds;
-- discipline-level and document-level compatibility maps cover the complete baseline;
+- every mandatory document has an eligible current/approved status;
+- `blocking_missing_documents` exactly matches the computed mandatory missing/non-current inventory and is empty;
+- `scope_summary` exactly matches `assessment_records`;
+- coverage is reproducible from `assessment_records` and meets threshold;
+- global, interface, discipline and document compatibility values match recomputed weighted scores;
 - no open CRITICAL finding remains;
-- any waiver has explicit human approval metadata;
-- evidence provenance hashes match the corresponding baseline document hashes;
+- any waiver references a trusted human approval record outside the datasheet;
+- evidence provenance hashes match corresponding baseline document hashes regardless of hexadecimal case;
+- findings reference valid assessment records and valid baseline disciplines;
+- every finding includes evidence quality and nonblank required technical text;
 - architecture-impact findings include alternatives and viability analysis;
 - schema and semantic validation return no errors.
 
 ## Pull request compatibility
-A pull request that changes compatibility-analysis logic, engineering schemas, Data Center manifests, datasheets, report-generation code or either compatibility validator MUST pass the engineering compatibility workflow and Golden Rule gate before merge.
+A pull request that changes compatibility-analysis logic, engineering schemas, Data Center manifests, datasheets, report-generation code or either compatibility validator MUST pass the Engineering Compatibility Visualize Gate and repository governance checks before merge.
