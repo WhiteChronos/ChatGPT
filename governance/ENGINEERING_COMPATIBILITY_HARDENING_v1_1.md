@@ -41,6 +41,10 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-31 | Non-verified assessment records could omit complete finding detail | Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment must be represented by a corresponding finding. |
 | H-32 | Authoritative assessment records could classify criteria without source evidence | Every assessment requires provenance-bearing `evidence` plus structured `evidence_quality`; evidence revisions and hashes are validated against baseline documents. |
 | H-33 | Single-discipline records could be self-declared as interface assessments | `interface=true` requires at least two distinct baseline disciplines and provenance evidence covering at least two interface disciplines. |
+| H-34 | Duplicate assessment content could be cloned under new IDs to dilute failures | Assessment content is fingerprinted independently of `id`; semantically duplicate records block release. |
+| H-35 | Threshold checks could trust a declared metric that was within tolerance but above the recomputed value | Tolerance is used only to validate declared-vs-computed consistency; release thresholds are applied to the recomputed coverage/global/interface values. |
+| H-36 | A scored assessment could declare disciplines/documents without evidence for every declared scope item | Assessment evidence must cover every declared `discipline` and every declared `document_id` before the record contributes to scores. |
+| H-37 | Project configuration could disable mandatory blockers | Mandatory blocker flags must remain enabled and the canonical gate enforces baseline, provenance, missing-document, waiver, architecture and open-CRITICAL controls independently of project switches. |
 
 ## Release invariants
 
@@ -49,23 +53,25 @@ A `PASS` package must satisfy all of the following:
 1. Baseline documents exist, have unique IDs, provenance and valid disciplines.
 2. The baseline is reconciled.
 3. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
-4. `assessment_records` are the authoritative complete criterion inventory.
+4. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate semantic content under different IDs.
 5. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
-6. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
-7. Every `interface=true` assessment identifies at least two baseline disciplines and has evidence spanning at least two interface disciplines.
-8. `scope_summary` exactly matches classifications derived from `assessment_records`.
-9. Coverage is recomputed from that inventory and meets threshold.
-10. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights.
-11. Every baseline discipline and document has a computed score.
-12. `NOT_VERIFIABLE` reduces coverage and is excluded from the compatibility denominator.
-13. Findings reference valid assessment records and cannot invent disciplines or classifications.
-14. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
-15. Every finding exposes evidence quality, confidence, comparison, root cause, lifecycle impacts, solution and objective closure criterion.
-16. Open CRITICAL findings block release.
-17. WAIVED findings require a trusted external human approval record.
-18. Architecture-impact findings include alternatives and viability.
-19. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
-20. Metrics are finite and schema + semantic validation return zero errors.
+6. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
+7. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
+8. Every `interface=true` assessment identifies at least two baseline disciplines and has evidence spanning at least two interface disciplines.
+9. `scope_summary` exactly matches classifications derived from `assessment_records`.
+10. Coverage is recomputed from that inventory and the recomputed value meets the release threshold.
+11. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights; global and interface thresholds are applied to recomputed values.
+12. Every baseline discipline and document has a computed score.
+13. `NOT_VERIFIABLE` reduces coverage and is excluded from the compatibility denominator.
+14. Findings reference valid assessment records and cannot invent disciplines or classifications.
+15. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
+16. Every finding exposes evidence quality, confidence, comparison, root cause, lifecycle impacts, solution and objective closure criterion.
+17. Open CRITICAL findings block release.
+18. WAIVED findings require a trusted external human approval record.
+19. Architecture-impact findings include alternatives and viability.
+20. Mandatory governance blockers are non-configurable release invariants; project configuration cannot disable them.
+21. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
+22. Metrics are finite and schema + semantic validation return zero errors.
 
 ## Coverage formula
 
@@ -73,7 +79,7 @@ Let `V`, `P`, `D`, `NV`, `NA` be counts derived from `assessment_records`.
 
 `coverage = 100 * (V + P + D) / (V + P + D + NV)`
 
-`NA` is excluded from the coverage denominator. `NV` remains in the denominator and therefore reduces coverage.
+`NA` is excluded from the coverage denominator. `NV` remains in the denominator and therefore reduces coverage. The release threshold is evaluated against this recomputed value; a declared value is informational only after it has been checked against the recomputation within tolerance.
 
 ## Compatibility formula
 
@@ -87,7 +93,7 @@ Default mandatory weights:
 - PARTIAL = 0.5
 - DIVERGENT = 0.0
 
-The same calculation is performed globally and for each discipline, document and interface subset. Declared values must match recomputed values within the configured tolerance.
+The same calculation is performed globally and for each discipline, document and interface subset. Declared values must match recomputed values within the configured tolerance, while release thresholds are applied to the recomputed global and interface values.
 
 ## Trusted waiver authorization
 
