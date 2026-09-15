@@ -89,15 +89,23 @@
     },
     "assessment_record": {
       "type": "object",
-      "required": ["id", "criterion", "classification", "disciplines", "document_ids", "interface"],
+      "required": ["id", "criterion", "classification", "disciplines", "document_ids", "interface", "evidence", "evidence_quality"],
       "properties": {
         "id": {"$ref": "#/$defs/nonblank"},
         "criterion": {"$ref": "#/$defs/nonblank"},
         "classification": {"enum": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"]},
         "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
         "document_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
-        "interface": {"type": "boolean"}
+        "interface": {"type": "boolean"},
+        "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+        "evidence_quality": {"$ref": "#/$defs/evidence_quality"}
       },
+      "allOf": [
+        {
+          "if": {"properties": {"interface": {"const": true}}, "required": ["interface"]},
+          "then": {"properties": {"disciplines": {"minItems": 2}}}
+        }
+      ],
       "additionalProperties": false
     },
     "evidence": {
