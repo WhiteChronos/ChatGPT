@@ -20,10 +20,14 @@ Codex SHALL:
 - never convert `/visualize` into a short summary;
 - keep compatibility and coverage as separate metrics;
 - treat `assessment_records` as the authoritative complete criterion inventory;
+- require every assessment record, including VERIFIED records, to carry provenance-bearing evidence and structured evidence quality before contributing to coverage or compatibility;
+- require evidence documents declared by an assessment to belong to that assessment's `document_ids` and baseline inventory;
 - derive `scope_summary` from `assessment_records` so unsupported counts cannot inflate coverage;
 - derive coverage from structured assessment classifications so `NOT_VERIFIABLE` reduces coverage;
 - recompute global, interface, discipline and document compatibility from `assessment_records` and mandatory status weights;
 - classify every assessment as VERIFIED, PARTIAL, DIVERGENT, NOT_VERIFIABLE or NOT_APPLICABLE;
+- require every PARTIAL, DIVERGENT or NOT_VERIFIABLE assessment record to be represented by a corresponding complete finding;
+- treat `interface=true` only as a multidisciplinary interface assessment: it must identify at least two distinct baseline disciplines and provenance evidence must cover at least two distinct interface disciplines;
 - identify document, revision, sheet/page, TAG/location and evidence for every engineering claim;
 - require every baseline discipline and every baseline document to have an explicit compatibility score;
 - require a structured calculation method with denominator definition and status weights;
@@ -95,6 +99,9 @@ A datasheet may declare `PASS` only when all of the following are true:
 - every mandatory document has an eligible current/approved status;
 - `blocking_missing_documents` exactly matches the computed mandatory missing/non-current inventory and is empty;
 - `scope_summary` exactly matches `assessment_records`;
+- every assessment record has source evidence, matching revision/hash provenance and structured evidence quality;
+- every issue-classified assessment (`PARTIAL`, `DIVERGENT`, `NOT_VERIFIABLE`) has a corresponding finding;
+- every interface assessment represents at least two baseline disciplines and has evidence spanning at least two interface disciplines;
 - coverage is reproducible from `assessment_records` and meets threshold;
 - global, interface, discipline and document compatibility values match recomputed weighted scores;
 - no open CRITICAL finding remains;
