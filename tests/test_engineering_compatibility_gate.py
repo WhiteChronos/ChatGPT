@@ -125,7 +125,7 @@ def test_declared_compatibility_cannot_ignore_status_weights() -> None:
     data = example()
     for record in data["assessment_records"]:
         record["classification"] = "DIVERGENT"
-    data["scope_summary"] = {"VERIFIED": 0, "PARTIAL": 0, "DIVERGENT": 3, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0}
+    data["scope_summary"] = {"VERIFIED": 0, "PARTIAL": 0, "DIVERGENT": 4, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0}
     data["release_gate"] = "BLOCK"
     errors = validate_semantics(data, config())
     assert any("compatibility.global" in error and "computed 0.0000%" in error for error in errors)
@@ -135,11 +135,55 @@ def test_declared_compatibility_cannot_ignore_status_weights() -> None:
 def test_not_verifiable_scope_reduces_coverage_and_cannot_be_diluted() -> None:
     data = example()
     data["assessment_records"][0]["classification"] = "NOT_VERIFIABLE"
-    data["scope_summary"] = {"VERIFIED": 2, "PARTIAL": 0, "DIVERGENT": 0, "NOT_VERIFIABLE": 1, "NOT_APPLICABLE": 0}
+    data["scope_summary"] = {"VERIFIED": 3, "PARTIAL": 0, "DIVERGENT": 0, "NOT_VERIFIABLE": 1, "NOT_APPLICABLE": 0}
     data["coverage"] = 100.0
     data["release_gate"] = "BLOCK"
     errors = validate_semantics(data, config())
-    assert any("coverage" in error and "computed 66.6667%" in error for error in errors)
+    assert any("coverage" in error and "computed 75.0000%" in error for error in errors)
+
+
+def test_assessment_records_require_provenance_evidence_and_quality() -> None:
+    data = example()
+    data["assessment_records"][0].pop("evidence")
+    messages = schema_messages(data)
+    assert any("'evidence' is a required property" in message for message in messages)
+
+    data = example()
+    data["assessment_records"][0].pop("evidence_quality")
+    messages = schema_messages(data)
+    assert any("'evidence_quality' is a required property" in message for message in messages)
+
+
+def test_assessment_evidence_hash_is_semantically_verified() -> None:
+    data = example()
+    data["assessment_records"][0]["evidence"][0]["source_hash"] = "0" * 64
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("assessment ASM-HVAC-001" in error and "source_hash" in error for error in errors)
+
+
+def test_issue_classified_assessment_requires_corresponding_finding() -> None:
+    data = example()
+    data["assessment_records"][0]["classification"] = "DIVERGENT"
+    data["scope_summary"] = {"VERIFIED": 3, "PARTIAL": 0, "DIVERGENT": 1, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0}
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("ASM-HVAC-001 classified DIVERGENT requires a corresponding finding" in error for error in errors)
+
+
+def test_interface_assessment_requires_at_least_two_disciplines() -> None:
+    data = example()
+    data["assessment_records"][0]["interface"] = True
+    assert schema_messages(data)
+
+
+def test_interface_assessment_requires_multidiscipline_evidence() -> None:
+    data = example()
+    interface_record = next(record for record in data["assessment_records"] if record["interface"])
+    interface_record["evidence"] = [interface_record["evidence"][0]]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("interface evidence must cover at least two distinct baseline disciplines" in error for error in errors)
 
 
 def test_uppercase_and_lowercase_sha256_are_equivalent() -> None:
