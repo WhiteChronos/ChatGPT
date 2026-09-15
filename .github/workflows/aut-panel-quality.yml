@@ -12,10 +12,13 @@ on:
       - 'pipeline/aut_panel_control.py'
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/render_panel_scaled.py'
+      - 'pipeline/conversation_contract.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'pipeline/pipeline.yaml'
       - 'templates/panel_template.yaml'
       - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
+      - 'prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md'
+      - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
@@ -27,6 +30,7 @@ on:
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'datasheet/datasheet.yaml'
       - 'tests/test_aut_panel_control.py'
+      - 'tests/test_conversation_contract.py'
   push:
     branches: [main]
     paths:
@@ -38,10 +42,13 @@ on:
       - 'pipeline/aut_panel_control.py'
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/render_panel_scaled.py'
+      - 'pipeline/conversation_contract.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'pipeline/pipeline.yaml'
       - 'templates/panel_template.yaml'
       - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
+      - 'prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md'
+      - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
@@ -53,6 +60,7 @@ on:
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
       - 'datasheet/datasheet.yaml'
       - 'tests/test_aut_panel_control.py'
+      - 'tests/test_conversation_contract.py'
   workflow_dispatch:
 
 permissions:
@@ -64,7 +72,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Immutable LI, load balance, workbook and approved drawing template
+    name: Immutable engineering + cross-chat conversation contract
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -89,30 +97,13 @@ jobs:
           python -m pip check
       - name: Compile sources
         run: python -m compileall -q pipeline tests
-      - name: Validate immutable YAML contracts and master prompt
+      - name: Validate cross-chat immutable contract
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import yaml
-          files = [
-              'governance/golden_rules.yaml',
-              'pipeline/pipeline.yaml',
-              'templates/panel_template.yaml',
-              'datacenter/datacenter.yaml',
-              'datasheet/datasheet.yaml',
-          ]
-          for name in files:
-              data = yaml.safe_load(Path(name).read_text(encoding='utf-8'))
-              assert isinstance(data, dict), name
-              assert data.get('status') == 'LOCKED_APPROVED_STANDARD', name
-              assert data.get('immutable') is True, name
-          prompt = Path('prompts/PROMPT_MASTER_AUT_PANEL.md').read_text(encoding='utf-8')
-          assert 'PROMPT-MASTER-AUT-PANEL-V1' in prompt
-          assert 'LI_QUANTITY → LOAD_BALANCE → BOM → LAYOUT → RENDER_IMAGE' in prompt
-          assert 'XLSX-PN-AUT-01-MASTER-R02' in prompt
-          PY
+          python pipeline/conversation_contract.py validate
+          python pipeline/conversation_contract.py dispatch --text '/explaincode pipeline/render_panel_scaled.py'
+          python pipeline/conversation_contract.py dispatch --text '/refactor pipeline/pipeline.yaml'
       - name: Run regression tests
-        run: python -m pytest -q tests/test_aut_panel_control.py
+        run: python -m pytest -q tests/test_aut_panel_control.py tests/test_conversation_contract.py
       - name: Run PN-AUT-01 standard pipeline
         run: |
           rm -rf build/aut-panel/PN-AUT-01
@@ -142,6 +133,7 @@ jobs:
       - name: Enforce immutable render contract PN-AUT-01
         run: |
           python pipeline/render_panel_scaled.py \
+            --root . \
             --panel-id PN-AUT-01 \
             --li li/PN-AUT-01_LI.json \
             --project datasheet/AUT_PANEL_DATA_SHEET.json \
@@ -151,13 +143,14 @@ jobs:
       - name: Enforce immutable render contract PN-AUT-02
         run: |
           python pipeline/render_panel_scaled.py \
+            --root . \
             --panel-id PN-AUT-02 \
             --li li/PN-AUT-02_LI.json \
             --project datasheet/PN-AUT-02_DATA_SHEET.json \
             --catalog datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json \
             --output build/aut-panel/PN-AUT-02/AUT_PANEL_LAYOUT_IMMUTABLE.svg \
             --contract-output build/aut-panel/PN-AUT-02/immutable_render_contract.json
-      - name: Verify artifact hashes, LI order and locked templates
+      - name: Verify artifact hashes, LI order, locked templates and memory link
         run: |
           python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-01/manifest.json --output-dir build/aut-panel/PN-AUT-01
           python pipeline/aut_panel_control.py verify-artifacts --manifest build/aut-panel/PN-AUT-02/manifest.json --output-dir build/aut-panel/PN-AUT-02
@@ -187,6 +180,8 @@ jobs:
               assert contract['workbook_template_id'] == 'XLSX-PN-AUT-01-MASTER-R02'
               assert contract['image_template_id'] == approved[panel][0]
               assert contract['approved_image_sha256'] == approved[panel][1]
+              assert contract['conversation_bootstrap']['status'] == 'PASS'
+              assert contract['conversation_bootstrap']['memory_id'] == 'AUT-PANEL-CONVERSATION-BRIDGE-V1'
           PY
       - name: Publish QA summary
         if: always()
