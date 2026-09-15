@@ -23,7 +23,18 @@
       "classification": "DIVERGENT",
       "disciplines": ["HVAC", "ELECTRICAL"],
       "document_ids": ["TEMPLATE-DOC-A"],
-      "interface": true
+      "interface": true,
+      "evidence": [
+        {
+          "document_id": "TEMPLATE-DOC-A",
+          "revision": "A",
+          "location": "Sheet 1 / TAG XX",
+          "tag": "XX",
+          "statement": "Documented source statement",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        }
+      ],
+      "evidence_quality": {"rating": "LOW", "rationale": "Template evidence is illustrative and does not cover both declared interface disciplines."}
     }
   ],
   "scope_summary": {"VERIFIED": 0, "PARTIAL": 0, "DIVERGENT": 1, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0},
