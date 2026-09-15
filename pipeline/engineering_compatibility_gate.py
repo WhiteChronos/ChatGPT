@@ -21,6 +21,7 @@ IMPACT_KEYS = {
     "operation", "maintenance", "safety", "cost", "schedule",
 }
 OPEN_STATUSES = {"OPEN", "IN_REVIEW"}
+ISSUE_CLASSIFICATIONS = {"PARTIAL", "DIVERGENT", "NOT_VERIFIABLE"}
 
 
 def _reject_non_standard_constant(value: str) -> None:
@@ -79,13 +80,80 @@ def _score(records: list[dict[str, Any]], weights: dict[str, float]) -> float | 
     return 100.0 * total / len(applicable)
 
 
-def _assert_metric(label: str, declared: Any, computed: float | None, tolerance: float, errors: list[str]) -> float | None:
+def _assert_metric(
+    label: str,
+    declared: Any,
+    computed: float | None,
+    tolerance: float,
+    errors: list[str],
+) -> float | None:
     value = _finite_metric(declared, label, errors)
     if computed is None:
         fail(f"{label} cannot be computed from assessment_records", errors)
     elif value is not None and abs(value - computed) > tolerance:
-        fail(f"{label} {value:.4f}% inconsistent with assessment_records computed {computed:.4f}%", errors)
+        fail(
+            f"{label} {value:.4f}% inconsistent with assessment_records computed {computed:.4f}%",
+            errors,
+        )
     return value
+
+
+def _validate_evidence(
+    owner: str,
+    evidence: list[dict[str, Any]],
+    document_by_id: dict[Any, dict[str, Any]],
+    thresholds: dict[str, Any],
+    errors: list[str],
+    *,
+    allowed_document_ids: set[Any] | None = None,
+) -> set[str]:
+    """Validate provenance-bearing evidence and return evidenced disciplines."""
+    evidenced_disciplines: set[str] = set()
+    if not evidence:
+        fail(f"{owner}: no evidence provided", errors)
+        return evidenced_disciplines
+
+    for index, item in enumerate(evidence, start=1):
+        doc_id = item.get("document_id")
+        doc = document_by_id.get(doc_id)
+        for key in ("document_id", "revision", "location", "statement", "source_hash"):
+            value = item.get(key)
+            if not isinstance(value, str) or not value.strip():
+                fail(f"{owner}: evidence[{index}] {key} must be non-empty", errors)
+
+        if allowed_document_ids is not None and doc_id not in allowed_document_ids:
+            fail(
+                f"{owner}: evidence[{index}] document {doc_id} is not declared in document_ids",
+                errors,
+            )
+
+        if doc is None:
+            fail(f"{owner}: evidence[{index}] document {doc_id} is not in baseline.documents", errors)
+            continue
+
+        discipline = doc.get("discipline")
+        if isinstance(discipline, str):
+            evidenced_disciplines.add(discipline)
+
+        if item.get("revision") != doc.get("revision"):
+            fail(
+                f"{owner}: evidence[{index}] revision {item.get('revision')} does not match "
+                f"baseline revision {doc.get('revision')} for {doc_id}",
+                errors,
+            )
+        source_hash = item.get("source_hash")
+        baseline_hash = doc.get("sha256")
+        if (
+            thresholds.get("require_provenance_hash")
+            and isinstance(source_hash, str)
+            and isinstance(baseline_hash, str)
+            and source_hash.lower() != baseline_hash.lower()
+        ):
+            fail(
+                f"{owner}: evidence[{index}] source_hash does not match baseline sha256 for {doc_id}",
+                errors,
+            )
+    return evidenced_disciplines
 
 
 def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
@@ -99,7 +167,10 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail("visualization.model must be VISUALIZE_GOLDEN_RULE_v1_0", errors)
     if viz.get("complete_not_summary") is not True:
         fail("/visualize output must be complete_not_summary=true", errors)
-    missing_sections = sorted(set(config["visualization"]["mandatory_sections"]) - set(viz.get("mandatory_sections", [])))
+    missing_sections = sorted(
+        set(config["visualization"]["mandatory_sections"])
+        - set(viz.get("mandatory_sections", []))
+    )
     if missing_sections:
         fail(f"missing visualization sections: {', '.join(missing_sections)}", errors)
     for severity, expected in config["severity"].items():
@@ -122,26 +193,39 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail("baseline is not reconciled with the current approved revisions", errors)
     for doc in documents:
         if doc.get("discipline") not in discipline_set:
-            fail(f"baseline document {doc.get('id', 'UNKNOWN')} uses discipline {doc.get('discipline')} outside baseline.disciplines", errors)
+            fail(
+                f"baseline document {doc.get('id', 'UNKNOWN')} uses discipline "
+                f"{doc.get('discipline')} outside baseline.disciplines",
+                errors,
+            )
         if thresholds.get("require_provenance_hash") and not doc.get("sha256"):
             fail(f"baseline document {doc.get('id', 'UNKNOWN')} missing sha256", errors)
 
     required_document_ids = set(baseline.get("required_document_ids", []))
-    eligible_statuses = set(config.get("baseline_policy", {}).get("eligible_required_document_statuses", ["CURRENT"]))
+    eligible_statuses = set(
+        config.get("baseline_policy", {}).get(
+            "eligible_required_document_statuses", ["CURRENT"]
+        )
+    )
     eligible_required_ids = {
-        doc.get("id") for doc in documents
+        doc.get("id")
+        for doc in documents
         if doc.get("id") in required_document_ids and doc.get("status") in eligible_statuses
     }
     computed_missing = required_document_ids - eligible_required_ids
     declared_missing = set(data.get("blocking_missing_documents", []))
     if computed_missing != declared_missing:
         fail(
-            "blocking_missing_documents must exactly match missing or non-current baseline.required_document_ids; "
+            "blocking_missing_documents must exactly match missing or non-current "
+            "baseline.required_document_ids; "
             f"computed={sorted(computed_missing)} declared={sorted(declared_missing)}",
             errors,
         )
     if thresholds.get("block_on_missing_mandatory_document") and declared_missing:
-        fail(f"blocking mandatory documents are missing or non-current: {sorted(declared_missing)}", errors)
+        fail(
+            f"blocking mandatory documents are missing or non-current: {sorted(declared_missing)}",
+            errors,
+        )
 
     records = list(data.get("assessment_records", []))
     record_ids = [record.get("id") for record in records]
@@ -154,26 +238,70 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         classification = record.get("classification")
         if classification in derived_counts:
             derived_counts[classification] += 1
-        for discipline in record.get("disciplines", []):
+
+        record_disciplines = set(record.get("disciplines", []))
+        record_documents = set(record.get("document_ids", []))
+        for discipline in record_disciplines:
             if discipline not in discipline_set:
                 fail(f"assessment {rid} uses discipline {discipline} outside baseline.disciplines", errors)
-        for document_id in record.get("document_ids", []):
+        for document_id in record_documents:
             if document_id not in document_id_set:
                 fail(f"assessment {rid} uses document {document_id} outside baseline.documents", errors)
+
+        evidenced_disciplines = _validate_evidence(
+            f"assessment {rid}",
+            list(record.get("evidence", [])),
+            document_by_id,
+            thresholds,
+            errors,
+            allowed_document_ids=record_documents,
+        )
+        if not evidenced_disciplines.issubset(record_disciplines):
+            extra = sorted(evidenced_disciplines - record_disciplines)
+            fail(
+                f"assessment {rid} evidence uses disciplines outside assessment.disciplines: {extra}",
+                errors,
+            )
+        if record.get("interface") is True:
+            if len(record_disciplines) < 2:
+                fail(
+                    f"assessment {rid} marked interface=true must include at least two disciplines",
+                    errors,
+                )
+            if len(evidenced_disciplines & record_disciplines) < 2:
+                fail(
+                    f"assessment {rid} interface evidence must cover at least two distinct baseline disciplines",
+                    errors,
+                )
 
     scope_summary = data.get("scope_summary", {})
     declared_counts = {name: int(scope_summary.get(name, 0)) for name in classifications}
     if declared_counts != derived_counts:
-        fail(f"scope_summary must equal counts derived from assessment_records; computed={derived_counts} declared={declared_counts}", errors)
+        fail(
+            "scope_summary must equal counts derived from assessment_records; "
+            f"computed={derived_counts} declared={declared_counts}",
+            errors,
+        )
 
     declared_coverage = _finite_metric(data.get("coverage"), "coverage", errors)
     computed_coverage = compute_coverage(derived_counts)
     if computed_coverage is None:
         fail("assessment_records has no applicable scope items; coverage cannot be computed", errors)
     elif declared_coverage is not None and abs(declared_coverage - computed_coverage) > tolerance:
-        fail(f"coverage {declared_coverage:.4f}% inconsistent with assessment_records computed {computed_coverage:.4f}%", errors)
-    if declared_coverage is not None and declared_coverage < float(thresholds["minimum_coverage_percent"]):
-        fail(f"coverage {declared_coverage:.2f}% below minimum {thresholds['minimum_coverage_percent']}%", errors)
+        fail(
+            f"coverage {declared_coverage:.4f}% inconsistent with assessment_records "
+            f"computed {computed_coverage:.4f}%",
+            errors,
+        )
+    if (
+        declared_coverage is not None
+        and declared_coverage < float(thresholds["minimum_coverage_percent"])
+    ):
+        fail(
+            f"coverage {declared_coverage:.2f}% below minimum "
+            f"{thresholds['minimum_coverage_percent']}%",
+            errors,
+        )
 
     compatibility = data.get("compatibility", {})
     method = compatibility.get("method", {})
@@ -191,32 +319,81 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail(f"compatibility.method.status_weights must equal {required_weights}", errors)
     weights = {key: float(value) for key, value in required_weights.items()}
 
-    global_compat = _assert_metric("compatibility.global", compatibility.get("global"), _score(records, weights), tolerance, errors)
+    global_compat = _assert_metric(
+        "compatibility.global",
+        compatibility.get("global"),
+        _score(records, weights),
+        tolerance,
+        errors,
+    )
     interface_records = [record for record in records if record.get("interface") is True]
-    interface_compat = _assert_metric("compatibility.interface", compatibility.get("interface"), _score(interface_records, weights), tolerance, errors)
+    interface_compat = _assert_metric(
+        "compatibility.interface",
+        compatibility.get("interface"),
+        _score(interface_records, weights),
+        tolerance,
+        errors,
+    )
 
     discipline_scores = compatibility.get("by_discipline", {})
     if thresholds.get("require_discipline_scores") and set(discipline_scores) != discipline_set:
-        fail(f"compatibility.by_discipline keys must exactly match baseline.disciplines; expected={sorted(discipline_set)} actual={sorted(discipline_scores)}", errors)
+        fail(
+            "compatibility.by_discipline keys must exactly match baseline.disciplines; "
+            f"expected={sorted(discipline_set)} actual={sorted(discipline_scores)}",
+            errors,
+        )
     for discipline in disciplines:
         related = [record for record in records if discipline in record.get("disciplines", [])]
-        _assert_metric(f"compatibility.by_discipline.{discipline}", discipline_scores.get(discipline), _score(related, weights), tolerance, errors)
+        _assert_metric(
+            f"compatibility.by_discipline.{discipline}",
+            discipline_scores.get(discipline),
+            _score(related, weights),
+            tolerance,
+            errors,
+        )
 
     document_scores = compatibility.get("by_document", {})
     if thresholds.get("require_document_scores") and set(document_scores) != document_id_set:
-        fail(f"compatibility.by_document keys must exactly match baseline document ids; expected={sorted(document_id_set)} actual={sorted(document_scores)}", errors)
+        fail(
+            "compatibility.by_document keys must exactly match baseline document ids; "
+            f"expected={sorted(document_id_set)} actual={sorted(document_scores)}",
+            errors,
+        )
     for document_id in document_ids:
         related = [record for record in records if document_id in record.get("document_ids", [])]
-        _assert_metric(f"compatibility.by_document.{document_id}", document_scores.get(document_id), _score(related, weights), tolerance, errors)
+        _assert_metric(
+            f"compatibility.by_document.{document_id}",
+            document_scores.get(document_id),
+            _score(related, weights),
+            tolerance,
+            errors,
+        )
 
-    if global_compat is not None and global_compat < float(thresholds["minimum_global_compatibility_percent"]):
-        fail(f"global compatibility {global_compat:.2f}% below minimum {thresholds['minimum_global_compatibility_percent']}%", errors)
-    if interface_compat is not None and interface_compat < float(thresholds["minimum_interface_compatibility_percent"]):
-        fail(f"interface compatibility {interface_compat:.2f}% below minimum {thresholds['minimum_interface_compatibility_percent']}%", errors)
+    if (
+        global_compat is not None
+        and global_compat < float(thresholds["minimum_global_compatibility_percent"])
+    ):
+        fail(
+            f"global compatibility {global_compat:.2f}% below minimum "
+            f"{thresholds['minimum_global_compatibility_percent']}%",
+            errors,
+        )
+    if (
+        interface_compat is not None
+        and interface_compat < float(thresholds["minimum_interface_compatibility_percent"])
+    ):
+        fail(
+            f"interface compatibility {interface_compat:.2f}% below minimum "
+            f"{thresholds['minimum_interface_compatibility_percent']}%",
+            errors,
+        )
 
     record_by_id = {record.get("id"): record for record in records}
     open_critical: list[str] = []
-    trusted_approvals = config.get("waiver_authorization", {}).get("trusted_approval_records", {})
+    trusted_approvals = config.get("waiver_authorization", {}).get(
+        "trusted_approval_records", {}
+    )
+    linked_assessment_ids: set[Any] = set()
 
     for finding in data.get("findings", []):
         fid = finding.get("id", "UNKNOWN")
@@ -229,6 +406,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         if assessment is None:
             fail(f"{fid}: assessment_id {assessment_id} is not in assessment_records", errors)
         else:
+            linked_assessment_ids.add(assessment_id)
             if finding.get("classification") != assessment.get("classification"):
                 fail(f"{fid}: classification must match assessment {assessment_id}", errors)
             if set(finding.get("disciplines", [])) != set(assessment.get("disciplines", [])):
@@ -254,25 +432,13 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if secondary not in document_id_set and secondary not in declared_missing:
                 fail(f"{fid}: secondary document {secondary} is not in the baseline inventory", errors)
 
-        evidence = finding.get("evidence", [])
-        if not evidence:
-            fail(f"{fid}: no evidence provided", errors)
-        for index, item in enumerate(evidence, start=1):
-            doc_id = item.get("document_id")
-            doc = document_by_id.get(doc_id)
-            for key in ("document_id", "revision", "location", "statement", "source_hash"):
-                value = item.get(key)
-                if not isinstance(value, str) or not value.strip():
-                    fail(f"{fid}: evidence[{index}] {key} must be non-empty", errors)
-            if doc is None:
-                fail(f"{fid}: evidence[{index}] document {doc_id} is not in baseline.documents", errors)
-            else:
-                if item.get("revision") != doc.get("revision"):
-                    fail(f"{fid}: evidence[{index}] revision {item.get('revision')} does not match baseline revision {doc.get('revision')} for {doc_id}", errors)
-                source_hash = item.get("source_hash")
-                baseline_hash = doc.get("sha256")
-                if thresholds.get("require_provenance_hash") and isinstance(source_hash, str) and isinstance(baseline_hash, str) and source_hash.lower() != baseline_hash.lower():
-                    fail(f"{fid}: evidence[{index}] source_hash does not match baseline sha256 for {doc_id}", errors)
+        _validate_evidence(
+            fid,
+            list(finding.get("evidence", [])),
+            document_by_id,
+            thresholds,
+            errors,
+        )
 
         if status == "WAIVED" and thresholds.get("require_waiver_metadata"):
             waiver = finding.get("waiver", {})
@@ -284,7 +450,10 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 fail(f"{fid}: waived finding requires waiver.approval_record_id", errors)
             approval = trusted_approvals.get(approval_record_id)
             if not isinstance(approval, dict) or approval.get("human_approved") is not True:
-                fail(f"{fid}: waiver approval_record_id must reference a trusted human approval record", errors)
+                fail(
+                    f"{fid}: waiver approval_record_id must reference a trusted human approval record",
+                    errors,
+                )
 
         if finding.get("architecture_impact") and thresholds.get("require_architecture_viability"):
             if not finding.get("alternatives"):
@@ -293,16 +462,32 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if not isinstance(viability, str) or not viability.strip():
                 fail(f"{fid}: architecture finding requires viability analysis", errors)
 
+    for record in records:
+        if (
+            record.get("classification") in ISSUE_CLASSIFICATIONS
+            and record.get("id") not in linked_assessment_ids
+        ):
+            fail(
+                f"assessment {record.get('id')} classified {record.get('classification')} "
+                "requires a corresponding finding",
+                errors,
+            )
+
     if thresholds.get("block_on_open_critical") and open_critical:
         fail(f"open CRITICAL findings: {', '.join(open_critical)}", errors)
 
     expected_gate = "BLOCK" if errors else "PASS"
     if data.get("release_gate") != expected_gate:
-        fail(f"release_gate={data.get('release_gate')} inconsistent with computed gate {expected_gate}", errors)
+        fail(
+            f"release_gate={data.get('release_gate')} inconsistent with computed gate {expected_gate}",
+            errors,
+        )
     return errors
 
 
-def validate_data(data: dict[str, Any], schema: dict[str, Any], config: dict[str, Any]) -> list[str]:
+def validate_data(
+    data: dict[str, Any], schema: dict[str, Any], config: dict[str, Any]
+) -> list[str]:
     errors = schema_errors(data, schema)
     if errors:
         return errors
@@ -310,8 +495,15 @@ def validate_data(data: dict[str, Any], schema: dict[str, Any], config: dict[str
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate an engineering compatibility datasheet against the v1.1 Golden Rule gate.")
-    parser.add_argument("datasheet", nargs="?", default=str(DEFAULT_DATA), help="Datasheet path. Defaults to the permanent known-good regression fixture.")
+    parser = argparse.ArgumentParser(
+        description="Validate an engineering compatibility datasheet against the v1.1 Golden Rule gate."
+    )
+    parser.add_argument(
+        "datasheet",
+        nargs="?",
+        default=str(DEFAULT_DATA),
+        help="Datasheet path. Defaults to the permanent known-good regression fixture.",
+    )
     parser.add_argument("--schema", default=str(DEFAULT_SCHEMA))
     parser.add_argument("--config", default=str(DEFAULT_CONFIG))
     args = parser.parse_args()
