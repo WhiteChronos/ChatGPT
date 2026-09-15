@@ -1,0 +1,114 @@
+schema_version: "1.1"
+pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+contracts:
+  golden_rules: governance/golden_rules.yaml
+  panel_template: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
+  conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  conversation_contract: pipeline/conversation_contract.py
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
+sequence:
+  - order: 10
+    id: BOOTSTRAP_CONTEXT
+    gate:
+      - prompt_master_loaded
+      - golden_rules_loaded
+      - pipeline_loaded
+      - datacenter_loaded
+      - datasheet_loaded
+      - panel_template_loaded
+      - conversation_memory_loaded
+      - conversation_contract_validated
+  - order: 20
+    id: DATACENTER
+    gate: [catalog_registered, quantity_baseline_registered, approved_template_fingerprint_registered]
+  - order: 30
+    id: DATASHEET
+    gate: [panel_registered, dimensions_locked, production_contract_locked, prompt_master_linked, memory_linked]
+  - order: 40
+    id: SELECT
+    gate: [reference_model_present, lifecycle_checked, technical_status_known]
+  - order: 50
+    id: LI_QUANTITY
+    gate: [li_exists, li_revision_matches_baseline, quantity_positive, quantity_registry_match]
+  - order: 60
+    id: LOAD_BALANCE
+    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present]
+  - order: 70
+    id: BOM
+    gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line]
+  - order: 80
+    id: LAYOUT
+    gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present]
+  - order: 90
+    id: RENDER_IMAGE
+    gate: [approved_template_id, approved_template_fingerprint, one_panel_per_image, no_unapproved_recomposition]
+  - order: 100
+    id: QA
+    gate:
+      - li_bom_layout_render_parity
+      - workbook_structure_fingerprint
+      - render_contract_fingerprint
+      - conversation_contract_valid
+      - hashes
+  - order: 110
+    id: MEMORY_SYNC
+    gate: [memory_id_valid, immutable_contract_unchanged, mutable_state_revision_incremented_when_required]
+  - order: 120
+    id: RELEASE
+    gate: [no_REPROVADO, no_HOLD_for_release, source_validation_two_agents, reverification_done, memory_synced]
+conversation_commands:
+  /explaincode:
+    mode: READ_ONLY
+    description: Explica código em partes sem modificar o alvo.
+    required_context: [pipeline, datacenter, datasheet, golden_rules, conversation_memory]
+    output_sections:
+      - finalidade
+      - visão geral do fluxo
+      - explicação por bloco/função
+      - entradas e saídas
+      - invariantes e Regras de Ouro
+      - riscos/erros possíveis
+      - vínculo com Data Center/Data Sheet/pipeline
+  /refactor:
+    mode: BEHAVIOR_PRESERVING_WRITE
+    description: Melhora estrutura sem mudar comportamento esperado.
+    behavior_change_allowed: false
+    locked_contract_change_requires_explicit_user_authorization: true
+    mandatory_gates:
+      - capture_before_baseline
+      - compile_or_parse
+      - regression_tests
+      - conversation_contract_validate
+      - diff_review
+      - qa
+      - memory_sync_if_major_change
+invalidations:
+  li_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_model_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  enclosure_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  approved_template_change:
+    requires_explicit_user_authorization: true
+    invalidates: [RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  immutable_contract_change:
+    requires_explicit_user_authorization: true
+    invalidates: [BOOTSTRAP_CONTEXT, QA, MEMORY_SYNC, RELEASE]
+  behavior_change_during_refactor:
+    allowed: false
+    action: STOP_REFACTOR_AND_OPEN_CONTROLLED_CHANGE
+release_policy:
+  unauthorized_standard_change: REPROVADO
+  missing_exact_model_or_evidence: HOLD
+  geometric_distortion: REPROVADO
+  quantity_mismatch: REPROVADO
+  conversation_contract_mismatch: REPROVADO
+  missing_memory_sync_when_required: HOLD
+  fail_closed: true
