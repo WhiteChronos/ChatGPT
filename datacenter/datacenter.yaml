@@ -1,4 +1,4 @@
-schema_version: "1.0"
+schema_version: '1.0'
 datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
 standard_id: AUT-PAINEL-COMPACT-V2.4
 status: LOCKED_APPROVED_STANDARD
@@ -12,6 +12,11 @@ canonical_sources:
   prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
   pipeline_yaml: pipeline/pipeline.yaml
   datasheet_yaml: datasheet/datasheet.yaml
+  bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
+  conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  conversation_contract: pipeline/conversation_contract.py
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
 workbook_baseline:
   template_id: XLSX-PN-AUT-01-MASTER-R02
   master_panel: PN-AUT-01
@@ -40,3 +45,13 @@ change_control:
   quantity_change_requires_new_li_revision: true
   image_template_change_requires_new_approved_template_revision: true
   unauthorized_change_status: REPROVADO
+  conversation_memory_immutable_contract_requires_user_authorization: true
+  conversation_prompt_change_requires_user_authorization: true
+  refactor_behavior_change_forbidden: true
+conversation_contract_fingerprints:
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  prompt_master_sha256: 2a5ee6ae749427335133d0a100b45bf08ee615d59fe151f8828193d98db70a7e
+  bootstrap_prompt_sha256: 5fb9aebf6e330a4df2cc681c78cca98a0f7fa2a0a85cbaaae27f181420e1988a
+  memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+  memory_immutable_contract_sha256: d4c7ec9c1cc4f43bfe99dfbef435138222208bb9f07606696a7facebbdbb7e27
+  conversation_contract_script_sha256: 9badd10fb6011053cf193f65e818a7b2a5a7e3cb68fcdd8f241ef4d44439bac2
