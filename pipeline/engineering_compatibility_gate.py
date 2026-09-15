@@ -6,6 +6,7 @@ import argparse
 import json
 import math
 from pathlib import Path
+import re
 import sys
 from typing import Any
 
@@ -22,6 +23,12 @@ IMPACT_KEYS = {
 }
 OPEN_STATUSES = {"OPEN", "IN_REVIEW"}
 ISSUE_CLASSIFICATIONS = {"PARTIAL", "DIVERGENT", "NOT_VERIFIABLE"}
+FIXED_CLASSIFICATIONS = (
+    "VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"
+)
+FIXED_REQUIRED_DOCUMENT_STATUSES = {"CURRENT", "APPROVED"}
+FIXED_STATUS_WEIGHTS = {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
+SHA256_RE = re.compile(r"[A-Fa-f0-9]{64}\Z")
 MANDATORY_THRESHOLD_FLAGS = (
     "block_on_open_critical",
     "block_on_missing_mandatory_document",
@@ -69,6 +76,10 @@ def _finite_metric(value: Any, label: str, errors: list[str]) -> float | None:
     return metric
 
 
+def _valid_sha256(value: Any) -> bool:
+    return isinstance(value, str) and SHA256_RE.fullmatch(value) is not None
+
+
 def compute_coverage(scope_summary: dict[str, Any]) -> float | None:
     verified = int(scope_summary.get("VERIFIED", 0))
     partial = int(scope_summary.get("PARTIAL", 0))
@@ -87,7 +98,10 @@ def _score(records: list[dict[str, Any]], weights: dict[str, float]) -> float | 
     ]
     if not applicable:
         return None
-    total = sum(float(weights[record["classification"]]) for record in applicable)
+    try:
+        total = sum(float(weights[record["classification"]]) for record in applicable)
+    except (KeyError, TypeError, ValueError):
+        return None
     return 100.0 * total / len(applicable)
 
 
@@ -110,12 +124,20 @@ def _assert_metric(
 
 
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    """Return a semantic content fingerprint that deliberately excludes record.id."""
+    """Return semantic content identity, excluding id and normalizing SHA-256 case."""
     payload = {key: value for key, value in record.items() if key != "id"}
     payload["disciplines"] = sorted(payload.get("disciplines", []))
     payload["document_ids"] = sorted(payload.get("document_ids", []))
+
+    normalized_evidence: list[dict[str, Any]] = []
+    for item in payload.get("evidence", []):
+        normalized = dict(item)
+        source_hash = normalized.get("source_hash")
+        if isinstance(source_hash, str):
+            normalized["source_hash"] = source_hash.lower()
+        normalized_evidence.append(normalized)
     payload["evidence"] = sorted(
-        list(payload.get("evidence", [])),
+        normalized_evidence,
         key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
     )
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -145,9 +167,13 @@ def _validate_evidence(
             if not isinstance(value, str) or not value.strip():
                 fail(f"{owner}: evidence[{index}] {key} must be non-empty", errors)
 
+        source_hash = item.get("source_hash")
+        if not _valid_sha256(source_hash):
+            fail(f"{owner}: evidence[{index}] source_hash must be exactly 64 hexadecimal characters", errors)
+
         if allowed_document_ids is not None and doc_id not in allowed_document_ids:
             fail(
-                f"{owner}: evidence[{index}] document {doc_id} is not declared in document_ids",
+                f"{owner}: evidence[{index}] document {doc_id} is outside the linked assessment document scope",
                 errors,
             )
 
@@ -166,7 +192,6 @@ def _validate_evidence(
                 f"baseline revision {doc.get('revision')} for {doc_id}",
                 errors,
             )
-        source_hash = item.get("source_hash")
         baseline_hash = doc.get("sha256")
         if (
             isinstance(source_hash, str)
@@ -180,11 +205,53 @@ def _validate_evidence(
     return evidenced_disciplines, evidenced_documents
 
 
+def _config_sections(config: dict[str, Any], errors: list[str]) -> tuple[dict[str, Any], dict[str, Any]] | None:
+    thresholds = config.get("thresholds") if isinstance(config, dict) else None
+    compatibility = config.get("compatibility") if isinstance(config, dict) else None
+    if not isinstance(thresholds, dict):
+        fail("config.thresholds must be an object", errors)
+    if not isinstance(compatibility, dict):
+        fail("config.compatibility must be an object", errors)
+    if not isinstance(thresholds, dict) or not isinstance(compatibility, dict):
+        return None
+    return thresholds, compatibility
+
+
 def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    thresholds = config["thresholds"]
-    tolerance = float(thresholds.get("metric_tolerance_percent", 0.05))
-    classifications = list(config["classifications"])
+    sections = _config_sections(config, errors)
+    if sections is None:
+        return errors
+    thresholds, compatibility_config = sections
+
+    tolerance = _finite_metric(
+        thresholds.get("metric_tolerance_percent", 0.05),
+        "config.thresholds.metric_tolerance_percent",
+        errors,
+    )
+    if tolerance is None or tolerance < 0:
+        if tolerance is not None:
+            fail("config.thresholds.metric_tolerance_percent must be non-negative", errors)
+        tolerance = 0.05
+
+    configured_classifications = config.get("classifications")
+    if configured_classifications != list(FIXED_CLASSIFICATIONS):
+        fail(
+            f"config.classifications must equal the fixed classification inventory {list(FIXED_CLASSIFICATIONS)}",
+            errors,
+        )
+    classifications = list(FIXED_CLASSIFICATIONS)
+
+    configured_statuses = config.get("baseline_policy", {}).get(
+        "eligible_required_document_statuses"
+    ) if isinstance(config.get("baseline_policy"), dict) else None
+    if set(configured_statuses or []) != FIXED_REQUIRED_DOCUMENT_STATUSES:
+        fail(
+            "config.baseline_policy.eligible_required_document_statuses must be exactly "
+            "CURRENT and APPROVED",
+            errors,
+        )
+    eligible_statuses = FIXED_REQUIRED_DOCUMENT_STATUSES
 
     for flag in MANDATORY_THRESHOLD_FLAGS:
         if thresholds.get(flag) is not True:
@@ -192,12 +259,26 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 f"config.thresholds.{flag} must remain true; mandatory governance controls cannot be disabled",
                 errors,
             )
-    if config.get("compatibility", {}).get("require_method_disclosure") is not True:
+    if compatibility_config.get("require_method_disclosure") is not True:
         fail(
             "config.compatibility.require_method_disclosure must remain true; "
             "mandatory governance controls cannot be disabled",
             errors,
         )
+    if compatibility_config.get("required_status_weights") != FIXED_STATUS_WEIGHTS:
+        fail(
+            f"config.compatibility.required_status_weights must equal fixed weights {FIXED_STATUS_WEIGHTS}",
+            errors,
+        )
+
+    visualization_config = config.get("visualization", {})
+    severity_config = config.get("severity", {})
+    if not isinstance(visualization_config, dict):
+        fail("config.visualization must be an object", errors)
+        visualization_config = {}
+    if not isinstance(severity_config, dict):
+        fail("config.severity must be an object", errors)
+        severity_config = {}
 
     viz = data.get("visualization", {})
     if viz.get("model") != "VISUALIZE_GOLDEN_RULE_v1_0":
@@ -205,12 +286,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     if viz.get("complete_not_summary") is not True:
         fail("/visualize output must be complete_not_summary=true", errors)
     missing_sections = sorted(
-        set(config["visualization"]["mandatory_sections"])
+        set(visualization_config.get("mandatory_sections", []))
         - set(viz.get("mandatory_sections", []))
     )
     if missing_sections:
         fail(f"missing visualization sections: {', '.join(missing_sections)}", errors)
-    for severity, expected in config["severity"].items():
+    for severity, expected in severity_config.items():
         if viz.get("severity_colors", {}).get(severity) != expected:
             fail(f"visualization.severity_colors.{severity} must be {expected}", errors)
 
@@ -235,15 +316,14 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 f"{doc.get('discipline')} outside baseline.disciplines",
                 errors,
             )
-        if not doc.get("sha256"):
-            fail(f"baseline document {doc.get('id', 'UNKNOWN')} missing sha256", errors)
+        if not _valid_sha256(doc.get("sha256")):
+            fail(
+                f"baseline document {doc.get('id', 'UNKNOWN')} sha256 must be exactly "
+                "64 hexadecimal characters",
+                errors,
+            )
 
     required_document_ids = set(baseline.get("required_document_ids", []))
-    eligible_statuses = set(
-        config.get("baseline_policy", {}).get(
-            "eligible_required_document_statuses", ["CURRENT"]
-        )
-    )
     eligible_required_ids = {
         doc.get("id")
         for doc in documents
@@ -289,6 +369,8 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         classification = record.get("classification")
         if classification in derived_counts:
             derived_counts[classification] += 1
+        else:
+            fail(f"assessment {rid} has unsupported classification {classification}", errors)
 
         record_disciplines = set(record.get("disciplines", []))
         record_documents = set(record.get("document_ids", []))
@@ -358,13 +440,14 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             f"computed {computed_coverage:.4f}%",
             errors,
         )
-    if (
-        computed_coverage is not None
-        and computed_coverage < float(thresholds["minimum_coverage_percent"])
-    ):
+    minimum_coverage = _finite_metric(
+        thresholds.get("minimum_coverage_percent"),
+        "config.thresholds.minimum_coverage_percent",
+        errors,
+    )
+    if computed_coverage is not None and minimum_coverage is not None and computed_coverage < minimum_coverage:
         fail(
-            f"coverage {computed_coverage:.2f}% below minimum "
-            f"{thresholds['minimum_coverage_percent']}%",
+            f"coverage {computed_coverage:.2f}% below minimum {minimum_coverage}%",
             errors,
         )
 
@@ -378,10 +461,9 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail("compatibility.method.exclude_not_applicable must be true", errors)
     if method.get("exclude_not_verifiable") is not True:
         fail("compatibility.method.exclude_not_verifiable must be true", errors)
-    required_weights = config["compatibility"].get("required_status_weights", {})
-    if method.get("status_weights") != required_weights:
-        fail(f"compatibility.method.status_weights must equal {required_weights}", errors)
-    weights = {key: float(value) for key, value in required_weights.items()}
+    if method.get("status_weights") != FIXED_STATUS_WEIGHTS:
+        fail(f"compatibility.method.status_weights must equal {FIXED_STATUS_WEIGHTS}", errors)
+    weights = FIXED_STATUS_WEIGHTS
 
     global_compat = _assert_metric(
         "compatibility.global",
@@ -433,29 +515,34 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             errors,
         )
 
-    if (
-        global_compat is not None
-        and global_compat < float(thresholds["minimum_global_compatibility_percent"])
-    ):
+    minimum_global = _finite_metric(
+        thresholds.get("minimum_global_compatibility_percent"),
+        "config.thresholds.minimum_global_compatibility_percent",
+        errors,
+    )
+    minimum_interface = _finite_metric(
+        thresholds.get("minimum_interface_compatibility_percent"),
+        "config.thresholds.minimum_interface_compatibility_percent",
+        errors,
+    )
+    if global_compat is not None and minimum_global is not None and global_compat < minimum_global:
         fail(
-            f"global compatibility {global_compat:.2f}% below minimum "
-            f"{thresholds['minimum_global_compatibility_percent']}%",
+            f"global compatibility {global_compat:.2f}% below minimum {minimum_global}%",
             errors,
         )
-    if (
-        interface_compat is not None
-        and interface_compat < float(thresholds["minimum_interface_compatibility_percent"])
-    ):
+    if interface_compat is not None and minimum_interface is not None and interface_compat < minimum_interface:
         fail(
-            f"interface compatibility {interface_compat:.2f}% below minimum "
-            f"{thresholds['minimum_interface_compatibility_percent']}%",
+            f"interface compatibility {interface_compat:.2f}% below minimum {minimum_interface}%",
             errors,
         )
 
     record_by_id = {record.get("id"): record for record in records}
     open_critical: list[str] = []
-    trusted_approvals = config.get("waiver_authorization", {}).get(
-        "trusted_approval_records", {}
+    waiver_authorization = config.get("waiver_authorization", {})
+    trusted_approvals = (
+        waiver_authorization.get("trusted_approval_records", {})
+        if isinstance(waiver_authorization, dict)
+        else {}
     )
     linked_assessment_ids: set[Any] = set()
 
@@ -467,10 +554,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
 
         assessment_id = finding.get("assessment_id")
         assessment = record_by_id.get(assessment_id)
+        assessment_documents: set[Any] | None = None
         if assessment is None:
             fail(f"{fid}: assessment_id {assessment_id} is not in assessment_records", errors)
         else:
             linked_assessment_ids.add(assessment_id)
+            assessment_documents = set(assessment.get("document_ids", []))
             if finding.get("classification") != assessment.get("classification"):
                 fail(f"{fid}: classification must match assessment {assessment_id}", errors)
             if set(finding.get("disciplines", [])) != set(assessment.get("disciplines", [])):
@@ -496,13 +585,30 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if secondary not in document_id_set and secondary not in declared_missing:
                 fail(f"{fid}: secondary document {secondary} is not in the baseline inventory", errors)
 
-        _validate_evidence(
+        finding_disciplines, finding_documents = _validate_evidence(
             fid,
             list(finding.get("evidence", [])),
             document_by_id,
             thresholds,
             errors,
+            allowed_document_ids=assessment_documents,
         )
+        if assessment is not None:
+            expected_disciplines = set(assessment.get("disciplines", []))
+            missing_finding_disciplines = sorted(expected_disciplines - finding_disciplines)
+            if missing_finding_disciplines:
+                fail(
+                    f"{fid}: finding evidence must cover every linked assessment discipline; "
+                    f"missing={missing_finding_disciplines}",
+                    errors,
+                )
+            missing_finding_documents = sorted(assessment_documents - finding_documents)
+            if missing_finding_documents:
+                fail(
+                    f"{fid}: finding evidence must cover every linked assessment document; "
+                    f"missing={missing_finding_documents}",
+                    errors,
+                )
 
         if status == "WAIVED":
             waiver = finding.get("waiver", {})
@@ -555,7 +661,10 @@ def validate_data(
     errors = schema_errors(data, schema)
     if errors:
         return errors
-    return validate_semantics(data, config)
+    try:
+        return validate_semantics(data, config)
+    except Exception as exc:  # Defensive fail-closed boundary for malformed policy/config data.
+        return [f"semantic validation error: {type(exc).__name__}: {exc}"]
 
 
 def main() -> int:
