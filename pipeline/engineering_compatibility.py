@@ -47,6 +47,16 @@ def summarize(data: dict, errors: list[str]) -> dict:
     }
 
 
+def _write_summary(path: Path | None, summary: dict) -> None:
+    if path is None:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(summary, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate and summarize an engineering compatibility datasheet."
@@ -68,24 +78,17 @@ def main() -> int:
             "validation_errors": [f"load error: {exc}"],
             "release_gate": "BLOCK",
         }
-        if args.summary:
-            args.summary.parent.mkdir(parents=True, exist_ok=True)
-            args.summary.write_text(
-                json.dumps(summary, indent=2, ensure_ascii=False),
-                encoding="utf-8",
-            )
+        _write_summary(args.summary, summary)
         print(json.dumps(summary, indent=2, ensure_ascii=False), file=sys.stderr)
         return 1
 
-    errors = validate_data(data, schema, config)
-    summary = summarize(data, errors)
+    try:
+        errors = validate_data(data, schema, config)
+    except Exception as exc:  # Fail closed and overwrite any stale persisted PASS summary.
+        errors = [f"validation error: {type(exc).__name__}: {exc}"]
 
-    if args.summary:
-        args.summary.parent.mkdir(parents=True, exist_ok=True)
-        args.summary.write_text(
-            json.dumps(summary, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
+    summary = summarize(data, errors)
+    _write_summary(args.summary, summary)
 
     stream = sys.stderr if errors else sys.stdout
     print(json.dumps(summary, indent=2, ensure_ascii=False), file=stream)
