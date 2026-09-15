@@ -1,77 +1,35 @@
 {
   "project": "Example Project",
   "baseline": {
-    "disciplines": [
-      "HVAC",
-      "ELECTRICAL",
-      "AUTOMATION"
-    ],
+    "disciplines": ["HVAC", "ELECTRICAL", "AUTOMATION"],
     "documents": [
-      {
-        "id": "EX-HVAC-001",
-        "discipline": "HVAC",
-        "revision": "A",
-        "source": "synthetic://example-project/HVAC/EX-HVAC-001/A",
-        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-        "status": "CURRENT"
-      },
-      {
-        "id": "EX-ELE-001",
-        "discipline": "ELECTRICAL",
-        "revision": "A",
-        "source": "synthetic://example-project/ELECTRICAL/EX-ELE-001/A",
-        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-        "status": "CURRENT"
-      },
-      {
-        "id": "EX-AUT-001",
-        "discipline": "AUTOMATION",
-        "revision": "A",
-        "source": "synthetic://example-project/AUTOMATION/EX-AUT-001/A",
-        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-        "status": "CURRENT"
-      }
+      {"id": "EX-HVAC-001", "discipline": "HVAC", "revision": "A", "source": "synthetic://example-project/HVAC/EX-HVAC-001/A", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "status": "CURRENT"},
+      {"id": "EX-ELE-001", "discipline": "ELECTRICAL", "revision": "A", "source": "synthetic://example-project/ELECTRICAL/EX-ELE-001/A", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "status": "CURRENT"},
+      {"id": "EX-AUT-001", "discipline": "AUTOMATION", "revision": "A", "source": "synthetic://example-project/AUTOMATION/EX-AUT-001/A", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "status": "CURRENT"}
     ],
     "reconciled": true,
     "reconciliation_note": "Synthetic positive fixture: all three discipline baselines are current and mutually reconciled.",
-    "required_document_ids": [
-      "EX-HVAC-001",
-      "EX-ELE-001",
-      "EX-AUT-001"
-    ]
+    "required_document_ids": ["EX-HVAC-001", "EX-ELE-001", "EX-AUT-001"]
   },
-  "scope_summary": {
-    "VERIFIED": 20,
-    "PARTIAL": 0,
-    "DIVERGENT": 0,
-    "NOT_VERIFIABLE": 0,
-    "NOT_APPLICABLE": 0
-  },
+  "assessment_records": [
+    {"id": "ASM-HVAC-001", "criterion": "HVAC baseline compatibility", "classification": "VERIFIED", "disciplines": ["HVAC"], "document_ids": ["EX-HVAC-001"], "interface": true},
+    {"id": "ASM-ELE-001", "criterion": "Electrical baseline compatibility", "classification": "VERIFIED", "disciplines": ["ELECTRICAL"], "document_ids": ["EX-ELE-001"], "interface": true},
+    {"id": "ASM-AUT-001", "criterion": "Automation baseline compatibility", "classification": "VERIFIED", "disciplines": ["AUTOMATION"], "document_ids": ["EX-AUT-001"], "interface": true}
+  ],
+  "scope_summary": {"VERIFIED": 3, "PARTIAL": 0, "DIVERGENT": 0, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0},
   "coverage": 100.0,
   "compatibility": {
     "global": 100.0,
-    "by_discipline": {
-      "HVAC": 100.0,
-      "ELECTRICAL": 100.0,
-      "AUTOMATION": 100.0
-    },
-    "by_document": {
-      "EX-HVAC-001": 100.0,
-      "EX-ELE-001": 100.0,
-      "EX-AUT-001": 100.0
-    },
+    "by_discipline": {"HVAC": 100.0, "ELECTRICAL": 100.0, "AUTOMATION": 100.0},
+    "by_document": {"EX-HVAC-001": 100.0, "EX-ELE-001": 100.0, "EX-AUT-001": 100.0},
     "interface": 100.0,
     "method": {
       "name": "weighted_status_v1",
       "formula": "100 * sum(status_weight * applicable_criterion) / applicable_criteria",
-      "denominator_definition": "Applicable criteria classified VERIFIED, PARTIAL or DIVERGENT; NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator.",
+      "denominator_definition": "Applicable assessment records classified VERIFIED, PARTIAL or DIVERGENT; NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator.",
       "exclude_not_applicable": true,
       "exclude_not_verifiable": true,
-      "status_weights": {
-        "VERIFIED": 1.0,
-        "PARTIAL": 0.5,
-        "DIVERGENT": 0.0
-      }
+      "status_weights": {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
     }
   },
   "blocking_missing_documents": [],
@@ -79,26 +37,8 @@
   "visualization": {
     "model": "VISUALIZE_GOLDEN_RULE_v1_0",
     "complete_not_summary": true,
-    "severity_colors": {
-      "CRITICAL": "red",
-      "HIGH": "orange",
-      "MEDIUM": "yellow",
-      "LOW": "blue",
-      "VERIFIED": "green",
-      "NOT_APPLICABLE": "gray"
-    },
-    "mandatory_sections": [
-      "executive_gate",
-      "baseline_map",
-      "compatibility_by_discipline",
-      "compatibility_by_document",
-      "interfaces",
-      "complete_findings",
-      "feasibility",
-      "missing_evidence",
-      "action_plan",
-      "release_gate"
-    ]
+    "severity_colors": {"CRITICAL": "red", "HIGH": "orange", "MEDIUM": "yellow", "LOW": "blue", "NOT_VERIFIABLE": "blue", "VERIFIED": "green", "NOT_APPLICABLE": "gray"},
+    "mandatory_sections": ["executive_gate", "baseline_map", "compatibility_by_discipline", "compatibility_by_document", "interfaces", "complete_findings", "feasibility", "missing_evidence", "action_plan", "release_gate"]
   },
   "findings": []
 }
