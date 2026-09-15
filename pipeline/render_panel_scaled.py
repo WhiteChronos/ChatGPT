@@ -76,11 +76,11 @@ def validate(
     require(golden.get("status") == "LOCKED_APPROVED_STANDARD" and golden.get("immutable") is True,
             "GR-041", "Golden Rules não estão bloqueadas.")
     ids = {str(x.get("id")) for x in golden.get("required_rules", [])}
-    for rule_id in ("GR-034", "GR-035", "GR-036", "GR-037", "GR-038", "GR-039", "GR-040", "GR-041", "GR-042", "GR-043", "GR-044", "GR-045"):
+    for rule_id in ("GR-034", "GR-035", "GR-036", "GR-037", "GR-038", "GR-039", "GR-040", "GR-041", "GR-042", "GR-043", "GR-044", "GR-045", "GR-046", "GR-047", "GR-048", "GR-049"):
         require(rule_id in ids, rule_id, "regra obrigatória ausente do registry.")
 
     seq = [str(x.get("id")) for x in pipeline.get("sequence", [])]
-    expected_seq = ["DATACENTER", "DATASHEET", "SELECT", "LI_QUANTITY", "LOAD_BALANCE", "BOM", "LAYOUT", "RENDER_IMAGE", "QA", "RELEASE"]
+    expected_seq = ["BOOTSTRAP_CONTEXT", "DATACENTER", "DATASHEET", "SELECT", "LI_QUANTITY", "LOAD_BALANCE", "BOM", "LAYOUT", "RENDER_IMAGE", "QA", "MEMORY_SYNC", "RELEASE"]
     require(seq == expected_seq, "GR-041", f"sequência do pipeline alterada: {seq}")
 
     dc_panel = (datacenter.get("panels") or {}).get(panel_id) or {}
@@ -151,6 +151,7 @@ def render_with_existing_engine(project_path: Path, catalog_path: Path, output: 
 
 def main() -> int:
     p = argparse.ArgumentParser()
+    p.add_argument("--root", default=".", help="Raiz do repositório/bundle para validar contrato de conversa")
     p.add_argument("--panel-id", required=True, choices=["PN-AUT-01", "PN-AUT-02"])
     p.add_argument("--li", required=True)
     p.add_argument("--project", required=True)
@@ -166,6 +167,12 @@ def main() -> int:
     args = p.parse_args()
 
     try:
+        root = Path(args.root).resolve()
+        try:
+            from pipeline.conversation_contract import validate_contract
+        except ImportError:
+            from conversation_contract import validate_contract
+        bootstrap_contract = validate_contract(root)
         project_path = Path(args.project)
         catalog_path = Path(args.catalog)
         contract = validate(
@@ -181,8 +188,9 @@ def main() -> int:
         )
         render_with_existing_engine(project_path, catalog_path, Path(args.output))
         contract_output = Path(args.contract_output) if args.contract_output else Path(args.output).with_suffix(".contract.json")
+        contract["conversation_bootstrap"] = bootstrap_contract
         contract_output.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print(json.dumps({"status": "PASS", "output": args.output, "contract": str(contract_output)}, ensure_ascii=False))
+        print(json.dumps({"status": "PASS", "output": args.output, "contract": str(contract_output), "memory_id": bootstrap_contract.get("memory_id")}, ensure_ascii=False))
         return 0
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         print(f"REPROVADO: {exc}", file=sys.stderr)
