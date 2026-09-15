@@ -22,6 +22,17 @@ IMPACT_KEYS = {
 }
 OPEN_STATUSES = {"OPEN", "IN_REVIEW"}
 ISSUE_CLASSIFICATIONS = {"PARTIAL", "DIVERGENT", "NOT_VERIFIABLE"}
+MANDATORY_THRESHOLD_FLAGS = (
+    "block_on_open_critical",
+    "block_on_missing_mandatory_document",
+    "block_on_unreconciled_baseline",
+    "require_baseline_documents",
+    "require_provenance_hash",
+    "require_waiver_metadata",
+    "require_document_scores",
+    "require_discipline_scores",
+    "require_architecture_viability",
+)
 
 
 def _reject_non_standard_constant(value: str) -> None:
@@ -95,7 +106,19 @@ def _assert_metric(
             f"{label} {value:.4f}% inconsistent with assessment_records computed {computed:.4f}%",
             errors,
         )
-    return value
+    return computed
+
+
+def _assessment_fingerprint(record: dict[str, Any]) -> str:
+    """Return a semantic content fingerprint that deliberately excludes record.id."""
+    payload = {key: value for key, value in record.items() if key != "id"}
+    payload["disciplines"] = sorted(payload.get("disciplines", []))
+    payload["document_ids"] = sorted(payload.get("document_ids", []))
+    payload["evidence"] = sorted(
+        list(payload.get("evidence", [])),
+        key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
+    )
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
 def _validate_evidence(
@@ -106,12 +129,13 @@ def _validate_evidence(
     errors: list[str],
     *,
     allowed_document_ids: set[Any] | None = None,
-) -> set[str]:
-    """Validate provenance-bearing evidence and return evidenced disciplines."""
+) -> tuple[set[str], set[Any]]:
+    """Validate provenance-bearing evidence and return evidenced disciplines/documents."""
     evidenced_disciplines: set[str] = set()
+    evidenced_documents: set[Any] = set()
     if not evidence:
         fail(f"{owner}: no evidence provided", errors)
-        return evidenced_disciplines
+        return evidenced_disciplines, evidenced_documents
 
     for index, item in enumerate(evidence, start=1):
         doc_id = item.get("document_id")
@@ -131,6 +155,7 @@ def _validate_evidence(
             fail(f"{owner}: evidence[{index}] document {doc_id} is not in baseline.documents", errors)
             continue
 
+        evidenced_documents.add(doc_id)
         discipline = doc.get("discipline")
         if isinstance(discipline, str):
             evidenced_disciplines.add(discipline)
@@ -144,8 +169,7 @@ def _validate_evidence(
         source_hash = item.get("source_hash")
         baseline_hash = doc.get("sha256")
         if (
-            thresholds.get("require_provenance_hash")
-            and isinstance(source_hash, str)
+            isinstance(source_hash, str)
             and isinstance(baseline_hash, str)
             and source_hash.lower() != baseline_hash.lower()
         ):
@@ -153,7 +177,7 @@ def _validate_evidence(
                 f"{owner}: evidence[{index}] source_hash does not match baseline sha256 for {doc_id}",
                 errors,
             )
-    return evidenced_disciplines
+    return evidenced_disciplines, evidenced_documents
 
 
 def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
@@ -161,6 +185,19 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     thresholds = config["thresholds"]
     tolerance = float(thresholds.get("metric_tolerance_percent", 0.05))
     classifications = list(config["classifications"])
+
+    for flag in MANDATORY_THRESHOLD_FLAGS:
+        if thresholds.get(flag) is not True:
+            fail(
+                f"config.thresholds.{flag} must remain true; mandatory governance controls cannot be disabled",
+                errors,
+            )
+    if config.get("compatibility", {}).get("require_method_disclosure") is not True:
+        fail(
+            "config.compatibility.require_method_disclosure must remain true; "
+            "mandatory governance controls cannot be disabled",
+            errors,
+        )
 
     viz = data.get("visualization", {})
     if viz.get("model") != "VISUALIZE_GOLDEN_RULE_v1_0":
@@ -185,11 +222,11 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     document_id_set = set(document_ids)
     document_by_id = {doc.get("id"): doc for doc in documents}
 
-    if thresholds.get("require_baseline_documents") and not documents:
+    if not documents:
         fail("baseline.documents must contain at least one source document", errors)
     if len(document_ids) != len(document_id_set):
         fail("baseline.documents contains duplicate document ids", errors)
-    if thresholds.get("block_on_unreconciled_baseline") and baseline.get("reconciled") is not True:
+    if baseline.get("reconciled") is not True:
         fail("baseline is not reconciled with the current approved revisions", errors)
     for doc in documents:
         if doc.get("discipline") not in discipline_set:
@@ -198,7 +235,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 f"{doc.get('discipline')} outside baseline.disciplines",
                 errors,
             )
-        if thresholds.get("require_provenance_hash") and not doc.get("sha256"):
+        if not doc.get("sha256"):
             fail(f"baseline document {doc.get('id', 'UNKNOWN')} missing sha256", errors)
 
     required_document_ids = set(baseline.get("required_document_ids", []))
@@ -221,7 +258,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             f"computed={sorted(computed_missing)} declared={sorted(declared_missing)}",
             errors,
         )
-    if thresholds.get("block_on_missing_mandatory_document") and declared_missing:
+    if declared_missing:
         fail(
             f"blocking mandatory documents are missing or non-current: {sorted(declared_missing)}",
             errors,
@@ -231,6 +268,20 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     record_ids = [record.get("id") for record in records]
     if len(record_ids) != len(set(record_ids)):
         fail("assessment_records contains duplicate ids", errors)
+
+    content_fingerprints: dict[str, Any] = {}
+    for record in records:
+        rid = record.get("id", "UNKNOWN")
+        fingerprint = _assessment_fingerprint(record)
+        duplicate_of = content_fingerprints.get(fingerprint)
+        if duplicate_of is not None:
+            fail(
+                f"assessment {rid} duplicates assessment content of {duplicate_of}; "
+                "assessment identity cannot differ only by id",
+                errors,
+            )
+        else:
+            content_fingerprints[fingerprint] = rid
 
     derived_counts = {name: 0 for name in classifications}
     for record in records:
@@ -248,7 +299,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if document_id not in document_id_set:
                 fail(f"assessment {rid} uses document {document_id} outside baseline.documents", errors)
 
-        evidenced_disciplines = _validate_evidence(
+        evidenced_disciplines, evidenced_documents = _validate_evidence(
             f"assessment {rid}",
             list(record.get("evidence", [])),
             document_by_id,
@@ -260,6 +311,20 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             extra = sorted(evidenced_disciplines - record_disciplines)
             fail(
                 f"assessment {rid} evidence uses disciplines outside assessment.disciplines: {extra}",
+                errors,
+            )
+        missing_disciplines = sorted(record_disciplines - evidenced_disciplines)
+        if missing_disciplines:
+            fail(
+                f"assessment {rid} evidence must cover every declared discipline; "
+                f"missing={missing_disciplines}",
+                errors,
+            )
+        missing_documents = sorted(record_documents - evidenced_documents)
+        if missing_documents:
+            fail(
+                f"assessment {rid} evidence must cover every declared document; "
+                f"missing={missing_documents}",
                 errors,
             )
         if record.get("interface") is True:
@@ -294,22 +359,21 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             errors,
         )
     if (
-        declared_coverage is not None
-        and declared_coverage < float(thresholds["minimum_coverage_percent"])
+        computed_coverage is not None
+        and computed_coverage < float(thresholds["minimum_coverage_percent"])
     ):
         fail(
-            f"coverage {declared_coverage:.2f}% below minimum "
+            f"coverage {computed_coverage:.2f}% below minimum "
             f"{thresholds['minimum_coverage_percent']}%",
             errors,
         )
 
     compatibility = data.get("compatibility", {})
     method = compatibility.get("method", {})
-    if config["compatibility"].get("require_method_disclosure"):
-        if not method.get("denominator_definition"):
-            fail("compatibility.method.denominator_definition is required", errors)
-        if not method.get("formula"):
-            fail("compatibility.method.formula is required", errors)
+    if not method.get("denominator_definition"):
+        fail("compatibility.method.denominator_definition is required", errors)
+    if not method.get("formula"):
+        fail("compatibility.method.formula is required", errors)
     if method.get("exclude_not_applicable") is not True:
         fail("compatibility.method.exclude_not_applicable must be true", errors)
     if method.get("exclude_not_verifiable") is not True:
@@ -336,7 +400,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     )
 
     discipline_scores = compatibility.get("by_discipline", {})
-    if thresholds.get("require_discipline_scores") and set(discipline_scores) != discipline_set:
+    if set(discipline_scores) != discipline_set:
         fail(
             "compatibility.by_discipline keys must exactly match baseline.disciplines; "
             f"expected={sorted(discipline_set)} actual={sorted(discipline_scores)}",
@@ -353,7 +417,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         )
 
     document_scores = compatibility.get("by_document", {})
-    if thresholds.get("require_document_scores") and set(document_scores) != document_id_set:
+    if set(document_scores) != document_id_set:
         fail(
             "compatibility.by_document keys must exactly match baseline document ids; "
             f"expected={sorted(document_id_set)} actual={sorted(document_scores)}",
@@ -440,7 +504,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             errors,
         )
 
-        if status == "WAIVED" and thresholds.get("require_waiver_metadata"):
+        if status == "WAIVED":
             waiver = finding.get("waiver", {})
             reason = waiver.get("reason")
             approval_record_id = waiver.get("approval_record_id")
@@ -455,7 +519,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                     errors,
                 )
 
-        if finding.get("architecture_impact") and thresholds.get("require_architecture_viability"):
+        if finding.get("architecture_impact"):
             if not finding.get("alternatives"):
                 fail(f"{fid}: architecture finding requires at least one alternative", errors)
             viability = finding.get("viability")
@@ -473,7 +537,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 errors,
             )
 
-    if thresholds.get("block_on_open_critical") and open_critical:
+    if open_critical:
         fail(f"open CRITICAL findings: {', '.join(open_critical)}", errors)
 
     expected_gate = "BLOCK" if errors else "PASS"
