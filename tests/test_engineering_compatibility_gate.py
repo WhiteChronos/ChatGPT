@@ -338,3 +338,77 @@ def test_failed_validation_summary_can_never_report_pass() -> None:
     result = summarize(data, errors)
     assert result["release_gate"] == "BLOCK"
     assert result["validation_error_count"] == len(errors)
+
+
+def test_duplicate_assessment_content_cannot_inflate_scores() -> None:
+    data = example()
+    clone = deepcopy(data["assessment_records"][0])
+    clone["id"] = "ASM-HVAC-CLONE"
+    data["assessment_records"].append(clone)
+    data["scope_summary"]["VERIFIED"] = 5
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("duplicates assessment content" in error for error in errors)
+
+
+def test_assessment_evidence_must_cover_every_declared_scope() -> None:
+    data = example()
+    record = data["assessment_records"][0]
+    record["disciplines"] = ["HVAC", "ELECTRICAL"]
+    record["document_ids"] = ["EX-HVAC-001", "EX-ELE-001"]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("evidence must cover every declared discipline" in error for error in errors)
+    assert any("evidence must cover every declared document" in error for error in errors)
+
+
+def test_release_threshold_uses_recomputed_compatibility_not_declared_value() -> None:
+    data = example()
+    cfg = deepcopy(config())
+    cfg["thresholds"]["minimum_global_compatibility_percent"] = 87.54
+
+    data["assessment_records"][0]["classification"] = "PARTIAL"
+    data["scope_summary"] = {
+        "VERIFIED": 3,
+        "PARTIAL": 1,
+        "DIVERGENT": 0,
+        "NOT_VERIFIABLE": 0,
+        "NOT_APPLICABLE": 0,
+    }
+    data["compatibility"]["global"] = 87.54
+    data["compatibility"]["by_discipline"]["HVAC"] = 75.0
+    data["compatibility"]["by_document"]["EX-HVAC-001"] = 75.0
+    finding = make_example_finding()
+    finding["classification"] = "PARTIAL"
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, cfg)
+    assert not any("compatibility.global 87.5400% inconsistent" in error for error in errors)
+    assert any("global compatibility 87.50% below minimum 87.54%" in error for error in errors)
+
+
+def test_mandatory_governance_controls_cannot_be_disabled_by_config() -> None:
+    data = example()
+    cfg = deepcopy(config())
+    for flag in (
+        "block_on_open_critical",
+        "block_on_missing_mandatory_document",
+        "block_on_unreconciled_baseline",
+        "require_provenance_hash",
+    ):
+        cfg["thresholds"][flag] = False
+
+    data["baseline"]["reconciled"] = False
+    data["baseline"]["documents"][0]["status"] = "DRAFT"
+    data["blocking_missing_documents"] = ["EX-HVAC-001"]
+    data["assessment_records"][0]["evidence"][0]["source_hash"] = "0" * 64
+    data["findings"] = [make_example_finding(status="OPEN", severity="CRITICAL")]
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, cfg)
+    assert any("mandatory governance controls cannot be disabled" in error for error in errors)
+    assert any("baseline is not reconciled" in error for error in errors)
+    assert any("blocking mandatory documents are missing or non-current" in error for error in errors)
+    assert any("source_hash does not match baseline sha256" in error for error in errors)
+    assert any("open CRITICAL findings" in error for error in errors)
