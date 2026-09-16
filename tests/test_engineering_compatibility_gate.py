@@ -9,6 +9,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from pipeline.engineering_compatibility import summarize
 from pipeline.engineering_compatibility_gate import (
     DEFAULT_DATA,
+    _waiver_subject_hash,
     load_json,
     validate_data,
     validate_semantics,
@@ -37,6 +38,15 @@ def example() -> dict:
 
 def template() -> dict:
     return load_json(TEMPLATE)
+
+
+def make_tradeoffs() -> dict:
+    return {
+        "simplicity": {"assessment": "IMPROVES", "rationale": "Synthetic alternative is simpler."},
+        "safety": {"assessment": "EQUIVALENT", "rationale": "Synthetic safety performance is equivalent."},
+        "cost": {"assessment": "IMPROVES", "rationale": "Synthetic lifecycle cost is lower."},
+        "maintainability": {"assessment": "IMPROVES", "rationale": "Synthetic maintenance burden is lower."},
+    }
 
 
 def make_example_finding(*, status: str = "CLOSED", severity: str = "HIGH") -> dict:
@@ -305,6 +315,10 @@ def test_trusted_human_approval_record_allows_waiver() -> None:
         "approver": "Chief Engineer",
         "approved_at": "2026-09-14T21:00:00Z",
         "evidence": "synthetic://approval/APR-TEST-001",
+        "project": data["project"],
+        "finding_id": finding["id"],
+        "assessment_id": finding["assessment_id"],
+        "subject_hash": _waiver_subject_hash(data["project"], finding, data["baseline"]),
     }
     assert validate_data(data, load_json(SCHEMA), cfg) == []
 
@@ -479,8 +493,72 @@ def test_finding_narratives_require_structured_claim_basis() -> None:
             "pros": ["Simple"],
             "cons": ["Synthetic only"],
             "recommended": True,
+            "tradeoffs": make_tradeoffs(),
         }
     ]
     finding["viability"] = "Synthetic viability analysis."
     data["findings"] = [finding]
     assert any("'viability' is a required property" in message for message in schema_messages(data))
+
+
+def test_duplicate_identity_excludes_evidence_payloads() -> None:
+    data = example()
+    clone = deepcopy(data["assessment_records"][0])
+    clone["id"] = "ASM-HVAC-EVIDENCE-CLONE"
+    clone["evidence"][0]["location"] = "Different sheet / same criterion"
+    clone["evidence"][0]["statement"] = "Alternate wording for the same scored criterion."
+    data["assessment_records"].append(clone)
+    data["scope_summary"]["VERIFIED"] = 5
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("duplicates assessment content" in error for error in errors)
+
+
+def test_trusted_waiver_approval_is_bound_to_current_finding_and_package() -> None:
+    data = example()
+    finding = make_example_finding(status="WAIVED", severity="CRITICAL")
+    finding["waiver"] = {"reason": "Authorized synthetic waiver", "approval_record_id": "APR-BOUND"}
+    data["findings"] = [finding]
+    cfg = deepcopy(config())
+    cfg["waiver_authorization"]["trusted_approval_records"]["APR-BOUND"] = {
+        "human_approved": True,
+        "approver": "Chief Engineer",
+        "approved_at": "2026-09-16T06:30:00Z",
+        "evidence": "synthetic://approval/APR-BOUND",
+        "project": data["project"],
+        "finding_id": finding["id"],
+        "assessment_id": finding["assessment_id"],
+        "subject_hash": _waiver_subject_hash(data["project"], finding, data["baseline"]),
+    }
+
+    finding["root_cause"] = "Changed after the approval was issued."
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, cfg)
+    assert any("subject_hash does not match the current finding/baseline package" in error for error in errors)
+
+
+def test_architecture_alternatives_require_structured_tradeoffs() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding["architecture_impact"] = True
+    finding["claim_basis"]["viability"] = "INFERENCE"
+    finding["viability"] = "Synthetic architecture viability analysis."
+    finding["alternatives"] = [
+        {
+            "name": "Synthetic alternative",
+            "feasibility": "HIGH",
+            "pros": ["Simple"],
+            "cons": ["Synthetic only"],
+            "recommended": True,
+        }
+    ]
+    data["findings"] = [finding]
+    assert any("'tradeoffs' is a required property" in message for message in schema_messages(data))
+
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("requires structured tradeoffs" in error for error in errors)
+
+    finding["alternatives"][0]["tradeoffs"] = make_tradeoffs()
+    data["release_gate"] = "PASS"
+    assert validate_data(data, load_json(SCHEMA), config()) == []
