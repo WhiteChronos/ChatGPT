@@ -301,3 +301,69 @@ def test_disclosed_compatibility_formula_must_match_canonical_method() -> None:
     errors = validate_semantics(data, config())
     assert any("formula must match the canonical weighted-status formula" in error for error in errors)
     assert any("denominator_definition must match the canonical denominator definition" in error for error in errors)
+
+
+def test_duplicate_identity_excludes_classification_outcome() -> None:
+    data = example()
+    divergent = data["assessment_records"][0]
+    divergent["classification"] = "DIVERGENT"
+    clone = deepcopy(divergent)
+    clone["id"] = "ASM-HVAC-OUTCOME-CLONE"
+    clone["classification"] = "VERIFIED"
+    data["assessment_records"].append(clone)
+    data["scope_summary"] = {
+        "VERIFIED": 4,
+        "PARTIAL": 0,
+        "DIVERGENT": 1,
+        "NOT_VERIFIABLE": 0,
+        "NOT_APPLICABLE": 0,
+    }
+    data["findings"] = [
+        _finding_for_assessment(data, divergent, primary_document="EX-HVAC-001")
+    ]
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, config())
+    assert any("assessment identity cannot differ only by id or classification" in error for error in errors)
+
+
+def test_release_percentage_thresholds_reject_negative_values() -> None:
+    data = example()
+    cfg = deepcopy(config())
+    for key in (
+        "minimum_coverage_percent",
+        "minimum_global_compatibility_percent",
+        "minimum_interface_compatibility_percent",
+    ):
+        cfg["thresholds"][key] = -1
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, cfg)
+    for key in (
+        "minimum_coverage_percent",
+        "minimum_global_compatibility_percent",
+        "minimum_interface_compatibility_percent",
+    ):
+        assert any(f"config.thresholds.{key} must be between 0 and 100" in error for error in errors)
+
+
+def test_discipline_identifiers_cannot_alias_via_whitespace() -> None:
+    data = example()
+    data["baseline"]["disciplines"].append("HVAC ")
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, config())
+    assert any("must not contain leading or trailing whitespace" in error for error in errors)
+    assert any("duplicate identifiers after whitespace/case normalization" in error for error in errors)
+
+
+def test_load_json_rejects_exponent_overflow_infinity(tmp_path: Path) -> None:
+    bad_data = tmp_path / "overflow.json"
+    bad_data.write_text('{"evidence":{"value":1e999}}', encoding="utf-8")
+
+    try:
+        load_json(bad_data)
+    except ValueError as exc:
+        assert "non-finite JSON number is not allowed" in str(exc)
+    else:
+        raise AssertionError("load_json accepted exponent-overflow infinity")
