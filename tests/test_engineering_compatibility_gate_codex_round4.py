@@ -360,7 +360,7 @@ def test_discipline_identifiers_cannot_alias_via_whitespace() -> None:
 
     errors = validate_semantics(data, config())
     assert any("must not contain leading or trailing whitespace" in error for error in errors)
-    assert any("duplicate identifiers after whitespace/case normalization" in error for error in errors)
+    assert any("duplicate identifiers after Unicode compatibility/whitespace/case normalization" in error for error in errors)
 
 
 def test_load_json_rejects_exponent_overflow_infinity(tmp_path: Path) -> None:
