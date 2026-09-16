@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -32,6 +33,8 @@ FIXED_STATUS_WEIGHTS = {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
 FIXED_METRIC_TOLERANCE_PERCENT = 0.05
 FIXED_CLAIM_BASIS_VALUES = {"SOURCE_DERIVED", "INFERENCE", "EXTERNAL_KNOWLEDGE"}
 REQUIRED_CLAIM_BASIS_FIELDS = ("comparison", "problem", "root_cause", "solution")
+ARCHITECTURE_TRADEOFF_DIMENSIONS = ("simplicity", "safety", "cost", "maintainability")
+ARCHITECTURE_TRADEOFF_RATINGS = {"IMPROVES", "EQUIVALENT", "DEGRADES"}
 FIXED_MANDATORY_SECTIONS = (
     "executive_gate",
     "baseline_map",
@@ -218,7 +221,7 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
     """Canonicalize semantically irrelevant textual differences for identity checks."""
     if isinstance(value, str):
         normalized = " ".join(value.split())
-        return normalized.lower() if key == "source_hash" else normalized
+        return normalized.lower() if key in {"source_hash", "sha256", "subject_hash"} else normalized
     if isinstance(value, dict):
         return {
             item_key: _canonicalize_fingerprint_value(item_value, key=item_key)
@@ -230,21 +233,52 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
 
 
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    """Return criterion/scope identity independent of metadata and producer-selected outcome."""
+    """Return stable criterion/scope identity independent of outcome and evidence payloads."""
     payload = _canonicalize_fingerprint_value(
         {
-            key: value
-            for key, value in record.items()
-            if key not in {"id", "classification", "evidence_quality"}
+            "criterion": record.get("criterion"),
+            "disciplines": record.get("disciplines", []),
+            "document_ids": record.get("document_ids", []),
+            "interface": record.get("interface"),
         }
     )
     payload["disciplines"] = sorted(payload.get("disciplines", []))
     payload["document_ids"] = sorted(payload.get("document_ids", []))
-    payload["evidence"] = sorted(
-        payload.get("evidence", []),
-        key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
-    )
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def _waiver_subject_hash(project: Any, finding: dict[str, Any], baseline: dict[str, Any]) -> str:
+    """Bind an external approval to the exact finding and baseline package being waived."""
+    finding_payload = {
+        key: value
+        for key, value in finding.items()
+        if key != "waiver"
+    }
+    baseline_documents = []
+    for document in baseline.get("documents", []):
+        baseline_documents.append(
+            {
+                "id": document.get("id"),
+                "discipline": document.get("discipline"),
+                "revision": document.get("revision"),
+                "sha256": document.get("sha256"),
+                "status": document.get("status"),
+            }
+        )
+    baseline_documents.sort(key=lambda item: str(item.get("id")))
+    payload = _canonicalize_fingerprint_value(
+        {
+            "project": project,
+            "finding": finding_payload,
+            "baseline": {
+                "documents": baseline_documents,
+                "required_document_ids": sorted(baseline.get("required_document_ids", [])),
+                "reconciled": baseline.get("reconciled"),
+            },
+        }
+    )
+    serialized = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
 def _validate_evidence(
@@ -510,7 +544,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         if duplicate_of is not None:
             fail(
                 f"assessment {rid} duplicates assessment content of {duplicate_of}; "
-                "assessment identity cannot differ only by id, classification, or evidence-quality metadata",
+                "assessment identity is fixed by criterion and declared scope, not by id, outcome, evidence, or evidence-quality metadata",
                 errors,
             )
         else:
@@ -822,6 +856,11 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 approver = approval.get("approver")
                 approved_at = approval.get("approved_at")
                 approval_evidence = approval.get("evidence")
+                approval_project = approval.get("project")
+                approval_finding_id = approval.get("finding_id")
+                approval_assessment_id = approval.get("assessment_id")
+                approval_subject_hash = approval.get("subject_hash")
+                expected_subject_hash = _waiver_subject_hash(data.get("project"), finding, baseline)
                 if not isinstance(approver, str) or not approver.strip():
                     fail(f"{fid}: trusted waiver approval requires a named approver", errors)
                 if not _valid_approval_timestamp(approved_at):
@@ -831,10 +870,53 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                     )
                 if not isinstance(approval_evidence, str) or not approval_evidence.strip():
                     fail(f"{fid}: trusted waiver approval requires approval evidence/reference", errors)
+                if approval_project != data.get("project"):
+                    fail(f"{fid}: trusted waiver approval project does not match the current package", errors)
+                if approval_finding_id != fid:
+                    fail(f"{fid}: trusted waiver approval is not bound to this finding", errors)
+                if approval_assessment_id != assessment_id:
+                    fail(f"{fid}: trusted waiver approval is not bound to this assessment", errors)
+                if not _valid_sha256(approval_subject_hash):
+                    fail(f"{fid}: trusted waiver approval requires a 64-character subject_hash", errors)
+                elif approval_subject_hash.lower() != expected_subject_hash.lower():
+                    fail(
+                        f"{fid}: trusted waiver approval subject_hash does not match the current finding/baseline package",
+                        errors,
+                    )
 
         if finding.get("architecture_impact"):
-            if not finding.get("alternatives"):
+            alternatives = finding.get("alternatives", [])
+            if not alternatives:
                 fail(f"{fid}: architecture finding requires at least one alternative", errors)
+            for index, alternative in enumerate(alternatives, start=1):
+                if not isinstance(alternative, dict):
+                    fail(f"{fid}: alternative[{index}] must be an object", errors)
+                    continue
+                tradeoffs = alternative.get("tradeoffs")
+                if not isinstance(tradeoffs, dict):
+                    fail(
+                        f"{fid}: alternative[{index}] requires structured tradeoffs for simplicity, safety, cost, and maintainability",
+                        errors,
+                    )
+                    continue
+                for dimension in ARCHITECTURE_TRADEOFF_DIMENSIONS:
+                    dimension_result = tradeoffs.get(dimension)
+                    if not isinstance(dimension_result, dict):
+                        fail(f"{fid}: alternative[{index}].tradeoffs.{dimension} must be an object", errors)
+                        continue
+                    rating = dimension_result.get("assessment")
+                    rationale = dimension_result.get("rationale")
+                    if rating not in ARCHITECTURE_TRADEOFF_RATINGS:
+                        fail(
+                            f"{fid}: alternative[{index}].tradeoffs.{dimension}.assessment must be "
+                            "IMPROVES, EQUIVALENT, or DEGRADES",
+                            errors,
+                        )
+                    if not isinstance(rationale, str) or not rationale.strip():
+                        fail(
+                            f"{fid}: alternative[{index}].tradeoffs.{dimension}.rationale must be non-empty",
+                            errors,
+                        )
             viability = finding.get("viability")
             if not isinstance(viability, str) or not viability.strip():
                 fail(f"{fid}: architecture finding requires viability analysis", errors)
