@@ -17,6 +17,7 @@ try:  # Package import used by pytest and other Python callers.
     from .engineering_compatibility_gate import (
         DEFAULT_CONFIG,
         DEFAULT_SCHEMA,
+        _load_policy_config,
         load_json,
         validate_data,
     )
@@ -24,6 +25,7 @@ except ImportError:  # Direct CLI execution: python pipeline/engineering_compati
     from engineering_compatibility_gate import (  # type: ignore
         DEFAULT_CONFIG,
         DEFAULT_SCHEMA,
+        _load_policy_config,
         load_json,
         validate_data,
     )
@@ -88,7 +90,7 @@ def main() -> int:
     try:
         data = load_json(args.datasheet)
         schema = load_json(args.schema)
-        config = load_json(args.config)
+        config = _load_policy_config(args.config)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         summary = {
             "project": None,
