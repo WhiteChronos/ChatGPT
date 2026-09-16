@@ -20,7 +20,7 @@
       "disciplines": ["HVAC"],
       "document_ids": ["EX-HVAC-001"],
       "interface": false,
-      "evidence": [{"document_id": "EX-HVAC-001", "revision": "A", "location": "Sheet 1 / Synthetic HVAC baseline criterion 1", "tag": "HVAC-BASELINE", "statement": "HVAC criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
+      "evidence": [{"document_id": "EX-HVAC-001", "revision": "A", "location": "Sheet 1 / TAG TEST", "tag": "TEST", "statement": "Synthetic evidence for regression testing.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
       "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
     },
     {
