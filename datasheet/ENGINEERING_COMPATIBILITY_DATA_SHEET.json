@@ -19,6 +19,7 @@
   "assessment_records": [
     {
       "id": "ASM-TEMPLATE-001",
+      "criterion_id": "CRIT-TEMPLATE-001",
       "criterion": "Replace template evidence with current approved project evidence",
       "classification": "DIVERGENT",
       "disciplines": ["HVAC", "ELECTRICAL"],
