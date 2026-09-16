@@ -89,3 +89,31 @@ def test_locator_roman_numerals_must_be_canonical() -> None:
     data["release_gate"] = "BLOCK"
     errors = validate_semantics(data, config())
     assert any("with a locator value" in error for error in errors)
+
+
+def test_cross_script_discipline_alias_is_rejected_before_interface_scoring() -> None:
+    data = example()
+    cyrillic_hvac = "\u041dVAC"  # Cyrillic En visually aliases Latin H.
+
+    data["baseline"]["disciplines"][2] = cyrillic_hvac
+    data["baseline"]["documents"][2]["discipline"] = cyrillic_hvac
+    data["compatibility"]["by_discipline"][cyrillic_hvac] = data["compatibility"]["by_discipline"].pop("AUTOMATION")
+    for record in data["assessment_records"]:
+        record["disciplines"] = [
+            cyrillic_hvac if discipline == "AUTOMATION" else discipline
+            for discipline in record["disciplines"]
+        ]
+    data["release_gate"] = "BLOCK"
+
+    semantic_errors = validate_semantics(data, config())
+    assert semantic_errors
+    assert any(
+        "baseline.disciplines contains duplicate identifiers" in error
+        or "distinct normalized disciplines" in error
+        or "multidisciplinary baseline requires" in error
+        for error in semantic_errors
+    )
+
+    schema_errors = validate_data(data, load_json(SCHEMA), config())
+    assert schema_errors
+    assert any("does not match" in error for error in schema_errors)
