@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Canonical Engineering Compatibility /visualize CI gate v1.1.
 
-Round-9 hardening is layered over the frozen v1.1 implementation so the two
+Round-9/10 hardening is layered over the frozen v1.1 implementation so the
 new Codex controls remain small and independently reviewable:
 
 * assessment criteria must come from a repository-pinned project inventory;
-* findings must preserve every evidence record when a source has multiple
-  authoritative assessment records, while accounting for every source.
+* the pinned inventory defines required baseline scope independently of the
+  producer-submitted baseline;
+* findings must preserve every authoritative assessment evidence record
+  exactly, including singleton source records.
 """
 from __future__ import annotations
 
@@ -55,26 +57,19 @@ def _normalized_scope(values: Any) -> set[str]:
 
 
 def _applicable_inventory_entries(data: dict[str, Any], canonical_config: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return the complete pinned project inventory.
+
+    Applicability is intentionally independent of the producer-submitted
+    baseline. Otherwise a producer could remove a failed discipline/document
+    from the baseline and silently remove the corresponding criterion from the
+    release calculation.
+    """
     project = data.get("project")
     inventories = _canonical_criterion_inventories(canonical_config)
     inventory = inventories.get(project)
     if not isinstance(inventory, list):
         return []
-
-    baseline = data.get("baseline", {})
-    baseline_disciplines = _normalized_scope(baseline.get("disciplines", []))
-    baseline_documents = _normalized_scope(
-        [doc.get("id") for doc in baseline.get("documents", []) if isinstance(doc, dict)]
-    )
-    applicable: list[dict[str, Any]] = []
-    for entry in inventory:
-        if not isinstance(entry, dict):
-            continue
-        entry_disciplines = _normalized_scope(entry.get("disciplines", []))
-        entry_documents = _normalized_scope(entry.get("document_ids", []))
-        if entry_disciplines.issubset(baseline_disciplines) and entry_documents.issubset(baseline_documents):
-            applicable.append(entry)
-    return applicable
+    return [entry for entry in inventory if isinstance(entry, dict)]
 
 
 def _evidence_fingerprint(item: Any) -> str:
@@ -118,13 +113,12 @@ def _validate_finding_evidence_preservation(
                 errors,
             )
             continue
-        if len(required_records) > 1:
-            missing = Counter(required_records) - Counter(supplied_records)
-            if missing:
-                _impl.fail(
-                    f"{fid}: finding evidence must preserve every linked assessment evidence record for repeated source evidence; missing={sum(missing.values())}",
-                    errors,
-                )
+        missing = Counter(required_records) - Counter(supplied_records)
+        if missing:
+            _impl.fail(
+                f"{fid}: finding evidence must preserve every linked assessment evidence record exactly; missing={sum(missing.values())}",
+                errors,
+            )
 
 
 def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
@@ -151,6 +145,45 @@ def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
         applicable_inventory: list[dict[str, Any]] = []
     else:
         applicable_inventory = _applicable_inventory_entries(data, canonical_config)
+
+    pinned_disciplines: set[str] = set()
+    pinned_documents: set[str] = set()
+    for entry in applicable_inventory:
+        pinned_disciplines.update(_normalized_scope(entry.get("disciplines", [])))
+        pinned_documents.update(_normalized_scope(entry.get("document_ids", [])))
+
+    baseline = data.get("baseline", {})
+    if not isinstance(baseline, dict):
+        baseline = {}
+    baseline_disciplines = _normalized_scope(baseline.get("disciplines", []))
+    baseline_documents = _normalized_scope(
+        [doc.get("id") for doc in baseline.get("documents", []) if isinstance(doc, dict)]
+        if isinstance(baseline.get("documents", []), list)
+        else []
+    )
+    required_document_ids = _normalized_scope(baseline.get("required_document_ids", []))
+
+    missing_pinned_disciplines = sorted(pinned_disciplines - baseline_disciplines)
+    if missing_pinned_disciplines:
+        _impl.fail(
+            "baseline.disciplines must include every discipline required by the repository-pinned criterion inventory; "
+            f"missing={missing_pinned_disciplines}",
+            errors,
+        )
+    missing_pinned_documents = sorted(pinned_documents - baseline_documents)
+    if missing_pinned_documents:
+        _impl.fail(
+            "baseline.documents must include every document required by the repository-pinned criterion inventory; "
+            f"missing={missing_pinned_documents}",
+            errors,
+        )
+    unrequired_pinned_documents = sorted(pinned_documents - required_document_ids)
+    if unrequired_pinned_documents:
+        _impl.fail(
+            "baseline.required_document_ids must include every document required by the repository-pinned criterion inventory; "
+            f"missing={unrequired_pinned_documents}",
+            errors,
+        )
 
     inventory_by_id: dict[str, dict[str, Any]] = {}
     for entry in applicable_inventory:
@@ -212,7 +245,7 @@ def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     missing_inventory_ids = sorted(set(inventory_by_id) - seen_inventory_ids)
     if missing_inventory_ids:
         _impl.fail(
-            "assessment_records must represent every applicable repository-pinned criterion; "
+            "assessment_records must represent every repository-pinned criterion; "
             f"missing={missing_inventory_ids}",
             errors,
         )
