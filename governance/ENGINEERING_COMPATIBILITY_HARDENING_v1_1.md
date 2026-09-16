@@ -70,6 +70,8 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-60 | Full-width or compatibility-equivalent discipline/document identifiers could fabricate distinct scopes or interfaces | Identifier normalization applies Unicode NFKC compatibility normalization, strips default-ignorable characters, trims and case-folds before uniqueness and interface cardinality checks. |
 | H-61 | Non-canonical Roman-letter words such as `civil` could satisfy the evidence locator rule | Roman locator tokens must match canonical Roman-numeral grammar; invalid Roman-like words and sequences are rejected. |
 | H-62 | Cross-script discipline aliases such as Cyrillic `НVAC` could fabricate a visually duplicate multidisciplinary interface | Discipline identifiers are schema-constrained to stable uppercase ASCII tokens, and semantic identifier normalization fails closed on non-ASCII input before uniqueness or interface-cardinality scoring. |
+| H-63 | Producer-created `criterion_id` values plus punctuation-only display changes could create additional scored criteria | Every project resolves to a repository-pinned canonical criterion inventory. An assessment must use an inventory `criterion_id` and exactly match that entry's canonical criterion text, disciplines, document scope and interface flag; custom configuration cannot add or replace criteria. |
+| H-64 | A finding could omit one of several authoritative evidence records from its linked assessment when document/discipline coverage still matched | Finding evidence is compared record-by-record against the linked assessment evidence inventory and must preserve every authoritative assessment evidence record; document/discipline set coverage alone is insufficient. |
 
 ## Release invariants
 
@@ -79,7 +81,7 @@ A `PASS` package must satisfy all of the following:
 2. Baseline discipline identifiers are stable uppercase ASCII tokens, nonblank, trimmed and unique after Unicode compatibility/whitespace/case normalization; cross-script aliases are invalid before interface scoring.
 3. The baseline is reconciled.
 4. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
-5. `assessment_records` are the authoritative complete criterion inventory. Every record has a schema-enforced stable `criterion_id`; stable IDs are unique, and duplicate/spoof-normalized criterion+scope identity cannot be counted again under a new record ID, outcome, evidence payload, evidence-quality metadata, Unicode compatibility form, default-ignorable variant or common cross-script homoglyph.
+5. The repository-pinned canonical criterion inventory is authoritative. `assessment_records` must represent every criterion applicable to the current baseline exactly once and may not introduce producer-created criterion IDs or alter canonical criterion text/scope/interface identity.
 6. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
 7. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
 8. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
@@ -90,7 +92,7 @@ A `PASS` package must satisfy all of the following:
 13. Every baseline discipline and document is represented by at least one assessment.
 14. `NOT_VERIFIABLE` reduces coverage and, together with `NOT_APPLICABLE`, is excluded from the weighted compatibility denominator.
 15. Findings reference valid assessment records and cannot invent disciplines or classifications.
-16. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
+16. Finding evidence preserves every authoritative evidence record from the linked assessment, including document identity, revision, location, statement and SHA-256 provenance; hexadecimal hash case is semantically irrelevant.
 17. Evidence locations identify a concrete sheet/page/drawing/section locator rather than generic following prose, include an explicit TAG or `NONE`, and accept Roman numerals only when they are canonical.
 18. Every finding exposes evidence quality, confidence, comparison, problem, root cause, lifecycle impacts, solution and objective closure criterion.
 19. Finding narratives identify their claim basis as `SOURCE_DERIVED`, `INFERENCE` or `EXTERNAL_KNOWLEDGE`; architecture viability is classified when required.
@@ -123,6 +125,10 @@ Default mandatory weights:
 
 The same calculation is performed globally and for each discipline, document and interface subset. Declared values must match recomputed values within the fixed canonical tolerance of 0.05 percentage point, while release thresholds are applied to the recomputed global and interface values. When a discipline/document/interface subset is explicitly represented but every record in that subset is `NOT_APPLICABLE` or `NOT_VERIFIABLE`, the scoped compatibility value is the conservative sentinel `0.0`; this prevents an excluded-only scope from being confused with a missing assessment. A multi-discipline baseline cannot use the single-discipline vacuous interface score: it must contain explicit multidisciplinary interface assessment records.
 
+## Canonical criterion inventory
+
+Each project used by the compatibility gate must have a repository-pinned entry in `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json` under `criterion_inventories`. The inventory defines each criterion's stable `criterion_id`, canonical display text, discipline scope, document scope and interface identity independently of producer-authored assessment outcomes or evidence. Only inventory entries whose declared disciplines and documents are present in the current baseline are applicable; all applicable entries must be represented exactly once. Custom `--config` files may not alter this inventory.
+
 ## Trusted waiver authorization
 
 `waiver.approval_record_id` must resolve to `waiver_authorization.trusted_approval_records` in the repository-pinned canonical configuration. Both compatibility CLIs reject a custom `--config` whose trust inventory differs from that pinned source. The selected record must contain `human_approved=true`, a nonblank `approver`, a timezone-qualified ISO-8601 `approved_at` timestamp and a nonblank `evidence` reference. It must also contain `project`, `finding_id`, `assessment_id` and `subject_hash`. The subject hash is the SHA-256 digest of the canonical current project/finding, the substantive waiver content including `waiver.reason` but excluding the circular `approval_record_id`, the complete linked assessment payload, and the complete canonical baseline payload including source provenance and reconciliation metadata. A trusted approval therefore cannot be replayed against another finding, a modified assessment, a changed waiver rationale, a changed baseline source URI/reconciliation statement or another package. Datasheet-authored approver names, timestamps or evidence strings do not create authorization by themselves.
@@ -137,4 +143,4 @@ Every finding must classify the basis of `comparison`, `problem`, `root_cause` a
 
 ## CI expectations
 
-The compatibility workflow shall compile both compatibility modules, validate JSON syntax and schema, exercise the permanent positive fixture, exercise the report wrapper, run all Codex regression rounds including round 8, validate every project datasheet found, preserve the empty-project discovery guard, and verify the Codex/Golden Rule contract.
+The compatibility workflow shall compile both compatibility modules, validate JSON syntax and schema, exercise the permanent positive fixture, exercise the report wrapper, run all Codex regression rounds including round 9, validate every project datasheet found, preserve the empty-project discovery guard, and verify the Codex/Golden Rule contract.

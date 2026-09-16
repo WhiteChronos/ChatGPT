@@ -17,6 +17,38 @@
   "baseline_policy": {
     "eligible_required_document_statuses": ["CURRENT", "APPROVED"]
   },
+  "criterion_inventories": {
+    "Example Project": [
+      {
+        "criterion_id": "CRIT-HVAC-BASELINE",
+        "criterion": "HVAC baseline compatibility",
+        "disciplines": ["HVAC"],
+        "document_ids": ["EX-HVAC-001"],
+        "interface": false
+      },
+      {
+        "criterion_id": "CRIT-ELE-BASELINE",
+        "criterion": "Electrical baseline compatibility",
+        "disciplines": ["ELECTRICAL"],
+        "document_ids": ["EX-ELE-001"],
+        "interface": false
+      },
+      {
+        "criterion_id": "CRIT-AUT-BASELINE",
+        "criterion": "Automation baseline compatibility",
+        "disciplines": ["AUTOMATION"],
+        "document_ids": ["EX-AUT-001"],
+        "interface": false
+      },
+      {
+        "criterion_id": "CRIT-IF-HVAC-AUT",
+        "criterion": "HVAC to automation interface compatibility",
+        "disciplines": ["HVAC", "AUTOMATION"],
+        "document_ids": ["EX-HVAC-001", "EX-AUT-001"],
+        "interface": true
+      }
+    ]
+  },
   "waiver_authorization": {
     "require_external_approval_record": true,
     "trusted_approval_records": {}

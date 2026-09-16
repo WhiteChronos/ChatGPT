@@ -17,6 +17,7 @@ on:
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
       - 'tests/test_engineering_compatibility_gate_codex_round7.py'
       - 'tests/test_engineering_compatibility_gate_codex_round8.py'
+      - 'tests/test_engineering_compatibility_gate_codex_round9.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
   push:
     branches: [main]
@@ -35,6 +36,7 @@ on:
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
       - 'tests/test_engineering_compatibility_gate_codex_round7.py'
       - 'tests/test_engineering_compatibility_gate_codex_round8.py'
+      - 'tests/test_engineering_compatibility_gate_codex_round9.py'
       - '.github/workflows/engineering-compatibility-visualize.yml'
 
 jobs:
@@ -53,6 +55,7 @@ jobs:
       - name: Compile compatibility validators
         run: |
           python -m py_compile pipeline/engineering_compatibility_gate.py
+          python -m py_compile pipeline/engineering_compatibility_gate_impl.py
           python -m py_compile pipeline/engineering_compatibility.py
 
       - name: Validate JSON syntax
@@ -97,6 +100,7 @@ jobs:
           pytest -q tests/test_engineering_compatibility_gate_codex_round6.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round7.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round8.py
+          pytest -q tests/test_engineering_compatibility_gate_codex_round9.py
 
       - name: Enforce Golden Rule on project datasheets
         shell: bash
