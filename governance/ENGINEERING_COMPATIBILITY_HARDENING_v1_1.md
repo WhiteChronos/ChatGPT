@@ -45,33 +45,38 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-35 | Threshold checks could trust a declared metric that was within tolerance but above the recomputed value | Tolerance is used only to validate declared-vs-computed consistency; release thresholds are applied to the recomputed coverage/global/interface values. |
 | H-36 | A scored assessment could declare disciplines/documents without evidence for every declared scope item | Assessment evidence must cover every declared `discipline` and every declared `document_id` before the record contributes to scores. |
 | H-37 | Project configuration could disable mandatory blockers | Mandatory blocker flags must remain enabled and the canonical gate enforces baseline, provenance, missing-document, waiver, architecture and open-CRITICAL controls independently of project switches. |
+| H-38 | Duplicate criterion/scope records could evade duplicate detection by changing only classification | Assessment identity excludes producer-selected `classification`; the same criterion/scope/evidence cannot be counted twice with different outcomes. |
+| H-39 | Negative configurable release thresholds could disable all percentage gates | Coverage, global compatibility and interface compatibility thresholds must be finite percentages in the inclusive range 0-100. |
+| H-40 | Discipline aliases differing only by whitespace/case could fabricate multidisciplinary interfaces | Discipline identifiers are normalized for uniqueness/interface counting and leading/trailing whitespace is rejected. |
+| H-41 | JSON exponent overflow such as `1e999` could enter evidence as infinity | Loaded JSON is recursively checked for non-finite floating-point values, including exponent-overflow infinities. |
 
 ## Release invariants
 
 A `PASS` package must satisfy all of the following:
 
 1. Baseline documents exist, have unique IDs, provenance and valid disciplines.
-2. The baseline is reconciled.
-3. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
-4. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate semantic content under different IDs.
-5. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
-6. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
-7. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
-8. Every `interface=true` assessment identifies at least two baseline disciplines and has evidence spanning at least two interface disciplines.
-9. `scope_summary` exactly matches classifications derived from `assessment_records`.
-10. Coverage is recomputed from that inventory and the recomputed value meets the release threshold.
-11. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights; global and interface thresholds are applied to recomputed values.
-12. Every baseline discipline and document has a computed score.
-13. `NOT_VERIFIABLE` reduces coverage and is excluded from the compatibility denominator.
-14. Findings reference valid assessment records and cannot invent disciplines or classifications.
-15. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
-16. Every finding exposes evidence quality, confidence, comparison, root cause, lifecycle impacts, solution and objective closure criterion.
-17. Open CRITICAL findings block release.
-18. WAIVED findings require a trusted external human approval record.
-19. Architecture-impact findings include alternatives and viability.
-20. Mandatory governance blockers are non-configurable release invariants; project configuration cannot disable them.
-21. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
-22. Metrics are finite and schema + semantic validation return zero errors.
+2. Baseline discipline identifiers are nonblank, trimmed and unique after whitespace/case normalization.
+3. The baseline is reconciled.
+4. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
+5. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate semantic content under different IDs or classifications.
+6. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
+7. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
+8. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
+9. Every multidisciplinary assessment is treated as an interface; normalized discipline identity must prove at least two distinct disciplines.
+10. `scope_summary` exactly matches classifications derived from `assessment_records`.
+11. Coverage is recomputed from that inventory and the recomputed value meets a finite release threshold in the range 0-100.
+12. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights; global and interface thresholds are finite percentages in the range 0-100 and are applied to recomputed values.
+13. Every baseline discipline and document has a computed score.
+14. `NOT_VERIFIABLE` reduces coverage and is excluded from the compatibility denominator.
+15. Findings reference valid assessment records and cannot invent disciplines or classifications.
+16. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
+17. Every finding exposes evidence quality, confidence, comparison, root cause, lifecycle impacts, solution and objective closure criterion.
+18. Open CRITICAL findings block release.
+19. WAIVED findings require a trusted external human approval record.
+20. Architecture-impact findings include alternatives and viability.
+21. Mandatory governance blockers are non-configurable release invariants; project configuration cannot disable them.
+22. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
+23. JSON input contains no non-finite numeric values, including exponent-overflow infinities; metrics are finite and schema + semantic validation return zero errors.
 
 ## Coverage formula
 
