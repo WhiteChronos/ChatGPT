@@ -73,15 +73,36 @@ MANDATORY_COMPATIBILITY_FLAGS = (
     "not_verifiable_reduces_coverage",
     "require_method_disclosure",
 )
+RELEASE_PERCENT_THRESHOLD_KEYS = (
+    "minimum_coverage_percent",
+    "minimum_global_compatibility_percent",
+    "minimum_interface_compatibility_percent",
+)
 
 
 def _reject_non_standard_constant(value: str) -> None:
     raise ValueError(f"non-standard JSON numeric constant is not allowed: {value}")
 
 
+def _reject_non_finite_numbers(value: Any, path: str = "$") -> None:
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError(f"non-finite JSON number is not allowed at {path}")
+        return
+    if isinstance(value, dict):
+        for key, item in value.items():
+            _reject_non_finite_numbers(item, f"{path}.{key}")
+        return
+    if isinstance(value, list):
+        for index, item in enumerate(value):
+            _reject_non_finite_numbers(item, f"{path}[{index}]")
+
+
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as fh:
-        return json.load(fh, parse_constant=_reject_non_standard_constant)
+        data = json.load(fh, parse_constant=_reject_non_standard_constant)
+    _reject_non_finite_numbers(data)
+    return data
 
 
 def fail(message: str, errors: list[str]) -> None:
@@ -111,6 +132,26 @@ def _finite_metric(value: Any, label: str, errors: list[str]) -> float | None:
 
 def _valid_sha256(value: Any) -> bool:
     return isinstance(value, str) and SHA256_RE.fullmatch(value) is not None
+
+
+def _normalized_identifier(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    stripped = value.strip()
+    if not stripped:
+        return None
+    return stripped.casefold()
+
+
+def _normalized_identifier_set(values: Any) -> set[str]:
+    if not isinstance(values, list):
+        return set()
+    result: set[str] = set()
+    for value in values:
+        normalized = _normalized_identifier(value)
+        if normalized is not None:
+            result.add(normalized)
+    return result
 
 
 def compute_coverage(scope_summary: dict[str, Any]) -> float | None:
@@ -172,9 +213,13 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
 
 
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    """Return semantic content identity, excluding id and normalizing textual noise."""
+    """Return criterion/scope identity independent of id and producer-selected outcome."""
     payload = _canonicalize_fingerprint_value(
-        {key: value for key, value in record.items() if key != "id"}
+        {
+            key: value
+            for key, value in record.items()
+            if key not in {"id", "classification"}
+        }
     )
     payload["disciplines"] = sorted(payload.get("disciplines", []))
     payload["document_ids"] = sorted(payload.get("document_ids", []))
@@ -271,10 +316,18 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         "config.thresholds.metric_tolerance_percent",
         errors,
     )
-    if tolerance is None or tolerance < 0:
+    if tolerance is None or tolerance < 0 or tolerance > 100:
         if tolerance is not None:
-            fail("config.thresholds.metric_tolerance_percent must be non-negative", errors)
+            fail("config.thresholds.metric_tolerance_percent must be between 0 and 100", errors)
         tolerance = 0.05
+
+    release_thresholds: dict[str, float | None] = {}
+    for key in RELEASE_PERCENT_THRESHOLD_KEYS:
+        value = _finite_metric(thresholds.get(key), f"config.thresholds.{key}", errors)
+        if value is not None and not 0 <= value <= 100:
+            fail(f"config.thresholds.{key} must be between 0 and 100", errors)
+            value = None
+        release_thresholds[key] = value
 
     configured_classifications = config.get("classifications")
     if configured_classifications != list(FIXED_CLASSIFICATIONS):
@@ -352,6 +405,21 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     baseline = data.get("baseline", {})
     disciplines = list(baseline.get("disciplines", []))
     discipline_set = set(disciplines)
+    normalized_baseline_disciplines = _normalized_identifier_set(disciplines)
+    for discipline in disciplines:
+        if not isinstance(discipline, str) or not discipline.strip():
+            fail("baseline.disciplines entries must be nonblank strings", errors)
+        elif discipline != discipline.strip():
+            fail(
+                f"baseline discipline {discipline!r} must not contain leading or trailing whitespace",
+                errors,
+            )
+    if len(normalized_baseline_disciplines) != len(disciplines):
+        fail(
+            "baseline.disciplines contains duplicate identifiers after whitespace/case normalization",
+            errors,
+        )
+
     documents = list(baseline.get("documents", []))
     document_ids = [doc.get("id") for doc in documents]
     document_id_set = set(document_ids)
@@ -364,10 +432,16 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     if baseline.get("reconciled") is not True:
         fail("baseline is not reconciled with the current approved revisions", errors)
     for doc in documents:
-        if doc.get("discipline") not in discipline_set:
+        doc_discipline = doc.get("discipline")
+        if isinstance(doc_discipline, str) and doc_discipline != doc_discipline.strip():
+            fail(
+                f"baseline document {doc.get('id', 'UNKNOWN')} discipline must not contain leading or trailing whitespace",
+                errors,
+            )
+        if doc_discipline not in discipline_set:
             fail(
                 f"baseline document {doc.get('id', 'UNKNOWN')} uses discipline "
-                f"{doc.get('discipline')} outside baseline.disciplines",
+                f"{doc_discipline} outside baseline.disciplines",
                 errors,
             )
         if not _valid_sha256(doc.get("sha256")):
@@ -411,7 +485,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         if duplicate_of is not None:
             fail(
                 f"assessment {rid} duplicates assessment content of {duplicate_of}; "
-                "assessment identity cannot differ only by id",
+                "assessment identity cannot differ only by id or classification",
                 errors,
             )
         else:
@@ -426,7 +500,23 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         else:
             fail(f"assessment {rid} has unsupported classification {classification}", errors)
 
-        record_disciplines = set(record.get("disciplines", []))
+        record_discipline_values = list(record.get("disciplines", []))
+        record_disciplines = set(record_discipline_values)
+        normalized_record_disciplines = _normalized_identifier_set(record_discipline_values)
+        for discipline in record_discipline_values:
+            if not isinstance(discipline, str) or not discipline.strip():
+                fail(f"assessment {rid} discipline identifiers must be nonblank strings", errors)
+            elif discipline != discipline.strip():
+                fail(
+                    f"assessment {rid} discipline {discipline!r} must not contain leading or trailing whitespace",
+                    errors,
+                )
+        if len(normalized_record_disciplines) != len(record_discipline_values):
+            fail(
+                f"assessment {rid} contains duplicate discipline identifiers after whitespace/case normalization",
+                errors,
+            )
+
         record_documents = set(record.get("document_ids", []))
         for discipline in record_disciplines:
             if discipline not in discipline_set:
@@ -465,18 +555,18 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             )
 
         interface_flag = record.get("interface")
-        if len(record_disciplines) >= 2 and interface_flag is not True:
+        if len(normalized_record_disciplines) >= 2 and interface_flag is not True:
             fail(
                 f"assessment {rid} is multidisciplinary and must set interface=true",
                 errors,
             )
         if interface_flag is True:
-            if len(record_disciplines) < 2:
+            if len(normalized_record_disciplines) < 2:
                 fail(
-                    f"assessment {rid} marked interface=true must include at least two disciplines",
+                    f"assessment {rid} marked interface=true must include at least two distinct normalized disciplines",
                     errors,
                 )
-            if len(evidenced_disciplines & record_disciplines) < 2:
+            if len(_normalized_identifier_set(list(evidenced_disciplines))) < 2:
                 fail(
                     f"assessment {rid} interface evidence must cover at least two distinct baseline disciplines",
                     errors,
@@ -501,11 +591,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             f"computed {computed_coverage:.4f}%",
             errors,
         )
-    minimum_coverage = _finite_metric(
-        thresholds.get("minimum_coverage_percent"),
-        "config.thresholds.minimum_coverage_percent",
-        errors,
-    )
+    minimum_coverage = release_thresholds["minimum_coverage_percent"]
     if computed_coverage is not None and minimum_coverage is not None and computed_coverage < minimum_coverage:
         fail(
             f"coverage {computed_coverage:.2f}% below minimum {minimum_coverage}%",
@@ -536,7 +622,9 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         errors,
     )
     interface_records = [
-        record for record in records if len(set(record.get("disciplines", []))) >= 2
+        record
+        for record in records
+        if len(_normalized_identifier_set(record.get("disciplines", []))) >= 2
     ]
     interface_compat = _assert_metric(
         "compatibility.interface",
@@ -580,16 +668,8 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             errors,
         )
 
-    minimum_global = _finite_metric(
-        thresholds.get("minimum_global_compatibility_percent"),
-        "config.thresholds.minimum_global_compatibility_percent",
-        errors,
-    )
-    minimum_interface = _finite_metric(
-        thresholds.get("minimum_interface_compatibility_percent"),
-        "config.thresholds.minimum_interface_compatibility_percent",
-        errors,
-    )
+    minimum_global = release_thresholds["minimum_global_compatibility_percent"]
+    minimum_interface = release_thresholds["minimum_interface_compatibility_percent"]
     if global_compat is not None and minimum_global is not None and global_compat < minimum_global:
         fail(
             f"global compatibility {global_compat:.2f}% below minimum {minimum_global}%",
@@ -631,6 +711,13 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 fail(f"{fid}: disciplines must match assessment {assessment_id}", errors)
 
         for discipline in finding.get("disciplines", []):
+            if not isinstance(discipline, str) or not discipline.strip():
+                fail(f"{fid}: discipline identifiers must be nonblank strings", errors)
+            elif discipline != discipline.strip():
+                fail(
+                    f"{fid}: discipline {discipline!r} must not contain leading or trailing whitespace",
+                    errors,
+                )
             if discipline not in discipline_set:
                 fail(f"{fid}: discipline {discipline} is outside baseline.disciplines", errors)
         for field in ("comparison", "root_cause", "solution", "closure_criterion"):
