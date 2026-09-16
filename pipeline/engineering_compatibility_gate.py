@@ -28,6 +28,33 @@ FIXED_CLASSIFICATIONS = (
 )
 FIXED_REQUIRED_DOCUMENT_STATUSES = {"CURRENT", "APPROVED"}
 FIXED_STATUS_WEIGHTS = {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
+FIXED_MANDATORY_SECTIONS = (
+    "executive_gate",
+    "baseline_map",
+    "compatibility_by_discipline",
+    "compatibility_by_document",
+    "interfaces",
+    "complete_findings",
+    "feasibility",
+    "missing_evidence",
+    "action_plan",
+    "release_gate",
+)
+FIXED_SEVERITY_COLORS = {
+    "CRITICAL": "red",
+    "HIGH": "orange",
+    "MEDIUM": "yellow",
+    "LOW": "blue",
+    "NOT_VERIFIABLE": "blue",
+    "VERIFIED": "green",
+    "NOT_APPLICABLE": "gray",
+}
+FIXED_METHOD_NAME = "weighted_status_v1"
+FIXED_METHOD_FORMULA = "100 * sum(status_weight * applicable_criterion) / applicable_criteria"
+FIXED_DENOMINATOR_DEFINITION = (
+    "Applicable assessment records classified VERIFIED, PARTIAL or DIVERGENT; "
+    "NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator."
+)
 SHA256_RE = re.compile(r"[A-Fa-f0-9]{64}\Z")
 MANDATORY_THRESHOLD_FLAGS = (
     "block_on_open_critical",
@@ -40,13 +67,19 @@ MANDATORY_THRESHOLD_FLAGS = (
     "require_discipline_scores",
     "require_architecture_viability",
 )
+MANDATORY_COMPATIBILITY_FLAGS = (
+    "exclude_not_applicable_from_denominator",
+    "exclude_not_verifiable_from_compatibility_denominator",
+    "not_verifiable_reduces_coverage",
+    "require_method_disclosure",
+)
 
 
 def _reject_non_standard_constant(value: str) -> None:
     raise ValueError(f"non-standard JSON numeric constant is not allowed: {value}")
 
 
-def load_json(path: Path) -> dict[str, Any]:
+def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as fh:
         return json.load(fh, parse_constant=_reject_non_standard_constant)
 
@@ -55,7 +88,7 @@ def fail(message: str, errors: list[str]) -> None:
     errors.append(message)
 
 
-def schema_errors(data: dict[str, Any], schema: dict[str, Any]) -> list[str]:
+def schema_errors(data: Any, schema: dict[str, Any]) -> list[str]:
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     result: list[str] = []
     for exc in sorted(validator.iter_errors(data), key=lambda e: list(e.absolute_path)):
@@ -123,21 +156,30 @@ def _assert_metric(
     return computed
 
 
+def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> Any:
+    """Canonicalize semantically irrelevant textual differences for identity checks."""
+    if isinstance(value, str):
+        normalized = " ".join(value.split())
+        return normalized.lower() if key == "source_hash" else normalized
+    if isinstance(value, dict):
+        return {
+            item_key: _canonicalize_fingerprint_value(item_value, key=item_key)
+            for item_key, item_value in value.items()
+        }
+    if isinstance(value, list):
+        return [_canonicalize_fingerprint_value(item) for item in value]
+    return value
+
+
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    """Return semantic content identity, excluding id and normalizing SHA-256 case."""
-    payload = {key: value for key, value in record.items() if key != "id"}
+    """Return semantic content identity, excluding id and normalizing textual noise."""
+    payload = _canonicalize_fingerprint_value(
+        {key: value for key, value in record.items() if key != "id"}
+    )
     payload["disciplines"] = sorted(payload.get("disciplines", []))
     payload["document_ids"] = sorted(payload.get("document_ids", []))
-
-    normalized_evidence: list[dict[str, Any]] = []
-    for item in payload.get("evidence", []):
-        normalized = dict(item)
-        source_hash = normalized.get("source_hash")
-        if isinstance(source_hash, str):
-            normalized["source_hash"] = source_hash.lower()
-        normalized_evidence.append(normalized)
     payload["evidence"] = sorted(
-        normalized_evidence,
+        payload.get("evidence", []),
         key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
     )
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -162,10 +204,10 @@ def _validate_evidence(
     for index, item in enumerate(evidence, start=1):
         doc_id = item.get("document_id")
         doc = document_by_id.get(doc_id)
-        for key in ("document_id", "revision", "location", "statement", "source_hash"):
-            value = item.get(key)
+        for field in ("document_id", "revision", "location", "statement", "source_hash"):
+            value = item.get(field)
             if not isinstance(value, str) or not value.strip():
-                fail(f"{owner}: evidence[{index}] {key} must be non-empty", errors)
+                fail(f"{owner}: evidence[{index}] {field} must be non-empty", errors)
 
         source_hash = item.get("source_hash")
         if not _valid_sha256(source_hash):
@@ -259,12 +301,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 f"config.thresholds.{flag} must remain true; mandatory governance controls cannot be disabled",
                 errors,
             )
-    if compatibility_config.get("require_method_disclosure") is not True:
-        fail(
-            "config.compatibility.require_method_disclosure must remain true; "
-            "mandatory governance controls cannot be disabled",
-            errors,
-        )
+    for flag in MANDATORY_COMPATIBILITY_FLAGS:
+        if compatibility_config.get(flag) is not True:
+            fail(
+                f"config.compatibility.{flag} must remain true; mandatory governance controls cannot be disabled",
+                errors,
+            )
     if compatibility_config.get("required_status_weights") != FIXED_STATUS_WEIGHTS:
         fail(
             f"config.compatibility.required_status_weights must equal fixed weights {FIXED_STATUS_WEIGHTS}",
@@ -280,18 +322,30 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail("config.severity must be an object", errors)
         severity_config = {}
 
+    configured_sections = visualization_config.get("mandatory_sections")
+    if (
+        not isinstance(configured_sections, list)
+        or len(configured_sections) != len(FIXED_MANDATORY_SECTIONS)
+        or set(configured_sections) != set(FIXED_MANDATORY_SECTIONS)
+    ):
+        fail(
+            "config.visualization.mandatory_sections must equal the fixed mandatory section inventory",
+            errors,
+        )
+    if severity_config != FIXED_SEVERITY_COLORS:
+        fail("config.severity must equal the fixed severity color mapping", errors)
+
     viz = data.get("visualization", {})
     if viz.get("model") != "VISUALIZE_GOLDEN_RULE_v1_0":
         fail("visualization.model must be VISUALIZE_GOLDEN_RULE_v1_0", errors)
     if viz.get("complete_not_summary") is not True:
         fail("/visualize output must be complete_not_summary=true", errors)
     missing_sections = sorted(
-        set(visualization_config.get("mandatory_sections", []))
-        - set(viz.get("mandatory_sections", []))
+        set(FIXED_MANDATORY_SECTIONS) - set(viz.get("mandatory_sections", []))
     )
     if missing_sections:
         fail(f"missing visualization sections: {', '.join(missing_sections)}", errors)
-    for severity, expected in severity_config.items():
+    for severity, expected in FIXED_SEVERITY_COLORS.items():
         if viz.get("severity_colors", {}).get(severity) != expected:
             fail(f"visualization.severity_colors.{severity} must be {expected}", errors)
 
@@ -409,7 +463,14 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 f"missing={missing_documents}",
                 errors,
             )
-        if record.get("interface") is True:
+
+        interface_flag = record.get("interface")
+        if len(record_disciplines) >= 2 and interface_flag is not True:
+            fail(
+                f"assessment {rid} is multidisciplinary and must set interface=true",
+                errors,
+            )
+        if interface_flag is True:
             if len(record_disciplines) < 2:
                 fail(
                     f"assessment {rid} marked interface=true must include at least two disciplines",
@@ -453,10 +514,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
 
     compatibility = data.get("compatibility", {})
     method = compatibility.get("method", {})
-    if not method.get("denominator_definition"):
-        fail("compatibility.method.denominator_definition is required", errors)
-    if not method.get("formula"):
-        fail("compatibility.method.formula is required", errors)
+    if method.get("name") != FIXED_METHOD_NAME:
+        fail(f"compatibility.method.name must be {FIXED_METHOD_NAME}", errors)
+    if method.get("formula") != FIXED_METHOD_FORMULA:
+        fail("compatibility.method.formula must match the canonical weighted-status formula", errors)
+    if method.get("denominator_definition") != FIXED_DENOMINATOR_DEFINITION:
+        fail("compatibility.method.denominator_definition must match the canonical denominator definition", errors)
     if method.get("exclude_not_applicable") is not True:
         fail("compatibility.method.exclude_not_applicable must be true", errors)
     if method.get("exclude_not_verifiable") is not True:
@@ -472,7 +535,9 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         tolerance,
         errors,
     )
-    interface_records = [record for record in records if record.get("interface") is True]
+    interface_records = [
+        record for record in records if len(set(record.get("disciplines", []))) >= 2
+    ]
     interface_compat = _assert_metric(
         "compatibility.interface",
         compatibility.get("interface"),
@@ -568,19 +633,24 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         for discipline in finding.get("disciplines", []):
             if discipline not in discipline_set:
                 fail(f"{fid}: discipline {discipline} is outside baseline.disciplines", errors)
-        for key in ("comparison", "root_cause", "solution", "closure_criterion"):
-            value = finding.get(key)
+        for field in ("comparison", "root_cause", "solution", "closure_criterion"):
+            value = finding.get(field)
             if not isinstance(value, str) or not value.strip():
-                fail(f"{fid}: {key} must be non-empty", errors)
+                fail(f"{fid}: {field} must be non-empty", errors)
 
-        for key in IMPACT_KEYS:
-            value = finding.get("impacts", {}).get(key)
+        for field in IMPACT_KEYS:
+            value = finding.get("impacts", {}).get(field)
             if not isinstance(value, str) or not value.strip():
-                fail(f"{fid}: lifecycle impact {key} must be explicit or NONE", errors)
+                fail(f"{fid}: lifecycle impact {field} must be explicit or NONE", errors)
 
         primary_document = finding.get("primary_document")
         if primary_document not in document_id_set and primary_document not in declared_missing:
             fail(f"{fid}: primary_document {primary_document} is not in the baseline inventory", errors)
+        if assessment_documents is not None and primary_document not in assessment_documents:
+            fail(
+                f"{fid}: primary_document {primary_document} is outside the linked assessment document scope",
+                errors,
+            )
         for secondary in finding.get("secondary_documents", []):
             if secondary not in document_id_set and secondary not in declared_missing:
                 fail(f"{fid}: secondary document {secondary} is not in the baseline inventory", errors)
@@ -655,16 +725,21 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     return errors
 
 
-def validate_data(
-    data: dict[str, Any], schema: dict[str, Any], config: dict[str, Any]
-) -> list[str]:
-    errors = schema_errors(data, schema)
-    if errors:
-        return errors
+def validate_data(data: Any, schema: dict[str, Any], config: dict[str, Any]) -> list[str]:
     try:
+        canonical_schema = load_json(DEFAULT_SCHEMA)
+        errors = schema_errors(data, canonical_schema)
+        if errors:
+            return errors
+        if schema != canonical_schema:
+            custom_errors = schema_errors(data, schema)
+            if custom_errors:
+                return custom_errors
+        if not isinstance(data, dict):
+            return ["schema:<root>: datasheet must be an object"]
         return validate_semantics(data, config)
-    except Exception as exc:  # Defensive fail-closed boundary for malformed policy/config data.
-        return [f"semantic validation error: {type(exc).__name__}: {exc}"]
+    except Exception as exc:  # Defensive fail-closed boundary for malformed schema/policy/config data.
+        return [f"validation error: {type(exc).__name__}: {exc}"]
 
 
 def main() -> int:
