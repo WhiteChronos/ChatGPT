@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 import sys
 from typing import Any
+import unicodedata
 
 from jsonschema import Draft202012Validator, FormatChecker
 
@@ -67,6 +68,18 @@ TRACEABLE_LOCATION_RE = re.compile(
     r"\b(?:sheet|page|drawing|section|folha|pagina|página|prancha)\b"
     r"\s*(?:[:#/\-]\s*)?([A-Za-z0-9][A-Za-z0-9._/\-]*)",
     re.IGNORECASE,
+)
+DEFAULT_IGNORABLE_RANGES = (
+    (0x034F, 0x034F),
+    (0x115F, 0x1160),
+    (0x17B4, 0x17B5),
+    (0x180B, 0x180D),
+    (0x180F, 0x180F),
+    (0x3164, 0x3164),
+    (0xFE00, 0xFE0F),
+    (0xFFA0, 0xFFA0),
+    (0xFFF0, 0xFFF8),
+    (0xE0100, 0xE01EF),
 )
 MAX_APPROVAL_CLOCK_SKEW = timedelta(minutes=5)
 VACUOUS_INTERFACE_COMPATIBILITY = 100.0
@@ -190,12 +203,21 @@ def _valid_approval_timestamp(value: Any) -> bool:
     return _parse_approval_timestamp(value) is not None
 
 
+def _concrete_locator_token(value: str) -> bool:
+    if any(character.isdigit() for character in value):
+        return True
+    if len(value) == 1 and value.isalpha():
+        return True
+    return re.fullmatch(r"[IVXLCDM]+", value, re.IGNORECASE) is not None
+
+
 def _valid_traceable_location(value: Any) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value.strip())
-        and TRACEABLE_LOCATION_RE.search(value.strip()) is not None
-    )
+    if not isinstance(value, str) or not value.strip():
+        return False
+    for match in TRACEABLE_LOCATION_RE.finditer(value.strip()):
+        if _concrete_locator_token(match.group(1)):
+            return True
+    return False
 
 
 def _normalized_identifier(value: Any) -> str | None:
@@ -282,9 +304,26 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
     return value
 
 
+def _strip_default_ignorable_unicode(value: str) -> str:
+    normalized = unicodedata.normalize("NFKC", value)
+    result: list[str] = []
+    for character in normalized:
+        codepoint = ord(character)
+        if unicodedata.category(character) == "Cf":
+            continue
+        if any(start <= codepoint <= end for start, end in DEFAULT_IGNORABLE_RANGES):
+            continue
+        result.append(character)
+    return "".join(result)
+
+
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
     criterion = record.get("criterion")
-    normalized_criterion = " ".join(criterion.split()).casefold() if isinstance(criterion, str) else criterion
+    normalized_criterion = (
+        " ".join(_strip_default_ignorable_unicode(criterion).split()).casefold()
+        if isinstance(criterion, str)
+        else criterion
+    )
     disciplines = [_normalized_identifier(value) or str(value) for value in record.get("disciplines", [])]
     document_ids = [_normalized_identifier(value) or str(value) for value in record.get("document_ids", [])]
     payload = {
@@ -319,6 +358,15 @@ def _waiver_subject_hash(
     if assessment is None:
         assessment = _legacy_default_assessment(finding)
     finding_payload = {key: value for key, value in finding.items() if key != "waiver"}
+    waiver = finding.get("waiver")
+    if isinstance(waiver, dict):
+        waiver_payload = {
+            key: value for key, value in waiver.items() if key != "approval_record_id"
+        }
+        if waiver_payload:
+            finding_payload["waiver"] = waiver_payload
+    elif waiver is not None:
+        finding_payload["waiver"] = waiver
     baseline_documents = [
         {
             "id": document.get("id"),
@@ -893,7 +941,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 elif approval_subject_hash.lower() != expected_subject_hash.lower():
                     fail(
                         f"{fid}: trusted waiver approval subject_hash does not match the current "
-                        "finding/baseline package or linked assessment",
+                        "finding/baseline package, waiver reason, or linked assessment",
                         errors,
                     )
 

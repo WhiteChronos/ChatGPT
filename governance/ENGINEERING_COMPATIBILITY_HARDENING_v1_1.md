@@ -62,6 +62,9 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-52 | `--config` could inject fabricated trusted waiver records | Both compatibility CLIs load waiver trust from the repository-pinned canonical configuration; project/custom configuration cannot add or replace trusted approvals. |
 | H-53 | A multidisciplinary baseline with no interface inventory received a vacuous 100% interface score | Multi-discipline projects require at least one explicit multidisciplinary interface assessment. The 100% vacuous score is reserved for genuinely single-discipline baselines. |
 | H-54 | A document represented only by `NOT_APPLICABLE`/`NOT_VERIFIABLE` assessments failed because no weighted score existed | Represented excluded-only discipline/document/interface scopes use the conservative explicit score `0.0`; only a completely missing assessment scope remains a semantic failure. |
+| H-55 | Invisible default-ignorable Unicode could create duplicate displayed criteria | Criterion identity is NFKC-normalized and strips default-ignorable Unicode before whitespace collapse and case-folding, so zero-width/format variants cannot create additional scored criteria. |
+| H-56 | The substantive waiver reason was excluded from the trusted approval subject hash | The subject hash includes `waiver.reason` and other substantive waiver content while excluding only the circular `approval_record_id` pointer, so changing the approved rationale invalidates prior authorization. |
+| H-57 | Generic prose after a locator keyword could satisfy evidence traceability | The captured sheet/page/drawing/section locator must be concrete: a numeric-bearing token, a single letter, or a Roman numeral; generic words such as `for`, `TAG`, `details`, and `summary` are rejected. |
 
 ## Release invariants
 
@@ -71,7 +74,7 @@ A `PASS` package must satisfy all of the following:
 2. Baseline discipline identifiers are nonblank, trimmed and unique after whitespace/case normalization.
 3. The baseline is reconciled.
 4. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
-5. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate criterion/scope identity under different IDs, classifications, evidence payloads or evidence-quality metadata; document aliases cannot create another identity.
+5. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate criterion/scope identity under different IDs, classifications, evidence payloads or evidence-quality metadata; criterion identity is Unicode-normalized, strips default-ignorable characters, and document aliases cannot create another identity.
 6. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
 7. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
 8. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
@@ -83,11 +86,11 @@ A `PASS` package must satisfy all of the following:
 14. `NOT_VERIFIABLE` reduces coverage and, together with `NOT_APPLICABLE`, is excluded from the weighted compatibility denominator.
 15. Findings reference valid assessment records and cannot invent disciplines or classifications.
 16. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
-17. Evidence locations identify a concrete sheet/page/drawing/section locator and an explicit TAG or `NONE`.
+17. Evidence locations identify a concrete sheet/page/drawing/section locator rather than generic following prose, and include an explicit TAG or `NONE`.
 18. Every finding exposes evidence quality, confidence, comparison, problem, root cause, lifecycle impacts, solution and objective closure criterion.
 19. Finding narratives identify their claim basis as `SOURCE_DERIVED`, `INFERENCE` or `EXTERNAL_KNOWLEDGE`; architecture viability is classified when required.
 20. Open CRITICAL findings block release.
-21. WAIVED findings require a complete trusted external human approval record with approver identity, approval time and evidence/reference, bound to the current project/finding/assessment and exact finding+assessment+baseline subject hash; the trust inventory is repository-pinned and cannot be injected through `--config`.
+21. WAIVED findings require a complete trusted external human approval record with approver identity, approval time and evidence/reference, bound to the current project/finding/assessment and exact finding+assessment+baseline+waiver-reason subject hash; the trust inventory is repository-pinned and cannot be injected through `--config`.
 22. Architecture-impact findings include alternatives and viability; every alternative explicitly assesses simplicity, safety, cost and maintainability with a structured rating and rationale.
 23. Mandatory governance blockers are non-configurable release invariants; project configuration cannot disable them.
 24. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
@@ -117,7 +120,7 @@ The same calculation is performed globally and for each discipline, document and
 
 ## Trusted waiver authorization
 
-`waiver.approval_record_id` must resolve to `waiver_authorization.trusted_approval_records` in the repository-pinned canonical configuration. Both compatibility CLIs reject a custom `--config` whose trust inventory differs from that pinned source. The selected record must contain `human_approved=true`, a nonblank `approver`, a timezone-qualified ISO-8601 `approved_at` timestamp and a nonblank `evidence` reference. It must also contain `project`, `finding_id`, `assessment_id` and `subject_hash`. The subject hash is the SHA-256 digest of the canonical current project/finding (excluding the waiver pointer itself), the complete linked assessment payload, and the baseline document snapshot, required-document inventory and reconciliation state. A trusted approval therefore cannot be replayed against another finding, a modified assessment or a changed package. Datasheet-authored approver names, timestamps or evidence strings do not create authorization by themselves.
+`waiver.approval_record_id` must resolve to `waiver_authorization.trusted_approval_records` in the repository-pinned canonical configuration. Both compatibility CLIs reject a custom `--config` whose trust inventory differs from that pinned source. The selected record must contain `human_approved=true`, a nonblank `approver`, a timezone-qualified ISO-8601 `approved_at` timestamp and a nonblank `evidence` reference. It must also contain `project`, `finding_id`, `assessment_id` and `subject_hash`. The subject hash is the SHA-256 digest of the canonical current project/finding, the substantive waiver content including `waiver.reason` but excluding the circular `approval_record_id`, the complete linked assessment payload, and the baseline document snapshot, required-document inventory and reconciliation state. A trusted approval therefore cannot be replayed against another finding, a modified assessment, a changed waiver rationale or a changed package. Datasheet-authored approver names, timestamps or evidence strings do not create authorization by themselves.
 
 ## Architecture trade-off contract
 
@@ -129,4 +132,4 @@ Every finding must classify the basis of `comparison`, `problem`, `root_cause` a
 
 ## CI expectations
 
-The compatibility workflow shall compile both compatibility modules, validate JSON syntax and schema, exercise the permanent positive fixture, exercise the report wrapper, run all Codex regression rounds, validate every project datasheet found, preserve the empty-project discovery guard, and verify the Codex/Golden Rule contract.
+The compatibility workflow shall compile both compatibility modules, validate JSON syntax and schema, exercise the permanent positive fixture, exercise the report wrapper, run all Codex regression rounds including round 7, validate every project datasheet found, preserve the empty-project discovery guard, and verify the Codex/Golden Rule contract.
