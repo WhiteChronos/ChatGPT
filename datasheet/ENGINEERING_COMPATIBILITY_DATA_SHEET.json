@@ -96,7 +96,21 @@
       },
       "solution": "Primary engineering correction.",
       "architecture_impact": true,
-      "alternatives": [{"name": "Simpler alternative", "feasibility": "MEDIUM", "pros": ["Example advantage"], "cons": ["Example limitation"], "recommended": false}],
+      "alternatives": [
+        {
+          "name": "Simpler alternative",
+          "feasibility": "MEDIUM",
+          "pros": ["Example advantage"],
+          "cons": ["Example limitation"],
+          "recommended": false,
+          "tradeoffs": {
+            "simplicity": {"assessment": "IMPROVES", "rationale": "Illustrative alternative reduces implementation complexity."},
+            "safety": {"assessment": "EQUIVALENT", "rationale": "No illustrative safety delta has been established."},
+            "cost": {"assessment": "IMPROVES", "rationale": "Illustrative alternative is expected to reduce lifecycle cost."},
+            "maintainability": {"assessment": "IMPROVES", "rationale": "Illustrative alternative reduces maintenance complexity."}
+          }
+        }
+      ],
       "viability": "Compare current solution and alternatives for simplicity, lifecycle cost, maintainability and interfaces.",
       "primary_document": "TEMPLATE-DOC-A",
       "secondary_documents": [],
