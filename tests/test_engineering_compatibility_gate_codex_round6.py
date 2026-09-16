@@ -115,13 +115,13 @@ def test_document_identifiers_cannot_alias_via_case_or_whitespace() -> None:
     data["release_gate"] = "BLOCK"
 
     errors = validate_semantics(data, config())
-    assert any("duplicate document ids after whitespace/case normalization" in error for error in errors)
+    assert any("duplicate document ids after Unicode compatibility/whitespace/case normalization" in error for error in errors)
 
     data = example()
     data["assessment_records"][0]["document_ids"] = ["EX-HVAC-001", "ex-hvac-001"]
     data["release_gate"] = "BLOCK"
     errors = validate_semantics(data, config())
-    assert any("duplicate document identifiers after whitespace/case normalization" in error for error in errors)
+    assert any("duplicate document identifiers after Unicode compatibility/whitespace/case normalization" in error for error in errors)
 
 
 def test_traceable_location_requires_locator_after_keyword() -> None:
