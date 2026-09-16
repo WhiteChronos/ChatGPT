@@ -19,7 +19,7 @@
       "disciplines": ["HVAC"],
       "document_ids": ["EX-HVAC-001"],
       "interface": false,
-      "evidence": [{"document_id": "EX-HVAC-001", "revision": "A", "location": "Synthetic HVAC baseline / criterion 1", "statement": "HVAC criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
+      "evidence": [{"document_id": "EX-HVAC-001", "revision": "A", "location": "Sheet 1 / Synthetic HVAC baseline criterion 1", "tag": "HVAC-BASELINE", "statement": "HVAC criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
       "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
     },
     {
@@ -29,7 +29,7 @@
       "disciplines": ["ELECTRICAL"],
       "document_ids": ["EX-ELE-001"],
       "interface": false,
-      "evidence": [{"document_id": "EX-ELE-001", "revision": "A", "location": "Synthetic electrical baseline / criterion 1", "statement": "Electrical criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
+      "evidence": [{"document_id": "EX-ELE-001", "revision": "A", "location": "Sheet 1 / Synthetic electrical baseline criterion 1", "tag": "ELE-BASELINE", "statement": "Electrical criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
       "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
     },
     {
@@ -39,7 +39,7 @@
       "disciplines": ["AUTOMATION"],
       "document_ids": ["EX-AUT-001"],
       "interface": false,
-      "evidence": [{"document_id": "EX-AUT-001", "revision": "A", "location": "Synthetic automation baseline / criterion 1", "statement": "Automation criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
+      "evidence": [{"document_id": "EX-AUT-001", "revision": "A", "location": "Sheet 1 / Synthetic automation baseline criterion 1", "tag": "AUT-BASELINE", "statement": "Automation criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
       "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
     },
     {
@@ -50,8 +50,8 @@
       "document_ids": ["EX-HVAC-001", "EX-AUT-001"],
       "interface": true,
       "evidence": [
-        {"document_id": "EX-HVAC-001", "revision": "A", "location": "Synthetic HVAC interface declaration", "statement": "HVAC side of the interface is explicitly represented.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"},
-        {"document_id": "EX-AUT-001", "revision": "A", "location": "Synthetic automation interface declaration", "statement": "Automation side of the interface is explicitly represented.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+        {"document_id": "EX-HVAC-001", "revision": "A", "location": "Sheet 2 / Synthetic HVAC interface declaration", "tag": "HVAC-IF", "statement": "HVAC side of the interface is explicitly represented.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"},
+        {"document_id": "EX-AUT-001", "revision": "A", "location": "Sheet 2 / Synthetic automation interface declaration", "tag": "AUT-IF", "statement": "Automation side of the interface is explicitly represented.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
       ],
       "evidence_quality": {"rating": "HIGH", "rationale": "Both interface endpoints are backed by current source documents and matching provenance."}
     }
