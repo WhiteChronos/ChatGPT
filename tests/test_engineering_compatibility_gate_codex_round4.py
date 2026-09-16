@@ -55,6 +55,12 @@ def _finding_for_assessment(data: dict, assessment: dict, *, primary_document: s
         "comparison": "Synthetic comparison for Codex regression coverage.",
         "problem": "Synthetic regression condition.",
         "root_cause": "Synthetic root cause.",
+        "claim_basis": {
+            "comparison": "SOURCE_DERIVED",
+            "problem": "INFERENCE",
+            "root_cause": "INFERENCE",
+            "solution": "INFERENCE",
+        },
         "impacts": _impacts(),
         "solution": "Synthetic solution.",
         "architecture_impact": False,
@@ -324,7 +330,7 @@ def test_duplicate_identity_excludes_classification_outcome() -> None:
     data["release_gate"] = "BLOCK"
 
     errors = validate_semantics(data, config())
-    assert any("assessment identity cannot differ only by id or classification" in error for error in errors)
+    assert any("duplicates assessment content" in error for error in errors)
 
 
 def test_release_percentage_thresholds_reject_negative_values() -> None:
