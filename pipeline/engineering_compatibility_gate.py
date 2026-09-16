@@ -88,11 +88,9 @@ DEFAULT_IGNORABLE_RANGES = (
 )
 CONFUSABLE_TO_LATIN = str.maketrans(
     {
-        # Cyrillic lookalikes.
         "А": "A", "а": "a", "В": "B", "Е": "E", "е": "e", "К": "K", "к": "k",
         "М": "M", "Н": "H", "О": "O", "о": "o", "Р": "P", "р": "p", "С": "C", "с": "c",
         "Т": "T", "Х": "X", "х": "x", "У": "Y", "у": "y", "І": "I", "і": "i", "Ј": "J", "ј": "j",
-        # Greek lookalikes commonly used in identifier spoofing.
         "Α": "A", "Β": "B", "Ε": "E", "Ζ": "Z", "Η": "H", "Ι": "I", "Κ": "K", "Μ": "M",
         "Ν": "N", "Ο": "O", "Ρ": "P", "Τ": "T", "Υ": "Y", "Χ": "X", "α": "a", "ο": "o",
         "ρ": "p", "ν": "v", "χ": "x", "ι": "i", "κ": "k",
@@ -980,8 +978,8 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                     fail(f"{fid}: trusted waiver approval requires a 64-character subject_hash", errors)
                 elif approval_subject_hash.lower() != expected_subject_hash.lower():
                     fail(
-                        f"{fid}: trusted waiver approval subject_hash does not match the current "
-                        "finding/assessment/complete baseline provenance package or waiver reason",
+                        f"{fid}: trusted waiver approval subject_hash does not match the current finding/baseline package; "
+                        "approval must bind the linked assessment, complete baseline provenance/reconciliation payload, and waiver reason",
                         errors,
                     )
 
