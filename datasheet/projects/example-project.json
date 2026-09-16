@@ -14,6 +14,7 @@
   "assessment_records": [
     {
       "id": "ASM-HVAC-001",
+      "criterion_id": "CRIT-HVAC-BASELINE",
       "criterion": "HVAC baseline compatibility",
       "classification": "VERIFIED",
       "disciplines": ["HVAC"],
@@ -24,6 +25,7 @@
     },
     {
       "id": "ASM-ELE-001",
+      "criterion_id": "CRIT-ELE-BASELINE",
       "criterion": "Electrical baseline compatibility",
       "classification": "VERIFIED",
       "disciplines": ["ELECTRICAL"],
@@ -34,6 +36,7 @@
     },
     {
       "id": "ASM-AUT-001",
+      "criterion_id": "CRIT-AUT-BASELINE",
       "criterion": "Automation baseline compatibility",
       "classification": "VERIFIED",
       "disciplines": ["AUTOMATION"],
@@ -44,6 +47,7 @@
     },
     {
       "id": "ASM-IF-HVAC-AUT-001",
+      "criterion_id": "CRIT-IF-HVAC-AUT",
       "criterion": "HVAC to automation interface compatibility",
       "classification": "VERIFIED",
       "disciplines": ["HVAC", "AUTOMATION"],
