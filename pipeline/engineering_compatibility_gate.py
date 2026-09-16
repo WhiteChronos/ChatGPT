@@ -5,11 +5,12 @@ Round-9 hardening is layered over the frozen v1.1 implementation so the two
 new Codex controls remain small and independently reviewable:
 
 * assessment criteria must come from a repository-pinned project inventory;
-* findings must preserve every evidence record from their linked assessment.
+* findings must preserve every evidence record when a source has multiple
+  authoritative assessment records, while accounting for every source.
 """
 from __future__ import annotations
 
-from collections import Counter
+from collections import Counter, defaultdict
 import json
 from pathlib import Path
 import sys
@@ -79,6 +80,51 @@ def _applicable_inventory_entries(data: dict[str, Any], canonical_config: dict[s
 def _evidence_fingerprint(item: Any) -> str:
     canonical = _impl._canonicalize_fingerprint_value(item)
     return json.dumps(canonical, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def _evidence_source_key(item: Any) -> str:
+    if not isinstance(item, dict):
+        return _evidence_fingerprint(item)
+    source = {
+        "document_id": item.get("document_id"),
+        "revision": item.get("revision"),
+        "source_hash": item.get("source_hash"),
+    }
+    canonical = _impl._canonicalize_fingerprint_value(source)
+    return json.dumps(canonical, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def _validate_finding_evidence_preservation(
+    fid: Any,
+    assessment_evidence: Any,
+    finding_evidence: Any,
+    errors: list[str],
+) -> None:
+    required_items = assessment_evidence if isinstance(assessment_evidence, list) else []
+    supplied_items = finding_evidence if isinstance(finding_evidence, list) else []
+
+    required_by_source: dict[str, list[str]] = defaultdict(list)
+    supplied_by_source: dict[str, list[str]] = defaultdict(list)
+    for item in required_items:
+        required_by_source[_evidence_source_key(item)].append(_evidence_fingerprint(item))
+    for item in supplied_items:
+        supplied_by_source[_evidence_source_key(item)].append(_evidence_fingerprint(item))
+
+    for source_key, required_records in required_by_source.items():
+        supplied_records = supplied_by_source.get(source_key, [])
+        if not supplied_records:
+            _impl.fail(
+                f"{fid}: finding evidence must account for every linked assessment evidence source",
+                errors,
+            )
+            continue
+        if len(required_records) > 1:
+            missing = Counter(required_records) - Counter(supplied_records)
+            if missing:
+                _impl.fail(
+                    f"{fid}: finding evidence must preserve every linked assessment evidence record for repeated source evidence; missing={sum(missing.values())}",
+                    errors,
+                )
 
 
 def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
@@ -185,20 +231,12 @@ def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
             assessment = record_by_id.get(finding.get("assessment_id"))
             if not isinstance(assessment, dict):
                 continue
-            required = Counter(
-                _evidence_fingerprint(item)
-                for item in assessment.get("evidence", [])
+            _validate_finding_evidence_preservation(
+                fid,
+                assessment.get("evidence", []),
+                finding.get("evidence", []),
+                errors,
             )
-            supplied = Counter(
-                _evidence_fingerprint(item)
-                for item in finding.get("evidence", [])
-            )
-            missing = required - supplied
-            if missing:
-                _impl.fail(
-                    f"{fid}: finding evidence must preserve every linked assessment evidence record; missing={sum(missing.values())}",
-                    errors,
-                )
     return errors
 
 
