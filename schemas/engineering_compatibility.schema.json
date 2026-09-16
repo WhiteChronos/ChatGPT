@@ -82,7 +82,7 @@
         "discipline": {"$ref": "#/$defs/nonblank"},
         "revision": {"$ref": "#/$defs/nonblank"},
         "source": {"$ref": "#/$defs/nonblank"},
-        "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+        "sha256": {"type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[A-Fa-f0-9]{64}$"},
         "status": {"enum": ["CURRENT", "APPROVED", "REFERENCE", "SUPERSEDED", "DRAFT"]}
       },
       "additionalProperties": false
@@ -119,7 +119,7 @@
         "statement": {"$ref": "#/$defs/nonblank"},
         "value": {},
         "unit": {"type": "string"},
-        "source_hash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}
+        "source_hash": {"type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[A-Fa-f0-9]{64}$"}
       },
       "additionalProperties": false
     },
@@ -157,13 +157,34 @@
       },
       "additionalProperties": false
     },
+    "tradeoff_dimension": {
+      "type": "object",
+      "required": ["assessment", "rationale"],
+      "properties": {
+        "assessment": {"enum": ["IMPROVES", "EQUIVALENT", "DEGRADES"]},
+        "rationale": {"$ref": "#/$defs/nonblank"}
+      },
+      "additionalProperties": false
+    },
+    "architecture_tradeoffs": {
+      "type": "object",
+      "required": ["simplicity", "safety", "cost", "maintainability"],
+      "properties": {
+        "simplicity": {"$ref": "#/$defs/tradeoff_dimension"},
+        "safety": {"$ref": "#/$defs/tradeoff_dimension"},
+        "cost": {"$ref": "#/$defs/tradeoff_dimension"},
+        "maintainability": {"$ref": "#/$defs/tradeoff_dimension"}
+      },
+      "additionalProperties": false
+    },
     "alternative": {
       "type": "object",
-      "required": ["name", "feasibility", "pros", "cons", "recommended"],
+      "required": ["name", "feasibility", "pros", "cons", "recommended", "tradeoffs"],
       "properties": {
         "name": {"$ref": "#/$defs/nonblank"}, "feasibility": {"$ref": "#/$defs/nonblank"},
         "pros": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonblank"}},
-        "cons": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonblank"}}, "recommended": {"type": "boolean"}
+        "cons": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/nonblank"}}, "recommended": {"type": "boolean"},
+        "tradeoffs": {"$ref": "#/$defs/architecture_tradeoffs"}
       },
       "additionalProperties": false
     },
