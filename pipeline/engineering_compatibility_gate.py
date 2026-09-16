@@ -64,6 +64,11 @@ FIXED_DENOMINATOR_DEFINITION = (
     "NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator."
 )
 SHA256_RE = re.compile(r"[A-Fa-f0-9]{64}\Z")
+CRITERION_ID_RE = re.compile(r"[A-Z0-9][A-Z0-9._:-]{0,127}\Z")
+ROMAN_NUMERAL_RE = re.compile(
+    r"M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})\Z",
+    re.IGNORECASE,
+)
 TRACEABLE_LOCATION_RE = re.compile(
     r"\b(?:sheet|page|drawing|section|folha|pagina|página|prancha)\b"
     r"\s*(?:[:#/\-]\s*)?([A-Za-z0-9][A-Za-z0-9._/\-]*)",
@@ -80,6 +85,18 @@ DEFAULT_IGNORABLE_RANGES = (
     (0xFFA0, 0xFFA0),
     (0xFFF0, 0xFFF8),
     (0xE0100, 0xE01EF),
+)
+CONFUSABLE_TO_LATIN = str.maketrans(
+    {
+        # Cyrillic lookalikes.
+        "А": "A", "а": "a", "В": "B", "Е": "E", "е": "e", "К": "K", "к": "k",
+        "М": "M", "Н": "H", "О": "O", "о": "o", "Р": "P", "р": "p", "С": "C", "с": "c",
+        "Т": "T", "Х": "X", "х": "x", "У": "Y", "у": "y", "І": "I", "і": "i", "Ј": "J", "ј": "j",
+        # Greek lookalikes commonly used in identifier spoofing.
+        "Α": "A", "Β": "B", "Ε": "E", "Ζ": "Z", "Η": "H", "Ι": "I", "Κ": "K", "Μ": "M",
+        "Ν": "N", "Ο": "O", "Ρ": "P", "Τ": "T", "Υ": "Y", "Χ": "X", "α": "a", "ο": "o",
+        "ρ": "p", "ν": "v", "χ": "x", "ι": "i", "κ": "k",
+    }
 )
 MAX_APPROVAL_CLOCK_SKEW = timedelta(minutes=5)
 VACUOUS_INTERFACE_COMPATIBILITY = 100.0
@@ -208,7 +225,7 @@ def _concrete_locator_token(value: str) -> bool:
         return True
     if len(value) == 1 and value.isalpha():
         return True
-    return re.fullmatch(r"[IVXLCDM]+", value, re.IGNORECASE) is not None
+    return bool(value) and ROMAN_NUMERAL_RE.fullmatch(value) is not None
 
 
 def _valid_traceable_location(value: Any) -> bool:
@@ -220,10 +237,23 @@ def _valid_traceable_location(value: Any) -> bool:
     return False
 
 
+def _strip_default_ignorable_unicode(value: str) -> str:
+    normalized = unicodedata.normalize("NFKC", value)
+    result: list[str] = []
+    for character in normalized:
+        codepoint = ord(character)
+        if unicodedata.category(character) == "Cf":
+            continue
+        if any(start <= codepoint <= end for start, end in DEFAULT_IGNORABLE_RANGES):
+            continue
+        result.append(character)
+    return "".join(result)
+
+
 def _normalized_identifier(value: Any) -> str | None:
     if not isinstance(value, str):
         return None
-    stripped = value.strip()
+    stripped = _strip_default_ignorable_unicode(value).strip()
     if not stripped:
         return None
     return stripped.casefold()
@@ -238,6 +268,14 @@ def _normalized_identifier_set(values: Any) -> set[str]:
         if normalized is not None:
             result.add(normalized)
     return result
+
+
+def _criterion_display_skeleton(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    normalized = _strip_default_ignorable_unicode(value).translate(CONFUSABLE_TO_LATIN)
+    normalized = " ".join(normalized.split()).casefold()
+    return normalized or None
 
 
 def compute_coverage(scope_summary: dict[str, Any]) -> float | None:
@@ -304,30 +342,24 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
     return value
 
 
-def _strip_default_ignorable_unicode(value: str) -> str:
-    normalized = unicodedata.normalize("NFKC", value)
-    result: list[str] = []
-    for character in normalized:
-        codepoint = ord(character)
-        if unicodedata.category(character) == "Cf":
-            continue
-        if any(start <= codepoint <= end for start, end in DEFAULT_IGNORABLE_RANGES):
-            continue
-        result.append(character)
-    return "".join(result)
-
-
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    criterion = record.get("criterion")
-    normalized_criterion = (
-        " ".join(_strip_default_ignorable_unicode(criterion).split()).casefold()
-        if isinstance(criterion, str)
-        else criterion
-    )
+    criterion_id = _normalized_identifier(record.get("criterion_id")) or str(record.get("criterion_id"))
     disciplines = [_normalized_identifier(value) or str(value) for value in record.get("disciplines", [])]
     document_ids = [_normalized_identifier(value) or str(value) for value in record.get("document_ids", [])]
     payload = {
-        "criterion": normalized_criterion,
+        "criterion_id": criterion_id,
+        "disciplines": sorted(disciplines),
+        "document_ids": sorted(document_ids),
+        "interface": record.get("interface"),
+    }
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def _assessment_display_fingerprint(record: dict[str, Any]) -> str:
+    disciplines = [_normalized_identifier(value) or str(value) for value in record.get("disciplines", [])]
+    document_ids = [_normalized_identifier(value) or str(value) for value in record.get("document_ids", [])]
+    payload = {
+        "criterion": _criterion_display_skeleton(record.get("criterion")),
         "disciplines": sorted(disciplines),
         "document_ids": sorted(document_ids),
         "interface": record.get("interface"),
@@ -367,30 +399,12 @@ def _waiver_subject_hash(
             finding_payload["waiver"] = waiver_payload
     elif waiver is not None:
         finding_payload["waiver"] = waiver
-    baseline_documents = [
-        {
-            "id": document.get("id"),
-            "discipline": document.get("discipline"),
-            "revision": document.get("revision"),
-            "sha256": document.get("sha256"),
-            "status": document.get("status"),
-        }
-        for document in baseline.get("documents", [])
-    ]
-    baseline_documents.sort(key=lambda item: (_normalized_identifier(item.get("id")) or str(item.get("id"))))
     payload = _canonicalize_fingerprint_value(
         {
             "project": project,
             "finding": finding_payload,
             "assessment": assessment,
-            "baseline": {
-                "documents": baseline_documents,
-                "required_document_ids": sorted(
-                    baseline.get("required_document_ids", []),
-                    key=lambda value: _normalized_identifier(value) or str(value),
-                ),
-                "reconciled": baseline.get("reconciled"),
-            },
+            "baseline": baseline,
         }
     )
     serialized = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -585,7 +599,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         elif discipline != discipline.strip():
             fail(f"baseline discipline {discipline!r} must not contain leading or trailing whitespace", errors)
     if len(normalized_baseline_disciplines) != len(disciplines):
-        fail("baseline.disciplines contains duplicate identifiers after whitespace/case normalization", errors)
+        fail("baseline.disciplines contains duplicate identifiers after Unicode compatibility/whitespace/case normalization", errors)
 
     documents = list(baseline.get("documents", []))
     document_ids = [doc.get("id") for doc in documents]
@@ -603,7 +617,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     if len(document_ids) != len(document_id_set):
         fail("baseline.documents contains duplicate document ids", errors)
     if len(normalized_document_ids) != len(document_ids):
-        fail("baseline.documents contains duplicate document ids after whitespace/case normalization", errors)
+        fail("baseline.documents contains duplicate document ids after Unicode compatibility/whitespace/case normalization", errors)
     if baseline.get("reconciled") is not True:
         fail("baseline is not reconciled with the current approved revisions", errors)
 
@@ -644,19 +658,45 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     if len(record_ids) != len(set(record_ids)):
         fail("assessment_records contains duplicate ids", errors)
 
+    normalized_criterion_ids: set[str] = set()
     content_fingerprints: dict[str, Any] = {}
+    display_fingerprints: dict[str, Any] = {}
     for record in records:
         rid = record.get("id", "UNKNOWN")
+        criterion_id = record.get("criterion_id")
+        if not isinstance(criterion_id, str) or CRITERION_ID_RE.fullmatch(criterion_id) is None:
+            fail(
+                f"assessment {rid} criterion_id must be a stable uppercase ASCII identifier matching "
+                "[A-Z0-9][A-Z0-9._:-]{0,127}",
+                errors,
+            )
+        normalized_criterion_id = _normalized_identifier(criterion_id)
+        if normalized_criterion_id is not None:
+            if normalized_criterion_id in normalized_criterion_ids:
+                fail(f"assessment {rid} reuses criterion_id {criterion_id}; criterion identifiers must be globally unique", errors)
+            normalized_criterion_ids.add(normalized_criterion_id)
+
         fingerprint = _assessment_fingerprint(record)
         duplicate_of = content_fingerprints.get(fingerprint)
         if duplicate_of is not None:
             fail(
                 f"assessment {rid} duplicates assessment content of {duplicate_of}; assessment identity is fixed "
-                "by criterion and declared scope, not by id, outcome, evidence, or evidence-quality metadata",
+                "by criterion_id and declared scope, not by id, outcome, evidence, or evidence-quality metadata",
                 errors,
             )
         else:
             content_fingerprints[fingerprint] = rid
+
+        display_fingerprint = _assessment_display_fingerprint(record)
+        display_duplicate_of = display_fingerprints.get(display_fingerprint)
+        if display_duplicate_of is not None:
+            fail(
+                f"assessment {rid} duplicates spoof-normalized criterion/scope content of {display_duplicate_of}; "
+                "Unicode homoglyph or display-text variation cannot create another scored criterion",
+                errors,
+            )
+        else:
+            display_fingerprints[display_fingerprint] = rid
 
     derived_counts = {name: 0 for name in classifications}
     for record in records:
@@ -676,7 +716,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             elif discipline != discipline.strip():
                 fail(f"assessment {rid} discipline {discipline!r} must not contain leading or trailing whitespace", errors)
         if len(normalized_record_disciplines) != len(record_discipline_values):
-            fail(f"assessment {rid} contains duplicate discipline identifiers after whitespace/case normalization", errors)
+            fail(f"assessment {rid} contains duplicate discipline identifiers after Unicode compatibility/whitespace/case normalization", errors)
 
         record_document_values = list(record.get("document_ids", []))
         record_documents = set(record_document_values)
@@ -687,7 +727,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             elif document_id != document_id.strip():
                 fail(f"assessment {rid} document {document_id!r} must not contain leading or trailing whitespace", errors)
         if len(normalized_record_documents) != len(record_document_values):
-            fail(f"assessment {rid} contains duplicate document identifiers after whitespace/case normalization", errors)
+            fail(f"assessment {rid} contains duplicate document identifiers after Unicode compatibility/whitespace/case normalization", errors)
 
         for discipline in record_disciplines:
             if discipline not in discipline_set:
@@ -941,7 +981,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 elif approval_subject_hash.lower() != expected_subject_hash.lower():
                     fail(
                         f"{fid}: trusted waiver approval subject_hash does not match the current "
-                        "finding/baseline package, waiver reason, or linked assessment",
+                        "finding/assessment/complete baseline provenance package or waiver reason",
                         errors,
                     )
 
