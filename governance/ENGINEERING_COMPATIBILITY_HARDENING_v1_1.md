@@ -72,6 +72,8 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-62 | Cross-script discipline aliases such as Cyrillic `НVAC` could fabricate a visually duplicate multidisciplinary interface | Discipline identifiers are schema-constrained to stable uppercase ASCII tokens, and semantic identifier normalization fails closed on non-ASCII input before uniqueness or interface-cardinality scoring. |
 | H-63 | Producer-created `criterion_id` values plus punctuation-only display changes could create additional scored criteria | Every project resolves to a repository-pinned canonical criterion inventory. An assessment must use an inventory `criterion_id` and exactly match that entry's canonical criterion text, disciplines, document scope and interface flag; custom configuration cannot add or replace criteria. |
 | H-64 | A finding could omit one of several authoritative evidence records from its linked assessment when document/discipline coverage still matched | Finding evidence is compared record-by-record against the linked assessment evidence inventory and must preserve every authoritative assessment evidence record; document/discipline set coverage alone is insufficient. |
+| H-65 | Producer-controlled baseline scope could suppress pinned criteria by removing their discipline/document before applicability filtering | The complete repository-pinned project criterion inventory is mandatory independently of the submitted baseline. Its discipline/document scope must be present in `baseline`, its documents must remain in `required_document_ids`, and every pinned criterion must have an assessment record. |
+| H-66 | A finding could replace a singleton assessment evidence record while keeping the same document/revision/hash source key | Exact canonical evidence fingerprints are required for every linked assessment evidence record, including singleton sources; matching only the source key is insufficient. |
 
 ## Release invariants
 
@@ -81,7 +83,7 @@ A `PASS` package must satisfy all of the following:
 2. Baseline discipline identifiers are stable uppercase ASCII tokens, nonblank, trimmed and unique after Unicode compatibility/whitespace/case normalization; cross-script aliases are invalid before interface scoring.
 3. The baseline is reconciled.
 4. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
-5. The repository-pinned canonical criterion inventory is authoritative. `assessment_records` must represent every criterion applicable to the current baseline exactly once and may not introduce producer-created criterion IDs or alter canonical criterion text/scope/interface identity.
+5. The repository-pinned canonical criterion inventory is authoritative and defines the minimum required baseline scope independently of producer-submitted baseline contents. Every pinned discipline/document must remain present, every pinned document must remain mandatory, and `assessment_records` must represent every pinned criterion exactly once without producer-created IDs or altered canonical text/scope/interface identity.
 6. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
 7. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
 8. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
@@ -92,7 +94,7 @@ A `PASS` package must satisfy all of the following:
 13. Every baseline discipline and document is represented by at least one assessment.
 14. `NOT_VERIFIABLE` reduces coverage and, together with `NOT_APPLICABLE`, is excluded from the weighted compatibility denominator.
 15. Findings reference valid assessment records and cannot invent disciplines or classifications.
-16. Finding evidence preserves every authoritative evidence record from the linked assessment, including document identity, revision, location, statement and SHA-256 provenance; hexadecimal hash case is semantically irrelevant.
+16. Finding evidence preserves every authoritative evidence record from the linked assessment exactly, including singleton records and document identity, revision, location, statement and SHA-256 provenance; hexadecimal hash case is semantically irrelevant.
 17. Evidence locations identify a concrete sheet/page/drawing/section locator rather than generic following prose, include an explicit TAG or `NONE`, and accept Roman numerals only when they are canonical.
 18. Every finding exposes evidence quality, confidence, comparison, problem, root cause, lifecycle impacts, solution and objective closure criterion.
 19. Finding narratives identify their claim basis as `SOURCE_DERIVED`, `INFERENCE` or `EXTERNAL_KNOWLEDGE`; architecture viability is classified when required.
@@ -127,7 +129,7 @@ The same calculation is performed globally and for each discipline, document and
 
 ## Canonical criterion inventory
 
-Each project used by the compatibility gate must have a repository-pinned entry in `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json` under `criterion_inventories`. The inventory defines each criterion's stable `criterion_id`, canonical display text, discipline scope, document scope and interface identity independently of producer-authored assessment outcomes or evidence. Only inventory entries whose declared disciplines and documents are present in the current baseline are applicable; all applicable entries must be represented exactly once. Custom `--config` files may not alter this inventory.
+Each project used by the compatibility gate must have a repository-pinned entry in `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json` under `criterion_inventories`. The inventory defines each criterion's stable `criterion_id`, canonical display text, discipline scope, document scope and interface identity independently of producer-authored baseline contents, assessment outcomes or evidence. The complete pinned inventory defines the minimum mandatory baseline scope: its disciplines and documents must remain present in the submitted baseline, its documents must remain listed as required, and every pinned criterion must be represented exactly once. Custom `--config` files may not alter this inventory.
 
 ## Trusted waiver authorization
 
