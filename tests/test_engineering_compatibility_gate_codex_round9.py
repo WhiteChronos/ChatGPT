@@ -120,6 +120,40 @@ def test_custom_config_cannot_override_canonical_criterion_inventory(tmp_path: P
         _load_policy_config(custom)
 
 
+def test_complete_pinned_inventory_is_required_independently_of_submitted_baseline() -> None:
+    data = example()
+    data["baseline"]["disciplines"].remove("ELECTRICAL")
+    data["baseline"]["documents"] = [
+        document
+        for document in data["baseline"]["documents"]
+        if document["id"] != "EX-ELE-001"
+    ]
+    data["baseline"]["required_document_ids"].remove("EX-ELE-001")
+    data["assessment_records"] = [
+        record
+        for record in data["assessment_records"]
+        if record["criterion_id"] != "CRIT-ELE-BASELINE"
+    ]
+    data["scope_summary"]["VERIFIED"] = 3
+    data["compatibility"]["by_discipline"].pop("ELECTRICAL")
+    data["compatibility"]["by_document"].pop("EX-ELE-001")
+
+    errors = validate_semantics(data, config())
+    assert any(
+        "baseline.disciplines must include every discipline required by the repository-pinned criterion inventory" in error
+        for error in errors
+    )
+    assert any(
+        "baseline.documents must include every document required by the repository-pinned criterion inventory" in error
+        for error in errors
+    )
+    assert any(
+        "assessment_records must represent every repository-pinned criterion" in error
+        and "crit-ele-baseline" in error.lower()
+        for error in errors
+    )
+
+
 def test_finding_must_preserve_every_linked_assessment_evidence_record() -> None:
     data = example()
     assessment = data["assessment_records"][0]
@@ -143,6 +177,31 @@ def test_finding_must_preserve_every_linked_assessment_evidence_record() -> None
     errors = validate_semantics(data, config())
     assert any(
         "finding evidence must preserve every linked assessment evidence record" in error
+        for error in errors
+    )
+
+
+def test_singleton_assessment_evidence_must_be_preserved_exactly() -> None:
+    data = example()
+    assessment = data["assessment_records"][0]
+    assessment["classification"] = "PARTIAL"
+
+    replacement = deepcopy(assessment["evidence"][0])
+    replacement["location"] = "Page 9 / Rewritten finding-only location"
+    replacement["statement"] = "Finding-only replacement that must not hide the assessment evidence record."
+    data["findings"] = [_finding_for(assessment, [replacement])]
+    data["scope_summary"] = {
+        "VERIFIED": 3,
+        "PARTIAL": 1,
+        "DIVERGENT": 0,
+        "NOT_VERIFIABLE": 0,
+        "NOT_APPLICABLE": 0,
+    }
+    data["release_gate"] = "BLOCK"
+
+    errors = validate_semantics(data, config())
+    assert any(
+        "finding evidence must preserve every linked assessment evidence record exactly" in error
         for error in errors
     )
 
