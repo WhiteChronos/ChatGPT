@@ -69,13 +69,14 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-59 | Cross-script homoglyphs in criterion display text could create duplicate scored criteria | Every assessment carries a schema-enforced stable uppercase ASCII `criterion_id`; duplicate detection uses that stable ID and separately applies Unicode compatibility/default-ignorable/confusable normalization to criterion display text so a new ID cannot legitimize a visual clone. |
 | H-60 | Full-width or compatibility-equivalent discipline/document identifiers could fabricate distinct scopes or interfaces | Identifier normalization applies Unicode NFKC compatibility normalization, strips default-ignorable characters, trims and case-folds before uniqueness and interface cardinality checks. |
 | H-61 | Non-canonical Roman-letter words such as `civil` could satisfy the evidence locator rule | Roman locator tokens must match canonical Roman-numeral grammar; invalid Roman-like words and sequences are rejected. |
+| H-62 | Cross-script discipline aliases such as Cyrillic `НVAC` could fabricate a visually duplicate multidisciplinary interface | Discipline identifiers are schema-constrained to stable uppercase ASCII tokens, and semantic identifier normalization fails closed on non-ASCII input before uniqueness or interface-cardinality scoring. |
 
 ## Release invariants
 
 A `PASS` package must satisfy all of the following:
 
 1. Baseline documents exist, have provenance and valid disciplines; document IDs are nonblank, trimmed and unique after Unicode compatibility/whitespace/case normalization.
-2. Baseline discipline identifiers are nonblank, trimmed and unique after Unicode compatibility/whitespace/case normalization.
+2. Baseline discipline identifiers are stable uppercase ASCII tokens, nonblank, trimmed and unique after Unicode compatibility/whitespace/case normalization; cross-script aliases are invalid before interface scoring.
 3. The baseline is reconciled.
 4. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
 5. `assessment_records` are the authoritative complete criterion inventory. Every record has a schema-enforced stable `criterion_id`; stable IDs are unique, and duplicate/spoof-normalized criterion+scope identity cannot be counted again under a new record ID, outcome, evidence payload, evidence-quality metadata, Unicode compatibility form, default-ignorable variant or common cross-script homoglyph.
