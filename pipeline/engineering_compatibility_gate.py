@@ -252,7 +252,7 @@ def _normalized_identifier(value: Any) -> str | None:
     if not isinstance(value, str):
         return None
     stripped = _strip_default_ignorable_unicode(value).strip()
-    if not stripped:
+    if not stripped or not stripped.isascii():
         return None
     return stripped.casefold()
 
