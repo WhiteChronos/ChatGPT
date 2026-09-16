@@ -133,7 +133,7 @@ def test_evidence_requires_sheet_or_page_traceability_and_explicit_tag() -> None
     assert validate_data(data, load_json(SCHEMA), config()) == []
 
 
-def test_single_discipline_project_uses_explicit_vacuous_interface_score() -> None:
+def test_pinned_multidiscipline_project_cannot_be_reduced_to_single_discipline() -> None:
     data = example()
     data["baseline"]["disciplines"] = ["HVAC"]
     data["baseline"]["documents"] = [data["baseline"]["documents"][0]]
@@ -151,11 +151,10 @@ def test_single_discipline_project_uses_explicit_vacuous_interface_score() -> No
     data["compatibility"]["by_document"] = {"EX-HVAC-001": 100.0}
     data["compatibility"]["interface"] = 100.0
     data["findings"] = []
-    data["release_gate"] = "PASS"
-
-    assert validate_data(data, load_json(SCHEMA), config()) == []
-
-    data["compatibility"]["interface"] = 0.0
     data["release_gate"] = "BLOCK"
+
     errors = validate_semantics(data, config())
-    assert any("must be 100.0 when the project has no multidisciplinary interfaces" in error for error in errors)
+    assert any("baseline.disciplines must include every discipline required" in error for error in errors)
+    assert any("baseline.documents must include every document required" in error for error in errors)
+    assert any("baseline.required_document_ids must include every document required" in error for error in errors)
+    assert any("assessment_records must represent every repository-pinned criterion" in error for error in errors)
