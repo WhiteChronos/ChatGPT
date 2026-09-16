@@ -64,11 +64,13 @@ FIXED_DENOMINATOR_DEFINITION = (
 )
 SHA256_RE = re.compile(r"[A-Fa-f0-9]{64}\Z")
 TRACEABLE_LOCATION_RE = re.compile(
-    r"\b(sheet|page|drawing|section|folha|pagina|página|prancha)\b",
+    r"\b(?:sheet|page|drawing|section|folha|pagina|página|prancha)\b"
+    r"\s*(?:[:#/\-]\s*)?([A-Za-z0-9][A-Za-z0-9._/\-]*)",
     re.IGNORECASE,
 )
 MAX_APPROVAL_CLOCK_SKEW = timedelta(minutes=5)
 VACUOUS_INTERFACE_COMPATIBILITY = 100.0
+UNSCORED_SCOPE_COMPATIBILITY = 0.0
 MANDATORY_THRESHOLD_FLAGS = (
     "block_on_open_critical",
     "block_on_missing_mandatory_document",
@@ -118,6 +120,36 @@ def load_json(path: Path) -> Any:
     return data
 
 
+def _trusted_approval_records(config: Any) -> dict[str, Any]:
+    if not isinstance(config, dict):
+        return {}
+    authorization = config.get("waiver_authorization")
+    if not isinstance(authorization, dict):
+        return {}
+    records = authorization.get("trusted_approval_records")
+    return records if isinstance(records, dict) else {}
+
+
+def _load_policy_config(path: Path) -> dict[str, Any]:
+    """Load project policy while keeping waiver trust pinned to DEFAULT_CONFIG.
+
+    Project configuration may tune permitted threshold values, but it cannot create
+    or replace trusted human approvals. The canonical trust inventory is read from
+    the repository-pinned configuration and an arbitrary ``--config`` must carry
+    exactly that inventory.
+    """
+    requested = load_json(path)
+    canonical = load_json(DEFAULT_CONFIG)
+    if not isinstance(requested, dict) or not isinstance(canonical, dict):
+        raise ValueError("engineering compatibility configuration must be a JSON object")
+    if _trusted_approval_records(requested) != _trusted_approval_records(canonical):
+        raise ValueError(
+            "config.waiver_authorization.trusted_approval_records cannot override "
+            "the repository-pinned canonical trust source"
+        )
+    return requested
+
+
 def fail(message: str, errors: list[str]) -> None:
     errors.append(message)
 
@@ -157,9 +189,7 @@ def _parse_approval_timestamp(value: Any) -> datetime | None:
         parsed = datetime.fromisoformat(candidate)
     except ValueError:
         return None
-    if parsed.tzinfo is None:
-        return None
-    return parsed
+    return parsed if parsed.tzinfo is not None else None
 
 
 def _valid_approval_timestamp(value: Any) -> bool:
@@ -219,6 +249,14 @@ def _score(records: list[dict[str, Any]], weights: dict[str, float]) -> float | 
     return 100.0 * total / len(applicable)
 
 
+def _scoped_score(records: list[dict[str, Any]], weights: dict[str, float]) -> float | None:
+    """Return a defined conservative value when a represented scope is excluded-only."""
+    computed = _score(records, weights)
+    if computed is None and records:
+        return UNSCORED_SCOPE_COMPATIBILITY
+    return computed
+
+
 def _assert_metric(
     label: str,
     declared: Any,
@@ -238,7 +276,6 @@ def _assert_metric(
 
 
 def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> Any:
-    """Canonicalize semantically irrelevant textual differences for identity checks."""
     if isinstance(value, str):
         normalized = " ".join(value.split())
         return normalized.lower() if key in {"source_hash", "sha256", "subject_hash"} else normalized
@@ -253,49 +290,73 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
 
 
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    """Return stable criterion/scope identity independent of outcome and evidence payloads."""
-    payload = _canonicalize_fingerprint_value(
-        {
-            "criterion": record.get("criterion"),
-            "disciplines": record.get("disciplines", []),
-            "document_ids": record.get("document_ids", []),
-            "interface": record.get("interface"),
-        }
-    )
-    criterion = payload.get("criterion")
-    if isinstance(criterion, str):
-        payload["criterion"] = criterion.casefold()
-    payload["disciplines"] = sorted(payload.get("disciplines", []))
-    payload["document_ids"] = sorted(payload.get("document_ids", []))
+    """Stable criterion/scope identity independent of outcome/evidence metadata."""
+    criterion = record.get("criterion")
+    normalized_criterion = " ".join(criterion.split()).casefold() if isinstance(criterion, str) else criterion
+    disciplines = [
+        _normalized_identifier(value) or str(value)
+        for value in record.get("disciplines", [])
+    ]
+    document_ids = [
+        _normalized_identifier(value) or str(value)
+        for value in record.get("document_ids", [])
+    ]
+    payload = {
+        "criterion": normalized_criterion,
+        "disciplines": sorted(disciplines),
+        "document_ids": sorted(document_ids),
+        "interface": record.get("interface"),
+    }
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-def _waiver_subject_hash(project: Any, finding: dict[str, Any], baseline: dict[str, Any]) -> str:
-    """Bind an external approval to the exact finding and baseline package being waived."""
-    finding_payload = {
-        key: value
-        for key, value in finding.items()
-        if key != "waiver"
-    }
-    baseline_documents = []
-    for document in baseline.get("documents", []):
-        baseline_documents.append(
-            {
-                "id": document.get("id"),
-                "discipline": document.get("discipline"),
-                "revision": document.get("revision"),
-                "sha256": document.get("sha256"),
-                "status": document.get("status"),
-            }
-        )
-    baseline_documents.sort(key=lambda item: str(item.get("id")))
+def _legacy_default_assessment(finding: dict[str, Any]) -> dict[str, Any] | None:
+    """Compatibility helper for existing tests/tools that used the old 3-arg hash API."""
+    try:
+        default_data = load_json(DEFAULT_DATA)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return None
+    if not isinstance(default_data, dict):
+        return None
+    assessment_id = finding.get("assessment_id")
+    for record in default_data.get("assessment_records", []):
+        if isinstance(record, dict) and record.get("id") == assessment_id:
+            return record
+    return None
+
+
+def _waiver_subject_hash(
+    project: Any,
+    finding: dict[str, Any],
+    baseline: dict[str, Any],
+    assessment: dict[str, Any] | None = None,
+) -> str:
+    """Bind approval to the exact finding, linked assessment, and baseline snapshot."""
+    if assessment is None:
+        assessment = _legacy_default_assessment(finding)
+    finding_payload = {key: value for key, value in finding.items() if key != "waiver"}
+    baseline_documents = [
+        {
+            "id": document.get("id"),
+            "discipline": document.get("discipline"),
+            "revision": document.get("revision"),
+            "sha256": document.get("sha256"),
+            "status": document.get("status"),
+        }
+        for document in baseline.get("documents", [])
+    ]
+    baseline_documents.sort(key=lambda item: (_normalized_identifier(item.get("id")) or str(item.get("id"))))
     payload = _canonicalize_fingerprint_value(
         {
             "project": project,
             "finding": finding_payload,
+            "assessment": assessment,
             "baseline": {
                 "documents": baseline_documents,
-                "required_document_ids": sorted(baseline.get("required_document_ids", [])),
+                "required_document_ids": sorted(
+                    baseline.get("required_document_ids", []),
+                    key=lambda value: _normalized_identifier(value) or str(value),
+                ),
                 "reconciled": baseline.get("reconciled"),
             },
         }
@@ -313,7 +374,6 @@ def _validate_evidence(
     *,
     allowed_document_ids: set[Any] | None = None,
 ) -> tuple[set[str], set[Any]]:
-    """Validate provenance-bearing evidence and return evidenced disciplines/documents."""
     evidenced_disciplines: set[str] = set()
     evidenced_documents: set[Any] = set()
     if not evidence:
@@ -330,8 +390,8 @@ def _validate_evidence(
 
         if not _valid_traceable_location(item.get("location")):
             fail(
-                f"{owner}: evidence[{index}] location must identify a sheet/page/drawing/section; "
-                "use tag='NONE' when no TAG applies",
+                f"{owner}: evidence[{index}] location must identify a sheet/page/drawing/section "
+                "with a locator value; use tag='NONE' when no TAG applies",
                 errors,
             )
 
@@ -426,13 +486,15 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         )
     classifications = list(FIXED_CLASSIFICATIONS)
 
-    configured_statuses = config.get("baseline_policy", {}).get(
-        "eligible_required_document_statuses"
-    ) if isinstance(config.get("baseline_policy"), dict) else None
+    baseline_policy = config.get("baseline_policy")
+    configured_statuses = (
+        baseline_policy.get("eligible_required_document_statuses")
+        if isinstance(baseline_policy, dict)
+        else None
+    )
     if set(configured_statuses or []) != FIXED_REQUIRED_DOCUMENT_STATUSES:
         fail(
-            "config.baseline_policy.eligible_required_document_statuses must be exactly "
-            "CURRENT and APPROVED",
+            "config.baseline_policy.eligible_required_document_statuses must be exactly CURRENT and APPROVED",
             errors,
         )
     eligible_statuses = FIXED_REQUIRED_DOCUMENT_STATUSES
@@ -455,6 +517,13 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             errors,
         )
 
+    waiver_authorization = config.get("waiver_authorization")
+    if not isinstance(waiver_authorization, dict):
+        fail("config.waiver_authorization must be an object", errors)
+        waiver_authorization = {}
+    if waiver_authorization.get("require_external_approval_record") is not True:
+        fail("config.waiver_authorization.require_external_approval_record must remain true", errors)
+
     visualization_config = config.get("visualization", {})
     severity_config = config.get("severity", {})
     if not isinstance(visualization_config, dict):
@@ -463,17 +532,13 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     if not isinstance(severity_config, dict):
         fail("config.severity must be an object", errors)
         severity_config = {}
-
     configured_sections = visualization_config.get("mandatory_sections")
     if (
         not isinstance(configured_sections, list)
         or len(configured_sections) != len(FIXED_MANDATORY_SECTIONS)
         or set(configured_sections) != set(FIXED_MANDATORY_SECTIONS)
     ):
-        fail(
-            "config.visualization.mandatory_sections must equal the fixed mandatory section inventory",
-            errors,
-        )
+        fail("config.visualization.mandatory_sections must equal the fixed mandatory section inventory", errors)
     if severity_config != FIXED_SEVERITY_COLORS:
         fail("config.severity must equal the fixed severity color mapping", errors)
 
@@ -482,9 +547,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail("visualization.model must be VISUALIZE_GOLDEN_RULE_v1_0", errors)
     if viz.get("complete_not_summary") is not True:
         fail("/visualize output must be complete_not_summary=true", errors)
-    missing_sections = sorted(
-        set(FIXED_MANDATORY_SECTIONS) - set(viz.get("mandatory_sections", []))
-    )
+    missing_sections = sorted(set(FIXED_MANDATORY_SECTIONS) - set(viz.get("mandatory_sections", [])))
     if missing_sections:
         fail(f"missing visualization sections: {', '.join(missing_sections)}", errors)
     for severity, expected in FIXED_SEVERITY_COLORS.items():
@@ -499,27 +562,30 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         if not isinstance(discipline, str) or not discipline.strip():
             fail("baseline.disciplines entries must be nonblank strings", errors)
         elif discipline != discipline.strip():
-            fail(
-                f"baseline discipline {discipline!r} must not contain leading or trailing whitespace",
-                errors,
-            )
+            fail(f"baseline discipline {discipline!r} must not contain leading or trailing whitespace", errors)
     if len(normalized_baseline_disciplines) != len(disciplines):
-        fail(
-            "baseline.disciplines contains duplicate identifiers after whitespace/case normalization",
-            errors,
-        )
+        fail("baseline.disciplines contains duplicate identifiers after whitespace/case normalization", errors)
 
     documents = list(baseline.get("documents", []))
     document_ids = [doc.get("id") for doc in documents]
     document_id_set = set(document_ids)
+    normalized_document_ids = _normalized_identifier_set(document_ids)
     document_by_id = {doc.get("id"): doc for doc in documents}
 
     if not documents:
         fail("baseline.documents must contain at least one source document", errors)
+    for document_id in document_ids:
+        if not isinstance(document_id, str) or not document_id.strip():
+            fail("baseline document ids must be nonblank strings", errors)
+        elif document_id != document_id.strip():
+            fail(f"baseline document id {document_id!r} must not contain leading or trailing whitespace", errors)
     if len(document_ids) != len(document_id_set):
         fail("baseline.documents contains duplicate document ids", errors)
+    if len(normalized_document_ids) != len(document_ids):
+        fail("baseline.documents contains duplicate document ids after whitespace/case normalization", errors)
     if baseline.get("reconciled") is not True:
         fail("baseline is not reconciled with the current approved revisions", errors)
+
     for doc in documents:
         doc_discipline = doc.get("discipline")
         if isinstance(doc_discipline, str) and doc_discipline != doc_discipline.strip():
@@ -529,14 +595,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             )
         if doc_discipline not in discipline_set:
             fail(
-                f"baseline document {doc.get('id', 'UNKNOWN')} uses discipline "
-                f"{doc_discipline} outside baseline.disciplines",
+                f"baseline document {doc.get('id', 'UNKNOWN')} uses discipline {doc_discipline} outside baseline.disciplines",
                 errors,
             )
         if not _valid_sha256(doc.get("sha256")):
             fail(
-                f"baseline document {doc.get('id', 'UNKNOWN')} sha256 must be exactly "
-                "64 hexadecimal characters",
+                f"baseline document {doc.get('id', 'UNKNOWN')} sha256 must be exactly 64 hexadecimal characters",
                 errors,
             )
 
@@ -550,16 +614,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     declared_missing = set(data.get("blocking_missing_documents", []))
     if computed_missing != declared_missing:
         fail(
-            "blocking_missing_documents must exactly match missing or non-current "
-            "baseline.required_document_ids; "
+            "blocking_missing_documents must exactly match missing or non-current baseline.required_document_ids; "
             f"computed={sorted(computed_missing)} declared={sorted(declared_missing)}",
             errors,
         )
     if declared_missing:
-        fail(
-            f"blocking mandatory documents are missing or non-current: {sorted(declared_missing)}",
-            errors,
-        )
+        fail(f"blocking mandatory documents are missing or non-current: {sorted(declared_missing)}", errors)
 
     records = list(data.get("assessment_records", []))
     record_ids = [record.get("id") for record in records]
@@ -573,8 +633,8 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         duplicate_of = content_fingerprints.get(fingerprint)
         if duplicate_of is not None:
             fail(
-                f"assessment {rid} duplicates assessment content of {duplicate_of}; "
-                "assessment identity is fixed by criterion and declared scope, not by id, outcome, evidence, or evidence-quality metadata",
+                f"assessment {rid} duplicates assessment content of {duplicate_of}; assessment identity is fixed "
+                "by criterion and declared scope, not by id, outcome, evidence, or evidence-quality metadata",
                 errors,
             )
         else:
@@ -596,17 +656,27 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if not isinstance(discipline, str) or not discipline.strip():
                 fail(f"assessment {rid} discipline identifiers must be nonblank strings", errors)
             elif discipline != discipline.strip():
-                fail(
-                    f"assessment {rid} discipline {discipline!r} must not contain leading or trailing whitespace",
-                    errors,
-                )
+                fail(f"assessment {rid} discipline {discipline!r} must not contain leading or trailing whitespace", errors)
         if len(normalized_record_disciplines) != len(record_discipline_values):
             fail(
                 f"assessment {rid} contains duplicate discipline identifiers after whitespace/case normalization",
                 errors,
             )
 
-        record_documents = set(record.get("document_ids", []))
+        record_document_values = list(record.get("document_ids", []))
+        record_documents = set(record_document_values)
+        normalized_record_documents = _normalized_identifier_set(record_document_values)
+        for document_id in record_document_values:
+            if not isinstance(document_id, str) or not document_id.strip():
+                fail(f"assessment {rid} document identifiers must be nonblank strings", errors)
+            elif document_id != document_id.strip():
+                fail(f"assessment {rid} document {document_id!r} must not contain leading or trailing whitespace", errors)
+        if len(normalized_record_documents) != len(record_document_values):
+            fail(
+                f"assessment {rid} contains duplicate document identifiers after whitespace/case normalization",
+                errors,
+            )
+
         for discipline in record_disciplines:
             if discipline not in discipline_set:
                 fail(f"assessment {rid} uses discipline {discipline} outside baseline.disciplines", errors)
@@ -624,31 +694,23 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         )
         if not evidenced_disciplines.issubset(record_disciplines):
             extra = sorted(evidenced_disciplines - record_disciplines)
-            fail(
-                f"assessment {rid} evidence uses disciplines outside assessment.disciplines: {extra}",
-                errors,
-            )
+            fail(f"assessment {rid} evidence uses disciplines outside assessment.disciplines: {extra}", errors)
         missing_disciplines = sorted(record_disciplines - evidenced_disciplines)
         if missing_disciplines:
             fail(
-                f"assessment {rid} evidence must cover every declared discipline; "
-                f"missing={missing_disciplines}",
+                f"assessment {rid} evidence must cover every declared discipline; missing={missing_disciplines}",
                 errors,
             )
         missing_documents = sorted(record_documents - evidenced_documents)
         if missing_documents:
             fail(
-                f"assessment {rid} evidence must cover every declared document; "
-                f"missing={missing_documents}",
+                f"assessment {rid} evidence must cover every declared document; missing={missing_documents}",
                 errors,
             )
 
         interface_flag = record.get("interface")
         if len(normalized_record_disciplines) >= 2 and interface_flag is not True:
-            fail(
-                f"assessment {rid} is multidisciplinary and must set interface=true",
-                errors,
-            )
+            fail(f"assessment {rid} is multidisciplinary and must set interface=true", errors)
         if interface_flag is True:
             if len(normalized_record_disciplines) < 2:
                 fail(
@@ -676,16 +738,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         fail("assessment_records has no applicable scope items; coverage cannot be computed", errors)
     elif declared_coverage is not None and abs(declared_coverage - computed_coverage) > tolerance:
         fail(
-            f"coverage {declared_coverage:.4f}% inconsistent with assessment_records "
-            f"computed {computed_coverage:.4f}%",
+            f"coverage {declared_coverage:.4f}% inconsistent with assessment_records computed {computed_coverage:.4f}%",
             errors,
         )
     minimum_coverage = release_thresholds["minimum_coverage_percent"]
     if computed_coverage is not None and minimum_coverage is not None and computed_coverage < minimum_coverage:
-        fail(
-            f"coverage {computed_coverage:.2f}% below minimum {minimum_coverage}%",
-            errors,
-        )
+        fail(f"coverage {computed_coverage:.2f}% below minimum {minimum_coverage}%", errors)
 
     compatibility = data.get("compatibility", {})
     method = compatibility.get("method", {})
@@ -710,6 +768,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         tolerance,
         errors,
     )
+
     interface_records = [
         record
         for record in records
@@ -719,25 +778,29 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         interface_compat = _assert_metric(
             "compatibility.interface",
             compatibility.get("interface"),
-            _score(interface_records, weights),
+            _scoped_score(interface_records, weights),
             tolerance,
             errors,
         )
-    else:
+    elif len(normalized_baseline_disciplines) <= 1:
         declared_interface = _finite_metric(
             compatibility.get("interface"),
             "compatibility.interface",
             errors,
         )
         interface_compat = VACUOUS_INTERFACE_COMPATIBILITY
-        if (
-            declared_interface is not None
-            and abs(declared_interface - VACUOUS_INTERFACE_COMPATIBILITY) > tolerance
-        ):
+        if declared_interface is not None and abs(declared_interface - VACUOUS_INTERFACE_COMPATIBILITY) > tolerance:
             fail(
                 "compatibility.interface must be 100.0 when the project has no multidisciplinary interfaces",
                 errors,
             )
+    else:
+        interface_compat = None
+        fail(
+            "multidisciplinary baseline requires at least one multidisciplinary interface assessment; "
+            "do not use a vacuous interface score for multi-discipline projects",
+            errors,
+        )
 
     discipline_scores = compatibility.get("by_discipline", {})
     if set(discipline_scores) != discipline_set:
@@ -751,7 +814,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         _assert_metric(
             f"compatibility.by_discipline.{discipline}",
             discipline_scores.get(discipline),
-            _score(related, weights),
+            _scoped_score(related, weights),
             tolerance,
             errors,
         )
@@ -768,7 +831,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         _assert_metric(
             f"compatibility.by_document.{document_id}",
             document_scores.get(document_id),
-            _score(related, weights),
+            _scoped_score(related, weights),
             tolerance,
             errors,
         )
@@ -776,24 +839,13 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
     minimum_global = release_thresholds["minimum_global_compatibility_percent"]
     minimum_interface = release_thresholds["minimum_interface_compatibility_percent"]
     if global_compat is not None and minimum_global is not None and global_compat < minimum_global:
-        fail(
-            f"global compatibility {global_compat:.2f}% below minimum {minimum_global}%",
-            errors,
-        )
+        fail(f"global compatibility {global_compat:.2f}% below minimum {minimum_global}%", errors)
     if interface_compat is not None and minimum_interface is not None and interface_compat < minimum_interface:
-        fail(
-            f"interface compatibility {interface_compat:.2f}% below minimum {minimum_interface}%",
-            errors,
-        )
+        fail(f"interface compatibility {interface_compat:.2f}% below minimum {minimum_interface}%", errors)
 
     record_by_id = {record.get("id"): record for record in records}
     open_critical: list[str] = []
-    waiver_authorization = config.get("waiver_authorization", {})
-    trusted_approvals = (
-        waiver_authorization.get("trusted_approval_records", {})
-        if isinstance(waiver_authorization, dict)
-        else {}
-    )
+    trusted_approvals = _trusted_approval_records(config)
     linked_assessment_ids: set[Any] = set()
 
     for finding in data.get("findings", []):
@@ -819,10 +871,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if not isinstance(discipline, str) or not discipline.strip():
                 fail(f"{fid}: discipline identifiers must be nonblank strings", errors)
             elif discipline != discipline.strip():
-                fail(
-                    f"{fid}: discipline {discipline!r} must not contain leading or trailing whitespace",
-                    errors,
-                )
+                fail(f"{fid}: discipline {discipline!r} must not contain leading or trailing whitespace", errors)
             if discipline not in discipline_set:
                 fail(f"{fid}: discipline {discipline} is outside baseline.disciplines", errors)
         for field in ("comparison", "root_cause", "solution", "closure_criterion"):
@@ -894,10 +943,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 fail(f"{fid}: waived finding requires waiver.approval_record_id", errors)
             approval = trusted_approvals.get(approval_record_id)
             if not isinstance(approval, dict) or approval.get("human_approved") is not True:
-                fail(
-                    f"{fid}: waiver approval_record_id must reference a trusted human approval record",
-                    errors,
-                )
+                fail(f"{fid}: waiver approval_record_id must reference a trusted human approval record", errors)
             else:
                 approver = approval.get("approver")
                 approved_at = approval.get("approved_at")
@@ -906,19 +952,20 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 approval_finding_id = approval.get("finding_id")
                 approval_assessment_id = approval.get("assessment_id")
                 approval_subject_hash = approval.get("subject_hash")
-                expected_subject_hash = _waiver_subject_hash(data.get("project"), finding, baseline)
+                expected_subject_hash = _waiver_subject_hash(
+                    data.get("project"),
+                    finding,
+                    baseline,
+                    assessment,
+                )
                 if not isinstance(approver, str) or not approver.strip():
                     fail(f"{fid}: trusted waiver approval requires a named approver", errors)
                 approval_timestamp = _parse_approval_timestamp(approved_at)
                 if approval_timestamp is None:
-                    fail(
-                        f"{fid}: trusted waiver approval requires an ISO-8601 timestamp with timezone",
-                        errors,
-                    )
+                    fail(f"{fid}: trusted waiver approval requires an ISO-8601 timestamp with timezone", errors)
                 elif approval_timestamp > datetime.now(timezone.utc) + MAX_APPROVAL_CLOCK_SKEW:
                     fail(
-                        f"{fid}: trusted waiver approval timestamp cannot be in the future "
-                        "beyond the 5-minute clock-skew tolerance",
+                        f"{fid}: trusted waiver approval timestamp cannot be in the future beyond the 5-minute clock-skew tolerance",
                         errors,
                     )
                 if not isinstance(approval_evidence, str) or not approval_evidence.strip():
@@ -933,7 +980,8 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                     fail(f"{fid}: trusted waiver approval requires a 64-character subject_hash", errors)
                 elif approval_subject_hash.lower() != expected_subject_hash.lower():
                     fail(
-                        f"{fid}: trusted waiver approval subject_hash does not match the current finding/baseline package",
+                        f"{fid}: trusted waiver approval subject_hash does not match the current "
+                        "finding/assessment/baseline package",
                         errors,
                     )
 
@@ -981,13 +1029,9 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 )
 
     for record in records:
-        if (
-            record.get("classification") in ISSUE_CLASSIFICATIONS
-            and record.get("id") not in linked_assessment_ids
-        ):
+        if record.get("classification") in ISSUE_CLASSIFICATIONS and record.get("id") not in linked_assessment_ids:
             fail(
-                f"assessment {record.get('id')} classified {record.get('classification')} "
-                "requires a corresponding finding",
+                f"assessment {record.get('id')} classified {record.get('classification')} requires a corresponding finding",
                 errors,
             )
 
@@ -1016,7 +1060,7 @@ def validate_data(data: Any, schema: dict[str, Any], config: dict[str, Any]) -> 
         if not isinstance(data, dict):
             return ["schema:<root>: datasheet must be an object"]
         return validate_semantics(data, config)
-    except Exception as exc:  # Defensive fail-closed boundary for malformed schema/policy/config data.
+    except Exception as exc:
         return [f"validation error: {type(exc).__name__}: {exc}"]
 
 
@@ -1036,7 +1080,7 @@ def main() -> int:
     data_path = Path(args.datasheet)
     try:
         schema = load_json(Path(args.schema))
-        config = load_json(Path(args.config))
+        config = _load_policy_config(Path(args.config))
         data = load_json(data_path)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print("=== Engineering Compatibility Golden Rule Gate ===")
