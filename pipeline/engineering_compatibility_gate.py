@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import math
@@ -63,6 +63,12 @@ FIXED_DENOMINATOR_DEFINITION = (
     "NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator."
 )
 SHA256_RE = re.compile(r"[A-Fa-f0-9]{64}\Z")
+TRACEABLE_LOCATION_RE = re.compile(
+    r"\b(sheet|page|drawing|section|folha|pagina|página|prancha)\b",
+    re.IGNORECASE,
+)
+MAX_APPROVAL_CLOCK_SKEW = timedelta(minutes=5)
+VACUOUS_INTERFACE_COMPATIBILITY = 100.0
 MANDATORY_THRESHOLD_FLAGS = (
     "block_on_open_critical",
     "block_on_missing_mandatory_document",
@@ -141,17 +147,31 @@ def _valid_sha256(value: Any) -> bool:
     return isinstance(value, str) and SHA256_RE.fullmatch(value) is not None
 
 
-def _valid_approval_timestamp(value: Any) -> bool:
+def _parse_approval_timestamp(value: Any) -> datetime | None:
     if not isinstance(value, str) or not value.strip():
-        return False
+        return None
     candidate = value.strip()
     if candidate.endswith("Z"):
         candidate = candidate[:-1] + "+00:00"
     try:
         parsed = datetime.fromisoformat(candidate)
     except ValueError:
-        return False
-    return parsed.tzinfo is not None
+        return None
+    if parsed.tzinfo is None:
+        return None
+    return parsed
+
+
+def _valid_approval_timestamp(value: Any) -> bool:
+    return _parse_approval_timestamp(value) is not None
+
+
+def _valid_traceable_location(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and bool(value.strip())
+        and TRACEABLE_LOCATION_RE.search(value.strip()) is not None
+    )
 
 
 def _normalized_identifier(value: Any) -> str | None:
@@ -242,6 +262,9 @@ def _assessment_fingerprint(record: dict[str, Any]) -> str:
             "interface": record.get("interface"),
         }
     )
+    criterion = payload.get("criterion")
+    if isinstance(criterion, str):
+        payload["criterion"] = criterion.casefold()
     payload["disciplines"] = sorted(payload.get("disciplines", []))
     payload["document_ids"] = sorted(payload.get("document_ids", []))
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -300,10 +323,17 @@ def _validate_evidence(
     for index, item in enumerate(evidence, start=1):
         doc_id = item.get("document_id")
         doc = document_by_id.get(doc_id)
-        for field in ("document_id", "revision", "location", "statement", "source_hash"):
+        for field in ("document_id", "revision", "location", "tag", "statement", "source_hash"):
             value = item.get(field)
             if not isinstance(value, str) or not value.strip():
                 fail(f"{owner}: evidence[{index}] {field} must be non-empty", errors)
+
+        if not _valid_traceable_location(item.get("location")):
+            fail(
+                f"{owner}: evidence[{index}] location must identify a sheet/page/drawing/section; "
+                "use tag='NONE' when no TAG applies",
+                errors,
+            )
 
         source_hash = item.get("source_hash")
         if not _valid_sha256(source_hash):
@@ -685,13 +715,29 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         for record in records
         if len(_normalized_identifier_set(record.get("disciplines", []))) >= 2
     ]
-    interface_compat = _assert_metric(
-        "compatibility.interface",
-        compatibility.get("interface"),
-        _score(interface_records, weights),
-        tolerance,
-        errors,
-    )
+    if interface_records:
+        interface_compat = _assert_metric(
+            "compatibility.interface",
+            compatibility.get("interface"),
+            _score(interface_records, weights),
+            tolerance,
+            errors,
+        )
+    else:
+        declared_interface = _finite_metric(
+            compatibility.get("interface"),
+            "compatibility.interface",
+            errors,
+        )
+        interface_compat = VACUOUS_INTERFACE_COMPATIBILITY
+        if (
+            declared_interface is not None
+            and abs(declared_interface - VACUOUS_INTERFACE_COMPATIBILITY) > tolerance
+        ):
+            fail(
+                "compatibility.interface must be 100.0 when the project has no multidisciplinary interfaces",
+                errors,
+            )
 
     discipline_scores = compatibility.get("by_discipline", {})
     if set(discipline_scores) != discipline_set:
@@ -863,9 +909,16 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                 expected_subject_hash = _waiver_subject_hash(data.get("project"), finding, baseline)
                 if not isinstance(approver, str) or not approver.strip():
                     fail(f"{fid}: trusted waiver approval requires a named approver", errors)
-                if not _valid_approval_timestamp(approved_at):
+                approval_timestamp = _parse_approval_timestamp(approved_at)
+                if approval_timestamp is None:
                     fail(
                         f"{fid}: trusted waiver approval requires an ISO-8601 timestamp with timezone",
+                        errors,
+                    )
+                elif approval_timestamp > datetime.now(timezone.utc) + MAX_APPROVAL_CLOCK_SKEW:
+                    fail(
+                        f"{fid}: trusted waiver approval timestamp cannot be in the future "
+                        "beyond the 5-minute clock-skew tolerance",
                         errors,
                     )
                 if not isinstance(approval_evidence, str) or not approval_evidence.strip():
