@@ -10,7 +10,7 @@
       "type": "object",
       "required": ["disciplines", "documents", "reconciled", "reconciliation_note", "required_document_ids"],
       "properties": {
-        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/discipline_id"}},
         "documents": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/document"}},
         "reconciled": {"type": "boolean"},
         "reconciliation_note": {"$ref": "#/$defs/nonblank"},
@@ -75,12 +75,13 @@
   "$defs": {
     "nonblank": {"type": "string", "pattern": "\\S"},
     "criterion_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._:-]{0,127}$"},
+    "discipline_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._:-]{0,63}$"},
     "document": {
       "type": "object",
       "required": ["id", "discipline", "revision", "source", "sha256", "status"],
       "properties": {
         "id": {"$ref": "#/$defs/nonblank"},
-        "discipline": {"$ref": "#/$defs/nonblank"},
+        "discipline": {"$ref": "#/$defs/discipline_id"},
         "revision": {"$ref": "#/$defs/nonblank"},
         "source": {"$ref": "#/$defs/nonblank"},
         "sha256": {"type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[A-Fa-f0-9]{64}$"},
@@ -96,7 +97,7 @@
         "criterion_id": {"$ref": "#/$defs/criterion_id"},
         "criterion": {"$ref": "#/$defs/nonblank"},
         "classification": {"enum": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"]},
-        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/discipline_id"}},
         "document_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
         "interface": {"type": "boolean"},
         "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
@@ -217,7 +218,7 @@
         "severity": {"enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
         "classification": {"enum": ["VERIFIED", "PARTIAL", "DIVERGENT", "NOT_VERIFIABLE", "NOT_APPLICABLE"]},
         "status": {"enum": ["OPEN", "IN_REVIEW", "CLOSED", "WAIVED"]},
-        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonblank"}},
+        "disciplines": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/discipline_id"}},
         "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
         "evidence_quality": {"$ref": "#/$defs/evidence_quality"},
         "comparison": {"$ref": "#/$defs/nonblank"}, "problem": {"$ref": "#/$defs/nonblank"}, "root_cause": {"$ref": "#/$defs/nonblank"},
