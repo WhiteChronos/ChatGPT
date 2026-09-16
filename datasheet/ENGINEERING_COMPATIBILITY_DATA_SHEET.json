@@ -83,6 +83,13 @@
       "comparison": "Explain source evidence versus the related engineering criterion without silently reconciling them.",
       "problem": "Complete engineering description of the discrepancy.",
       "root_cause": "Identified cause or explicit statement that root cause is not yet verifiable.",
+      "claim_basis": {
+        "comparison": "INFERENCE",
+        "problem": "INFERENCE",
+        "root_cause": "INFERENCE",
+        "solution": "INFERENCE",
+        "viability": "INFERENCE"
+      },
       "impacts": {
         "design": "Impact or NONE", "procurement": "Impact or NONE", "fabrication": "Impact or NONE", "programming": "Impact or NONE", "commissioning": "Impact or NONE",
         "operation": "Impact or NONE", "maintenance": "Impact or NONE", "safety": "Impact or NONE", "cost": "Impact or NONE", "schedule": "Impact or NONE"

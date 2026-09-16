@@ -64,6 +64,12 @@ def make_example_finding(*, status: str = "CLOSED", severity: str = "HIGH") -> d
         "comparison": "Synthetic comparison against the coordinated project baseline.",
         "problem": "Synthetic compatibility condition used only by the regression suite.",
         "root_cause": "Synthetic root cause for regression testing.",
+        "claim_basis": {
+            "comparison": "SOURCE_DERIVED",
+            "problem": "INFERENCE",
+            "root_cause": "INFERENCE",
+            "solution": "INFERENCE",
+        },
         "impacts": {
             "design": "NONE",
             "procurement": "NONE",
@@ -412,3 +418,69 @@ def test_mandatory_governance_controls_cannot_be_disabled_by_config() -> None:
     assert any("blocking mandatory documents are missing or non-current" in error for error in errors)
     assert any("source_hash does not match baseline sha256" in error for error in errors)
     assert any("open CRITICAL findings" in error for error in errors)
+
+
+def test_duplicate_identity_excludes_evidence_quality_metadata() -> None:
+    data = example()
+    clone = deepcopy(data["assessment_records"][0])
+    clone["id"] = "ASM-HVAC-QUALITY-CLONE"
+    clone["evidence_quality"] = {
+        "rating": "LOW",
+        "rationale": "Alternate quality metadata must not create a new criterion identity.",
+    }
+    data["assessment_records"].append(clone)
+    data["scope_summary"]["VERIFIED"] = 5
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("duplicates assessment content" in error for error in errors)
+
+
+def test_metric_tolerance_is_canonical_and_cannot_be_weakened() -> None:
+    data = example()
+    cfg = deepcopy(config())
+    cfg["thresholds"]["metric_tolerance_percent"] = 100
+    data["compatibility"]["by_discipline"]["HVAC"] = 0
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, cfg)
+    assert any("metric_tolerance_percent must equal canonical 0.05" in error for error in errors)
+    assert any("compatibility.by_discipline.HVAC" in error and "inconsistent" in error for error in errors)
+
+
+def test_trusted_waiver_approval_requires_complete_metadata() -> None:
+    data = example()
+    finding = make_example_finding(status="WAIVED", severity="CRITICAL")
+    finding["waiver"] = {"reason": "Incomplete approval must block", "approval_record_id": "APR-INCOMPLETE"}
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+    cfg = deepcopy(config())
+    cfg["waiver_authorization"]["trusted_approval_records"]["APR-INCOMPLETE"] = {
+        "human_approved": True,
+    }
+    errors = validate_semantics(data, cfg)
+    assert any("requires a named approver" in error for error in errors)
+    assert any("requires an ISO-8601 timestamp with timezone" in error for error in errors)
+    assert any("requires approval evidence/reference" in error for error in errors)
+
+
+def test_finding_narratives_require_structured_claim_basis() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding.pop("claim_basis")
+    data["findings"] = [finding]
+    assert any("'claim_basis' is a required property" in message for message in schema_messages(data))
+
+    data = example()
+    finding = make_example_finding()
+    finding["architecture_impact"] = True
+    finding["alternatives"] = [
+        {
+            "name": "Synthetic alternative",
+            "feasibility": "HIGH",
+            "pros": ["Simple"],
+            "cons": ["Synthetic only"],
+            "recommended": True,
+        }
+    ]
+    finding["viability"] = "Synthetic viability analysis."
+    data["findings"] = [finding]
+    assert any("'viability' is a required property" in message for message in schema_messages(data))

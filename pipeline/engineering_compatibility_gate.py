@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 import json
 import math
 from pathlib import Path
@@ -28,6 +29,9 @@ FIXED_CLASSIFICATIONS = (
 )
 FIXED_REQUIRED_DOCUMENT_STATUSES = {"CURRENT", "APPROVED"}
 FIXED_STATUS_WEIGHTS = {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
+FIXED_METRIC_TOLERANCE_PERCENT = 0.05
+FIXED_CLAIM_BASIS_VALUES = {"SOURCE_DERIVED", "INFERENCE", "EXTERNAL_KNOWLEDGE"}
+REQUIRED_CLAIM_BASIS_FIELDS = ("comparison", "problem", "root_cause", "solution")
 FIXED_MANDATORY_SECTIONS = (
     "executive_gate",
     "baseline_map",
@@ -134,6 +138,19 @@ def _valid_sha256(value: Any) -> bool:
     return isinstance(value, str) and SHA256_RE.fullmatch(value) is not None
 
 
+def _valid_approval_timestamp(value: Any) -> bool:
+    if not isinstance(value, str) or not value.strip():
+        return False
+    candidate = value.strip()
+    if candidate.endswith("Z"):
+        candidate = candidate[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(candidate)
+    except ValueError:
+        return False
+    return parsed.tzinfo is not None
+
+
 def _normalized_identifier(value: Any) -> str | None:
     if not isinstance(value, str):
         return None
@@ -213,12 +230,12 @@ def _canonicalize_fingerprint_value(value: Any, *, key: str | None = None) -> An
 
 
 def _assessment_fingerprint(record: dict[str, Any]) -> str:
-    """Return criterion/scope identity independent of id and producer-selected outcome."""
+    """Return criterion/scope identity independent of metadata and producer-selected outcome."""
     payload = _canonicalize_fingerprint_value(
         {
             key: value
             for key, value in record.items()
-            if key not in {"id", "classification"}
+            if key not in {"id", "classification", "evidence_quality"}
         }
     )
     payload["disciplines"] = sorted(payload.get("disciplines", []))
@@ -311,15 +328,23 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         return errors
     thresholds, compatibility_config = sections
 
-    tolerance = _finite_metric(
-        thresholds.get("metric_tolerance_percent", 0.05),
+    configured_tolerance = _finite_metric(
+        thresholds.get("metric_tolerance_percent"),
         "config.thresholds.metric_tolerance_percent",
         errors,
     )
-    if tolerance is None or tolerance < 0 or tolerance > 100:
-        if tolerance is not None:
-            fail("config.thresholds.metric_tolerance_percent must be between 0 and 100", errors)
-        tolerance = 0.05
+    if configured_tolerance is not None and not math.isclose(
+        configured_tolerance,
+        FIXED_METRIC_TOLERANCE_PERCENT,
+        rel_tol=0.0,
+        abs_tol=1e-12,
+    ):
+        fail(
+            f"config.thresholds.metric_tolerance_percent must equal canonical "
+            f"{FIXED_METRIC_TOLERANCE_PERCENT}",
+            errors,
+        )
+    tolerance = FIXED_METRIC_TOLERANCE_PERCENT
 
     release_thresholds: dict[str, float | None] = {}
     for key in RELEASE_PERCENT_THRESHOLD_KEYS:
@@ -485,7 +510,7 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
         if duplicate_of is not None:
             fail(
                 f"assessment {rid} duplicates assessment content of {duplicate_of}; "
-                "assessment identity cannot differ only by id or classification",
+                "assessment identity cannot differ only by id, classification, or evidence-quality metadata",
                 errors,
             )
         else:
@@ -725,6 +750,18 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             if not isinstance(value, str) or not value.strip():
                 fail(f"{fid}: {field} must be non-empty", errors)
 
+        claim_basis = finding.get("claim_basis", {})
+        if not isinstance(claim_basis, dict):
+            fail(f"{fid}: claim_basis must be an object", errors)
+            claim_basis = {}
+        for field in REQUIRED_CLAIM_BASIS_FIELDS:
+            if claim_basis.get(field) not in FIXED_CLAIM_BASIS_VALUES:
+                fail(
+                    f"{fid}: claim_basis.{field} must classify the narrative as "
+                    "SOURCE_DERIVED, INFERENCE, or EXTERNAL_KNOWLEDGE",
+                    errors,
+                )
+
         for field in IMPACT_KEYS:
             value = finding.get("impacts", {}).get(field)
             if not isinstance(value, str) or not value.strip():
@@ -781,6 +818,19 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
                     f"{fid}: waiver approval_record_id must reference a trusted human approval record",
                     errors,
                 )
+            else:
+                approver = approval.get("approver")
+                approved_at = approval.get("approved_at")
+                approval_evidence = approval.get("evidence")
+                if not isinstance(approver, str) or not approver.strip():
+                    fail(f"{fid}: trusted waiver approval requires a named approver", errors)
+                if not _valid_approval_timestamp(approved_at):
+                    fail(
+                        f"{fid}: trusted waiver approval requires an ISO-8601 timestamp with timezone",
+                        errors,
+                    )
+                if not isinstance(approval_evidence, str) or not approval_evidence.strip():
+                    fail(f"{fid}: trusted waiver approval requires approval evidence/reference", errors)
 
         if finding.get("architecture_impact"):
             if not finding.get("alternatives"):
@@ -788,6 +838,12 @@ def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str
             viability = finding.get("viability")
             if not isinstance(viability, str) or not viability.strip():
                 fail(f"{fid}: architecture finding requires viability analysis", errors)
+            if claim_basis.get("viability") not in FIXED_CLAIM_BASIS_VALUES:
+                fail(
+                    f"{fid}: claim_basis.viability must classify the viability narrative as "
+                    "SOURCE_DERIVED, INFERENCE, or EXTERNAL_KNOWLEDGE",
+                    errors,
+                )
 
     for record in records:
         if (

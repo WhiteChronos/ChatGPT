@@ -49,6 +49,10 @@ This hardening release converts review findings into machine-enforced controls. 
 | H-39 | Negative configurable release thresholds could disable all percentage gates | Coverage, global compatibility and interface compatibility thresholds must be finite percentages in the inclusive range 0-100. |
 | H-40 | Discipline aliases differing only by whitespace/case could fabricate multidisciplinary interfaces | Discipline identifiers are normalized for uniqueness/interface counting and leading/trailing whitespace is rejected. |
 | H-41 | JSON exponent overflow such as `1e999` could enter evidence as infinity | Loaded JSON is recursively checked for non-finite floating-point values, including exponent-overflow infinities. |
+| H-42 | Duplicate criteria could evade identity checks by changing only evidence-quality metadata | `evidence_quality` is excluded from assessment identity, so rating/rationale changes cannot create another scored criterion. |
+| H-43 | Configurable metric tolerance could be enlarged to publish arbitrary declared scores | Declared-vs-computed consistency uses the canonical `0.05%` tolerance; project configuration cannot widen it. |
+| H-44 | An incomplete trusted approval object could authorize a CRITICAL waiver | Trusted waiver records require `human_approved=true`, a named approver, timezone-qualified ISO-8601 approval timestamp and nonblank approval evidence/reference. |
+| H-45 | Finding narratives did not state whether claims were sourced, inferred or external knowledge | Every comparison, problem, root-cause and solution narrative carries structured `claim_basis`; architecture viability carries the same metadata when present. |
 
 ## Release invariants
 
@@ -58,25 +62,26 @@ A `PASS` package must satisfy all of the following:
 2. Baseline discipline identifiers are nonblank, trimmed and unique after whitespace/case normalization.
 3. The baseline is reconciled.
 4. Every required document has an eligible current/approved status; `blocking_missing_documents` equals the computed missing/non-current set and is empty.
-5. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate semantic content under different IDs or classifications.
+5. `assessment_records` are the authoritative complete criterion inventory and cannot contain duplicate semantic content under different IDs, classifications or evidence-quality metadata.
 6. Every assessment record carries provenance-bearing source evidence and structured evidence quality; evidence is tied to declared assessment documents and baseline revisions/hashes.
 7. Assessment evidence covers every declared discipline and every declared document before the record contributes to compatibility scores.
 8. Every `PARTIAL`, `DIVERGENT` or `NOT_VERIFIABLE` assessment has a corresponding complete finding.
 9. Every multidisciplinary assessment is treated as an interface; normalized discipline identity must prove at least two distinct disciplines.
 10. `scope_summary` exactly matches classifications derived from `assessment_records`.
 11. Coverage is recomputed from that inventory and the recomputed value meets a finite release threshold in the range 0-100.
-12. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights; global and interface thresholds are finite percentages in the range 0-100 and are applied to recomputed values.
+12. Compatibility global, interface, discipline and document scores are recomputed from the same inventory and disclosed status weights; the canonical declared-vs-computed tolerance is fixed at 0.05 percentage point, and global/interface thresholds are applied to recomputed values.
 13. Every baseline discipline and document has a computed score.
 14. `NOT_VERIFIABLE` reduces coverage and is excluded from the compatibility denominator.
 15. Findings reference valid assessment records and cannot invent disciplines or classifications.
 16. Finding evidence preserves document identity, revision and SHA-256 provenance; hexadecimal case is semantically irrelevant.
-17. Every finding exposes evidence quality, confidence, comparison, root cause, lifecycle impacts, solution and objective closure criterion.
-18. Open CRITICAL findings block release.
-19. WAIVED findings require a trusted external human approval record.
-20. Architecture-impact findings include alternatives and viability.
-21. Mandatory governance blockers are non-configurable release invariants; project configuration cannot disable them.
-22. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
-23. JSON input contains no non-finite numeric values, including exponent-overflow infinities; metrics are finite and schema + semantic validation return zero errors.
+17. Every finding exposes evidence quality, confidence, comparison, problem, root cause, lifecycle impacts, solution and objective closure criterion.
+18. Finding narratives identify their claim basis as `SOURCE_DERIVED`, `INFERENCE` or `EXTERNAL_KNOWLEDGE`; architecture viability is classified when required.
+19. Open CRITICAL findings block release.
+20. WAIVED findings require a complete trusted external human approval record with approver identity, approval time and evidence/reference.
+21. Architecture-impact findings include alternatives and viability.
+22. Mandatory governance blockers are non-configurable release invariants; project configuration cannot disable them.
+23. Visualization color semantics are fixed, including `NOT_VERIFIABLE = blue`.
+24. JSON input contains no non-finite numeric values, including exponent-overflow infinities; metrics are finite and schema + semantic validation return zero errors.
 
 ## Coverage formula
 
@@ -84,7 +89,7 @@ Let `V`, `P`, `D`, `NV`, `NA` be counts derived from `assessment_records`.
 
 `coverage = 100 * (V + P + D) / (V + P + D + NV)`
 
-`NA` is excluded from the coverage denominator. `NV` remains in the denominator and therefore reduces coverage. The release threshold is evaluated against this recomputed value; a declared value is informational only after it has been checked against the recomputation within tolerance.
+`NA` is excluded from the coverage denominator. `NV` remains in the denominator and therefore reduces coverage. The release threshold is evaluated against this recomputed value; a declared value is informational only after it has been checked against the recomputation within the canonical 0.05 percentage-point tolerance.
 
 ## Compatibility formula
 
@@ -98,11 +103,15 @@ Default mandatory weights:
 - PARTIAL = 0.5
 - DIVERGENT = 0.0
 
-The same calculation is performed globally and for each discipline, document and interface subset. Declared values must match recomputed values within the configured tolerance, while release thresholds are applied to the recomputed global and interface values.
+The same calculation is performed globally and for each discipline, document and interface subset. Declared values must match recomputed values within the fixed canonical tolerance of 0.05 percentage point, while release thresholds are applied to the recomputed global and interface values.
 
 ## Trusted waiver authorization
 
-`waiver.approval_record_id` must resolve to `waiver_authorization.trusted_approval_records` in the trusted configuration and that record must contain `human_approved=true`. Datasheet-authored approver names, timestamps or evidence strings do not create authorization by themselves.
+`waiver.approval_record_id` must resolve to `waiver_authorization.trusted_approval_records` in the trusted configuration. The selected record must contain `human_approved=true`, a nonblank `approver`, a timezone-qualified ISO-8601 `approved_at` timestamp and a nonblank `evidence` reference. Datasheet-authored approver names, timestamps or evidence strings do not create authorization by themselves.
+
+## Claim-basis metadata
+
+Every finding must classify the basis of `comparison`, `problem`, `root_cause` and `solution` as `SOURCE_DERIVED`, `INFERENCE` or `EXTERNAL_KNOWLEDGE`. When `architecture_impact=true`, the required `viability` narrative must also carry claim-basis metadata. This classification is descriptive provenance metadata and does not replace the mandatory evidence records.
 
 ## CI expectations
 
