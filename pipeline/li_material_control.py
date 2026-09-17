@@ -17,7 +17,6 @@ from pathlib import Path
 from typing import Any
 
 from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter
 
 REV_RE = re.compile(r"^REV\.\s*(.+)$", re.IGNORECASE)
 
@@ -54,12 +53,17 @@ def workbook_is_valid_ooxml(path: Path) -> bool:
 
 
 def _column_widths(ws) -> dict[str, float | None]:
+    """Captura larguras explicitamente configuradas, inclusive colunas futuras vazias.
+
+    ws.max_column cresce quando a nova revisão recebe conteúdo. Usá-lo como limite faria uma
+    coluna já formatada, porém vazia na baseline, parecer uma alteração estrutural quando a revisão
+    seguinte fosse preenchida. A estrutura protegida é o conjunto de ColumnDimension persistido no
+    workbook, não a área atualmente ocupada por valores.
+    """
     result: dict[str, float | None] = {}
-    for idx in range(1, ws.max_column + 1):
-        letter = get_column_letter(idx)
-        dim = ws.column_dimensions.get(letter)
-        if dim is not None and dim.width is not None:
-            result[letter] = float(dim.width)
+    for key, dim in ws.column_dimensions.items():
+        if dim.width is not None:
+            result[str(key)] = float(dim.width)
     return result
 
 
