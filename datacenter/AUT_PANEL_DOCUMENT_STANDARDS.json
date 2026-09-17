@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "standard_id": "AUT-PANEL-DOCUMENT-V1.0",
   "status": "LOCKED_APPROVED_STANDARD",
   "workbook_master": {
@@ -37,6 +37,22 @@
     ],
     "rule": "PN-AUT-01 is the master Excel template. PN-AUT-02 and all future panels must use the same workbook presentation structure; only panel-specific engineering data may vary."
   },
+  "li_material_revision_standard": {
+    "control_id": "LI-MATERIAL-CONTROL-V1",
+    "prompt_id": "PROMPT-MASTER-LI-MATERIAL-V1",
+    "pipesheets_id": "LI-MATERIAL-PIPE-SHEETS-V1",
+    "memory_id": "LI-MATERIAL-CONTROL-MEMORY-V1",
+    "historical_revision_columns_immutable": true,
+    "preserve_rev_0": true,
+    "new_revision_adjacent_right": true,
+    "overwrite_previous_revision_forbidden": true,
+    "cover_and_format_preserved": true,
+    "quantity_evidence_required": true,
+    "a_levantar_only_when_not_determinable": true,
+    "source_conflict_status": "HOLD",
+    "historical_revision_change_status": "REPROVADO",
+    "rule": "Existing revision columns remain exactly as emitted. Corrections are written only in the next revision column, immediately to the right, with traceable quantity evidence."
+  },
   "image_master": {
     "visual_standard_id": "IMG-AUT-PANEL-MASTER-V1",
     "one_panel_per_image": true,
@@ -72,6 +88,6 @@
   "change_control": {
     "explicit_user_authorization_required": true,
     "unauthorized_change_status": "REPROVADO",
-    "rule": "No workbook or image standard may be changed without explicit authorization from the project owner."
+    "rule": "No workbook, revision-history or image standard may be changed without explicit authorization from the project owner."
   }
 }
