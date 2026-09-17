@@ -1089,4 +1089,11 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # The implementation module is importable only. Direct execution delegates
+    # to the canonical wrapper so no secondary CLI can bypass wrapper hardening.
+    import runpy
+
+    runpy.run_path(
+        str(Path(__file__).with_name("engineering_compatibility_gate.py")),
+        run_name="__main__",
+    )
