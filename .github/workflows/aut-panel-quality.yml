@@ -13,24 +13,33 @@ on:
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/render_panel_scaled.py'
       - 'pipeline/conversation_contract.py'
+      - 'pipeline/li_material_control.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'pipeline/pipeline.yaml'
+      - 'pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml'
       - 'templates/panel_template.yaml'
       - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
+      - 'prompts/PROMPT_MASTER_LI_MATERIAL.md'
       - 'prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md'
       - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
+      - 'memory/LI_MATERIAL_CONTROL_MEMORY.yaml'
+      - 'plugins/li_material_qa_registry.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
+      - 'datacenter/LI_MATERIAL_CONTROL.json'
       - 'datacenter/datacenter.yaml'
       - 'li/PN-AUT-01_LI.json'
       - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
+      - 'datasheet/LI_MATERIAL_DATA_SHEET.json'
       - 'datasheet/datasheet.yaml'
       - 'tests/test_aut_panel_control.py'
       - 'tests/test_conversation_contract.py'
+      - 'tests/test_li_material_control.py'
+      - 'tests/test_li_material_contract.py'
   push:
     branches: [main]
     paths:
@@ -43,24 +52,33 @@ on:
       - 'pipeline/aut_panel_standard.py'
       - 'pipeline/render_panel_scaled.py'
       - 'pipeline/conversation_contract.py'
+      - 'pipeline/li_material_control.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'pipeline/pipeline.yaml'
+      - 'pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml'
       - 'templates/panel_template.yaml'
       - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
+      - 'prompts/PROMPT_MASTER_LI_MATERIAL.md'
       - 'prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md'
       - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
+      - 'memory/LI_MATERIAL_CONTROL_MEMORY.yaml'
+      - 'plugins/li_material_qa_registry.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
+      - 'datacenter/LI_MATERIAL_CONTROL.json'
       - 'datacenter/datacenter.yaml'
       - 'li/PN-AUT-01_LI.json'
       - 'li/PN-AUT-02_LI.json'
       - 'datasheet/AUT_PANEL_DATA_SHEET.json'
       - 'datasheet/PN-AUT-02_DATA_SHEET.json'
+      - 'datasheet/LI_MATERIAL_DATA_SHEET.json'
       - 'datasheet/datasheet.yaml'
       - 'tests/test_aut_panel_control.py'
       - 'tests/test_conversation_contract.py'
+      - 'tests/test_li_material_control.py'
+      - 'tests/test_li_material_contract.py'
   workflow_dispatch:
 
 permissions:
@@ -72,7 +90,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Immutable engineering + cross-chat conversation contract
+    name: Immutable engineering + LI revision history + conversation contract
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -103,7 +121,29 @@ jobs:
           python pipeline/conversation_contract.py dispatch --text '/explaincode pipeline/render_panel_scaled.py'
           python pipeline/conversation_contract.py dispatch --text '/refactor pipeline/pipeline.yaml'
       - name: Run regression tests
-        run: python -m pytest -q tests/test_aut_panel_control.py tests/test_conversation_contract.py
+        run: |
+          python -m pytest -q \
+            tests/test_aut_panel_control.py \
+            tests/test_conversation_contract.py \
+            tests/test_li_material_control.py \
+            tests/test_li_material_contract.py
+      - name: Validate LI material canonical contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import yaml
+          root = Path('.')
+          dc = json.loads((root/'datacenter/LI_MATERIAL_CONTROL.json').read_text(encoding='utf-8'))
+          ds = json.loads((root/'datasheet/LI_MATERIAL_DATA_SHEET.json').read_text(encoding='utf-8'))
+          ps = yaml.safe_load((root/'pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml').read_text(encoding='utf-8'))
+          mem = yaml.safe_load((root/'memory/LI_MATERIAL_CONTROL_MEMORY.yaml').read_text(encoding='utf-8'))
+          assert dc['revision_contract']['preserve_rev_0'] is True
+          assert dc['revision_contract']['overwrite_previous_revision_forbidden'] is True
+          assert ds['revision_behavior']['new_revision_column_adjacent_right'] is True
+          assert ps['revision_model']['historical_columns_immutable'] is True
+          assert mem['immutable_rules']['previous_revision_columns_immutable'] is True
+          PY
       - name: Run PN-AUT-01 standard pipeline
         run: |
           rm -rf build/aut-panel/PN-AUT-01
