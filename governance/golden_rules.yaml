@@ -1,4 +1,4 @@
-schema_version: '1.0'
+schema_version: '1.1'
 registry_id: GOLDEN-RULES-IMMUTABLE-V1
 standard_id: AUT-PAINEL-COMPACT-V2.4
 status: LOCKED_APPROVED_STANDARD
@@ -17,8 +17,7 @@ required_rules:
 - id: GR-022
   name: Vista interna frontal preserva o contorno externo
   severity_on_violation: REPROVADO
-  rule: A vista interna frontal deve ter exatamente a mesma largura e altura externas da vista frontal
-    externa.
+  rule: A vista interna frontal deve ter exatamente a mesma largura e altura externas da vista frontal externa.
 - id: GR-023
   name: Vista lateral real
   severity_on_violation: REPROVADO
@@ -62,13 +61,11 @@ required_rules:
 - id: GR-039
   name: PN-AUT-01 é o template mestre de Excel
   severity_on_violation: REPROVADO
-  rule: PN-AUT-02 e futuros quadros devem manter a estrutura documental e visual do workbook mestre do
-    PN-AUT-01.
+  rule: PN-AUT-02 e futuros quadros devem manter a estrutura documental e visual do workbook mestre do PN-AUT-01.
 - id: GR-040
   name: Imagem individual no padrão visual aprovado
   severity_on_violation: REPROVADO
-  rule: Cada painel possui uma imagem própria e deve seguir seu template visual aprovado, sem recomposição
-    automática.
+  rule: Cada painel possui uma imagem própria e deve seguir seu template visual aprovado, sem recomposição automática.
 - id: GR-041
   name: Padrão aprovado imutável
   severity_on_violation: REPROVADO
@@ -76,40 +73,68 @@ required_rules:
 - id: GR-042
   name: Baseline da LI imutável
   severity_on_violation: REPROVADO
-  rule: LI-PN-AUT-01-R02 e LI-PN-AUT-02-R02 são baselines congeladas; mudança exige nova revisão e autorização
-    explícita.
+  rule: LI-PN-AUT-01-R02 e LI-PN-AUT-02-R02 são baselines congeladas; mudança exige nova revisão e autorização explícita.
 - id: GR-043
   name: Estrutura do workbook imutável
   severity_on_violation: REPROVADO
-  rule: Ordem de abas, dimensões de planilha, freeze panes, mesclagens, larguras e alturas-base devem
-    seguir o fingerprint estrutural mestre.
+  rule: Ordem de abas, dimensões de planilha, freeze panes, mesclagens, larguras e alturas-base devem seguir o fingerprint estrutural mestre.
 - id: GR-044
   name: Fingerprint visual aprovado
   severity_on_violation: REPROVADO
-  rule: O template de imagem deve apontar para o fingerprint SHA-256 da referência aprovada do painel
-    no Data Center privado.
+  rule: O template de imagem deve apontar para o fingerprint SHA-256 da referência aprovada do painel no Data Center privado.
 - id: GR-045
   name: Prompt mestre obrigatório
   severity_on_violation: REPROVADO
-  rule: Toda elaboração automática de LI, layout, código ou imagem deve carregar PROMPT-MASTER-AUT-PANEL-V2
-    sem reescrever suas regras imutáveis.
+  rule: Toda elaboração automática de LI, layout, código ou imagem deve carregar PROMPT-MASTER-AUT-PANEL-V2 sem reescrever suas regras imutáveis.
 - id: GR-046
   name: Bootstrap de conversa obrigatório
   severity_on_violation: REPROVADO
-  rule: Toda nova conversa deve carregar e validar Prompt Mestre, Golden Rules, pipeline, Data Center,
-    Data Sheet, template e memória operacional antes de executar tarefa técnica.
+  rule: Toda nova conversa deve carregar e validar Prompt Mestre, Golden Rules, pipeline, Data Center, Data Sheet, template e memória operacional antes de executar tarefa técnica.
 - id: GR-047
   name: Memória operacional compartilhada
   severity_on_violation: REPROVADO
-  rule: As conversas usam context/AUT_PANEL_CONVERSATION_MEMORY.yaml como memória operacional comum; immutable_contract
-    é bloqueado e mutable_state é sincronizado após marcos definidos.
+  rule: As conversas usam context/AUT_PANEL_CONVERSATION_MEMORY.yaml como memória operacional comum; immutable_contract é bloqueado e mutable_state é sincronizado após marcos definidos.
 - id: GR-048
   name: Contrato dos comandos /explaincode e /refactor
   severity_on_violation: REPROVADO
-  rule: /explaincode é somente leitura; /refactor deve preservar comportamento, executar regressão/QA
-    e não alterar contratos bloqueados sem autorização explícita.
+  rule: /explaincode é somente leitura; /refactor deve preservar comportamento, executar regressão/QA e não alterar contratos bloqueados sem autorização explícita.
 - id: GR-049
   name: Precedência canônica entre conversa e arquivos
   severity_on_violation: REPROVADO
-  rule: Conversa ou memória informal nunca sobrescrevem Data Center, Data Sheet, LI ou Golden Rules; conflitos
-    são resolvidos pela precedência canônica e qualquer lacuna crítica vira HOLD.
+  rule: Conversa ou memória informal nunca sobrescrevem Data Center, Data Sheet, LI ou Golden Rules; conflitos são resolvidos pela precedência canônica e qualquer lacuna crítica vira HOLD.
+- id: GR-050
+  name: Revisões históricas da LI são imutáveis
+  severity_on_violation: REPROVADO
+  rule: Toda coluna de revisão já emitida permanece exatamente como estava. Nunca corrigir REV. 0, REV. A ou outra revisão histórica em lugar da nova revisão.
+- id: GR-051
+  name: Nova revisão ocupa a coluna imediatamente à direita
+  severity_on_violation: REPROVADO
+  rule: A nova revisão deve ser criada na coluna imediatamente à direita da última revisão existente, preservando REV. 0 e todas as demais revisões anteriores.
+- id: GR-052
+  name: Quantitativo da nova revisão exige evidência rastreável
+  severity_on_violation: REPROVADO
+  rule: Valores da nova revisão só podem ser preenchidos por desenho oficial, desenho de painel aprovado, workbook de referência aprovado, Data Center/Data Sheet, documentação oficial do fabricante ou cálculo determinístico derivado dessas fontes.
+- id: GR-053
+  name: A LEVANTAR somente quando o quantitativo não puder ser determinado
+  severity_on_violation: HOLD
+  rule: A LEVANTAR exige justificativa e lacuna de fonte. Se a quantidade puder ser contada ou calculada a partir das fontes autorizadas, deve ser preenchida na nova revisão.
+- id: GR-054
+  name: Capa e formato da LI permanecem preservados
+  severity_on_violation: REPROVADO
+  rule: Revisão de conteúdo não autoriza alterar capa, ordem/nome das folhas, mesclagens, larguras estruturais, área de impressão, cabeçalhos, rodapés ou configuração de página sem autorização explícita.
+- id: GR-055
+  name: QA de revisão exige diff estrutural e histórico
+  severity_on_violation: REPROVADO
+  rule: Toda atualização de LI deve comparar baseline x nova versão e provar que revisões históricas e estrutura protegida não mudaram.
+- id: GR-056
+  name: Memória de controle da LI é obrigatória
+  severity_on_violation: HOLD
+  rule: Cada revisão deve registrar evento, fontes, folhas alteradas, coluna anterior, nova coluna, itens modificados, pendências, QA e testes de regressão em memory/LI_MATERIAL_CONTROL_MEMORY.yaml.
+- id: GR-057
+  name: Divergência entre fontes não corrige revisão antiga
+  severity_on_violation: HOLD
+  rule: Em conflito de fontes, a revisão histórica permanece intocada; a nova revisão fica HOLD até reconciliação e só então recebe o valor correto.
+- id: GR-058
+  name: QA open source em camadas
+  severity_on_violation: HOLD
+  rule: O pipeline deve usar o núcleo local de validação e registrar a cobertura de ferramentas open source opcionais; ausência de ferramenta opcional não pode ser mascarada como validação total.
