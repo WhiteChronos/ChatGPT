@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "datasheet_id": "LI-MATERIAL-DATA-SHEET-V1",
+  "status": "LOCKED_APPROVED_STANDARD",
+  "document_type": "LI_MATERIAL",
+  "control_registry": "datacenter/LI_MATERIAL_CONTROL.json",
+  "prompt": "prompts/PROMPT_MASTER_LI_MATERIAL.md",
+  "pipesheets": "pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml",
+  "script": "pipeline/li_material_control.py",
+  "memory": "memory/LI_MATERIAL_CONTROL_MEMORY.yaml",
+  "revision_behavior": {
+    "historical_revision_columns_immutable": true,
+    "new_revision_column_adjacent_right": true,
+    "preserve_rev_0": true,
+    "new_revision_values_only_in_new_column": true,
+    "previous_revision_values_must_not_be_corrected_in_place": true
+  },
+  "required_revision_evidence": [
+    "source_type",
+    "source_id_or_filename",
+    "sheet_page_or_location",
+    "quantity_derivation",
+    "validation_status"
+  ],
+  "required_qa": [
+    "xlsx_package_valid",
+    "cover_unchanged",
+    "sheet_order_unchanged",
+    "sheet_names_unchanged",
+    "merged_ranges_unchanged",
+    "print_area_unchanged",
+    "historical_revision_cells_unchanged",
+    "new_revision_column_position_valid",
+    "quantities_have_evidence",
+    "a_levantar_has_reason",
+    "semantic_diff_reviewed",
+    "memory_synced"
+  ],
+  "status_policy": {
+    "historical_revision_changed": "REPROVADO",
+    "template_changed_without_authorization": "REPROVADO",
+    "quantity_invented": "REPROVADO",
+    "source_conflict": "HOLD",
+    "quantity_not_determinable": "HOLD",
+    "all_gates_pass": "VALIDADO"
+  }
+}
