@@ -3,6 +3,8 @@ from __future__ import annotations
 from copy import deepcopy
 import json
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -15,6 +17,7 @@ from pipeline.engineering_compatibility_gate import (
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "datacenter" / "ENGINEERING_COMPATIBILITY_CONFIG.json"
 EXAMPLE = ROOT / "datasheet" / "projects" / "example-project.json"
+IMPL = ROOT / "pipeline" / "engineering_compatibility_gate_impl.py"
 
 
 def config() -> dict:
@@ -231,3 +234,38 @@ def test_finding_can_preserve_complete_linked_assessment_evidence() -> None:
         "finding evidence must preserve every linked assessment evidence record" in error
         for error in errors
     )
+
+
+def test_direct_impl_entrypoint_delegates_to_canonical_wrapper(tmp_path: Path) -> None:
+    data = example()
+    data["baseline"]["disciplines"].remove("ELECTRICAL")
+    data["baseline"]["documents"] = [
+        document
+        for document in data["baseline"]["documents"]
+        if document["id"] != "EX-ELE-001"
+    ]
+    data["baseline"]["required_document_ids"].remove("EX-ELE-001")
+    data["assessment_records"] = [
+        record
+        for record in data["assessment_records"]
+        if record["criterion_id"] != "CRIT-ELE-BASELINE"
+    ]
+    data["scope_summary"]["VERIFIED"] = 3
+    data["compatibility"]["by_discipline"].pop("ELECTRICAL")
+    data["compatibility"]["by_document"].pop("EX-ELE-001")
+    data["release_gate"] = "PASS"
+
+    bypass_candidate = tmp_path / "bypass-candidate.json"
+    bypass_candidate.write_text(json.dumps(data), encoding="utf-8")
+
+    result = subprocess.run(
+        [sys.executable, str(IMPL), str(bypass_candidate)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert "RESULT: BLOCK" in result.stdout
+    assert "repository-pinned criterion inventory" in result.stdout
