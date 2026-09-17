@@ -28,16 +28,27 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 2
-  last_sync_at: '2026-09-15T20:08:00-03:00'
+  sync_revision: 3
+  last_sync_at: '2026-09-16T23:11:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
     head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
   active_work:
-    objective: Consolidar prompt portátil entre conversas, memória operacional compartilhada, comandos
-      /explaincode e /refactor e validação fail-closed dentro do pipeline.
+    objective: Consolidar controle de criação e revisão de LI - Lista de Material, preservando todas
+      as revisões históricas e preenchendo quantitativos corrigidos somente na nova revisão.
     status: IMPLEMENTED
+  li_material_control:
+    control_id: LI-MATERIAL-CONTROL-V1
+    prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+    pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+    memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+    rule: A revisão antiga permanece na própria coluna; a nova revisão ocupa a coluna imediatamente
+      à direita e recebe somente os valores revisados.
+    preserve_rev_0: true
+    historical_revision_overwrite_forbidden: true
+    quantity_evidence_required: true
+    a_levantar_only_when_not_determinable: true
   active_panels:
     PN-AUT-01:
       role: PLC principal HVAC + VRF
@@ -113,6 +124,7 @@ sync_policy:
   mandatory_write_after:
   - user_authorized_standard_change
   - new_li_revision
+  - li_material_revision_update
   - exact_model_frozen
   - qa_status_change
   - release_decision
@@ -137,3 +149,10 @@ history:
   summary: Prompt V2, bootstrap portátil, memória operacional, /explaincode, /refactor, script de contrato,
     testes e CI foram integrados à branch feat/aut-panel-control-v1. O head deve ser resolvido dinamicamente
     no bootstrap para evitar auto-referência do arquivo de memória.
+- revision: 3
+  at: '2026-09-16T23:11:00-03:00'
+  actor: user+assistant
+  event: LI_MATERIAL_REVISION_CONTROL_IMPLEMENTED
+  summary: Foi aprovado e integrado o padrão de manter todas as revisões históricas da LI intactas,
+    preservar REV. 0, criar a nova revisão na coluna imediatamente à direita, rastrear quantitativos por
+    evidência e registrar QA/regressão/memória específica da Lista de Material.
