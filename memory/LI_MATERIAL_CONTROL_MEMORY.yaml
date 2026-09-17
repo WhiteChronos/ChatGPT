@@ -1,0 +1,69 @@
+schema_version: '1.0'
+memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+memory_type: TECHNICAL_CONTROL_MEMORY
+status: ACTIVE
+purpose: >-
+  Registrar decisões, regras, regressões e eventos de criação/revisão de LI - Lista de Material
+  sem substituir os documentos oficiais ou suas revisões.
+
+immutable_rules:
+  previous_revision_columns_immutable: true
+  rev_0_must_be_preserved: true
+  new_revision_must_use_next_column: true
+  overwrite_historical_revision_forbidden: true
+  cover_and_format_preserved_without_explicit_authorization: true
+  quantity_requires_traceable_evidence: true
+  source_conflict_becomes_hold: true
+  a_levantar_only_when_not_determinable: true
+  memory_never_overrides_official_document: true
+
+required_event_fields:
+  - event_id
+  - timestamp
+  - document_type
+  - previous_revision
+  - new_revision
+  - affected_sheets
+  - historical_revision_columns
+  - target_revision_column
+  - sources_used
+  - changed_items
+  - unresolved_items
+  - qa_status
+  - regression_tests
+
+regression_controls:
+  - id: REG-LI-MAT-001
+    rule: previous_revision_cells_unchanged
+    failure_status: REPROVADO
+  - id: REG-LI-MAT-002
+    rule: new_revision_immediately_right_of_previous
+    failure_status: REPROVADO
+  - id: REG-LI-MAT-003
+    rule: cover_structure_preserved
+    failure_status: REPROVADO
+  - id: REG-LI-MAT-004
+    rule: quantity_has_source_or_hold
+    failure_status: REPROVADO
+  - id: REG-LI-MAT-005
+    rule: a_levantar_has_reason
+    failure_status: HOLD
+
+current_control_decision:
+  approved_at: '2026-09-16T23:11:00-03:00'
+  actor: user+assistant
+  event: LI_MATERIAL_REVISION_RULE_APPROVED
+  summary: >-
+    Preservar integralmente a revisão antiga na coluna existente, incluindo REV. 0. A revisão nova
+    recebe os valores corrigidos somente na coluna imediatamente à direita. Quantidades devem ser
+    levantadas por evidência do desenho oficial, desenho do painel aprovado, workbook de referência,
+    Data Center/Data Sheet ou documentação oficial. Não corrigir a revisão anterior em lugar da nova.
+  status: APPROVED_STANDARD
+
+history:
+  - revision: 1
+    at: '2026-09-16T23:11:00-03:00'
+    event: CONTROL_MEMORY_CREATED
+    summary: >-
+      Criada memória persistente específica para LI - Lista de Material, com preservação de revisões,
+      rastreabilidade de quantitativos e regressão fail-closed.

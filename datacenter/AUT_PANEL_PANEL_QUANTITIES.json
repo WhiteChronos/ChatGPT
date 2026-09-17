@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "standard_id": "AUT-PAINEL-COMPACT-V2.4",
+  "registry_type": "PANEL_QUANTITY_STANDARD",
+  "golden_rules": ["GR-034", "GR-035", "GR-036"],
+  "panels": {
+    "PN-AUT-01": {
+      "li_id": "LI-PN-AUT-01-R02",
+      "revision": "R02",
+      "quantities": {
+        "ENC-01":{"catalog_id":"SCHNEIDER-NSYCRN86300","quantity":1,"unit":"un","render_required":false},
+        "MP-01":{"catalog_id":"SCHNEIDER-NSYMM86","quantity":1,"unit":"un","render_required":false},
+        "QF-01":{"catalog_id":"SCHNEIDER-A9F74232-REF","quantity":1,"unit":"un","render_required":true},
+        "DPS-01":{"catalog_id":"SCHNEIDER-IPRD-REF","quantity":1,"unit":"cj","render_required":true},
+        "PS-01":{"catalog_id":"SCHNEIDER-ABL8RPS24100","quantity":1,"unit":"un","render_required":true},
+        "UPS-01":{"catalog_id":"ADEL-CBI2420A","quantity":1,"unit":"un","render_required":true},
+        "BAT-01A/B":{"catalog_id":"BATTERY-12V12AH-VRLA-REF","quantity":2,"unit":"un","render_required":true},
+        "QF24-01..04":{"catalog_id":"SCHNEIDER-A9F74210-REF","quantity":4,"unit":"un","render_required":true},
+        "GW-01":{"catalog_id":"TRANE-FIACNXYEKIT","quantity":1,"unit":"un","render_required":true},
+        "SW-01":{"catalog_id":"SIEMENS-SCALANCE-X208-REF","quantity":1,"unit":"un","render_required":true},
+        "PLC-01":{"catalog_id":"SIEMENS-S7-1500-REF","quantity":1,"unit":"un","render_required":true},
+        "IM-01":{"catalog_id":"SIEMENS-ET200SP-IM-REF","quantity":1,"unit":"un","render_required":true},
+        "DI-01":{"catalog_id":"SIEMENS-ET200SP-DI-REF","quantity":1,"unit":"un","render_required":true},
+        "DO-01":{"catalog_id":"SIEMENS-ET200SP-DQ-REF","quantity":1,"unit":"un","render_required":true},
+        "AI-01":{"catalog_id":"SIEMENS-ET200SP-AI-REF","quantity":1,"unit":"un","render_required":true},
+        "RTD-01":{"catalog_id":"SIEMENS-ET200SP-RTD-REF","quantity":1,"unit":"un","render_required":true},
+        "KA-01..04":{"catalog_id":"SCHNEIDER-HARMONY-RELAY-REF","quantity":4,"unit":"un","render_required":true},
+        "XT-01":{"catalog_id":"PHOENIX-PT25-3209510","quantity":32,"unit":"un","render_required":true},
+        "XPE-01":{"catalog_id":"PHOENIX-PT25-PE-REF","quantity":8,"unit":"un","render_required":true},
+        "PE-01":{"catalog_id":"PHOENIX-NB10-6-REF","quantity":1,"unit":"un","render_required":true},
+        "DIN-01..03":{"catalog_id":"PHOENIX-NS35-75-REF","quantity":3,"unit":"un","render_required":true},
+        "WD-01..05":{"catalog_id":"AUT-DUCT-REF","quantity":5,"unit":"un","render_required":true},
+        "CG-01..08":{"catalog_id":"SCHNEIDER-GLAND-REF","quantity":8,"unit":"un","render_required":true},
+        "ETH-01..03":{"catalog_id":"SIEMENS-IE-CAT6-REF","quantity":3,"unit":"trecho","render_required":false},
+        "WIRE-01":{"catalog_id":"PRYSMIAN-750V-REF","quantity":1,"unit":"lote","render_required":false},
+        "ID-01":{"catalog_id":"PHOENIX-MARKING-REF","quantity":1,"unit":"kit","render_required":false},
+        "ACC-01":{"catalog_id":"SCHNEIDER-PANELSET-ACC-REF","quantity":1,"unit":"kit","render_required":false},
+        "HMI-01":{"catalog_id":"SCHNEIDER-HMIST6500","quantity":1,"unit":"un","render_required":true}
+      }
+    },
+    "PN-AUT-02": {
+      "li_id": "LI-PN-AUT-02-R02",
+      "revision": "R02",
+      "quantities": {
+        "ENC-02":{"catalog_id":"SCHNEIDER-NSYCRN54250","quantity":1,"unit":"un","render_required":false},
+        "MP-02":{"catalog_id":"SCHNEIDER-NSYMM54","quantity":1,"unit":"un","render_required":false},
+        "QF-02":{"catalog_id":"SCHNEIDER-A9F74210-REF","quantity":1,"unit":"un","render_required":true},
+        "PS-02":{"catalog_id":"PULS-CPS241","quantity":1,"unit":"un","render_required":true},
+        "UPS-02":{"catalog_id":"ADEL-CBI2420A","quantity":1,"unit":"un","render_required":true},
+        "BAT-02A/B":{"catalog_id":"BATTERY-12V12AH-VRLA-REF","quantity":2,"unit":"un","render_required":true},
+        "QF24-05..07":{"catalog_id":"SCHNEIDER-A9F74206-REF","quantity":3,"unit":"un","render_required":true},
+        "SW-02":{"catalog_id":"SIEMENS-SCALANCE-X208-REF","quantity":1,"unit":"un","render_required":true},
+        "RTU-02":{"catalog_id":"SIEMENS-RTU-REF","quantity":1,"unit":"un","render_required":true},
+        "DI-02":{"catalog_id":"SIEMENS-SM1221-DI-REF","quantity":1,"unit":"un","render_required":true},
+        "DO-02":{"catalog_id":"SIEMENS-SM1222-DO-REF","quantity":1,"unit":"un","render_required":true},
+        "AI-02":{"catalog_id":"SIEMENS-SM1231-AI-REF","quantity":1,"unit":"un","render_required":true},
+        "RTD-02":{"catalog_id":"SIEMENS-SM1231-RTD-REF","quantity":1,"unit":"un","render_required":true},
+        "KA-05..08":{"catalog_id":"SCHNEIDER-HARMONY-RELAY-REF","quantity":4,"unit":"un","render_required":true},
+        "XT-02":{"catalog_id":"PHOENIX-PT25-3209510","quantity":24,"unit":"un","render_required":true},
+        "XPE-02":{"catalog_id":"PHOENIX-PT25-PE-REF","quantity":6,"unit":"un","render_required":true},
+        "PE-02":{"catalog_id":"PHOENIX-NB10-6-REF","quantity":1,"unit":"un","render_required":true},
+        "DIN-04..06":{"catalog_id":"PHOENIX-NS35-75-REF","quantity":3,"unit":"un","render_required":true},
+        "WD-06..10":{"catalog_id":"AUT-DUCT-REF","quantity":5,"unit":"un","render_required":true},
+        "CG-09..14":{"catalog_id":"SCHNEIDER-GLAND-REF","quantity":6,"unit":"un","render_required":true},
+        "ETH-04..05":{"catalog_id":"SIEMENS-IE-CAT6-REF","quantity":2,"unit":"trecho","render_required":false},
+        "WIRE-02":{"catalog_id":"PRYSMIAN-750V-REF","quantity":1,"unit":"lote","render_required":false},
+        "ID-02":{"catalog_id":"PHOENIX-MARKING-REF","quantity":1,"unit":"kit","render_required":false},
+        "ACC-02":{"catalog_id":"SCHNEIDER-PANELSET-ACC-REF","quantity":1,"unit":"kit","render_required":false},
+        "HMI-02":{"catalog_id":"SCHNEIDER-HMIST6500","quantity":1,"unit":"un","render_required":true}
+      }
+    }
+  }
+}

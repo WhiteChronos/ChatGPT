@@ -1,0 +1,151 @@
+schema_version: "1.2"
+pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+contracts:
+  golden_rules: governance/golden_rules.yaml
+  panel_template: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  li_material_prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
+  li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
+  li_material_control: datacenter/LI_MATERIAL_CONTROL.json
+  li_material_datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+  li_material_script: pipeline/li_material_control.py
+  li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+  li_material_open_source_qa: plugins/li_material_qa_registry.json
+  bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
+  conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  conversation_contract: pipeline/conversation_contract.py
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
+sequence:
+  - order: 10
+    id: BOOTSTRAP_CONTEXT
+    gate:
+      - prompt_master_loaded
+      - golden_rules_loaded
+      - pipeline_loaded
+      - datacenter_loaded
+      - datasheet_loaded
+      - panel_template_loaded
+      - conversation_memory_loaded
+      - conversation_contract_validated
+  - order: 20
+    id: DATACENTER
+    gate: [catalog_registered, quantity_baseline_registered, approved_template_fingerprint_registered, li_material_revision_contract_registered]
+  - order: 30
+    id: DATASHEET
+    gate: [panel_registered, dimensions_locked, production_contract_locked, prompt_master_linked, memory_linked, li_material_datasheet_linked]
+  - order: 40
+    id: SELECT
+    gate: [reference_model_present, lifecycle_checked, technical_status_known]
+  - order: 50
+    id: LI_QUANTITY
+    gate:
+      - li_exists
+      - li_revision_matches_baseline
+      - quantity_positive
+      - quantity_registry_match
+      - historical_revision_columns_immutable
+      - rev_0_preserved
+      - new_revision_in_adjacent_column
+      - new_revision_quantity_has_traceable_evidence
+      - a_levantar_only_when_not_determinable
+      - li_material_control_memory_linked
+  - order: 60
+    id: LOAD_BALANCE
+    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present]
+  - order: 70
+    id: BOM
+    gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line]
+  - order: 80
+    id: LAYOUT
+    gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present]
+  - order: 90
+    id: RENDER_IMAGE
+    gate: [approved_template_id, approved_template_fingerprint, one_panel_per_image, no_unapproved_recomposition]
+  - order: 100
+    id: QA
+    gate:
+      - li_bom_layout_render_parity
+      - workbook_structure_fingerprint
+      - render_contract_fingerprint
+      - conversation_contract_valid
+      - li_historical_revision_diff
+      - li_new_revision_column_diff
+      - li_cover_and_format_preserved
+      - li_semantic_diff_reviewed
+      - li_open_source_qa_coverage_recorded
+      - hashes
+  - order: 110
+    id: MEMORY_SYNC
+    gate:
+      - memory_id_valid
+      - immutable_contract_unchanged
+      - mutable_state_revision_incremented_when_required
+      - li_material_revision_event_recorded_when_applicable
+  - order: 120
+    id: RELEASE
+    gate: [no_REPROVADO, no_HOLD_for_release, source_validation_two_agents, reverification_done, memory_synced]
+conversation_commands:
+  /explaincode:
+    mode: READ_ONLY
+    description: Explica código em partes sem modificar o alvo.
+    required_context: [pipeline, datacenter, datasheet, golden_rules, conversation_memory]
+    output_sections:
+      - finalidade
+      - visão geral do fluxo
+      - explicação por bloco/função
+      - entradas e saídas
+      - invariantes e Regras de Ouro
+      - riscos/erros possíveis
+      - vínculo com Data Center/Data Sheet/pipeline
+  /refactor:
+    mode: BEHAVIOR_PRESERVING_WRITE
+    description: Melhora estrutura sem mudar comportamento esperado.
+    behavior_change_allowed: false
+    locked_contract_change_requires_explicit_user_authorization: true
+    mandatory_gates:
+      - capture_before_baseline
+      - compile_or_parse
+      - regression_tests
+      - conversation_contract_validate
+      - diff_review
+      - qa
+      - memory_sync_if_major_change
+invalidations:
+  li_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  li_historical_revision_change:
+    allowed: false
+    action: REPROVADO
+  li_new_revision_change:
+    requires_new_revision_event: true
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_model_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  enclosure_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  approved_template_change:
+    requires_explicit_user_authorization: true
+    invalidates: [RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  immutable_contract_change:
+    requires_explicit_user_authorization: true
+    invalidates: [BOOTSTRAP_CONTEXT, QA, MEMORY_SYNC, RELEASE]
+  behavior_change_during_refactor:
+    allowed: false
+    action: STOP_REFACTOR_AND_OPEN_CONTROLLED_CHANGE
+release_policy:
+  unauthorized_standard_change: REPROVADO
+  missing_exact_model_or_evidence: HOLD
+  geometric_distortion: REPROVADO
+  quantity_mismatch: REPROVADO
+  historical_revision_changed: REPROVADO
+  new_revision_column_not_adjacent: REPROVADO
+  li_template_changed_without_authorization: REPROVADO
+  li_source_conflict: HOLD
+  a_levantar_without_justification: HOLD
+  conversation_contract_mismatch: REPROVADO
+  missing_memory_sync_when_required: HOLD
+  fail_closed: true

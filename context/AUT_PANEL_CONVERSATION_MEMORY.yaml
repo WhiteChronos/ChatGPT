@@ -1,0 +1,158 @@
+schema_version: '1.0'
+memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+memory_type: OPERATIONAL_CROSS_CHAT_CONTEXT
+status: ACTIVE
+purpose: Estado operacional canônico para continuidade do projeto AUTOMAÇÃO EQUIPAMENTO entre conversas.
+  Não substitui Golden Rules, Data Center, Data Sheet ou LI.
+immutable_contract:
+  standard_id: AUT-PAINEL-COMPACT-V2.4
+  pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  golden_rules_id: GOLDEN-RULES-IMMUTABLE-V1
+  datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
+  datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
+  workbook_template_id: XLSX-PN-AUT-01-MASTER-R02
+  image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  repository: WhiteChronos/ChatGPT
+  source_precedence:
+  - governance/golden_rules.yaml
+  - pipeline/pipeline.yaml
+  - datacenter/datacenter.yaml
+  - datasheet/datasheet.yaml
+  - li vigente
+  - templates/panel_template.yaml
+  - context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  - conversa atual
+  mutation_policy:
+    explicit_user_authorization_required_for_immutable_contract: true
+    chat_memory_cannot_override_canonical_files: true
+    fail_closed: true
+mutable_state:
+  sync_revision: 3
+  last_sync_at: '2026-09-16T23:11:00-03:00'
+  repository:
+    branch: feat/aut-panel-control-v1
+    pull_request: 23
+    head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
+  active_work:
+    objective: Consolidar controle de criação e revisão de LI - Lista de Material, preservando todas
+      as revisões históricas e preenchendo quantitativos corrigidos somente na nova revisão.
+    status: IMPLEMENTED
+  li_material_control:
+    control_id: LI-MATERIAL-CONTROL-V1
+    prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+    pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+    memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+    rule: A revisão antiga permanece na própria coluna; a nova revisão ocupa a coluna imediatamente
+      à direita e recebe somente os valores revisados.
+    preserve_rev_0: true
+    historical_revision_overwrite_forbidden: true
+    quantity_evidence_required: true
+    a_levantar_only_when_not_determinable: true
+  active_panels:
+    PN-AUT-01:
+      role: PLC principal HVAC + VRF
+      li_id: LI-PN-AUT-01-R02
+      li_revision: R02
+      li_status: QUANTITY_FROZEN
+      enclosure_mm:
+        height: 800
+        width: 600
+        depth: 300
+      mounting_plate_mm:
+        height: 750
+        width: 550
+      hmi_surface: door
+      mandatory_power_chain:
+      - power_supply_24vdc
+      - dc_ups_24vdc
+      - battery_bank
+    PN-AUT-02:
+      role: UTR remota segundo pavimento
+      li_id: LI-PN-AUT-02-R02
+      li_revision: R02
+      li_status: QUANTITY_FROZEN
+      enclosure_mm:
+        height: 500
+        width: 400
+        depth: 250
+      mounting_plate_mm:
+        height: 450
+        width: 350
+      hmi_surface: door
+      mandatory_power_chain:
+      - power_supply_24vdc
+      - dc_ups_24vdc
+      - battery_bank
+  engineering_status:
+    quantitative_baseline: FROZEN_R02
+    formal_release: HOLD
+    reason: Há itens ainda pendentes de código exato, dimensões, lifecycle, compatibilidade ou documentação
+      oficial; CI pode passar sem liberar engenharia.
+  open_holds:
+  - id: HOLD-PLC-EXACT
+    scope: PN-AUT-01
+    item: PLC CPU e módulos ET 200SP
+    reason: código exato deve ser congelado somente após I/O oficial e compatibilidade.
+  - id: HOLD-RTU-EXACT
+    scope: PN-AUT-02
+    item: UTR e cartões de I/O
+    reason: modelo e ecossistema de expansão precisam de compatibilidade oficial.
+  - id: HOLD-SWITCH-LIFECYCLE
+    scope: PN-AUT-01/PN-AUT-02
+    item: switch industrial
+    reason: referência SCALANCE X208 é legada e sucessor atual deve ser validado.
+  - id: HOLD-BATTERY-SIZING
+    scope: PN-AUT-01/PN-AUT-02
+    item: banco de baterias
+    reason: Ah/autonomia devem ser calculados pela carga real e requisito de autonomia.
+  - id: HOLD-GATEWAY-VRF
+    scope: PN-AUT-01
+    item: gateway VRF
+    reason: manter somente código oficial verificado; referência visual não é evidência.
+  command_contract:
+    explaincode:
+      slash: /explaincode
+      mode: READ_ONLY
+      behavior: Explica código em partes sem modificar o alvo.
+    refactor:
+      slash: /refactor
+      mode: BEHAVIOR_PRESERVING_WRITE
+      behavior: Melhora estrutura sem mudar comportamento esperado e exige regressão/QA.
+sync_policy:
+  mandatory_read_on_new_conversation: true
+  mandatory_write_after:
+  - user_authorized_standard_change
+  - new_li_revision
+  - li_material_revision_update
+  - exact_model_frozen
+  - qa_status_change
+  - release_decision
+  - major_pipeline_change
+  conflict_resolution:
+    chat_vs_memory: MEMORY_FILE_WINS
+    memory_vs_datacenter: DATACENTER_WINS_AND_MEMORY_MUST_BE_REPAIRED
+    memory_vs_datasheet: DATASHEET_WINS_AND_MEMORY_MUST_BE_REPAIRED
+    missing_evidence: HOLD
+    standard_violation: REPROVADO
+history:
+- revision: 1
+  at: '2026-09-15T20:08:00-03:00'
+  actor: user+assistant
+  event: CONVERSATION_BRIDGE_CREATED
+  summary: Usuário autorizou criar um prompt portátil, memória operacional vinculada entre conversas,
+    comandos /explaincode e /refactor e integração desses contratos ao pipeline.
+- revision: 2
+  at: '2026-09-15T20:08:00-03:00'
+  actor: user+assistant
+  event: CONVERSATION_BRIDGE_IMPLEMENTED
+  summary: Prompt V2, bootstrap portátil, memória operacional, /explaincode, /refactor, script de contrato,
+    testes e CI foram integrados à branch feat/aut-panel-control-v1. O head deve ser resolvido dinamicamente
+    no bootstrap para evitar auto-referência do arquivo de memória.
+- revision: 3
+  at: '2026-09-16T23:11:00-03:00'
+  actor: user+assistant
+  event: LI_MATERIAL_REVISION_CONTROL_IMPLEMENTED
+  summary: Foi aprovado e integrado o padrão de manter todas as revisões históricas da LI intactas,
+    preservar REV. 0, criar a nova revisão na coluna imediatamente à direita, rastrear quantitativos por
+    evidência e registrar QA/regressão/memória específica da Lista de Material.

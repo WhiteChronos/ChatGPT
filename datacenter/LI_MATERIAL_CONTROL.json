@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "LI-MATERIAL-CONTROL-V1",
+  "status": "LOCKED_APPROVED_STANDARD",
+  "purpose": "Controle canônico de criação, revisão, rastreabilidade e QA de LI - Lista de Material.",
+  "prompt": "prompts/PROMPT_MASTER_LI_MATERIAL.md",
+  "pipesheets": "pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml",
+  "script": "pipeline/li_material_control.py",
+  "datasheet": "datasheet/LI_MATERIAL_DATA_SHEET.json",
+  "memory": "memory/LI_MATERIAL_CONTROL_MEMORY.yaml",
+  "revision_contract": {
+    "preserve_all_previous_revision_columns": true,
+    "preserve_rev_0": true,
+    "new_revision_in_next_column": true,
+    "overwrite_previous_revision_forbidden": true,
+    "historical_revision_mutation_status": "REPROVADO",
+    "revision_example": ["REV. 0", "REV. A", "REV. B"]
+  },
+  "workbook_contract": {
+    "cover_preserved": true,
+    "format_preserved": true,
+    "sheet_order_preserved": true,
+    "sheet_names_preserved": true,
+    "merged_ranges_preserved": true,
+    "column_widths_preserved": true,
+    "print_areas_preserved": true,
+    "page_setup_preserved": true,
+    "headers_footers_preserved": true
+  },
+  "quantity_evidence_priority": [
+    "OFFICIAL_PROJECT_DRAWING",
+    "USER_APPROVED_PANEL_DRAWING",
+    "USER_APPROVED_REFERENCE_WORKBOOK",
+    "DATACENTER_DATASHEET",
+    "OFFICIAL_MANUFACTURER_DOCUMENT",
+    "DETERMINISTIC_CALCULATION_FROM_APPROVED_SOURCE"
+  ],
+  "quantity_policy": {
+    "evidence_required": true,
+    "conflicting_sources_status": "HOLD",
+    "invented_quantity_status": "REPROVADO",
+    "copy_previous_revision_without_evidence_forbidden": true,
+    "a_levantar_only_when_not_determinable": true,
+    "a_levantar_requires_reason": true
+  },
+  "qa_contract": {
+    "structural_diff_required": true,
+    "historical_revision_cell_diff_required": true,
+    "semantic_diff_required": true,
+    "ooxml_validity_required": true,
+    "unexpected_external_links_forbidden": true,
+    "memory_sync_required": true,
+    "open_source_registry": "plugins/li_material_qa_registry.json"
+  },
+  "conflict_policy": {
+    "never_modify_historical_revision_to_resolve_conflict": true,
+    "new_revision_must_carry_corrected_value": true,
+    "unresolved_conflict": "HOLD"
+  }
+}
