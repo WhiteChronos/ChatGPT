@@ -1,4 +1,4 @@
-schema_version: '1.0'
+schema_version: '1.1'
 datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
 standard_id: AUT-PAINEL-COMPACT-V2.4
 status: LOCKED_APPROVED_STANDARD
@@ -10,6 +10,13 @@ production_contract:
   workbook_structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
   image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
   prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  li_material_prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+  li_material_control_registry: datacenter/LI_MATERIAL_CONTROL.json
+  li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
+  li_material_datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+  li_material_script: pipeline/li_material_control.py
+  li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+  li_material_open_source_qa: plugins/li_material_qa_registry.json
   li_before_bom: true
   load_balance_before_layout: true
   bom_before_layout: true
@@ -25,6 +32,20 @@ production_contract:
   explaincode_mode: READ_ONLY
   refactor_mode: BEHAVIOR_PRESERVING_WRITE
   refactor_behavior_change_allowed: false
+li_material_revision_contract:
+  historical_revision_columns_immutable: true
+  preserve_rev_0: true
+  new_revision_adjacent_right: true
+  historical_revision_overwrite_forbidden: true
+  quantity_evidence_required: true
+  a_levantar_only_when_not_determinable: true
+  cover_preserved: true
+  format_preserved: true
+  semantic_diff_required: true
+  structural_diff_required: true
+  revision_memory_sync_required: true
+  conflict_status: HOLD
+  historical_revision_change_status: REPROVADO
 panels:
   PN-AUT-01:
     project_json: datasheet/AUT_PANEL_DATA_SHEET.json
