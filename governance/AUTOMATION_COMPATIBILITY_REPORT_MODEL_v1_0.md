@@ -76,11 +76,11 @@ Every confirmed finding/error SHALL display:
 - owner and dependencies;
 - closure criterion;
 - confidence and evidence quality;
-- **documents involved**, split into:
-  - source/evidence documents;
-  - correlated or conflicting project documents;
-  - normative/reference documents;
-  - documents to correct.
+- **documents involved**, split into the machine-readable groups:
+  - `source_evidence` — source/evidence documents;
+  - `project_correlated_or_conflicting` — correlated or conflicting project documents;
+  - `normative_or_reference` — normative/reference documents;
+  - `documents_to_correct` — documents to correct.
 
 A normative/reference document SHALL carry an applicability state:
 - `APPLICABLE`
