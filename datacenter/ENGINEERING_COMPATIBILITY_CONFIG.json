@@ -145,11 +145,20 @@
       "release_gate"
     ],
     "renderer": {
-      "required": true,
-      "plugin_id": "Plugin_40dab999fe9c8191bbc2f550371692fc",
-      "display_name": "Build Web Data Visualization",
-      "allow_silent_fallback": false,
-      "fallback_policy": "BLOCK_AND_REPORT_UNAVAILABLE"
+      "strategy": "PROGRESSIVE_ENHANCEMENT",
+      "primary": {
+        "name": "Visualize",
+        "required": true,
+        "interactive_required_when_available": true,
+        "allow_markdown_only_as_visualize": false
+      },
+      "enhanced": {
+        "plugin_id": "Plugin_40dab999fe9c8191bbc2f550371692fc",
+        "display_name": "Build Web Data Visualization",
+        "preferred_when_executable": true,
+        "block_if_unavailable": false,
+        "upgrade_without_content_change": true
+      }
     },
     "separate_questions_findings_problems": true,
     "require_answer_field_for_open_questions": true
