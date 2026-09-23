@@ -8,11 +8,14 @@ When Codex operates in this repository, the order of authority is:
 
 1. approved source documents for the project;
 2. `governance/VISUALIZE_GOLDEN_RULE_v1_0.md`;
-3. `AGENTS.md`;
-4. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`;
-5. `schemas/engineering_compatibility.schema.json`;
-6. project datasheet;
-7. pipeline validation output.
+3. `governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md`;
+4. `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`;
+5. `AGENTS.md`;
+6. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`;
+7. `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`;
+8. `schemas/engineering_compatibility.schema.json`;
+9. project datasheet;
+10. pipeline validation output.
 
 ## Required Codex workflow
 
@@ -64,7 +67,9 @@ Every actionable finding must contain:
 - owner;
 - dependency;
 - closure criterion;
-- confidence.
+- confidence;
+- documents involved, separated into source/evidence, correlated/conflicting project documents, normative/reference sources and documents to correct;
+- normative applicability state and basis.
 
 ### 6. Calculate
 - compatibility and coverage are separate;
@@ -72,6 +77,13 @@ Every actionable finding must contain:
 - NOT_VERIFIABLE is excluded from compatibility denominator but lowers coverage;
 - calculation method must be explicit;
 - no percentage can be presented without denominator and coverage.
+
+### 6A. Protocol Zero source search
+Before escalating an unresolved technical question to the user:
+- check available project baseline documents;
+- check applicable standards/official authorities/manufacturer sources when relevant;
+- record the checks in `protocol_zero.questions[].source_checks`;
+- keep unresolved matters NOT_VERIFIABLE.
 
 ### 7. Visualize
 Output must comply with the Golden Rule: complete, visually structured, color-coded by severity, but never shortened to the point of losing evidence, root cause, impact, solution or closure criteria.
