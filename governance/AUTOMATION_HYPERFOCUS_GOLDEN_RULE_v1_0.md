@@ -140,6 +140,7 @@ Mandatory behavior:
 - keep questions/doubts visually separated from confirmed findings/errors and from engineering problems;
 - provide a simple answer field for every open technical question;
 - expose evidence location, comparison, impact, solution, affected documents and closure criterion for every confirmed finding;
+- every confirmed finding/error SHALL show **documents involved**, separated at least into: source/evidence documents, conflicting/correlated project documents, normative/reference documents, and documents that must be corrected;
 - show NOT_VERIFIABLE items separately and never visually present them as confirmed errors;
 - include filters for severity/status when supported;
 - include the release gate as a distinct final module;
@@ -164,6 +165,19 @@ The visualization SHALL expose at least:
 - release gate.
 
 Questions must be readable and must provide a simple answer field when user input is expected.
+
+## Automation reference library
+For every Automation project, the review SHALL consult the following default reference library before raising a question to the user, while still applying a formal applicability/scope check:
+
+- PETROBRAS N-1882 Rev. F (11/2023) — Criteria for Instrumentation Project Design;
+- PETROBRAS N-1883 Rev. F (05/2024) — Presentation of Instrumentation, Control and Automation Projects;
+- PETROBRAS N-2833 Rev. A, Annex A, forms 01 through 14 — standard forms/lists for instrumentation project documentation.
+
+Applicability guard:
+- these documents are **reference-by-default**, not automatically mandatory in every project;
+- contractual/project specifications and current approved editions take precedence;
+- scope exclusions SHALL be respected. In particular, N-1883 Rev. F item 1.4 excludes electrical-system automation, building automation and HVAC automation from its direct normative scope. In such projects, N-1883/N-2833 may still be used as documentary/engineering references only when appropriate or when explicitly invoked by project requirements;
+- do not promote a deviation from a reference-only document to a confirmed error unless that document is applicable/contractually invoked or the same requirement is independently established by another applicable source.
 
 ## Compatibility scoring
 Do not publish a compatibility percentage before:
