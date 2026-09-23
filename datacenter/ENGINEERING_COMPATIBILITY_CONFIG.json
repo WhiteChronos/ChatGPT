@@ -200,5 +200,45 @@
     "require_failure_mode_review": true,
     "require_data_lineage": true,
     "require_master_discipline_authority": true
+  },
+  "finding_contract": {
+    "require_documents_involved": true,
+    "documents_involved_categories": [
+      "SOURCE_EVIDENCE",
+      "PROJECT_CORRELATED_OR_CONFLICTING",
+      "NORMATIVE_OR_REFERENCE",
+      "DOCUMENTS_TO_CORRECT"
+    ]
+  },
+  "automation_reference_library": {
+    "policy": "REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE",
+    "check_before_user_question": true,
+    "references": [
+      {
+        "document": "PETROBRAS N-1882",
+        "revision": "F",
+        "date": "11/2023",
+        "title": "Critérios para Elaboração de Projetos de Instrumentação",
+        "default_use": "TECHNICAL_CRITERIA_REFERENCE",
+        "mandatory_only_when_applicable_or_invoked": true
+      },
+      {
+        "document": "PETROBRAS N-1883",
+        "revision": "F",
+        "date": "05/2024",
+        "title": "Apresentação de Projeto de Instrumentação, Controle e Automação",
+        "default_use": "DOCUMENTATION_AND_AUTOMATION_PROJECT_REFERENCE",
+        "mandatory_only_when_applicable_or_invoked": true,
+        "scope_guard": "Item 1.4 excludes electrical-system automation, building automation, and HVAC automation from direct normative scope."
+      },
+      {
+        "document": "PETROBRAS N-2833",
+        "revision": "A",
+        "title": "Formulários e Listas para Projetos de Instrumentação",
+        "coverage": "Annex A forms 01-14",
+        "default_use": "FORM_AND_LIST_TEMPLATE_REFERENCE",
+        "mandatory_only_when_applicable_or_invoked": true
+      }
+    ]
   }
 }
