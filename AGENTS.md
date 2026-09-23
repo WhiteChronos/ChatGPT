@@ -71,6 +71,11 @@ The no-argument gate validates the permanent known-good fixture at `datasheet/pr
 python pipeline/engineering_compatibility_gate.py datasheet/projects/<project>.json
 ```
 
+## Mandatory visualization renderer
+Every final engineering compatibility report, re-evaluation, audit or /visualize output for this project SHALL use **@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) as the final rendering surface.
+
+Do not silently substitute Markdown-only output, generic GenUI or another visualization app. If the plugin action is not exposed in the current runtime, report the renderer as unavailable and do not claim that an alternate visualization satisfies this contract.
+
 ## Visualization contract
 Every final engineering report SHALL expose all relevant findings using a complete visual hierarchy. Required elements include:
 
