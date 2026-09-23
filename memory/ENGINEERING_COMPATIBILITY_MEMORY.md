@@ -13,7 +13,7 @@ Durable, repository-visible memory for the engineering compatibility process.
 - Datasheet template: `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
 
 ## Permanent engineering decisions
-0. Every engineering compatibility report, re-evaluation, audit result and /visualize output must be rendered in @Build Web Data Visualization (Plugin_40dab999fe9c8191bbc2f550371692fc). Do not silently substitute another renderer; if unavailable, block presentation and report the limitation.
+0. Every engineering compatibility report, re-evaluation, audit result and /visualize output must render through the native /visualize presentation layer. @Build Web Data Visualization (Plugin_40dab999fe9c8191bbc2f550371692fc) is a preferred enhancement when executable; its absence must not block visualization. Use the best interactive native visualization available and upgrade to Build Web Data Visualization later without changing engineering content.
 1. Question before finding.
 2. Unanswered doubt = NOT_VERIFIABLE / pending, not presumed error.
 3. Source fact, project decision, inference and external knowledge remain distinguishable.
