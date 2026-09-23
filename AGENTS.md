@@ -12,11 +12,17 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 5. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
 6. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
 7. `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`
+8. `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`
+9. `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`
+10. `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`
 
 ## Codex operating contract
 Codex SHALL:
 
 - apply Protocol Zero: explicit technical question before promoting a suspected discrepancy to a finding;
+- record project-source and normative/official source checks before escalating an unresolved technical question to the user;
+- apply the reusable Automation Compatibility Report Model and expose documents involved for every confirmed finding;
+- require normative/reference applicability state and basis before a normative source can support a confirmed nonconformity;
 - keep unanswered questions as NOT_VERIFIABLE/pending and never promote them to confirmed findings;
 - apply Automation/Data hyperfocus through TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> FAT/SAT;
 - preserve the master-discipline authority for physical attributes and never silently override it from a derived discipline;
