@@ -1,0 +1,74 @@
+{
+  "library_id": "AUTOMATION_REFERENCE_LIBRARY_V1_0",
+  "status": "MANDATORY_LOOKUP",
+  "policy": "REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE",
+  "official_source_check_before_user_question": true,
+  "source_priority": [
+    "PROJECT_BASELINE",
+    "CONTRACT_AND_PROJECT_BASIS",
+    "APPLICABLE_CORPORATE_STANDARD",
+    "NATIONAL_OR_INTERNATIONAL_STANDARD",
+    "OFFICIAL_AUTHORITY",
+    "OFFICIAL_MANUFACTURER",
+    "SPECIALIST_REFERENCE",
+    "USER_QUESTION"
+  ],
+  "standards": [
+    {
+      "id": "PETROBRAS-N-1882",
+      "revision": "F",
+      "date": "2023-11",
+      "title": "Critérios para Elaboração de Projetos de Instrumentação",
+      "authority": "PETROBRAS",
+      "default_applicability": "CHECK_PROJECT_INVOCATION",
+      "roles": [
+        "instrumentation_design",
+        "power_and_ups",
+        "analog_signals_and_protocols",
+        "cabling",
+        "panels",
+        "installation"
+      ],
+      "scope_note": "Use as a technical criterion when applicable or invoked by contract/project documents. Verify the current approved edition before declaring nonconformity."
+    },
+    {
+      "id": "PETROBRAS-N-1883",
+      "revision": "F",
+      "date": "2024-05",
+      "title": "Apresentação de Projeto de Instrumentação, Controle e Automação",
+      "authority": "PETROBRAS",
+      "default_applicability": "REFERENCE_ONLY_UNLESS_INVOKED",
+      "roles": [
+        "documentation",
+        "architecture",
+        "lists",
+        "network",
+        "cybersecurity",
+        "fat_sat"
+      ],
+      "scope_exclusions": [
+        "electrical-system automation",
+        "building automation",
+        "HVAC automation"
+      ],
+      "scope_note": "Item 1.4 excludes the listed automation scopes from direct normative applicability. In those scopes use as documentary/engineering reference unless explicitly invoked by project requirements."
+    },
+    {
+      "id": "PETROBRAS-N-2833",
+      "revision": "A",
+      "date": null,
+      "title": "Formulários e Listas para Projetos de Instrumentação",
+      "authority": "PETROBRAS",
+      "default_applicability": "REFERENCE_ONLY_UNLESS_INVOKED",
+      "roles": [
+        "forms",
+        "instrument_lists",
+        "cable_lists",
+        "material_lists",
+        "requisitions"
+      ],
+      "coverage": "Annex A forms 01-14",
+      "scope_note": "Use as a standard forms/list reference. Treat as mandatory only when applicable or explicitly invoked."
+    }
+  ]
+}
