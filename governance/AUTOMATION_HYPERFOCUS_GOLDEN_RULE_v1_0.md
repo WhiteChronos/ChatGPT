@@ -199,6 +199,14 @@ A package SHALL remain BLOCK when an unresolved question can materially change:
 - safety/interlock behavior;
 - FAT/SAT acceptance criteria.
 
+## Machine-readable report model
+The reusable Automation report model is mandatory and pinned at:
+- `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`
+- `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`
+- `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`
+
+Every confirmed Automation finding SHALL carry a structured `documents_involved` inventory and every Protocol Zero question SHALL record pre-escalation source checks. A normative/reference source SHALL carry an applicability state and applicability basis before it can support a confirmed nonconformity.
+
 ## Repository memory
 Repository memory is maintained in `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`.
 It is engineering-process memory, not personal account memory, and SHALL contain no confidential project source content in this public repository.
