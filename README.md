@@ -35,6 +35,34 @@ Arquivos de controle:
 
 O pipeline opera em `BLOCK_ON_FAILURE` para incompatibilidades críticas abertas, cobertura insuficiente, documentos mandatórios ausentes, baseline não reconciliada ou compatibilidade abaixo do limiar definido.
 
+## Modelo permanente de compatibilização de Automação
+
+Model ID:
+
+`AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0`
+
+Toda compatibilização de Automação usa `/visualize` como camada de apresentação padrão e pode ser aprimorada com **Build Web Data Visualization** quando a ação estiver disponível.
+
+Contrato mínimo:
+
+- Protocol Zero: pergunta antes de finding;
+- consultar primeiro baseline do projeto e, quando pertinente, normas/fontes oficiais antes de escalar dúvida ao usuário;
+- separar dúvidas, erros confirmados, problemas de engenharia, compatíveis e NOT_VERIFIABLE;
+- todo erro confirmado informa os documentos envolvidos: evidência, correlatos/conflitantes, normas/referências e documentos a corrigir;
+- referências normativas possuem estado de aplicabilidade e não podem gerar não conformidade quando forem apenas `REFERENCE_ONLY`;
+- revisão corrigida deve ser rechecada antes de fechar finding ou liberar o pacote.
+
+Arquivos de controle:
+
+- `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`;
+- `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`;
+- `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`;
+- `schemas/engineering_compatibility.schema.json`;
+- `pipeline/engineering_compatibility_gate.py`;
+- `pipeline/protocol_zero_gate.py`.
+
+A biblioteca padrão de consulta inclui os metadados e o gate de aplicabilidade para PETROBRAS N-1882 Rev. F, N-1883 Rev. F e N-2833 Rev. A. O repositório público não armazena o texto integral das normas.
+
 ## Compatibilidade com Codex
 
 Codex e outros agentes de código devem ler `AGENTS.md` e a Regra de Ouro antes de alterar esquemas, cálculos de compatibilidade, relatórios, pipelines ou configuração do Data Center.
