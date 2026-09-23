@@ -36,6 +36,8 @@ Codex SHALL:
 - require every PARTIAL, DIVERGENT or NOT_VERIFIABLE assessment record to be represented by a corresponding complete finding;
 - treat `interface=true` only as a multidisciplinary interface assessment: it must identify at least two distinct baseline disciplines and provenance evidence must cover at least two distinct interface disciplines;
 - identify document, revision, sheet/page, TAG/location and evidence for every engineering claim;
+- for every confirmed finding, explicitly list the documents involved: source/evidence, conflicting/correlated project documents, normative/reference documents, and documents to be corrected;
+- consult the default Automation reference library (PETROBRAS N-1882 Rev. F 11/2023, PETROBRAS N-1883 Rev. F 05/2024, and PETROBRAS N-2833 Rev. A Annex A forms 01-14) before escalating unresolved questions, always applying scope/applicability checks; N-1883 item 1.4 excludes electrical automation, building automation and HVAC automation from its direct normative scope;
 - require every baseline discipline and every baseline document to have an explicit compatibility score;
 - require a structured calculation method with denominator definition and status weights;
 - perform `/factcheck`, `/thenvsnow`, `/comparison`, `/deepdive`, `/rootcause`, `/audit`, `/redteam`, `/premortem`, `/viability` and `/actionplan` when relevant;
