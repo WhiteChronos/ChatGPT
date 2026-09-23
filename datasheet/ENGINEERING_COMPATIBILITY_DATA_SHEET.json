@@ -202,7 +202,34 @@
         "Required decision or missing evidence"
       ],
       "closure_criterion": "Objective evidence required to close the finding.",
-      "confidence": "HIGH"
+      "confidence": "HIGH",
+      "documents_involved": {
+        "source_evidence": [
+          {
+            "document_id": "TEMPLATE-DOC-A",
+            "revision": "A",
+            "applicability": "APPLICABLE",
+            "note": "Illustrative source document for the template finding."
+          }
+        ],
+        "project_correlated_or_conflicting": [],
+        "normative_or_reference": [
+          {
+            "document_id": "PETROBRAS-N-1882",
+            "revision": "F",
+            "applicability": "PENDING",
+            "note": "Template reference; applicability must be established before use."
+          }
+        ],
+        "documents_to_correct": [
+          {
+            "document_id": "TEMPLATE-DOC-A",
+            "revision": "A",
+            "applicability": "APPLICABLE",
+            "note": "Illustrative document requiring correction in the template."
+          }
+        ]
+      }
     }
   ],
   "protocol_zero": {
@@ -214,7 +241,22 @@
         "question": "Replace this template question with the technical doubt that must be answered before promoting a finding.",
         "answer": "",
         "status": "UNANSWERED",
-        "promotes_to_finding": false
+        "promotes_to_finding": false,
+        "pre_escalation_search_completed": true,
+        "source_checks": [
+          {
+            "source_type": "PROJECT_DOCUMENT",
+            "source_id": "TEMPLATE-DOC-A",
+            "result": "PARTIAL",
+            "note": "Template project source was checked but does not resolve the placeholder question."
+          },
+          {
+            "source_type": "REFERENCE_STANDARD",
+            "source_id": "PETROBRAS-N-1882",
+            "result": "NOT_FOUND",
+            "note": "Template normative lookup recorded before escalation; no project-specific answer is inferred."
+          }
+        ]
       }
     ]
   },
@@ -222,6 +264,46 @@
     "model": "AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0",
     "automation_hyperfocus": true,
     "data_lineage_required": true,
-    "failure_mode_review_required": true
+    "failure_mode_review_required": true,
+    "reference_library_check_required": true,
+    "documents_involved_required": true,
+    "source_check_before_question_required": true,
+    "visualize_default": true
+  },
+  "reference_library": {
+    "library_id": "AUTOMATION_REFERENCE_LIBRARY_V1_0",
+    "policy": "REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE",
+    "standards": [
+      {
+        "id": "PETROBRAS-N-1882",
+        "revision": "F",
+        "applicability": "PENDING",
+        "applicability_basis": "Template placeholder: determine project invocation and scope before use.",
+        "project_invoked": false
+      },
+      {
+        "id": "PETROBRAS-N-1883",
+        "revision": "F",
+        "applicability": "PENDING",
+        "applicability_basis": "Template placeholder: check item 1.4 scope and project invocation before use.",
+        "project_invoked": false
+      },
+      {
+        "id": "PETROBRAS-N-2833",
+        "revision": "A",
+        "applicability": "PENDING",
+        "applicability_basis": "Template placeholder: determine whether the forms/list standard is invoked.",
+        "project_invoked": false
+      }
+    ]
+  },
+  "report_model": {
+    "model": "AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0",
+    "visualize_default": true,
+    "enhanced_renderer": "Build Web Data Visualization",
+    "questions_separated": true,
+    "documents_involved_required": true,
+    "normative_applicability_required": true,
+    "recheck_revised_documents_before_close": true
   }
 }
