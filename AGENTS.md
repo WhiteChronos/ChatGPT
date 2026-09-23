@@ -72,9 +72,11 @@ python pipeline/engineering_compatibility_gate.py datasheet/projects/<project>.j
 ```
 
 ## Mandatory visualization renderer
-Every final engineering compatibility report, re-evaluation, audit or /visualize output for this project SHALL use **@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) as the final rendering surface.
+Every final engineering compatibility report, re-evaluation, audit or `/visualize` output SHALL render through the native **/visualize** presentation layer using the best interactive visualization surface available in the current runtime.
 
-Do not silently substitute Markdown-only output, generic GenUI or another visualization app. If the plugin action is not exposed in the current runtime, report the renderer as unavailable and do not claim that an alternate visualization satisfies this contract.
+**@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) is the preferred enhanced renderer when its executable action is exposed in the current conversation. If it is unavailable, visualization SHALL continue through the native interactive `/visualize` surface; do not fall back to Markdown-only output when an interactive surface is available.
+
+When the enhanced renderer later becomes available, the visual report may be regenerated/upgraded without changing engineering content or classifications.
 
 ## Visualization contract
 Every final engineering report SHALL expose all relevant findings using a complete visual hierarchy. Required elements include:
