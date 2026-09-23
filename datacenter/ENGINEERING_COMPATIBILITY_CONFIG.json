@@ -134,13 +134,21 @@
     "complete_not_summary": true,
     "mandatory_sections": [
       "executive_gate",
+      "source_documents",
       "baseline_map",
-      "compatibility_by_discipline",
-      "compatibility_by_document",
-      "interfaces",
-      "complete_findings",
-      "feasibility",
-      "missing_evidence",
+      "tag_traceability",
+      "resolved_questions",
+      "open_questions",
+      "confirmed_findings",
+      "engineering_problems",
+      "verified_items",
+      "not_verifiable",
+      "automation_architecture",
+      "network_and_data",
+      "functional_logic",
+      "power_24vdc_ups",
+      "solutions",
+      "documents_to_correct",
       "action_plan",
       "release_gate"
     ],
@@ -179,7 +187,10 @@
     "unanswered_classification": "NOT_VERIFIABLE",
     "forbid_unanswered_promotion_to_finding": true,
     "block_pass_with_unanswered_questions": true,
-    "simple_answer_field": true
+    "simple_answer_field": true,
+    "pre_escalation_source_checks_required": true,
+    "require_project_source_check": true,
+    "require_normative_or_official_check": true
   },
   "hyperfocus_automation_data": {
     "enabled": true,
@@ -208,7 +219,8 @@
       "PROJECT_CORRELATED_OR_CONFLICTING",
       "NORMATIVE_OR_REFERENCE",
       "DOCUMENTS_TO_CORRECT"
-    ]
+    ],
+    "require_normative_applicability": true
   },
   "automation_reference_library": {
     "policy": "REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE",
@@ -240,5 +252,11 @@
         "mandatory_only_when_applicable_or_invoked": true
       }
     ]
+  },
+  "automation_report_model": {
+    "governance": "governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md",
+    "datacenter_model": "datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json",
+    "reference_library": "datacenter/AUTOMATION_REFERENCE_LIBRARY.json",
+    "status": "MANDATORY"
   }
 }
