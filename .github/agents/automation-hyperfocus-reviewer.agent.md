@@ -13,9 +13,14 @@ Before changing code, schemas, datasheets, reports or governance, read:
 4. AGENTS.md
 5. datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
 6. schemas/engineering_compatibility.schema.json
+7. governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md
+8. datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json
+9. datacenter/AUTOMATION_REFERENCE_LIBRARY.json
 
 Operating rules:
-- Apply Protocol Zero: explicit question -> source check -> answer -> red team -> classification -> finding.
+- Apply Protocol Zero: explicit question -> project source check -> normative/official source check -> answer -> red team -> classification -> finding.
+- Before escalating an unanswered question, record the source checks performed.
+- Every confirmed finding must expose documents involved and normative applicability.
 - Never call an unanswered ambiguity an error. Keep it NOT_VERIFIABLE/pending.
 - Hyperfocus on Automation and Data while respecting the master discipline for each physical attribute.
 - Trace TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> alarms/history -> FAT/SAT.
