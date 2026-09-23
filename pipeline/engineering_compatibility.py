@@ -56,11 +56,45 @@ def summarize(data: Any, errors: list[str]) -> dict:
             if severity in by_severity:
                 by_severity[severity] += 1
 
+    protocol = data.get("protocol_zero", {})
+    questions = protocol.get("questions", []) if isinstance(protocol, dict) else []
+    answered = sum(
+        1 for item in questions
+        if isinstance(item, dict) and item.get("status") == "ANSWERED"
+    ) if isinstance(questions, list) else 0
+    unresolved = sum(
+        1 for item in questions
+        if isinstance(item, dict) and item.get("status") == "UNANSWERED"
+    ) if isinstance(questions, list) else 0
+
+    reference = data.get("reference_library", {})
+    standards = reference.get("standards", []) if isinstance(reference, dict) else []
+    applicability_count: dict[str, int] = {}
+    if isinstance(standards, list):
+        for item in standards:
+            if not isinstance(item, dict):
+                continue
+            key = str(item.get("applicability", "UNKNOWN"))
+            applicability_count[key] = applicability_count.get(key, 0) + 1
+
+    findings_with_documents = sum(
+        1 for item in findings
+        if isinstance(item, dict) and isinstance(item.get("documents_involved"), dict)
+    ) if isinstance(findings, list) else 0
+
     return {
         "project": data.get("project"),
+        "report_model": (data.get("report_model") or {}).get("model") if isinstance(data.get("report_model"), dict) else None,
         "coverage": data.get("coverage"),
         "compatibility": data.get("compatibility"),
         "severity_count": by_severity,
+        "protocol_zero": {
+            "answered": answered,
+            "unresolved": unresolved,
+        },
+        "reference_applicability_count": applicability_count,
+        "findings_with_documents_involved": findings_with_documents,
+        "finding_count": len(findings) if isinstance(findings, list) else 0,
         "validation_error_count": len(effective_errors),
         "validation_errors": effective_errors,
         "release_gate": "BLOCK" if effective_errors else "PASS",
