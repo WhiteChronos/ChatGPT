@@ -126,17 +126,40 @@ Architecture-impact questions SHALL compare, when relevant:
 No hardware is retained only because it appears in an older drawing.
 
 ## Visualization
-`/visualize` remains the presentation layer. It SHALL preserve complete technical depth and expose:
+`/visualize` remains the presentation layer and SHALL be rendered through **@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) for every engineering compatibility report, re-evaluation, audit result, comparison result, or interactive technical report produced for this project.
+
+This renderer is a **Golden Rule requirement**, not a preference.
+
+Mandatory behavior:
+- use @Build Web Data Visualization as the final presentation surface;
+- do not substitute Markdown-only output, generic GenUI, a different dashboard renderer, or another visualization app when the requested report is expected in this format;
+- if the plugin action is unavailable in the current runtime, do not silently fall back to another renderer; state that the required renderer is unavailable and wait for the plugin capability to be exposed;
+- preserve complete technical depth and do not reduce the report to a summary;
+- keep questions/doubts visually separated from confirmed findings/errors and from engineering problems;
+- provide a simple answer field for every open technical question;
+- expose evidence location, comparison, impact, solution, affected documents and closure criterion for every confirmed finding;
+- show NOT_VERIFIABLE items separately and never visually present them as confirmed errors;
+- include filters for severity/status when supported;
+- include the release gate as a distinct final module.
+
+The visualization SHALL expose at least:
+- executive overview;
+- source documents and revisions;
+- baseline map;
+- TAG x TAG inventory;
 - resolved questions;
-- unanswered questions;
+- unanswered questions with answer fields;
 - verified facts;
-- confirmed findings;
+- confirmed findings/errors;
+- engineering problems;
 - non-errors / justified differences;
+- Automation / HVAC / Electrical / Network & Data / Functional Logic views when applicable;
 - solutions;
-- document actions;
+- documents to adjust;
+- action plan;
 - release gate.
 
-Questions must be readable and, in interactive reports, must provide a simple answer field when user input is expected.
+Questions must be readable and must provide a simple answer field when user input is expected.
 
 ## Compatibility scoring
 Do not publish a compatibility percentage before:
