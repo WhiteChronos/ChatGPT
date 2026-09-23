@@ -9,6 +9,8 @@ Define the default internal engineering elaboration model for multidisciplinary 
 This rule extends `governance/VISUALIZE_GOLDEN_RULE_v1_0.md`. It does not replace source evidence, approved discipline baselines, or the canonical compatibility gate.
 
 ## Protocol Zero — question before finding
+Machine-enforced policy: `QUESTION_BEFORE_FINDING`.
+
 Every suspected discrepancy SHALL begin as an explicit technical question.
 
 The required sequence is:
