@@ -25,6 +25,19 @@ Durable, repository-visible memory for the engineering compatibility process.
 9. Agents never self-waive findings and never merge automatically.
 10. Architecture changes require alternatives, viability and failure-mode review.
 
+## Automation compatibility report model
+Permanent reusable model:
+- `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`
+- `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`
+
+Permanent rules:
+- /visualize is the default rendering layer; Build Web Data Visualization is progressive enhancement.
+- questions, confirmed errors and engineering problems stay separated.
+- every open question records source checks before escalation and provides an answer field.
+- every confirmed finding exposes documents involved in four groups: source/evidence, correlated/conflicting, normative/reference, and documents to correct.
+- normative/reference documents require applicability state and basis. REFERENCE_ONLY guidance cannot create a confirmed nonconformity by itself.
+- revised documents are rechecked before findings are closed and before Release Gate can pass.
+
 ## Default Automation reference library
 For every Automation project, consult these references before escalating a technical doubt to the user:
 
