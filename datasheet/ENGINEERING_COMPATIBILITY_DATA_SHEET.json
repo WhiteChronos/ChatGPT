@@ -1,7 +1,11 @@
 {
   "project": "TEMPLATE_PROJECT",
   "baseline": {
-    "disciplines": ["HVAC", "ELECTRICAL", "AUTOMATION"],
+    "disciplines": [
+      "HVAC",
+      "ELECTRICAL",
+      "AUTOMATION"
+    ],
     "documents": [
       {
         "id": "TEMPLATE-DOC-A",
@@ -14,7 +18,9 @@
     ],
     "reconciled": false,
     "reconciliation_note": "Template baseline is intentionally unreconciled and must remain BLOCK until replaced with project evidence.",
-    "required_document_ids": ["TEMPLATE-DOC-A"]
+    "required_document_ids": [
+      "TEMPLATE-DOC-A"
+    ]
   },
   "assessment_records": [
     {
@@ -22,8 +28,13 @@
       "criterion_id": "CRIT-TEMPLATE-001",
       "criterion": "Replace template evidence with current approved project evidence",
       "classification": "DIVERGENT",
-      "disciplines": ["HVAC", "ELECTRICAL"],
-      "document_ids": ["TEMPLATE-DOC-A"],
+      "disciplines": [
+        "HVAC",
+        "ELECTRICAL"
+      ],
+      "document_ids": [
+        "TEMPLATE-DOC-A"
+      ],
       "interface": true,
       "evidence": [
         {
@@ -35,15 +46,30 @@
           "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         }
       ],
-      "evidence_quality": {"rating": "LOW", "rationale": "Template evidence is illustrative and does not cover both declared interface disciplines."}
+      "evidence_quality": {
+        "rating": "LOW",
+        "rationale": "Template evidence is illustrative and does not cover both declared interface disciplines."
+      }
     }
   ],
-  "scope_summary": {"VERIFIED": 0, "PARTIAL": 0, "DIVERGENT": 1, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0},
-  "coverage": 100.0,
+  "scope_summary": {
+    "VERIFIED": 0,
+    "PARTIAL": 0,
+    "DIVERGENT": 1,
+    "NOT_VERIFIABLE": 0,
+    "NOT_APPLICABLE": 0
+  },
+  "coverage": 100,
   "compatibility": {
     "global": 0,
-    "by_discipline": {"HVAC": 0, "ELECTRICAL": 0, "AUTOMATION": 0},
-    "by_document": {"TEMPLATE-DOC-A": 0},
+    "by_discipline": {
+      "HVAC": 0,
+      "ELECTRICAL": 0,
+      "AUTOMATION": 0
+    },
+    "by_document": {
+      "TEMPLATE-DOC-A": 0
+    },
     "interface": 0,
     "method": {
       "name": "weighted_status_v1",
@@ -51,16 +77,41 @@
       "denominator_definition": "Applicable assessment records classified VERIFIED, PARTIAL or DIVERGENT; NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator.",
       "exclude_not_applicable": true,
       "exclude_not_verifiable": true,
-      "status_weights": {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
+      "status_weights": {
+        "VERIFIED": 1,
+        "PARTIAL": 0.5,
+        "DIVERGENT": 0
+      }
     }
   },
-  "blocking_missing_documents": ["TEMPLATE-DOC-A"],
+  "blocking_missing_documents": [
+    "TEMPLATE-DOC-A"
+  ],
   "release_gate": "BLOCK",
   "visualization": {
     "model": "VISUALIZE_GOLDEN_RULE_v1_0",
     "complete_not_summary": true,
-    "severity_colors": {"CRITICAL": "red", "HIGH": "orange", "MEDIUM": "yellow", "LOW": "blue", "NOT_VERIFIABLE": "blue", "VERIFIED": "green", "NOT_APPLICABLE": "gray"},
-    "mandatory_sections": ["executive_gate", "baseline_map", "compatibility_by_discipline", "compatibility_by_document", "interfaces", "complete_findings", "feasibility", "missing_evidence", "action_plan", "release_gate"]
+    "severity_colors": {
+      "CRITICAL": "red",
+      "HIGH": "orange",
+      "MEDIUM": "yellow",
+      "LOW": "blue",
+      "NOT_VERIFIABLE": "blue",
+      "VERIFIED": "green",
+      "NOT_APPLICABLE": "gray"
+    },
+    "mandatory_sections": [
+      "executive_gate",
+      "baseline_map",
+      "compatibility_by_discipline",
+      "compatibility_by_document",
+      "interfaces",
+      "complete_findings",
+      "feasibility",
+      "missing_evidence",
+      "action_plan",
+      "release_gate"
+    ]
   },
   "findings": [
     {
@@ -69,7 +120,10 @@
       "severity": "HIGH",
       "classification": "DIVERGENT",
       "status": "OPEN",
-      "disciplines": ["HVAC", "ELECTRICAL"],
+      "disciplines": [
+        "HVAC",
+        "ELECTRICAL"
+      ],
       "evidence": [
         {
           "document_id": "TEMPLATE-DOC-A",
@@ -80,7 +134,10 @@
           "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
         }
       ],
-      "evidence_quality": {"rating": "LOW", "rationale": "Template evidence is illustrative and the source document is DRAFT."},
+      "evidence_quality": {
+        "rating": "LOW",
+        "rationale": "Template evidence is illustrative and the source document is DRAFT."
+      },
       "comparison": "Explain source evidence versus the related engineering criterion without silently reconciling them.",
       "problem": "Complete engineering description of the discrepancy.",
       "root_cause": "Identified cause or explicit statement that root cause is not yet verifiable.",
@@ -92,8 +149,16 @@
         "viability": "INFERENCE"
       },
       "impacts": {
-        "design": "Impact or NONE", "procurement": "Impact or NONE", "fabrication": "Impact or NONE", "programming": "Impact or NONE", "commissioning": "Impact or NONE",
-        "operation": "Impact or NONE", "maintenance": "Impact or NONE", "safety": "Impact or NONE", "cost": "Impact or NONE", "schedule": "Impact or NONE"
+        "design": "Impact or NONE",
+        "procurement": "Impact or NONE",
+        "fabrication": "Impact or NONE",
+        "programming": "Impact or NONE",
+        "commissioning": "Impact or NONE",
+        "operation": "Impact or NONE",
+        "maintenance": "Impact or NONE",
+        "safety": "Impact or NONE",
+        "cost": "Impact or NONE",
+        "schedule": "Impact or NONE"
       },
       "solution": "Primary engineering correction.",
       "architecture_impact": true,
@@ -101,14 +166,30 @@
         {
           "name": "Simpler alternative",
           "feasibility": "MEDIUM",
-          "pros": ["Example advantage"],
-          "cons": ["Example limitation"],
+          "pros": [
+            "Example advantage"
+          ],
+          "cons": [
+            "Example limitation"
+          ],
           "recommended": false,
           "tradeoffs": {
-            "simplicity": {"assessment": "IMPROVES", "rationale": "Illustrative alternative reduces implementation complexity."},
-            "safety": {"assessment": "EQUIVALENT", "rationale": "No illustrative safety delta has been established."},
-            "cost": {"assessment": "IMPROVES", "rationale": "Illustrative alternative is expected to reduce lifecycle cost."},
-            "maintainability": {"assessment": "IMPROVES", "rationale": "Illustrative alternative reduces maintenance complexity."}
+            "simplicity": {
+              "assessment": "IMPROVES",
+              "rationale": "Illustrative alternative reduces implementation complexity."
+            },
+            "safety": {
+              "assessment": "EQUIVALENT",
+              "rationale": "No illustrative safety delta has been established."
+            },
+            "cost": {
+              "assessment": "IMPROVES",
+              "rationale": "Illustrative alternative is expected to reduce lifecycle cost."
+            },
+            "maintainability": {
+              "assessment": "IMPROVES",
+              "rationale": "Illustrative alternative reduces maintenance complexity."
+            }
           }
         }
       ],
@@ -117,9 +198,30 @@
       "secondary_documents": [],
       "proposed_text": "Exact replacement/insertion text when applicable.",
       "owner": "RESPONSIBLE_DISCIPLINE",
-      "dependencies": ["Required decision or missing evidence"],
+      "dependencies": [
+        "Required decision or missing evidence"
+      ],
       "closure_criterion": "Objective evidence required to close the finding.",
       "confidence": "HIGH"
     }
-  ]
+  ],
+  "protocol_zero": {
+    "policy": "QUESTION_BEFORE_FINDING",
+    "unresolved_count": 1,
+    "questions": [
+      {
+        "id": "Q-TEMPLATE-001",
+        "question": "Replace this template question with the technical doubt that must be answered before promoting a finding.",
+        "answer": "",
+        "status": "UNANSWERED",
+        "promotes_to_finding": false
+      }
+    ]
+  },
+  "analysis_profile": {
+    "model": "AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0",
+    "automation_hyperfocus": true,
+    "data_lineage_required": true,
+    "failure_mode_review_required": true
+  }
 }
