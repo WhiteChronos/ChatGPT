@@ -126,21 +126,25 @@ Architecture-impact questions SHALL compare, when relevant:
 No hardware is retained only because it appears in an older drawing.
 
 ## Visualization
-`/visualize` remains the presentation layer and SHALL be rendered through **@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) for every engineering compatibility report, re-evaluation, audit result, comparison result, or interactive technical report produced for this project.
+`/visualize` is the **mandatory default presentation layer** for every engineering compatibility report, re-evaluation, audit result, comparison result, or interactive technical report.
 
-This renderer is a **Golden Rule requirement**, not a preference.
+The rendering strategy follows **progressive enhancement**:
+
+1. **PRIMARY / ALWAYS AVAILABLE:** render the complete report through the native `/visualize` experience using the best interactive visualization surface available in the current runtime (for example, a self-contained interactive app block).
+2. **ENHANCED / WHEN AVAILABLE:** if **@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) is exposed and executable in the current conversation, upgrade the same report to that renderer without changing the engineering content, classifications, evidence, questions, findings, or release decision.
+3. The absence of @Build Web Data Visualization SHALL NOT block visualization. It only blocks the enhanced renderer.
+4. Markdown-only output SHALL NOT be treated as satisfying `/visualize` when an interactive visualization surface is available.
 
 Mandatory behavior:
-- use @Build Web Data Visualization as the final presentation surface;
-- do not substitute Markdown-only output, generic GenUI, a different dashboard renderer, or another visualization app when the requested report is expected in this format;
-- if the plugin action is unavailable in the current runtime, do not silently fall back to another renderer; state that the required renderer is unavailable and wait for the plugin capability to be exposed;
 - preserve complete technical depth and do not reduce the report to a summary;
 - keep questions/doubts visually separated from confirmed findings/errors and from engineering problems;
 - provide a simple answer field for every open technical question;
 - expose evidence location, comparison, impact, solution, affected documents and closure criterion for every confirmed finding;
 - show NOT_VERIFIABLE items separately and never visually present them as confirmed errors;
 - include filters for severity/status when supported;
-- include the release gate as a distinct final module.
+- include the release gate as a distinct final module;
+- preserve source-derived facts, project decisions, inference and external research as distinct evidence classes;
+- when the enhanced Build Web Data Visualization renderer later becomes available, regenerate or upgrade the visual presentation without altering the underlying engineering baseline.
 
 The visualization SHALL expose at least:
 - executive overview;
