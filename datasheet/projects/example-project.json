@@ -1,15 +1,44 @@
 {
   "project": "Example Project",
   "baseline": {
-    "disciplines": ["HVAC", "ELECTRICAL", "AUTOMATION"],
+    "disciplines": [
+      "HVAC",
+      "ELECTRICAL",
+      "AUTOMATION"
+    ],
     "documents": [
-      {"id": "EX-HVAC-001", "discipline": "HVAC", "revision": "A", "source": "synthetic://example-project/HVAC/EX-HVAC-001/A", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "status": "CURRENT"},
-      {"id": "EX-ELE-001", "discipline": "ELECTRICAL", "revision": "A", "source": "synthetic://example-project/ELECTRICAL/EX-ELE-001/A", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "status": "CURRENT"},
-      {"id": "EX-AUT-001", "discipline": "AUTOMATION", "revision": "A", "source": "synthetic://example-project/AUTOMATION/EX-AUT-001/A", "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "status": "CURRENT"}
+      {
+        "id": "EX-HVAC-001",
+        "discipline": "HVAC",
+        "revision": "A",
+        "source": "synthetic://example-project/HVAC/EX-HVAC-001/A",
+        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "status": "CURRENT"
+      },
+      {
+        "id": "EX-ELE-001",
+        "discipline": "ELECTRICAL",
+        "revision": "A",
+        "source": "synthetic://example-project/ELECTRICAL/EX-ELE-001/A",
+        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "status": "CURRENT"
+      },
+      {
+        "id": "EX-AUT-001",
+        "discipline": "AUTOMATION",
+        "revision": "A",
+        "source": "synthetic://example-project/AUTOMATION/EX-AUT-001/A",
+        "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "status": "CURRENT"
+      }
     ],
     "reconciled": true,
     "reconciliation_note": "Synthetic positive fixture: all three discipline baselines are current and mutually reconciled.",
-    "required_document_ids": ["EX-HVAC-001", "EX-ELE-001", "EX-AUT-001"]
+    "required_document_ids": [
+      "EX-HVAC-001",
+      "EX-ELE-001",
+      "EX-AUT-001"
+    ]
   },
   "assessment_records": [
     {
@@ -17,63 +46,152 @@
       "criterion_id": "CRIT-HVAC-BASELINE",
       "criterion": "HVAC baseline compatibility",
       "classification": "VERIFIED",
-      "disciplines": ["HVAC"],
-      "document_ids": ["EX-HVAC-001"],
+      "disciplines": [
+        "HVAC"
+      ],
+      "document_ids": [
+        "EX-HVAC-001"
+      ],
       "interface": false,
-      "evidence": [{"document_id": "EX-HVAC-001", "revision": "A", "location": "Sheet 1 / TAG TEST", "tag": "TEST", "statement": "Synthetic evidence for regression testing.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
-      "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
+      "evidence": [
+        {
+          "document_id": "EX-HVAC-001",
+          "revision": "A",
+          "location": "Sheet 1 / TAG TEST",
+          "tag": "TEST",
+          "statement": "Synthetic evidence for regression testing.",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        }
+      ],
+      "evidence_quality": {
+        "rating": "HIGH",
+        "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."
+      }
     },
     {
       "id": "ASM-ELE-001",
       "criterion_id": "CRIT-ELE-BASELINE",
       "criterion": "Electrical baseline compatibility",
       "classification": "VERIFIED",
-      "disciplines": ["ELECTRICAL"],
-      "document_ids": ["EX-ELE-001"],
+      "disciplines": [
+        "ELECTRICAL"
+      ],
+      "document_ids": [
+        "EX-ELE-001"
+      ],
       "interface": false,
-      "evidence": [{"document_id": "EX-ELE-001", "revision": "A", "location": "Sheet 1 / Synthetic electrical baseline criterion 1", "tag": "ELE-BASELINE", "statement": "Electrical criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
-      "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
+      "evidence": [
+        {
+          "document_id": "EX-ELE-001",
+          "revision": "A",
+          "location": "Sheet 1 / Synthetic electrical baseline criterion 1",
+          "tag": "ELE-BASELINE",
+          "statement": "Electrical criterion is verified against the immutable regression source.",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        }
+      ],
+      "evidence_quality": {
+        "rating": "HIGH",
+        "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."
+      }
     },
     {
       "id": "ASM-AUT-001",
       "criterion_id": "CRIT-AUT-BASELINE",
       "criterion": "Automation baseline compatibility",
       "classification": "VERIFIED",
-      "disciplines": ["AUTOMATION"],
-      "document_ids": ["EX-AUT-001"],
+      "disciplines": [
+        "AUTOMATION"
+      ],
+      "document_ids": [
+        "EX-AUT-001"
+      ],
       "interface": false,
-      "evidence": [{"document_id": "EX-AUT-001", "revision": "A", "location": "Sheet 1 / Synthetic automation baseline criterion 1", "tag": "AUT-BASELINE", "statement": "Automation criterion is verified against the immutable regression source.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}],
-      "evidence_quality": {"rating": "HIGH", "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."}
+      "evidence": [
+        {
+          "document_id": "EX-AUT-001",
+          "revision": "A",
+          "location": "Sheet 1 / Synthetic automation baseline criterion 1",
+          "tag": "AUT-BASELINE",
+          "statement": "Automation criterion is verified against the immutable regression source.",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        }
+      ],
+      "evidence_quality": {
+        "rating": "HIGH",
+        "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."
+      }
     },
     {
       "id": "ASM-IF-HVAC-AUT-001",
       "criterion_id": "CRIT-IF-HVAC-AUT",
       "criterion": "HVAC to automation interface compatibility",
       "classification": "VERIFIED",
-      "disciplines": ["HVAC", "AUTOMATION"],
-      "document_ids": ["EX-HVAC-001", "EX-AUT-001"],
+      "disciplines": [
+        "HVAC",
+        "AUTOMATION"
+      ],
+      "document_ids": [
+        "EX-HVAC-001",
+        "EX-AUT-001"
+      ],
       "interface": true,
       "evidence": [
-        {"document_id": "EX-HVAC-001", "revision": "A", "location": "Sheet 2 / Synthetic HVAC interface declaration", "tag": "HVAC-IF", "statement": "HVAC side of the interface is explicitly represented.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"},
-        {"document_id": "EX-AUT-001", "revision": "A", "location": "Sheet 2 / Synthetic automation interface declaration", "tag": "AUT-IF", "statement": "Automation side of the interface is explicitly represented.", "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+        {
+          "document_id": "EX-HVAC-001",
+          "revision": "A",
+          "location": "Sheet 2 / Synthetic HVAC interface declaration",
+          "tag": "HVAC-IF",
+          "statement": "HVAC side of the interface is explicitly represented.",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        },
+        {
+          "document_id": "EX-AUT-001",
+          "revision": "A",
+          "location": "Sheet 2 / Synthetic automation interface declaration",
+          "tag": "AUT-IF",
+          "statement": "Automation side of the interface is explicitly represented.",
+          "source_hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        }
       ],
-      "evidence_quality": {"rating": "HIGH", "rationale": "Both interface endpoints are backed by current source documents and matching provenance."}
+      "evidence_quality": {
+        "rating": "HIGH",
+        "rationale": "Both interface endpoints are backed by current source documents and matching provenance."
+      }
     }
   ],
-  "scope_summary": {"VERIFIED": 4, "PARTIAL": 0, "DIVERGENT": 0, "NOT_VERIFIABLE": 0, "NOT_APPLICABLE": 0},
-  "coverage": 100.0,
+  "scope_summary": {
+    "VERIFIED": 4,
+    "PARTIAL": 0,
+    "DIVERGENT": 0,
+    "NOT_VERIFIABLE": 0,
+    "NOT_APPLICABLE": 0
+  },
+  "coverage": 100,
   "compatibility": {
-    "global": 100.0,
-    "by_discipline": {"HVAC": 100.0, "ELECTRICAL": 100.0, "AUTOMATION": 100.0},
-    "by_document": {"EX-HVAC-001": 100.0, "EX-ELE-001": 100.0, "EX-AUT-001": 100.0},
-    "interface": 100.0,
+    "global": 100,
+    "by_discipline": {
+      "HVAC": 100,
+      "ELECTRICAL": 100,
+      "AUTOMATION": 100
+    },
+    "by_document": {
+      "EX-HVAC-001": 100,
+      "EX-ELE-001": 100,
+      "EX-AUT-001": 100
+    },
+    "interface": 100,
     "method": {
       "name": "weighted_status_v1",
       "formula": "100 * sum(status_weight * applicable_criterion) / applicable_criteria",
       "denominator_definition": "Applicable assessment records classified VERIFIED, PARTIAL or DIVERGENT; NOT_APPLICABLE and NOT_VERIFIABLE are excluded from the compatibility denominator.",
       "exclude_not_applicable": true,
       "exclude_not_verifiable": true,
-      "status_weights": {"VERIFIED": 1.0, "PARTIAL": 0.5, "DIVERGENT": 0.0}
+      "status_weights": {
+        "VERIFIED": 1,
+        "PARTIAL": 0.5,
+        "DIVERGENT": 0
+      }
     }
   },
   "blocking_missing_documents": [],
@@ -81,8 +199,46 @@
   "visualization": {
     "model": "VISUALIZE_GOLDEN_RULE_v1_0",
     "complete_not_summary": true,
-    "severity_colors": {"CRITICAL": "red", "HIGH": "orange", "MEDIUM": "yellow", "LOW": "blue", "NOT_VERIFIABLE": "blue", "VERIFIED": "green", "NOT_APPLICABLE": "gray"},
-    "mandatory_sections": ["executive_gate", "baseline_map", "compatibility_by_discipline", "compatibility_by_document", "interfaces", "complete_findings", "feasibility", "missing_evidence", "action_plan", "release_gate"]
+    "severity_colors": {
+      "CRITICAL": "red",
+      "HIGH": "orange",
+      "MEDIUM": "yellow",
+      "LOW": "blue",
+      "NOT_VERIFIABLE": "blue",
+      "VERIFIED": "green",
+      "NOT_APPLICABLE": "gray"
+    },
+    "mandatory_sections": [
+      "executive_gate",
+      "baseline_map",
+      "compatibility_by_discipline",
+      "compatibility_by_document",
+      "interfaces",
+      "complete_findings",
+      "feasibility",
+      "missing_evidence",
+      "action_plan",
+      "release_gate"
+    ]
   },
-  "findings": []
+  "findings": [],
+  "protocol_zero": {
+    "policy": "QUESTION_BEFORE_FINDING",
+    "unresolved_count": 0,
+    "questions": [
+      {
+        "id": "Q-EX-001",
+        "question": "Are the synthetic current baselines mutually reconciled before findings are evaluated?",
+        "answer": "Yes. The positive fixture explicitly marks the current synthetic HVAC, Electrical and Automation baselines as reconciled.",
+        "status": "ANSWERED",
+        "promotes_to_finding": false
+      }
+    ]
+  },
+  "analysis_profile": {
+    "model": "AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0",
+    "automation_hyperfocus": true,
+    "data_lineage_required": true,
+    "failure_mode_review_required": true
+  }
 }
