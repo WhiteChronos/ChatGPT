@@ -69,3 +69,10 @@ Qualquer violação deste documento é NÃO CONFORMIDADE CRÍTICA e bloqueia a a
 ## 8. Governança de mudança
 
 Arquivos de CI, agentes, prompts, schemas ou sugestões automáticas não podem simplificar, substituir ou redefinir estas regras de engenharia apenas para fazer o workflow passar. Toda alteração de conteúdo de domínio deve preservar rastreabilidade, motivo técnico, revisão e teste de regressão correspondente.
+
+## 9. Compatibilização e referências
+Toda compatibilização de Automação SHALL seguir o modelo `AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0`, o Protocol Zero e a biblioteca `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`.
+
+Antes de perguntar uma dúvida técnica ao usuário, consultar a baseline do projeto e as fontes normativas/oficiais aplicáveis. Norma fora de escopo pode orientar boa prática, mas não cria não conformidade sozinha.
+
+Todo erro confirmado deve mostrar os documentos envolvidos: evidência, correlatos/conflitantes, normas/referências e documentos a corrigir.
