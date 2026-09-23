@@ -15,36 +15,57 @@
     "allow_silent_reconciliation": false
   },
   "baseline_policy": {
-    "eligible_required_document_statuses": ["CURRENT", "APPROVED"]
+    "eligible_required_document_statuses": [
+      "CURRENT",
+      "APPROVED"
+    ]
   },
   "criterion_inventories": {
     "Example Project": [
       {
         "criterion_id": "CRIT-HVAC-BASELINE",
         "criterion": "HVAC baseline compatibility",
-        "disciplines": ["HVAC"],
-        "document_ids": ["EX-HVAC-001"],
+        "disciplines": [
+          "HVAC"
+        ],
+        "document_ids": [
+          "EX-HVAC-001"
+        ],
         "interface": false
       },
       {
         "criterion_id": "CRIT-ELE-BASELINE",
         "criterion": "Electrical baseline compatibility",
-        "disciplines": ["ELECTRICAL"],
-        "document_ids": ["EX-ELE-001"],
+        "disciplines": [
+          "ELECTRICAL"
+        ],
+        "document_ids": [
+          "EX-ELE-001"
+        ],
         "interface": false
       },
       {
         "criterion_id": "CRIT-AUT-BASELINE",
         "criterion": "Automation baseline compatibility",
-        "disciplines": ["AUTOMATION"],
-        "document_ids": ["EX-AUT-001"],
+        "disciplines": [
+          "AUTOMATION"
+        ],
+        "document_ids": [
+          "EX-AUT-001"
+        ],
         "interface": false
       },
       {
         "criterion_id": "CRIT-IF-HVAC-AUT",
         "criterion": "HVAC to automation interface compatibility",
-        "disciplines": ["HVAC", "AUTOMATION"],
-        "document_ids": ["EX-HVAC-001", "EX-AUT-001"],
+        "disciplines": [
+          "HVAC",
+          "AUTOMATION"
+        ],
+        "document_ids": [
+          "EX-HVAC-001",
+          "EX-AUT-001"
+        ],
         "interface": true
       }
     ]
@@ -104,9 +125,9 @@
     "not_verifiable_reduces_coverage": true,
     "require_method_disclosure": true,
     "required_status_weights": {
-      "VERIFIED": 1.0,
+      "VERIFIED": 1,
       "PARTIAL": 0.5,
-      "DIVERGENT": 0.0
+      "DIVERGENT": 0
     }
   },
   "visualization": {
@@ -129,5 +150,37 @@
     "normalized": "datacenter/normalized/<project>/",
     "reports": "reports/<project>/",
     "datasheets": "datasheet/projects/<project>/"
+  },
+  "automation_hyperfocus_rule": "governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md",
+  "protocol_zero_gate": "pipeline/protocol_zero_gate.py",
+  "repository_memory": "memory/ENGINEERING_COMPATIBILITY_MEMORY.md",
+  "assistance_catalog": "docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md",
+  "github_agent": ".github/agents/automation-hyperfocus-reviewer.agent.md",
+  "protocol_zero": {
+    "policy": "QUESTION_BEFORE_FINDING",
+    "unanswered_classification": "NOT_VERIFIABLE",
+    "forbid_unanswered_promotion_to_finding": true,
+    "block_pass_with_unanswered_questions": true,
+    "simple_answer_field": true
+  },
+  "hyperfocus_automation_data": {
+    "enabled": true,
+    "chain": [
+      "PROCESS_REQUIREMENT",
+      "EQUIPMENT_TAG",
+      "POWER",
+      "COMMAND_FEEDBACK",
+      "IO",
+      "PLC_RTU",
+      "CONTROL_LOGIC",
+      "NETWORK_PROTOCOL",
+      "DATA_QUALITY",
+      "HMI_SCADA",
+      "ALARM_HISTORY",
+      "FAT_SAT"
+    ],
+    "require_failure_mode_review": true,
+    "require_data_lineage": true,
+    "require_master_discipline_authority": true
   }
 }

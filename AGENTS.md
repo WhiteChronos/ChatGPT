@@ -6,13 +6,20 @@ This repository contains engineering-governance rules for Automation, HVAC, Elec
 Before creating, editing, reviewing or approving compatibility-analysis code, schemas, reports, pipelines or documentation, read:
 
 1. `governance/VISUALIZE_GOLDEN_RULE_v1_0.md`
-2. `governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md`
-3. `schemas/engineering_compatibility.schema.json`
-4. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
-5. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
+2. `governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md`
+3. `governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md`
+4. `schemas/engineering_compatibility.schema.json`
+5. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
+6. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
+7. `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`
 
 ## Codex operating contract
 Codex SHALL:
+
+- apply Protocol Zero: explicit technical question before promoting a suspected discrepancy to a finding;
+- keep unanswered questions as NOT_VERIFIABLE/pending and never promote them to confirmed findings;
+- apply Automation/Data hyperfocus through TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> FAT/SAT;
+- preserve the master-discipline authority for physical attributes and never silently override it from a derived discipline;
 
 - preserve all source evidence and provenance;
 - require SHA-256 provenance for every baseline document and every evidence record;
@@ -53,7 +60,9 @@ Before proposing merge, Codex SHALL run or ensure CI runs:
 
 ```bash
 python pipeline/engineering_compatibility_gate.py
+python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
 pytest -q tests/test_engineering_compatibility_gate.py
+pytest -q tests/test_protocol_zero_gate.py
 ```
 
 The no-argument gate validates the permanent known-good fixture at `datasheet/projects/example-project.json`. Real projects MUST also be validated explicitly:

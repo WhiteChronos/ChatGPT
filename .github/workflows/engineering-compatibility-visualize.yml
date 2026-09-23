@@ -5,13 +5,16 @@ on:
     paths:
       - 'AGENTS.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
+      - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
+      - 'pipeline/protocol_zero_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
+      - 'tests/test_protocol_zero_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
@@ -24,13 +27,16 @@ on:
     paths:
       - 'AGENTS.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
+      - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
+      - 'pipeline/protocol_zero_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
+      - 'tests/test_protocol_zero_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
@@ -57,6 +63,7 @@ jobs:
           python -m py_compile pipeline/engineering_compatibility_gate.py
           python -m py_compile pipeline/engineering_compatibility_gate_impl.py
           python -m py_compile pipeline/engineering_compatibility.py
+          python -m py_compile pipeline/protocol_zero_gate.py
 
       - name: Validate JSON syntax
         run: |
@@ -79,6 +86,9 @@ jobs:
       - name: Exercise permanent positive semantic gate
         run: python pipeline/engineering_compatibility_gate.py
 
+      - name: Exercise Protocol Zero semantic gate
+        run: python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
+
       - name: Exercise compatibility report wrapper
         run: |
           python pipeline/engineering_compatibility.py \
@@ -95,6 +105,7 @@ jobs:
       - name: Permanent Golden Rule regression tests
         run: |
           pytest -q tests/test_engineering_compatibility_gate.py
+          pytest -q tests/test_protocol_zero_gate.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round4.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round5.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round6.py
@@ -123,4 +134,6 @@ jobs:
           grep -q 'VISUALIZE_GOLDEN_RULE_v1_0' AGENTS.md
           grep -q 'engineering_compatibility_gate.py' AGENTS.md
           grep -q 'complete_not_summary' governance/VISUALIZE_GOLDEN_RULE_v1_0.md
+          grep -q 'QUESTION_BEFORE_FINDING' governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md
+          grep -q 'protocol_zero_gate.py' AGENTS.md
           grep -q 'ENGINEERING_COMPATIBILITY_VISUALIZE_V1_1' datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
