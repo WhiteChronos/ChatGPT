@@ -273,9 +273,192 @@ def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     return errors
 
 
+_ROOT = Path(__file__).resolve().parents[1]
+_REFERENCE_LIBRARY_PATH = _ROOT / "datacenter" / "AUTOMATION_REFERENCE_LIBRARY.json"
+_REPORT_MODEL_PATH = _ROOT / "datacenter" / "AUTOMATION_COMPATIBILITY_REPORT_MODEL.json"
+
+
+def _canonical_reference_map() -> dict[str, dict[str, Any]]:
+    library = _impl.load_json(_REFERENCE_LIBRARY_PATH)
+    standards = library.get("standards", []) if isinstance(library, dict) else []
+    return {
+        str(item.get("id")): item
+        for item in standards
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+
+
+def _round10_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
+    """Enforce the reusable Automation report model and applicability controls."""
+    errors: list[str] = []
+    baseline = data.get("baseline", {})
+    disciplines = _normalized_scope(baseline.get("disciplines", [])) if isinstance(baseline, dict) else set()
+    automation_scope = "AUTOMATION" in disciplines
+
+    try:
+        canonical_refs = _canonical_reference_map()
+        canonical_model = _impl.load_json(_REPORT_MODEL_PATH)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return [f"Automation report-model policy load error: {exc}"]
+
+    report_model = data.get("report_model")
+    if not isinstance(report_model, dict):
+        _impl.fail("report_model is required", errors)
+    elif report_model.get("model") != canonical_model.get("model_id"):
+        _impl.fail(
+            f"report_model.model must be {canonical_model.get('model_id')!r}",
+            errors,
+        )
+
+    if automation_scope:
+        ref_record = data.get("reference_library")
+        if not isinstance(ref_record, dict):
+            _impl.fail("reference_library is required for Automation scope", errors)
+            project_refs: dict[str, dict[str, Any]] = {}
+        else:
+            records = ref_record.get("standards", [])
+            project_refs = {
+                str(item.get("id")): item
+                for item in records
+                if isinstance(item, dict) and isinstance(item.get("id"), str)
+            } if isinstance(records, list) else {}
+            missing = sorted(set(canonical_refs) - set(project_refs))
+            if missing:
+                _impl.fail(
+                    f"reference_library must assess every pinned Automation reference; missing={missing}",
+                    errors,
+                )
+            for sid, canonical in canonical_refs.items():
+                current = project_refs.get(sid)
+                if not isinstance(current, dict):
+                    continue
+                if current.get("revision") != canonical.get("revision"):
+                    _impl.fail(
+                        f"reference_library {sid}: revision must match repository-pinned reference {canonical.get('revision')!r}",
+                        errors,
+                    )
+                applicability = current.get("applicability")
+                if current.get("project_invoked") is True and applicability != "APPLICABLE":
+                    _impl.fail(
+                        f"reference_library {sid}: project_invoked=true requires applicability=APPLICABLE",
+                        errors,
+                    )
+
+    else:
+        project_refs = {}
+
+    pz = data.get("protocol_zero", {})
+    questions = pz.get("questions", []) if isinstance(pz, dict) else []
+    if isinstance(questions, list):
+        for question in questions:
+            if not isinstance(question, dict):
+                continue
+            qid = question.get("id", "UNKNOWN")
+            if question.get("pre_escalation_search_completed") is not True:
+                _impl.fail(f"{qid}: pre_escalation_search_completed must be true", errors)
+            checks = question.get("source_checks", [])
+            if not isinstance(checks, list) or not checks:
+                _impl.fail(f"{qid}: source_checks must be non-empty", errors)
+                continue
+            source_types = {
+                item.get("source_type")
+                for item in checks
+                if isinstance(item, dict)
+            }
+            if not source_types.intersection({"PROJECT_DOCUMENT", "CONTRACT_OR_PROJECT_BASIS"}):
+                _impl.fail(
+                    f"{qid}: source_checks must include project source or project-basis review",
+                    errors,
+                )
+            if question.get("status") == "UNANSWERED":
+                external_types = {
+                    "APPLICABLE_STANDARD",
+                    "REFERENCE_STANDARD",
+                    "OFFICIAL_AUTHORITY",
+                    "OFFICIAL_MANUFACTURER",
+                    "SPECIALIST_REFERENCE",
+                }
+                if not source_types.intersection(external_types):
+                    _impl.fail(
+                        f"{qid}: unanswered question requires normative/official/specialist pre-escalation source check",
+                        errors,
+                    )
+
+    finding_contract = config.get("finding_contract", {}) if isinstance(config, dict) else {}
+    require_docs = finding_contract.get("require_documents_involved") is True
+    findings = data.get("findings", [])
+    if require_docs and isinstance(findings, list):
+        for finding in findings:
+            if not isinstance(finding, dict):
+                continue
+            fid = finding.get("id", "UNKNOWN")
+            docs = finding.get("documents_involved")
+            if not isinstance(docs, dict):
+                _impl.fail(f"{fid}: documents_involved is required", errors)
+                continue
+            source_docs = docs.get("source_evidence", [])
+            fix_docs = docs.get("documents_to_correct", [])
+            if not isinstance(source_docs, list) or not source_docs:
+                _impl.fail(f"{fid}: documents_involved.source_evidence must be non-empty", errors)
+            if not isinstance(fix_docs, list) or not fix_docs:
+                _impl.fail(f"{fid}: documents_involved.documents_to_correct must be non-empty", errors)
+
+            evidence_ids = {
+                item.get("document_id")
+                for item in finding.get("evidence", [])
+                if isinstance(item, dict)
+            }
+            declared_source_ids = {
+                item.get("document_id")
+                for item in source_docs
+                if isinstance(item, dict)
+            }
+            missing_sources = sorted(
+                str(value) for value in evidence_ids - declared_source_ids if value is not None
+            )
+            if missing_sources:
+                _impl.fail(
+                    f"{fid}: documents_involved.source_evidence must include every finding evidence document; missing={missing_sources}",
+                    errors,
+                )
+
+            primary = finding.get("primary_document")
+            declared_fix_ids = {
+                item.get("document_id")
+                for item in fix_docs
+                if isinstance(item, dict)
+            }
+            if isinstance(primary, str) and primary and primary not in declared_fix_ids:
+                _impl.fail(
+                    f"{fid}: primary_document must appear in documents_involved.documents_to_correct",
+                    errors,
+                )
+
+            normative = docs.get("normative_or_reference", [])
+            if isinstance(normative, list):
+                for ref in normative:
+                    if not isinstance(ref, dict):
+                        continue
+                    sid = ref.get("document_id")
+                    applicability = ref.get("applicability")
+                    project_ref = project_refs.get(str(sid))
+                    if project_ref is not None and applicability != project_ref.get("applicability"):
+                        _impl.fail(
+                            f"{fid}: normative/reference applicability for {sid} must match reference_library assessment",
+                            errors,
+                        )
+                    if applicability == "NOT_APPLICABLE" and finding.get("classification") == "DIVERGENT":
+                        _impl.fail(
+                            f"{fid}: NOT_APPLICABLE normative/reference source cannot support a DIVERGENT finding",
+                            errors,
+                        )
+    return errors
+
+
 def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     errors = _original_validate_semantics(data, config)
     errors.extend(_round9_errors(data, config))
+    errors.extend(_round10_errors(data, config))
     return errors
 
 
