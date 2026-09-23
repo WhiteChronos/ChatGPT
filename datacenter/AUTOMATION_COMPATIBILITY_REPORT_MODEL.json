@@ -1,0 +1,87 @@
+{
+  "model_id": "AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0",
+  "status": "GOLDEN_RULE",
+  "renderer": {
+    "primary": "Visualize",
+    "enhanced": "Build Web Data Visualization",
+    "enhanced_plugin_id": "Plugin_40dab999fe9c8191bbc2f550371692fc",
+    "progressive_enhancement": true
+  },
+  "mandatory_modules": [
+    "executive_gate",
+    "source_documents",
+    "baseline_map",
+    "tag_traceability",
+    "resolved_questions",
+    "open_questions",
+    "confirmed_findings",
+    "engineering_problems",
+    "verified_items",
+    "not_verifiable",
+    "automation_architecture",
+    "network_and_data",
+    "functional_logic",
+    "power_24vdc_ups",
+    "solutions",
+    "documents_to_correct",
+    "action_plan",
+    "release_gate"
+  ],
+  "finding_documents_involved": [
+    "SOURCE_EVIDENCE",
+    "PROJECT_CORRELATED_OR_CONFLICTING",
+    "NORMATIVE_OR_REFERENCE",
+    "DOCUMENTS_TO_CORRECT"
+  ],
+  "normative_applicability_states": [
+    "APPLICABLE",
+    "REFERENCE_ONLY",
+    "NOT_APPLICABLE",
+    "PENDING"
+  ],
+  "protocol_zero": {
+    "policy": "QUESTION_BEFORE_FINDING",
+    "project_source_check_required": true,
+    "official_or_normative_source_check_required_before_user_question": true,
+    "unanswered_classification": "NOT_VERIFIABLE"
+  },
+  "evidence_classes": [
+    "PROJECT_SOURCE_FACT",
+    "PROJECT_DECISION",
+    "APPLICABLE_NORMATIVE_REQUIREMENT",
+    "REFERENCE_ONLY_GUIDANCE",
+    "OFFICIAL_AUTHORITY",
+    "OFFICIAL_MANUFACTURER",
+    "SPECIALIST_REFERENCE",
+    "ENGINEERING_INFERENCE"
+  ],
+  "automation_trace": [
+    "PROCESS_REQUIREMENT",
+    "EQUIPMENT_TAG",
+    "LOCATION",
+    "POWER_PROTECTION",
+    "COMMAND_FEEDBACK",
+    "IO",
+    "PLC_RTU_CONTROLLER",
+    "CONTROL_LOGIC",
+    "NETWORK",
+    "PROTOCOL_ADDRESS_REGISTER",
+    "SCALE_UNIT_QUALITY",
+    "HMI_SCADA",
+    "ALARM_TREND_HISTORY",
+    "FAT_SAT"
+  ],
+  "release_blockers": [
+    "OPEN_CRITICAL",
+    "UNRESOLVED_MATERIAL_QUESTION",
+    "INCOMPLETE_BASELINE",
+    "UNRECONCILED_BASELINE",
+    "MISSING_PROVENANCE",
+    "MISSING_FINDING_DOCUMENTS_INVOLVED",
+    "NORMATIVE_CLAIM_WITHOUT_APPLICABILITY",
+    "FAILED_AUTOMATION_TRACEABILITY",
+    "ARCHITECTURE_WITHOUT_VIABILITY",
+    "FAILED_COVERAGE_OR_COMPATIBILITY",
+    "REVISED_DOCUMENT_NOT_RECHECKED"
+  ]
+}
