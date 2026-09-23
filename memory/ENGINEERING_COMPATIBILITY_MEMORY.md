@@ -4,6 +4,7 @@
 Durable, repository-visible memory for the engineering compatibility process.
 
 ## Current operating model
+- Hardening v1.1 is the integrated baseline on `main`; Hyperfocus v1.2 extends it and must not weaken its controls.
 - Visual presentation rule: `governance/VISUALIZE_GOLDEN_RULE_v1_0.md`
 - Automation/Data reasoning rule: `governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md`
 - Canonical release validator: `pipeline/engineering_compatibility_gate.py`
