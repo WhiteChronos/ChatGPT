@@ -298,7 +298,7 @@ def _round10_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     baseline = data.get("baseline", {})
     disciplines = _normalized_scope(baseline.get("disciplines", [])) if isinstance(baseline, dict) else set()
-    automation_scope = "AUTOMATION" in disciplines
+    automation_scope = any(str(value).casefold() == "automation" for value in disciplines)
 
     try:
         canonical_refs = _canonical_reference_map()
