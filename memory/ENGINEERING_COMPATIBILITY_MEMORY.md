@@ -25,5 +25,19 @@ Durable, repository-visible memory for the engineering compatibility process.
 9. Agents never self-waive findings and never merge automatically.
 10. Architecture changes require alternatives, viability and failure-mode review.
 
+## Default Automation reference library
+For every Automation project, consult these references before escalating a technical doubt to the user:
+
+- PETROBRAS N-1882 Rev. F (11/2023) — `Critérios para Elaboração de Projetos de Instrumentação`.
+- PETROBRAS N-1883 Rev. F (05/2024) — `Apresentação de Projeto de Instrumentação, Controle e Automação`.
+- PETROBRAS N-2833 Rev. A — Annex A forms 01-14, used as the standard forms/list reference set.
+
+Permanent applicability rule:
+- these are a **reference-by-default library**, not universal mandatory requirements;
+- always check contract, project basis, discipline scope and current approved revision before classifying noncompliance;
+- N-1883 Rev. F item 1.4 explicitly excludes electrical-system automation, building automation and HVAC automation from its direct scope. For those projects, N-1883/N-2833 may be used only as documentary/engineering references unless another project requirement explicitly invokes them;
+- reference-only differences remain questions/NOT_VERIFIABLE or engineering observations until an applicable requirement proves divergence;
+- every confirmed finding must display its **documents involved**: source/evidence, correlated/conflicting project documents, normative/reference documents, and documents to correct.
+
 ## Maintenance
 Update this file only when the process contract changes. Project-specific facts belong in governed project datasheets, not here.
