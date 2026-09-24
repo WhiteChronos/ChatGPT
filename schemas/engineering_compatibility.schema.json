@@ -173,7 +173,8 @@
         "model",
         "complete_not_summary",
         "severity_colors",
-        "mandatory_sections"
+        "mandatory_sections",
+        "question_batches_are_visualize_artifacts"
       ],
       "properties": {
         "model": {
@@ -225,6 +226,9 @@
           "items": {
             "$ref": "#/$defs/nonblank"
           }
+        },
+        "question_batches_are_visualize_artifacts": {
+          "const": true
         }
       },
       "additionalProperties": false
@@ -947,7 +951,8 @@
         "reference_library_check_required",
         "documents_involved_required",
         "source_check_before_question_required",
-        "visualize_default"
+        "visualize_default",
+        "question_visual_contract_required"
       ],
       "properties": {
         "model": {
@@ -972,6 +977,9 @@
           "const": true
         },
         "visualize_default": {
+          "const": true
+        },
+        "question_visual_contract_required": {
           "const": true
         }
       },
@@ -1148,7 +1156,8 @@
         "questions_separated",
         "documents_involved_required",
         "normative_applicability_required",
-        "recheck_revised_documents_before_close"
+        "recheck_revised_documents_before_close",
+        "question_visual_contract_required"
       ],
       "properties": {
         "model": {
@@ -1170,6 +1179,9 @@
           "const": true
         },
         "recheck_revised_documents_before_close": {
+          "const": true
+        },
+        "question_visual_contract_required": {
           "const": true
         }
       },
