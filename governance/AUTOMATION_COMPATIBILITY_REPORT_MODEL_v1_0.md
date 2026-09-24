@@ -192,3 +192,10 @@ For XLSX circulation/review, the default export profile is `AUTOMATION_COMPACT_X
 The XLSX presentation SHALL be compact by default: decisions + Release Gate in Summary; confirmed findings consolidated by document/action; Pendings in one organized sheet; answered Protocol Zero questions in a separate audit-history sheet. Standalone evidence, standalone decisions, standalone findings, standalone Release Gate, external-evaluation forms and responsible/owner sheets are excluded unless explicitly requested.
 
 This compact projection must preserve traceability and must not weaken the comprehensive /visualize report model.
+
+## Elaboration and execution control
+The report SHALL apply `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0` from `governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md`.
+
+Every confirmed finding or material pending item SHALL be converted into an owning-document action with priority, objective required action, basis, related IDs, closure criterion and execution status. A revised document is not closed until it is rechecked.
+
+When network/IP/cybersecurity scope exists, the review SHALL check topology, interconnections, switch/uplinks, port map, IP/subnets, VLAN/segmentation, control-to-supervisory boundary, zones/conduits, firewall/DMZ decision, protocol/register/data-quality mapping, communication-loss behavior, FAT/SAT and cybersecurity-reference applicability. IEC 62443-related controls remain applicability-driven and cannot create automatic nonconformity without project/applicability basis.
