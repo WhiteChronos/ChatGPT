@@ -34,6 +34,8 @@ Permanent rules:
 - /visualize is the default rendering layer; Build Web Data Visualization is progressive enhancement.
 - questions, confirmed errors and engineering problems stay separated.
 - every open question records source checks before escalation and provides an answer field.
+- every user-facing Automation question batch is a governed /visualize artifact; when an interactive surface is available, plain Markdown/list-only questions are non-compliant.
+- each question card carries ID, severity/priority, area, rationale, project documents involved, completed source checks, status and answer field; answered questions remain in a resolved-questions module.
 - every confirmed finding exposes documents involved in four groups: source/evidence, correlated/conflicting, normative/reference, and documents to correct.
 - normative/reference documents require applicability state and basis. REFERENCE_ONLY guidance cannot create a confirmed nonconformity by itself.
 - revised documents are rechecked before findings are closed and before Release Gate can pass.
