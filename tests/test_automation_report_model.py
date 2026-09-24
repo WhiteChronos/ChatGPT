@@ -263,7 +263,7 @@ def test_elaboration_execution_rule_covers_network_ip_and_recheck() -> None:
     assert "zones and conduits" in rule_text
     assert "firewall/DMZ" in rule_text
     assert "IEC 62443" in rule_text
-    assert "CLOSED is allowed only after" in rule_text
+    assert "`CLOSED` is allowed only after" in rule_text
 
 
 def test_custom_config_cannot_disable_elaboration_execution_control(tmp_path: Path) -> None:
