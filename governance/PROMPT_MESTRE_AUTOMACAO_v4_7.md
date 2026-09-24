@@ -73,6 +73,24 @@ Regras obrigatórias:
 6. norma/referência deve registrar aplicabilidade; `REFERENCE_ONLY` não cria não conformidade sozinha;
 7. documento revisado precisa ser rechecado antes de encerrar finding ou liberar o projeto.
 
+## Perguntas ao usuário — formato obrigatório
+
+Em compatibilização de Automação, não gerar lote de perguntas em lista Markdown quando houver superfície `/visualize` interativa disponível.
+
+Toda pergunta deve aparecer em card com:
+- ID;
+- criticidade/prioridade;
+- área/disciplina;
+- pergunta objetiva;
+- motivo da pergunta;
+- documentos envolvidos;
+- checagens já realizadas;
+- status Protocol Zero;
+- campo de resposta;
+- mecanismo para gerar/copiar bloco de respostas.
+
+Perguntas respondidas permanecem auditáveis em “Perguntas Resolvidas”. Pergunta sem resposta permanece NOT_VERIFIABLE e nunca vira erro automaticamente.
+
 ## Data Center e Data Sheet
 
 Registrar modelo, hash, fingerprint estrutural, documento de destino, alterações autorizadas, paginação final, mapa de revisão, evidências técnicas e evidências de renderização. Binários Petrobras permanecem em armazenamento privado controlado; o GitHub armazena apenas regras, hashes, fingerprints, esquemas e testes.
