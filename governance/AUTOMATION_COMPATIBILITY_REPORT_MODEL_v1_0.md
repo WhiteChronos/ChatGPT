@@ -71,9 +71,9 @@ QUESTION
 -> ACTION
 ```
 
-Before an unanswered question is escalated to the user, the review SHALL record that the available project documents were checked and that at least one applicable external authority was checked when relevant: corporate/national/international standard, official authority, official manufacturer, or specialist reference.
+Before an unanswered question is escalated to the user, the review SHALL first perform owning-document routing (identify the project document class most likely to contain the answer), then record that the routed project documents were checked and that at least one applicable external authority was checked when relevant: corporate/national/international standard, official authority, official manufacturer, or specialist reference.
 
-A missing answer is never a confirmed error.
+A missing answer is never a confirmed error. A question resolved by its owning project document SHALL be removed from the user-question queue and retained as source-derived evidence.
 
 ## Finding card contract
 Every confirmed finding/error SHALL display:
