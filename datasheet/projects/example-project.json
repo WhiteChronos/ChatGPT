@@ -274,7 +274,8 @@
     "documents_involved_required": true,
     "source_check_before_question_required": true,
     "visualize_default": true,
-    "question_visual_contract_required": true
+    "question_visual_contract_required": true,
+    "evidence_before_assumption_required": true
   },
   "reference_library": {
     "library_id": "AUTOMATION_REFERENCE_LIBRARY_V1_0",
@@ -311,6 +312,7 @@
     "documents_involved_required": true,
     "normative_applicability_required": true,
     "recheck_revised_documents_before_close": true,
-    "question_visual_contract_required": true
+    "question_visual_contract_required": true,
+    "evidence_before_assumption_required": true
   }
 }
