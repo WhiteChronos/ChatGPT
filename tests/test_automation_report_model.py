@@ -22,6 +22,8 @@ EVIDENCE_RESEARCH_RULE = ROOT / "governance" / "AUTOMATION_EVIDENCE_RESEARCH_GOL
 GOVERNANCE_MODEL = ROOT / "governance" / "AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md"
 EXPORT_PROFILES = ROOT / "datacenter" / "AUTOMATION_REPORT_EXPORT_PROFILES.json"
 COMPACT_XLSX_RULE = ROOT / "governance" / "AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md"
+ELABORATION_EXECUTION_MODEL = ROOT / "datacenter" / "AUTOMATION_ELABORATION_EXECUTION_CONTROL.json"
+ELABORATION_EXECUTION_RULE = ROOT / "governance" / "AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md"
 
 
 def config() -> dict:
@@ -240,3 +242,34 @@ def test_compact_xlsx_rule_keeps_traceability_without_sheet_sprawl() -> None:
     assert "Decisions and Release Gate belong in the Summary sheet" in text
     assert "Findings are consolidated into the Documents & Actions sheet" in text
     assert "Never delete a superseded user answer" in text
+
+
+def test_elaboration_execution_control_is_pinned() -> None:
+    model = load_json(ELABORATION_EXECUTION_MODEL)
+    assert model["model_id"] == "AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0"
+    assert model["mandatory"] is True
+    assert model["action_record"]["owning_document_required"] is True
+    assert model["action_record"]["closed_requires_recheck"] is True
+    assert model["execution_control"]["closure_on_revision_statement_only"] is False
+    assert model["network_ip_cybersecurity"]["iec_62443_universal_nonconformity"] is False
+    assert model["network_ip_cybersecurity"]["design_stage_deferral_requires_deliverable_and_closure_criterion"] is True
+
+
+def test_elaboration_execution_rule_covers_network_ip_and_recheck() -> None:
+    rule_text = ELABORATION_EXECUTION_RULE.read_text(encoding="utf-8")
+    assert "Automation network / IP / cybersecurity elaboration" in rule_text
+    assert "port map" in rule_text
+    assert "VLAN/subnet segmentation" in rule_text
+    assert "zones and conduits" in rule_text
+    assert "firewall/DMZ" in rule_text
+    assert "IEC 62443" in rule_text
+    assert "CLOSED is allowed only after" in rule_text
+
+
+def test_custom_config_cannot_disable_elaboration_execution_control(tmp_path: Path) -> None:
+    cfg = deepcopy(config())
+    cfg["elaboration_execution_control"]["revised_document_recheck_required"] = False
+    path = tmp_path / "custom-elaboration.json"
+    path.write_text(json.dumps(cfg), encoding="utf-8")
+    with pytest.raises(ValueError, match="cannot override repository-pinned Automation compatibility policy"):
+        _load_policy_config(path)
