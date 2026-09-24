@@ -122,5 +122,11 @@
     "document_routing_before_user_question": true,
     "user_pointed_document_must_be_rechecked": true,
     "project_source_resolution_removes_user_question": true
+  },
+  "exports": {
+    "default_xlsx_profile": "AUTOMATION_COMPACT_XLSX_V1",
+    "profile_registry": "datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json",
+    "compact_external_review": true,
+    "preserve_full_model_data": true
   }
 }
