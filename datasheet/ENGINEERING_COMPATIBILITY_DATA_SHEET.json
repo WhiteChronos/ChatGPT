@@ -119,7 +119,8 @@
       "documents_to_correct",
       "action_plan",
       "release_gate"
-    ]
+    ],
+    "question_batches_are_visualize_artifacts": true
   },
   "findings": [
     {
@@ -276,7 +277,8 @@
     "reference_library_check_required": true,
     "documents_involved_required": true,
     "source_check_before_question_required": true,
-    "visualize_default": true
+    "visualize_default": true,
+    "question_visual_contract_required": true
   },
   "reference_library": {
     "library_id": "AUTOMATION_REFERENCE_LIBRARY_V1_0",
@@ -312,6 +314,7 @@
     "questions_separated": true,
     "documents_involved_required": true,
     "normative_applicability_required": true,
-    "recheck_revised_documents_before_close": true
+    "recheck_revised_documents_before_close": true,
+    "question_visual_contract_required": true
   }
 }
