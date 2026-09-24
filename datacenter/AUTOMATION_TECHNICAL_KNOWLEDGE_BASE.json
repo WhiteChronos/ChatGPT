@@ -1,0 +1,127 @@
+{
+  "knowledge_base_id": "AUTOMATION_TECHNICAL_KNOWLEDGE_BASE_V1_0",
+  "status": "MANDATORY_SUPPORT_REFERENCE",
+  "policy": "PROJECT_EVIDENCE_BEFORE_ASSOCIATION",
+  "invariants": [
+    {
+      "id": "IO-DO-001",
+      "statement": "A digital output (DO/DQ) is a PLC/RTU/controller output point or channel. Its existence does not by itself imply an external interposing relay.",
+      "consequence": "Do not derive relay count from DO count."
+    },
+    {
+      "id": "IO-RELAY-001",
+      "statement": "An external interposing/interface relay is a separate device used only when the documented interface requires functions such as isolation, voltage/current adaptation, contact multiplication or another explicit interface purpose.",
+      "consequence": "Map relay purpose and wiring independently from the I/O point count."
+    },
+    {
+      "id": "IO-OUTPUT-TECH-001",
+      "statement": "A PLC digital-output module can use different switching technologies, including transistor and relay outputs; output technology is a module characteristic and is distinct from an external interposing relay.",
+      "consequence": "Do not use the word relay without distinguishing relay-output module from external interface relay."
+    },
+    {
+      "id": "ASSOCIATION-001",
+      "statement": "Quantity, naming similarity, tag prefix, adjacency in a list or generic industry practice is insufficient to prove a project-specific electrical/functional association.",
+      "consequence": "Require project wiring, interconnection, I/O mapping, terminal plan, loop/panel schematic, cable schedule or explicit specification."
+    }
+  ],
+  "research_policy": {
+    "question_before_assumption": true,
+    "project_evidence_before_association": true,
+    "support_research_required_for_ambiguous_relationships": true,
+    "search_channels": [
+      "PROJECT_BASELINE",
+      "CONTRACT_AND_DESIGN_BASIS",
+      "APPLICABLE_STANDARD",
+      "OFFICIAL_AUTHORITY",
+      "OFFICIAL_MANUFACTURER",
+      "OPEN_EDUCATIONAL_BOOK",
+      "SPECIALIST_REFERENCE",
+      "GITHUB_OPEN_SOURCE_REPOSITORY",
+      "RESEARCH_PLUGIN_DISCOVERY"
+    ],
+    "github_is_supporting_not_authoritative": true,
+    "plugin_is_discovery_not_evidence": true
+  },
+  "curated_sources": [
+    {
+      "id": "BOOK-KUPHALDT-LIII",
+      "type": "OPEN_EDUCATIONAL_BOOK",
+      "title": "Lessons In Industrial Instrumentation",
+      "author": "Tony R. Kuphaldt",
+      "publisher_or_host": "ibiblio",
+      "url": "https://www.ibiblio.org/kuphaldt/socratic/sinst/book/liii_0v8.pdf",
+      "relevance": [
+        "relay control systems",
+        "interposing relays",
+        "PLC discrete I/O"
+      ],
+      "supported_concept": "Interposing relays are optional interface devices used between mismatched devices/circuits; PLC discrete I/O is a separate concept."
+    },
+    {
+      "id": "ARTICLE-CONTROL-COM-INTERPOSING",
+      "type": "SPECIALIST_REFERENCE",
+      "title": "Interposing Relays in PLCs",
+      "publisher_or_host": "Control.com",
+      "url": "https://control.com/textbook/relay-control-systems/interposing-relays/",
+      "relevance": [
+        "interposing relay",
+        "PLC outputs",
+        "isolation",
+        "current/voltage adaptation"
+      ],
+      "supported_concept": "An interposing relay may be driven by a PLC output when load/interface requirements justify it; it is not implied by every output."
+    },
+    {
+      "id": "SIEMENS-S7-1200-SYSTEM-MANUAL",
+      "type": "OFFICIAL_MANUFACTURER",
+      "title": "S7-1200 Programmable Controller System Manual",
+      "publisher_or_host": "Siemens",
+      "url": "https://cache.industry.siemens.com/dl/files/302/109977302/att_1307432/v1/s71200_system_manual_en-US.pdf",
+      "relevance": [
+        "digital output modules",
+        "relay outputs",
+        "24 VDC outputs"
+      ],
+      "supported_concept": "Digital output modules exist with relay and non-relay output technologies; the output point is a controller I/O function."
+    },
+    {
+      "id": "ROCKWELL-1756-UM058",
+      "type": "OFFICIAL_MANUFACTURER",
+      "title": "ControlLogix Digital I/O Modules User Manual",
+      "publisher_or_host": "Rockwell Automation",
+      "url": "https://literature.rockwellautomation.com/idc/groups/literature/documents/um/1756-um058_-en-p.pdf",
+      "relevance": [
+        "digital output points",
+        "output states",
+        "fault/communication behavior"
+      ],
+      "supported_concept": "Digital outputs are configured and controlled as individual module points independently of any external relay unless the field wiring uses one."
+    },
+    {
+      "id": "GITHUB-OPENPLC-RUNTIME",
+      "type": "OPEN_SOURCE_REFERENCE_IMPLEMENTATION",
+      "title": "OpenPLC Runtime",
+      "publisher_or_host": "Autonomy-Logic / GitHub",
+      "url": "https://github.com/Autonomy-Logic/openplc-runtime",
+      "relevance": [
+        "IEC 61131-3 runtime",
+        "I/O mapping",
+        "digital outputs"
+      ],
+      "supported_concept": "Open-source PLC runtime implementation distinguishes I/O locations/outputs as controller data points; field interface hardware is platform-specific."
+    },
+    {
+      "id": "GITHUB-CONTROLLINO-OPENPLC-EXAMPLES",
+      "type": "OPEN_SOURCE_REFERENCE_IMPLEMENTATION",
+      "title": "OpenPLC examples with CONTROLLINO",
+      "publisher_or_host": "CONTROLLINO-PLC / GitHub",
+      "url": "https://github.com/CONTROLLINO-PLC/OpenPLC_examples",
+      "relevance": [
+        "digital output mapping",
+        "QX addressing",
+        "relay-output hardware variants"
+      ],
+      "supported_concept": "IEC-style digital-output addressing maps software outputs to physical hardware; hardware may expose separate digital and relay outputs."
+    }
+  ]
+}
