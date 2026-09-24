@@ -118,6 +118,9 @@
     "require_support_research_for_ambiguous_relationships": true,
     "github_open_source_support": true,
     "research_plugin_discovery": true,
-    "discovery_tool_is_not_evidence": true
+    "discovery_tool_is_not_evidence": true,
+    "document_routing_before_user_question": true,
+    "user_pointed_document_must_be_rechecked": true,
+    "project_source_resolution_removes_user_question": true
   }
 }
