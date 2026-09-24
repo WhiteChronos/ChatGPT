@@ -309,11 +309,18 @@ def _round10_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     report_model = data.get("report_model")
     if not isinstance(report_model, dict):
         _impl.fail("report_model is required", errors)
-    elif report_model.get("model") != canonical_model.get("model_id"):
-        _impl.fail(
-            f"report_model.model must be {canonical_model.get('model_id')!r}",
-            errors,
-        )
+    else:
+        if report_model.get("model") != canonical_model.get("model_id"):
+            _impl.fail(
+                f"report_model.model must be {canonical_model.get('model_id')!r}",
+                errors,
+            )
+        if report_model.get("question_visual_contract_required") is not True:
+            _impl.fail("report_model.question_visual_contract_required must be true", errors)
+
+    visualization = data.get("visualization", {})
+    if not isinstance(visualization, dict) or visualization.get("question_batches_are_visualize_artifacts") is not True:
+        _impl.fail("visualization.question_batches_are_visualize_artifacts must be true", errors)
 
     if automation_scope:
         ref_record = data.get("reference_library")
