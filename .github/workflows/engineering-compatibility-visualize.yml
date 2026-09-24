@@ -4,24 +4,23 @@ on:
   pull_request:
     paths:
       - 'AGENTS.md'
+      - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md'
-      - 'governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md'
+      - 'governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datacenter/AUTOMATION_REFERENCE_LIBRARY.json'
       - 'datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json'
-      - 'datacenter/AUTOMATION_REFERENCE_LIBRARY.json'
-      - 'datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json'
+      - 'datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
-      - 'tests/test_automation_report_model.py'
       - 'tests/test_automation_report_model.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
@@ -34,6 +33,7 @@ on:
     branches: [main]
     paths:
       - 'AGENTS.md'
+      - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
@@ -78,6 +78,7 @@ jobs:
           python -m json.tool datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_REFERENCE_LIBRARY.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json >/dev/null
+          python -m json.tool datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json >/dev/null
           python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
           python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
           python -m json.tool datasheet/projects/example-project.json >/dev/null
@@ -152,4 +153,6 @@ jobs:
           grep -q 'PETROBRAS-N-1882' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
           grep -q 'PETROBRAS-N-1883' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
           grep -q 'PETROBRAS-N-2833' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
+          grep -q 'AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0' AGENTS.md
+          grep -q 'Do not derive relay count from DO count' datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json
           grep -q 'ENGINEERING_COMPATIBILITY_VISUALIZE_V1_1' datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
