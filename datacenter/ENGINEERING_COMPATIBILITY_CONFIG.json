@@ -275,5 +275,25 @@
     "datacenter_model": "datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json",
     "reference_library": "datacenter/AUTOMATION_REFERENCE_LIBRARY.json",
     "status": "MANDATORY"
+  },
+  "automation_evidence_research": {
+    "governance": "governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md",
+    "knowledge_base": "datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json",
+    "assistance_catalog": "docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md",
+    "status": "MANDATORY",
+    "question_before_assumption": true,
+    "project_evidence_before_association": true,
+    "forbid_quantity_only_mapping": true,
+    "forbid_name_or_tag_only_mapping": true,
+    "do_external_relay_are_distinct_without_explicit_mapping": true,
+    "supporting_research_channels": [
+      "OFFICIAL_MANUFACTURER",
+      "OPEN_EDUCATIONAL_BOOK",
+      "SPECIALIST_REFERENCE",
+      "GITHUB_OPEN_SOURCE_REPOSITORY",
+      "RESEARCH_PLUGIN_DISCOVERY"
+    ],
+    "github_open_source_is_supporting_not_authoritative": true,
+    "plugin_is_discovery_not_evidence": true
   }
 }
