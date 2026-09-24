@@ -128,5 +128,14 @@
     "profile_registry": "datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json",
     "compact_external_review": true,
     "preserve_full_model_data": true
+  },
+  "elaboration_execution_control": {
+    "required": true,
+    "model_id": "AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0",
+    "governance": "governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md",
+    "machine_model": "datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json",
+    "document_action_required": true,
+    "revised_document_recheck_required": true,
+    "network_ip_cybersecurity_applicability_controlled": true
   }
 }
