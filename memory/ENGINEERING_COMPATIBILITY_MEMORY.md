@@ -75,3 +75,14 @@ Permanent applicability rule:
 
 ## Maintenance
 Update this file only when the process contract changes. Project-specific facts belong in governed project datasheets, not here.
+
+## Compact XLSX export permanent rule
+For reviewer-facing Automation workbooks, use `AUTOMATION_COMPACT_XLSX_V1` by default.
+
+Permanent layout:
+- Summary = executive status + closed decisions + Release Gate;
+- Documents & Actions = findings consolidated by document, with required solution action and priority;
+- Pendings = organized by priority, next action and deliverable;
+- Answered Questions = Protocol Zero history, including superseded answers.
+
+Do not create separate evidence, decisions, findings, Release Gate, external-evaluation or responsible/owner sheets unless explicitly requested. This is a presentation rule only; the underlying technical traceability remains complete.
