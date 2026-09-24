@@ -40,6 +40,23 @@ Permanent rules:
 - normative/reference documents require applicability state and basis. REFERENCE_ONLY guidance cannot create a confirmed nonconformity by itself.
 - revised documents are rechecked before findings are closed and before Release Gate can pass.
 
+## Evidence-before-assumption permanent rule
+Permanent regression lesson:
+- A DO/DQ is a controller output point/channel. An external interface/interposing relay is a separate device.
+- DO quantity SHALL NOT be used to infer relay quantity.
+- Relay quantity SHALL NOT be used to infer DO quantity.
+- TAG name, prefix, row adjacency or equal counts do not prove electrical/functional mapping.
+- DO -> relay association requires explicit project evidence: wiring/interconnection diagram, terminal plan, I/O mapping, panel schematic, cable schedule, loop diagram or specification.
+- A PLC output module may itself be transistor, triac or relay technology; this is different from an external interface relay.
+- If a relationship is unclear, keep it as a question/NOT_VERIFIABLE, research supporting material, and state what the external source proves versus what remains project-specific.
+- Mandatory support research channels include official manufacturer material, open educational books, GitHub/open-source repositories and research plugins/connectors where they materially improve understanding.
+- GitHub/open-source/plugins never override the project baseline, applicable standard or official manufacturer source.
+
+Canonical assets:
+- `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`
+- `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`
+- `docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md`
+
 ## Default Automation reference library
 For every Automation project, consult these references before escalating a technical doubt to the user:
 
