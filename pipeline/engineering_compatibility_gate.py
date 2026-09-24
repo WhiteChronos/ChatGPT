@@ -43,7 +43,7 @@ def _load_policy_config(path: Path) -> dict[str, Any]:
         raise ValueError(
             "config.criterion_inventories cannot override the repository-pinned canonical criterion inventory"
         )
-    for pinned_key in ("finding_contract", "automation_report_model", "protocol_zero", "automation_evidence_research"):
+    for pinned_key in ("finding_contract", "automation_report_model", "protocol_zero", "automation_evidence_research", "elaboration_execution_control"):
         if requested.get(pinned_key) != canonical.get(pinned_key):
             raise ValueError(
                 f"config.{pinned_key} cannot override repository-pinned Automation compatibility policy"
