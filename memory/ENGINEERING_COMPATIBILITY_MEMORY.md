@@ -86,3 +86,15 @@ Permanent layout:
 - Answered Questions = Protocol Zero history, including superseded answers.
 
 Do not create separate evidence, decisions, findings, Release Gate, external-evaluation or responsible/owner sheets unless explicitly requested. This is a presentation rule only; the underlying technical traceability remains complete.
+
+## Elaboration and execution control permanent rule
+Permanent reusable control: `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0`.
+
+- Convert findings/pendings into owning-document actions before execution.
+- Consolidate by document/revision and state exactly what must be changed to solve the problem.
+- Keep priority, basis/evidence, related IDs, closure criterion and status.
+- Revised documents must be rechecked before closure; a new revision number alone is not closure evidence.
+- Items deferred to detailed/executive design remain DESIGN_PENDING with expected deliverable and closure criterion.
+- For Automation network scope, check topology, CLP/UTR/I/O/IHM/Gateway/Switch/BMS links, uplinks, port map, IP/subnet, VLAN/segmentation, control-supervisory boundary, zones/conduits, firewall/DMZ decision, protocol/register/data-quality, communication-loss behavior, FAT/SAT and cybersecurity-reference applicability.
+- IEC 62443/firewall/DMZ/VLAN/zones are applicability-controlled; do not create automatic nonconformity without project/applicability basis.
+- Compact XLSX remains the execution-facing projection: Summary + Documents & Actions + Pendings + Answered Questions.
