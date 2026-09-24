@@ -17,6 +17,8 @@ CONFIG = ROOT / "datacenter" / "ENGINEERING_COMPATIBILITY_CONFIG.json"
 EXAMPLE = ROOT / "datasheet" / "projects" / "example-project.json"
 REFERENCE_LIBRARY = ROOT / "datacenter" / "AUTOMATION_REFERENCE_LIBRARY.json"
 REPORT_MODEL = ROOT / "datacenter" / "AUTOMATION_COMPATIBILITY_REPORT_MODEL.json"
+TECHNICAL_KNOWLEDGE_BASE = ROOT / "datacenter" / "AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json"
+EVIDENCE_RESEARCH_RULE = ROOT / "governance" / "AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md"
 GOVERNANCE_MODEL = ROOT / "governance" / "AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md"
 
 
@@ -172,3 +174,32 @@ def test_question_format_is_part_of_golden_rule() -> None:
     assert "Question presentation contract" in text
     assert "plain Markdown/list-only" in text
     assert "answer field" in text
+
+
+def test_do_relay_invariant_is_repository_pinned() -> None:
+    kb = load_json(TECHNICAL_KNOWLEDGE_BASE)
+    statements = " ".join(item["statement"] for item in kb["invariants"])
+    consequences = " ".join(item["consequence"] for item in kb["invariants"])
+    assert "digital output (DO/DQ)" in statements
+    assert "external interposing relay" in statements
+    assert "Do not derive relay count from DO count" in consequences
+    rule = EVIDENCE_RESEARCH_RULE.read_text(encoding="utf-8")
+    assert "relay quantity SHALL NOT be derived from DO quantity" in rule
+    assert "Quantity, naming similarity" in rule
+
+
+def test_report_model_requires_evidence_before_assumption() -> None:
+    model = load_json(REPORT_MODEL)
+    assert model["evidence_research"]["required"] is True
+    assert model["evidence_research"]["forbid_quantity_only_mapping"] is True
+    assert model["evidence_research"]["github_open_source_support"] is True
+    assert model["evidence_research"]["research_plugin_discovery"] is True
+
+
+def test_custom_config_cannot_disable_evidence_research(tmp_path: Path) -> None:
+    cfg = deepcopy(config())
+    cfg["automation_evidence_research"]["forbid_quantity_only_mapping"] = False
+    path = tmp_path / "custom-evidence.json"
+    path.write_text(json.dumps(cfg), encoding="utf-8")
+    with pytest.raises(ValueError, match="cannot override repository-pinned Automation compatibility policy"):
+        _load_policy_config(path)
