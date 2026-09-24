@@ -113,3 +113,18 @@ Padrão:
 - não criar abas separadas de Evidências, Decisões, Findings, Release Gate, Avaliação Externa ou Responsáveis salvo pedido explícito.
 
 A compactação é somente de apresentação e não pode apagar evidência ou rastreabilidade técnica.
+
+## 13. Controle de elaboração e execução
+Toda análise de compatibilização de Automação deve ser convertida em ações executáveis por documento, aplicando `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0`.
+
+Fluxo obrigatório:
+
+`EVIDÊNCIA/COMENTÁRIO -> PROTOCOL ZERO -> DECISÃO/FINDING -> AÇÃO NO DOCUMENTO -> EXECUÇÃO -> RECHECK -> FECHAMENTO`.
+
+Cada ação deve identificar documento/revisão, prioridade, ação objetiva, base/evidência, IDs relacionados, critério de fechamento e status. Não fechar item somente porque uma nova revisão foi emitida; é obrigatório reavaliar o documento revisado.
+
+Quando houver escopo de rede/Automação, verificar conforme aplicabilidade: topologia, interligações CLP/UTR/I/O/IHM/Gateway/Switch/BMS, uplinks, port map, IP/sub-redes, VLAN/segmentação, fronteira controle-supervisório, zonas e conduítes, firewall/DMZ, protocolos/endereços/registradores, perda de comunicação, FAT/SAT e aplicabilidade de referências de cibersegurança como IEC 62443.
+
+IEC 62443, VLAN, zonas/conduítes, firewall e DMZ não são não conformidades automáticas. Registrar a aplicabilidade como APPLICABLE, REFERENCE_ONLY, NOT_APPLICABLE ou PENDING, com sua base. Itens deliberadamente deixados para Projeto Executivo devem permanecer DESIGN_PENDING com entregável e critério de fechamento definidos.
+
+Aplicar `governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md` e `datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json`.
