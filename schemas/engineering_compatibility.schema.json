@@ -952,7 +952,8 @@
         "documents_involved_required",
         "source_check_before_question_required",
         "visualize_default",
-        "question_visual_contract_required"
+        "question_visual_contract_required",
+        "evidence_before_assumption_required"
       ],
       "properties": {
         "model": {
@@ -980,6 +981,9 @@
           "const": true
         },
         "question_visual_contract_required": {
+          "const": true
+        },
+        "evidence_before_assumption_required": {
           "const": true
         }
       },
@@ -1070,7 +1074,10 @@
             "OFFICIAL_AUTHORITY",
             "OFFICIAL_MANUFACTURER",
             "SPECIALIST_REFERENCE",
-            "USER_DECISION"
+            "USER_DECISION",
+            "OPEN_EDUCATIONAL_BOOK",
+            "OPEN_SOURCE_REFERENCE_IMPLEMENTATION",
+            "RESEARCH_PLUGIN_DISCOVERY"
           ]
         },
         "source_id": {
@@ -1157,7 +1164,8 @@
         "documents_involved_required",
         "normative_applicability_required",
         "recheck_revised_documents_before_close",
-        "question_visual_contract_required"
+        "question_visual_contract_required",
+        "evidence_before_assumption_required"
       ],
       "properties": {
         "model": {
@@ -1182,6 +1190,9 @@
           "const": true
         },
         "question_visual_contract_required": {
+          "const": true
+        },
+        "evidence_before_assumption_required": {
           "const": true
         }
       },
