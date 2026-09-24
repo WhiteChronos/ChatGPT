@@ -169,7 +169,24 @@
       }
     },
     "separate_questions_findings_problems": true,
-    "require_answer_field_for_open_questions": true
+    "require_answer_field_for_open_questions": true,
+    "question_presentation": {
+      "required": true,
+      "question_batch_is_visualize_artifact": true,
+      "forbid_plain_markdown_batch_when_interactive_available": true,
+      "separate_open_resolved_findings_problems": true,
+      "require_question_id": true,
+      "require_severity_or_priority": true,
+      "require_area_or_discipline": true,
+      "require_rationale": true,
+      "require_project_documents_involved": true,
+      "require_source_checks": true,
+      "require_status": true,
+      "require_answer_field": true,
+      "require_response_block_generator": true,
+      "retain_resolved_questions": true,
+      "rerun_protocol_zero_after_answer": true
+    }
   },
   "datacenter_layout": {
     "raw": "datacenter/raw/<project>/<discipline>/<document>/<revision>/",
