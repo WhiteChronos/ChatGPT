@@ -15,11 +15,17 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 8. `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`
 9. `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`
 10. `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`
+11. `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`
+12. `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`
+13. `docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md`
 
 ## Codex operating contract
 Codex SHALL:
 
 - apply Protocol Zero: explicit technical question before promoting a suspected discrepancy to a finding;
+- apply evidence-before-assumption: never infer project associations from quantity, naming, tag prefixes or row adjacency alone;
+- treat DO/DQ points and external interface/interposing relays as distinct objects unless project wiring/evidence explicitly links them;
+- when a relationship is ambiguous, research project sources, official standards/manufacturer material, open educational books, GitHub/open-source repositories and research plugins/connectors before escalating the question;
 - record project-source and normative/official source checks before escalating an unresolved technical question to the user;
 - apply the reusable Automation Compatibility Report Model and expose documents involved for every confirmed finding;
 - require normative/reference applicability state and basis before a normative source can support a confirmed nonconformity;
