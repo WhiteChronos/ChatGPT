@@ -76,3 +76,10 @@ Toda compatibilização de Automação SHALL seguir o modelo `AUTOMATION_COMPATI
 Antes de perguntar uma dúvida técnica ao usuário, consultar a baseline do projeto e as fontes normativas/oficiais aplicáveis. Norma fora de escopo pode orientar boa prática, mas não cria não conformidade sozinha.
 
 Todo erro confirmado deve mostrar os documentos envolvidos: evidência, correlatos/conflitantes, normas/referências e documentos a corrigir.
+
+## 10. Formato obrigatório de perguntas
+Em compatibilização de Automação, perguntas ao usuário também fazem parte do relatório técnico e devem permanecer no padrão visual aprovado.
+
+É proibido substituir o módulo visual de perguntas por uma lista simples em Markdown quando houver superfície interativa disponível.
+
+Cada pergunta deve mostrar: ID, criticidade/prioridade, área, pergunta objetiva, motivo, documentos do projeto envolvidos, fontes já verificadas, status e campo de resposta. Após resposta, a pergunta migra para “Perguntas Resolvidas” e o Protocol Zero é reexecutado antes de qualquer promoção para erro/finding.
