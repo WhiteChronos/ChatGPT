@@ -185,3 +185,10 @@ Release remains BLOCK when:
 
 ## Confidentiality
 This public repository SHALL store process rules, metadata and synthetic fixtures only. Project-confidential documents, project-specific source text, drawings and secrets SHALL NOT be committed.
+
+## Compact Excel export profile
+For XLSX circulation/review, the default export profile is `AUTOMATION_COMPACT_XLSX_V1`, governed by `governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md` and `datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json`.
+
+The XLSX presentation SHALL be compact by default: decisions + Release Gate in Summary; confirmed findings consolidated by document/action; Pendings in one organized sheet; answered Protocol Zero questions in a separate audit-history sheet. Standalone evidence, standalone decisions, standalone findings, standalone Release Gate, external-evaluation forms and responsible/owner sheets are excluded unless explicitly requested.
+
+This compact projection must preserve traceability and must not weaken the comprehensive /visualize report model.
