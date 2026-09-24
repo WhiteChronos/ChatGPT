@@ -77,3 +77,10 @@ Evidence remains visible in the relevant document/action, pending or question ro
 
 ## Relation to /visualize
 The interactive /visualize report remains comprehensive. The compact XLSX is a reviewer-oriented projection of the same governed data, not a replacement for the full technical model.
+
+## Elaboration/execution projection
+The compact workbook is also the execution-facing projection of `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0`.
+
+For `01_Documentos_e_Acoes`, every row should carry enough information to execute and close the correction: document/revision, priority, required action, related IDs, status and, when useful to the review stage, closure criterion/basis.
+
+For network/IP/cybersecurity pendings, do not reduce the action to “IPs/VLAN” when the source comment or engineering scope also covers topology, interconnections/uplinks, segmentation, zones/conduits, firewall/DMZ or IEC 62443 applicability. Consolidate the whole required elaboration into the document action and pending record.
