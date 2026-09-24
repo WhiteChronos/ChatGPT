@@ -53,6 +53,8 @@
     "OFFICIAL_AUTHORITY",
     "OFFICIAL_MANUFACTURER",
     "SPECIALIST_REFERENCE",
+    "OPEN_EDUCATIONAL_BOOK",
+    "OPEN_SOURCE_REFERENCE_IMPLEMENTATION",
     "ENGINEERING_INFERENCE"
   ],
   "automation_trace": [
@@ -105,5 +107,17 @@
     "retain_resolved_questions": true,
     "rerun_protocol_zero_after_answer": true,
     "enhanced_renderer_when_executable": "Build Web Data Visualization"
+  },
+  "evidence_research": {
+    "required": true,
+    "policy": "PROJECT_EVIDENCE_BEFORE_ASSOCIATION",
+    "governance": "governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md",
+    "knowledge_base": "datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json",
+    "forbid_quantity_only_mapping": true,
+    "forbid_tag_name_only_mapping": true,
+    "require_support_research_for_ambiguous_relationships": true,
+    "github_open_source_support": true,
+    "research_plugin_discovery": true,
+    "discovery_tool_is_not_evidence": true
   }
 }
