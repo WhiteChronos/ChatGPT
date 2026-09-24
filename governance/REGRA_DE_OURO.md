@@ -83,3 +83,21 @@ Em compatibilização de Automação, perguntas ao usuário também fazem parte 
 É proibido substituir o módulo visual de perguntas por uma lista simples em Markdown quando houver superfície interativa disponível.
 
 Cada pergunta deve mostrar: ID, criticidade/prioridade, área, pergunta objetiva, motivo, documentos do projeto envolvidos, fontes já verificadas, status e campo de resposta. Após resposta, a pergunta migra para “Perguntas Resolvidas” e o Protocol Zero é reexecutado antes de qualquer promoção para erro/finding.
+
+## 11. Regra de evidência antes de associação
+Não presumir relação elétrica, funcional ou quantitativa entre itens sem evidência do projeto.
+
+É proibido concluir, por exemplo, que quantidade de DO = quantidade de relés, ou que um TAG RI está ligado a um DO específico, apenas por nome, contagem ou proximidade em lista.
+
+Antes da afirmação técnica:
+1. verificar documento do projeto;
+2. verificar base/contrato;
+3. verificar norma aplicável;
+4. verificar fabricante oficial;
+5. buscar livro/artigo técnico de apoio;
+6. pesquisar GitHub/repositórios open source e plugins de pesquisa quando ajudarem a entender o conceito;
+7. somente então formular hipótese/pergunta.
+
+GitHub, repositórios open source e plugins são apoio de pesquisa, nunca substituem evidência do projeto, norma aplicável ou fabricante oficial.
+
+Aplicar `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md` e `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`.
