@@ -43,7 +43,7 @@ def _load_policy_config(path: Path) -> dict[str, Any]:
         raise ValueError(
             "config.criterion_inventories cannot override the repository-pinned canonical criterion inventory"
         )
-    for pinned_key in ("finding_contract", "automation_report_model", "protocol_zero"):
+    for pinned_key in ("finding_contract", "automation_report_model", "protocol_zero", "automation_evidence_research"):
         if requested.get(pinned_key) != canonical.get(pinned_key):
             raise ValueError(
                 f"config.{pinned_key} cannot override repository-pinned Automation compatibility policy"
@@ -317,6 +317,12 @@ def _round10_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
             )
         if report_model.get("question_visual_contract_required") is not True:
             _impl.fail("report_model.question_visual_contract_required must be true", errors)
+        if report_model.get("evidence_before_assumption_required") is not True:
+            _impl.fail("report_model.evidence_before_assumption_required must be true", errors)
+
+    analysis_profile = data.get("analysis_profile", {})
+    if not isinstance(analysis_profile, dict) or analysis_profile.get("evidence_before_assumption_required") is not True:
+        _impl.fail("analysis_profile.evidence_before_assumption_required must be true", errors)
 
     visualization = data.get("visualization", {})
     if not isinstance(visualization, dict) or visualization.get("question_batches_are_visualize_artifacts") is not True:
