@@ -11,6 +11,9 @@
     "OFFICIAL_AUTHORITY",
     "OFFICIAL_MANUFACTURER",
     "SPECIALIST_REFERENCE",
+    "OPEN_EDUCATIONAL_BOOK",
+    "GITHUB_OPEN_SOURCE_REPOSITORY",
+    "RESEARCH_PLUGIN_DISCOVERY",
     "USER_QUESTION"
   ],
   "standards": [
@@ -70,5 +73,12 @@
       "coverage": "Annex A forms 01-14",
       "scope_note": "Use as a standard forms/list reference. Treat as mandatory only when applicable or explicitly invoked."
     }
-  ]
+  ],
+  "research_guard": {
+    "no_project_association_from_quantity_name_or_adjacency": true,
+    "project_evidence_required_before_mapping": true,
+    "github_and_open_source_are_supporting_sources": true,
+    "research_plugins_are_discovery_channels_not_evidence": true,
+    "technical_knowledge_base": "datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json"
+  }
 }
