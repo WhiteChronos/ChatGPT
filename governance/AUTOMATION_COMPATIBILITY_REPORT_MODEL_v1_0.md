@@ -107,6 +107,15 @@ A normative/reference document SHALL carry an applicability state:
 
 A reference-only document cannot, by itself, create a confirmed nonconformity.
 
+## Evidence-before-assumption gate
+The report SHALL apply `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`.
+
+A suspected relationship between project objects remains a question/NOT_VERIFIABLE until evidence establishes the link. Quantity matching alone is never evidence of one-to-one mapping.
+
+For component/interface questions, the reviewer SHALL check the project baseline first and then seek supporting material from official standards/manufacturers and, when useful, open educational books, GitHub/open-source repositories and research plugins. The discovery mechanism is not itself the evidence.
+
+The technical knowledge base is `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`.
+
 ## Evidence classes
 The report SHALL distinguish:
 - project source fact;
@@ -115,7 +124,9 @@ The report SHALL distinguish:
 - reference-only normative guidance;
 - official authority source;
 - official manufacturer source;
+- open educational book;
 - specialist reference;
+- open-source reference implementation;
 - engineering inference.
 
 ## Automation trace
