@@ -18,6 +18,10 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 11. `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`
 12. `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`
 13. `docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md`
+14. `governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md`
+15. `datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json`
+16. `governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md`
+17. `datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json`
 
 ## Codex operating contract
 Codex SHALL:
@@ -28,6 +32,11 @@ Codex SHALL:
 - when a relationship is ambiguous, research project sources, official standards/manufacturer material, open educational books, GitHub/open-source repositories and research plugins/connectors before escalating the question;
 - record project-source and normative/official source checks before escalating an unresolved technical question to the user;
 - apply the reusable Automation Compatibility Report Model and expose documents involved for every confirmed finding;
+- convert confirmed findings and material pendings into owning-document actions before execution, with priority, required action, basis, related IDs, closure criterion and status;
+- never close a correction merely because a revised document was issued; recheck the revised document against the original evidence and decisions;
+- for network/IP/cybersecurity scope, check topology, controller/UTR/I/O/HMI/gateway/switch/BMS interconnections, uplinks, port map, IP/subnets, VLAN/segmentation, control-supervisory boundary, zones/conduits, firewall/DMZ decision, protocol/register/data-quality, communication-loss behavior, FAT/SAT and cybersecurity-reference applicability;
+- treat IEC 62443, VLAN, zones/conduits, firewall and DMZ as applicability-controlled, not universal automatic nonconformities;
+- keep intentionally deferred detailed/executive-design items as DESIGN_PENDING with a defined deliverable and closure criterion;
 - require normative/reference applicability state and basis before a normative source can support a confirmed nonconformity;
 - keep unanswered questions as NOT_VERIFIABLE/pending and never promote them to confirmed findings;
 - apply Automation/Data hyperfocus through TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> FAT/SAT;
