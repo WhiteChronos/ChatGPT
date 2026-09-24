@@ -101,3 +101,15 @@ Antes da afirmação técnica:
 GitHub, repositórios open source e plugins são apoio de pesquisa, nunca substituem evidência do projeto, norma aplicável ou fabricante oficial.
 
 Aplicar `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md` e `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`.
+
+## 12. Exportação Excel compacta
+Para relatórios de compatibilização de Automação enviados em XLSX para circulação/revisão, aplicar `AUTOMATION_COMPACT_XLSX_V1`.
+
+Padrão:
+- Resumo contém decisões e Release Gate;
+- Findings são consolidados por documento em “Documentos e Ações”, mostrando objetivamente o que corrigir e a prioridade;
+- Pendências permanecem em uma aba organizada;
+- Perguntas respondidas permanecem em aba própria para rastreabilidade do Protocol Zero;
+- não criar abas separadas de Evidências, Decisões, Findings, Release Gate, Avaliação Externa ou Responsáveis salvo pedido explícito.
+
+A compactação é somente de apresentação e não pode apagar evidência ou rastreabilidade técnica.
