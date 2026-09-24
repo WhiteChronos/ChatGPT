@@ -27,6 +27,17 @@ Rules:
 - Conservative electrical values, minimum-versus-higher protection classes, reserve capacity, and alternative design bases SHALL be tested before being classified as errors.
 - Project decisions and documentary facts must remain distinguishable.
 
+## Evidence-before-assumption research rule
+The mandatory research contract is `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`.
+
+Rules:
+- do not infer an electrical/functional relationship from counts, naming similarity, tag prefixes, adjacent material-list rows or generic practice;
+- a DO/DQ is a controller output point; an external interface/interposing relay is a separate device unless project wiring explicitly links them;
+- never infer relay quantity from DO quantity;
+- when project evidence is ambiguous, research official standards/manufacturer material and then supporting open educational books, GitHub/open-source reference implementations and research plugins/connectors before escalating the doubt;
+- GitHub/open-source code and plugins are supporting/discovery channels, not project authority;
+- the underlying source must be identified and classified before it supports a technical claim.
+
 ## Hyperfocus Automation + Data
 The primary review perspective is the complete automation chain:
 
