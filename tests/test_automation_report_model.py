@@ -142,3 +142,33 @@ def test_custom_config_cannot_disable_report_model_controls(tmp_path: Path) -> N
 
     with pytest.raises(ValueError, match="cannot override repository-pinned Automation compatibility policy"):
         _load_policy_config(path)
+
+
+def test_question_batches_are_visualize_artifacts() -> None:
+    model = load_json(REPORT_MODEL)
+    qp = model["question_presentation"]
+    assert qp["required"] is True
+    assert qp["renderer"] == "Visualize"
+    assert qp["plain_markdown_batch_allowed_when_interactive_available"] is False
+    assert qp["require_answer_field"] is True
+    assert qp["require_response_block_generator"] is True
+    assert qp["retain_resolved_questions"] is True
+    assert qp["rerun_protocol_zero_after_answer"] is True
+    assert {
+        "question_id",
+        "severity_or_priority",
+        "discipline_or_area",
+        "question",
+        "rationale",
+        "project_documents_involved",
+        "source_checks",
+        "status",
+        "answer_field",
+    } <= set(qp["required_fields"])
+
+
+def test_question_format_is_part_of_golden_rule() -> None:
+    text = GOVERNANCE_MODEL.read_text(encoding="utf-8")
+    assert "Question presentation contract" in text
+    assert "plain Markdown/list-only" in text
+    assert "answer field" in text
