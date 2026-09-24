@@ -308,5 +308,17 @@
         "PROCUREMENT_MODEL_QUANTITY": "MATERIAL_LIST_DATASHEET_REQUISITION_SPECIFICATION"
       }
     }
+  },
+  "elaboration_execution_control": {
+    "governance": "governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md",
+    "model": "datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json",
+    "status": "MANDATORY",
+    "owning_document_action_required": true,
+    "revised_document_recheck_required": true,
+    "close_on_revision_statement_only": false,
+    "design_pending_requires_deliverable_and_closure_criterion": true,
+    "network_ip_cybersecurity_checklist_required_when_applicable": true,
+    "normative_and_cybersecurity_applicability_controlled": true,
+    "iec_62443_universal_nonconformity": false
   }
 }
