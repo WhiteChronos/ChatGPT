@@ -83,5 +83,27 @@
     "ARCHITECTURE_WITHOUT_VIABILITY",
     "FAILED_COVERAGE_OR_COMPATIBILITY",
     "REVISED_DOCUMENT_NOT_RECHECKED"
-  ]
+  ],
+  "question_presentation": {
+    "required": true,
+    "renderer": "Visualize",
+    "plain_markdown_batch_allowed_when_interactive_available": false,
+    "separate_from_findings_and_problems": true,
+    "required_fields": [
+      "question_id",
+      "severity_or_priority",
+      "discipline_or_area",
+      "question",
+      "rationale",
+      "project_documents_involved",
+      "source_checks",
+      "status",
+      "answer_field"
+    ],
+    "require_answer_field": true,
+    "require_response_block_generator": true,
+    "retain_resolved_questions": true,
+    "rerun_protocol_zero_after_answer": true,
+    "enhanced_renderer_when_executable": "Build Web Data Visualization"
+  }
 }
