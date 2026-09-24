@@ -40,6 +40,23 @@ Every report SHALL expose, at minimum:
 17. Action plan.
 18. Release Gate.
 
+## Question presentation contract
+Any user-facing batch of Automation compatibility questions SHALL use the same standard visual model as the report.
+
+Mandatory behavior:
+- render through `/visualize` using the best interactive surface available;
+- do not present the primary question batch as a plain Markdown/list-only response when an interactive visualization surface is available;
+- keep questions in a dedicated module visually separated from confirmed findings and engineering problems;
+- every question card SHALL show: question ID, severity/priority, discipline/area, objective question, why the question is needed, project documents involved, completed source checks, current status, and a writable answer field;
+- when an answer can be selected from a bounded engineering choice, show the options explicitly without steering the user;
+- provide a generated response block so the user can return all answers to the analysis;
+- preserve answered questions in a separate resolved-questions module rather than deleting their audit trail;
+- unanswered questions remain `NOT_VERIFIABLE` / pending and SHALL NOT be visually styled as confirmed errors;
+- after user answers, re-run Protocol Zero and source verification before promoting any question to a finding;
+- when @Build Web Data Visualization later becomes executable, upgrade the same question/report view without changing technical content.
+
+This contract applies both when the user asks for the full report and when the user asks only to “generate the questions”.
+
 ## Protocol Zero
 Every suspected discrepancy SHALL follow:
 
