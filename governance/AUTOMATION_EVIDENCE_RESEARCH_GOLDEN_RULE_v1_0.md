@@ -30,18 +30,34 @@ Therefore:
 - a DO may drive a compatible load directly;
 - mapping DO -> external relay requires project evidence such as wiring diagram, loop/interconnection diagram, terminal plan, panel schematic, I/O mapping, cable schedule or explicit design specification.
 
+## Document-routing gate before user questions
+Before escalating any technical doubt to the user, the reviewer SHALL first route the question to the project document class most likely to own the answer and search that source.
+
+Minimum routing:
+- network topology, Ethernet paths, switch/uplink ports, controller interconnection, gateway paths -> Automation/network architecture drawings and network diagrams;
+- I/O point destination, card/channel mapping, terminal destination -> I/O list + interconnection/wiring/loop/terminal/panel drawings;
+- command priority, LOCAL/REMOTE, MANUAL/AUTO, sequences, permissives and fallback -> control philosophy / memorial / technical specification / Cause & Effect;
+- field-device quantity and process location -> discipline-master process/HVAC/P&ID/layout/equipment documents;
+- power feed, protection, grounding, UPS and source -> electrical one-line/panel/feeding documents;
+- procurement quantity/model -> material list + datasheet + requisition/specification.
+
+If the user explicitly points to the owning document (for example, “this is in the network architecture”), the reviewer SHALL reopen/recheck that document before keeping the item as a user question.
+
+A question that can be answered from its owning project document is NOT a user question. It is a source-resolution task.
+
 ## Research-before-assumption sequence
 For an unfamiliar, ambiguous or disputed engineering relationship, search in this order:
 
-1. current project baseline and revisions;
-2. contract, design basis and discipline-master document;
-3. applicable corporate/national/international standard;
-4. official authority;
-5. official manufacturer manual/datasheet/application guide;
-6. open educational book/textbook or recognized specialist reference;
-7. GitHub/open-source reference implementation or repository;
-8. research plugins/connectors for discovery and citation finding;
-9. ask the user only after the above checks fail to resolve the project-specific question.
+1. route the doubt to the likely owning project document class and search that source;
+2. current project baseline and revisions;
+3. contract, design basis and discipline-master document;
+4. applicable corporate/national/international standard;
+5. official authority;
+6. official manufacturer manual/datasheet/application guide;
+7. open educational book/textbook or recognized specialist reference;
+8. GitHub/open-source reference implementation or repository;
+9. research plugins/connectors for discovery and citation finding;
+10. ask the user only after the above checks fail to resolve the project-specific question.
 
 ## GitHub / open-source rule
 GitHub and open-source repositories are mandatory discovery channels when they can materially improve understanding of a technical concept, protocol, software mapping or reference implementation.
