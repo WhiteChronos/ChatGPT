@@ -203,3 +203,15 @@ def test_custom_config_cannot_disable_evidence_research(tmp_path: Path) -> None:
     path.write_text(json.dumps(cfg), encoding="utf-8")
     with pytest.raises(ValueError, match="cannot override repository-pinned Automation compatibility policy"):
         _load_policy_config(path)
+
+
+def test_owning_document_routing_is_mandatory_before_user_question() -> None:
+    model = load_json(REPORT_MODEL)
+    er = model["evidence_research"]
+    assert er["document_routing_before_user_question"] is True
+    assert er["user_pointed_document_must_be_rechecked"] is True
+    assert er["project_source_resolution_removes_user_question"] is True
+    rule = EVIDENCE_RESEARCH_RULE.read_text(encoding="utf-8")
+    assert "Document-routing gate before user questions" in rule
+    assert "network topology" in rule
+    assert "A question that can be answered from its owning project document is NOT a user question" in rule
