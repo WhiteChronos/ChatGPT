@@ -185,7 +185,7 @@ def test_do_relay_invariant_is_repository_pinned() -> None:
     assert "Do not derive relay count from DO count" in consequences
     rule = EVIDENCE_RESEARCH_RULE.read_text(encoding="utf-8")
     assert "relay quantity SHALL NOT be derived from DO quantity" in rule
-    assert "Quantity, naming similarity" in rule
+    assert "quantity, naming similarity" in rule
 
 
 def test_report_model_requires_evidence_before_assumption() -> None:
