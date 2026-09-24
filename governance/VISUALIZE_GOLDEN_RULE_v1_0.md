@@ -171,3 +171,8 @@ Codex or any coding agent modifying this repository SHALL read this file before 
 Automation compatibility reports SHALL also comply with `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md` and the machine-readable model at `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`.
 
 For Automation findings, the visualization SHALL expose the structured documents-involved groups and normative applicability state. Open questions SHALL expose recorded pre-escalation source checks and an answer field.
+
+## Question-only outputs
+When an engineering review asks the user to answer technical questions, the question set is itself a governed `/visualize` artifact. If an interactive surface is available, a plain Markdown/list-only question batch is non-compliant.
+
+Each question card must include ID, severity/priority, discipline/area, objective question, rationale, project documents involved, completed source checks, status and an answer field. Answered questions must move to a resolved-questions module without losing traceability.
