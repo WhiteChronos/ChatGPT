@@ -215,3 +215,26 @@ def test_owning_document_routing_is_mandatory_before_user_question() -> None:
     assert "Document-routing gate before user questions" in rule
     assert "network topology" in rule
     assert "A question that can be answered from its owning project document is NOT a user question" in rule
+
+
+def test_compact_xlsx_export_profile_is_pinned() -> None:
+    profile = load_json(EXPORT_PROFILES)
+    assert profile["profile_id"] == "AUTOMATION_COMPACT_XLSX_V1"
+    assert profile["default_for_external_review"] is True
+    names = [sheet["name"] for sheet in profile["sheets"]]
+    assert names == [
+        "00_Resumo",
+        "01_Documentos_e_Acoes",
+        "02_Pendencias",
+        "03_Perguntas_Respondidas",
+    ]
+    assert profile["rules"]["findings_grouped_by_document_action"] is True
+    assert profile["rules"]["owner_column_default"] is False
+    assert profile["rules"]["external_review_fields_default"] is False
+
+
+def test_compact_xlsx_rule_keeps_traceability_without_sheet_sprawl() -> None:
+    text = COMPACT_XLSX_RULE.read_text(encoding="utf-8")
+    assert "Decisions and Release Gate belong in the Summary sheet" in text
+    assert "Findings are consolidated into the Documents & Actions sheet" in text
+    assert "Never delete a superseded user answer" in text
