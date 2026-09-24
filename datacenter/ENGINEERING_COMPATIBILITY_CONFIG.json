@@ -294,6 +294,19 @@
       "RESEARCH_PLUGIN_DISCOVERY"
     ],
     "github_open_source_is_supporting_not_authoritative": true,
-    "plugin_is_discovery_not_evidence": true
+    "plugin_is_discovery_not_evidence": true,
+    "document_routing_before_user_question": {
+      "required": true,
+      "user_pointed_document_must_be_rechecked": true,
+      "resolved_from_project_source_remove_from_user_question_queue": true,
+      "routes": {
+        "NETWORK_TOPOLOGY_PROTOCOL": "AUTOMATION_OR_NETWORK_ARCHITECTURE",
+        "IO_DESTINATION_CHANNEL_TERMINAL": "IO_LIST_PLUS_INTERCONNECTION_WIRING_LOOP_TERMINAL_PANEL",
+        "CONTROL_PRIORITY_SEQUENCE_FALLBACK": "CONTROL_PHILOSOPHY_MEMORIAL_SPECIFICATION_CAUSE_EFFECT",
+        "FIELD_DEVICE_QUANTITY_PROCESS_LOCATION": "DISCIPLINE_MASTER_PROCESS_HVAC_PID_LAYOUT_EQUIPMENT",
+        "POWER_PROTECTION_GROUNDING_UPS": "ELECTRICAL_ONE_LINE_PANEL_FEEDING",
+        "PROCUREMENT_MODEL_QUANTITY": "MATERIAL_LIST_DATASHEET_REQUISITION_SPECIFICATION"
+      }
+    }
   }
 }
