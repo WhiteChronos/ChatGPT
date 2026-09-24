@@ -81,3 +81,15 @@ For an ambiguous component relationship:
 7. if the project link remains unproven, keep the item as NOT_VERIFIABLE/question.
 
 Never infer one-to-one mappings from counts, names, prefixes or adjacent rows. In particular, DO count does not imply external relay count.
+
+### Codex workflow and repository-governance references
+- `openai/codex` — official open-source Codex CLI/harness. Relevant patterns: repository `AGENTS.md`, project `.codex/config.toml`, app-server/SDK/exec integration surfaces, bounded context, explicit verification and repository-scoped instructions.
+- `duduaguiaarr-source/miniguia-estudos-sistemas-operacionais` — small public study project whose useful pattern is source curation before AI synthesis: define source set, specify answer format/level, require source-bounded answers, and surface uncertainties instead of silently filling gaps.
+- `crisxuan/agent-workflow-kit` — evaluation-first workflow kit: inspect repository risk first, choose the smallest workflow level, and require verification before claiming completion.
+- `dev-hara0004/codex-agent-workflow-template` — reusable Codex project structure with `AGENTS.md`, `.codex/`, workflow modes, templates, test plans and traceability; useful principle: avoid duplicating the same information across documents and keep one source of truth.
+- `hdtinh57/codex-orchestrated-project-template` — orchestration-focused template using thin agents, skills, prompt packs, rules and hooks; useful principle: keep reusable domain knowledge in skills/rules instead of bloating one global prompt.
+
+Adoption note: non-OpenAI repositories are reference-only patterns. Review license, maintenance, security and fit before adopting any files or automation.
+
+Secondary tutorial reference:
+- DataCamp, `OpenAI Codex: um guia passo a passo com 3 exemplos práticos` — useful onboarding overview of GitHub-connected tasks, sandboxes, pull requests and `AGENTS.md`; not an authority source for Codex behavior. Prefer official OpenAI docs for current product semantics.
