@@ -9,6 +9,7 @@ on:
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md'
       - 'governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md'
+      - 'governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
@@ -16,6 +17,7 @@ on:
       - 'datacenter/AUTOMATION_REFERENCE_LIBRARY.json'
       - 'datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json'
       - 'datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json'
+      - 'datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json'
       - 'datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
@@ -81,6 +83,7 @@ jobs:
           python -m json.tool datacenter/AUTOMATION_REFERENCE_LIBRARY.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json >/dev/null
+          python -m json.tool datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json >/dev/null
           python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
           python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
@@ -154,6 +157,8 @@ jobs:
           grep -q 'AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0' AGENTS.md
           grep -q 'AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0' datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json
           grep -q 'AUTOMATION_COMPACT_XLSX_V1' datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json
+          grep -q 'AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0' datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json
+          grep -q 'IEC 62443' governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md
           grep -q 'Findings are consolidated into the Documents & Actions sheet' governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md
           grep -q 'PETROBRAS-N-1882' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
           grep -q 'PETROBRAS-N-1883' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
