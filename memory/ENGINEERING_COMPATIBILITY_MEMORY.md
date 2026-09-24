@@ -49,6 +49,8 @@ Permanent regression lesson:
 - DO -> relay association requires explicit project evidence: wiring/interconnection diagram, terminal plan, I/O mapping, panel schematic, cable schedule, loop diagram or specification.
 - A PLC output module may itself be transistor, triac or relay technology; this is different from an external interface relay.
 - If a relationship is unclear, keep it as a question/NOT_VERIFIABLE, research supporting material, and state what the external source proves versus what remains project-specific.
+- Owning-document routing is mandatory before asking the user: first identify and search the project document class most likely to own the answer (network architecture, I/O/interconnection, control philosophy/C&E, HVAC/process master, electrical supply/protection, material/datasheet).
+- If the user points to the owning document, reopen/recheck that document and remove the item from the user-question queue when the source resolves it.
 - Mandatory support research channels include official manufacturer material, open educational books, GitHub/open-source repositories and research plugins/connectors where they materially improve understanding.
 - GitHub/open-source/plugins never override the project baseline, applicable standard or official manufacturer source.
 
