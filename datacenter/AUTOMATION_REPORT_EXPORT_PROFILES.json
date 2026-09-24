@@ -70,5 +70,12 @@
     "superseded_answers_retained": true,
     "owner_column_default": false,
     "external_review_fields_default": false
+  },
+  "execution_projection": {
+    "elaboration_execution_control_model": "AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0",
+    "documents_and_actions_must_be_executable": true,
+    "pendings_must_include_next_action_and_deliverable": true,
+    "network_ip_cybersecurity_scope_must_not_be_truncated": true,
+    "revised_document_recheck_before_closure": true
   }
 }
