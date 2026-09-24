@@ -73,6 +73,22 @@ Regras obrigatórias:
 6. norma/referência deve registrar aplicabilidade; `REFERENCE_ONLY` não cria não conformidade sozinha;
 7. documento revisado precisa ser rechecado antes de encerrar finding ou liberar o projeto.
 
+## Pesquisa técnica antes de afirmar associação
+Aplicar `AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0`.
+
+Nunca associar DO, DI, AI, AO, relé, contato, borne, cabo, gateway, switch ou outro objeto por quantidade, nome, prefixo de TAG ou proximidade documental sem evidência explícita.
+
+Caso a relação seja ambígua:
+- pesquisar a baseline do projeto;
+- consultar normas/fontes oficiais;
+- consultar fabricante;
+- procurar literatura técnica aberta;
+- pesquisar GitHub/repositórios open source;
+- usar plugins/conectores de pesquisa para descobrir fontes;
+- distinguir claramente conceito geral de evidência específica do projeto.
+
+Regra permanente: DO é um ponto/canal de saída do controlador; relé externo é dispositivo separado e só pode ser associado ao DO quando o projeto demonstra a ligação.
+
 ## Perguntas ao usuário — formato obrigatório
 
 Em compatibilização de Automação, não gerar lote de perguntas em lista Markdown quando houver superfície `/visualize` interativa disponível.
