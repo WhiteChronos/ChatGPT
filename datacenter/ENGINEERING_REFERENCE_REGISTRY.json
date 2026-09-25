@@ -213,7 +213,12 @@
         "MODBUS_CLIENT_SERVER",
         "PROTOCOL_TESTING"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "NOASSERTION",
+      "default_branch": "dev",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY_REVIEW_REQUIRED"
     },
     {
       "id": "GITHUB-OPCUA-ASYNCIO",
@@ -223,7 +228,12 @@
         "OPC_UA_CLIENT_SERVER",
         "INTEROPERABILITY_TESTING"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "LGPL-3.0",
+      "default_branch": "master",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-BAC0",
@@ -233,7 +243,12 @@
         "BACNET_TESTING",
         "DDC_TEST_AUTOMATION"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "LGPL-3.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-NODE-RED",
@@ -243,7 +258,12 @@
         "FLOW_INTEGRATION",
         "PROTOTYPING"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "Apache-2.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-JSONSCHEMA",
@@ -252,7 +272,12 @@
       "role": [
         "JSON_SCHEMA_VALIDATION"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "MIT",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-PANDERA",
@@ -262,7 +287,12 @@
         "DATAFRAME_VALIDATION",
         "DATA_QUALITY"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "MIT",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-GRAFANA",
@@ -272,7 +302,12 @@
         "OBSERVABILITY",
         "DASHBOARD"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "AGPL-3.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-PROMETHEUS",
@@ -282,7 +317,12 @@
         "METRICS",
         "MONITORING"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "Apache-2.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
     },
     {
       "id": "GITHUB-TIMESCALEDB",
@@ -292,7 +332,12 @@
         "TIME_SERIES",
         "HISTORIAN_SUPPORT"
       ],
-      "normative": false
+      "normative": false,
+      "reported_license": "NOASSERTION",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY_REVIEW_REQUIRED"
     }
   ],
   "verified_at": "2026-09-25",
