@@ -1,0 +1,31 @@
+{
+  "system_id": "DOCUMENT_EVALUATION_SYSTEM_V0_1",
+  "status": "INCUBATING",
+  "source_repository": "WhiteChronos/ChatGPT",
+  "source_branch": "feature/document-evaluation-platform-v0.1",
+  "inherits": {
+    "compatibility_gate": "pipeline/engineering_compatibility_gate.py",
+    "protocol_zero_gate": "pipeline/protocol_zero_gate.py",
+    "reference_registry_gate": "pipeline/reference_registry_gate.py",
+    "reference_registry": "datacenter/ENGINEERING_REFERENCE_REGISTRY.json",
+    "datasheet_schema": "schemas/engineering_compatibility.schema.json",
+    "source_governance": "governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md",
+    "hyperfocus_governance": "governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md",
+    "visualize_governance": "governance/VISUALIZE_GOLDEN_RULE_v1_0.md"
+  },
+  "product_modules": [
+    "INGESTION",
+    "PROVENANCE",
+    "BASELINE",
+    "PROTOCOL_ZERO",
+    "ASSESSMENT",
+    "REFERENCE_GOVERNANCE",
+    "AUTOMATION_HYPERFOCUS",
+    "FINDINGS",
+    "SCORING",
+    "RELEASE_GATE",
+    "REPORTING",
+    "AGENT"
+  ],
+  "extraction_ready": true
+}
