@@ -1,0 +1,82 @@
+{
+  "model_id": "DOCUMENT_FIDELITY_INTERPRETATION_V1_0",
+  "status": "GOLDEN_RULE",
+  "mandatory": true,
+  "layers": [
+    "SOURCE_NATIVE_STRUCTURE",
+    "SEMANTIC_EXTRACTION",
+    "VISUAL_RENDERING"
+  ],
+  "pagination": {
+    "source_fidelity_fact": true,
+    "docx_priority": [
+      "DOCX_APP_XML_PAGES",
+      "AUTHORED_FOLIATION",
+      "NATIVE_WORD_EXPORT"
+    ],
+    "doc_priority": [
+      "OLE_SUMMARYINFO_PAGE_COUNT",
+      "AUTHORED_FOLIATION",
+      "NATIVE_WORD_EXPORT"
+    ],
+    "pdf_priority": [
+      "PDF_NATIVE_PAGE_TREE"
+    ],
+    "external_render_count_authoritative_for_word": false,
+    "mismatch_status": "RENDER_MISMATCH",
+    "interpretation_conflict_status": "DOCUMENT_INTERPRETATION_CONFLICT"
+  },
+  "font_fidelity": {
+    "inventory_required_before_layout_claim": true,
+    "substitution_must_be_recorded": true,
+    "material_substitution_blocks_render_only_layout_findings": true,
+    "blocked_status": "NOT_VERIFIABLE_FROM_RENDER"
+  },
+  "required_probe_fields": [
+    "native_page_count",
+    "native_count_method",
+    "rendered_page_count",
+    "renderer",
+    "font_substitution_detected",
+    "pagination_status",
+    "confidence"
+  ],
+  "interpretation_workflow": [
+    "STRUCTURE_AND_PROVENANCE",
+    "SEMANTIC_CONTENT",
+    "VISUAL_VERIFICATION",
+    "CROSS_LAYER_RECONCILIATION"
+  ],
+  "source_tools": {
+    "docx": [
+      "python-openxml/python-docx",
+      "OOXML_ZIP_INSPECTION"
+    ],
+    "legacy_doc": [
+      "decalage2/olefile"
+    ],
+    "pdf": [
+      "pymupdf/PyMuPDF"
+    ],
+    "layout_parser": [
+      "docling-project/docling"
+    ],
+    "semantic_converter": [
+      "microsoft/markitdown"
+    ],
+    "renderer": [
+      "LibreOffice/core"
+    ],
+    "scanned_documents": [
+      "PaddlePaddle/PaddleOCR",
+      "ocrmypdf/OCRmyPDF"
+    ],
+    "partitioning": [
+      "Unstructured-IO/unstructured"
+    ]
+  },
+  "renderer_guard": {
+    "libreoffice_is_visual_qa_not_word_pagination_authority": true,
+    "parser_page_segmentation_is_not_source_page_count": true
+  }
+}

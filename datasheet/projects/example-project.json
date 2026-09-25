@@ -210,16 +210,25 @@
     },
     "mandatory_sections": [
       "executive_gate",
+      "source_documents",
       "baseline_map",
-      "compatibility_by_discipline",
-      "compatibility_by_document",
-      "interfaces",
-      "complete_findings",
-      "feasibility",
-      "missing_evidence",
+      "tag_traceability",
+      "resolved_questions",
+      "open_questions",
+      "confirmed_findings",
+      "engineering_problems",
+      "verified_items",
+      "not_verifiable",
+      "automation_architecture",
+      "network_and_data",
+      "functional_logic",
+      "power_24vdc_ups",
+      "solutions",
+      "documents_to_correct",
       "action_plan",
       "release_gate"
-    ]
+    ],
+    "question_batches_are_visualize_artifacts": true
   },
   "findings": [],
   "protocol_zero": {
@@ -231,7 +240,28 @@
         "question": "Are the synthetic current baselines mutually reconciled before findings are evaluated?",
         "answer": "Yes. The positive fixture explicitly marks the current synthetic HVAC, Electrical and Automation baselines as reconciled.",
         "status": "ANSWERED",
-        "promotes_to_finding": false
+        "promotes_to_finding": false,
+        "pre_escalation_search_completed": true,
+        "source_checks": [
+          {
+            "source_type": "PROJECT_DOCUMENT",
+            "source_id": "EX-HVAC-001",
+            "result": "ANSWERED",
+            "note": "Synthetic baseline source confirms current reconciliation evidence."
+          },
+          {
+            "source_type": "PROJECT_DOCUMENT",
+            "source_id": "EX-AUT-001",
+            "result": "ANSWERED",
+            "note": "Synthetic Automation baseline source confirms current reconciliation evidence."
+          },
+          {
+            "source_type": "REFERENCE_STANDARD",
+            "source_id": "PETROBRAS-N-1883",
+            "result": "NOT_APPLICABLE",
+            "note": "No normative claim is required to resolve this synthetic baseline question."
+          }
+        ]
       }
     ]
   },
@@ -239,6 +269,50 @@
     "model": "AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0",
     "automation_hyperfocus": true,
     "data_lineage_required": true,
-    "failure_mode_review_required": true
+    "failure_mode_review_required": true,
+    "reference_library_check_required": true,
+    "documents_involved_required": true,
+    "source_check_before_question_required": true,
+    "visualize_default": true,
+    "question_visual_contract_required": true,
+    "evidence_before_assumption_required": true
+  },
+  "reference_library": {
+    "library_id": "AUTOMATION_REFERENCE_LIBRARY_V1_0",
+    "policy": "REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE",
+    "standards": [
+      {
+        "id": "PETROBRAS-N-1882",
+        "revision": "F",
+        "applicability": "REFERENCE_ONLY",
+        "applicability_basis": "Synthetic regression fixture; no contractual invocation is asserted.",
+        "project_invoked": false
+      },
+      {
+        "id": "PETROBRAS-N-1883",
+        "revision": "F",
+        "applicability": "REFERENCE_ONLY",
+        "applicability_basis": "Synthetic regression fixture; retained as documentary reference only.",
+        "project_invoked": false
+      },
+      {
+        "id": "PETROBRAS-N-2833",
+        "revision": "A",
+        "applicability": "REFERENCE_ONLY",
+        "applicability_basis": "Synthetic regression fixture; retained as forms/list reference only.",
+        "project_invoked": false
+      }
+    ]
+  },
+  "report_model": {
+    "model": "AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0",
+    "visualize_default": true,
+    "enhanced_renderer": "Build Web Data Visualization",
+    "questions_separated": true,
+    "documents_involved_required": true,
+    "normative_applicability_required": true,
+    "recheck_revised_documents_before_close": true,
+    "question_visual_contract_required": true,
+    "evidence_before_assumption_required": true
   }
 }

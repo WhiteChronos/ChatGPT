@@ -19,6 +19,21 @@ def base():
                     "answer": "",
                     "status": "UNANSWERED",
                     "promotes_to_finding": False,
+                    "pre_escalation_search_completed": True,
+                    "source_checks": [
+                        {
+                            "source_type": "PROJECT_DOCUMENT",
+                            "source_id": "SYNTHETIC-PROJECT-DOC",
+                            "result": "PARTIAL",
+                            "note": "Synthetic project source checked first.",
+                        },
+                        {
+                            "source_type": "REFERENCE_STANDARD",
+                            "source_id": "PETROBRAS-N-1882",
+                            "result": "NOT_FOUND",
+                            "note": "Synthetic normative lookup completed before escalation.",
+                        },
+                    ],
                 }
             ],
         },
@@ -44,3 +59,22 @@ def test_answered_question_requires_answer():
     q["answer"] = ""
     data["protocol_zero"]["unresolved_count"] = 0
     assert any("requires a nonblank answer" in e for e in validate_protocol_zero(data))
+
+
+def test_unanswered_question_requires_external_source_check():
+    data = base()
+    data["protocol_zero"]["questions"][0]["source_checks"] = [
+        {
+            "source_type": "PROJECT_DOCUMENT",
+            "source_id": "SYNTHETIC-PROJECT-DOC",
+            "result": "PARTIAL",
+            "note": "Only project source was checked.",
+        }
+    ]
+    assert any("normative/official/specialist" in e for e in validate_protocol_zero(data))
+
+
+def test_pre_escalation_search_must_be_complete():
+    data = base()
+    data["protocol_zero"]["questions"][0]["pre_escalation_search_completed"] = False
+    assert any("pre_escalation_search_completed" in e for e in validate_protocol_zero(data))

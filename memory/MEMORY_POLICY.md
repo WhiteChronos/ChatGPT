@@ -13,6 +13,7 @@ Garantir que decisões, correções, falhas, lições aprendidas e critérios ap
 5. `PENDING`: informação ainda não confirmada.
 6. `SOURCE`: fonte documental e evidência associada.
 7. `REGRESSION`: erro que já ocorreu e deve possuir teste para impedir repetição.
+8. `MODEL`: padrão reutilizável aprovado que deve ser aplicado em projetos futuros.
 
 ## Regra de persistência
 
@@ -37,6 +38,16 @@ Quando um erro for detectado e corrigido, devem existir três registros vinculad
 3. teste automatizado de regressão.
 
 Uma correção sem esses três elementos é considerada incompleta.
+
+Quando um padrão reutilizável for aprovado como modelo de engenharia, devem existir de forma vinculada:
+1. regra de governança legível por humanos;
+2. manifesto/Data Center legível por máquina;
+3. Data Sheet/schema compatível;
+4. validação no pipeline;
+5. teste de regressão;
+6. registro na memória técnica.
+
+O modelo `AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0` segue este contrato.
 
 ## Hierarquia de verdade
 

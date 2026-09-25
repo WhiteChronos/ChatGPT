@@ -57,3 +57,37 @@ def test_governance_schema_is_domain_correct():
     assert symbol['families']['const'] == ['DISCRETE', 'SHARED_DISPLAY', 'COMPUTER', 'PLC']
     assert schema['properties']['critical_signal_roles']['const'] == ['CMD', 'RUN', 'FAULT', 'AVAILABLE']
     assert schema['properties']['document_policy']['properties']['sheet_count_source']['const'] == 'TARGET_DOCUMENT'
+
+
+def test_automation_compatibility_report_model_is_bound_as_golden_rule():
+    model = Path('governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md').read_text(encoding='utf-8')
+    config = json.loads(Path('datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json').read_text(encoding='utf-8'))
+    library = json.loads(Path('datacenter/AUTOMATION_REFERENCE_LIBRARY.json').read_text(encoding='utf-8'))
+    assert config['model_id'] == 'AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0'
+    assert config['renderer']['primary'] == 'Visualize'
+    assert 'documents_to_correct' in model
+    assert library['policy'] == 'REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE'
+    assert {item['id'] for item in library['standards']} >= {
+        'PETROBRAS-N-1882', 'PETROBRAS-N-1883', 'PETROBRAS-N-2833'
+    }
+
+
+def test_memory_policy_requires_model_governance_manifest_datasheet_pipeline_test_memory_chain():
+    text = Path('memory/MEMORY_POLICY.md').read_text(encoding='utf-8')
+    assert '`MODEL`' in text
+    for phrase in [
+        'regra de governança',
+        'manifesto/Data Center',
+        'Data Sheet/schema',
+        'validação no pipeline',
+        'teste de regressão',
+        'memória técnica',
+    ]:
+        assert phrase in text
+
+
+def test_prompt_master_binds_automation_compatibility_model():
+    text = Path('governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md').read_text(encoding='utf-8')
+    assert 'AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0' in text
+    assert 'source_checks' in text
+    assert 'REFERENCE_ONLY' in text

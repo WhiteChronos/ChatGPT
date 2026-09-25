@@ -134,16 +134,59 @@
     "complete_not_summary": true,
     "mandatory_sections": [
       "executive_gate",
+      "source_documents",
       "baseline_map",
-      "compatibility_by_discipline",
-      "compatibility_by_document",
-      "interfaces",
-      "complete_findings",
-      "feasibility",
-      "missing_evidence",
+      "tag_traceability",
+      "resolved_questions",
+      "open_questions",
+      "confirmed_findings",
+      "engineering_problems",
+      "verified_items",
+      "not_verifiable",
+      "automation_architecture",
+      "network_and_data",
+      "functional_logic",
+      "power_24vdc_ups",
+      "solutions",
+      "documents_to_correct",
       "action_plan",
       "release_gate"
-    ]
+    ],
+    "renderer": {
+      "strategy": "PROGRESSIVE_ENHANCEMENT",
+      "primary": {
+        "name": "Visualize",
+        "required": true,
+        "interactive_required_when_available": true,
+        "allow_markdown_only_as_visualize": false
+      },
+      "enhanced": {
+        "plugin_id": "Plugin_40dab999fe9c8191bbc2f550371692fc",
+        "display_name": "Build Web Data Visualization",
+        "preferred_when_executable": true,
+        "block_if_unavailable": false,
+        "upgrade_without_content_change": true
+      }
+    },
+    "separate_questions_findings_problems": true,
+    "require_answer_field_for_open_questions": true,
+    "question_presentation": {
+      "required": true,
+      "question_batch_is_visualize_artifact": true,
+      "forbid_plain_markdown_batch_when_interactive_available": true,
+      "separate_open_resolved_findings_problems": true,
+      "require_question_id": true,
+      "require_severity_or_priority": true,
+      "require_area_or_discipline": true,
+      "require_rationale": true,
+      "require_project_documents_involved": true,
+      "require_source_checks": true,
+      "require_status": true,
+      "require_answer_field": true,
+      "require_response_block_generator": true,
+      "retain_resolved_questions": true,
+      "rerun_protocol_zero_after_answer": true
+    }
   },
   "datacenter_layout": {
     "raw": "datacenter/raw/<project>/<discipline>/<document>/<revision>/",
@@ -161,7 +204,10 @@
     "unanswered_classification": "NOT_VERIFIABLE",
     "forbid_unanswered_promotion_to_finding": true,
     "block_pass_with_unanswered_questions": true,
-    "simple_answer_field": true
+    "simple_answer_field": true,
+    "pre_escalation_source_checks_required": true,
+    "require_project_source_check": true,
+    "require_normative_or_official_check": true
   },
   "hyperfocus_automation_data": {
     "enabled": true,
@@ -182,5 +228,114 @@
     "require_failure_mode_review": true,
     "require_data_lineage": true,
     "require_master_discipline_authority": true
+  },
+  "finding_contract": {
+    "require_documents_involved": true,
+    "documents_involved_categories": [
+      "SOURCE_EVIDENCE",
+      "PROJECT_CORRELATED_OR_CONFLICTING",
+      "NORMATIVE_OR_REFERENCE",
+      "DOCUMENTS_TO_CORRECT"
+    ],
+    "require_normative_applicability": true
+  },
+  "automation_reference_library": {
+    "policy": "REFERENCE_BY_DEFAULT_WITH_APPLICABILITY_GATE",
+    "check_before_user_question": true,
+    "references": [
+      {
+        "document": "PETROBRAS N-1882",
+        "revision": "F",
+        "date": "11/2023",
+        "title": "Critérios para Elaboração de Projetos de Instrumentação",
+        "default_use": "TECHNICAL_CRITERIA_REFERENCE",
+        "mandatory_only_when_applicable_or_invoked": true
+      },
+      {
+        "document": "PETROBRAS N-1883",
+        "revision": "F",
+        "date": "05/2024",
+        "title": "Apresentação de Projeto de Instrumentação, Controle e Automação",
+        "default_use": "DOCUMENTATION_AND_AUTOMATION_PROJECT_REFERENCE",
+        "mandatory_only_when_applicable_or_invoked": true,
+        "scope_guard": "Item 1.4 excludes electrical-system automation, building automation, and HVAC automation from direct normative scope."
+      },
+      {
+        "document": "PETROBRAS N-2833",
+        "revision": "A",
+        "title": "Formulários e Listas para Projetos de Instrumentação",
+        "coverage": "Annex A forms 01-14",
+        "default_use": "FORM_AND_LIST_TEMPLATE_REFERENCE",
+        "mandatory_only_when_applicable_or_invoked": true
+      }
+    ]
+  },
+  "automation_report_model": {
+    "governance": "governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md",
+    "datacenter_model": "datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json",
+    "reference_library": "datacenter/AUTOMATION_REFERENCE_LIBRARY.json",
+    "status": "MANDATORY"
+  },
+  "automation_evidence_research": {
+    "governance": "governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md",
+    "knowledge_base": "datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json",
+    "assistance_catalog": "docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md",
+    "status": "MANDATORY",
+    "question_before_assumption": true,
+    "project_evidence_before_association": true,
+    "forbid_quantity_only_mapping": true,
+    "forbid_name_or_tag_only_mapping": true,
+    "do_external_relay_are_distinct_without_explicit_mapping": true,
+    "supporting_research_channels": [
+      "OFFICIAL_MANUFACTURER",
+      "OPEN_EDUCATIONAL_BOOK",
+      "SPECIALIST_REFERENCE",
+      "GITHUB_OPEN_SOURCE_REPOSITORY",
+      "RESEARCH_PLUGIN_DISCOVERY"
+    ],
+    "github_open_source_is_supporting_not_authoritative": true,
+    "plugin_is_discovery_not_evidence": true,
+    "document_routing_before_user_question": {
+      "required": true,
+      "user_pointed_document_must_be_rechecked": true,
+      "resolved_from_project_source_remove_from_user_question_queue": true,
+      "routes": {
+        "NETWORK_TOPOLOGY_PROTOCOL": "AUTOMATION_OR_NETWORK_ARCHITECTURE",
+        "IO_DESTINATION_CHANNEL_TERMINAL": "IO_LIST_PLUS_INTERCONNECTION_WIRING_LOOP_TERMINAL_PANEL",
+        "CONTROL_PRIORITY_SEQUENCE_FALLBACK": "CONTROL_PHILOSOPHY_MEMORIAL_SPECIFICATION_CAUSE_EFFECT",
+        "FIELD_DEVICE_QUANTITY_PROCESS_LOCATION": "DISCIPLINE_MASTER_PROCESS_HVAC_PID_LAYOUT_EQUIPMENT",
+        "POWER_PROTECTION_GROUNDING_UPS": "ELECTRICAL_ONE_LINE_PANEL_FEEDING",
+        "PROCUREMENT_MODEL_QUANTITY": "MATERIAL_LIST_DATASHEET_REQUISITION_SPECIFICATION"
+      }
+    }
+  },
+  "elaboration_execution_control": {
+    "governance": "governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md",
+    "model": "datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json",
+    "status": "MANDATORY",
+    "owning_document_action_required": true,
+    "revised_document_recheck_required": true,
+    "close_on_revision_statement_only": false,
+    "design_pending_requires_deliverable_and_closure_criterion": true,
+    "network_ip_cybersecurity_checklist_required_when_applicable": true,
+    "normative_and_cybersecurity_applicability_controlled": true,
+    "iec_62443_universal_nonconformity": false
+  },
+  "document_fidelity_interpretation": {
+    "governance": "governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md",
+    "model": "datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json",
+    "probe": "pipeline/document_fidelity_probe.py",
+    "status": "MANDATORY",
+    "three_layer_review_required": true,
+    "native_pagination_before_external_render": true,
+    "libreoffice_word_pagination_authority": false,
+    "render_mismatch_is_document_error": false,
+    "font_substitution_audit_before_layout_claim": true,
+    "cross_layer_conflict_status": "DOCUMENT_INTERPRETATION_CONFLICT",
+    "font_manifest": "datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json",
+    "font_gate": "pipeline/font_fidelity_gate.py",
+    "private_font_runtime_wrapper": "pipeline/with_private_fonts.sh",
+    "exact_fonts_required_for_layout_sensitive_validation": true,
+    "proprietary_font_binaries_in_public_repo": false
   }
 }

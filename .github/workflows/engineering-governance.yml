@@ -60,6 +60,9 @@ jobs:
       - name: Verify governance assets
         run: |
           test -f governance/REGRA_DE_OURO.md
+          test -f governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md
+          test -f governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md
+          test -f governance/VISUALIZE_GOLDEN_RULE_v1_0.md
           test -f governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md
           test -f governance/PROMPT_MESTRE_MD_AUTOMACAO_v1_0.md
           test -f governance/MD_AUTOMATION_STANDARD_v1_0.md
@@ -68,6 +71,9 @@ jobs:
           test -f governance/LI_IO_STANDARD_v1_0.md
           test -f governance/PLUGIN_SECURITY_POLICY.md
           test -f datacenter/LI_IO_STANDARD.json
+          test -f datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json
+          test -f datacenter/AUTOMATION_REFERENCE_LIBRARY.json
+          test -f datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
           test -f datacenter/MD_AUTOMATION_STANDARD.json
           test -f datasheet/LI_IO_DATA_SHEET.json
           test -f datasheet/MD_AUTOMATION_DATA_SHEET.json
@@ -75,10 +81,18 @@ jobs:
           test -f memory/LESSON_LI_IO_MODEL_2026-08-27.md
           test -f schemas/governance_v4_6.schema.json
           test -f schemas/li_io_standard_v1.schema.json
+          test -f schemas/engineering_compatibility.schema.json
+          test -f datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json
 
       - name: Enforce golden constants and document controls
         run: |
           grep -q "12 mm" governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md
+          grep -q "AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0" governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md
+          grep -q "documents_to_correct" governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md
+          grep -q '"model_id": "AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0"' datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json
+          grep -q '"id": "PETROBRAS-N-1882"' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
+          grep -q '"id": "PETROBRAS-N-1883"' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
+          grep -q '"id": "PETROBRAS-N-2833"' datacenter/AUTOMATION_REFERENCE_LIBRARY.json
           grep -q "CMD, RUN, FAULT" governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md
           grep -q "MD_AUTOMATION_PETROBRAS_V1_0" governance/PROMPT_MESTRE_AUTOMACAO_v4_7.md
           grep -q "D9D9D9" governance/MD_AUTOMATION_STANDARD_v1_0.md

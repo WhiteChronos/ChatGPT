@@ -1,0 +1,141 @@
+{
+  "model_id": "AUTOMATION_COMPATIBILITY_REPORT_MODEL_V1_0",
+  "status": "GOLDEN_RULE",
+  "renderer": {
+    "primary": "Visualize",
+    "enhanced": "Build Web Data Visualization",
+    "enhanced_plugin_id": "Plugin_40dab999fe9c8191bbc2f550371692fc",
+    "progressive_enhancement": true
+  },
+  "mandatory_modules": [
+    "executive_gate",
+    "source_documents",
+    "baseline_map",
+    "tag_traceability",
+    "resolved_questions",
+    "open_questions",
+    "confirmed_findings",
+    "engineering_problems",
+    "verified_items",
+    "not_verifiable",
+    "automation_architecture",
+    "network_and_data",
+    "functional_logic",
+    "power_24vdc_ups",
+    "solutions",
+    "documents_to_correct",
+    "action_plan",
+    "release_gate"
+  ],
+  "finding_documents_involved": [
+    "SOURCE_EVIDENCE",
+    "PROJECT_CORRELATED_OR_CONFLICTING",
+    "NORMATIVE_OR_REFERENCE",
+    "DOCUMENTS_TO_CORRECT"
+  ],
+  "normative_applicability_states": [
+    "APPLICABLE",
+    "REFERENCE_ONLY",
+    "NOT_APPLICABLE",
+    "PENDING"
+  ],
+  "protocol_zero": {
+    "policy": "QUESTION_BEFORE_FINDING",
+    "project_source_check_required": true,
+    "official_or_normative_source_check_required_before_user_question": true,
+    "unanswered_classification": "NOT_VERIFIABLE"
+  },
+  "evidence_classes": [
+    "PROJECT_SOURCE_FACT",
+    "PROJECT_DECISION",
+    "APPLICABLE_NORMATIVE_REQUIREMENT",
+    "REFERENCE_ONLY_GUIDANCE",
+    "OFFICIAL_AUTHORITY",
+    "OFFICIAL_MANUFACTURER",
+    "SPECIALIST_REFERENCE",
+    "OPEN_EDUCATIONAL_BOOK",
+    "OPEN_SOURCE_REFERENCE_IMPLEMENTATION",
+    "ENGINEERING_INFERENCE"
+  ],
+  "automation_trace": [
+    "PROCESS_REQUIREMENT",
+    "EQUIPMENT_TAG",
+    "LOCATION",
+    "POWER_PROTECTION",
+    "COMMAND_FEEDBACK",
+    "IO",
+    "PLC_RTU_CONTROLLER",
+    "CONTROL_LOGIC",
+    "NETWORK",
+    "PROTOCOL_ADDRESS_REGISTER",
+    "SCALE_UNIT_QUALITY",
+    "HMI_SCADA",
+    "ALARM_TREND_HISTORY",
+    "FAT_SAT"
+  ],
+  "release_blockers": [
+    "OPEN_CRITICAL",
+    "UNRESOLVED_MATERIAL_QUESTION",
+    "INCOMPLETE_BASELINE",
+    "UNRECONCILED_BASELINE",
+    "MISSING_PROVENANCE",
+    "MISSING_FINDING_DOCUMENTS_INVOLVED",
+    "NORMATIVE_CLAIM_WITHOUT_APPLICABILITY",
+    "FAILED_AUTOMATION_TRACEABILITY",
+    "ARCHITECTURE_WITHOUT_VIABILITY",
+    "FAILED_COVERAGE_OR_COMPATIBILITY",
+    "REVISED_DOCUMENT_NOT_RECHECKED"
+  ],
+  "question_presentation": {
+    "required": true,
+    "renderer": "Visualize",
+    "plain_markdown_batch_allowed_when_interactive_available": false,
+    "separate_from_findings_and_problems": true,
+    "required_fields": [
+      "question_id",
+      "severity_or_priority",
+      "discipline_or_area",
+      "question",
+      "rationale",
+      "project_documents_involved",
+      "source_checks",
+      "status",
+      "answer_field"
+    ],
+    "require_answer_field": true,
+    "require_response_block_generator": true,
+    "retain_resolved_questions": true,
+    "rerun_protocol_zero_after_answer": true,
+    "enhanced_renderer_when_executable": "Build Web Data Visualization"
+  },
+  "evidence_research": {
+    "required": true,
+    "policy": "PROJECT_EVIDENCE_BEFORE_ASSOCIATION",
+    "governance": "governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md",
+    "knowledge_base": "datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json",
+    "forbid_quantity_only_mapping": true,
+    "forbid_tag_name_only_mapping": true,
+    "require_support_research_for_ambiguous_relationships": true,
+    "github_open_source_support": true,
+    "research_plugin_discovery": true,
+    "discovery_tool_is_not_evidence": true,
+    "document_routing_before_user_question": true,
+    "user_pointed_document_must_be_rechecked": true,
+    "project_source_resolution_removes_user_question": true
+  },
+  "exports": {
+    "default_xlsx_profile": "AUTOMATION_COMPACT_XLSX_V1",
+    "profile_registry": "datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json",
+    "compact_external_review": true,
+    "preserve_full_model_data": true
+  },
+  "elaboration_execution_control": {
+    "required": true,
+    "model_id": "AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0",
+    "governance": "governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md",
+    "machine_model": "datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json",
+    "document_action_required": true,
+    "revised_document_recheck_required": true,
+    "network_ip_cybersecurity_applicability_controlled": true
+  }
+}

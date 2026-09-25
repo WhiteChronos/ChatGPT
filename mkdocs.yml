@@ -62,6 +62,7 @@ nav:
   - Como usar: usage.md
   - Arquitetura DEKS: architecture.md
   - Governança: governance.md
+  - Modelo de compatibilização de Automação: automation-compatibility-model.md
   - Knowledge Ingestion: knowledge-ingestion.md
   - Glossário:
       - Glossário técnico interativo: glossario-interativo.md

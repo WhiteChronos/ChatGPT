@@ -27,6 +27,17 @@ Rules:
 - Conservative electrical values, minimum-versus-higher protection classes, reserve capacity, and alternative design bases SHALL be tested before being classified as errors.
 - Project decisions and documentary facts must remain distinguishable.
 
+## Evidence-before-assumption research rule
+The mandatory research contract is `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`.
+
+Rules:
+- do not infer an electrical/functional relationship from counts, naming similarity, tag prefixes, adjacent material-list rows or generic practice;
+- a DO/DQ is a controller output point; an external interface/interposing relay is a separate device unless project wiring explicitly links them;
+- never infer relay quantity from DO quantity;
+- when project evidence is ambiguous, research official standards/manufacturer material and then supporting open educational books, GitHub/open-source reference implementations and research plugins/connectors before escalating the doubt;
+- GitHub/open-source code and plugins are supporting/discovery channels, not project authority;
+- the underlying source must be identified and classified before it supports a technical claim.
+
 ## Hyperfocus Automation + Data
 The primary review perspective is the complete automation chain:
 
@@ -126,17 +137,58 @@ Architecture-impact questions SHALL compare, when relevant:
 No hardware is retained only because it appears in an older drawing.
 
 ## Visualization
-`/visualize` remains the presentation layer. It SHALL preserve complete technical depth and expose:
+`/visualize` is the **mandatory default presentation layer** for every engineering compatibility report, re-evaluation, audit result, comparison result, or interactive technical report.
+
+The rendering strategy follows **progressive enhancement**:
+
+1. **PRIMARY / ALWAYS AVAILABLE:** render the complete report through the native `/visualize` experience using the best interactive visualization surface available in the current runtime (for example, a self-contained interactive app block).
+2. **ENHANCED / WHEN AVAILABLE:** if **@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) is exposed and executable in the current conversation, upgrade the same report to that renderer without changing the engineering content, classifications, evidence, questions, findings, or release decision.
+3. The absence of @Build Web Data Visualization SHALL NOT block visualization. It only blocks the enhanced renderer.
+4. Markdown-only output SHALL NOT be treated as satisfying `/visualize` when an interactive visualization surface is available.
+
+Mandatory behavior:
+- preserve complete technical depth and do not reduce the report to a summary;
+- keep questions/doubts visually separated from confirmed findings/errors and from engineering problems;
+- provide a simple answer field for every open technical question;
+- expose evidence location, comparison, impact, solution, affected documents and closure criterion for every confirmed finding;
+- every confirmed finding/error SHALL show **documents involved**, separated at least into: source/evidence documents, conflicting/correlated project documents, normative/reference documents, and documents that must be corrected;
+- show NOT_VERIFIABLE items separately and never visually present them as confirmed errors;
+- include filters for severity/status when supported;
+- include the release gate as a distinct final module;
+- preserve source-derived facts, project decisions, inference and external research as distinct evidence classes;
+- when the enhanced Build Web Data Visualization renderer later becomes available, regenerate or upgrade the visual presentation without altering the underlying engineering baseline.
+
+The visualization SHALL expose at least:
+- executive overview;
+- source documents and revisions;
+- baseline map;
+- TAG x TAG inventory;
 - resolved questions;
-- unanswered questions;
+- unanswered questions with answer fields;
 - verified facts;
-- confirmed findings;
+- confirmed findings/errors;
+- engineering problems;
 - non-errors / justified differences;
+- Automation / HVAC / Electrical / Network & Data / Functional Logic views when applicable;
 - solutions;
-- document actions;
+- documents to adjust;
+- action plan;
 - release gate.
 
-Questions must be readable and, in interactive reports, must provide a simple answer field when user input is expected.
+Questions must be readable and must provide a simple answer field when user input is expected.
+
+## Automation reference library
+For every Automation project, the review SHALL consult the following default reference library before raising a question to the user, while still applying a formal applicability/scope check:
+
+- PETROBRAS N-1882 Rev. F (11/2023) — Criteria for Instrumentation Project Design;
+- PETROBRAS N-1883 Rev. F (05/2024) — Presentation of Instrumentation, Control and Automation Projects;
+- PETROBRAS N-2833 Rev. A, Annex A, forms 01 through 14 — standard forms/lists for instrumentation project documentation.
+
+Applicability guard:
+- these documents are **reference-by-default**, not automatically mandatory in every project;
+- contractual/project specifications and current approved editions take precedence;
+- scope exclusions SHALL be respected. In particular, N-1883 Rev. F item 1.4 excludes electrical-system automation, building automation and HVAC automation from its direct normative scope. In such projects, N-1883/N-2833 may still be used as documentary/engineering references only when appropriate or when explicitly invoked by project requirements;
+- do not promote a deviation from a reference-only document to a confirmed error unless that document is applicable/contractually invoked or the same requirement is independently established by another applicable source.
 
 ## Compatibility scoring
 Do not publish a compatibility percentage before:
@@ -157,6 +209,14 @@ A package SHALL remain BLOCK when an unresolved question can materially change:
 - electrical protection or supply;
 - safety/interlock behavior;
 - FAT/SAT acceptance criteria.
+
+## Machine-readable report model
+The reusable Automation report model is mandatory and pinned at:
+- `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`
+- `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`
+- `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`
+
+Every confirmed Automation finding SHALL carry a structured `documents_involved` inventory and every Protocol Zero question SHALL record pre-escalation source checks. A normative/reference source SHALL carry an applicability state and applicability basis before it can support a confirmed nonconformity.
 
 ## Repository memory
 Repository memory is maintained in `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`.

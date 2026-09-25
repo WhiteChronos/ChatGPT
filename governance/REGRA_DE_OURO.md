@@ -69,3 +69,75 @@ Qualquer violação deste documento é NÃO CONFORMIDADE CRÍTICA e bloqueia a a
 ## 8. Governança de mudança
 
 Arquivos de CI, agentes, prompts, schemas ou sugestões automáticas não podem simplificar, substituir ou redefinir estas regras de engenharia apenas para fazer o workflow passar. Toda alteração de conteúdo de domínio deve preservar rastreabilidade, motivo técnico, revisão e teste de regressão correspondente.
+
+## 9. Compatibilização e referências
+Toda compatibilização de Automação SHALL seguir o modelo `AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0`, o Protocol Zero e a biblioteca `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`.
+
+Antes de perguntar uma dúvida técnica ao usuário, consultar a baseline do projeto e as fontes normativas/oficiais aplicáveis. Norma fora de escopo pode orientar boa prática, mas não cria não conformidade sozinha.
+
+Todo erro confirmado deve mostrar os documentos envolvidos: evidência, correlatos/conflitantes, normas/referências e documentos a corrigir.
+
+## 10. Formato obrigatório de perguntas
+Em compatibilização de Automação, perguntas ao usuário também fazem parte do relatório técnico e devem permanecer no padrão visual aprovado.
+
+É proibido substituir o módulo visual de perguntas por uma lista simples em Markdown quando houver superfície interativa disponível.
+
+Cada pergunta deve mostrar: ID, criticidade/prioridade, área, pergunta objetiva, motivo, documentos do projeto envolvidos, fontes já verificadas, status e campo de resposta. Após resposta, a pergunta migra para “Perguntas Resolvidas” e o Protocol Zero é reexecutado antes de qualquer promoção para erro/finding.
+
+## 11. Regra de evidência antes de associação
+Não presumir relação elétrica, funcional ou quantitativa entre itens sem evidência do projeto.
+
+É proibido concluir, por exemplo, que quantidade de DO = quantidade de relés, ou que um TAG RI está ligado a um DO específico, apenas por nome, contagem ou proximidade em lista.
+
+Antes da afirmação técnica:
+1. verificar documento do projeto;
+2. verificar base/contrato;
+3. verificar norma aplicável;
+4. verificar fabricante oficial;
+5. buscar livro/artigo técnico de apoio;
+6. pesquisar GitHub/repositórios open source e plugins de pesquisa quando ajudarem a entender o conceito;
+7. somente então formular hipótese/pergunta.
+
+GitHub, repositórios open source e plugins são apoio de pesquisa, nunca substituem evidência do projeto, norma aplicável ou fabricante oficial.
+
+Aplicar `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md` e `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`.
+
+## 12. Exportação Excel compacta
+Para relatórios de compatibilização de Automação enviados em XLSX para circulação/revisão, aplicar `AUTOMATION_COMPACT_XLSX_V1`.
+
+Padrão:
+- Resumo contém decisões e Release Gate;
+- Findings são consolidados por documento em “Documentos e Ações”, mostrando objetivamente o que corrigir e a prioridade;
+- Pendências permanecem em uma aba organizada;
+- Perguntas respondidas permanecem em aba própria para rastreabilidade do Protocol Zero;
+- não criar abas separadas de Evidências, Decisões, Findings, Release Gate, Avaliação Externa ou Responsáveis salvo pedido explícito.
+
+A compactação é somente de apresentação e não pode apagar evidência ou rastreabilidade técnica.
+
+## 13. Controle de elaboração e execução
+Toda análise de compatibilização de Automação deve ser convertida em ações executáveis por documento, aplicando `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0`.
+
+Fluxo obrigatório:
+
+`EVIDÊNCIA/COMENTÁRIO -> PROTOCOL ZERO -> DECISÃO/FINDING -> AÇÃO NO DOCUMENTO -> EXECUÇÃO -> RECHECK -> FECHAMENTO`.
+
+Cada ação deve identificar documento/revisão, prioridade, ação objetiva, base/evidência, IDs relacionados, critério de fechamento e status. Não fechar item somente porque uma nova revisão foi emitida; é obrigatório reavaliar o documento revisado.
+
+Quando houver escopo de rede/Automação, verificar conforme aplicabilidade: topologia, interligações CLP/UTR/I/O/IHM/Gateway/Switch/BMS, uplinks, port map, IP/sub-redes, VLAN/segmentação, fronteira controle-supervisório, zonas e conduítes, firewall/DMZ, protocolos/endereços/registradores, perda de comunicação, FAT/SAT e aplicabilidade de referências de cibersegurança como IEC 62443.
+
+IEC 62443, VLAN, zonas/conduítes, firewall e DMZ não são não conformidades automáticas. Registrar a aplicabilidade como APPLICABLE, REFERENCE_ONLY, NOT_APPLICABLE ou PENDING, com sua base. Itens deliberadamente deixados para Projeto Executivo devem permanecer DESIGN_PENDING com entregável e critério de fechamento definidos.
+
+Aplicar `governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md` e `datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json`.
+
+## 14. Fidelidade documental e interpretação
+Toda revisão de documentos de engenharia deve separar três camadas: **estrutura nativa do arquivo**, **extração semântica** e **renderização visual**.
+
+É proibido declarar erro de paginação, quebra de página, posição em folha ou estouro de layout de um Word apenas porque um renderizador externo produziu quantidade de páginas diferente.
+
+Para DOCX, o número de páginas armazenado pelo Word em `docProps/app.xml -> Pages` e a foliação autoral têm precedência sobre a contagem produzida por LibreOffice/headless. Para DOC legado, usar metadados OLE/SummaryInformation quando disponíveis. Para PDF, usar a árvore de páginas do próprio PDF.
+
+Se a contagem nativa e a renderizada divergirem, classificar como `RENDER_MISMATCH` e não como erro do documento. Se estrutura, texto extraído e renderização entrarem em conflito, usar `DOCUMENT_INTERPRETATION_CONFLICT` e manter o item como NOT_VERIFIABLE até reconciliação.
+
+Antes de usar renderização para conclusões de paginação/layout, auditar fontes solicitadas e substituições. Substituição material de fonte torna conclusões baseadas apenas no render `NOT_VERIFIABLE_FROM_RENDER` até confirmação por exportação nativa.
+
+Aplicar `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md` e `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`.

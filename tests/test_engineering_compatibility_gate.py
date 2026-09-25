@@ -96,6 +96,26 @@ def make_example_finding(*, status: str = "CLOSED", severity: str = "HIGH") -> d
         "architecture_impact": False,
         "primary_document": "EX-HVAC-001",
         "secondary_documents": [],
+        "documents_involved": {
+            "source_evidence": [
+                {
+                    "document_id": "EX-HVAC-001",
+                    "revision": "A",
+                    "applicability": "APPLICABLE",
+                    "note": "Synthetic regression source document.",
+                }
+            ],
+            "project_correlated_or_conflicting": [],
+            "normative_or_reference": [],
+            "documents_to_correct": [
+                {
+                    "document_id": "EX-HVAC-001",
+                    "revision": "A",
+                    "applicability": "APPLICABLE",
+                    "note": "Synthetic document used for regression correction.",
+                }
+            ],
+        },
         "proposed_text": "NONE",
         "owner": "HVAC",
         "dependencies": [],

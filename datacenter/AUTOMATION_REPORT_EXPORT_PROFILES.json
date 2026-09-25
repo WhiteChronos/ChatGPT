@@ -1,0 +1,81 @@
+{
+  "profile_id": "AUTOMATION_COMPACT_XLSX_V1",
+  "status": "GOLDEN_RULE",
+  "default_for_external_review": true,
+  "presentation_only": true,
+  "preserve_underlying_traceability": true,
+  "sheets": [
+    {
+      "name": "00_Resumo",
+      "includes": [
+        "executive_status",
+        "key_counts",
+        "closed_decisions",
+        "release_gate",
+        "release_closure_conditions"
+      ]
+    },
+    {
+      "name": "01_Documentos_e_Acoes",
+      "grain": "ONE_ROW_PER_DOCUMENT_REVISION",
+      "required_columns": [
+        "document",
+        "revision",
+        "priority",
+        "required_action",
+        "related_finding_or_pending_ids",
+        "status"
+      ]
+    },
+    {
+      "name": "02_Pendencias",
+      "required_columns": [
+        "id",
+        "priority",
+        "theme_or_class",
+        "pending_condition",
+        "next_action",
+        "expected_document_or_deliverable",
+        "status"
+      ]
+    },
+    {
+      "name": "03_Perguntas_Respondidas",
+      "required_columns": [
+        "question_id",
+        "theme",
+        "original_question",
+        "user_answer",
+        "consolidated_treatment",
+        "status",
+        "evidence_documents",
+        "traceability_note"
+      ]
+    }
+  ],
+  "default_excluded_sheets": [
+    "standalone_evidence",
+    "standalone_decisions",
+    "standalone_findings",
+    "standalone_release_gate",
+    "external_evaluation_form",
+    "responsible_owner_matrix"
+  ],
+  "rules": {
+    "decisions_with_summary": true,
+    "release_gate_with_summary": true,
+    "findings_grouped_by_document_action": true,
+    "pendings_stay_separate": true,
+    "answered_questions_stay_separate": true,
+    "superseded_answers_retained": true,
+    "owner_column_default": false,
+    "external_review_fields_default": false
+  },
+  "execution_projection": {
+    "elaboration_execution_control_model": "AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0",
+    "documents_and_actions_must_be_executable": true,
+    "pendings_must_include_next_action_and_deliverable": true,
+    "network_ip_cybersecurity_scope_must_not_be_truncated": true,
+    "revised_document_recheck_before_closure": true
+  }
+}

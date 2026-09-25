@@ -32,6 +32,8 @@ def validate_protocol_zero(data: dict[str, Any]) -> list[str]:
         answer = item.get("answer")
         status = item.get("status")
         promote = item.get("promotes_to_finding")
+        source_checks = item.get("source_checks")
+        pre_search = item.get("pre_escalation_search_completed")
         if not isinstance(qid, str) or not qid.strip():
             errors.append(f"{where}.id must be nonblank")
         elif qid in seen:
@@ -45,6 +47,19 @@ def validate_protocol_zero(data: dict[str, Any]) -> list[str]:
             continue
         if not isinstance(promote, bool):
             errors.append(f"{where}.promotes_to_finding must be boolean")
+        if pre_search is not True:
+            errors.append(f"{where}.pre_escalation_search_completed must be true")
+        if not isinstance(source_checks, list) or not source_checks:
+            errors.append(f"{where}.source_checks must be a non-empty list")
+            source_types = set()
+        else:
+            source_types = {
+                check.get("source_type")
+                for check in source_checks
+                if isinstance(check, dict)
+            }
+            if not source_types.intersection({"PROJECT_DOCUMENT", "CONTRACT_OR_PROJECT_BASIS"}):
+                errors.append(f"{where}: source_checks must include project source review")
         if status == "ANSWERED":
             if not isinstance(answer, str) or not answer.strip():
                 errors.append(f"{where}: ANSWERED requires a nonblank answer")
@@ -54,6 +69,17 @@ def validate_protocol_zero(data: dict[str, Any]) -> list[str]:
                 errors.append(f"{where}: UNANSWERED must not carry a substantive answer")
             if promote is True:
                 errors.append(f"{where}: unanswered question cannot be promoted to finding")
+            external_types = {
+                "APPLICABLE_STANDARD",
+                "REFERENCE_STANDARD",
+                "OFFICIAL_AUTHORITY",
+                "OFFICIAL_MANUFACTURER",
+                "SPECIALIST_REFERENCE",
+            }
+            if not source_types.intersection(external_types):
+                errors.append(
+                    f"{where}: unanswered question requires normative/official/specialist pre-escalation source check"
+                )
 
     declared = pz.get("unresolved_count")
     if declared != unresolved:

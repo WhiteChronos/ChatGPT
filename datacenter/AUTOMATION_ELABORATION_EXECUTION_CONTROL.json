@@ -1,0 +1,75 @@
+{
+  "model_id": "AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0",
+  "status": "GOLDEN_RULE",
+  "mandatory": true,
+  "sequence": [
+    "EVIDENCE_OR_COMMENT",
+    "PROTOCOL_ZERO",
+    "DECISION_OR_FINDING",
+    "DOCUMENT_ACTION",
+    "EXECUTION",
+    "RECHECK",
+    "CLOSURE"
+  ],
+  "action_record": {
+    "required_fields": [
+      "document",
+      "revision",
+      "priority",
+      "required_action",
+      "basis",
+      "related_ids",
+      "closure_criterion",
+      "status"
+    ],
+    "statuses": [
+      "OPEN",
+      "DESIGN_PENDING",
+      "READY_FOR_EXECUTION",
+      "IN_EXECUTION",
+      "READY_FOR_RECHECK",
+      "CLOSED",
+      "NOT_APPLICABLE"
+    ],
+    "closed_requires_recheck": true,
+    "owning_document_required": true,
+    "consolidate_by_document_revision": true
+  },
+  "network_ip_cybersecurity": {
+    "required_when_network_scope_exists": true,
+    "checks": [
+      "TOPOLOGY_AND_NODE_ROLES",
+      "CONTROLLER_UTR_IO_HMI_GATEWAY_SWITCH_BMS_INTERCONNECTIONS",
+      "SWITCH_QUANTITY_LOCATION_AND_UPLINKS",
+      "PORT_MAP",
+      "IP_ADDRESS_PLAN_AND_SUBNETTING",
+      "VLAN_OR_SUBNET_SEGMENTATION",
+      "CONTROL_TO_SUPERVISORY_BMS_BOUNDARY",
+      "ZONES_AND_CONDUITS",
+      "FIREWALL_OR_DMZ_DECISION",
+      "PROTOCOL_ADDRESS_REGISTER_DATA_QUALITY",
+      "COMMUNICATION_LOSS_DIAGNOSTICS_RECOVERY",
+      "NETWORK_FAT_SAT",
+      "CYBERSECURITY_REFERENCE_APPLICABILITY"
+    ],
+    "applicability_states": [
+      "APPLICABLE",
+      "REFERENCE_ONLY",
+      "NOT_APPLICABLE",
+      "PENDING"
+    ],
+    "iec_62443_universal_nonconformity": false,
+    "firewall_dmz_universal_requirement": false,
+    "explicit_design_stage_deferral_allowed": true,
+    "design_stage_deferral_requires_deliverable_and_closure_criterion": true
+  },
+  "execution_control": {
+    "no_action_without_owning_document": true,
+    "no_silent_finding_deletion": true,
+    "revised_document_must_be_rechecked": true,
+    "closure_on_revision_statement_only": false,
+    "reopen_on_new_conflict": true,
+    "release_gate_block_until_blocking_actions_rechecked": true
+  },
+  "xlsx_profile": "AUTOMATION_COMPACT_XLSX_V1"
+}

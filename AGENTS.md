@@ -12,15 +12,46 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 5. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
 6. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
 7. `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`
+8. `governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md`
+9. `datacenter/AUTOMATION_COMPATIBILITY_REPORT_MODEL.json`
+10. `datacenter/AUTOMATION_REFERENCE_LIBRARY.json`
+11. `governance/AUTOMATION_EVIDENCE_RESEARCH_GOLDEN_RULE_v1_0.md`
+12. `datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json`
+13. `docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md`
+14. `governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md`
+15. `datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json`
+16. `governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md`
+17. `datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json`
+18. `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md`
+19. `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`
+20. `datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json`
+21. `docs/FONT_FIDELITY_SETUP.md`
 
 ## Codex operating contract
 Codex SHALL:
 
 - apply Protocol Zero: explicit technical question before promoting a suspected discrepancy to a finding;
+- apply evidence-before-assumption: never infer project associations from quantity, naming, tag prefixes or row adjacency alone;
+- treat DO/DQ points and external interface/interposing relays as distinct objects unless project wiring/evidence explicitly links them;
+- when a relationship is ambiguous, research project sources, official standards/manufacturer material, open educational books, GitHub/open-source repositories and research plugins/connectors before escalating the question;
+- record project-source and normative/official source checks before escalating an unresolved technical question to the user;
+- apply the reusable Automation Compatibility Report Model and expose documents involved for every confirmed finding;
+- convert confirmed findings and material pendings into owning-document actions before execution, with priority, required action, basis, related IDs, closure criterion and status;
+- never close a correction merely because a revised document was issued; recheck the revised document against the original evidence and decisions;
+- for network/IP/cybersecurity scope, check topology, controller/UTR/I/O/HMI/gateway/switch/BMS interconnections, uplinks, port map, IP/subnets, VLAN/segmentation, control-supervisory boundary, zones/conduits, firewall/DMZ decision, protocol/register/data-quality, communication-loss behavior, FAT/SAT and cybersecurity-reference applicability;
+- treat IEC 62443, VLAN, zones/conduits, firewall and DMZ as applicability-controlled, not universal automatic nonconformities;
+- keep intentionally deferred detailed/executive-design items as DESIGN_PENDING with a defined deliverable and closure criterion;
+- require normative/reference applicability state and basis before a normative source can support a confirmed nonconformity;
 - keep unanswered questions as NOT_VERIFIABLE/pending and never promote them to confirmed findings;
 - apply Automation/Data hyperfocus through TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> FAT/SAT;
 - preserve the master-discipline authority for physical attributes and never silently override it from a derived discipline;
 
+- apply document fidelity triage before interpreting pagination/layout: native file metadata/structure, semantic extraction, then visual rendering;
+- never treat LibreOffice/headless page count as authoritative Word pagination when it conflicts with DOC/DOCX native metadata or authored foliation;
+- classify native-vs-render page-count disagreement as RENDER_MISMATCH and cross-layer disagreement as DOCUMENT_INTERPRETATION_CONFLICT;
+- audit font substitutions before making layout-derived claims; material substitutions make render-only layout claims NOT_VERIFIABLE_FROM_RENDER until confirmed natively;
+- require exact source fonts for layout-sensitive Word validation; use the governed font manifest and block layout conclusions when exact proprietary fonts are missing;
+- never commit Petrobras Sans or Microsoft proprietary font binaries to the public repository; consume them only through an authorized private-font mount/runtime;
 - preserve all source evidence and provenance;
 - require SHA-256 provenance for every baseline document and every evidence record;
 - compare valid hexadecimal SHA-256 digests case-insensitively;
@@ -36,6 +67,8 @@ Codex SHALL:
 - require every PARTIAL, DIVERGENT or NOT_VERIFIABLE assessment record to be represented by a corresponding complete finding;
 - treat `interface=true` only as a multidisciplinary interface assessment: it must identify at least two distinct baseline disciplines and provenance evidence must cover at least two distinct interface disciplines;
 - identify document, revision, sheet/page, TAG/location and evidence for every engineering claim;
+- for every confirmed finding, explicitly list the documents involved: source/evidence, conflicting/correlated project documents, normative/reference documents, and documents to be corrected;
+- consult the default Automation reference library (PETROBRAS N-1882 Rev. F 11/2023, PETROBRAS N-1883 Rev. F 05/2024, and PETROBRAS N-2833 Rev. A Annex A forms 01-14) before escalating unresolved questions, always applying scope/applicability checks; N-1883 item 1.4 excludes electrical automation, building automation and HVAC automation from its direct normative scope;
 - require every baseline discipline and every baseline document to have an explicit compatibility score;
 - require a structured calculation method with denominator definition and status weights;
 - perform `/factcheck`, `/thenvsnow`, `/comparison`, `/deepdive`, `/rootcause`, `/audit`, `/redteam`, `/premortem`, `/viability` and `/actionplan` when relevant;
@@ -70,6 +103,13 @@ The no-argument gate validates the permanent known-good fixture at `datasheet/pr
 ```bash
 python pipeline/engineering_compatibility_gate.py datasheet/projects/<project>.json
 ```
+
+## Mandatory visualization renderer
+Every final engineering compatibility report, re-evaluation, audit or `/visualize` output SHALL render through the native **/visualize** presentation layer using the best interactive visualization surface available in the current runtime.
+
+**@Build Web Data Visualization** (`Plugin_40dab999fe9c8191bbc2f550371692fc`) is the preferred enhanced renderer when its executable action is exposed in the current conversation. If it is unavailable, visualization SHALL continue through the native interactive `/visualize` surface; do not fall back to Markdown-only output when an interactive surface is available.
+
+When the enhanced renderer later becomes available, the visual report may be regenerated/upgraded without changing engineering content or classifications.
 
 ## Visualization contract
 Every final engineering report SHALL expose all relevant findings using a complete visual hierarchy. Required elements include:

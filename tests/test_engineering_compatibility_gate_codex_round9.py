@@ -70,6 +70,26 @@ def _finding_for(assessment: dict, evidence: list[dict]) -> dict:
         "architecture_impact": False,
         "primary_document": assessment["document_ids"][0],
         "secondary_documents": [],
+        "documents_involved": {
+            "source_evidence": [
+                {
+                    "document_id": assessment["document_ids"][0],
+                    "revision": "A",
+                    "applicability": "APPLICABLE",
+                    "note": "Synthetic regression source document.",
+                }
+            ],
+            "project_correlated_or_conflicting": [],
+            "normative_or_reference": [],
+            "documents_to_correct": [
+                {
+                    "document_id": assessment["document_ids"][0],
+                    "revision": "A",
+                    "applicability": "APPLICABLE",
+                    "note": "Synthetic document used for regression correction.",
+                }
+            ],
+        },
         "proposed_text": "NONE",
         "owner": "HVAC",
         "dependencies": [],
