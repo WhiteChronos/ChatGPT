@@ -10,6 +10,7 @@ Before changing code, schemas, datasheets, reports or governance, read:
 1. governance/VISUALIZE_GOLDEN_RULE_v1_0.md
 2. governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md
 3. governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md
+4. governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md
 4. AGENTS.md
 5. datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
 6. schemas/engineering_compatibility.schema.json
