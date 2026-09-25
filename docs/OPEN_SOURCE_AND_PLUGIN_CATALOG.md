@@ -93,3 +93,16 @@ Adoption note: non-OpenAI repositories are reference-only patterns. Review licen
 
 Secondary tutorial reference:
 - DataCamp, `OpenAI Codex: um guia passo a passo com 3 exemplos práticos` — useful onboarding overview of GitHub-connected tasks, sandboxes, pull requests and `AGENTS.md`; not an authority source for Codex behavior. Prefer official OpenAI docs for current product semantics.
+
+### Document fidelity, parsing and engineering-document interpretation
+- `docling-project/docling` — layout-aware multi-format parsing with reading order, tables, page structure, images and structured document representation; strong candidate for cross-checking complex engineering documents.
+- `microsoft/markitdown` — lightweight semantic conversion of Word/PDF/Office files to Markdown for LLM pipelines; useful for text structure, explicitly not a high-fidelity layout renderer.
+- `pymupdf/PyMuPDF` — native PDF page count/page tree, text geometry, rendering and image extraction; use for PDF-grounded page identity and coordinates.
+- `python-openxml/python-docx` — DOCX paragraphs/tables/styles; combine with direct OOXML ZIP inspection for `docProps/app.xml`, headers/fields and other package metadata.
+- `decalage2/olefile` — legacy OLE/Word .doc property streams, including metadata used for native document inspection.
+- `LibreOffice/core` — cross-platform Office renderer/converter; use for visual QA but not as authoritative Word pagination when reflow/font substitution changes layout.
+- `PaddlePaddle/PaddleOCR` — OCR plus structure-aware document parsing for scans/images, tables and complex layouts.
+- `ocrmypdf/OCRmyPDF` — adds searchable OCR text to scanned PDFs while preserving the PDF artifact; useful before semantic extraction.
+- `Unstructured-IO/unstructured` — multi-format partitioning/chunking for semantic pipelines; use as a supporting extraction layer, not layout authority.
+
+Document-tool adoption rule: compare at least source-native structure + semantic extraction + visual rendering for material engineering claims. A tool output describes that tool's interpretation and does not silently replace the source artifact.
