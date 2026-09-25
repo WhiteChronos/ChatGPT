@@ -8,11 +8,12 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 1. `governance/VISUALIZE_GOLDEN_RULE_v1_0.md`
 2. `governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md`
 3. `governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md`
-4. `schemas/engineering_compatibility.schema.json`
-5. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
-6. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
-7. `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`
-8. `datacenter/ENGINEERING_REFERENCE_REGISTRY.json`
+4. `governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md`
+5. `schemas/engineering_compatibility.schema.json`
+6. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
+7. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
+8. `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`
+9. `datacenter/ENGINEERING_REFERENCE_REGISTRY.json`
 
 ## Codex operating contract
 Codex SHALL:
