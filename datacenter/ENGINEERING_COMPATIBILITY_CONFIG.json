@@ -320,5 +320,17 @@
     "network_ip_cybersecurity_checklist_required_when_applicable": true,
     "normative_and_cybersecurity_applicability_controlled": true,
     "iec_62443_universal_nonconformity": false
+  },
+  "document_fidelity_interpretation": {
+    "governance": "governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md",
+    "model": "datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json",
+    "probe": "pipeline/document_fidelity_probe.py",
+    "status": "MANDATORY",
+    "three_layer_review_required": true,
+    "native_pagination_before_external_render": true,
+    "libreoffice_word_pagination_authority": false,
+    "render_mismatch_is_document_error": false,
+    "font_substitution_audit_before_layout_claim": true,
+    "cross_layer_conflict_status": "DOCUMENT_INTERPRETATION_CONFLICT"
   }
 }
