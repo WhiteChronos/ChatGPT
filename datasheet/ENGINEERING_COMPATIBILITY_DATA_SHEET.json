@@ -233,68 +233,81 @@
       {
         "stage": "PROCESS_REQUIREMENT",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "EQUIPMENT_TAG",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "POWER",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "COMMAND_FEEDBACK",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "IO",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "PLC_RTU",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "CONTROL_LOGIC",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "NETWORK_PROTOCOL",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "DATA_QUALITY",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "HMI_SCADA",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "ALARM_HISTORY",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       },
       {
         "stage": "FAT_SAT",
         "status": "NOT_APPLICABLE",
-        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable.",
+        "reference_ids": []
       }
     ]
   },
   "reference_context": {
     "registry_id": "ENGINEERING_REFERENCE_REGISTRY_V1_0",
     "authoritative_source_ids": [],
-    "open_source_repository_ids": []
+    "open_source_repository_ids": [],
+    "profile_id": "AUTOMATION_ENGINEERING_V1"
   }
 }
