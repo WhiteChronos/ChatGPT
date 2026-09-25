@@ -981,7 +981,8 @@
       "required": [
         "registry_id",
         "authoritative_source_ids",
-        "open_source_repository_ids"
+        "open_source_repository_ids",
+        "profile_id"
       ],
       "properties": {
         "registry_id": {
@@ -1000,6 +1001,9 @@
           "items": {
             "$ref": "#/$defs/nonblank"
           }
+        },
+        "profile_id": {
+          "$ref": "#/$defs/nonblank"
         }
       },
       "additionalProperties": false
@@ -1009,7 +1013,8 @@
       "required": [
         "stage",
         "status",
-        "evidence"
+        "evidence",
+        "reference_ids"
       ],
       "properties": {
         "stage": {
@@ -1036,6 +1041,13 @@
         },
         "evidence": {
           "$ref": "#/$defs/nonblank"
+        },
+        "reference_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
         }
       },
       "additionalProperties": false
