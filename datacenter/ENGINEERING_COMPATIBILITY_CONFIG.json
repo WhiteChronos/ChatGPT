@@ -190,8 +190,58 @@
     "official_sources_are_normative_over_open_source": true,
     "open_source_is_supporting_only": true,
     "prohibit_open_source_as_project_evidence": true,
-    "prohibit_unlicensed_standard_text_storage": true
+    "prohibit_unlicensed_standard_text_storage": true,
+    "default_reference_profile": "AUTOMATION_ENGINEERING_V1"
   },
   "source_governance_rule": "governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md",
-  "reference_registry_gate": "pipeline/reference_registry_gate.py"
+  "reference_registry_gate": "pipeline/reference_registry_gate.py",
+  "reference_profiles": {
+    "AUTOMATION_ENGINEERING_V1": {
+      "selection_policy": "APPLICABILITY_BASED",
+      "rule": "Project-approved evidence remains primary for project facts. External source IDs are selected only when the criterion invokes that external domain.",
+      "by_hyperfocus_stage": {
+        "PROCESS_REQUIREMENT": [],
+        "EQUIPMENT_TAG": [
+          "ISA-5.1-2024"
+        ],
+        "POWER": [],
+        "COMMAND_FEEDBACK": [
+          "IEC-61131-3-2025"
+        ],
+        "IO": [
+          "IEC-61131-3-2025"
+        ],
+        "PLC_RTU": [
+          "IEC-61131-3-2025"
+        ],
+        "CONTROL_LOGIC": [
+          "IEC-61131-3-2025"
+        ],
+        "NETWORK_PROTOCOL": [
+          "OPC-UA-1.05",
+          "MODBUS-APPLICATION-PROTOCOL-V1.1B3",
+          "ASHRAE-135-2024"
+        ],
+        "DATA_QUALITY": [
+          "JSON-SCHEMA-2020-12"
+        ],
+        "HMI_SCADA": [
+          "ISA-101.01-2015"
+        ],
+        "ALARM_HISTORY": [
+          "ISA-18.2-2016"
+        ],
+        "FAT_SAT": []
+      },
+      "cross_cutting": {
+        "FUNCTIONAL_SAFETY": [
+          "IEC-61511-1-2016-A1-2017"
+        ],
+        "OT_CYBERSECURITY": [
+          "IEC-62443-2-1-2024",
+          "NIST-SP-800-82R3"
+        ]
+      }
+    }
+  }
 }
