@@ -49,7 +49,8 @@
       "evidence_quality": {
         "rating": "LOW",
         "rationale": "Template evidence is illustrative and does not cover both declared interface disciplines."
-      }
+      },
+      "reference_ids": []
     }
   ],
   "scope_summary": {
@@ -202,19 +203,24 @@
         "Required decision or missing evidence"
       ],
       "closure_criterion": "Objective evidence required to close the finding.",
-      "confidence": "HIGH"
+      "confidence": "HIGH",
+      "protocol_question_id": "Q-TEMPLATE-001",
+      "external_reference_ids": []
     }
   ],
   "protocol_zero": {
     "policy": "QUESTION_BEFORE_FINDING",
-    "unresolved_count": 1,
+    "unresolved_count": 0,
     "questions": [
       {
         "id": "Q-TEMPLATE-001",
         "question": "Replace this template question with the technical doubt that must be answered before promoting a finding.",
-        "answer": "",
-        "status": "UNANSWERED",
-        "promotes_to_finding": false
+        "answer": "Template answer placeholder: replace with the documented technical answer before using this template for a real project.",
+        "status": "ANSWERED",
+        "promotes_to_finding": true,
+        "finding_ids": [
+          "TEMPLATE-001"
+        ]
       }
     ]
   },
@@ -222,6 +228,73 @@
     "model": "AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0",
     "automation_hyperfocus": true,
     "data_lineage_required": true,
-    "failure_mode_review_required": true
+    "failure_mode_review_required": true,
+    "hyperfocus_checks": [
+      {
+        "stage": "PROCESS_REQUIREMENT",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "EQUIPMENT_TAG",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "POWER",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "COMMAND_FEEDBACK",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "IO",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "PLC_RTU",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "CONTROL_LOGIC",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "NETWORK_PROTOCOL",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "DATA_QUALITY",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "HMI_SCADA",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "ALARM_HISTORY",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      },
+      {
+        "stage": "FAT_SAT",
+        "status": "NOT_APPLICABLE",
+        "evidence": "Template placeholder: provide project-specific evidence when this stage is applicable."
+      }
+    ]
+  },
+  "reference_context": {
+    "registry_id": "ENGINEERING_REFERENCE_REGISTRY_V1_0",
+    "authoritative_source_ids": [],
+    "open_source_repository_ids": []
   }
 }
