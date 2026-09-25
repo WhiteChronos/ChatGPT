@@ -12,7 +12,7 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--reference-registry",
         type=Path,
-        default=Path("datacenter/ENGINEERING_REFERENCE_REGISTRY.json"),
+        default=Path("document-evaluation/datacenter/ENGINEERING_REFERENCE_REGISTRY.json"),
     )
     return p
 
