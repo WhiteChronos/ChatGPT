@@ -9,6 +9,7 @@ on:
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
+      - 'datacenter/ENGINEERING_REFERENCE_REGISTRY.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
@@ -21,6 +22,9 @@ on:
       - 'tests/test_engineering_compatibility_gate_codex_round7.py'
       - 'tests/test_engineering_compatibility_gate_codex_round8.py'
       - 'tests/test_engineering_compatibility_gate_codex_round9.py'
+      - 'memory/ENGINEERING_COMPATIBILITY_MEMORY.md'
+      - '.github/agents/automation-hyperfocus-reviewer.agent.md'
+      - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
       - '.github/workflows/engineering-compatibility-visualize.yml'
   push:
     branches: [main]
@@ -30,6 +34,7 @@ on:
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
       - 'schemas/engineering_compatibility.schema.json'
+      - 'datacenter/ENGINEERING_REFERENCE_REGISTRY.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
@@ -43,6 +48,9 @@ on:
       - 'tests/test_engineering_compatibility_gate_codex_round7.py'
       - 'tests/test_engineering_compatibility_gate_codex_round8.py'
       - 'tests/test_engineering_compatibility_gate_codex_round9.py'
+      - 'memory/ENGINEERING_COMPATIBILITY_MEMORY.md'
+      - '.github/agents/automation-hyperfocus-reviewer.agent.md'
+      - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
       - '.github/workflows/engineering-compatibility-visualize.yml'
 
 jobs:
@@ -126,6 +134,7 @@ jobs:
           for file in "${files[@]}"; do
             echo "Validating $file"
             python pipeline/engineering_compatibility_gate.py "$file" || rc=1
+            python pipeline/protocol_zero_gate.py "$file" || rc=1
           done
           exit $rc
 
