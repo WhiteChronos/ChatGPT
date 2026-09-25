@@ -143,3 +143,16 @@ Permanent prevention:
 
 ## Confidentiality
 Do not commit confidential project files or proprietary source text to a public repository. Regression tests must use synthetic fixtures only.
+
+## Exact-font source and provisioning gate
+For layout-sensitive validation of Word documents, exact font families referenced by the source must be available to the renderer.
+
+The governed source manifest is `datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json`.
+
+Rules:
+- proprietary font binaries must never be committed to the public repository;
+- Petrobras Sans must be obtained from an authorized Petrobras/corporate brand source;
+- Microsoft families such as Arial, Arial Black, Calibri, Courier New, Times New Roman, Wingdings, Tahoma and Symbol must come from a licensed Windows/Office installation or other authorized Microsoft/Monotype source;
+- Trebuchet MS may be used only as a support/fallback font where the identity guidance permits it; it is not an exact-layout substitute for Petrobras Sans;
+- if an exact required family is missing, page-count, line-wrap, overflow and page-break claims from an external render are `NOT_VERIFIABLE_FROM_RENDER`;
+- use `pipeline/font_fidelity_gate.py` before layout-sensitive rendering and `pipeline/with_private_fonts.sh` to expose a caller-supplied licensed font directory to the renderer.
