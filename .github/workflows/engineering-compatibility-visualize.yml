@@ -15,8 +15,10 @@ on:
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
+      - 'pipeline/reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
+      - 'tests/test_reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
@@ -42,8 +44,10 @@ on:
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
+      - 'pipeline/reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
+      - 'tests/test_reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
@@ -74,10 +78,12 @@ jobs:
           python -m py_compile pipeline/engineering_compatibility_gate_impl.py
           python -m py_compile pipeline/engineering_compatibility.py
           python -m py_compile pipeline/protocol_zero_gate.py
+          python -m py_compile pipeline/reference_registry_gate.py
 
       - name: Validate JSON syntax
         run: |
           python -m json.tool datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json >/dev/null
+          python -m json.tool datacenter/ENGINEERING_REFERENCE_REGISTRY.json >/dev/null
           python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
           python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
           python -m json.tool datasheet/projects/example-project.json >/dev/null
@@ -92,6 +98,9 @@ jobs:
           Draft202012Validator(schema, format_checker=FormatChecker()).validate(data)
           print('Template schema: PASS')
           PY
+
+      - name: Validate canonical engineering reference registry
+        run: python pipeline/reference_registry_gate.py
 
       - name: Exercise permanent positive semantic gate
         run: python pipeline/engineering_compatibility_gate.py
@@ -116,6 +125,7 @@ jobs:
         run: |
           pytest -q tests/test_engineering_compatibility_gate.py
           pytest -q tests/test_protocol_zero_gate.py
+          pytest -q tests/test_reference_registry_gate.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round4.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round5.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round6.py
