@@ -1,0 +1,345 @@
+{
+  "registry_id": "ENGINEERING_REFERENCE_REGISTRY_V1_0",
+  "status": "MANDATORY",
+  "policy": {
+    "authority_order": [
+      "PROJECT_APPROVED_SOURCE",
+      "OFFICIAL_STANDARD_OR_SPECIFICATION",
+      "OFFICIAL_GUIDANCE",
+      "OPEN_SOURCE_IMPLEMENTATION"
+    ],
+    "open_source_is_not_normative": true,
+    "require_official_url_for_authoritative_source": true,
+    "require_repository_url_for_open_source": true,
+    "require_license_security_maintenance_review_before_adoption": true,
+    "do_not_store_licensed_standard_text_in_repository": true,
+    "do_not_use_open_source_repository_as_project_evidence": true
+  },
+  "authoritative_sources": [
+    {
+      "id": "IEC-61131-3-2025",
+      "authority": "IEC",
+      "title": "IEC 61131-3:2025 Programmable controllers - Part 3: Programming languages",
+      "status": "CURRENT",
+      "official_url": "https://webstore.iec.ch/en/publication/68533",
+      "disciplines": [
+        "AUTOMATION"
+      ],
+      "applies_to": [
+        "PLC_PROGRAMMING",
+        "CONTROL_LOGIC",
+        "PROGRAM_STRUCTURE"
+      ],
+      "access_note": "Use official metadata and licensed copy as applicable; do not reproduce copyrighted standard text."
+    },
+    {
+      "id": "ISA-5.1-2024",
+      "authority": "ISA",
+      "title": "ANSI/ISA-5.1-2024 Instrumentation and Control - Symbols and Identification",
+      "status": "CURRENT",
+      "official_url": "https://www.isa.org/standards-and-publications/isa-standards/isa-standards-committees/isa5-1",
+      "disciplines": [
+        "AUTOMATION",
+        "INSTRUMENTATION"
+      ],
+      "applies_to": [
+        "TAG_IDENTIFICATION",
+        "P_AND_ID",
+        "INSTRUMENTATION_SYMBOLS"
+      ],
+      "access_note": "Store only public bibliographic metadata/official links in this repository and AI workflow. Do not enter ISA standard text or other ISA IP into AI tools without ISA's express written permission."
+    },
+    {
+      "id": "ISA-101.01-2015",
+      "authority": "ISA",
+      "title": "ISA-101.01-2015 Human Machine Interfaces for Process Automation Systems",
+      "status": "CURRENT",
+      "official_url": "https://www.isa.org/standards-and-publications/isa-standards/isa-101-standards",
+      "disciplines": [
+        "AUTOMATION"
+      ],
+      "applies_to": [
+        "HMI",
+        "SCADA",
+        "OPERATOR_INTERFACE"
+      ],
+      "access_note": "Store only public bibliographic metadata/official links in this repository and AI workflow. Do not enter ISA standard text or other ISA IP into AI tools without ISA's express written permission."
+    },
+    {
+      "id": "ISA-18.2-2016",
+      "authority": "ISA",
+      "title": "ANSI/ISA-18.2-2016 Management of Alarm Systems for the Process Industries",
+      "status": "CURRENT",
+      "official_url": "https://www.isa.org/standards-and-publications/isa-standards/isa-18-series-of-standards",
+      "disciplines": [
+        "AUTOMATION"
+      ],
+      "applies_to": [
+        "ALARMS",
+        "ALARM_LIFECYCLE",
+        "HMI_SCADA"
+      ],
+      "access_note": "Store only public bibliographic metadata/official links in this repository and AI workflow. Do not enter ISA standard text or other ISA IP into AI tools without ISA's express written permission."
+    },
+    {
+      "id": "IEC-61511-1-2016-A1-2017",
+      "authority": "IEC",
+      "title": "IEC 61511-1:2016+AMD1:2017 Functional safety - Safety instrumented systems for the process industry sector - Part 1",
+      "status": "CURRENT",
+      "official_url": "https://webstore.iec.ch/en/publication/61289",
+      "disciplines": [
+        "AUTOMATION",
+        "INSTRUMENTATION",
+        "SAFETY"
+      ],
+      "applies_to": [
+        "SIS",
+        "INTERLOCKS",
+        "SAFE_STATE",
+        "FUNCTIONAL_SAFETY"
+      ],
+      "access_note": "Use official metadata and licensed copy as applicable; do not reproduce copyrighted standard text."
+    },
+    {
+      "id": "IEC-62443-2-1-2024",
+      "authority": "IEC",
+      "title": "IEC 62443-2-1:2024 Security for industrial automation and control systems - Part 2-1",
+      "status": "CURRENT",
+      "official_url": "https://webstore.iec.ch/en/publication/62883",
+      "disciplines": [
+        "AUTOMATION",
+        "CYBERSECURITY"
+      ],
+      "applies_to": [
+        "IACS_SECURITY",
+        "ASSET_OWNER_SECURITY_PROGRAM",
+        "OT_SECURITY"
+      ],
+      "access_note": "Use official metadata and licensed copy as applicable; do not reproduce copyrighted standard text."
+    },
+    {
+      "id": "NIST-SP-800-82R3",
+      "authority": "NIST",
+      "title": "NIST SP 800-82 Rev. 3 Guide to Operational Technology (OT) Security",
+      "status": "FINAL",
+      "official_url": "https://csrc.nist.gov/pubs/sp/800/82/r3/final",
+      "disciplines": [
+        "AUTOMATION",
+        "CYBERSECURITY"
+      ],
+      "applies_to": [
+        "OT_SECURITY",
+        "PLC",
+        "SCADA",
+        "NETWORK_SECURITY"
+      ],
+      "access_note": "Rev. 4 is draft as of 2026-09-25; Rev. 3 remains the final baseline until superseded."
+    },
+    {
+      "id": "OPC-UA-1.05",
+      "authority": "OPC Foundation",
+      "title": "OPC Unified Architecture Specification 1.05",
+      "status": "CURRENT",
+      "official_url": "https://opcfoundation.org/developer-tools/specifications-unified-architecture",
+      "disciplines": [
+        "AUTOMATION",
+        "DATA"
+      ],
+      "applies_to": [
+        "OPC_UA",
+        "INFORMATION_MODEL",
+        "INDUSTRIAL_INTEROPERABILITY"
+      ],
+      "access_note": "Use official OPC Foundation specification pages and applicable license terms."
+    },
+    {
+      "id": "MODBUS-APPLICATION-PROTOCOL-V1.1B3",
+      "authority": "Modbus Organization",
+      "title": "MODBUS Application Protocol Specification V1.1b3",
+      "status": "CURRENT",
+      "official_url": "https://www.modbus.org/modbus-specifications",
+      "disciplines": [
+        "AUTOMATION",
+        "DATA"
+      ],
+      "applies_to": [
+        "MODBUS",
+        "REGISTER_MAP",
+        "INDUSTRIAL_PROTOCOL"
+      ],
+      "access_note": "Observe Modbus Organization license terms for protocol documents."
+    },
+    {
+      "id": "ASHRAE-135-2024",
+      "authority": "ASHRAE",
+      "title": "ANSI/ASHRAE Standard 135-2024 BACnet - A Data Communication Protocol for Building Automation and Control Networks",
+      "status": "CURRENT",
+      "official_url": "https://www.ashrae.org/technical-resources/standards-and-guidelines/titles-purposes-and-scopes",
+      "disciplines": [
+        "AUTOMATION",
+        "HVAC",
+        "DATA"
+      ],
+      "applies_to": [
+        "BACNET",
+        "BUILDING_AUTOMATION",
+        "HVAC_INTEROPERABILITY"
+      ],
+      "access_note": "Use official ASHRAE metadata and licensed/read-only access as permitted. Account for published addenda/errata when a project claim depends on affected clauses; do not reproduce copyrighted standard text."
+    },
+    {
+      "id": "JSON-SCHEMA-2020-12",
+      "authority": "JSON Schema",
+      "title": "JSON Schema Draft 2020-12",
+      "status": "CURRENT",
+      "official_url": "https://json-schema.org/draft/2020-12",
+      "disciplines": [
+        "DATA"
+      ],
+      "applies_to": [
+        "DATA_CONTRACT",
+        "SCHEMA_VALIDATION",
+        "DATASHEET"
+      ],
+      "access_note": "Public specification used by repository schema validation."
+    }
+  ],
+  "open_source_repositories": [
+    {
+      "id": "GITHUB-PYMODBUS",
+      "repository": "pymodbus-dev/pymodbus",
+      "repository_url": "https://github.com/pymodbus-dev/pymodbus",
+      "role": [
+        "MODBUS_CLIENT_SERVER",
+        "PROTOCOL_TESTING"
+      ],
+      "normative": false,
+      "reported_license": "NOASSERTION",
+      "default_branch": "dev",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY_REVIEW_REQUIRED"
+    },
+    {
+      "id": "GITHUB-OPCUA-ASYNCIO",
+      "repository": "FreeOpcUa/opcua-asyncio",
+      "repository_url": "https://github.com/FreeOpcUa/opcua-asyncio",
+      "role": [
+        "OPC_UA_CLIENT_SERVER",
+        "INTEROPERABILITY_TESTING"
+      ],
+      "normative": false,
+      "reported_license": "LGPL-3.0",
+      "default_branch": "master",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-BAC0",
+      "repository": "ChristianTremblay/BAC0",
+      "repository_url": "https://github.com/ChristianTremblay/BAC0",
+      "role": [
+        "BACNET_TESTING",
+        "DDC_TEST_AUTOMATION"
+      ],
+      "normative": false,
+      "reported_license": "LGPL-3.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-NODE-RED",
+      "repository": "node-red/node-red",
+      "repository_url": "https://github.com/node-red/node-red",
+      "role": [
+        "FLOW_INTEGRATION",
+        "PROTOTYPING"
+      ],
+      "normative": false,
+      "reported_license": "Apache-2.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-JSONSCHEMA",
+      "repository": "python-jsonschema/jsonschema",
+      "repository_url": "https://github.com/python-jsonschema/jsonschema",
+      "role": [
+        "JSON_SCHEMA_VALIDATION"
+      ],
+      "normative": false,
+      "reported_license": "MIT",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-PANDERA",
+      "repository": "unionai-oss/pandera",
+      "repository_url": "https://github.com/unionai-oss/pandera",
+      "role": [
+        "DATAFRAME_VALIDATION",
+        "DATA_QUALITY"
+      ],
+      "normative": false,
+      "reported_license": "MIT",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-GRAFANA",
+      "repository": "grafana/grafana",
+      "repository_url": "https://github.com/grafana/grafana",
+      "role": [
+        "OBSERVABILITY",
+        "DASHBOARD"
+      ],
+      "normative": false,
+      "reported_license": "AGPL-3.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-PROMETHEUS",
+      "repository": "prometheus/prometheus",
+      "repository_url": "https://github.com/prometheus/prometheus",
+      "role": [
+        "METRICS",
+        "MONITORING"
+      ],
+      "normative": false,
+      "reported_license": "Apache-2.0",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY"
+    },
+    {
+      "id": "GITHUB-TIMESCALEDB",
+      "repository": "timescale/timescaledb",
+      "repository_url": "https://github.com/timescale/timescaledb",
+      "role": [
+        "TIME_SERIES",
+        "HISTORIAN_SUPPORT"
+      ],
+      "normative": false,
+      "reported_license": "NOASSERTION",
+      "default_branch": "main",
+      "archived": false,
+      "verified_at": "2026-09-25",
+      "adoption_status": "REFERENCE_ONLY_REVIEW_REQUIRED"
+    }
+  ],
+  "verified_at": "2026-09-25",
+  "verification_policy": "Verify version/status against the issuing organization's official page before changing a canonical source entry."
+}
