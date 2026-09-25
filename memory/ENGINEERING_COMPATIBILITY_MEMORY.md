@@ -113,3 +113,12 @@ Canonical assets:
 - `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md`
 - `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`
 - `pipeline/document_fidelity_probe.py`
+
+## Exact-font fidelity permanent rule
+- Exact fonts referenced by the Word source are required for layout-sensitive validation.
+- Governed manifest: `datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json`.
+- Petrobras Sans must come from an authorized Petrobras/corporate source; Microsoft fonts must come from a licensed Windows/Office or authorized licensing source.
+- Public GitHub must never contain proprietary font binaries.
+- Trebuchet MS is support-only where identity guidance permits it and never counts as exact Petrobras Sans for pagination/layout validation.
+- Missing exact fonts => `NOT_VERIFIABLE_FROM_RENDER` for pagination, wrapping, overflow and page-break claims.
+- Use `pipeline/font_fidelity_gate.py` for preflight and `pipeline/with_private_fonts.sh` for a licensed private-font runtime.
