@@ -191,5 +191,6 @@
     "open_source_is_supporting_only": true,
     "prohibit_open_source_as_project_evidence": true,
     "prohibit_unlicensed_standard_text_storage": true
-  }
+  },
+  "source_governance_rule": "governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md"
 }
