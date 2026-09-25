@@ -182,5 +182,14 @@
     "require_failure_mode_review": true,
     "require_data_lineage": true,
     "require_master_discipline_authority": true
+  },
+  "engineering_reference_registry": "datacenter/ENGINEERING_REFERENCE_REGISTRY.json",
+  "source_governance": {
+    "require_registered_external_sources": true,
+    "require_reference_ids_for_external_knowledge": true,
+    "official_sources_are_normative_over_open_source": true,
+    "open_source_is_supporting_only": true,
+    "prohibit_open_source_as_project_evidence": true,
+    "prohibit_unlicensed_standard_text_storage": true
   }
 }
