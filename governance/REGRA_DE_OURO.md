@@ -128,3 +128,16 @@ Quando houver escopo de rede/Automação, verificar conforme aplicabilidade: top
 IEC 62443, VLAN, zonas/conduítes, firewall e DMZ não são não conformidades automáticas. Registrar a aplicabilidade como APPLICABLE, REFERENCE_ONLY, NOT_APPLICABLE ou PENDING, com sua base. Itens deliberadamente deixados para Projeto Executivo devem permanecer DESIGN_PENDING com entregável e critério de fechamento definidos.
 
 Aplicar `governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md` e `datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json`.
+
+## 14. Fidelidade documental e interpretação
+Toda revisão de documentos de engenharia deve separar três camadas: **estrutura nativa do arquivo**, **extração semântica** e **renderização visual**.
+
+É proibido declarar erro de paginação, quebra de página, posição em folha ou estouro de layout de um Word apenas porque um renderizador externo produziu quantidade de páginas diferente.
+
+Para DOCX, o número de páginas armazenado pelo Word em `docProps/app.xml -> Pages` e a foliação autoral têm precedência sobre a contagem produzida por LibreOffice/headless. Para DOC legado, usar metadados OLE/SummaryInformation quando disponíveis. Para PDF, usar a árvore de páginas do próprio PDF.
+
+Se a contagem nativa e a renderizada divergirem, classificar como `RENDER_MISMATCH` e não como erro do documento. Se estrutura, texto extraído e renderização entrarem em conflito, usar `DOCUMENT_INTERPRETATION_CONFLICT` e manter o item como NOT_VERIFIABLE até reconciliação.
+
+Antes de usar renderização para conclusões de paginação/layout, auditar fontes solicitadas e substituições. Substituição material de fonte torna conclusões baseadas apenas no render `NOT_VERIFIABLE_FROM_RENDER` até confirmação por exportação nativa.
+
+Aplicar `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md` e `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`.
