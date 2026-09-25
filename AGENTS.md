@@ -22,6 +22,8 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 15. `datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json`
 16. `governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md`
 17. `datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json`
+18. `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md`
+19. `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`
 
 ## Codex operating contract
 Codex SHALL:
@@ -42,6 +44,10 @@ Codex SHALL:
 - apply Automation/Data hyperfocus through TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> FAT/SAT;
 - preserve the master-discipline authority for physical attributes and never silently override it from a derived discipline;
 
+- apply document fidelity triage before interpreting pagination/layout: native file metadata/structure, semantic extraction, then visual rendering;
+- never treat LibreOffice/headless page count as authoritative Word pagination when it conflicts with DOC/DOCX native metadata or authored foliation;
+- classify native-vs-render page-count disagreement as RENDER_MISMATCH and cross-layer disagreement as DOCUMENT_INTERPRETATION_CONFLICT;
+- audit font substitutions before making layout-derived claims; material substitutions make render-only layout claims NOT_VERIFIABLE_FROM_RENDER until confirmed natively;
 - preserve all source evidence and provenance;
 - require SHA-256 provenance for every baseline document and every evidence record;
 - compare valid hexadecimal SHA-256 digests case-insensitively;
