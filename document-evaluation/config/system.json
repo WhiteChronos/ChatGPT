@@ -19,5 +19,15 @@
     "complete_not_summary": true,
     "machine_readable_datasheet": true,
     "human_visual_report": true
+  },
+  "execution_model": "PARALLEL_WITH_MAIN",
+  "parent_integration": {
+    "branch": "main",
+    "compatibility_gate": "pipeline/engineering_compatibility_gate.py",
+    "required": true
+  },
+  "local_gates": {
+    "reference_registry": "document-evaluation/pipeline/reference_registry_gate.py",
+    "protocol_zero": "document-evaluation/pipeline/protocol_zero_gate.py"
   }
 }
