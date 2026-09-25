@@ -5,6 +5,7 @@ on:
     paths:
       - 'AGENTS.md'
       - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
+      - 'docs/FONT_FIDELITY_SETUP.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_COMPATIBILITY_REPORT_MODEL_v1_0.md'
@@ -20,16 +21,20 @@ on:
       - 'datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json'
       - 'datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json'
       - 'datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json'
+      - 'datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json'
       - 'datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
       - 'pipeline/document_fidelity_probe.py'
+      - 'pipeline/font_fidelity_gate.py'
+      - 'pipeline/with_private_fonts.sh'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
       - 'tests/test_automation_report_model.py'
       - 'tests/test_document_fidelity_probe.py'
+      - 'tests/test_font_fidelity_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
@@ -42,6 +47,7 @@ on:
     paths:
       - 'AGENTS.md'
       - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
+      - 'docs/FONT_FIDELITY_SETUP.md'
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
@@ -52,6 +58,8 @@ on:
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
       - 'pipeline/document_fidelity_probe.py'
+      - 'pipeline/font_fidelity_gate.py'
+      - 'pipeline/with_private_fonts.sh'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
@@ -82,6 +90,7 @@ jobs:
           python -m py_compile pipeline/engineering_compatibility.py
           python -m py_compile pipeline/protocol_zero_gate.py
           python -m py_compile pipeline/document_fidelity_probe.py
+          python -m py_compile pipeline/font_fidelity_gate.py
 
       - name: Validate JSON syntax
         run: |
@@ -91,6 +100,7 @@ jobs:
           python -m json.tool datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json >/dev/null
           python -m json.tool datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json >/dev/null
+          python -m json.tool datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json >/dev/null
           python -m json.tool datacenter/AUTOMATION_TECHNICAL_KNOWLEDGE_BASE.json >/dev/null
           python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
           python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
@@ -132,6 +142,7 @@ jobs:
           pytest -q tests/test_protocol_zero_gate.py
           pytest -q tests/test_automation_report_model.py
           pytest -q tests/test_document_fidelity_probe.py
+          pytest -q tests/test_font_fidelity_gate.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round4.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round5.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round6.py
@@ -167,6 +178,9 @@ jobs:
           grep -q 'AUTOMATION_COMPACT_XLSX_V1' datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json
           grep -q 'AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0' datacenter/AUTOMATION_ELABORATION_EXECUTION_CONTROL.json
           grep -q 'DOCUMENT_FIDELITY_INTERPRETATION_V1_0' datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json
+          grep -q 'DOCUMENT_FONT_FIDELITY_MANIFEST_V1_0' datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json
+          grep -q 'Petrobras Sans' datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json
+          grep -q 'proprietary_font_binaries_must_not_be_committed' datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json
           grep -q 'RENDER_MISMATCH' governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md
           grep -q 'IEC 62443' governance/AUTOMATION_ELABORATION_EXECUTION_CONTROL_GOLDEN_RULE_v1_0.md
           grep -q 'Findings are consolidated into the Documents & Actions sheet' governance/AUTOMATION_COMPACT_EXCEL_EXPORT_MODEL_v1_0.md
