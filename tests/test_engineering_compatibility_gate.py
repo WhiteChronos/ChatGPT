@@ -599,3 +599,20 @@ def test_hyperfocus_stage_inventory_must_be_complete_and_unique() -> None:
     data["release_gate"] = "BLOCK"
     errors = validate_semantics(data, config())
     assert any("hyperfocus_checks must cover each canonical stage exactly once" in error for error in errors)
+
+
+def test_unknown_reference_profile_blocks_release() -> None:
+    data = example()
+    data["reference_context"]["profile_id"] = "INVENTED_PROFILE"
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("not a repository-pinned reference profile" in error for error in errors)
+
+
+def test_hyperfocus_stage_reference_must_be_declared_and_authoritative() -> None:
+    data = example()
+    data["analysis_profile"]["hyperfocus_checks"][0]["reference_ids"] = ["GITHUB-PYMODBUS"]
+    data["reference_context"]["open_source_repository_ids"].append("GITHUB-PYMODBUS")
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("unknown authoritative reference ids" in error for error in errors)
