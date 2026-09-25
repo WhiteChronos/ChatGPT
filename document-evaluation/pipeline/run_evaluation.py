@@ -32,7 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     commands = [
         [sys.executable, str(REFERENCE_GATE)],
         [sys.executable, str(PROTOCOL_ZERO_GATE), datasheet],
-        [sys.executable, str(PARENT_COMPATIBILITY_GATE), datasheet],
+        [sys.executable, "-m", "pipeline.engineering_compatibility_gate", datasheet],
     ]
 
     failed = False
