@@ -106,3 +106,9 @@ Secondary tutorial reference:
 - `Unstructured-IO/unstructured` — multi-format partitioning/chunking for semantic pipelines; use as a supporting extraction layer, not layout authority.
 
 Document-tool adoption rule: compare at least source-native structure + semantic extraction + visual rendering for material engineering claims. A tool output describes that tool's interpretation and does not silently replace the source artifact.
+
+### Font fidelity and licensed source provisioning
+- Petrobras official brand page / Brand Content Library — authoritative acquisition route for Petrobras-exclusive typography and brand assets; do not use third-party font-sharing copies.
+- Microsoft Learn Typography font pages — authoritative family/file-name/licensing references for Arial, Arial Black, Courier New, Wingdings, Trebuchet MS and Windows font inventories.
+- Exact proprietary binaries remain outside the public repository. Use an authorized local/private font directory with `font_fidelity_gate.py` and `with_private_fonts.sh`.
+- Fallback fonts are acceptable only for readability when explicitly permitted; they never satisfy exact layout/pagination fidelity.
