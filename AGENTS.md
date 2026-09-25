@@ -63,10 +63,12 @@ Codex SHALL:
 Before proposing merge, Codex SHALL run or ensure CI runs:
 
 ```bash
+python pipeline/reference_registry_gate.py
 python pipeline/engineering_compatibility_gate.py
 python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
 pytest -q tests/test_engineering_compatibility_gate.py
 pytest -q tests/test_protocol_zero_gate.py
+pytest -q tests/test_reference_registry_gate.py
 ```
 
 The no-argument gate validates the permanent known-good fixture at `datasheet/projects/example-project.json`. Real projects MUST also be validated explicitly:
