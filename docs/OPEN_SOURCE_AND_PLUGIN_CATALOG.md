@@ -3,6 +3,22 @@
 ## Purpose
 Curated discovery catalog for engineering automation/data compatibility work. This is not an allow-list and does not auto-install, vendor-lock, or approve any dependency. Every adoption requires license, maintenance, cybersecurity, protocol and project-fit review.
 
+
+## Authoritative source hierarchy
+
+External engineering requirements are governed by `datacenter/ENGINEERING_REFERENCE_REGISTRY.json`.
+
+Priority is:
+
+1. approved project source for project-specific facts;
+2. official standards/specifications issued by the responsible authority;
+3. official guidance;
+4. open-source implementations for testing, simulation, integration and validation support only.
+
+An open-source repository is never normative authority and must never be used as project evidence. Any finding whose claim basis is `EXTERNAL_KNOWLEDGE` must cite a registered authoritative source ID.
+
+The canonical registry currently covers IEC 61131-3, IEC 61511-1, IEC 62443-2-1, ISA-5.1, ISA-101.01, ISA-18.2, NIST SP 800-82 Rev. 3, OPC UA, Modbus Application Protocol V1.1b3, ANSI/ASHRAE 135-2024 BACnet and JSON Schema Draft 2020-12.
+
 ## Open-source repositories discovered
 
 ### Industrial protocols / PLC integration
@@ -12,6 +28,8 @@ Curated discovery catalog for engineering automation/data compatibility work. Th
 - `Autonomy-Logic/openplc-runtime` — OpenPLC runtime.
 - `Autonomy-Logic/openplc-editor` — OpenPLC editor.
 - `eclipse-milo/milo` — OPC UA stack for Java.
+- `FreeOpcUa/opcua-asyncio` — OPC UA client/server support for Python and interoperability testing.
+- `ChristianTremblay/BAC0` — BACnet test/integration support for Python.
 
 ### Flow, integration and observability
 - `node-red/node-red` — flow-based integration and prototyping.
