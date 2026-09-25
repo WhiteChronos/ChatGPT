@@ -98,3 +98,18 @@ Permanent reusable control: `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0`.
 - For Automation network scope, check topology, CLP/UTR/I/O/IHM/Gateway/Switch/BMS links, uplinks, port map, IP/subnet, VLAN/segmentation, control-supervisory boundary, zones/conduits, firewall/DMZ decision, protocol/register/data-quality, communication-loss behavior, FAT/SAT and cybersecurity-reference applicability.
 - IEC 62443/firewall/DMZ/VLAN/zones are applicability-controlled; do not create automatic nonconformity without project/applicability basis.
 - Compact XLSX remains the execution-facing projection: Summary + Documents & Actions + Pendings + Answered Questions.
+
+## Document fidelity permanent rule
+Permanent lesson from a pagination false positive:
+- Word page count and external renderer page count are separate facts.
+- DOCX native page count should be read from `docProps/app.xml -> Pages` when present; legacy DOC page count should use OLE SummaryInformation; PDF uses its native page tree.
+- LibreOffice/headless rendering is for visual QA, not authoritative Word pagination when reflow occurs.
+- If native page count and render count differ, use `RENDER_MISMATCH`, not a document finding.
+- Before layout claims, audit requested fonts and substitutions. Missing corporate/proprietary fonts can change line wrapping and total pages.
+- Review engineering documents in three passes: structure/provenance -> semantic content -> visual verification -> reconcile conflicts.
+- If layers disagree, use `DOCUMENT_INTERPRETATION_CONFLICT` / NOT_VERIFIABLE until resolved.
+
+Canonical assets:
+- `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md`
+- `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`
+- `pipeline/document_fidelity_probe.py`
