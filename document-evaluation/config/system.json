@@ -1,0 +1,23 @@
+{
+  "model_id": "DOCUMENT_EVALUATION_V0_1",
+  "mode": "BLOCK_ON_FAILURE",
+  "agent_profile": "DOCUMENT_EVALUATION_ENGINEERING_AGENT_V0_1",
+  "reference_profile": "AUTOMATION_ENGINEERING_V1",
+  "protocols": {
+    "protocol_zero": true,
+    "source_governance": true,
+    "automation_hyperfocus": true,
+    "immutable_raw": true,
+    "sha256_provenance": true
+  },
+  "gates": [
+    "REFERENCE_REGISTRY",
+    "PROTOCOL_ZERO",
+    "ENGINEERING_COMPATIBILITY"
+  ],
+  "output": {
+    "complete_not_summary": true,
+    "machine_readable_datasheet": true,
+    "human_visual_report": true
+  }
+}
