@@ -24,6 +24,8 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 17. `datacenter/AUTOMATION_REPORT_EXPORT_PROFILES.json`
 18. `governance/DOCUMENT_FIDELITY_INTERPRETATION_GOLDEN_RULE_v1_0.md`
 19. `datacenter/DOCUMENT_FIDELITY_INTERPRETATION_MODEL.json`
+20. `datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json`
+21. `docs/FONT_FIDELITY_SETUP.md`
 
 ## Codex operating contract
 Codex SHALL:
@@ -48,6 +50,8 @@ Codex SHALL:
 - never treat LibreOffice/headless page count as authoritative Word pagination when it conflicts with DOC/DOCX native metadata or authored foliation;
 - classify native-vs-render page-count disagreement as RENDER_MISMATCH and cross-layer disagreement as DOCUMENT_INTERPRETATION_CONFLICT;
 - audit font substitutions before making layout-derived claims; material substitutions make render-only layout claims NOT_VERIFIABLE_FROM_RENDER until confirmed natively;
+- require exact source fonts for layout-sensitive Word validation; use the governed font manifest and block layout conclusions when exact proprietary fonts are missing;
+- never commit Petrobras Sans or Microsoft proprietary font binaries to the public repository; consume them only through an authorized private-font mount/runtime;
 - preserve all source evidence and provenance;
 - require SHA-256 provenance for every baseline document and every evidence record;
 - compare valid hexadecimal SHA-256 digests case-insensitively;
