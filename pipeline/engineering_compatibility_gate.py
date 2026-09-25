@@ -317,6 +317,18 @@ def _source_governance_errors(data: dict[str, Any]) -> list[str]:
             errors,
         )
 
+    try:
+        canonical_config = _impl.load_json(_impl.DEFAULT_CONFIG)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return errors + [f"canonical source profile load error: {exc}"]
+    profiles = canonical_config.get("reference_profiles", {})
+    profile_id = context.get("profile_id")
+    if not isinstance(profiles, dict) or profile_id not in profiles:
+        _impl.fail(
+            f"reference_context.profile_id {profile_id!r} is not a repository-pinned reference profile",
+            errors,
+        )
+
     declared_authorities = context.get("authoritative_source_ids", [])
     declared_repositories = context.get("open_source_repository_ids", [])
     if not isinstance(declared_authorities, list):
@@ -399,6 +411,21 @@ def _source_governance_errors(data: dict[str, Any]) -> list[str]:
         if not isinstance(item.get("evidence"), str) or not item.get("evidence", "").strip():
             _impl.fail(
                 f"hyperfocus stage {item.get('stage', 'UNKNOWN')} requires nonblank evidence",
+                errors,
+            )
+        stage_refs = item.get("reference_ids", [])
+        if not isinstance(stage_refs, list):
+            stage_refs = []
+        invalid_stage_refs = sorted(set(stage_refs) - authority_ids)
+        if invalid_stage_refs:
+            _impl.fail(
+                f"hyperfocus stage {item.get('stage', 'UNKNOWN')} contains unknown authoritative reference ids: {invalid_stage_refs}",
+                errors,
+            )
+        undeclared_stage_refs = sorted(set(stage_refs) - set(declared_authorities))
+        if undeclared_stage_refs:
+            _impl.fail(
+                f"hyperfocus stage {item.get('stage', 'UNKNOWN')} uses references not declared in reference_context: {undeclared_stage_refs}",
                 errors,
             )
 
