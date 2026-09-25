@@ -331,6 +331,11 @@
     "libreoffice_word_pagination_authority": false,
     "render_mismatch_is_document_error": false,
     "font_substitution_audit_before_layout_claim": true,
-    "cross_layer_conflict_status": "DOCUMENT_INTERPRETATION_CONFLICT"
+    "cross_layer_conflict_status": "DOCUMENT_INTERPRETATION_CONFLICT",
+    "font_manifest": "datacenter/DOCUMENT_FONT_FIDELITY_MANIFEST.json",
+    "font_gate": "pipeline/font_fidelity_gate.py",
+    "private_font_runtime_wrapper": "pipeline/with_private_fonts.sh",
+    "exact_fonts_required_for_layout_sensitive_validation": true,
+    "proprietary_font_binaries_in_public_repo": false
   }
 }
