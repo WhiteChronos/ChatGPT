@@ -1,0 +1,159 @@
+{
+  "model_id": "DOCUMENT_FONT_FIDELITY_MANIFEST_V1_0",
+  "status": "MANDATORY",
+  "policy": {
+    "exact_fonts_required_for_layout_sensitive_validation": true,
+    "proprietary_font_binaries_must_not_be_committed": true,
+    "private_font_directory": "private_fonts/",
+    "font_gate": "pipeline/font_fidelity_gate.py",
+    "runtime_wrapper": "pipeline/with_private_fonts.sh",
+    "missing_exact_font_status": "NOT_VERIFIABLE_FROM_RENDER",
+    "fallback_font_never_counts_as_exact": true
+  },
+  "sources": [
+    {
+      "family": "Petrobras Sans",
+      "classification": "PROPRIETARY_CORPORATE",
+      "exact_required": true,
+      "official_source": "https://petrobras.com.br/quem-somos/nossa-marca",
+      "acquisition": "Authorized Petrobras Brand Content Library / corporate source",
+      "redistribution_in_public_repo": false,
+      "notes": "Petrobras states that its visual identity uses an exclusive typography and that brand manuals/assets are accessed through the Petrobras brand-content library.",
+      "support_fallback": {
+        "family": "Trebuchet MS",
+        "status": "SUPPORT_ONLY",
+        "exact_layout_equivalent": false,
+        "basis": "Petrobras/Transpetro identity manuals identify Trebuchet MS as a support font under technical restriction. It must not be used to validate exact Word pagination."
+      }
+    },
+    {
+      "family": "Arial",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/font-list/arial",
+      "windows_files": [
+        "Arial.ttf",
+        "Ariali.ttf",
+        "Arialbd.ttf",
+        "Arialbi.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation or authorized Microsoft/Monotype licensing",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Arial Black",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/font-list/arial-black",
+      "windows_files": [
+        "Ariblk.ttf",
+        "AriBlkIt.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation or authorized Microsoft/Monotype licensing",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Calibri",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list",
+      "windows_files": [
+        "Calibri.ttf",
+        "Calibrii.ttf",
+        "Calibrib.ttf",
+        "Calibriz.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Calibri Light",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list",
+      "windows_files": [
+        "Calibril.ttf",
+        "Calibrili.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Courier New",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/font-list/courier-new",
+      "windows_files": [
+        "Cour.ttf",
+        "Couri.ttf",
+        "Courbd.ttf",
+        "Courbi.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation or authorized Microsoft/Monotype licensing",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Times New Roman",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/font-list/times-new-roman",
+      "windows_files": [
+        "Times.ttf",
+        "Timesi.ttf",
+        "Timesbd.ttf",
+        "Timesbi.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation or authorized Microsoft/Monotype licensing",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Wingdings",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/font-list/wingdings",
+      "windows_files": [
+        "Wingding.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Tahoma",
+      "classification": "MICROSOFT_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list",
+      "windows_files": [
+        "Tahoma.ttf",
+        "Tahomabd.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Symbol",
+      "classification": "MICROSOFT_OR_OFFICE_LICENSED",
+      "exact_required": true,
+      "official_source": "https://learn.microsoft.com/en-us/typography/fonts/windows_11_font_list",
+      "windows_files": [
+        "Symbol.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation when used by the source document",
+      "redistribution_in_public_repo": false
+    },
+    {
+      "family": "Trebuchet MS",
+      "classification": "MICROSOFT_LICENSED_SUPPORT_FONT",
+      "exact_required": false,
+      "official_source": "https://learn.microsoft.com/en-us/typography/font-list/trebuchet-ms",
+      "windows_files": [
+        "Trebuc.ttf",
+        "Trebucit.ttf",
+        "Trebucbd.ttf",
+        "Trebucbi.ttf"
+      ],
+      "acquisition": "Licensed Windows/Office installation",
+      "redistribution_in_public_repo": false,
+      "notes": "Approved only as a support/fallback where the source identity manual permits it; not an exact-layout substitute for Petrobras Sans."
+    }
+  ]
+}
