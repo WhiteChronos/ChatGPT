@@ -2,39 +2,51 @@ name: Document Evaluation Subsystem
 
 on:
   pull_request:
+    branches: [main]
     paths:
       - 'document-evaluation/**'
       - '.github/workflows/document-evaluation.yml'
       - 'pipeline/engineering_compatibility_gate.py'
-      - 'pipeline/protocol_zero_gate.py'
-      - 'pipeline/reference_registry_gate.py'
-      - 'datacenter/ENGINEERING_REFERENCE_REGISTRY.json'
+      - 'pipeline/engineering_compatibility_gate_impl.py'
+      - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'schemas/engineering_compatibility.schema.json'
   push:
     branches: [main]
     paths:
       - 'document-evaluation/**'
       - '.github/workflows/document-evaluation.yml'
+      - 'pipeline/engineering_compatibility_gate.py'
+      - 'pipeline/engineering_compatibility_gate_impl.py'
 
 jobs:
   subsystem:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install subsystem
         run: pip install -e document-evaluation pytest
+
       - name: Compile
         run: |
           python -m py_compile document-evaluation/pipeline/run_evaluation.py
+          python -m py_compile document-evaluation/pipeline/reference_registry_gate.py
+          python -m py_compile document-evaluation/pipeline/protocol_zero_gate.py
           python -m py_compile document-evaluation/src/document_evaluation/contracts.py
           python -m py_compile document-evaluation/src/document_evaluation/engine.py
           python -m py_compile document-evaluation/src/document_evaluation/cli.py
+          python -m py_compile document-evaluation/src/document_evaluation/reference_registry.py
+          python -m py_compile document-evaluation/src/document_evaluation/protocol_zero.py
+
+      - name: Validate embedded source registry
+        run: python document-evaluation/pipeline/reference_registry_gate.py
+
       - name: Tests
         run: pytest -q document-evaluation/tests
-      - name: Parent-system integration
-        run: |
-          python pipeline/reference_registry_gate.py
-          python document-evaluation/pipeline/run_evaluation.py datasheet/projects/example-project.json
+
+      - name: Parallel integration with main compatibility gate
+        run: python document-evaluation/pipeline/run_evaluation.py datasheet/projects/example-project.json
