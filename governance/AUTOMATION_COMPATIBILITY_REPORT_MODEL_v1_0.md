@@ -199,3 +199,8 @@ The report SHALL apply `AUTOMATION_ELABORATION_EXECUTION_CONTROL_V1_0` from `gov
 Every confirmed finding or material pending item SHALL be converted into an owning-document action with priority, objective required action, basis, related IDs, closure criterion and execution status. A revised document is not closed until it is rechecked.
 
 When network/IP/cybersecurity scope exists, the review SHALL check topology, interconnections, switch/uplinks, port map, IP/subnets, VLAN/segmentation, control-to-supervisory boundary, zones/conduits, firewall/DMZ decision, protocol/register/data-quality mapping, communication-loss behavior, FAT/SAT and cybersecurity-reference applicability. IEC 62443-related controls remain applicability-driven and cannot create automatic nonconformity without project/applicability basis.
+
+## Document fidelity and interpretation gate
+Before promoting any document-format, pagination, sheet-location or layout discrepancy, apply `DOCUMENT_FIDELITY_INTERPRETATION_V1_0`.
+
+The reviewer SHALL separate native source structure, semantic extraction and visual rendering. For Word documents, external render page counts are non-authoritative when they conflict with native metadata/foliation. Record such cases as `RENDER_MISMATCH`; do not create a source-document finding until confirmed natively. Audit font substitutions before using external rendering for layout conclusions.
