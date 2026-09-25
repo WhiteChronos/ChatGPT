@@ -47,7 +47,7 @@
         "P_AND_ID",
         "INSTRUMENTATION_SYMBOLS"
       ],
-      "access_note": "Reference official metadata only in AI workflow unless licensed use is expressly permitted by ISA."
+      "access_note": "Store only public bibliographic metadata/official links in this repository and AI workflow. Do not enter ISA standard text or other ISA IP into AI tools without ISA's express written permission."
     },
     {
       "id": "ISA-101.01-2015",
@@ -63,7 +63,7 @@
         "SCADA",
         "OPERATOR_INTERFACE"
       ],
-      "access_note": "Reference official metadata only in AI workflow unless licensed use is expressly permitted by ISA."
+      "access_note": "Store only public bibliographic metadata/official links in this repository and AI workflow. Do not enter ISA standard text or other ISA IP into AI tools without ISA's express written permission."
     },
     {
       "id": "ISA-18.2-2016",
@@ -79,7 +79,7 @@
         "ALARM_LIFECYCLE",
         "HMI_SCADA"
       ],
-      "access_note": "Reference official metadata only in AI workflow unless licensed use is expressly permitted by ISA."
+      "access_note": "Store only public bibliographic metadata/official links in this repository and AI workflow. Do not enter ISA standard text or other ISA IP into AI tools without ISA's express written permission."
     },
     {
       "id": "IEC-61511-1-2016-A1-2017",
@@ -185,7 +185,7 @@
         "BUILDING_AUTOMATION",
         "HVAC_INTEROPERABILITY"
       ],
-      "access_note": "Use official ASHRAE metadata/read-only access where permitted; do not reproduce copyrighted standard text."
+      "access_note": "Use official ASHRAE metadata and licensed/read-only access as permitted. Account for published addenda/errata when a project claim depends on affected clauses; do not reproduce copyrighted standard text."
     },
     {
       "id": "JSON-SCHEMA-2020-12",
@@ -294,5 +294,7 @@
       ],
       "normative": false
     }
-  ]
+  ],
+  "verified_at": "2026-09-25",
+  "verification_policy": "Verify version/status against the issuing organization's official page before changing a canonical source entry."
 }
