@@ -12,6 +12,7 @@ Before creating, editing, reviewing or approving compatibility-analysis code, sc
 5. `datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json`
 6. `datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json`
 7. `memory/ENGINEERING_COMPATIBILITY_MEMORY.md`
+8. `datacenter/ENGINEERING_REFERENCE_REGISTRY.json`
 
 ## Codex operating contract
 Codex SHALL:
@@ -22,6 +23,8 @@ Codex SHALL:
 - preserve the master-discipline authority for physical attributes and never silently override it from a derived discipline;
 
 - preserve all source evidence and provenance;
+- apply the canonical engineering reference registry: project-approved evidence governs project facts; official standards/specifications govern external requirements; open-source repositories are supporting-only and never normative;
+- require every EXTERNAL_KNOWLEDGE finding claim to cite registered authoritative source IDs;
 - require SHA-256 provenance for every baseline document and every evidence record;
 - compare valid hexadecimal SHA-256 digests case-insensitively;
 - never convert `/visualize` into a short summary;
