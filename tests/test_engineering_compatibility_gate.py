@@ -53,6 +53,7 @@ def make_example_finding(*, status: str = "CLOSED", severity: str = "HIGH") -> d
     return {
         "id": "TEST-001",
         "assessment_id": "ASM-HVAC-001",
+        "protocol_question_id": "Q-EX-001",
         "severity": severity,
         "classification": "VERIFIED",
         "status": status,
@@ -562,3 +563,39 @@ def test_architecture_alternatives_require_structured_tradeoffs() -> None:
     finding["alternatives"][0]["tradeoffs"] = make_tradeoffs()
     data["release_gate"] = "PASS"
     assert validate_data(data, load_json(SCHEMA), config()) == []
+
+
+def test_unknown_authoritative_reference_blocks_release() -> None:
+    data = example()
+    data["reference_context"]["authoritative_source_ids"].append("UNKNOWN-STANDARD")
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("unknown authoritative source ids" in error for error in errors)
+
+
+def test_external_knowledge_requires_registered_authoritative_reference() -> None:
+    data = example()
+    finding = make_example_finding()
+    finding["claim_basis"]["solution"] = "EXTERNAL_KNOWLEDGE"
+    finding["external_reference_ids"] = []
+    data["findings"] = [finding]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("EXTERNAL_KNOWLEDGE" in error and "external_reference_id" in error for error in errors)
+
+
+def test_open_source_repository_cannot_be_used_as_authoritative_reference() -> None:
+    data = example()
+    data["assessment_records"][0]["reference_ids"] = ["GITHUB-PYMODBUS"]
+    data["reference_context"]["open_source_repository_ids"].append("GITHUB-PYMODBUS")
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("reference_ids must resolve to authoritative registry entries" in error for error in errors)
+
+
+def test_hyperfocus_stage_inventory_must_be_complete_and_unique() -> None:
+    data = example()
+    data["analysis_profile"]["hyperfocus_checks"] = data["analysis_profile"]["hyperfocus_checks"][:-1]
+    data["release_gate"] = "BLOCK"
+    errors = validate_semantics(data, config())
+    assert any("hyperfocus_checks must cover each canonical stage exactly once" in error for error in errors)
