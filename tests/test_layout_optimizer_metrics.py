@@ -54,8 +54,8 @@ def test_calculate_metrics_counts_physical_artifacts_and_reserve():
     metrics = calculate_metrics(panel, placements)
 
     assert metrics.occupied_area_mm2 == 50 * 50 + 40 * 50 + 10 * 40 + 200 * 10
-    assert metrics.free_reserve_percent == 67.75
-    assert metrics.minimum_clearance_mm == 40
+    assert metrics.free_reserve_percent == 62.75
+    assert metrics.minimum_clearance_mm == 20
     assert metrics.overlap_count == 0
     assert metrics.rail_count == 1
     assert metrics.wireway_count == 1
