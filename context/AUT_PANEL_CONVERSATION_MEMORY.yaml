@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 8
-  last_sync_at: '2026-09-28T18:10:00-03:00'
+  sync_revision: 9
+  last_sync_at: '2026-09-28T18:21:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -53,6 +53,10 @@ mutable_state:
     open_door_view_may_show_same_hmi_backside: true
     cable_exit_clearance_required: true
     bend_radius_validation_required: true
+    side_open_real_scale: true
+    side_open_aspect_ratio_formula: depth_external_mm / height_external_mm
+    pn_aut_01_side_open_aspect_ratio: 0.375
+    image_6_depth_section_required: true
     failure_modes:
       missing_dimension: HOLD_DIMENSIONAL_DATA
       capacity_failure: HOLD_LAYOUT_CAPACITY
@@ -248,3 +252,9 @@ history:
   actor: user+assistant
   event: HMI_DUPLICATION_AND_DIMENSIONAL_RENDER_REGRESSION_PREVENTION
   summary: Usuário determinou que o erro de IHM duplicada e escala visual aproximada não volte a ocorrer. O pipeline foi endurecido para exigir uma única instância física da IHM na porta, fechamento dimensional por catálogo oficial, escala comum em milímetros, validação porta x placa, zona de saída de cabos e teste automatizado de regressão antes do render final.
+
+- revision: 9
+  at: '2026-09-28T18:21:00-03:00'
+  actor: user+assistant
+  event: SIDE_OPEN_AND_DEPTH_SECTION_REAL_SCALE_STANDARDIZED
+  summary: Usuário identificou compressão indevida na vista lateral aberta/corte em profundidade. Foi autorizado tornar obrigatório o uso da mesma escala global em mm, com razão profundidade/altura real do gabinete. No PN-AUT-01, 300/800 = 0,375. A Imagem 6 passa a ser corte dimensional obrigatório com profundidade útil, componentes, canaletas, folgas, raio de curvatura e prensa-cabos, sem distorção.
