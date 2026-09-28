@@ -57,6 +57,9 @@ sequence:
       - normative_registry_loaded
       - normative_memory_loaded
       - conversation_memory_loaded
+      - normative_registry_loaded
+      - normative_supplement_loaded
+      - normative_memory_loaded
       - conversation_contract_validated
   - order: 20
     id: DATACENTER
