@@ -194,3 +194,89 @@ def test_panel_render_gate_rejects_duplicate_hmi_and_fake_scale():
     assert any("HMI must be mounted on door only" in x for x in result["errors"])
     assert any("differ from BOM" in x for x in result["errors"])
     assert any("layout dimensions do not match official dimensions" in x for x in result["errors"])
+
+
+def test_panel_render_gate_accepts_real_scale_side_open_and_image6():
+    gate = load_module("panel_render_gate_side_ok", "pipeline/panel_render_gate.py")
+    manifest = {
+        "panel_id": "PN-AUT-01",
+        "panel_revision": "R03",
+        "px_per_mm": 1.0,
+        "bom_counts": {"HMI-01": 1},
+        "physical_instances": [{
+            "instance_id": "HMI-01-001",
+            "physical_instance_key": "HMI-01-001",
+            "catalog_id": "HMI-01",
+            "component_class": "HMI",
+            "mounting_surface": "door",
+            "geometry_source": "OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING",
+            "orientation_deg": 0,
+            "official_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+            "layout_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+        }],
+        "view_representations": [{"instance_id": "HMI-01-001", "representation_role": "front"}],
+        "panel_views": [
+            {
+                "view_id": "right_side_open_depth_section",
+                "physical_dimensions_mm": {"width": 300, "height": 800},
+                "rendered_dimensions_px": {"width": 300, "height": 800},
+                "dimensional": True,
+                "annotations": ["external_depth", "usable_depth", "component_depths", "ducts", "clearances", "bend_radius", "cable_glands"],
+            },
+            {
+                "view_id": "image_6",
+                "physical_dimensions_mm": {"width": 300, "height": 800},
+                "rendered_dimensions_px": {"width": 300, "height": 800},
+                "dimensional": True,
+                "annotations": ["external_depth", "usable_depth", "component_depths", "ducts", "clearances", "bend_radius", "cable_glands"],
+            },
+        ],
+        "cable_exit": {
+            "actual_clearance_mm": 150,
+            "required_clearance_mm": 150,
+            "bend_radius_validated": True,
+            "gland_access_validated": True,
+        },
+    }
+    result = gate.validate_render_manifest(manifest)
+    assert result["status"] == "PASS"
+    assert result["panel_view_count"] == 2
+
+
+def test_panel_render_gate_rejects_squeezed_side_open_view():
+    gate = load_module("panel_render_gate_side_bad", "pipeline/panel_render_gate.py")
+    manifest = {
+        "panel_id": "PN-AUT-01",
+        "panel_revision": "R03",
+        "px_per_mm": 1.0,
+        "bom_counts": {"HMI-01": 1},
+        "physical_instances": [{
+            "instance_id": "HMI-01-001",
+            "physical_instance_key": "HMI-01-001",
+            "catalog_id": "HMI-01",
+            "component_class": "HMI",
+            "mounting_surface": "door",
+            "geometry_source": "OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING",
+            "orientation_deg": 0,
+            "official_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+            "layout_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+        }],
+        "view_representations": [{"instance_id": "HMI-01-001", "representation_role": "front"}],
+        "panel_views": [{
+            "view_id": "image_6",
+            "physical_dimensions_mm": {"width": 300, "height": 800},
+            "rendered_dimensions_px": {"width": 500, "height": 500},
+            "dimensional": True,
+            "annotations": ["external_depth", "usable_depth", "component_depths", "ducts", "clearances", "bend_radius", "cable_glands"],
+        }],
+        "cable_exit": {
+            "actual_clearance_mm": 150,
+            "required_clearance_mm": 150,
+            "bend_radius_validated": True,
+            "gland_access_validated": True,
+        },
+    }
+    result = gate.validate_render_manifest(manifest)
+    assert result["status"] == "REPROVADO"
+    assert any("rendered aspect ratio" in x for x in result["errors"])
+    assert any("common px_per_mm" in x for x in result["errors"])
