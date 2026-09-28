@@ -17,3 +17,9 @@ namespaces:
   MEMORY_CURATOR: {namespace: agent_dc.memory, tables: [memory_events]}
   ML_QUALITY: {namespace: agent_dc.ml_quality, tables: [training_examples, model_registry]}
   EVOLUTION_PROPOSER: {namespace: agent_dc.evolution, tables: [evolution_proposals]}
+
+  CAD_GEOMETRY_GUARDIAN: {namespace: agent_dc.cad_geometry, tables: [artifacts, qa_findings, render_metrics]}
+  SCALE_PROPORTION_GUARDIAN: {namespace: agent_dc.scale_guard, tables: [qa_findings, render_metrics]}
+  BLENDER_RENDER_GUARDIAN: {namespace: agent_dc.blender_render, tables: [artifacts, render_metrics]}
+  REVIT_BIM_INTEROP_GUARDIAN: {namespace: agent_dc.revit_bim, tables: [artifacts, qa_findings]}
+  CANVAS_COMPOSITION_GUARDIAN: {namespace: agent_dc.canvas_guard, tables: [artifacts, qa_findings, render_metrics]}
