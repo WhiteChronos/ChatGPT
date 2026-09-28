@@ -84,6 +84,16 @@ panels:
     hmi:
       quantity: 1
       surface: door
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present]
+      conditional_group_review_required: true
+      applicability_status: HOLD_UNTIL_NORMATIVE_REVIEW
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, spd_present]
+      conditional_group_review_required: true
+      applicability_status: HOLD_UNTIL_NORMATIVE_REVIEW
   PN-AUT-02:
     project_json: datasheet/PN-AUT-02_DATA_SHEET.json
     li_id: LI-PN-AUT-02-R02
