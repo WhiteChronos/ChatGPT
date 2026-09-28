@@ -1,6 +1,3 @@
-from __future__ import annotations
-import json
-from pathlib import Path
 from pipeline.layout_optimizer.cli import optimize_panel
 from pipeline.layout_optimizer.models import LayoutStatus
 
