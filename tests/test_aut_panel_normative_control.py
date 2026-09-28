@@ -51,3 +51,15 @@ def test_standard_pipeline_writes_normative_applicability_manifest(tmp_path):
     assert data["registry_id"]=="AUT-PANEL-NORMATIVE-REFERENCES-V1"
     assert data["status"] in {"HOLD","VALIDATED"}
     assert result==data
+
+
+def test_standard_pipeline_normative_gate_returns_hold_and_artifact(tmp_path):
+    from pipeline import aut_panel_standard as std
+    registry=yaml.safe_load((ROOT/"datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml").read_text(encoding="utf-8"))
+    memory=yaml.safe_load((ROOT/"memory/AUT_PANEL_NORMATIVE_MEMORY.yaml").read_text(encoding="utf-8"))
+    project=json.loads((ROOT/"datasheet/AUT_PANEL_DATA_SHEET.json").read_text(encoding="utf-8"))
+    result,path=std.avaliar_normas(project,registry,memory,tmp_path)
+    assert path.name=="AUT_PANEL_NORMATIVE_APPLICABILITY.json"
+    assert path.exists()
+    assert result.resultado=="HOLD"
+    assert result.severidade=="HOLD"
