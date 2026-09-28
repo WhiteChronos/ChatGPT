@@ -48,9 +48,17 @@ Use SQLite as the offline baseline via `database/aut_panel_schema.sql` and `pipe
 
 ## Image quality
 
-Use `datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml` as the active composition reference for new panel revisions. Prefer deterministic vector generation and constraint optimization before generative images. Keep real component dimensions, no distortion, and no item outside the validated BOM. The required composition includes internal front, external front, right side, material list, load schedule, electrical architecture, communication architecture, field equipment, enclosure dimensions, technical notes, and the parity footer `LI = BOM = CARGA = LAYOUT = IMAGEM`.
+Use `datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml` as the active composition reference for new panel revisions. Prefer deterministic vector generation and constraint optimization before generative images. Keep real component dimensions, no distortion, and no item outside the validated BOM. The required composition includes internal front, external front, right side, material list, load schedule, electrical architecture, communication architecture, field equipment, enclosure dimensions, technical notes, and the parity footer `LI = BOM = CARGA = LAYOUT = IMAGEM`.
 
 The visual reference is not an engineering-data source: numeric values visible in the reference must be independently validated before use.
+
+### Geometry-first 3D workflow
+
+Read `plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json`. Use manufacturer STEP/IGES first, then native CAD/DXF, then deterministic parametric reconstruction from official dimensional drawings. Normalize all geometry to millimetres and create one 3D physical assembly. Generate front, side and depth-section orthographic views from that same assembly. Validate each component bounding box against its official datasheet before rendering.
+
+FreeCAD/OpenCascade/CadQuery/build123d are geometry tools; trimesh/Open3D are geometry-QA tools; Blender is a photorealistic renderer. Blender or a generative image model may change materials, lighting and presentation, but must not change geometry, component count, coordinates, scale or dimensions.
+
+Use a grow-only canvas. Never shrink a physical view, component or engineering block to fit a fixed poster. Visual Standard V3 removes dedicated blocks 4 and 8; their engineering information remains integrated into the main open-door and depth-section views.
 
 ### Dimensional closure before render
 
