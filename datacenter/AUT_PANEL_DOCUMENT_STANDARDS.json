@@ -5,7 +5,11 @@
   "workbook_master": {
     "template_id": "XLSX-PN-AUT-01-MASTER-R02",
     "master_panel": "PN-AUT-01",
-    "applies_to": ["PN-AUT-01", "PN-AUT-02", "future_AUT_panels"],
+    "applies_to": [
+      "PN-AUT-01",
+      "PN-AUT-02",
+      "future_AUT_panels"
+    ],
     "required_sheet_order": [
       "LI - Quantitativo",
       "Lista de Material",
@@ -89,5 +93,28 @@
     "explicit_user_authorization_required": true,
     "unauthorized_change_status": "REPROVADO",
     "rule": "No workbook, revision-history or image standard may be changed without explicit authorization from the project owner."
+  },
+  "normative_reference_standard": {
+    "registry_id": "AUT-PANEL-NORMATIVE-REFERENCES-V1",
+    "registry_path": "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+    "memory_id": "AUT-PANEL-NORMATIVE-MEMORY-V1",
+    "memory_path": "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
+    "references_sheet_required": true,
+    "reverify_before_release": true,
+    "store_metadata_not_normative_text": true,
+    "required_fields": [
+      "normative_reference_id",
+      "reference",
+      "applicability_decision",
+      "source_status",
+      "official_url",
+      "edition_reverified_at",
+      "impacted_artifacts",
+      "validator_a",
+      "validator_b"
+    ],
+    "unverified_applicable_reference_status": "HOLD",
+    "conflicting_requirements_status": "HOLD",
+    "rule": "Normas aplicáveis devem ser registradas por metadados e fonte oficial, reverificadas antes da emissão e vinculadas à folha Referências; o texto integral protegido não é copiado."
   }
 }
