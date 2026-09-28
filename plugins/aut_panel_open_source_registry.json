@@ -1,0 +1,33 @@
+{
+  "registry_version": "1.0",
+  "registry_id": "AUT-PANEL-OPEN-SOURCE-REGISTRY-V1",
+  "discovered_at": "2026-09-28",
+  "policy": {
+    "activation_requires_version_or_commit_pin": true,
+    "license_review_required": true,
+    "security_review_required": true,
+    "no_auto_install_into_core_pipeline": true,
+    "archived_repository_cannot_be_new_core_dependency": true,
+    "generated_output_never_overrides_engineering_evidence": true
+  },
+  "repositories": [
+    {"repository":"cdelker/schemdraw","role":["ELECTRICAL_SCHEMATIC_RENDERING","VECTOR_SYMBOLS"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"Kozea/CairoSVG","role":["SVG_RASTERIZATION","PNG_PDF_RENDER_SUPPORT"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"google/or-tools","role":["CONSTRAINT_LAYOUT_OPTIMIZATION","PLACEMENT_SEARCH"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"opencv/opencv","role":["VISUAL_REGRESSION","GEOMETRY_DETECTION","IMAGE_QA"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"networkx/networkx","role":["CONNECTION_GRAPH","IO_NETWORK_TOPOLOGY","DEPENDENCY_ANALYSIS"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"online-ml/river","role":["ONLINE_MACHINE_LEARNING","INCREMENTAL_QUALITY_MODEL"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"mlflow/mlflow","role":["MODEL_REGISTRY","EXPERIMENT_TRACKING","MODEL_METRICS"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"treeverse/dvc","source_alias":"iterative/dvc","role":["DATASET_VERSIONING","MODEL_ARTIFACT_VERSIONING"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"evidentlyai/evidently","role":["DATA_QUALITY_MONITORING","MODEL_DRIFT","ML_EVALUATION"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"optuna/optuna","role":["HYPERPARAMETER_SEARCH","LAYOUT_HEURISTIC_TUNING"],"status":"DISCOVERED_EVALUATE_AND_PIN","archived":false},
+    {"repository":"PrefectHQ/prefect","role":["WORKFLOW_ORCHESTRATION","RETRIES","OBSERVABILITY"],"status":"DISCOVERED_OPTIONAL","archived":false},
+    {"repository":"duckdb/duckdb","role":["LOCAL_ANALYTICS","QA_HISTORY_QUERY","TRAINING_DATA_ANALYSIS"],"status":"DISCOVERED_OPTIONAL","archived":false},
+    {"repository":"sqlalchemy/sqlalchemy","role":["DATABASE_ABSTRACTION","POSTGRES_PORTABILITY"],"status":"DISCOVERED_OPTIONAL","archived":false},
+    {"repository":"pydantic/pydantic","role":["RUNTIME_SCHEMA_VALIDATION","AGENT_MESSAGE_CONTRACTS"],"status":"DISCOVERED_OPTIONAL","archived":false}
+  ],
+  "excluded_from_new_core_dependency": [
+    {"repository":"mozman/svgwrite","reason":"repository currently archived"},
+    {"repository":"graphviz/graphviz","reason":"repository returned as archived in discovery; re-evaluate before dependency use"}
+  ]
+}
