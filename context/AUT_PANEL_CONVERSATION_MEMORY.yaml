@@ -32,16 +32,27 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 6
-  last_sync_at: '2026-09-28T14:05:00-03:00'
+  sync_revision: 7
+  last_sync_at: '2026-09-28T16:55:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
     head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
   active_work:
-    objective: Estruturar sistema multiagente de elaboração de quadros com Data Centers e memórias isolados,
-      banco relacional, machine learning consultivo, pipeline de aprendizado e autoevolução controlada.
+    objective: Aplicar o padrão visual aprovado de elaboração de quadros AUT e integrar o toolchain GitHub
+      categorizado à Skill, Data Center, Data Sheet e pipeline sem alterar LI R02 ou dimensões congeladas.
     status: IMPLEMENTED
+  visual_standard_v2:
+    registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
+    reference_sha256: 56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6
+    reference_pixel_size: {width: 1536, height: 1024}
+    role: COMPOSITION_REFERENCE_NOT_ENGINEERING_DATA
+    legacy_panel_fingerprints_preserved: true
+    parity_footer: "LI = BOM = CARGA = LAYOUT = IMAGEM"
+  github_toolchain:
+    registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+    skill_reference: skills/aut-panel-engineering/references/github-toolchain.md
+    activation_policy: PIN_LICENSE_SECURITY_SANDBOX_REGRESSION
   li_material_control:
     control_id: LI-MATERIAL-CONTROL-V1
     prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
@@ -210,3 +221,9 @@ history:
   actor: user+assistant
   event: AUT_PANEL_NORMATIVE_SUPPLEMENT_LINKED
   summary: Catálogo complementar de normas oficiais foi vinculado ao Data Center e à memória normativa para uso como referência de elaboração. A aplicabilidade é resolvida por condição técnica e a edição deve ser reverificada antes da emissão.
+
+- revision: 7
+  at: '2026-09-28T16:55:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_VISUAL_STANDARD_V2_AND_GITHUB_TOOLCHAIN_LINKED
+  summary: Usuário aprovou a imagem fornecida como padrão de composição para elaboração dos quadros. Foi registrado o SHA-256 da referência, preservados os fingerprints históricos dos painéis, e vinculados o padrão visual V2 e o toolchain GitHub V2 à Skill, Data Center, Data Sheet e pipeline. Valores técnicos visíveis na imagem não se tornam fatos de projeto sem validação independente.
