@@ -20,7 +20,26 @@ properties:
   canonical_inputs:
     item_fields: [path, sha256, role, authority]
   normative_manifest:
-    item_fields: [reference_id, applicability, source_status, verified_at]
+    type: canonical_normative_resolution
+    fields:
+      - registry_id
+      - normative_memory_id
+      - resolved_groups
+      - detected_conditions
+      - references
+      - hold_reasons
+      - status
+      - release_rule
+    reference_fields:
+      - id
+      - reference
+      - title
+      - publisher
+      - applicability
+      - source_status
+      - official_url
+      - registry_verified_at
+      - applicability_decision
   cache:
     fields: [key, status, invalidation_reason]
   holds:
