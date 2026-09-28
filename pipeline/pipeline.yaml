@@ -7,6 +7,8 @@ contracts:
   golden_rules: governance/golden_rules.yaml
   panel_template: templates/panel_template.yaml
   prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
   li_material_prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
   li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
   li_material_control: datacenter/LI_MATERIAL_CONTROL.json
