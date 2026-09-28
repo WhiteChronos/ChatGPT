@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 11
-  last_sync_at: '2026-09-28T19:24:00-03:00'
+  sync_revision: 12
+  last_sync_at: '2026-09-28T19:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -42,6 +42,13 @@ mutable_state:
     objective: Impedir regressão de duplicidade de IHM e renders fora de escala, exigindo fechamento
       dimensional, instância física única, superfície de montagem e validação de saída de cabos antes do render.
     status: IMPLEMENTED
+  raster_proportion_guard:
+    script: pipeline/corrigir_proporcao_imagem.py
+    source_sha256: 835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31
+    policy: GROW_CANVAS_KEEP_SCALE
+    dimensional_scale: {x: 1.0, y: 1.0}
+    smaller_frame_action: GROW_FRAME_OR_REPROVADO
+    raster_resize_to_fit_forbidden: true
   geometry_guardians:
     required: [CAD_GEOMETRY_GUARDIAN, SCALE_PROPORTION_GUARDIAN, BLENDER_RENDER_GUARDIAN, CANVAS_COMPOSITION_GUARDIAN]
     conditional: [REVIT_BIM_INTEROP_GUARDIAN]
@@ -289,3 +296,9 @@ history:
   actor: user+assistant
   event: PERMANENT_GEOMETRY_GUARDIANS_AND_NEVER_FIT_TO_CANVAS
   summary: Usuário determinou que o sistema nunca mais comprima, estique, reduza ou altere proporções para fazer o painel caber no canvas. Foram adicionados agentes permanentes de geometria CAD, escala/proporção, Blender render, Revit/BIM e composição de canvas. Blender fica restrito a materiais/luz/render; Revit é interoperabilidade BIM condicionada a ambiente Autodesk autorizado. O canvas deve crescer sem limite prático necessário para preservar geometria, medidas e legibilidade.
+
+- revision: 12
+  at: '2026-09-28T19:31:00-03:00'
+  actor: user+assistant
+  event: USER_PROPORTION_SCRIPT_INTEGRATED_WITH_CODEX_GITHUB
+  summary: Script corrigir_proporcao_imagem.py fornecido pelo usuário, SHA-256 835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31, foi integrado ao pipeline em versão endurecida para engenharia. Diferente do fit genérico, o modo dimensional não reduz raster para caber: scale_x=scale_y=1.0 e moldura menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard V3, CI e testes foram vinculados.
