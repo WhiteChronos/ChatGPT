@@ -48,12 +48,24 @@ application_logic:
       triggers: [machine_scope, nr12_scope, machinery_electrical_equipment]
     motor_and_vfd:
       triggers: [vfd_present, motor_starter_present, pds_present]
+    soft_starter:
+      triggers: [soft_starter_present, semiconductor_starter_present]
+    transfer_switching:
+      triggers: [ats_present, transfer_switch_present, atse_present]
+    thermal_verification:
+      triggers: [thermal_calculation, temperature_rise_verification, heat_loss_data_available]
     surge_and_lightning:
       triggers: [spd_present, spda_interface, lightning_risk_scope, lpz_coordination]
     ups:
       triggers: [ups_present, dc_ups_present, energy_storage_present]
     industrial_network:
-      triggers: [industrial_ethernet, fieldbus, remote_io, plc_network]
+      triggers: [industrial_ethernet, fieldbus, remote_io, plc_network, industrial_network]
+    bacs_hvac:
+      triggers: [hvac_automation, bacs_scope, building_automation]
+    bacnet:
+      triggers: [bacnet, bacnet_ip, bacnet_mstp]
+    international_lv_reference:
+      triggers: [iec60364_required, international_project]
     cybersecurity:
       triggers: [external_network_interface, plant_network, remote_access, cybersecurity_requirement]
     safety_function:
