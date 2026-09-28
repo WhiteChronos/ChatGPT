@@ -110,3 +110,87 @@ def test_panel_render_contract_blocks_duplicate_hmi_and_requires_dimensions():
     assert "uma única instância física" in prompt
     assert "HOLD_DIMENSIONAL_DATA" in prompt
     assert "HOLD_LAYOUT_CAPACITY" in prompt
+
+
+def test_panel_render_gate_accepts_single_door_hmi_and_backside_view():
+    gate = load_module("panel_render_gate", "pipeline/panel_render_gate.py")
+    manifest = {
+        "panel_id": "PN-AUT-01",
+        "panel_revision": "R02",
+        "px_per_mm": 1.0,
+        "bom_counts": {"HMI-01": 1, "PLC-01": 1},
+        "physical_instances": [
+            {
+                "instance_id": "HMI-01-001",
+                "physical_instance_key": "HMI-01-001",
+                "catalog_id": "HMI-01",
+                "component_class": "HMI",
+                "mounting_surface": "door",
+                "geometry_source": "OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING",
+                "orientation_deg": 0,
+                "official_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+                "layout_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+            },
+            {
+                "instance_id": "PLC-01-001",
+                "physical_instance_key": "PLC-01-001",
+                "catalog_id": "PLC-01",
+                "component_class": "PLC",
+                "mounting_surface": "din",
+                "geometry_source": "OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING",
+                "orientation_deg": 0,
+                "official_dimensions_mm": {"width": 35, "height": 147, "depth": 129},
+                "layout_dimensions_mm": {"width": 35, "height": 147, "depth": 129},
+            },
+        ],
+        "view_representations": [
+            {"instance_id": "HMI-01-001", "representation_role": "front"},
+            {"instance_id": "HMI-01-001", "representation_role": "backside"},
+            {"instance_id": "PLC-01-001", "representation_role": "internal"},
+        ],
+        "cable_exit": {
+            "actual_clearance_mm": 150,
+            "required_clearance_mm": 150,
+            "bend_radius_validated": True,
+            "gland_access_validated": True,
+        },
+    }
+    result = gate.validate_render_manifest(manifest)
+    assert result["status"] == "PASS"
+    assert result["physical_instance_count"] == 2
+    assert result["view_representation_count"] == 3
+
+
+def test_panel_render_gate_rejects_duplicate_hmi_and_fake_scale():
+    gate = load_module("panel_render_gate_bad", "pipeline/panel_render_gate.py")
+    hmi = {
+        "catalog_id": "HMI-01",
+        "component_class": "HMI",
+        "geometry_source": "OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING",
+        "orientation_deg": 0,
+        "official_dimensions_mm": {"width": 273, "height": 203, "depth": 47},
+    }
+    manifest = {
+        "panel_id": "PN-AUT-01",
+        "panel_revision": "R02",
+        "px_per_mm": 1.0,
+        "bom_counts": {"HMI-01": 1},
+        "physical_instances": [
+            dict(hmi, instance_id="HMI-DOOR", physical_instance_key="HMI-DOOR", mounting_surface="door",
+                 layout_dimensions_mm={"width": 273, "height": 203, "depth": 47}),
+            dict(hmi, instance_id="HMI-INTERNAL", physical_instance_key="HMI-INTERNAL", mounting_surface="backplate",
+                 layout_dimensions_mm={"width": 180, "height": 140, "depth": 47}),
+        ],
+        "view_representations": [],
+        "cable_exit": {
+            "actual_clearance_mm": 80,
+            "required_clearance_mm": 150,
+            "bend_radius_validated": False,
+            "gland_access_validated": False,
+        },
+    }
+    result = gate.validate_render_manifest(manifest)
+    assert result["status"] == "REPROVADO"
+    assert any("HMI must be mounted on door only" in x for x in result["errors"])
+    assert any("differ from BOM" in x for x in result["errors"])
+    assert any("layout dimensions do not match official dimensions" in x for x in result["errors"])
