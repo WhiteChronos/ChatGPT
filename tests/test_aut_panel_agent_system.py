@@ -332,3 +332,53 @@ def test_3d_geometry_gate_rejects_independent_view_scaling_and_removed_blocks():
     assert result["status"] == "REPROVADO"
     assert any("independent per-view scaling" in x for x in result["errors"])
     assert any("removed visual blocks present" in x for x in result["errors"])
+
+
+def test_geometry_guardians_are_permanent_and_v3_is_active():
+    agents = yaml.safe_load((ROOT / "agents/AUT_PANEL_AGENT_SYSTEM.yaml").read_text(encoding="utf-8"))
+    ids = {x["id"] for x in agents["agents"]}
+    required = {
+        "CAD_GEOMETRY_GUARDIAN",
+        "SCALE_PROPORTION_GUARDIAN",
+        "BLENDER_RENDER_GUARDIAN",
+        "REVIT_BIM_INTEROP_GUARDIAN",
+        "CANVAS_COMPOSITION_GUARDIAN",
+    }
+    assert required.issubset(ids)
+
+    pipeline = yaml.safe_load((ROOT / "pipeline/pipeline.yaml").read_text(encoding="utf-8"))
+    render = next(x for x in pipeline["sequence"] if x["id"] == "RENDER_IMAGE")
+    qa = next(x for x in pipeline["sequence"] if x["id"] == "QA")
+    for gate in {
+        "cad_geometry_guardian_passed",
+        "scale_proportion_guardian_passed",
+        "canvas_composition_guardian_passed",
+        "blender_render_guardian_passed",
+        "revit_bim_guardian_passed_when_applicable",
+        "large_canvas_grow_only",
+        "no_block_downscale_to_fit",
+    }:
+        assert gate in render["gate"]
+    assert "no_fit_to_canvas_or_non_uniform_scale" in qa["gate"]
+    assert "blender_geometry_lock_verified" in qa["gate"]
+
+    template = yaml.safe_load((ROOT / "templates/panel_template.yaml").read_text(encoding="utf-8"))
+    assert template["image_standard"]["active_composition_revision"] == "AUT-PANEL-VISUAL-STANDARD-V3"
+    assert template["image_standard"]["canvas_policy"] == "GROW_CANVAS_KEEP_SCALE"
+
+    golden = yaml.safe_load((ROOT / "governance/golden_rules.yaml").read_text(encoding="utf-8"))
+    rule_ids = {x["id"] for x in golden["required_rules"]}
+    for rid in {"GR-076","GR-077","GR-078","GR-079","GR-080","GR-081","GR-082","GR-083"}:
+        assert rid in rule_ids
+
+
+def test_geometry_toolchain_includes_blender_and_revit_bridges():
+    registry = json.loads((ROOT / "plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json").read_text(encoding="utf-8"))
+    repos = {x["repository"] for x in registry["repositories"]}
+    assert "blender/blender" in repos
+    assert "pyrevitlabs/pyRevit" in repos
+    assert "architecture-building-systems/revitpythonshell" in repos
+    assert "IfcOpenShell/IfcOpenShell" in repos
+    assert registry["rules"]["render_canvas_policy"] == "GROW_CANVAS_KEEP_SCALE"
+    assert registry["blender_policy"]["geometry_change_allowed"] is False
+    assert registry["revit_policy"]["no_claim_without_execution"] is True
