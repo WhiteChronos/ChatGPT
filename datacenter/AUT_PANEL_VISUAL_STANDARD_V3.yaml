@@ -45,9 +45,14 @@ composition:
     - parity_footer
 canvas:
   policy: GROW_CANVAS_KEEP_SCALE
+  raster_composition_guard: pipeline/corrigir_proporcao_imagem.py
+  dimensional_raster_scale: {x: 1.0, y: 1.0}
+  smaller_frame_action: GROW_FRAME_OR_REPROVADO
   minimum_px: {width: 2048, height: 1536}
   no_block_downscale_to_fit: true
   no_component_downscale_to_fit: true
+  letterbox_only_adds_space: true
+  raster_resize_of_dimensional_views_forbidden: true
   allow_larger_than_minimum: true
   primary_view_priority: front_internal_door_open
 geometry_authority:
