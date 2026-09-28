@@ -1,0 +1,22 @@
+schema_version: "1.0"
+pipeline_id: AUT-PANEL-LEARNING-PIPELINE-V1
+mode: CONTROLLED_EVOLUTION
+canonical_engineering_pipeline: pipeline/pipeline.yaml
+rule: O pipeline de aprendizado nunca substitui nem reordena o pipeline canônico de engenharia.
+stages:
+  - {order: 10, id: OBSERVE, input: [qa_runs, qa_findings, render_metrics, reviewer_outcomes, source_validation_history], output: [candidate_training_events]}
+  - {order: 20, id: FEATURE_EXTRACT, input: [candidate_training_events], output: [training_examples], gates: [provenance_present, label_human_reviewed, panel_id_present, revision_present]}
+  - {order: 30, id: TRAIN, input: [training_examples], output: [candidate_model], gates: [minimum_labeled_examples, dataset_fingerprint, reproducible_seed]}
+  - {order: 40, id: EVALUATE, input: [candidate_model, holdout_examples], output: [model_metrics], gates: [metrics_recorded, deterministic_baseline_compared]}
+  - {order: 50, id: PROPOSE, input: [model_metrics, recurring_findings], output: [evolution_proposal], gates: [problem_evidence, affected_files, expected_benefit, risk, rollback, tests]}
+  - {order: 60, id: SANDBOX_SIMULATE, input: [evolution_proposal], output: [simulation_result], gates: [no_locked_contract_mutation, regression_tests, artifact_diff]}
+  - {order: 70, id: HUMAN_GATE, input: [evolution_proposal, simulation_result], output: [approved_or_rejected], gates: [explicit_approval_for_behavior_change]}
+  - {order: 80, id: APPLY, input: [approved_proposal], output: [reviewed_change], gates: [normal_git_review, tests, qa]}
+  - {order: 90, id: VERSION, input: [reviewed_change, model_metrics], output: [versioned_model_and_history], gates: [model_registry_updated, database_event_written, rollback_reference_present]}
+hard_constraints:
+  ml_cannot_create_engineering_fact: true
+  deterministic_failure_cannot_be_overridden_by_ml: true
+  auto_merge_forbidden: true
+  auto_apply_locked_change_forbidden: true
+  training_from_unreviewed_generated_output_forbidden: true
+  cold_start_minimum_examples: 25
