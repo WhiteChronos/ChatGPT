@@ -26,27 +26,34 @@ workbook_master:
     Referências: {max_row: 9, max_column: 6, freeze_panes: null, merged_ranges_count: 1}
 image_standard:
   visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  active_composition_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
+  active_composition_revision: AUT-PANEL-VISUAL-STANDARD-V2
+  user_approved_reference_sha256: 56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6
+  user_approved_reference_pixel_size: {width: 1536, height: 1024}
+  legacy_panel_fingerprints_preserved: true
   one_panel_per_image: true
   required_blocks_in_order:
-    - title_and_model
-    - enclosure_and_mounting_plate_dimensions
-    - application_block
+    - title_revision_year_conformity_header
     - front_internal_door_open
-    - front_external_door
-    - side_view_depth
-    - technical_component_list
-    - connection_architecture
-    - functional_levels
-    - panel_characteristics
-    - applications_and_benefits
-    - principal_component_visual_references
-    - engineering_note_and_footer
+    - front_external_door_closed
+    - right_side_view
+    - material_list
+    - load_schedule
+    - electrical_architecture
+    - communication_architecture
+    - field_equipment_schedule
+    - enclosure_dimensions
+    - technical_notes
+    - parity_footer
   fixed_rules:
     hmi_on_door: true
     blue_white_engineering_identity: true
     preserve_approved_composition: true
     no_unapproved_recomposition: true
     no_component_distortion: true
+    technical_values_from_reference_image_are_not_authoritative: true
+    parity_footer_text: "LI = BOM = CARGA = LAYOUT = IMAGEM"
+    high_information_density_engineering_sheet: true
 panels:
   PN-AUT-01:
     image_template_id: IMG-PN-AUT-01-APPROVED-V1
