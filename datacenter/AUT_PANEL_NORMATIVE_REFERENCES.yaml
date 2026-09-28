@@ -1,0 +1,731 @@
+schema_version: "1.0"
+registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: CONTROLLED_ACTIVE
+scope: >-
+  Registro normativo para elaboração, seleção, dimensionamento, layout, documentação,
+  automação, comunicação, QA e emissão de quadros de automação de baixa tensão.
+  O registro contém referências-base e referências condicionais; normas específicas
+  do contrato, cliente, local de instalação ou equipamento devem ser adicionadas quando aplicáveis.
+jurisdiction_default: BR
+verified_at: "2026-09-28"
+reverify_before_release: true
+copyright_policy:
+  store_metadata_not_normative_text: true
+  do_not_copy_paid_standard_content: true
+  use_official_metadata_and_project_licensed_copies: true
+applicability_policy:
+  project_specific_requirement_precedence: true
+  legal_requirements_precedence: true
+  national_adoption_preferred_when_applicable: true
+  manufacturer_product_standard_still_required: true
+  unverified_edition_status: HOLD
+  conflicting_requirements_status: HOLD
+  missing_applicability_decision_status: HOLD
+  release_requires_normative_reverification: true
+  international_reference_does_not_imply_brazilian_adoption: true
+classification:
+  BASELINE:
+    meaning: Revisar em toda elaboração de quadro AUT de baixa tensão, conforme escopo.
+  CONDITIONAL:
+    meaning: Ativar somente quando a característica técnica indicada estiver presente.
+  LEGAL_BR:
+    meaning: Requisito legal/regulamentar brasileiro aplicável ao escopo indicado.
+source_authority:
+  - legislação/regulamentação oficial
+  - catálogo oficial ABNT
+  - webstore oficial IEC
+  - catálogo oficial ISO
+  - documento licenciado do projeto
+  - fonte secundária apenas para localização, nunca para emissão
+standards:
+  - id: NORM-001
+    reference: "ABNT NBR 5410:2004 Versao Corrigida:2008"
+    title: "Instalações elétricas de baixa tensão"
+    publisher: ABNT
+    jurisdiction: BR
+    category: INSTALACOES_BT
+    applicability: BASELINE
+    use_in_elaboration: "alimentação BT, proteção, condutores, seccionamento, aterramento e interface do quadro com a instalação"
+    mandatory_when: "quadro conectado a instalação elétrica de baixa tensão no Brasil"
+    source_status: OFFICIAL_CATALOG_VERIFIED
+    official_url: "https://www.abntcatalogo.com.br/"
+    verified_at: "2026-09-28"
+    notes: "Catálogo ABNT consultado; edição exibida como 2004 Versão Corrigida:2008."
+
+  - id: NORM-002
+    reference: "NR-10"
+    title: "Segurança em instalações e serviços em eletricidade"
+    publisher: Ministério do Trabalho e Emprego
+    jurisdiction: BR
+    category: SEGURANCA_LEGAL
+    applicability: LEGAL_BR
+    use_in_elaboration: "requisitos de segurança relacionados a projeto, montagem, operação, manutenção e documentação elétrica"
+    mandatory_when: "houver trabalhadores expostos direta ou indiretamente a instalações/serviços com eletricidade"
+    source_status: OFFICIAL_VERIFIED_TRANSITION
+    official_url: "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-10-nr-10"
+    verified_at: "2026-09-28"
+    current_revision_note: "Texto vigente até 31/05/2027 conforme página oficial."
+    future_revision_note: "Portaria MTE nº 737, de 29/05/2026, com vigência prevista em 01/06/2027; não aplicar antecipadamente sem requisito contratual/legal."
+
+  - id: NORM-003
+    reference: "NR-12"
+    title: "Segurança no Trabalho em Máquinas e Equipamentos"
+    publisher: Ministério do Trabalho e Emprego
+    jurisdiction: BR
+    category: SEGURANCA_MAQUINAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "comandos, partida/parada, sistemas de segurança, parada de emergência e documentação quando o quadro integrar máquina/equipamento"
+    mandatory_when: "quadro fizer parte de máquina ou equipamento abrangido pela NR-12"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-12-nr-12"
+    verified_at: "2026-09-28"
+
+  - id: NORM-004
+    reference: "IEC 61439-1:2020"
+    title: "Low-voltage switchgear and controlgear assemblies - Part 1: General rules"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CONJUNTOS_BT
+    applicability: BASELINE
+    use_in_elaboration: "regras gerais, características, construção e verificações do conjunto"
+    mandatory_when: "conjunto BT estiver no escopo IEC 61439"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/32338"
+    verified_at: "2026-09-28"
+
+  - id: NORM-005
+    reference: "IEC 61439-2:2020"
+    title: "Low-voltage switchgear and controlgear assemblies - Part 2: Power switchgear and controlgear assemblies"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CONJUNTOS_BT
+    applicability: BASELINE
+    use_in_elaboration: "requisitos específicos para PSC assemblies e quadros industriais de potência/controle"
+    mandatory_when: "quadro enquadrar-se como PSC assembly"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/30043"
+    verified_at: "2026-09-28"
+
+  - id: NORM-006
+    reference: "IEC 60204-1:2016+AMD1:2021"
+    title: "Safety of machinery - Electrical equipment of machines - Part 1: General requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: EQUIPAMENTO_ELETRICO_MAQUINAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "arquitetura elétrica, proteção, bonding, comandos, documentação e integração com máquinas"
+    mandatory_when: "quadro fizer parte do equipamento elétrico de máquina"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/71256"
+    verified_at: "2026-09-28"
+
+  - id: NORM-007
+    reference: "IEC 60529:1989+AMD1:1999+AMD2:2013"
+    title: "Degrees of protection provided by enclosures (IP Code)"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INVOLUCROS_IP
+    applicability: BASELINE
+    use_in_elaboration: "definição e verificação do grau IP do gabinete e interfaces"
+    mandatory_when: "grau de proteção IP for especificado"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/2452"
+    verified_at: "2026-09-28"
+
+  - id: NORM-008
+    reference: "IEC 62208:2023"
+    title: "Empty enclosures for low-voltage switchgear and controlgear assemblies - General requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INVOLUCROS
+    applicability: BASELINE
+    use_in_elaboration: "seleção e requisitos gerais de gabinetes vazios antes da montagem do conjunto"
+    mandatory_when: "gabinete vazio for utilizado como base do conjunto"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/67906"
+    verified_at: "2026-09-28"
+
+  - id: NORM-009
+    reference: "IEC 60445:2021+AMD1:2026"
+    title: "Basic and safety principles for man-machine interface, marking and identification - Identification of equipment terminals, conductor terminations and conductors"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: IDENTIFICACAO
+    applicability: BASELINE
+    use_in_elaboration: "cores, marcações e identificação de terminais, terminações e condutores"
+    mandatory_when: "identificação de terminais/condutores fizer parte do projeto"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/111816"
+    verified_at: "2026-09-28"
+
+  - id: NORM-010
+    reference: "IEC 61082-1:2014"
+    title: "Preparation of documents used in electrotechnology - Part 1: Rules"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: DOCUMENTACAO_ELETRICA
+    applicability: BASELINE
+    use_in_elaboration: "regras de representação para diagramas, desenhos e tabelas eletrotécnicas"
+    mandatory_when: "gerar diagramas/documentação eletrotécnica"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/4469"
+    verified_at: "2026-09-28"
+
+  - id: NORM-011
+    reference: "IEC 81346-1:2022"
+    title: "Industrial systems, installations and equipment and industrial products - Structuring principles and reference designations - Part 1: Basic rules"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: TAG_REFERENCIA
+    applicability: BASELINE
+    use_in_elaboration: "estruturação de objetos, designações de referência e rastreabilidade documental"
+    mandatory_when: "criar ou validar tags/designações de referência"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/64021"
+    verified_at: "2026-09-28"
+
+  - id: NORM-012
+    reference: "IEC 60947-2:2024"
+    title: "Low-voltage switchgear and controlgear - Part 2: Circuit-breakers"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: DISJUNTORES
+    applicability: BASELINE
+    use_in_elaboration: "seleção, características e aplicação de disjuntores BT industriais"
+    mandatory_when: "disjuntor IEC 60947-2 for especificado"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/66277"
+    verified_at: "2026-09-28"
+
+  - id: NORM-013
+    reference: "IEC 60947-3:2020+AMD1:2025"
+    title: "Low-voltage switchgear and controlgear - Part 3: Switches, disconnectors, switch-disconnectors and fuse-combination units"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SECCIONAMENTO
+    applicability: BASELINE
+    use_in_elaboration: "seleção de chaves, seccionadores e combinações com fusíveis"
+    mandatory_when: "esses dispositivos existirem no quadro"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/107159"
+    verified_at: "2026-09-28"
+
+  - id: NORM-014
+    reference: "IEC 60947-4-1:2023"
+    title: "Low-voltage switchgear and controlgear - Part 4-1: Contactors and motor-starters - Electromechanical contactors and motor-starters"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CONTATORES_PARTIDAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "contatores, relés de sobrecarga, partidas e dispositivos associados"
+    mandatory_when: "quadro possuir comando/partida de motores por dispositivos eletromecânicos"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/74487"
+    verified_at: "2026-09-28"
+
+  - id: NORM-015
+    reference: "IEC 60947-5-1:2024"
+    title: "Low-voltage switchgear and controlgear - Part 5-1: Control circuit devices and switching elements - Electromechanical control circuit devices"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: COMANDO_SINALIZACAO
+    applicability: BASELINE
+    use_in_elaboration: "botoeiras, seletores, contatos auxiliares, sinalização e dispositivos de circuito de comando"
+    mandatory_when: "houver dispositivos eletromecânicos de comando/sinalização"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/65935"
+    verified_at: "2026-09-28"
+
+  - id: NORM-016
+    reference: "IEC 60947-7-1:2025"
+    title: "Low-voltage switchgear and controlgear - Part 7-1: Ancillary equipment - Terminal blocks for copper conductors"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: BORNES
+    applicability: BASELINE
+    use_in_elaboration: "seleção e aplicação de bornes para condutores de cobre"
+    mandatory_when: "houver bornes de passagem/distribuição"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/72949"
+    verified_at: "2026-09-28"
+
+  - id: NORM-017
+    reference: "IEC 60947-7-2"
+    title: "Low-voltage switchgear and controlgear - Part 7-2: Ancillary equipment - Protective conductor terminal blocks for copper conductors"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: BORNES_PE
+    applicability: BASELINE
+    use_in_elaboration: "bornes de proteção PE e continuidade do condutor de proteção"
+    mandatory_when: "houver bornes PE"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-018
+    reference: "IEC 61643-11:2025"
+    title: "Low-voltage surge protective devices - Part 11: Surge protective devices connected to AC low-voltage power systems - Requirements and test methods"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: DPS
+    applicability: CONDITIONAL
+    use_in_elaboration: "seleção e coordenação de DPS conectados a sistemas CA BT"
+    mandatory_when: "DPS CA estiver no escopo"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/65314"
+    verified_at: "2026-09-28"
+
+  - id: NORM-019
+    reference: "IEC 60269-1:2024"
+    title: "Low-voltage fuses - Part 1: General requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: FUSIVEIS
+    applicability: CONDITIONAL
+    use_in_elaboration: "seleção e requisitos gerais de fusíveis BT"
+    mandatory_when: "fusíveis fizerem parte da proteção/seccionamento"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/66096"
+    verified_at: "2026-09-28"
+
+  - id: NORM-020
+    reference: "IEC 61131-2:2017"
+    title: "Industrial-process measurement and control - Programmable controllers - Part 2: Equipment requirements and tests"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: PLC_PAC
+    applicability: BASELINE
+    use_in_elaboration: "requisitos e ensaios de PLC/PAC e periféricos industriais"
+    mandatory_when: "PLC/PAC/UTR industrial fizer parte do quadro"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/31007"
+    verified_at: "2026-09-28"
+
+  - id: NORM-021
+    reference: "IEC 61131-3"
+    title: "Programmable controllers - Part 3: Programming languages"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SOFTWARE_PLC
+    applicability: CONDITIONAL
+    use_in_elaboration: "estrutura e linguagens de programação de controladores quando houver entrega de software"
+    mandatory_when: "escopo incluir software/lógica PLC conforme IEC 61131"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-022
+    reference: "IEC 61000-6-2:2016"
+    title: "Electromagnetic compatibility (EMC) - Part 6-2: Generic standards - Immunity standard for industrial environments"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: EMC_IMUNIDADE
+    applicability: BASELINE
+    use_in_elaboration: "referência de imunidade EMC em ambiente industrial quando não houver norma de produto mais específica"
+    mandatory_when: "aplicável e não houver norma EMC de produto/família mais específica"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/25630"
+    verified_at: "2026-09-28"
+
+  - id: NORM-023
+    reference: "IEC 61000-6-4:2018"
+    title: "Electromagnetic compatibility (EMC) - Part 6-4: Generic standards - Emission standard for industrial environments"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: EMC_EMISSAO
+    applicability: BASELINE
+    use_in_elaboration: "referência de emissões EMC em ambiente industrial quando não houver norma de produto mais específica"
+    mandatory_when: "aplicável e não houver norma EMC de produto/família mais específica"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/26622"
+    verified_at: "2026-09-28"
+
+  - id: NORM-024
+    reference: "IEC 60073:2002"
+    title: "Basic and safety principles for man-machine interface, marking and identification - Coding principles for indicators and actuators"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: IHM_SINALIZACAO
+    applicability: BASELINE
+    use_in_elaboration: "princípios de codificação de indicadores e atuadores"
+    mandatory_when: "painel possuir sinalização/atuadores com codificação funcional"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/587"
+    verified_at: "2026-09-28"
+    notes: "Stability date indicada pela IEC como 2026; reverificar antes de emissão."
+
+  - id: NORM-025
+    reference: "IEC 60715"
+    title: "Dimensions of low-voltage switchgear and controlgear - Standardized mounting on rails for mechanical support of switchgear, controlgear and accessories"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: TRILHO_DIN
+    applicability: BASELINE
+    use_in_elaboration: "interface dimensional de montagem em trilho padronizado"
+    mandatory_when: "componentes forem montados em trilho normalizado"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-026
+    reference: "IEC 60664-1"
+    title: "Insulation coordination for equipment within low-voltage supply systems - Part 1: Principles, requirements and tests"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: COORDENACAO_ISOLAMENTO
+    applicability: CONDITIONAL
+    use_in_elaboration: "coordenação de isolamento, sobretensão e distâncias elétricas quando aplicável ao projeto"
+    mandatory_when: "dimensionamento exigir coordenação de isolamento"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-027
+    reference: "IEC 61800-3:2022"
+    title: "Adjustable speed electrical power drive systems - Part 3: EMC requirements and specific test methods for PDS and machine tools"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INVERSOR_EMC
+    applicability: CONDITIONAL
+    use_in_elaboration: "segregação, EMC, instalação e avaliação de sistemas de acionamento de velocidade variável"
+    mandatory_when: "VFD/PDS estiver presente"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/65056"
+    verified_at: "2026-09-28"
+
+  - id: NORM-028
+    reference: "IEC 61800-5-1"
+    title: "Adjustable speed electrical power drive systems - Part 5-1: Safety requirements - Electrical, thermal and energy"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INVERSOR_SEGURANCA
+    applicability: CONDITIONAL
+    use_in_elaboration: "requisitos de segurança elétrica/térmica/energia para PDS"
+    mandatory_when: "VFD/PDS estiver presente e norma for aplicável"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-029
+    reference: "IEC 62040-1:2017+AMD1:2021+AMD2:2022"
+    title: "Uninterruptible power systems (UPS) - Part 1: Safety requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: UPS_SEGURANCA
+    applicability: CONDITIONAL
+    use_in_elaboration: "segurança de UPS quando o produto/arquitetura estiver no escopo da série IEC 62040"
+    mandatory_when: "UPS abrangida pela IEC 62040 for utilizada"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/80573"
+    verified_at: "2026-09-28"
+
+  - id: NORM-030
+    reference: "IEC 62040-2"
+    title: "Uninterruptible power systems (UPS) - Part 2: Electromagnetic compatibility (EMC) requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: UPS_EMC
+    applicability: CONDITIONAL
+    use_in_elaboration: "compatibilidade eletromagnética de UPS"
+    mandatory_when: "UPS abrangida pela IEC 62040 for utilizada"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-031
+    reference: "IEC 61158-1:2023"
+    title: "Industrial communication networks - Fieldbus specifications - Part 1: Overview and guidance for the IEC 61158 and IEC 61784 series"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: COMUNICACAO_INDUSTRIAL
+    applicability: CONDITIONAL
+    use_in_elaboration: "estrutura de referência para fieldbuses e relação com perfis IEC 61784"
+    mandatory_when: "rede industrial/fieldbus fizer parte da arquitetura"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/66931"
+    verified_at: "2026-09-28"
+
+  - id: NORM-032
+    reference: "IEC 61784-2"
+    title: "Industrial communication networks - Profiles - Part 2: Additional fieldbus profiles for real-time networks based on ISO/IEC/IEEE 8802-3"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: ETHERNET_INDUSTRIAL
+    applicability: CONDITIONAL
+    use_in_elaboration: "perfis Ethernet industrial em tempo real"
+    mandatory_when: "protocolo aplicável estiver mapeado pela série IEC 61784"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-033
+    reference: "IEC 61918"
+    title: "Industrial communication networks - Installation of communication networks in industrial premises"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INSTALACAO_REDE
+    applicability: CONDITIONAL
+    use_in_elaboration: "regras de instalação física de redes de comunicação industriais"
+    mandatory_when: "escopo incluir instalação de rede industrial"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-034
+    reference: "IEC 62443-3-3:2013"
+    title: "Industrial communication networks - Network and system security - Part 3-3: System security requirements and security levels"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CIBERSEGURANCA_IACS
+    applicability: CONDITIONAL
+    use_in_elaboration: "requisitos de segurança de sistema e níveis de segurança para IACS"
+    mandatory_when: "rede/controle industrial exigir requisitos de cibersegurança"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/7033"
+    verified_at: "2026-09-28"
+
+  - id: NORM-035
+    reference: "IEC 62443-2-1"
+    title: "Security for industrial automation and control systems - Security program requirements for IACS asset owners"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CIBERSEGURANCA_GESTAO
+    applicability: CONDITIONAL
+    use_in_elaboration: "gestão do programa de segurança IACS quando aplicável ao empreendimento"
+    mandatory_when: "requisitos de cibersegurança do ativo/cliente ativarem esta parte"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-036
+    reference: "ISO 13849-1:2023"
+    title: "Safety of machinery - Safety-related parts of control systems - Part 1: General principles for design"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: SEGURANCA_FUNCIONAL_MAQUINAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "projeto de partes de sistemas de comando relacionadas à segurança"
+    mandatory_when: "quadro implementar função de segurança conforme arquitetura aplicável"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://www.iso.org/standard/73481.html"
+    verified_at: "2026-09-28"
+
+  - id: NORM-037
+    reference: "IEC 62061:2021"
+    title: "Safety of machinery - Functional safety of safety-related control systems"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SEGURANCA_FUNCIONAL_MAQUINAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "projeto, integração e validação de sistemas de comando relacionados à segurança"
+    mandatory_when: "arquitetura de segurança utilizar abordagem IEC 62061"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/59927"
+    verified_at: "2026-09-28"
+
+  - id: NORM-038
+    reference: "ISO 12100:2010"
+    title: "Safety of machinery - General principles for design - Risk assessment and risk reduction"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: ANALISE_RISCO_MAQUINAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "avaliação/redução de risco de máquinas antes de definir funções de segurança"
+    mandatory_when: "quadro integrar máquina e análise de risco estiver no escopo"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://www.iso.org/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-039
+    reference: "ISO 13850"
+    title: "Safety of machinery - Emergency stop function - Principles for design"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: PARADA_EMERGENCIA
+    applicability: CONDITIONAL
+    use_in_elaboration: "princípios de função de parada de emergência"
+    mandatory_when: "parada de emergência estiver no escopo da máquina/sistema"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://www.iso.org/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-040
+    reference: "IEC 60947-5-5"
+    title: "Low-voltage switchgear and controlgear - Part 5-5: Control circuit devices and switching elements - Electrical emergency stop device with mechanical latching function"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: PARADA_EMERGENCIA
+    applicability: CONDITIONAL
+    use_in_elaboration: "requisitos do dispositivo elétrico de parada de emergência com retenção mecânica"
+    mandatory_when: "esse tipo de dispositivo estiver presente"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-041
+    reference: "IEC 61508 series"
+    title: "Functional safety of electrical/electronic/programmable electronic safety-related systems"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SEGURANCA_FUNCIONAL
+    applicability: CONDITIONAL
+    use_in_elaboration: "referência geral de segurança funcional E/E/PE"
+    mandatory_when: "funções instrumentadas/segurança não forem cobertas apenas por norma setorial específica"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-042
+    reference: "IEC 61511 series"
+    title: "Functional safety - Safety instrumented systems for the process industry sector"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SIS_PROCESSO
+    applicability: CONDITIONAL
+    use_in_elaboration: "SIS e funções instrumentadas de segurança em processo"
+    mandatory_when: "quadro integrar SIS do setor de processo"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-043
+    reference: "ABNT NBR 5419-1:2026 Versao Corrigida:2026"
+    title: "Proteção contra descargas atmosféricas - Parte 1"
+    publisher: ABNT
+    jurisdiction: BR
+    category: SPDA
+    applicability: CONDITIONAL
+    use_in_elaboration: "interface do quadro com requisitos gerais de proteção contra descargas atmosféricas"
+    mandatory_when: "coordenação com SPDA/LPZ estiver no escopo"
+    source_status: OFFICIAL_CATALOG_VERIFIED
+    official_url: "https://www.abntcatalogo.com.br/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-044
+    reference: "ABNT NBR 5419-2:2026 Versao Corrigida:2026"
+    title: "Proteção contra descargas atmosféricas - Parte 2"
+    publisher: ABNT
+    jurisdiction: BR
+    category: SPDA_RISCO
+    applicability: CONDITIONAL
+    use_in_elaboration: "avaliação de risco quando requerida pelo projeto de proteção contra descargas atmosféricas"
+    mandatory_when: "avaliação de risco SPDA fizer parte do escopo"
+    source_status: OFFICIAL_CATALOG_VERIFIED
+    official_url: "https://www.abntcatalogo.com.br/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-045
+    reference: "ABNT NBR 5419-3:2026 Versao Corrigida:2026"
+    title: "Proteção contra descargas atmosféricas - Parte 3"
+    publisher: ABNT
+    jurisdiction: BR
+    category: SPDA_ESTRUTURA
+    applicability: CONDITIONAL
+    use_in_elaboration: "interface com medidas de proteção física e equipotencialização da estrutura"
+    mandatory_when: "integração com SPDA estrutural fizer parte do escopo"
+    source_status: OFFICIAL_CATALOG_VERIFIED
+    official_url: "https://www.abntcatalogo.com.br/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-046
+    reference: "ABNT NBR 5419-4:2026 Versao Corrigida:2026"
+    title: "Proteção contra descargas atmosféricas - Parte 4"
+    publisher: ABNT
+    jurisdiction: BR
+    category: SPDA_SISTEMAS_ELETRICOS_ELETRONICOS
+    applicability: CONDITIONAL
+    use_in_elaboration: "proteção de sistemas elétricos/eletrônicos internos e coordenação de surtos"
+    mandatory_when: "proteção contra LEMP/surtos estiver no escopo"
+    source_status: OFFICIAL_CATALOG_VERIFIED
+    official_url: "https://www.abntcatalogo.com.br/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-047
+    reference: "ABNT NBR 14039:2021"
+    title: "Instalações elétricas de média tensão de 1,0 kV a 36,2 kV"
+    publisher: ABNT
+    jurisdiction: BR
+    category: MEDIA_TENSAO
+    applicability: CONDITIONAL
+    use_in_elaboration: "interface com alimentação/instalação de média tensão"
+    mandatory_when: "projeto tiver interface de 1,0 kV a 36,2 kV"
+    source_status: OFFICIAL_CATALOG_VERIFIED
+    official_url: "https://www.abntcatalogo.com.br/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-048
+    reference: "IEC 60079 series"
+    title: "Explosive atmospheres"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: ATMOSFERAS_EXPLOSIVAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "classificação/aplicação de equipamentos e instalações em atmosferas explosivas conforme partes aplicáveis"
+    mandatory_when: "painel, dispositivos de campo ou instalação estiverem em área classificada"
+    source_status: VERIFY_PARTS_AND_CURRENT_EDITIONS_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-049
+    reference: "IEC 61010-2-201"
+    title: "Safety requirements for electrical equipment for measurement, control, and laboratory use - Particular requirements for control equipment"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: EQUIPAMENTO_CONTROLE_SEGURANCA
+    applicability: CONDITIONAL
+    use_in_elaboration: "referência de segurança de equipamento de controle quando aplicável ao produto"
+    mandatory_when: "produto de controle declarar conformidade ou escopo desta norma"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+  - id: NORM-050
+    reference: "IEC 62477-1"
+    title: "Safety requirements for power electronic converter systems and equipment - Part 1: General"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: ELETRONICA_POTENCIA
+    applicability: CONDITIONAL
+    use_in_elaboration: "segurança de sistemas/conversores eletrônicos de potência quando aplicável"
+    mandatory_when: "fonte, conversor ou UPS tiver esta norma como produto/grupo aplicável"
+    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
+    official_url: "https://webstore.iec.ch/"
+    verified_at: "2026-09-28"
+
+application_matrix:
+  panel_general:
+    always_review: [NORM-001, NORM-002, NORM-004, NORM-005, NORM-007, NORM-008, NORM-009, NORM-010, NORM-011, NORM-012, NORM-013, NORM-015, NORM-016, NORM-017, NORM-020, NORM-022, NORM-023, NORM-024, NORM-025]
+  machine_panel:
+    activate: [NORM-003, NORM-006, NORM-036, NORM-037, NORM-038, NORM-039, NORM-040]
+  motor_and_vfd:
+    activate: [NORM-014, NORM-027, NORM-028]
+  surge_and_lightning:
+    activate: [NORM-018, NORM-043, NORM-044, NORM-045, NORM-046]
+  ups:
+    activate: [NORM-029, NORM-030, NORM-050]
+  industrial_network:
+    activate: [NORM-031, NORM-032, NORM-033]
+  cybersecurity:
+    activate: [NORM-034, NORM-035]
+  safety_function:
+    activate: [NORM-036, NORM-037, NORM-041, NORM-042]
+  medium_voltage_interface:
+    activate: [NORM-047]
+  hazardous_area:
+    activate: [NORM-048]
+release_evidence:
+  required_fields:
+    - normative_reference_id
+    - reference
+    - applicability_decision
+    - edition_reverified_at
+    - official_source_url
+    - project_requirement_or_reason
+    - impacted_artifacts
+    - validator_a
+    - validator_b
+  rule: >-
+    Para emissão, toda referência ativada deve ter edição vigente reverificada em fonte oficial.
+    Referência com source_status diferente de OFFICIAL_VERIFIED, OFFICIAL_CATALOG_VERIFIED
+    ou OFFICIAL_VERIFIED_TRANSITION permanece HOLD até verificação.
