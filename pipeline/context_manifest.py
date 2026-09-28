@@ -186,6 +186,14 @@ def build_context_manifest(
     cache_lookup = ContentAddressedCache(cache_root).lookup(cache_key)
 
     holds: list[dict[str, Any]] = []
+    if cache_lookup.status == "INVALID":
+        holds.append({
+            "hold_id": "HOLD-CACHE-INVALID",
+            "reason": "Content-addressed cache entry is invalid or does not match its SHA256 key.",
+            "blocking": True,
+            "owner": "ORCHESTRATOR",
+            "next_action": "Invalidate the cache entry and recompute the task result.",
+        })
     if bom_hash == "MISSING":
         holds.append({
             "hold_id": "HOLD-CACHE-BOM-MISSING",
