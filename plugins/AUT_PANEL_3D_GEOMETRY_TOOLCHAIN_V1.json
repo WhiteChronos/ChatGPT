@@ -1,0 +1,111 @@
+{
+  "registry_id": "AUT-PANEL-3D-GEOMETRY-TOOLCHAIN-V1",
+  "registry_version": "1.0",
+  "created_at": "2026-09-28",
+  "purpose": "Deterministic 3D/CAD geometry and rendering pipeline for AUT panel views. Prevents generative image systems from inventing or distorting component geometry.",
+  "authority_order": [
+    "MANUFACTURER_STEP_OR_IGES",
+    "MANUFACTURER_DXF_OR_NATIVE_CAD",
+    "PARAMETRIC_RECONSTRUCTION_FROM_OFFICIAL_DIMENSIONAL_DRAWING",
+    "OFFICIAL_DIMENSIONAL_BBOX_PROXY",
+    "GENERATIVE_IMAGE_REFERENCE_ONLY"
+  ],
+  "rules": {
+    "unit": "mm",
+    "one_geometry_model_per_physical_instance": true,
+    "orthographic_views_from_same_3d_assembly": true,
+    "bounding_box_must_match_official_dimensions": true,
+    "individual_rescaling_forbidden": true,
+    "camera_perspective_for_dimension_views": "ORTHOGRAPHIC",
+    "render_canvas_policy": "GROW_CANVAS_KEEP_SCALE",
+    "generative_model_geometry_authority": false
+  },
+  "repositories": [
+    {
+      "repository": "FreeCAD/FreeCAD",
+      "role": [
+        "STEP_IGES_IMPORT",
+        "BREP_ASSEMBLY",
+        "ORTHOGRAPHIC_VIEWS",
+        "TECHDRAW"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "repository": "FreeCAD/FreeCAD-library",
+      "role": [
+        "COMPONENT_CAD_LIBRARY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "repository": "CadQuery/cadquery",
+      "role": [
+        "PARAMETRIC_SOLID_RECONSTRUCTION",
+        "STEP_EXPORT"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "repository": "gumyr/build123d",
+      "role": [
+        "PARAMETRIC_SOLID_RECONSTRUCTION",
+        "ASSEMBLY"
+      ],
+      "status": "CANDIDATE_VERIFY_CANONICAL_REPO"
+    },
+    {
+      "repository": "tpaviot/pythonocc-core",
+      "role": [
+        "OPENCASCADE_BREP",
+        "STEP_IGES_GEOMETRY",
+        "BOUNDING_BOX"
+      ],
+      "status": "CANDIDATE_VERIFY_CANONICAL_REPO"
+    },
+    {
+      "repository": "mikedh/trimesh",
+      "role": [
+        "MESH_BOUNDS",
+        "SCENE_GRAPH",
+        "GEOMETRY_QA"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "repository": "isl-org/Open3D",
+      "role": [
+        "MESH_AND_POINTCLOUD_QA",
+        "3D_VISUAL_VALIDATION"
+      ],
+      "status": "CANDIDATE_VERIFY_CANONICAL_REPO"
+    },
+    {
+      "repository": "blender/blender",
+      "role": [
+        "PHOTOREALISTIC_RENDER",
+        "ORTHOGRAPHIC_CAMERA",
+        "MATERIALS_LIGHTING"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "repository": "IfcOpenShell/IfcOpenShell",
+      "role": [
+        "BIM_GEOMETRY_INTERCHANGE",
+        "OPEN_CASCADE_GEOMETRY"
+      ],
+      "status": "OPTIONAL"
+    },
+    {
+      "repository": "mozman/ezdxf",
+      "role": [
+        "DXF_IMPORT_EXPORT",
+        "2D_CAD_DIMENSIONAL_INTERCHANGE"
+      ],
+      "status": "CANDIDATE_VERIFY_CANONICAL_REPO"
+    }
+  ],
+  "activation_policy": "Pin exact release/commit, review license/security, run sandbox geometry regression, then promote candidate to ACTIVE.",
+  "note": "Repositories marked VERIFY_CANONICAL_REPO must be reverified before activation. No candidate is allowed to override manufacturer evidence."
+}
