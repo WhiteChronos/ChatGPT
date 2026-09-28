@@ -578,5 +578,20 @@
     "cold_start_status": "LEARNING_COLD_START",
     "auto_merge": false,
     "auto_apply_locked_changes": false
+  },
+  "layout_optimizer": {
+    "id": "LAYOUT-OPTIMIZER-V1",
+    "stage": "LAYOUT",
+    "canonical_sequence_unchanged": true,
+    "implementation": "pipeline/layout_optimizer/cli.py",
+    "config": "configs/layout_optimizer_v1.yaml",
+    "result_schema": "schemas/layout_optimizer_result_v1.schema.json",
+    "solver": "OR_TOOLS_CP_SAT",
+    "dependency_graph": "NetworkX",
+    "locked_enclosure_auto_change": false,
+    "split_auto_select": false,
+    "capacity_failure_status": "HOLD_LAYOUT_CAPACITY",
+    "decision_status": "USER_DECISION_REQUIRED",
+    "deterministic_render_bridge": "pipeline/render_panel_scaled.py"
   }
 }
