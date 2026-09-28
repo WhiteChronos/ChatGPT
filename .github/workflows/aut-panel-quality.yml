@@ -14,6 +14,7 @@ on:
       - 'pipeline/render_panel_scaled.py'
       - 'pipeline/conversation_contract.py'
       - 'pipeline/li_material_control.py'
+      - 'pipeline/aut_panel_normative_control.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'pipeline/pipeline.yaml'
       - 'pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml'
@@ -43,6 +44,7 @@ on:
       - 'tests/test_li_material_control.py'
       - 'tests/test_li_material_contract.py'
       - 'tests/test_aut_panel_normative_registry.py'
+      - 'tests/test_aut_panel_normative_control.py'
   push:
     branches: [main]
     paths:
@@ -56,6 +58,7 @@ on:
       - 'pipeline/render_panel_scaled.py'
       - 'pipeline/conversation_contract.py'
       - 'pipeline/li_material_control.py'
+      - 'pipeline/aut_panel_normative_control.py'
       - 'pipeline/AUT_PANEL_PIPELINE.json'
       - 'pipeline/pipeline.yaml'
       - 'pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml'
@@ -85,6 +88,7 @@ on:
       - 'tests/test_li_material_control.py'
       - 'tests/test_li_material_contract.py'
       - 'tests/test_aut_panel_normative_registry.py'
+      - 'tests/test_aut_panel_normative_control.py'
   workflow_dispatch:
 
 permissions:
@@ -133,7 +137,8 @@ jobs:
             tests/test_conversation_contract.py \
             tests/test_li_material_control.py \
             tests/test_li_material_contract.py \
-            tests/test_aut_panel_normative_registry.py
+            tests/test_aut_panel_normative_registry.py \
+            tests/test_aut_panel_normative_control.py
       - name: Validate LI material canonical contracts
         run: |
           python - <<'PY'
