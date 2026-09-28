@@ -24,6 +24,43 @@ RELEASE_VERIFIED_STATUSES = {
 }
 
 
+def merge_normative_registries(
+    primary: Mapping[str, Any],
+    supplement: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Merge metadata-only supplemental references without mutating the primary registry."""
+    merged = dict(primary)
+    standards = [dict(x) for x in primary.get("standards", [])]
+    matrix = {
+        str(k): dict(v or {})
+        for k, v in (primary.get("application_matrix") or {}).items()
+    }
+    if supplement:
+        existing = {str(x.get("id")) for x in standards}
+        for item in supplement.get("references", []):
+            ref = dict(item)
+            ref_id = str(ref.get("id") or "")
+            if not ref_id:
+                raise ValueError("NORMATIVE_SUPPLEMENT_REFERENCE_ID_MISSING")
+            if ref_id in existing:
+                raise ValueError(f"NORMATIVE_REFERENCE_DUPLICATE:{ref_id}")
+            standards.append(ref)
+            existing.add(ref_id)
+        for group, ids in (supplement.get("activation_groups") or {}).items():
+            record = matrix.setdefault(str(group), {})
+            current = [str(x) for x in record.get("activate", [])]
+            for ref_id in ids or []:
+                ref_id = str(ref_id)
+                if ref_id not in current:
+                    current.append(ref_id)
+            record["activate"] = current
+        merged["supplemental_registry_id"] = supplement.get("registry_id")
+        merged["supplemental_verified_at"] = supplement.get("verified_at")
+    merged["standards"] = standards
+    merged["application_matrix"] = matrix
+    return merged
+
+
 def _index_standards(registry: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
     return {
         str(item.get("id")): item
@@ -169,13 +206,17 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project", required=True)
     parser.add_argument("--registry", default="datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml")
+    parser.add_argument("--supplement", default="datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml")
     parser.add_argument("--memory", default="memory/AUT_PANEL_NORMATIVE_MEMORY.yaml")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     try:
+        primary_registry = _load_yaml(Path(args.registry))
+        supplement_path = Path(args.supplement)
+        supplement = _load_yaml(supplement_path) if supplement_path.exists() else None
         result = write_normative_manifest(
             _load_json(Path(args.project)),
-            _load_yaml(Path(args.registry)),
+            merge_normative_registries(primary_registry, supplement),
             _load_yaml(Path(args.memory)),
             Path(args.output),
         )
