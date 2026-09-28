@@ -135,6 +135,40 @@ def validate(
     }
 
 
+def apply_validated_optimizer_layout(project: dict[str, Any], optimizer_result: dict[str, Any]) -> dict[str, Any]:
+    """Apply only validated optimizer coordinates without changing engineering identity."""
+    if optimizer_result.get("status") != "LAYOUT_VALIDATED":
+        raise RuntimeError("Layout Optimizer result must be LAYOUT_VALIDATED before render.")
+    import copy
+    out = copy.deepcopy(project)
+    by_tag: dict[str, dict[str, Any]] = {}
+    for placement in optimizer_result.get("placements", []):
+        if placement.get("kind", "component") != "component":
+            continue
+        tag = str(placement.get("source_tag") or "")
+        if tag and tag not in by_tag:
+            by_tag[tag] = placement
+    for row in out.get("placements", []):
+        tag = str(row.get("li_tag") or "")
+        solved = by_tag.get(tag)
+        if solved is None:
+            continue
+        if str(row.get("catalog_id") or "") != str(solved.get("catalog_id") or ""):
+            raise RuntimeError(f"GR-035: optimizer catalog_id diverges for {tag}.")
+        if str(row.get("surface") or "") != str(solved.get("surface") or ""):
+            raise RuntimeError(f"GR-037: optimizer surface diverges for {tag}.")
+        row["x_mm"] = float(solved["x_mm"])
+        row["y_mm"] = float(solved["y_mm"])
+        row["rotation_deg"] = int(solved.get("rotation_deg", 0) or 0)
+    out["layout_optimizer"] = {
+        "status": optimizer_result.get("status"),
+        "solver_manifest": optimizer_result.get("solver_manifest") or {},
+        "metrics": optimizer_result.get("metrics") or {},
+        "diagnostics": optimizer_result.get("diagnostics") or [],
+    }
+    return out
+
+
 def render_with_existing_engine(project_path: Path, catalog_path: Path, output: Path) -> None:
     try:
         from pipeline.aut_panel_control import carregar_json, gerar_svg
@@ -162,6 +196,7 @@ def main() -> int:
     p.add_argument("--datacenter", default="datacenter/datacenter.yaml")
     p.add_argument("--datasheet-registry", default="datasheet/datasheet.yaml")
     p.add_argument("--approved-image-ref")
+    p.add_argument("--optimizer-result", help="Layout Optimizer V1 result JSON; must be LAYOUT_VALIDATED")
     p.add_argument("--output", required=True)
     p.add_argument("--contract-output")
     args = p.parse_args()
@@ -175,10 +210,11 @@ def main() -> int:
         bootstrap_contract = validate_contract(root)
         project_path = Path(args.project)
         catalog_path = Path(args.catalog)
+        project_data = load_json(project_path)
         contract = validate(
             args.panel_id,
             load_json(Path(args.li)),
-            load_json(project_path),
+            project_data,
             load_yaml(Path(args.golden_rules)),
             load_yaml(Path(args.pipeline)),
             load_yaml(Path(args.panel_template)),
@@ -186,7 +222,19 @@ def main() -> int:
             load_yaml(Path(args.datasheet_registry)),
             Path(args.approved_image_ref) if args.approved_image_ref else None,
         )
-        render_with_existing_engine(project_path, catalog_path, Path(args.output))
+        if args.optimizer_result:
+            optimized = apply_validated_optimizer_layout(project_data, load_json(Path(args.optimizer_result)))
+            import tempfile
+            with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as tmp:
+                json.dump(optimized, tmp, ensure_ascii=False, indent=2)
+                optimized_project_path = Path(tmp.name)
+            try:
+                render_with_existing_engine(optimized_project_path, catalog_path, Path(args.output))
+            finally:
+                optimized_project_path.unlink(missing_ok=True)
+            contract["layout_optimizer"] = optimized.get("layout_optimizer")
+        else:
+            render_with_existing_engine(project_path, catalog_path, Path(args.output))
         contract_output = Path(args.contract_output) if args.contract_output else Path(args.output).with_suffix(".contract.json")
         contract["conversation_bootstrap"] = bootstrap_contract
         contract_output.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
