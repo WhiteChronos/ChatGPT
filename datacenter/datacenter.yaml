@@ -131,7 +131,7 @@ change_control:
   refactor_behavior_change_forbidden: true
 conversation_contract_fingerprints:
   prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
-  prompt_master_sha256: 2a5ee6ae749427335133d0a100b45bf08ee615d59fe151f8828193d98db70a7e
+  prompt_master_sha256: a157c75c8a3725db06a2c87e31d4170a6a492cd6647022511e650b812c53b2dc
   bootstrap_prompt_sha256: 5fb9aebf6e330a4df2cc681c78cca98a0f7fa2a0a85cbaaae27f181420e1988a
   memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
   memory_immutable_contract_sha256: 77c29eb332d89164c8dfb8b12fab351c5062d1b31642134f20e90776e7d57429
