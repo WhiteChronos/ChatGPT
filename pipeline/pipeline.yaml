@@ -93,7 +93,20 @@ sequence:
     gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line, applicable_norms_loaded]
   - order: 80
     id: LAYOUT
-    gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present, applicable_normative_constraints_loaded]
+    gate:
+      - layout_quantity_equals_li
+      - dimensions_real
+      - component_dimensional_evidence_complete
+      - manufacturer_mounting_clearances_loaded
+      - hmi_on_door
+      - hmi_unique_physical_instance
+      - door_components_not_duplicated_on_mounting_plate
+      - no_distortion
+      - common_mm_scale_applied
+      - lower_zone_present
+      - cable_exit_clearance_validated
+      - bend_radius_and_gland_access_validated
+      - applicable_normative_constraints_loaded
     optimizer:
       id: LAYOUT-OPTIMIZER-V1
       implementation: pipeline/layout_optimizer/cli.py
@@ -107,11 +120,30 @@ sequence:
       decision_status: USER_DECISION_REQUIRED
   - order: 90
     id: RENDER_IMAGE
-    gate: [approved_template_id, approved_template_fingerprint, visual_composition_v2_loaded, one_panel_per_image, no_unapproved_recomposition, parity_footer_present]
+    gate:
+      - approved_template_id
+      - approved_template_fingerprint
+      - visual_composition_v2_loaded
+      - dimensional_closure_passed
+      - render_derived_from_validated_layout
+      - render_component_count_equals_li
+      - no_duplicate_visual_instances
+      - hmi_front_door_only
+      - internal_view_shows_only_physical_backside_when_applicable
+      - manufacturer_geometry_used
+      - common_mm_scale_applied
+      - one_panel_per_image
+      - no_unapproved_recomposition
+      - parity_footer_present
   - order: 100
     id: QA
     gate:
       - li_bom_layout_render_parity
+      - duplicate_component_instance_check
+      - door_vs_backplate_allocation_check
+      - dimensional_catalog_traceability_check
+      - render_scale_and_proportion_check
+      - cable_exit_clearance_check
       - workbook_structure_fingerprint
       - render_contract_fingerprint
       - conversation_contract_valid
@@ -170,6 +202,10 @@ invalidations:
     invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
   component_model_change:
     invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_dimension_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_mounting_surface_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
   enclosure_change:
     invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
   approved_template_change:
@@ -185,6 +221,11 @@ release_policy:
   unauthorized_standard_change: REPROVADO
   missing_exact_model_or_evidence: HOLD
   geometric_distortion: REPROVADO
+  duplicate_physical_component_in_render: REPROVADO
+  door_component_duplicated_on_backplate: REPROVADO
+  render_before_dimensional_closure: REPROVADO
+  unofficial_or_unverified_component_dimensions: HOLD
+  missing_mounting_clearance_or_cable_exit_validation: HOLD
   quantity_mismatch: REPROVADO
   historical_revision_changed: REPROVADO
   new_revision_column_not_adjacent: REPROVADO
