@@ -29,7 +29,8 @@ contracts:
   ml_model_registry: ml/model_registry.yaml
   open_source_registry: plugins/aut_panel_open_source_registry.json
   github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
-  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
   panel_render_manifest_schema: schemas/panel_render_manifest_v1.schema.json
   engineering_skill: skills/aut-panel-engineering/SKILL.md
@@ -107,6 +108,9 @@ sequence:
       - common_mm_scale_applied
       - side_open_view_real_aspect_ratio
       - depth_section_image_6_real_scale
+      - single_3d_assembly_coordinates
+      - cad_or_parametric_geometry_authority
+      - component_bbox_matches_official_dimensions
       - lower_zone_present
       - cable_exit_clearance_validated
       - bend_radius_and_gland_access_validated
@@ -139,6 +143,11 @@ sequence:
       - common_mm_scale_applied
       - side_open_view_real_aspect_ratio
       - image_6_depth_section_gate_passed
+      - same_3d_assembly_drives_all_views
+      - orthographic_dimension_views
+      - large_canvas_grow_only
+      - no_block_downscale_to_fit
+      - removed_visual_blocks_4_and_8_absent
       - one_panel_per_image
       - no_unapproved_recomposition
       - parity_footer_present
