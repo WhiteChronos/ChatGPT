@@ -113,3 +113,16 @@ Use pyRevit, RevitPythonShell, IFC/IfcOpenShell, or other approved bridges only 
 - Never reduce components, the enclosure, the mounting plate, cable zones, or the depth section to make the page look balanced.
 - Increase page/canvas width or height instead.
 - All engineering views must derive from the same 3D assembly and use the same unit system in millimetres.
+
+
+### Raster proportion guard
+
+Use `pipeline/corrigir_proporcao_imagem.py` for dimensional image placement and proportion QA. This utility was derived from the user-provided proportion script (source SHA-256 `835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31`) but hardened for engineering use.
+
+For dimensional panel views:
+- never resize the image to fit a smaller frame;
+- require `scale_x = scale_y = 1.0` at raster composition time;
+- if the target frame is smaller than the rendered view, enlarge the frame/canvas or fail closed;
+- use letterbox/pillarbox only by adding empty space around the image;
+- verify image aspect ratio against the engineering width/height before composing the poster;
+- do not use this raster guard to correct upstream CAD geometry; fix the 3D assembly instead.
