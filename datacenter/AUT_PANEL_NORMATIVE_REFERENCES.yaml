@@ -693,19 +693,266 @@ standards:
     official_url: "https://webstore.iec.ch/"
     verified_at: "2026-09-28"
 
+  - id: NORM-051
+    reference: "IEC TR 60890:2022"
+    title: "A method of temperature-rise verification of low-voltage switchgear and controlgear assemblies by calculation"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: VERIFICACAO_TERMICA
+    applicability: CONDITIONAL
+    use_in_elaboration: "verificação por cálculo da elevação de temperatura do conjunto quando este método for tecnicamente aplicável"
+    mandatory_when: "verificação térmica por cálculo for adotada conforme requisitos aplicáveis do conjunto"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/66007"
+    verified_at: "2026-09-28"
+
+  - id: NORM-052
+    reference: "IEC 60617:2026 DB"
+    title: "Graphical symbols for diagrams"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SIMBOLOS_GRAFICOS
+    applicability: BASELINE
+    use_in_elaboration: "símbolos gráficos de diagramas eletrotécnicos"
+    mandatory_when: "diagramas elétricos e de automação utilizarem simbologia IEC"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/2723"
+    verified_at: "2026-09-28"
+
+  - id: NORM-053
+    reference: "IEC 81355-1:2024"
+    title: "Industrial systems, installations and equipment and industrial products - Classification and designation of information - Part 1: Basic rules and classification of information"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CLASSIFICACAO_DOCUMENTAL
+    applicability: BASELINE
+    use_in_elaboration: "classificação e designação de informações/documentos técnicos do ciclo de vida do painel"
+    mandatory_when: "estrutura de informação/documentação técnica seguir referência IEC"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/68281"
+    verified_at: "2026-09-28"
+
+  - id: NORM-054
+    reference: "IEC 60228:2023"
+    title: "Conductors of insulated cables"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CONDUTORES
+    applicability: CONDITIONAL
+    use_in_elaboration: "classes, seções nominais e características de condutores isolados quando a referência IEC for requerida"
+    mandatory_when: "especificação de cabos/condutores exigir IEC 60228 ou norma de produto a referenciar"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/71891"
+    verified_at: "2026-09-28"
+
+  - id: NORM-055
+    reference: "IEC 62485-2:2010"
+    title: "Safety requirements for secondary batteries and battery installations - Part 2: Stationary batteries"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: BATERIAS_ESTACIONARIAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "segurança de instalação, uso, inspeção e manutenção de baterias estacionárias"
+    mandatory_when: "banco de baterias estacionárias estiver integrado ao quadro/sistema"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/7091"
+    verified_at: "2026-09-28"
+
+  - id: NORM-056
+    reference: "IEC 61643-12:2020"
+    title: "Low-voltage surge protective devices - Part 12: Surge protective devices connected to low-voltage power systems - Selection and application principles"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: DPS_APLICACAO
+    applicability: CONDITIONAL
+    use_in_elaboration: "seleção, localização e coordenação de DPS em sistemas de baixa tensão"
+    mandatory_when: "DPS for selecionado/coordenado segundo IEC"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/32531"
+    verified_at: "2026-09-28"
+
+  - id: NORM-057
+    reference: "ISO 16484-1:2024"
+    title: "Building automation and control systems (BACS) - Part 1: Project specification and implementation"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: BACS_PROJETO
+    applicability: CONDITIONAL
+    use_in_elaboration: "princípios de projeto, engenharia, integração, instalação, comissionamento e documentação de BACS"
+    mandatory_when: "escopo envolver automação predial/HVAC BACS"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://www.iso.org/standard/84890.html"
+    verified_at: "2026-09-28"
+
+  - id: NORM-058
+    reference: "ISO 16484-2:2025"
+    title: "Building automation and control systems (BACS) - Part 2: Hardware"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: BACS_HARDWARE
+    applicability: CONDITIONAL
+    use_in_elaboration: "requisitos de hardware de estações de automação, painéis de operador, sensores, atuadores e topologia BACS"
+    mandatory_when: "hardware de automação predial/HVAC estiver no escopo"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://www.iso.org/standard/86354.html"
+    verified_at: "2026-09-28"
+
+  - id: NORM-059
+    reference: "ISO 16484-3:2005"
+    title: "Building automation and control systems (BACS) - Part 3: Functions"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: BACS_FUNCOES
+    applicability: CONDITIONAL
+    use_in_elaboration: "funções BACS, serviços de engenharia e documentação funcional/pontos"
+    mandatory_when: "definição funcional de BACS estiver no escopo"
+    source_status: OFFICIAL_VERIFIED_TRANSITION
+    official_url: "https://www.iso.org/standard/37205.html"
+    verified_at: "2026-09-28"
+    notes: "Confirmada em 2024; revisão ISO/DIS 16484-3 em desenvolvimento em 2026. Reverificar antes da emissão."
+
+  - id: NORM-060
+    reference: "ISO 16484-5:2026"
+    title: "Building automation and control systems (BACS) - Part 5: Data communication protocol"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: BACNET_PROTOCOLO
+    applicability: CONDITIONAL
+    use_in_elaboration: "serviços e protocolo de comunicação BACnet para HVAC&R e outros sistemas prediais"
+    mandatory_when: "BACnet fizer parte da arquitetura"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://www.iso.org/standard/92057.html"
+    verified_at: "2026-09-28"
+
+  - id: NORM-061
+    reference: "ISO 16484-6:2026"
+    title: "Building automation and control systems (BACS) - Part 6: Data communication conformance testing"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: BACNET_CONFORMIDADE
+    applicability: CONDITIONAL
+    use_in_elaboration: "ensaios de conformidade das capacidades BACnet declaradas em PICS"
+    mandatory_when: "escopo exigir validação/conformidade BACnet"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://www.iso.org/standard/93006.html"
+    verified_at: "2026-09-28"
+
+  - id: NORM-062
+    reference: "IEC 60364-4-41:2005+AMD1:2017"
+    title: "Low voltage electrical installations - Part 4-41: Protection for safety - Protection against electric shock"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INSTALACAO_BT_CHOQUE
+    applicability: CONDITIONAL
+    use_in_elaboration: "referência internacional para proteção contra choque elétrico quando requerida pelo projeto"
+    mandatory_when: "contrato/jurisdição exigir IEC 60364 além ou em vez da adoção nacional"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/60169"
+    verified_at: "2026-09-28"
+
+  - id: NORM-063
+    reference: "IEC 60364-4-43:2023"
+    title: "Low-voltage electrical installations - Part 4-43: Protection for safety - Protection against overcurrent"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INSTALACAO_BT_SOBRECORRENTE
+    applicability: CONDITIONAL
+    use_in_elaboration: "referência internacional para proteção e coordenação contra sobrecorrente"
+    mandatory_when: "contrato/jurisdição exigir IEC 60364 além ou em vez da adoção nacional"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/28432"
+    verified_at: "2026-09-28"
+
+  - id: NORM-064
+    reference: "IEC 60364-5-52:2009+AMD1:2024"
+    title: "Low-voltage electrical installations - Part 5-52: Selection and erection of electrical equipment - Wiring systems"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INSTALACAO_BT_CONDUTORES
+    applicability: CONDITIONAL
+    use_in_elaboration: "seleção e instalação de sistemas de cabos/condutores e queda de tensão quando referência IEC for requerida"
+    mandatory_when: "contrato/jurisdição exigir IEC 60364 além ou em vez da adoção nacional"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/103734"
+    verified_at: "2026-09-28"
+
+  - id: NORM-065
+    reference: "IEC 60364-5-54:2011+AMD1:2021"
+    title: "Low-voltage electrical installations - Part 5-54: Selection and erection of electrical equipment - Earthing arrangements and protective conductors"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: INSTALACAO_BT_ATERRAMENTO
+    applicability: CONDITIONAL
+    use_in_elaboration: "aterramento, condutores de proteção e equipotencialização quando referência IEC for requerida"
+    mandatory_when: "contrato/jurisdição exigir IEC 60364 além ou em vez da adoção nacional"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/68865"
+    verified_at: "2026-09-28"
+
+  - id: NORM-066
+    reference: "IEC 60947-1:2020"
+    title: "Low-voltage switchgear and controlgear - Part 1: General rules"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: DISPOSITIVOS_BT_GERAL
+    applicability: BASELINE
+    use_in_elaboration: "regras gerais e requisitos comuns de segurança para dispositivos IEC 60947"
+    mandatory_when: "dispositivos de manobra/proteção IEC 60947 estiverem no quadro"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/26973"
+    verified_at: "2026-09-28"
+
+  - id: NORM-067
+    reference: "IEC 60947-4-2:2020+AMD1:2024"
+    title: "Low-voltage switchgear and controlgear - Part 4-2: Contactors and motor-starters - Semiconductor motor controllers, starters and soft-starters"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SOFT_STARTER
+    applicability: CONDITIONAL
+    use_in_elaboration: "seleção/aplicação de controladores semicondutores, starters e soft-starters"
+    mandatory_when: "soft-starter ou starter semicondutor estiver presente"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/102954"
+    verified_at: "2026-09-28"
+
+  - id: NORM-068
+    reference: "IEC 60947-6-1:2026"
+    title: "Low-voltage switchgear and controlgear - Part 6-1: Multiple function equipment - Transfer switching equipment"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: TRANSFERENCIA_FONTES
+    applicability: CONDITIONAL
+    use_in_elaboration: "equipamentos de transferência manual, remota ou automática entre fontes"
+    mandatory_when: "TSE/ATS/ATSE fizer parte do quadro"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/90494"
+    verified_at: "2026-09-28"
+
 application_matrix:
   panel_general:
-    always_review: [NORM-001, NORM-002, NORM-004, NORM-005, NORM-007, NORM-008, NORM-009, NORM-010, NORM-011, NORM-012, NORM-013, NORM-015, NORM-016, NORM-017, NORM-020, NORM-022, NORM-023, NORM-024, NORM-025]
+    always_review: [NORM-001, NORM-002, NORM-004, NORM-005, NORM-007, NORM-008, NORM-009, NORM-010, NORM-011, NORM-012, NORM-013, NORM-015, NORM-016, NORM-017, NORM-020, NORM-022, NORM-023, NORM-024, NORM-025, NORM-052, NORM-053, NORM-066]
   machine_panel:
     activate: [NORM-003, NORM-006, NORM-036, NORM-037, NORM-038, NORM-039, NORM-040]
   motor_and_vfd:
     activate: [NORM-014, NORM-027, NORM-028]
+  soft_starter:
+    activate: [NORM-067]
+  transfer_switching:
+    activate: [NORM-068]
+  thermal_verification:
+    activate: [NORM-051]
   surge_and_lightning:
-    activate: [NORM-018, NORM-043, NORM-044, NORM-045, NORM-046]
+    activate: [NORM-018, NORM-043, NORM-044, NORM-045, NORM-046, NORM-056]
   ups:
-    activate: [NORM-029, NORM-030, NORM-050]
+    activate: [NORM-029, NORM-030, NORM-050, NORM-055]
   industrial_network:
     activate: [NORM-031, NORM-032, NORM-033]
+  bacs_hvac:
+    activate: [NORM-057, NORM-058, NORM-059]
+  bacnet:
+    activate: [NORM-060, NORM-061]
+  international_lv_reference:
+    activate: [NORM-054, NORM-062, NORM-063, NORM-064, NORM-065]
   cybersecurity:
     activate: [NORM-034, NORM-035]
   safety_function:
@@ -714,6 +961,20 @@ application_matrix:
     activate: [NORM-047]
   hazardous_area:
     activate: [NORM-048]
+coverage_policy:
+  registry_is_extensible: true
+  universal_exhaustiveness_claimed: false
+  uncovered_project_feature_status: HOLD
+  uncovered_project_feature_action: TECHNICAL_RESEARCH_OFFICIAL_NORM_DISCOVERY
+  required_for_each_new_feature:
+    - jurisdiction
+    - product_or_system_scope
+    - applicable_legal_requirements
+    - applicable_national_standards
+    - applicable_international_standards
+    - manufacturer_declared_product_standards
+    - official_source_validation
+    - two_agent_validation
 release_evidence:
   required_fields:
     - normative_reference_id
