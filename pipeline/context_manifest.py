@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from pipeline.aut_panel_router import route_intent
+from pipeline.aut_panel_cache import ContentAddressedCache
 from pipeline.aut_panel_normative_control import (
     merge_normative_registries,
     resolve_applicable_norms,
@@ -142,6 +143,7 @@ def build_context_manifest(
     panel_id: str,
     agent_version: str,
     hints: list[str] | None = None,
+    cache_dir: Path | None = None,
 ) -> dict[str, Any]:
     route = route_intent(intent, hints or ())
     dc_panel, ds_panel = _panel_record(root, panel_id)
@@ -180,6 +182,8 @@ def build_context_manifest(
         "agent_version": agent_version,
     }
     cache_key = sha256_object(cache_material)
+    cache_root = cache_dir or (root / ".cache" / "aut_panel")
+    cache_lookup = ContentAddressedCache(cache_root).lookup(cache_key)
 
     holds: list[dict[str, Any]] = []
     if bom_hash == "MISSING":
@@ -238,7 +242,8 @@ def build_context_manifest(
         }.get(route.agent, ["QA", "MEMORY_SYNC", "RELEASE"]),
         "cache": {
             "key": cache_key,
-            "status": "MISS",
+            "status": cache_lookup.status,
+            "cache_path": cache_lookup.path,
             "invalidation_reason": None,
             "material": cache_material,
             "bom_path": bom_path,
@@ -266,6 +271,7 @@ def main() -> int:
     p.add_argument("--panel", required=True, choices=["PN-AUT-01", "PN-AUT-02"])
     p.add_argument("--agent-version", default="AUT-PANEL-FAST-CONTEXT-V1")
     p.add_argument("--hint", action="append", default=[])
+    p.add_argument("--cache-dir", default=".cache/aut_panel")
     p.add_argument("--output", required=True)
     args = p.parse_args()
 
@@ -277,6 +283,7 @@ def main() -> int:
         panel_id=args.panel,
         agent_version=args.agent_version,
         hints=args.hint,
+        cache_dir=(root / args.cache_dir) if not Path(args.cache_dir).is_absolute() else Path(args.cache_dir),
     )
     out = Path(args.output)
     if not out.is_absolute():
