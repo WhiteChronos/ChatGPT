@@ -44,3 +44,22 @@ def test_registry_does_not_claim_universal_exhaustiveness():
 
     assert primary["coverage_policy"]["universal_exhaustiveness_claimed"] is False
     assert supplement["coverage_policy"]["universal_exhaustiveness_claimed"] is False
+
+
+def test_normative_context_is_mandatory_for_engineering_agents_and_release():
+    pipe = yaml.safe_load((ROOT / "pipeline/pipeline.yaml").read_text(encoding="utf-8"))
+    agents = yaml.safe_load((ROOT / "agents/AUT_PANEL_AGENT_SYSTEM.yaml").read_text(encoding="utf-8"))
+
+    bootstrap = next(x for x in pipe["sequence"] if x["id"] == "BOOTSTRAP_CONTEXT")
+    assert "normative_registry_loaded" in bootstrap["gate"]
+    assert "normative_supplement_loaded" in bootstrap["gate"]
+    assert "normative_memory_loaded" in bootstrap["gate"]
+
+    release = next(x for x in pipe["sequence"] if x["id"] == "RELEASE")
+    assert "normative_reverification_done" in release["gate"]
+
+    norm = agents["normative_control"]
+    assert norm["use_as_engineering_reference"] is True
+    assert norm["reverify_before_release"] is True
+    assert "LAYOUT_OPTIMIZER" in norm["mandatory_for_agents"]
+    assert "QA" in norm["mandatory_for_agents"]
