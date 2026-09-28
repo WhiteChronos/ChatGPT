@@ -31,6 +31,8 @@ canonical_sources:
   evolution_script: pipeline/evolution_engine.py
   ml_model_registry: ml/model_registry.yaml
   open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   pipeline_yaml: pipeline/pipeline.yaml
   datasheet_yaml: datasheet/datasheet.yaml
@@ -63,6 +65,8 @@ agent_learning_system:
   autoevolution_mode: PROPOSAL_ONLY
   minimum_labeled_examples: 25
   open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
 workbook_baseline:
   template_id: XLSX-PN-AUT-01-MASTER-R02
   master_panel: PN-AUT-01
