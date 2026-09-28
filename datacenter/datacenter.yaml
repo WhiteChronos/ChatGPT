@@ -8,6 +8,7 @@ canonical_sources:
   quantity_registry: datacenter/AUT_PANEL_PANEL_QUANTITIES.json
   document_standard_registry: datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json
   normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_supplement: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
   normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
   normative_script: pipeline/aut_panel_normative_control.py
   golden_rules_yaml: governance/golden_rules.yaml
@@ -41,6 +42,7 @@ canonical_sources:
 normative_control:
   registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
   registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  supplemental_registry_path: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
   memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
   memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
   default_jurisdiction: BR
