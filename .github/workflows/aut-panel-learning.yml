@@ -21,6 +21,7 @@ on:
       - 'pipeline/aut_panel_fast_context.py'
       - 'pipeline/panel_render_gate.py'
       - 'pipeline/panel_3d_geometry_gate.py'
+      - 'pipeline/corrigir_proporcao_imagem.py'
       - 'schemas/aut_panel_handoff_v1.schema.json'
       - 'schemas/panel_render_manifest_v1.schema.json'
       - 'datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml'
@@ -44,6 +45,7 @@ on:
       - 'pipeline/aut_panel_handoff.py'
       - 'pipeline/aut_panel_fast_context.py'
       - 'pipeline/panel_render_gate.py'
+      - 'pipeline/corrigir_proporcao_imagem.py'
       - 'pipeline/evolution_engine.py'
       - 'pipeline/learning_pipeline.yaml'
       - 'pipeline/layout_optimizer/**'
@@ -64,6 +66,7 @@ on:
       - 'tests/test_aut_panel_agent_system.py'
       - 'tests/test_aut_panel_fast_context.py'
       - 'tests/test_aut_panel_cache.py'
+      - 'requirements-dev.txt'
       - 'requirements-ml.txt'
   workflow_dispatch:
 
