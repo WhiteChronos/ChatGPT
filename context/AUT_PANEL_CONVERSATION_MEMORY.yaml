@@ -301,4 +301,10 @@ history:
   at: '2026-09-28T19:31:00-03:00'
   actor: user+assistant
   event: USER_PROPORTION_SCRIPT_INTEGRATED_WITH_CODEX_GITHUB
-  summary: Script corrigir_proporcao_imagem.py fornecido pelo usuário, SHA-256 835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31, foi integrado ao pipeline em versão endurecida para engenharia. Diferente do fit genérico, o modo dimensional não reduz raster para caber: scale_x=scale_y=1.0 e moldura menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard V3, CI e testes foram vinculados.
+  summary: >-
+    Script corrigir_proporcao_imagem.py fornecido pelo usuário, SHA-256
+    835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31, foi integrado
+    ao pipeline em versão endurecida para engenharia. Diferente do fit genérico,
+    o modo dimensional não reduz raster para caber; scale_x=scale_y=1.0 e moldura
+    menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard
+    V3, CI e testes foram vinculados.
