@@ -75,7 +75,7 @@ agents:
     memory_namespace: agent_memory.cad_geometry
     read_scope: [bom, official_dimensions, manufacturer_cad, geometry_toolchain, validated_layout]
     write_scope: [geometry_manifests, bbox_validations, cad_findings]
-    required_skill: aut-panel-geometry-guard
+    required_skill: aut-panel-engineering
     blocking_gate: panel_3d_geometry_gate
     failure_status: REPROVADO
   - id: SCALE_PROPORTION_GUARDIAN
@@ -84,7 +84,7 @@ agents:
     memory_namespace: agent_memory.scale_guard
     read_scope: [geometry_manifests, panel_dimensions, render_manifests, visual_standard]
     write_scope: [scale_validations, proportion_findings]
-    required_skill: aut-panel-geometry-guard
+    required_skill: aut-panel-engineering
     blocking_gate: panel_render_gate
     failure_status: REPROVADO
   - id: BLENDER_RENDER_GUARDIAN
@@ -93,7 +93,7 @@ agents:
     memory_namespace: agent_memory.blender_render
     read_scope: [frozen_3d_assembly, materials, cameras, visual_standard]
     write_scope: [blender_render_artifacts, render_metadata]
-    required_skill: aut-panel-geometry-guard
+    required_skill: aut-panel-engineering
     geometry_change_allowed: false
     failure_status: REPROVADO
   - id: REVIT_BIM_INTEROP_GUARDIAN
@@ -102,7 +102,7 @@ agents:
     memory_namespace: agent_memory.revit_bim
     read_scope: [manufacturer_cad, ifc_exports, revit_exports, official_dimensions, geometry_manifests]
     write_scope: [bim_interop_findings, ifc_validation, revit_exchange_metadata]
-    required_skill: aut-panel-geometry-guard
+    required_skill: aut-panel-engineering
     execution_note: "Revit e proprietario; execucao requer ambiente Autodesk autorizado. pyRevit/RevitPythonShell/IFC sao pontes opcionais, nao autoridade de engenharia."
     failure_status: HOLD
   - id: CANVAS_COMPOSITION_GUARDIAN
@@ -111,6 +111,6 @@ agents:
     memory_namespace: agent_memory.canvas_guard
     read_scope: [visual_standard, validated_views, tables, diagrams, render_metrics]
     write_scope: [canvas_plan, composition_findings]
-    required_skill: aut-panel-geometry-guard
+    required_skill: aut-panel-engineering
     canvas_policy: GROW_CANVAS_KEEP_SCALE
     failure_status: REPROVADO
