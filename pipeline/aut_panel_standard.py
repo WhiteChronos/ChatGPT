@@ -28,6 +28,8 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
+import yaml
+
 try:
     from .aut_panel_control import (
         HOLD, REPROVADO, Resultado, avaliar, carregar_json, gerar_datasheet,
@@ -41,6 +43,11 @@ except ImportError:
         salvar_json, sha256, status_final, validar_schema, verificar_manifesto,
     )
 
+try:
+    from .aut_panel_normative_control import write_normative_manifest
+except ImportError:
+    from aut_panel_normative_control import write_normative_manifest
+
 GR034 = "GR-034"
 GR035 = "GR-035"
 GR036 = "GR-036"
@@ -50,6 +57,13 @@ GR039 = "GR-039"
 GR040 = "GR-040"
 GR041 = "GR-041"
 MANDATORY_POWER_CATEGORIES = {"power_supply", "dc_ups", "battery"}
+
+
+def carregar_yaml_controlado(path: Path) -> dict[str, Any]:
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"YAML inválido: {path}")
+    return data
 
 
 def _panel_standard(pipeline: Mapping[str, Any], panel_id: str) -> Mapping[str, Any]:
@@ -334,6 +348,52 @@ def _project_render_pairs(projeto: Mapping[str, Any]) -> dict[str, tuple[str, in
     }
 
 
+def avaliar_normas(
+    projeto: Mapping[str, Any],
+    normative_registry: Mapping[str, Any],
+    normative_memory: Mapping[str, Any],
+    saida: Path,
+) -> tuple[Resultado, Path]:
+    """Resolve applicable normative references and add a fail-closed engineering gate."""
+    path = saida / "AUT_PANEL_NORMATIVE_APPLICABILITY.json"
+    manifest = write_normative_manifest(
+        projeto,
+        normative_registry,
+        normative_memory,
+        path,
+    )
+    if manifest.get("status") == "VALIDATED":
+        return (
+            Resultado(
+                "NORMATIVE",
+                "PASS",
+                "INFO",
+                "Referências normativas aplicáveis resolvidas e verificadas para o estágio.",
+                {
+                    "registry_id": manifest.get("registry_id"),
+                    "resolved_groups": manifest.get("resolved_groups"),
+                    "reference_count": len(manifest.get("references") or []),
+                },
+            ),
+            path,
+        )
+    return (
+        Resultado(
+            "NORMATIVE",
+            "HOLD",
+            HOLD,
+            "Revisão normativa pendente antes da emissão.",
+            {
+                "registry_id": manifest.get("registry_id"),
+                "resolved_groups": manifest.get("resolved_groups"),
+                "hold_reasons": manifest.get("hold_reasons") or [],
+                "reference_count": len(manifest.get("references") or []),
+            },
+        ),
+        path,
+    )
+
+
 def gerar_layout_otimizado(
     projeto: Mapping[str, Any],
     catalogo: Mapping[str, Any],
@@ -406,14 +466,23 @@ def executar(args: argparse.Namespace) -> int:
     project_path, catalog_path, pipeline_path = Path(args.project), Path(args.catalog), Path(args.pipeline)
     schema_path, li_path, q_path = Path(args.schema), Path(args.li), Path(args.quantity_standard)
     document_standard_path = Path(args.document_standard)
+    normative_registry_path = Path(args.normative_registry)
+    normative_memory_path = Path(args.normative_memory)
     output = Path(args.output_dir); output.mkdir(parents=True, exist_ok=True)
     projeto, catalogo, pipeline = carregar_json(project_path), carregar_json(catalog_path), carregar_json(pipeline_path)
     li, qreg, docstd = carregar_json(li_path), carregar_json(q_path), carregar_json(document_standard_path)
+    normative_registry = carregar_yaml_controlado(normative_registry_path)
+    normative_memory = carregar_yaml_controlado(normative_memory_path)
     resultados = (
         validar_schema(projeto, carregar_json(schema_path))
         + avaliar(projeto, catalogo)
         + validar_li(projeto, catalogo, pipeline, li, qreg, docstd)
     )
+
+    normative_result, normative_path = avaliar_normas(
+        projeto, normative_registry, normative_memory, output
+    )
+    resultados.append(normative_result)
 
     qa_json, qa_md = gerar_relatorio(output, projeto, resultados)
     ds = gerar_datasheet(projeto, catalogo, resultados, sha256(project_path), sha256(catalog_path))
@@ -426,8 +495,12 @@ def executar(args: argparse.Namespace) -> int:
     gerar_imagem_pos_li(projeto, catalogo, li, bom_json, image_path, docstd)
 
     estado = status_final(resultados)
-    man = manifesto(output, [project_path,catalog_path,pipeline_path,schema_path,li_path,q_path,document_standard_path],
-        [qa_json,qa_md,ds_path,db_path,li_snapshot,bom_json,bom_csv,image_path], estado)
+    man = manifesto(
+        output,
+        [project_path,catalog_path,pipeline_path,schema_path,li_path,q_path,document_standard_path,normative_registry_path,normative_memory_path],
+        [qa_json,qa_md,ds_path,db_path,li_snapshot,bom_json,bom_csv,normative_path,image_path],
+        estado,
+    )
     verificar_manifesto(man, output)
     print(json.dumps({"status":estado,"project_id":(projeto.get("project") or {}).get("id"),
         "sequence":["AUT_PANEL_LI.json","AUT_PANEL_BOM.json","AUT_PANEL_BOM.csv","AUT_PANEL_LAYOUT.svg"],
@@ -442,6 +515,8 @@ def principal() -> int:
     p = argparse.ArgumentParser()
     for flag in ("project","catalog","pipeline","schema","li","quantity-standard","document-standard","output-dir"):
         p.add_argument("--"+flag, required=True)
+    p.add_argument("--normative-registry", default="datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml")
+    p.add_argument("--normative-memory", default="memory/AUT_PANEL_NORMATIVE_MEMORY.yaml")
     p.add_argument("--allow-hold", action="store_true")
     try:
         return executar(p.parse_args())
