@@ -3,3 +3,4 @@ openpyxl==3.1.5
 jsonschema==4.25.1
 mkdocs-material==9.6.18
 PyYAML==6.0.2
+ortools==9.14.6206
