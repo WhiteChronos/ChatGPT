@@ -12,6 +12,7 @@ def test_normative_supplement_is_linked_in_datacenter_pipeline_datasheet_and_mem
     pipe = yaml.safe_load((ROOT / "pipeline/pipeline.yaml").read_text(encoding="utf-8"))
     ds = yaml.safe_load((ROOT / "datasheet/datasheet.yaml").read_text(encoding="utf-8"))
     mem = yaml.safe_load((ROOT / "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml").read_text(encoding="utf-8"))
+    conv = yaml.safe_load((ROOT / "context/AUT_PANEL_CONVERSATION_MEMORY.yaml").read_text(encoding="utf-8"))
 
     expected = "datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml"
     assert dc["canonical_sources"]["normative_supplement"] == expected
@@ -19,6 +20,7 @@ def test_normative_supplement_is_linked_in_datacenter_pipeline_datasheet_and_mem
     assert pipe["contracts"]["normative_supplement"] == expected
     assert ds["production_contract"]["normative_supplement"] == expected
     assert mem["supplemental_registry_path"] == expected
+    assert conv["mutable_state"]["normative_control"]["supplemental_registry_path"] == expected
 
 
 def test_normative_supplement_merges_without_replacing_primary_registry():
