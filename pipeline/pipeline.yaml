@@ -50,6 +50,8 @@ sequence:
       - datacenter_loaded
       - datasheet_loaded
       - panel_template_loaded
+      - normative_registry_loaded
+      - normative_memory_loaded
       - conversation_memory_loaded
       - conversation_contract_validated
   - order: 20
@@ -110,6 +112,8 @@ sequence:
       - li_semantic_diff_reviewed
       - li_open_source_qa_coverage_recorded
       - hashes
+      - normative_applicability_reviewed
+      - normative_source_status_checked
   - order: 110
     id: MEMORY_SYNC
     gate:
@@ -119,7 +123,7 @@ sequence:
       - li_material_revision_event_recorded_when_applicable
   - order: 120
     id: RELEASE
-    gate: [no_REPROVADO, no_HOLD_for_release, source_validation_two_agents, reverification_done, memory_synced]
+    gate: [no_REPROVADO, no_HOLD_for_release, source_validation_two_agents, reverification_done, normative_reverification_done, memory_synced]
 conversation_commands:
   /explaincode:
     mode: READ_ONLY
@@ -180,6 +184,8 @@ release_policy:
   a_levantar_without_justification: HOLD
   conversation_contract_mismatch: REPROVADO
   missing_memory_sync_when_required: HOLD
+  unverified_applicable_normative_edition: HOLD
+  normative_requirement_conflict: HOLD
   ml_override_of_deterministic_gate: REPROVADO
   autoevolution_locked_mutation: REPROVADO
   fail_closed: true
