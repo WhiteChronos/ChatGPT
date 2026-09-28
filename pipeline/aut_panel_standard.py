@@ -334,6 +334,34 @@ def _project_render_pairs(projeto: Mapping[str, Any]) -> dict[str, tuple[str, in
     }
 
 
+def gerar_layout_otimizado(
+    projeto: Mapping[str, Any],
+    catalogo: Mapping[str, Any],
+    li: Mapping[str, Any],
+    bom_path: Path,
+    output_path: Path,
+):
+    """Run Layout Optimizer V1 after BOM generation without mutating canonical inputs."""
+    if not bom_path.exists():
+        raise RuntimeError("GR-034: BOM deve existir antes do Layout Optimizer.")
+    try:
+        from pipeline.layout_optimizer.cli import optimize_panel
+        from pipeline.layout_optimizer.export import export_layout_result
+    except ImportError:
+        from layout_optimizer.cli import optimize_panel
+        from layout_optimizer.export import export_layout_result
+    bom = carregar_json(bom_path)
+    result = optimize_panel(
+        str((projeto.get("project") or {}).get("id") or li.get("project_id") or ""),
+        li,
+        bom,
+        catalogo,
+        projeto,
+    )
+    export_layout_result(result, output_path)
+    return result
+
+
 def gerar_imagem_pos_li(
     projeto: Mapping[str, Any],
     catalogo: Mapping[str, Any],
