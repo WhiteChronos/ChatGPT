@@ -1,6 +1,22 @@
 name: AUT Panel Learning Control
 
 on:
+  push:
+    branches:
+      - feat/aut-panel-control-v1
+    paths:
+      - '.github/workflows/aut-panel-learning.yml'
+      - 'AGENTS.md'
+      - 'context/AUT_PANEL_CONTEXT_MANIFEST_V1.yaml'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL_GITHUB_CODEX_V1.md'
+      - 'pipeline/aut_panel_router.py'
+      - 'pipeline/context_manifest.py'
+      - 'pipeline/aut_panel_cache.py'
+      - 'pipeline/aut_panel_handoff.py'
+      - 'pipeline/aut_panel_fast_context.py'
+      - 'schemas/aut_panel_handoff_v1.schema.json'
+      - 'tests/test_aut_panel_fast_context.py'
+      - 'tests/test_aut_panel_cache.py'
   pull_request:
     branches: [main]
     paths:
