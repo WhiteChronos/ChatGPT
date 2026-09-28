@@ -17,6 +17,24 @@ database:
   schema: database/aut_panel_schema.sql
   script: pipeline/aut_panel_db.py
   optional_targets: [PostgreSQL, Supabase_Postgres]
+normative_control:
+  primary_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  supplemental_registry: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  persistent_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  applicability_resolver: pipeline/aut_panel_normative_control.py
+  use_as_engineering_reference: true
+  reverify_before_release: true
+  mandatory_for_agents:
+    - TECHNICAL_RESEARCH
+    - SOURCE_VALIDATOR_A
+    - SOURCE_VALIDATOR_B
+    - DATACENTER_CURATOR
+    - ELECTRICAL_SIZING
+    - AUTOMATION_IO
+    - LI_BOM
+    - LAYOUT_OPTIMIZER
+    - RENDERER
+    - QA
 learning:
   pipeline: pipeline/learning_pipeline.yaml
   script: pipeline/aut_panel_learning.py
