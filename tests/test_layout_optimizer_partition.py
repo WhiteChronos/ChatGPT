@@ -18,3 +18,10 @@ def test_split_candidates_never_auto_select_winner():
     assert alts
     assert all(a.requires_user_decision for a in alts)
     assert all(a.status.value=="USER_DECISION_REQUIRED" for a in alts)
+
+
+def test_split_candidate_contains_solved_child_panel_status():
+    panel=PanelGeometry("P","R",100,100,50,80,80)
+    alts=generate_split_candidates(panel,_items(),[],LayoutConfig(max_time_seconds=2))
+    assert alts
+    assert all(all(p["layout_status"]=="LAYOUT_VALIDATED" for p in a.panels) for a in alts)
