@@ -52,6 +52,19 @@ composition:
         - depth
         - ventilation
         - cable_glands
+    - id: right_side_open_depth_section
+      priority: PRIMARY
+      block_id: image_6
+      dimensional: true
+      annotations:
+        - external_depth
+        - usable_depth
+        - component_depths
+        - wiring_duct_clearance
+        - cable_bend_radius
+        - cable_glands
+      scale_rule: SAME_GLOBAL_PX_PER_MM
+      aspect_ratio_rule: EXTERNAL_DEPTH_DIVIDED_BY_EXTERNAL_HEIGHT
   engineering_tables:
     - material_list
     - load_schedule
@@ -84,6 +97,9 @@ engineering_rules:
   no_component_distortion: true
   one_panel_per_image: true
   use_real_panel_dimensions: true
+  side_open_and_depth_section_use_global_scale: true
+  side_open_view_cannot_be_stretched_or_squeezed: true
+  image_6_is_dimensional_depth_section: true
   maintain_lower_cable_zone: true
   show_power_control_communication_separation: true
   show_terminal_groups: true
