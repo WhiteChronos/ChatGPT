@@ -104,8 +104,51 @@
         "2D_CAD_DIMENSIONAL_INTERCHANGE"
       ],
       "status": "CANDIDATE_VERIFY_CANONICAL_REPO"
+    },
+    {
+      "repository": "pyrevitlabs/pyRevit",
+      "role": [
+        "REVIT_AUTOMATION",
+        "BIM_INTEROP",
+        "MODEL_QA"
+      ],
+      "status": "CANDIDATE_REQUIRES_REVIT"
+    },
+    {
+      "repository": "architecture-building-systems/revitpythonshell",
+      "role": [
+        "REVIT_PYTHON_AUTOMATION",
+        "MODEL_EXPORT_QA"
+      ],
+      "status": "CANDIDATE_REQUIRES_REVIT"
     }
   ],
   "activation_policy": "Pin exact release/commit, review license/security, run sandbox geometry regression, then promote candidate to ACTIVE.",
-  "note": "Repositories marked VERIFY_CANONICAL_REPO must be reverified before activation. No candidate is allowed to override manufacturer evidence."
+  "note": "Repositories marked VERIFY_CANONICAL_REPO must be reverified before activation. No candidate is allowed to override manufacturer evidence.",
+  "revit_policy": {
+    "execution_requires_authorized_autodesk_environment": true,
+    "open_source_bridges": [
+      "pyrevitlabs/pyRevit",
+      "architecture-building-systems/revitpythonshell",
+      "IfcOpenShell/IfcOpenShell"
+    ],
+    "preserve": [
+      "units_mm",
+      "component_ids",
+      "coordinates",
+      "bounding_boxes"
+    ],
+    "no_claim_without_execution": true
+  },
+  "blender_policy": {
+    "geometry_change_allowed": false,
+    "allowed_changes": [
+      "materials",
+      "lighting",
+      "antialiasing",
+      "camera_framing"
+    ],
+    "dimensional_camera": "ORTHOGRAPHIC",
+    "object_scale_rule": "1,1,1 after validated import"
+  }
 }
