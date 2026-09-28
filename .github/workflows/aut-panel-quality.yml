@@ -23,11 +23,13 @@ on:
       - 'prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md'
       - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
       - 'memory/LI_MATERIAL_CONTROL_MEMORY.yaml'
+      - 'memory/AUT_PANEL_NORMATIVE_MEMORY.yaml'
       - 'plugins/li_material_qa_registry.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
+      - 'datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml'
       - 'datacenter/LI_MATERIAL_CONTROL.json'
       - 'datacenter/datacenter.yaml'
       - 'li/PN-AUT-01_LI.json'
@@ -40,6 +42,7 @@ on:
       - 'tests/test_conversation_contract.py'
       - 'tests/test_li_material_control.py'
       - 'tests/test_li_material_contract.py'
+      - 'tests/test_aut_panel_normative_registry.py'
   push:
     branches: [main]
     paths:
@@ -62,11 +65,13 @@ on:
       - 'prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md'
       - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
       - 'memory/LI_MATERIAL_CONTROL_MEMORY.yaml'
+      - 'memory/AUT_PANEL_NORMATIVE_MEMORY.yaml'
       - 'plugins/li_material_qa_registry.json'
       - 'datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json'
       - 'datacenter/AUT_PANEL_PANEL_QUANTITIES.json'
       - 'datacenter/AUT_PANEL_GOLDEN_RULES.json'
       - 'datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json'
+      - 'datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml'
       - 'datacenter/LI_MATERIAL_CONTROL.json'
       - 'datacenter/datacenter.yaml'
       - 'li/PN-AUT-01_LI.json'
@@ -79,6 +84,7 @@ on:
       - 'tests/test_conversation_contract.py'
       - 'tests/test_li_material_control.py'
       - 'tests/test_li_material_contract.py'
+      - 'tests/test_aut_panel_normative_registry.py'
   workflow_dispatch:
 
 permissions:
@@ -126,7 +132,8 @@ jobs:
             tests/test_aut_panel_control.py \
             tests/test_conversation_contract.py \
             tests/test_li_material_control.py \
-            tests/test_li_material_contract.py
+            tests/test_li_material_contract.py \
+            tests/test_aut_panel_normative_registry.py
       - name: Validate LI material canonical contracts
         run: |
           python - <<'PY'
