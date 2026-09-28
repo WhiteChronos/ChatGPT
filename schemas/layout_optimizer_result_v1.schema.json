@@ -1,103 +1,17 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://whitechronos.local/schemas/layout_optimizer_result_v1.schema.json",
-  "title": "AUT Panel Layout Optimizer Result V1",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "panel_id",
-    "panel_revision",
-    "status",
-    "placements",
-    "metrics",
-    "solver_manifest",
-    "diagnostics",
-    "alternatives"
-  ],
-  "properties": {
-    "panel_id": {"type": "string", "minLength": 1},
-    "panel_revision": {"type": "string", "minLength": 1},
-    "status": {
-      "enum": [
-        "LAYOUT_FEASIBLE",
-        "LAYOUT_VALIDATED",
-        "HOLD_LAYOUT_INPUT",
-        "HOLD_LAYOUT_CAPACITY",
-        "HOLD_LAYOUT_SOLVER_TIMEOUT",
-        "HOLD_LAYOUT_THERMAL",
-        "HOLD_LAYOUT_EMC",
-        "HOLD_LAYOUT_CABLE_ENTRY",
-        "USER_DECISION_REQUIRED"
-      ]
-    },
-    "placements": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "instance_id","source_tag","catalog_id","surface","x_mm","y_mm",
-          "width_mm","height_mm","rotation_deg","kind","quantity_index","metadata"
-        ],
-        "properties": {
-          "instance_id": {"type": "string"},
-          "source_tag": {"type": "string"},
-          "catalog_id": {"type": "string"},
-          "surface": {"type": "string"},
-          "x_mm": {"type": "number"},
-          "y_mm": {"type": "number"},
-          "width_mm": {"type": "number", "exclusiveMinimum": 0},
-          "height_mm": {"type": "number", "exclusiveMinimum": 0},
-          "rotation_deg": {"type": "integer"},
-          "kind": {"type": "string"},
-          "quantity_index": {"type": "integer", "minimum": 1},
-          "metadata": {"type": "object"}
-        },
-        "additionalProperties": false
-      }
-    },
-    "metrics": {
-      "type": "object",
-      "required": [
-        "occupied_area_mm2","free_reserve_percent","minimum_clearance_mm",
-        "overlap_count","rail_count","wireway_count","terminal_count","gland_count",
-        "occupied_envelope_area_mm2","routing_complexity"
-      ],
-      "properties": {
-        "occupied_area_mm2": {"type": "number", "minimum": 0},
-        "free_reserve_percent": {"type": "number"},
-        "minimum_clearance_mm": {"type": ["number","null"]},
-        "overlap_count": {"type": "integer", "minimum": 0},
-        "rail_count": {"type": "integer", "minimum": 0},
-        "wireway_count": {"type": "integer", "minimum": 0},
-        "terminal_count": {"type": "integer", "minimum": 0},
-        "gland_count": {"type": "integer", "minimum": 0},
-        "occupied_envelope_area_mm2": {"type": "number", "minimum": 0},
-        "routing_complexity": {"type": "number", "minimum": 0}
-      },
-      "additionalProperties": false
-    },
-    "solver_manifest": {"type": "object"},
-    "diagnostics": {"type": "array", "items": {"type": "string"}},
-    "alternatives": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "alternative_id","alternative_type","status","panels","metrics","impacts",
-          "diagnostics","requires_user_decision"
-        ],
-        "properties": {
-          "alternative_id": {"type": "string"},
-          "alternative_type": {"type": "string"},
-          "status": {"type": "string"},
-          "panels": {"type": "array", "items": {"type": "object"}},
-          "metrics": {"type": "object"},
-          "impacts": {"type": "object"},
-          "diagnostics": {"type": "array", "items": {"type": "string"}},
-          "requires_user_decision": {"const": true}
-        },
-        "additionalProperties": false
-      }
-    }
-  }
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"AUT-PANEL-LAYOUT-OPTIMIZER-RESULT-V1",
+  "type":"object",
+  "required":["panel_id","panel_revision","status","placements","metrics","solver_manifest","diagnostics","alternatives"],
+  "properties":{
+    "panel_id":{"type":"string"},
+    "panel_revision":{"type":"string"},
+    "status":{"type":"string"},
+    "placements":{"type":"array"},
+    "metrics":{"type":"object"},
+    "solver_manifest":{"type":"object"},
+    "diagnostics":{"type":"array"},
+    "alternatives":{"type":"array"}
+  },
+  "additionalProperties":false
 }
