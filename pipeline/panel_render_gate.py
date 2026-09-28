@@ -131,6 +131,47 @@ def validate_render_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
         if instance_by_id[iid].get("component_class") == "HMI" and role == "internal":
             errors.append(f"{iid}: HMI internal representation would imply a duplicated device; use backside for the same door instance")
 
+    panel_views = manifest.get("panel_views") or []
+    if not isinstance(panel_views, list):
+        errors.append("panel_views missing or invalid")
+        panel_views = []
+
+    for view in panel_views:
+        if not isinstance(view, dict):
+            errors.append("panel view is not an object")
+            continue
+        view_id = str(view.get("view_id") or "")
+        physical = view.get("physical_dimensions_mm") or {}
+        rendered = view.get("rendered_dimensions_px") or {}
+        if not all(isinstance(physical.get(k), (int, float)) and physical[k] > 0 for k in ("width", "height")):
+            errors.append(f"{view_id}: invalid physical view dimensions")
+            continue
+        if not all(isinstance(rendered.get(k), (int, float)) and rendered[k] > 0 for k in ("width", "height")):
+            errors.append(f"{view_id}: invalid rendered view dimensions")
+            continue
+        expected_ratio = float(physical["width"]) / float(physical["height"])
+        observed_ratio = float(rendered["width"]) / float(rendered["height"])
+        if not _close(expected_ratio, observed_ratio, tolerance=0.01):
+            errors.append(
+                f"{view_id}: rendered aspect ratio {observed_ratio:.6f} differs from physical ratio {expected_ratio:.6f}"
+            )
+        if isinstance(px_per_mm, (int, float)) and px_per_mm > 0:
+            expected_w = float(physical["width"]) * float(px_per_mm)
+            expected_h = float(physical["height"]) * float(px_per_mm)
+            if not _close(float(rendered["width"]), expected_w, tolerance=0.01):
+                errors.append(f"{view_id}: rendered width does not use common px_per_mm")
+            if not _close(float(rendered["height"]), expected_h, tolerance=0.01):
+                errors.append(f"{view_id}: rendered height does not use common px_per_mm")
+
+        if view_id in {"right_side_open_depth_section", "image_6"}:
+            if view.get("dimensional") is not True:
+                errors.append(f"{view_id}: depth section must be dimensional")
+            required = {"external_depth", "usable_depth", "component_depths", "ducts", "clearances", "bend_radius", "cable_glands"}
+            annotations = set(view.get("annotations") or [])
+            missing = sorted(required - annotations)
+            if missing:
+                errors.append(f"{view_id}: missing dimensional annotations {missing}")
+
     cable = manifest.get("cable_exit") or {}
     actual = cable.get("actual_clearance_mm")
     required = cable.get("required_clearance_mm")
@@ -156,6 +197,7 @@ def validate_render_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
         "holds": holds,
         "physical_instance_count": len(instances),
         "view_representation_count": len(views),
+        "panel_view_count": len(panel_views),
         "bom_counts": expected_counts,
         "actual_counts": dict(actual_counts),
     }
