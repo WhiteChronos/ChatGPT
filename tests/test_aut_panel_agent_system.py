@@ -6,6 +6,7 @@ import sqlite3
 from pathlib import Path
 
 import yaml
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -382,3 +383,35 @@ def test_geometry_toolchain_includes_blender_and_revit_bridges():
     assert registry["rules"]["render_canvas_policy"] == "GROW_CANVAS_KEEP_SCALE"
     assert registry["blender_policy"]["geometry_change_allowed"] is False
     assert registry["revit_policy"]["no_claim_without_execution"] is True
+
+
+def test_image_proportion_guard_is_grow_only(tmp_path):
+    from PIL import Image
+
+    guard = load_module("image_proportion_guard", "pipeline/corrigir_proporcao_imagem.py")
+    src = tmp_path / "panel.png"
+    out = tmp_path / "framed.png"
+    Image.new("RGB", (600, 800), "white").save(src)
+
+    assert guard.required_frame_for_image(src, 1200, 1600) == (1200, 1600)
+    ratio = guard.verify_expected_ratio(src, 600, 800)
+    assert ratio["status"] == "PASS"
+
+    placed = guard.place_in_frame_grow_only(src, out, 1200, 1600)
+    assert placed["scale_x"] == 1.0
+    assert placed["scale_y"] == 1.0
+    assert placed["frame_px"] == {"width": 1200, "height": 1600}
+    assert Image.open(out).size == (1200, 1600)
+
+    with pytest.raises(guard.AspectGuardError):
+        guard.place_in_frame_grow_only(src, out, 300, 400)
+
+
+def test_image_proportion_guard_rejects_wrong_engineering_ratio(tmp_path):
+    from PIL import Image
+
+    guard = load_module("image_proportion_guard_bad", "pipeline/corrigir_proporcao_imagem.py")
+    src = tmp_path / "wrong.png"
+    Image.new("RGB", (800, 600), "white").save(src)
+    result = guard.verify_expected_ratio(src, 600, 800)
+    assert result["status"] == "REPROVADO"
