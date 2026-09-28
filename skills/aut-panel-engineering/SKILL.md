@@ -81,3 +81,35 @@ Use `VALIDADO`, `REFERENCIA`, `HOLD`, and `REPROVADO`. Software CI success does 
 Verify source traceability, dual validation when required, LI/BOM/layout/render parity, exact model/lifecycle, load traceability, geometry, database/memory consistency, artifact hashes, ML provenance when used, and absence of unauthorized standard mutation.
 
 Read `references/architecture.md`, `references/quality-contract.md`, `references/database-schema.md`, and `references/github-toolchain.md` when those topics are needed. Use `scripts/validate_bundle.py` for lightweight local manifest checks.
+
+
+## Permanent geometry guardians
+
+For every panel image, dimensional poster, CAD/BIM export, Blender render, Revit/IFC exchange, or layout revision, enforce the following guardian order before QA:
+
+1. **CAD_GEOMETRY_GUARDIAN** — validates official manufacturer geometry, bounding boxes, millimetre units, component identity, and a single frozen 3D assembly.
+2. **REVIT_BIM_INTEROP_GUARDIAN** — when Revit/BIM is involved, validates IFC/CAD exchange, IDs, units, coordinates, and bounding boxes. Revit execution requires an authorized Autodesk environment.
+3. **SCALE_PROPORTION_GUARDIAN** — validates one global scale, orthographic dimensional views, real width/height/depth ratios, and prohibits per-view scaling.
+4. **BLENDER_RENDER_GUARDIAN** — allows Blender to change materials, lighting, anti-aliasing, and framing only; geometry, coordinates, scale, count, and bounding boxes are locked.
+5. **CANVAS_COMPOSITION_GUARDIAN** — uses `GROW_CANVAS_KEEP_SCALE`; the canvas grows until everything fits. Never shrink a component, view, table, or engineering block to fit the poster.
+6. **QA** — verifies LI/BOM/layout/3D/render parity and rejects any geometric regression.
+
+Any guardian may stop the pipeline. Never bypass a geometric failure for visual convenience.
+
+### Local deterministic fallback
+
+When Blender/Revit are not available, use CadQuery for parametric solids and trimesh for bounding-box/scene QA. This fallback can validate geometry but does not count as Blender or Revit execution.
+
+### Revit open-source support
+
+Use pyRevit, RevitPythonShell, IFC/IfcOpenShell, or other approved bridges only after version pinning, license/security review, and integration tests. Revit itself remains proprietary and must not be claimed as executed unless an Autodesk environment actually ran the model/export.
+
+### Absolute no-squeeze rule
+
+- Never fit the panel into a fixed poster by rescaling the physical geometry.
+- Never change object X/Y/Z scale independently.
+- Never use perspective projection for a dimensional view.
+- Never reconstruct each view separately.
+- Never reduce components, the enclosure, the mounting plate, cable zones, or the depth section to make the page look balanced.
+- Increase page/canvas width or height instead.
+- All engineering views must derive from the same 3D assembly and use the same unit system in millimetres.
