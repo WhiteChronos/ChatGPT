@@ -52,6 +52,14 @@ Use `datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml` as the active composition ref
 
 The visual reference is not an engineering-data source: numeric values visible in the reference must be independently validated before use.
 
+### Dimensional closure before render
+
+Do not create a dimensionally authoritative panel render until every drawable BOM item has official manufacturer width, height, depth, mounting method, and required clearance recorded. Use one common millimetre scale for enclosure, mounting plate, DIN devices, ducts, terminals, door devices and cable-exit zones. A missing official dimension is HOLD_DIMENSIONAL_DATA.
+
+The HMI is one physical device mounted on the front door only. Never place a second HMI on the internal mounting plate. In an open-door view, the rear body/connectors of the same door-mounted HMI may be shown only when geometrically visible and must never increment the LI/BOM quantity.
+
+Before render, execute duplicate-instance, door-vs-backplate, cable-exit, gland-access and bend-radius checks. A failed fit is HOLD_LAYOUT_CAPACITY; never solve it by scaling components down.
+
 ## GitHub toolchain
 
 Read `references/github-toolchain.md` and `plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json` when selecting repositories, tools or plugins. New tools require version/commit pinning, license review, security review, sandbox validation and regression coverage before promotion to active use.
