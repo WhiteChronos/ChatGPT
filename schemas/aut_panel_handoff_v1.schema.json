@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AUT-PANEL-HANDOFF-V1",
+  "title": "AUT Panel Agent Handoff V1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "handoff_id", "task_id", "from", "to", "panel", "revision", "status",
+    "outputs", "validated_facts", "source_refs", "holds", "next_action",
+    "chain_of_thought_included"
+  ],
+  "properties": {
+    "handoff_id": {"type": "string", "pattern": "^HANDOFF-[A-F0-9]{12}$"},
+    "task_id": {"type": "string", "minLength": 1},
+    "from": {"type": "string", "minLength": 1},
+    "to": {"type": "string", "minLength": 1},
+    "panel": {"enum": ["PN-AUT-01", "PN-AUT-02"]},
+    "revision": {"type": "string", "minLength": 1},
+    "status": {"enum": ["PASS", "HOLD", "REPROVADO", "PENDING", "USER_DECISION_REQUIRED"]},
+    "outputs": {"type": "array"},
+    "validated_facts": {"type": "array"},
+    "source_refs": {"type": "array"},
+    "holds": {"type": "array"},
+    "next_action": {"type": "string", "minLength": 1},
+    "chain_of_thought_included": {"const": false}
+  }
+}
