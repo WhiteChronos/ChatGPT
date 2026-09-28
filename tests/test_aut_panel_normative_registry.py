@@ -40,8 +40,27 @@ def test_normative_registry_has_required_core_references_and_evidence_fields():
         "IEC 62443-3-3:2013",
         "ISO 13849-1:2023",
         "IEC 62061:2021",
+        "IEC TR 60890:2022",
+        "IEC 60617:2026 DB",
+        "IEC 81355-1:2024",
+        "IEC 60228:2023",
+        "IEC 62485-2:2010",
+        "IEC 61643-12:2020",
+        "ISO 16484-1:2024",
+        "ISO 16484-2:2025",
+        "ISO 16484-3:2005",
+        "ISO 16484-5:2026",
+        "ISO 16484-6:2026",
+        "IEC 60364-4-41:2005+AMD1:2017",
+        "IEC 60364-4-43:2023",
+        "IEC 60364-5-52:2009+AMD1:2024",
+        "IEC 60364-5-54:2011+AMD1:2021",
+        "IEC 60947-1:2020",
+        "IEC 60947-4-2:2020+AMD1:2024",
+        "IEC 60947-6-1:2026",
     }
     assert required.issubset(refs)
+    assert len(refs) >= 68
     for ref in refs.values():
         for key in ("id","reference","title","publisher","jurisdiction","category","applicability","use_in_elaboration","source_status","official_url","verified_at"):
             assert key in ref
