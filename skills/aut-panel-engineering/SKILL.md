@@ -48,7 +48,13 @@ Use SQLite as the offline baseline via `database/aut_panel_schema.sql` and `pipe
 
 ## Image quality
 
-Prefer deterministic vector generation and constraint optimization before generative images. Keep the front/door view as master geometry, one physical scale, real component dimensions, no distortion, and no item outside the validated BOM.
+Use `datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml` as the active composition reference for new panel revisions. Prefer deterministic vector generation and constraint optimization before generative images. Keep real component dimensions, no distortion, and no item outside the validated BOM. The required composition includes internal front, external front, right side, material list, load schedule, electrical architecture, communication architecture, field equipment, enclosure dimensions, technical notes, and the parity footer `LI = BOM = CARGA = LAYOUT = IMAGEM`.
+
+The visual reference is not an engineering-data source: numeric values visible in the reference must be independently validated before use.
+
+## GitHub toolchain
+
+Read `references/github-toolchain.md` and `plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json` when selecting repositories, tools or plugins. New tools require version/commit pinning, license review, security review, sandbox validation and regression coverage before promotion to active use.
 
 ## Status
 
@@ -58,4 +64,4 @@ Use `VALIDADO`, `REFERENCIA`, `HOLD`, and `REPROVADO`. Software CI success does 
 
 Verify source traceability, dual validation when required, LI/BOM/layout/render parity, exact model/lifecycle, load traceability, geometry, database/memory consistency, artifact hashes, ML provenance when used, and absence of unauthorized standard mutation.
 
-Read `references/architecture.md`, `references/quality-contract.md`, and `references/database-schema.md` when those topics are needed. Use `scripts/validate_bundle.py` for lightweight local manifest checks.
+Read `references/architecture.md`, `references/quality-contract.md`, `references/database-schema.md`, and `references/github-toolchain.md` when those topics are needed. Use `scripts/validate_bundle.py` for lightweight local manifest checks.
