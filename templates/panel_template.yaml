@@ -26,11 +26,15 @@ workbook_master:
     Referências: {max_row: 9, max_column: 6, freeze_panes: null, merged_ranges_count: 1}
 image_standard:
   visual_standard_id: IMG-AUT-PANEL-MASTER-V1
-  active_composition_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
-  active_composition_revision: AUT-PANEL-VISUAL-STANDARD-V2
+  active_composition_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  active_composition_revision: AUT-PANEL-VISUAL-STANDARD-V3
   user_approved_reference_sha256: 56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6
   user_approved_reference_pixel_size: {width: 1536, height: 1024}
   legacy_panel_fingerprints_preserved: true
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  canvas_policy: GROW_CANVAS_KEEP_SCALE
+  canvas_minimum_px: {width: 2048, height: 1536}
+  removed_dedicated_blocks: [door_internal_hmi_detail, bottom_cable_exit_view]
   one_panel_per_image: true
   required_blocks_in_order:
     - title_revision_year_conformity_header
