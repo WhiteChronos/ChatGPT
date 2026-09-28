@@ -1,4 +1,4 @@
-schema_version: '1.1'
+schema_version: '1.2'
 registry_id: GOLDEN-RULES-IMMUTABLE-V1
 standard_id: AUT-PAINEL-COMPACT-V2.4
 status: LOCKED_APPROVED_STANDARD
@@ -138,3 +138,35 @@ required_rules:
   name: QA open source em camadas
   severity_on_violation: HOLD
   rule: O pipeline deve usar o núcleo local de validação e registrar a cobertura de ferramentas open source opcionais; ausência de ferramenta opcional não pode ser mascarada como validação total.
+- id: GR-059
+  name: Isolamento de agentes e escopo de escrita
+  severity_on_violation: REPROVADO
+  rule: Cada agente deve operar apenas no seu escopo de leitura/escrita e namespace de Data Center/memória; promoção ao estado canônico exige gate.
+- id: GR-060
+  name: Machine learning é consultivo
+  severity_on_violation: REPROVADO
+  rule: Modelos de ML podem priorizar risco e sugerir melhoria, mas nunca criam fato de engenharia nem sobrepõem gate determinístico, fonte oficial ou HOLD.
+- id: GR-061
+  name: Autoevolução controlada por proposta
+  severity_on_violation: REPROVADO
+  rule: O sistema autoevolutivo somente pode gerar propostas, simulações e evidências; mudança de comportamento ou contrato bloqueado exige aprovação humana explícita antes da aplicação.
+- id: GR-062
+  name: Histórico de engenharia append-only
+  severity_on_violation: REPROVADO
+  rule: Revisões emitidas, decisões, evidências e eventos de memória devem permanecer reconstruíveis; registros liberados não podem ser sobrescritos silenciosamente.
+- id: GR-063
+  name: Proveniência de dados e modelos
+  severity_on_violation: HOLD
+  rule: Treinamento exige exemplos revisados por humano, fingerprint do dataset, schema de features, versão do modelo, métricas e data de treinamento.
+- id: GR-064
+  name: Ativação controlada de open source
+  severity_on_violation: HOLD
+  rule: Repositório ou plugin descoberto só pode entrar no pipeline após pin de versão/commit, revisão de licença, revisão de segurança e teste de integração.
+- id: GR-065
+  name: Isolamento de estado por painel
+  severity_on_violation: REPROVADO
+  rule: Estado específico de um painel não pode contaminar outro; componentes compartilhados podem referenciar catálogo comum, mas LI, I/O, carga, layout, QA e memória são panel-scoped.
+- id: GR-066
+  name: Desenho determinístico é autoridade visual
+  severity_on_violation: REPROVADO
+  rule: Desenho vetorial derivado de BOM/layout validado é a autoridade visual de engenharia; imagem generativa é apenas referência suplementar.
