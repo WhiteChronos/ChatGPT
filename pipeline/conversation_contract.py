@@ -53,6 +53,8 @@ LOCKED_PATHS = {
     "prompts/PROMPT_MASTER_AUT_PANEL.md",
     "prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md",
     "context/AUT_PANEL_CONVERSATION_MEMORY.yaml",
+    "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+    "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
     "pipeline/conversation_contract.py",
 }
 
@@ -103,6 +105,8 @@ def project_paths(root: Path) -> dict[str, Path]:
         "prompt": root / "prompts/PROMPT_MASTER_AUT_PANEL.md",
         "bootstrap_prompt": root / "prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md",
         "memory": root / "context/AUT_PANEL_CONVERSATION_MEMORY.yaml",
+        "normative_registry": root / "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+        "normative_memory": root / "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
         "script": root / "pipeline/conversation_contract.py",
     }
 
@@ -119,6 +123,8 @@ def load_contract(root: Path) -> dict[str, Any]:
         "datasheet": load_yaml(paths["datasheet"]),
         "template": load_yaml(paths["template"]),
         "memory": load_yaml(paths["memory"]),
+        "normative_registry": load_yaml(paths["normative_registry"]),
+        "normative_memory": load_yaml(paths["normative_memory"]),
     }
 
 
@@ -128,6 +134,7 @@ def validate_contract(root: Path) -> dict[str, Any]:
     golden, pipeline = c["golden"], c["pipeline"]
     datacenter, datasheet = c["datacenter"], c["datasheet"]
     template, memory = c["template"], c["memory"]
+    normative_registry, normative_memory = c["normative_registry"], c["normative_memory"]
 
     require(golden.get("status") == "LOCKED_APPROVED_STANDARD" and golden.get("immutable") is True,
             "GR-041", "Golden Rules não estão bloqueadas.")
@@ -141,6 +148,18 @@ def validate_contract(root: Path) -> dict[str, Any]:
     immutable = memory.get("immutable_contract") or {}
     require(memory.get("memory_id") == "AUT-PANEL-CONVERSATION-BRIDGE-V1", "GR-047", "memory_id inválido.")
     require(memory.get("status") == "ACTIVE", "GR-047", "memória operacional não está ativa.")
+    require(normative_registry.get("registry_id") == "AUT-PANEL-NORMATIVE-REFERENCES-V1",
+            "NORMATIVE", "registry normativo inválido.")
+    require(normative_registry.get("status") == "CONTROLLED_ACTIVE",
+            "NORMATIVE", "registry normativo não está ativo.")
+    require(normative_registry.get("reverify_before_release") is True,
+            "NORMATIVE", "reverificação normativa pré-emissão deve permanecer ativa.")
+    require(normative_memory.get("memory_id") == "AUT-PANEL-NORMATIVE-MEMORY-V1",
+            "NORMATIVE", "memory_id normativo inválido.")
+    require(normative_memory.get("status") == "ACTIVE",
+            "NORMATIVE", "memória normativa não está ativa.")
+    require(normative_memory.get("registry_path") == "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+            "NORMATIVE", "memória normativa não aponta para o registry canônico.")
 
     require(immutable.get("standard_id") == pipeline.get("standard_id") == datacenter.get("standard_id") == datasheet.get("standard_id"),
             "GR-046", "standard_id divergente entre contratos.")
@@ -165,6 +184,8 @@ def validate_contract(root: Path) -> dict[str, Any]:
         "conversation_contract": "pipeline/conversation_contract.py",
         "datacenter": "datacenter/datacenter.yaml",
         "datasheet": "datasheet/datasheet.yaml",
+        "normative_registry": "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+        "normative_memory": "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
     }
     for key, value in expected_paths.items():
         require(contracts.get(key) == value, "GR-046", f"pipeline.contracts.{key} divergente.")
@@ -185,6 +206,14 @@ def validate_contract(root: Path) -> dict[str, Any]:
             "GR-048", "ID do script de contrato não confere.")
 
     prod = datasheet.get("production_contract") or {}
+    require(prod.get("normative_registry") == "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+            "NORMATIVE", "Data Sheet não referencia o registry normativo.")
+    require(prod.get("normative_memory") == "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
+            "NORMATIVE", "Data Sheet não referencia a memória normativa.")
+    require(immutable.get("normative_registry") == "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+            "NORMATIVE", "memória de conversa não referencia o registry normativo.")
+    require(immutable.get("normative_memory") == "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
+            "NORMATIVE", "memória de conversa não referencia a memória normativa.")
     require(prod.get("pipeline_id") == pipeline.get("pipeline_id"), "GR-046", "Data Sheet aponta pipeline incorreto.")
     require(prod.get("prompt_master_id") == immutable.get("prompt_master_id"), "GR-046", "Prompt Master ID divergente.")
     require(prod.get("memory_id") == memory.get("memory_id"), "GR-047", "Data Sheet não está ligado à memória compartilhada.")
@@ -214,6 +243,8 @@ def validate_contract(root: Path) -> dict[str, Any]:
         "sync_revision": mutable.get("sync_revision"),
         "branch": (mutable.get("repository") or {}).get("branch"),
         "pull_request": (mutable.get("repository") or {}).get("pull_request"),
+        "normative_registry_id": normative_registry.get("registry_id"),
+        "normative_memory_id": normative_memory.get("memory_id"),
         "active_panels": {
             p: {
                 "li_id": dc_panels[p].get("li_id"),
@@ -248,7 +279,7 @@ def dispatch(root: Path, text: str) -> dict[str, Any]:
             "target": target,
             "mode": "READ_ONLY",
             "may_modify_target": False,
-            "required_context": ["pipeline", "datacenter", "datasheet", "memory", "golden_rules"],
+            "required_context": ["pipeline", "datacenter", "datasheet", "memory", "golden_rules", "normative_registry", "normative_memory"],
             "required_sections": [
                 "finalidade",
                 "visão geral do fluxo",
