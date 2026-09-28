@@ -5,7 +5,7 @@ from .geometry import overlaps
 from .models import LayoutMetrics, LayoutResult, LayoutStatus, PanelGeometry, Placement
 
 def _engineering_rects(placements: Sequence[Placement]) -> list[Placement]:
-    return [p for p in placements if p.surface=="mounting_plate" and p.kind not in {"din_rail","cable_gland"}]
+    return [p for p in placements if p.surface=="mounting_plate" and p.kind not in {"din_rail","wireway","cable_gland"}]
 
 def _gap(a: Placement,b: Placement) -> float:
     if overlaps(a.rect,b.rect): return 0.0
