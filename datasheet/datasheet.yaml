@@ -86,7 +86,7 @@ panels:
       surface: door
     normative_profile:
       baseline_group: panel_general
-      detected_conditions: [industrial_network, dc_ups_present, spd_present]
+      detected_conditions: [industrial_network, dc_ups_present, spd_present, hvac_automation]
       conditional_group_review_required: true
       applicability_status: HOLD_UNTIL_NORMATIVE_REVIEW
   PN-AUT-02:
@@ -107,6 +107,6 @@ panels:
       surface: door
     normative_profile:
       baseline_group: panel_general
-      detected_conditions: [industrial_network, dc_ups_present]
+      detected_conditions: [industrial_network, dc_ups_present, hvac_automation]
       conditional_group_review_required: true
       applicability_status: HOLD_UNTIL_NORMATIVE_REVIEW
