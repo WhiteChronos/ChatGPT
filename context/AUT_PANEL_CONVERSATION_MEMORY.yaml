@@ -11,6 +11,8 @@ immutable_contract:
   golden_rules_id: GOLDEN-RULES-IMMUTABLE-V1
   datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
   datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
   workbook_template_id: XLSX-PN-AUT-01-MASTER-R02
   image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
   repository: WhiteChronos/ChatGPT
@@ -19,6 +21,8 @@ immutable_contract:
   - pipeline/pipeline.yaml
   - datacenter/datacenter.yaml
   - datasheet/datasheet.yaml
+  - datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  - memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
   - li vigente
   - templates/panel_template.yaml
   - context/AUT_PANEL_CONVERSATION_MEMORY.yaml
@@ -28,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 4
-  last_sync_at: '2026-09-28T10:37:00-03:00'
+  sync_revision: 5
+  last_sync_at: '2026-09-28T12:43:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -66,6 +70,16 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  normative_control:
+    registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+    registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+    memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+    memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+    default_jurisdiction: BR
+    baseline_group: panel_general
+    reverify_before_release: true
+    unverified_edition_status: HOLD
+    conflict_status: HOLD
   active_panels:
     PN-AUT-01:
       role: PLC principal HVAC + VRF
@@ -146,6 +160,8 @@ sync_policy:
   - qa_status_change
   - release_decision
   - major_pipeline_change
+  - normative_registry_change
+  - normative_applicability_change
   conflict_resolution:
     chat_vs_memory: MEMORY_FILE_WINS
     memory_vs_datacenter: DATACENTER_WINS_AND_MEMORY_MUST_BE_REPAIRED
@@ -180,3 +196,9 @@ history:
   summary: Usuário autorizou a estruturação de agentes com Data Center e memória próprios, banco SQLite,
     pipeline de machine learning consultivo, autoevolução por proposta, registro open source e Skill
     AUT Panel Engineering, mantendo o pipeline canônico e padrões aprovados como autoridade.
+
+- revision: 5
+  at: '2026-09-28T12:43:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_NORMATIVE_REGISTRY_LINKED
+  summary: Usuário autorizou incluir as normas de referência de elaboração no Data Center e na memória persistente. Foi criado registro normativo base/condicional, política de reverificação pré-emissão e vínculo canônico ao pipeline, Data Sheet e bootstrap.
