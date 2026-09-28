@@ -1,0 +1,97 @@
+schema_version: "2.0"
+visual_standard_registry_id: AUT-PANEL-VISUAL-STANDARD-V2
+status: USER_APPROVED_REFERENCE
+approved_at: "2026-09-28"
+authority: USER_APPROVED_VISUAL_REFERENCE
+scope:
+  applies_to:
+    - PN-AUT-01
+    - PN-AUT-02
+    - future_AUT_panels
+  purpose: "Master composition for panel elaboration, review and rendering."
+reference:
+  storage_policy: PRIVATE_REFERENCE_HASH_ONLY
+  source_filename: "image(20260928-194537).png"
+  sha256: "56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6"
+  pixel_size:
+    width: 1536
+    height: 1024
+  aspect_ratio: "3:2"
+  note: "The image is a visual composition reference. Numeric technical values printed in it are not project facts unless independently validated."
+composition:
+  header:
+    required: true
+    fields:
+      - panel_id
+      - panel_title
+      - application
+      - configuration_summary
+      - revision
+      - year
+      - conformity_status
+  primary_views:
+    - id: front_internal_door_open
+      priority: PRIMARY
+      annotations:
+        - functional_zones
+        - component_tags
+        - separation_distances
+        - cable_zone
+        - PE_grounding
+    - id: front_external_door_closed
+      priority: PRIMARY
+      annotations:
+        - width
+        - height
+        - hmi_identification
+        - electrical_hazard
+        - panel_nameplate
+    - id: right_side_view
+      priority: SECONDARY
+      annotations:
+        - depth
+        - ventilation
+        - cable_glands
+  engineering_tables:
+    - material_list
+    - load_schedule
+    - field_equipment_schedule
+    - enclosure_dimensions
+    - technical_notes
+  diagrams:
+    - electrical_architecture
+    - communication_architecture
+  footer:
+    parity_statement: "LI = BOM = CARGA = LAYOUT = IMAGEM"
+    discipline_line_required: true
+    panel_revision_required: true
+visual_identity:
+  palette: BLUE_WHITE_ENGINEERING
+  high_information_density: true
+  thin_blue_grid_tables: true
+  blue_section_headers: true
+  dimensions_in_blue: true
+  component_photorealistic_or_manufacturer_reference: ALLOWED_AS_SUPPORT_ONLY
+  canonical_geometry_source: DETERMINISTIC_LAYOUT
+engineering_rules:
+  technical_values_from_image_are_not_authoritative: true
+  li_is_quantity_authority: true
+  bom_must_equal_li: true
+  load_schedule_must_trace_to_equipment: true
+  layout_must_equal_bom: true
+  render_must_equal_layout: true
+  hmi_on_door: true
+  no_component_distortion: true
+  one_panel_per_image: true
+  use_real_panel_dimensions: true
+  maintain_lower_cable_zone: true
+  show_power_control_communication_separation: true
+  show_terminal_groups: true
+  show_grounding: true
+  show_network_and_protocol_labels_when_validated: true
+change_control:
+  previous_panel_image_fingerprints_remain_historical: true
+  new_visual_revision_requires_new_render_and_qa: true
+  quantity_change_requires_new_li_revision: true
+  dimension_change_requires_explicit_authorization: true
+  generated_image_never_overrides_engineering_data: true
