@@ -9,6 +9,7 @@ canonical_sources:
   document_standard_registry: datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json
   normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
   normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  normative_script: pipeline/aut_panel_normative_control.py
   golden_rules_yaml: governance/golden_rules.yaml
   panel_template_yaml: templates/panel_template.yaml
   prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
