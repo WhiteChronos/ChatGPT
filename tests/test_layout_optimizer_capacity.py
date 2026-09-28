@@ -15,7 +15,7 @@ def test_larger_enclosure_candidates_require_user_decision():
 
 
 def test_larger_enclosure_candidate_must_satisfy_reserve():
-    panel=PanelGeometry("P","R",100,100,50,80,80,minimum_free_reserve_percent=50)
+    panel=PanelGeometry("P","R",100,100,50,80,80,minimum_free_reserve_percent=60)
     items=[PhysicalInstance("A","A","A",1,"mounting_plate",70,70,10,ClearanceMM())]
     enclosures=[{"catalog_id":"TIGHT","external_mm":{"width":120,"height":120,"depth":100},"mounting_plate_mm":{"width":100,"height":100}}]
     alts=find_larger_enclosure_candidates(panel,items,enclosures,LayoutConfig(max_time_seconds=2))
