@@ -24,6 +24,12 @@ def test_router_ambiguity_never_becomes_write_route():
     assert decision.mode == "ML_ROUTE_HINT"
 
 
+def test_router_does_not_match_short_alias_inside_other_words():
+    decision = route_intent("validacao documental")
+    assert decision.agent == "ORCHESTRATOR"
+    assert decision.mode == "ML_ROUTE_HINT"
+
+
 def test_context_manifest_is_panel_scoped_and_content_addressed():
     manifest = build_context_manifest(
         ROOT,
