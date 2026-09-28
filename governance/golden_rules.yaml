@@ -238,4 +238,8 @@ required_rules:
   name: Nunca fazer caber
   severity_on_violation: REPROVADO
   rule: É proibido reduzir qualquer vista, componente, gabinete, placa, zona de cabos, tabela ou bloco dimensional para caber em um canvas fixo. O canvas deve crescer horizontal e/ou verticalmente até preservar integralmente escala, proporção e legibilidade.
+- id: GR-084
+  name: Inserção raster dimensional preserva escala 1:1
+  severity_on_violation: REPROVADO
+  rule: Imagens dimensionais derivadas do modelo 3D não podem ser redimensionadas para caber em molduras. Na composição raster, scale_x e scale_y devem permanecer iguais a 1,0; se a moldura for menor que a imagem, a moldura/canvas deve crescer. Letterbox/pillarbox só pode adicionar espaço vazio, nunca reduzir a geometria.
 
