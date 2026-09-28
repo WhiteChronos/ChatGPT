@@ -24,3 +24,9 @@ namespaces:
   MEMORY_CURATOR: agent_memory.curator
   ML_QUALITY: agent_memory.ml_quality
   EVOLUTION_PROPOSER: agent_memory.evolution
+
+  CAD_GEOMETRY_GUARDIAN: agent_memory.cad_geometry
+  SCALE_PROPORTION_GUARDIAN: agent_memory.scale_guard
+  BLENDER_RENDER_GUARDIAN: agent_memory.blender_render
+  REVIT_BIM_INTEROP_GUARDIAN: agent_memory.revit_bim
+  CANVAS_COMPOSITION_GUARDIAN: agent_memory.canvas_guard
