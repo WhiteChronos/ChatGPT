@@ -222,4 +222,20 @@ required_rules:
   name: Blocos 4 e 8 removidos do padrão V3
   severity_on_violation: REPROVADO
   rule: O padrão visual V3 não possui bloco dedicado 4 de vista interna da porta nem bloco dedicado 8 de vista inferior de cabos. A traseira da IHM integra a vista principal de porta aberta quando visível; a saída de cabos permanece dimensionada na vista interna principal e no corte em profundidade.
+- id: GR-080
+  name: Guardiões geométricos obrigatórios antes do render
+  severity_on_violation: REPROVADO
+  rule: CAD_GEOMETRY_GUARDIAN, SCALE_PROPORTION_GUARDIAN, BLENDER_RENDER_GUARDIAN e CANVAS_COMPOSITION_GUARDIAN devem aprovar toda imagem dimensional. REVIT_BIM_INTEROP_GUARDIAN é obrigatório quando houver Revit/IFC/BIM no fluxo.
+- id: GR-081
+  name: Blender é renderizador e não autoridade geométrica
+  severity_on_violation: REPROVADO
+  rule: Blender pode alterar somente materiais, iluminação, antialiasing e enquadramento. Geometria, coordenadas, escala, quantidades e bounding boxes ficam congelados antes da renderização.
+- id: GR-082
+  name: Revit preserva geometria na interoperabilidade BIM
+  severity_on_violation: HOLD
+  rule: Quando Revit for usado, unidades, IDs, coordenadas e bounding boxes devem permanecer consistentes com o modelo canônico. Não é permitido declarar validação Revit sem execução real em ambiente Autodesk autorizado.
+- id: GR-083
+  name: Nunca fazer caber
+  severity_on_violation: REPROVADO
+  rule: É proibido reduzir qualquer vista, componente, gabinete, placa, zona de cabos, tabela ou bloco dimensional para caber em um canvas fixo. O canvas deve crescer horizontal e/ou verticalmente até preservar integralmente escala, proporção e legibilidade.
 
