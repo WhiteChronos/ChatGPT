@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 9
-  last_sync_at: '2026-09-28T18:21:00-03:00'
+  sync_revision: 10
+  last_sync_at: '2026-09-28T18:35:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -42,6 +42,16 @@ mutable_state:
     objective: Impedir regressão de duplicidade de IHM e renders fora de escala, exigindo fechamento
       dimensional, instância física única, superfície de montagem e validação de saída de cabos antes do render.
     status: IMPLEMENTED
+  geometry_first_3d:
+    visual_standard: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+    geometry_toolchain: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+    common_assembly_required: true
+    manufacturer_cad_preferred: true
+    parametric_reconstruction_from_official_dimensions_allowed: true
+    generative_geometry_authority: false
+    dimensional_views_projection: ORTHOGRAPHIC
+    canvas_policy: GROW_CANVAS_KEEP_SCALE
+    removed_visual_blocks: [door_internal_hmi_detail, bottom_cable_exit_view]
   render_integrity:
     dimensional_closure_required: true
     official_manufacturer_dimensions_required: true
@@ -258,3 +268,9 @@ history:
   actor: user+assistant
   event: SIDE_OPEN_AND_DEPTH_SECTION_REAL_SCALE_STANDARDIZED
   summary: Usuário identificou compressão indevida na vista lateral aberta/corte em profundidade. Foi autorizado tornar obrigatório o uso da mesma escala global em mm, com razão profundidade/altura real do gabinete. No PN-AUT-01, 300/800 = 0,375. A Imagem 6 passa a ser corte dimensional obrigatório com profundidade útil, componentes, canaletas, folgas, raio de curvatura e prensa-cabos, sem distorção.
+
+- revision: 10
+  at: '2026-09-28T18:35:00-03:00'
+  actor: user+assistant
+  event: CAD_FIRST_3D_GEOMETRY_AND_LARGE_CANVAS_STANDARD
+  summary: Usuário determinou resolver perda de proporcionalidade, dimensionamento real e entendimento 3D usando ferramentas open source/GitHub. Foi criado padrão visual V3 geometry-first, toolchain FreeCAD/OpenCascade/CadQuery/build123d/trimesh/Open3D/Blender, gate de montagem 3D única, canvas grow-only e remoção dos blocos dedicados 4 e 8. Imagem generativa deixa de ser autoridade geométrica.
