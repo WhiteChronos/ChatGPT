@@ -75,6 +75,7 @@ mutable_state:
     registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
     memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
     memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+    script: pipeline/aut_panel_normative_control.py
     default_jurisdiction: BR
     baseline_group: panel_general
     reverify_before_release: true
