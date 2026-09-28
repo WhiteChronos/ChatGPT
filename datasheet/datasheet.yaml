@@ -19,6 +19,7 @@ production_contract:
   li_material_open_source_qa: plugins/li_material_qa_registry.json
   normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
   normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  normative_script: pipeline/aut_panel_normative_control.py
   normative_registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
   normative_memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
   normative_reverification_before_release: true
