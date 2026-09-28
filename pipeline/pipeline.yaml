@@ -59,13 +59,13 @@ sequence:
       - conversation_contract_validated
   - order: 20
     id: DATACENTER
-    gate: [catalog_registered, quantity_baseline_registered, approved_template_fingerprint_registered, li_material_revision_contract_registered]
+    gate: [catalog_registered, quantity_baseline_registered, approved_template_fingerprint_registered, li_material_revision_contract_registered, normative_registry_registered, normative_source_authority]
   - order: 30
     id: DATASHEET
-    gate: [panel_registered, dimensions_locked, production_contract_locked, prompt_master_linked, memory_linked, li_material_datasheet_linked]
+    gate: [panel_registered, dimensions_locked, production_contract_locked, prompt_master_linked, memory_linked, li_material_datasheet_linked, normative_profile_present]
   - order: 40
     id: SELECT
-    gate: [reference_model_present, lifecycle_checked, technical_status_known]
+    gate: [reference_model_present, lifecycle_checked, technical_status_known, normative_applicability_reviewed]
   - order: 50
     id: LI_QUANTITY
     gate:
@@ -81,13 +81,13 @@ sequence:
       - li_material_control_memory_linked
   - order: 60
     id: LOAD_BALANCE
-    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present]
+    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present, applicable_norms_loaded]
   - order: 70
     id: BOM
-    gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line]
+    gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line, applicable_norms_loaded]
   - order: 80
     id: LAYOUT
-    gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present]
+    gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present, applicable_normative_constraints_loaded]
     optimizer:
       id: LAYOUT-OPTIMIZER-V1
       implementation: pipeline/layout_optimizer/cli.py
