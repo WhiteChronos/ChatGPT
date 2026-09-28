@@ -81,7 +81,7 @@ def test_validate_hard_geometry_uses_clearance_and_surface_boundaries():
     placements = [
         _placement("A#01", 20, 150),
         _placement("B#01", 70, 150),
-        _placement("HMI#01", 540, 700, "door"),
+        _placement("HMI#01", 560, 700, "door"),
     ]
 
     errors = validate_hard_geometry(_panel(), placements, instances)
