@@ -3,6 +3,7 @@ memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
 memory_type: TECHNICAL_NORMATIVE_CONTROL_MEMORY
 status: ACTIVE
 registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+supplemental_registry_path: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
 purpose: >-
   Preservar entre conversas o conjunto de referências normativas usadas na elaboração
   dos quadros AUT, suas decisões de aplicabilidade, revisões verificadas, HOLDs,
@@ -74,6 +75,20 @@ application_logic:
       triggers: [supply_above_1kv, mv_interface]
     hazardous_area:
       triggers: [classified_area, ex_equipment, intrinsic_safety]
+    measurement_control_equipment:
+      triggers: [measurement_equipment, control_equipment, process_instrumentation]
+    rtd_temperature:
+      triggers: [rtd_present, pt100_present, pt1000_present]
+    installation_verification:
+      triggers: [installation_verification_required, commissioning_test_scope]
+    cybersecurity_extended:
+      triggers: [cybersecurity_requirement, external_network_interface, remote_access]
+    safety_validation:
+      triggers: [safety_function, pl_requirement, iso13849_scope]
+    ups_performance:
+      triggers: [ups_present, ac_ups_present, ups_performance_test_scope]
+    plc_software:
+      triggers: [plc_software_delivery, ladder, structured_text, function_block_diagram]
 event_schema:
   required_fields:
     - event_id
@@ -90,8 +105,8 @@ event_schema:
     - result
   result_values: [APPLICABLE, NOT_APPLICABLE, HOLD, REPROVADO, VERIFIED]
 current_state:
-  revision: 1
-  last_sync_at: "2026-09-28T13:25:00-03:00"
+  revision: 2
+  last_sync_at: "2026-09-28T14:05:00-03:00"
   registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
   registry_verified_at: "2026-09-28"
   baseline_group: panel_general
@@ -116,3 +131,13 @@ history:
       e ao Data Center. Foi criado registro controlado com referências base e condicionais,
       política fail-closed, reverificação pré-emissão e separação entre metadados públicos
       e conteúdo normativo protegido.
+
+  - revision: 2
+    at: "2026-09-28T14:05:00-03:00"
+    actor: user+assistant
+    event: NORMATIVE_SUPPLEMENT_LINKED
+    summary: >-
+      Catálogo normativo complementar foi vinculado ao Data Center e à memória normativa
+      para cobrir EMC de medição/controle, RTD, verificação IEC 60364, cibersegurança IEC 62443,
+      validação ISO 13849, desempenho de UPS e IEC 61131-3:2025. Aplicabilidade continua
+      condicional e toda edição deve ser reverificada em fonte oficial antes da emissão.
