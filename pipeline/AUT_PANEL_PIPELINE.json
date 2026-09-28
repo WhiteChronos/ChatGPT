@@ -232,7 +232,10 @@
     "locked_change_requires_human_gate": true,
     "database_event_history_required": true,
     "per_panel_state_isolation": true,
-    "deterministic_vector_render_is_canonical": true
+    "deterministic_vector_render_is_canonical": true,
+    "normative_registry_required": true,
+    "normative_applicability_review_required": true,
+    "normative_reverification_before_release": true
   },
   "panel_standards": {
     "PN-AUT-01": {
@@ -344,14 +347,16 @@
       "id": "DATACENTER",
       "input": [
         "confirmed_requirements",
-        "manufacturer_documents"
+        "manufacturer_documents",
+        "official_normative_sources"
       ],
       "output": [
         "verified_catalog",
         "panel_quantity_registry",
         "document_standard_registry",
         "immutable_contracts",
-        "li_material_revision_contract"
+        "li_material_revision_contract",
+        "normative_registry"
       ],
       "gates": [
         "manufacturer",
@@ -361,7 +366,9 @@
         "document_standard",
         "prompt_master",
         "li_material_prompt",
-        "template_fingerprint"
+        "template_fingerprint",
+        "normative_registry_loaded",
+        "normative_source_authority"
       ]
     },
     {
@@ -370,7 +377,8 @@
       "input": [
         "confirmed_requirements",
         "verified_catalog",
-        "document_standard_registry"
+        "document_standard_registry",
+        "normative_registry"
       ],
       "output": [
         "canonical_project"
@@ -382,7 +390,8 @@
         "panel_independence",
         "workbook_template_contract",
         "image_template_contract",
-        "change_authorization_contract"
+        "change_authorization_contract",
+        "normative_contract"
       ]
     },
     {
@@ -390,14 +399,16 @@
       "id": "SELECT",
       "input": [
         "calculation_results",
-        "verified_catalog"
+        "verified_catalog",
+        "applicable_norms"
       ],
       "output": [
         "selected_components"
       ],
       "gates": [
         "reference_model",
-        "lifecycle"
+        "lifecycle",
+        "normative_applicability"
       ]
     },
     {
@@ -430,7 +441,8 @@
       "id": "LOAD_BALANCE",
       "input": [
         "validated_li",
-        "verified_catalog"
+        "verified_catalog",
+        "applicable_norms"
       ],
       "output": [
         "equipment_loads",
@@ -451,7 +463,8 @@
       "input": [
         "validated_li",
         "verified_catalog",
-        "equipment_loads"
+        "equipment_loads",
+        "applicable_norms"
       ],
       "output": [
         "AUT_PANEL_BOM.json",
@@ -469,7 +482,8 @@
         "validated_li",
         "equipment_loads",
         "AUT_PANEL_BOM.json",
-        "canonical_project"
+        "canonical_project",
+        "applicable_norms"
       ],
       "output": [
         "physical_layout"
@@ -538,7 +552,9 @@
         "li_template_preservation",
         "li_semantic_diff",
         "li_open_source_qa_coverage",
-        "li_memory_sync"
+        "li_memory_sync",
+        "normative_applicability_reviewed",
+        "normative_source_status_checked"
       ]
     },
     {
@@ -556,7 +572,8 @@
         "no_HOLD",
         "pull_request_review",
         "two_agent_source_validation",
-        "reverification_done"
+        "reverification_done",
+        "normative_reverification_done"
       ]
     }
   ],
@@ -593,5 +610,18 @@
     "capacity_failure_status": "HOLD_LAYOUT_CAPACITY",
     "decision_status": "USER_DECISION_REQUIRED",
     "deterministic_render_bridge": "pipeline/render_panel_scaled.py"
+  },
+  "normative_registry": "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+  "normative_memory": "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
+  "normative_control": {
+    "registry_id": "AUT-PANEL-NORMATIVE-REFERENCES-V1",
+    "memory_id": "AUT-PANEL-NORMATIVE-MEMORY-V1",
+    "default_jurisdiction": "BR",
+    "baseline_group": "panel_general",
+    "conditional_activation": true,
+    "reverify_before_release": true,
+    "unverified_applicable_edition_status": "HOLD",
+    "conflicting_requirements_status": "HOLD",
+    "ml_override_allowed": false
   }
 }
