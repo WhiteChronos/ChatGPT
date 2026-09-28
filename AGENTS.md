@@ -167,5 +167,16 @@ Known intent -> deterministic router.
 Ambiguous intent -> ML_ROUTE_HINT only.
 Conflict -> deterministic rules win.
 
+## Panel render integrity
+Before any AUT panel render is treated as dimensional or fabrication-relevant, agents SHALL:
+- prove official manufacturer dimensions and mounting clearances for every drawable component;
+- use one common millimetre scale;
+- reconcile physical instance counts against LI/BOM;
+- keep the HMI as one door-mounted physical instance only;
+- never duplicate a door-mounted component on the backplate;
+- validate door/backplate interference, cable-exit space, gland access and bend radius;
+- return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY instead of visually shrinking components;
+- record confirmed mistakes in project memory and add a regression test before closure.
+
 ## Release
 RELEASE is allowed only after required deterministic gates, source validation, normative reverification, QA and human approval.
