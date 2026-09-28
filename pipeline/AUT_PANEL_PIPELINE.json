@@ -622,6 +622,9 @@
     "reverify_before_release": true,
     "unverified_applicable_edition_status": "HOLD",
     "conflicting_requirements_status": "HOLD",
-    "ml_override_allowed": false
-  }
+    "ml_override_allowed": false,
+    "script": "pipeline/aut_panel_normative_control.py",
+    "output_artifact": "AUT_PANEL_NORMATIVE_APPLICABILITY.json"
+  },
+  "normative_script": "pipeline/aut_panel_normative_control.py"
 }
