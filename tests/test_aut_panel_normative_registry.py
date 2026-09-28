@@ -68,3 +68,15 @@ def test_normative_policy_is_fail_closed_and_does_not_copy_standard_text():
     assert reg["applicability_policy"]["unverified_edition_status"]=="HOLD"
     assert reg["applicability_policy"]["conflicting_requirements_status"]=="HOLD"
     assert reg["applicability_policy"]["project_specific_requirement_precedence"] is True
+
+
+def test_conversation_contract_bootstrap_returns_normative_ids():
+    import importlib.util
+    script=ROOT/"pipeline/conversation_contract.py"
+    spec=importlib.util.spec_from_file_location("conversation_contract_norms",script)
+    mod=importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(mod)
+    result=mod.validate_contract(ROOT)
+    assert result["normative_registry_id"]=="AUT-PANEL-NORMATIVE-REFERENCES-V1"
+    assert result["normative_memory_id"]=="AUT-PANEL-NORMATIVE-MEMORY-V1"
