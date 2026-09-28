@@ -65,19 +65,18 @@
       "PN-AUT-02": "IMG-PN-AUT-02-APPROVED-V1"
     },
     "required_blocks": [
-      "title_and_model",
-      "enclosure_and_mounting_plate_dimensions",
-      "application_block",
+      "title_revision_year_conformity_header",
       "front_internal_door_open",
-      "front_external_door",
-      "side_view_depth",
-      "technical_component_list",
-      "connection_architecture",
-      "functional_levels",
-      "panel_characteristics",
-      "applications_and_benefits",
-      "principal_component_visual_references",
-      "engineering_note_and_footer"
+      "front_external_door_closed",
+      "right_side_view",
+      "material_list",
+      "load_schedule",
+      "electrical_architecture",
+      "communication_architecture",
+      "field_equipment_schedule",
+      "enclosure_dimensions",
+      "technical_notes",
+      "parity_footer"
     ],
     "fixed_rules": {
       "hmi_on_door": true,
@@ -85,9 +84,19 @@
       "blue_white_engineering_identity": true,
       "same_composition_as_approved_reference": true,
       "no_unapproved_layout_recomposition": true,
-      "no_component_distortion": true
+      "no_component_distortion": true,
+      "parity_footer_text": "LI = BOM = CARGA = LAYOUT = IMAGEM",
+      "technical_values_from_reference_image_are_not_authoritative": true
     },
-    "rule": "Every panel image must follow its user-approved visual template and the common composition above. The image is not allowed to redesign the approved standard."
+    "rule": "Every panel image must follow its user-approved visual template and the common composition above. The image is not allowed to redesign the approved standard.",
+    "visual_composition_registry": "datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml",
+    "visual_composition_revision": "AUT-PANEL-VISUAL-STANDARD-V2",
+    "user_approved_reference_sha256": "56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6",
+    "user_approved_reference_pixel_size": {
+      "width": 1536,
+      "height": 1024
+    },
+    "legacy_panel_fingerprints_preserved": true
   },
   "change_control": {
     "explicit_user_authorization_required": true,
