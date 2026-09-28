@@ -56,7 +56,9 @@ A sequência aprovada é:
 9. Nunca distorça gabinete ou componente para caber. Se faltar espaço, reorganize ou proponha gabinete maior; alteração de gabinete já aprovado exige autorização.
 10. Gere uma imagem por painel. Não combine PN-AUT-01 e PN-AUT-02 na mesma imagem.
 11. Use somente o template visual e o SHA-256 aprovados registrados em `datacenter/datacenter.yaml` e `templates/panel_template.yaml`.
-12. Preserve a composição aprovada: título/modelo; dimensões de gabinete e placa; aplicação; vista interna frontal com porta aberta; vista frontal externa/porta; vista lateral; lista técnica; arquitetura de conexão; níveis funcionais; características; aplicações/benefícios; referências visuais; nota/rodapé.
+12. Preserve a composição visual V2 aprovada em `datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml`: cabeçalho com painel/título/aplicação/configuração/revisão/ano/conformidade; vista frontal interna com porta aberta; vista frontal externa com porta fechada; vista lateral direita; lista de material; quadro de carga; arquitetura elétrica; arquitetura de comunicação; equipamentos de campo; dimensões do gabinete; notas técnicas; e rodapé obrigatório `LI = BOM = CARGA = LAYOUT = IMAGEM`.
+12.1. A imagem de referência visual é apenas padrão de composição. Nenhuma tensão, corrente, quantidade, modelo, dimensão, TAG ou protocolo impresso na referência pode ser reutilizado como fato de projeto sem validação independente.
+12.2. Use o registry `plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json` e a Skill `skills/aut-panel-engineering/SKILL.md` para selecionar ferramentas auxiliares. Ferramentas GitHub são apoio controlado e nunca substituem fonte oficial ou gate determinístico.
 13. Mudança de quantidade ou `catalog_id` exige nova revisão da LI e invalida carga, BOM, layout, imagem e QA anteriores.
 14. Mudança de workbook, template visual, composição, identidade, Golden Rules ou sequência exige autorização explícita do usuário; sem isso, o status é `REPROVADO`.
 15. Para emissão, exigir fabricante/modelo, documento oficial, link, página/seção, data de consulta, situação do produto, fornecedor/canal oficial, validação por dois agentes e reverificação.
