@@ -52,8 +52,12 @@ A sequência aprovada é:
 5. Antes do layout, complete balanço de cargas com rastreabilidade por equipamento e totais em 24 Vcc, 127 Vca e 220 Vca. Valor sem dado oficial permanece `HOLD`.
 6. Toda linha da BOM deve ter `catalog_id`, fabricante, modelo de referência, quantidade, unidade, status de engenharia e referência técnica.
 7. Todo item desenhável da LI deve existir no layout com o mesmo `catalog_id` e a mesma quantidade. Itens adicionais são proibidos.
-8. A IHM fica na porta/tampa frontal externa.
-9. Nunca distorça gabinete ou componente para caber. Se faltar espaço, reorganize ou proponha gabinete maior; alteração de gabinete já aprovado exige autorização.
+8. A IHM fica exclusivamente na porta/tampa frontal externa e representa uma única instância física. É proibido repetir a IHM na placa de montagem interna. Na vista com porta aberta, somente a traseira física da mesma IHM pode aparecer quando geometricamente visível, sem ser contada como segundo equipamento.
+8.1. Todo componente deve possuir exatamente a quantidade física definida na LI/BOM. O render deve detectar e bloquear duplicidade visual de componentes.
+8.2. Componentes montados na porta não ocupam área da placa de montagem interna; sua traseira, profundidade e zona de interferência devem ser consideradas no envelope 3D e na verificação porta × componentes internos.
+9. Nunca distorça gabinete ou componente para caber. Antes do layout, obter largura, altura, profundidade, recorte, orientação, folgas de montagem e demais envelopes aplicáveis em desenho dimensional/datasheet oficial do fabricante. Todos os componentes devem usar a mesma escala física em milímetros.
+9.1. É proibido liberar render dimensional enquanto existir componente desenhável sem dimensão oficial confirmada. Nesse caso, o status é HOLD_DIMENSIONAL_DATA.
+9.2. Antes do render final, validar canaletas, trilhos, espaçamento, ventilação, acesso de manutenção, área inferior de entrada/saída de cabos, prensa-cabos e raio mínimo de curvatura. Se não couber, usar HOLD_LAYOUT_CAPACITY; nunca reduzir visualmente os componentes.
 10. Gere uma imagem por painel. Não combine PN-AUT-01 e PN-AUT-02 na mesma imagem.
 11. Use somente o template visual e o SHA-256 aprovados registrados em `datacenter/datacenter.yaml` e `templates/panel_template.yaml`.
 12. Preserve a composição visual V2 aprovada em `datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml`: cabeçalho com painel/título/aplicação/configuração/revisão/ano/conformidade; vista frontal interna com porta aberta; vista frontal externa com porta fechada; vista lateral direita; lista de material; quadro de carga; arquitetura elétrica; arquitetura de comunicação; equipamentos de campo; dimensões do gabinete; notas técnicas; e rodapé obrigatório `LI = BOM = CARGA = LAYOUT = IMAGEM`.
@@ -111,7 +115,7 @@ Formato esperado:
 - Lista de Material/BOM;
 - carga por equipamento;
 - carga geral 24 Vcc, 127 Vca e 220 Vca;
-- layout físico em escala real;
+- layout físico em escala real, com rastreabilidade dimensional por componente e superfície de montagem (porta/placa/trilho);
 - uma imagem do painel no template aprovado;
 - QA com comparação LI × carga × BOM × Data Sheet × layout × imagem;
 - manifesto com hashes e revisões;
