@@ -251,7 +251,7 @@ standards:
     verified_at: "2026-09-28"
 
   - id: NORM-017
-    reference: "IEC 60947-7-2"
+    reference: "IEC 60947-7-2:2009"
     title: "Low-voltage switchgear and controlgear - Part 7-2: Ancillary equipment - Protective conductor terminal blocks for copper conductors"
     publisher: IEC
     jurisdiction: INTERNATIONAL
@@ -259,9 +259,10 @@ standards:
     applicability: BASELINE
     use_in_elaboration: "bornes de proteção PE e continuidade do condutor de proteção"
     mandatory_when: "houver bornes PE"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED_TRANSITION
+    official_url: "https://webstore.iec.ch/en/publication/4006"
     verified_at: "2026-09-28"
+    notes: "IEC 60947-7-2:2026 estava em pre-release/FDIS em 2026-09-28; IEC 60947-7-2:2009 permanece a referência publicada até emissão final da nova edição. Reverificar antes da emissão."
 
   - id: NORM-018
     reference: "IEC 61643-11:2025"
@@ -356,7 +357,7 @@ standards:
     notes: "Stability date indicada pela IEC como 2026; reverificar antes de emissão."
 
   - id: NORM-025
-    reference: "IEC 60715"
+    reference: "IEC 60715:2017"
     title: "Dimensions of low-voltage switchgear and controlgear - Standardized mounting on rails for mechanical support of switchgear, controlgear and accessories"
     publisher: IEC
     jurisdiction: INTERNATIONAL
@@ -364,8 +365,8 @@ standards:
     applicability: BASELINE
     use_in_elaboration: "interface dimensional de montagem em trilho padronizado"
     mandatory_when: "componentes forem montados em trilho normalizado"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/29026"
     verified_at: "2026-09-28"
 
   - id: NORM-026
@@ -421,7 +422,7 @@ standards:
     verified_at: "2026-09-28"
 
   - id: NORM-030
-    reference: "IEC 62040-2"
+    reference: "IEC 62040-2:2016"
     title: "Uninterruptible power systems (UPS) - Part 2: Electromagnetic compatibility (EMC) requirements"
     publisher: IEC
     jurisdiction: INTERNATIONAL
@@ -429,9 +430,10 @@ standards:
     applicability: CONDITIONAL
     use_in_elaboration: "compatibilidade eletromagnética de UPS"
     mandatory_when: "UPS abrangida pela IEC 62040 for utilizada"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/33696"
     verified_at: "2026-09-28"
+    notes: "Stability date IEC indicada como 2026; reverificar antes da emissão."
 
   - id: NORM-031
     reference: "IEC 61158-1:2023"
@@ -447,20 +449,21 @@ standards:
     verified_at: "2026-09-28"
 
   - id: NORM-032
-    reference: "IEC 61784-2"
-    title: "Industrial communication networks - Profiles - Part 2: Additional fieldbus profiles for real-time networks based on ISO/IEC/IEEE 8802-3"
+    reference: "IEC 61784-2-0:2023"
+    title: "Industrial networks - Profiles - Part 2-0: Additional real-time fieldbus profiles based on ISO/IEC/IEEE 8802-3 - General concepts and terminology"
     publisher: IEC
     jurisdiction: INTERNATIONAL
     category: ETHERNET_INDUSTRIAL
     applicability: CONDITIONAL
     use_in_elaboration: "perfis Ethernet industrial em tempo real"
     mandatory_when: "protocolo aplicável estiver mapeado pela série IEC 61784"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/83463"
     verified_at: "2026-09-28"
+    notes: "Perfis CPF específicos devem ativar a parte IEC 61784-2-x correspondente."
 
   - id: NORM-033
-    reference: "IEC 61918"
+    reference: "IEC 61918:2018+AMD1:2022+AMD2:2024"
     title: "Industrial communication networks - Installation of communication networks in industrial premises"
     publisher: IEC
     jurisdiction: INTERNATIONAL
@@ -468,8 +471,8 @@ standards:
     applicability: CONDITIONAL
     use_in_elaboration: "regras de instalação física de redes de comunicação industriais"
     mandatory_when: "escopo incluir instalação de rede industrial"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/93274"
     verified_at: "2026-09-28"
 
   - id: NORM-034
@@ -668,20 +671,20 @@ standards:
     verified_at: "2026-09-28"
 
   - id: NORM-049
-    reference: "IEC 61010-2-201"
-    title: "Safety requirements for electrical equipment for measurement, control, and laboratory use - Particular requirements for control equipment"
+    reference: "IEC 61010-2-201:2024"
+    title: "Safety requirements for electrical equipment for measurement, control, and laboratory use - Part 2-201: Particular requirements for control equipment"
     publisher: IEC
     jurisdiction: INTERNATIONAL
     category: EQUIPAMENTO_CONTROLE_SEGURANCA
     applicability: CONDITIONAL
     use_in_elaboration: "referência de segurança de equipamento de controle quando aplicável ao produto"
     mandatory_when: "produto de controle declarar conformidade ou escopo desta norma"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/64909"
     verified_at: "2026-09-28"
 
   - id: NORM-050
-    reference: "IEC 62477-1"
+    reference: "IEC 62477-1:2022"
     title: "Safety requirements for power electronic converter systems and equipment - Part 1: General"
     publisher: IEC
     jurisdiction: INTERNATIONAL
@@ -689,8 +692,8 @@ standards:
     applicability: CONDITIONAL
     use_in_elaboration: "segurança de sistemas/conversores eletrônicos de potência quando aplicável"
     mandatory_when: "fonte, conversor ou UPS tiver esta norma como produto/grupo aplicável"
-    source_status: VERIFY_CURRENT_OFFICIAL_BEFORE_USE
-    official_url: "https://webstore.iec.ch/"
+    source_status: OFFICIAL_VERIFIED
+    official_url: "https://webstore.iec.ch/en/publication/28936"
     verified_at: "2026-09-28"
 
   - id: NORM-051
@@ -944,7 +947,9 @@ application_matrix:
   surge_and_lightning:
     activate: [NORM-018, NORM-043, NORM-044, NORM-045, NORM-046, NORM-056]
   ups:
-    activate: [NORM-029, NORM-030, NORM-050, NORM-055]
+    activate: [NORM-029, NORM-030]
+  dc_backup_power:
+    activate: [NORM-050, NORM-055]
   industrial_network:
     activate: [NORM-031, NORM-032, NORM-033]
   bacs_hvac:
