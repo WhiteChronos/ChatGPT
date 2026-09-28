@@ -206,4 +206,20 @@ required_rules:
   name: Imagem 6 é corte dimensional verificável
   severity_on_violation: REPROVADO
   rule: O bloco visual identificado como Imagem 6 ou distribuição em profundidade deve exibir profundidade externa, profundidade útil, componentes na profundidade real, canaletas, folgas, raio de curvatura e prensa-cabos, todos derivados de dados dimensionais oficiais e da mesma escala global.
+- id: GR-076
+  name: Uma única montagem 3D governa todas as vistas
+  severity_on_violation: REPROVADO
+  rule: Vista interna, frontal externa, lateral e corte em profundidade devem ser projeções da mesma montagem geométrica em coordenadas reais. É proibido reconstruir ou redimensionar cada vista independentemente.
+- id: GR-077
+  name: CAD e catálogo são autoridade geométrica
+  severity_on_violation: HOLD
+  rule: A geometria de cada componente deve vir prioritariamente de STEP/IGES/DXF/CAD oficial do fabricante ou ser reconstruída deterministicamente a partir do desenho dimensional oficial. Geometria inferida de imagem generativa nunca é autoridade.
+- id: GR-078
+  name: Canvas cresce e blocos não encolhem
+  severity_on_violation: REPROVADO
+  rule: A composição visual deve ampliar o canvas até acomodar todas as vistas, tabelas e diagramas nas escalas definidas. É proibido reduzir componentes ou blocos dimensionais para fazê-los caber.
+- id: GR-079
+  name: Blocos 4 e 8 removidos do padrão V3
+  severity_on_violation: REPROVADO
+  rule: O padrão visual V3 não possui bloco dedicado 4 de vista interna da porta nem bloco dedicado 8 de vista inferior de cabos. A traseira da IHM integra a vista principal de porta aberta quando visível; a saída de cabos permanece dimensionada na vista interna principal e no corte em profundidade.
 
