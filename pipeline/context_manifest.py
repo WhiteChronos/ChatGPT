@@ -10,6 +10,10 @@ from typing import Any
 import yaml
 
 from pipeline.aut_panel_router import route_intent
+from pipeline.aut_panel_normative_control import (
+    merge_normative_registries,
+    resolve_applicable_norms,
+)
 
 CORE_INPUTS = (
     "governance/golden_rules.yaml",
@@ -33,6 +37,7 @@ AGENT_INPUTS = {
     "NORMATIVE": (
         "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
         "datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml",
+        "pipeline/aut_panel_normative_control.py",
     ),
     "EVOLUTION_PROPOSER": ("pipeline/evolution_engine.py",),
 }
@@ -100,28 +105,24 @@ def _golden_rule_ids(root: Path) -> list[str]:
     return [str(x.get("id")) for x in golden.get("required_rules", []) if x.get("id")]
 
 
-def _normative_manifest(root: Path, ds_panel: dict[str, Any]) -> list[dict[str, Any]]:
-    base = load_yaml(_require_file(root, "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml"))
+def _normative_manifest(
+    root: Path,
+    panel_id: str,
+    panel_revision: str,
+    ds_panel: dict[str, Any],
+) -> dict[str, Any]:
+    primary = load_yaml(_require_file(root, "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml"))
     supplement = load_yaml(_require_file(root, "datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml"))
+    memory = load_yaml(_require_file(root, "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml"))
     profile = ds_panel.get("normative_profile") or {}
-    detected = {str(x) for x in profile.get("detected_conditions", [])}
-
-    rows: list[dict[str, Any]] = []
-    for source in (base.get("standards", []), supplement.get("references", [])):
-        if not isinstance(source, dict):
-            continue
-        applicability = str(source.get("applicability", "CONDITIONAL"))
-        mandatory_when = str(source.get("mandatory_when", ""))
-        activate = applicability in {"BASELINE", "LEGAL_BR"} or any(x in mandatory_when for x in detected)
-        if activate:
-            rows.append({
-                "reference_id": source.get("id"),
-                "reference": source.get("reference"),
-                "applicability": applicability,
-                "source_status": source.get("source_status"),
-                "verified_at": source.get("verified_at"),
-            })
-    return rows
+    merged = merge_normative_registries(primary, supplement)
+    return resolve_applicable_norms(
+        panel_id=panel_id,
+        panel_revision=panel_revision,
+        profile=profile,
+        registry=merged,
+        memory=memory,
+    )
 
 
 def _find_bom_hash(root: Path, panel_id: str) -> tuple[str, str | None]:
@@ -164,7 +165,7 @@ def build_context_manifest(
         for rel in deduped
     ]
 
-    norm = _normative_manifest(root, ds_panel)
+    norm = _normative_manifest(root, panel_id, panel_revision, ds_panel)
     norm_hash = sha256_object(norm)
     bom_hash, bom_path = _find_bom_hash(root, panel_id)
     li_hash = next((x["sha256"] for x in canonical_inputs if x["path"] == li_file), "MISSING")
@@ -188,6 +189,14 @@ def build_context_manifest(
             "blocking": False,
             "owner": "LI_BOM",
             "next_action": "Generate/locate canonical BOM before downstream layout/release.",
+        })
+    for reason in norm.get("hold_reasons", []):
+        holds.append({
+            "hold_id": f"HOLD-NORM-{sha256_object(reason)[:10].upper()}",
+            "reason": str(reason),
+            "blocking": True,
+            "owner": "NORMATIVE",
+            "next_action": "Review applicability/reverify official source before release.",
         })
     if route.mode != "DETERMINISTIC":
         holds.append({
