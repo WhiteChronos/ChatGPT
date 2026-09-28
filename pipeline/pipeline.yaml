@@ -83,6 +83,17 @@ sequence:
   - order: 80
     id: LAYOUT
     gate: [layout_quantity_equals_li, dimensions_real, hmi_on_door, no_distortion, lower_zone_present]
+    optimizer:
+      id: LAYOUT-OPTIMIZER-V1
+      implementation: pipeline/layout_optimizer/cli.py
+      config: configs/layout_optimizer_v1.yaml
+      result_schema: schemas/layout_optimizer_result_v1.schema.json
+      solver: OR_TOOLS_CP_SAT
+      dependency_graph: NetworkX
+      locked_enclosure_auto_change: false
+      split_auto_select: false
+      capacity_failure_status: HOLD_LAYOUT_CAPACITY
+      decision_status: USER_DECISION_REQUIRED
   - order: 90
     id: RENDER_IMAGE
     gate: [approved_template_id, approved_template_fingerprint, one_panel_per_image, no_unapproved_recomposition]
