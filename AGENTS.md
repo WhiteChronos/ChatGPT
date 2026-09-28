@@ -178,5 +178,15 @@ Before any AUT panel render is treated as dimensional or fabrication-relevant, a
 - return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY instead of visually shrinking components;
 - record confirmed mistakes in project memory and add a regression test before closure.
 
+## Raster proportion guard
+For dimensional raster views, Codex SHALL use `pipeline/corrigir_proporcao_imagem.py` or equivalent validated gate before composition. A fixed frame may not force any resize of engineering geometry. Required invariants:
+- `scale_x = scale_y = 1.0`;
+- smaller target frame => grow canvas or REPROVADO;
+- aspect ratio must match the engineering width/height;
+- letterbox/pillarbox may add empty space only;
+- no raster utility may be used to hide an upstream CAD/3D geometry error.
+
+When this guard or its tests change, Codex SHALL run the AUT panel agent-system regression suite and report the result in PR #23.
+
 ## Release
 RELEASE is allowed only after required deterministic gates, source validation, normative reverification, QA and human approval.
