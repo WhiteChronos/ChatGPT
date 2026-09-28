@@ -8,6 +8,7 @@ contracts:
   panel_template: templates/panel_template.yaml
   prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
   normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_supplement: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
   normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
   normative_script: pipeline/aut_panel_normative_control.py
   li_material_prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
