@@ -28,6 +28,8 @@ contracts:
   evolution_script: pipeline/evolution_engine.py
   ml_model_registry: ml/model_registry.yaml
   open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
   conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
@@ -105,7 +107,7 @@ sequence:
       decision_status: USER_DECISION_REQUIRED
   - order: 90
     id: RENDER_IMAGE
-    gate: [approved_template_id, approved_template_fingerprint, one_panel_per_image, no_unapproved_recomposition]
+    gate: [approved_template_id, approved_template_fingerprint, visual_composition_v2_loaded, one_panel_per_image, no_unapproved_recomposition, parity_footer_present]
   - order: 100
     id: QA
     gate:
