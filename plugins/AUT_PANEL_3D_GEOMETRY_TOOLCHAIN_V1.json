@@ -150,5 +150,17 @@
     ],
     "dimensional_camera": "ORTHOGRAPHIC",
     "object_scale_rule": "1,1,1 after validated import"
+  },
+  "raster_proportion_guard": {
+    "implementation": "pipeline/corrigir_proporcao_imagem.py",
+    "derived_from_user_source_sha256": "835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31",
+    "source_behavior": "uniform aspect-preserving scale with optional letterbox",
+    "engineering_behavior": "no dimensional downscale; place at 1:1 raster pixels and grow canvas",
+    "policy": "GROW_CANVAS_KEEP_SCALE",
+    "required_scale": {
+      "x": 1,
+      "y": 1
+    },
+    "smaller_frame_action": "REPROVADO_OR_GROW_FRAME"
   }
 }
