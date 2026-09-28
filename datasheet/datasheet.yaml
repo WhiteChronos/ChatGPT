@@ -1,4 +1,4 @@
-schema_version: '1.1'
+schema_version: '1.2'
 datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
 standard_id: AUT-PAINEL-COMPACT-V2.4
 status: LOCKED_APPROVED_STANDARD
@@ -17,6 +17,22 @@ production_contract:
   li_material_script: pipeline/li_material_control.py
   li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
   li_material_open_source_qa: plugins/li_material_qa_registry.json
+  agent_system: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  agent_datacenters: datacenter/agents/agent_datacenters.yaml
+  agent_memories: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_script: pipeline/aut_panel_db.py
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  learning_script: pipeline/aut_panel_learning.py
+  evolution_script: pipeline/evolution_engine.py
+  ml_model_registry: ml/model_registry.yaml
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  engineering_skill: skills/aut-panel-engineering/SKILL.md
+  ml_advisory_only: true
+  deterministic_gate_precedes_ml: true
+  autoevolution_proposal_only: true
+  locked_change_requires_human_gate: true
+  per_panel_state_isolation: true
   li_before_bom: true
   load_balance_before_layout: true
   bom_before_layout: true
