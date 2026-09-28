@@ -3,11 +3,22 @@ import argparse, json
 from pathlib import Path
 from typing import Any, Mapping
 from .infrastructure import build_cable_glands, build_din_rails, build_lower_zones, build_terminal_strips, build_wireways, validate_infrastructure_requirements
-from .metrics import calculate_metrics
+from .metrics import calculate_metrics, validate_layout_result
 from .models import LayoutConfig, LayoutResult, LayoutStatus
 from .normalize import normalize_inputs
+from .partition import generate_split_candidates
+from .capacity import find_larger_enclosure_candidates
 from .solver import solve_single_panel
 from .export import export_layout_result
+
+def _enclosure_candidates(catalog: Mapping[str,Any]) -> list[Mapping[str,Any]]:
+    out=[]
+    for item in catalog.get("components",[]):
+        if str(item.get("category") or "")!="enclosure":
+            continue
+        if item.get("external_mm") and item.get("mounting_plate_mm"):
+            out.append(item)
+    return out
 
 def optimize_panel(panel_id: str, li: Mapping[str,Any], bom: Mapping[str,Any], catalog: Mapping[str,Any], project: Mapping[str,Any], config: LayoutConfig | None = None) -> LayoutResult:
     cfg=config or LayoutConfig()
@@ -20,8 +31,16 @@ def optimize_panel(panel_id: str, li: Mapping[str,Any], bom: Mapping[str,Any], c
         from .models import LayoutMetrics
         return LayoutResult(panel.panel_id,panel.revision,LayoutStatus.HOLD_LAYOUT_INPUT,(),LayoutMetrics(0,0,None,0,0,0,0,0),{"engine":"PRECHECK"},tuple(diags),())
     zones=build_lower_zones(panel)
-    reserved=[zones["cable_exit"],zones["bend_clearance"],zones["lower_wireway"]]
+    reserved=[z for z in (zones["cable_exit"],zones["bend_clearance"],zones["lower_wireway"]) if z.width>0 and z.height>0]
     solved=solve_single_panel(panel,instances,reserved,cfg)
+    if solved.status==LayoutStatus.HOLD_LAYOUT_CAPACITY:
+        alternatives=[]
+        alternatives.extend(find_larger_enclosure_candidates(panel,instances,_enclosure_candidates(catalog),cfg))
+        links=((project.get("architecture") or {}).get("dependency_links") or [])
+        alternatives.extend(generate_split_candidates(panel,instances,links,cfg))
+        if alternatives:
+            return LayoutResult(panel.panel_id,panel.revision,LayoutStatus.USER_DECISION_REQUIRED,(),solved.metrics,solved.solver_manifest,solved.diagnostics,tuple(alternatives))
+        return solved
     if solved.status not in {LayoutStatus.LAYOUT_FEASIBLE,LayoutStatus.LAYOUT_VALIDATED}:
         return solved
     instance_map={x.instance_id:x for x in instances}
@@ -34,9 +53,12 @@ def optimize_panel(panel_id: str, li: Mapping[str,Any], bom: Mapping[str,Any], c
     for req in infra.get("cable_gland",[]):
         r,d=build_cable_glands(panel,req,cfg); infra_places+=r; infra_diags+=d
     errors=validate_infrastructure_requirements(panel,solved.placements,infra_places,infra_diags)
-    status=LayoutStatus.LAYOUT_VALIDATED if not errors else (LayoutStatus.HOLD_LAYOUT_CABLE_ENTRY if any("CABLE_GLAND" in x for x in errors) else LayoutStatus.HOLD_LAYOUT_INPUT)
     all_places=tuple(list(solved.placements)+infra_places)
-    return LayoutResult(panel.panel_id,panel.revision,status,all_places,calculate_metrics(panel,all_places),solved.solver_manifest,tuple(errors),())
+    base=LayoutResult(panel.panel_id,panel.revision,LayoutStatus.LAYOUT_FEASIBLE,all_places,calculate_metrics(panel,all_places),solved.solver_manifest,tuple(errors),())
+    if errors:
+        status=LayoutStatus.HOLD_LAYOUT_CABLE_ENTRY if any("CABLE_GLAND" in x for x in errors) else LayoutStatus.HOLD_LAYOUT_INPUT
+        return LayoutResult(base.panel_id,base.panel_revision,status,base.placements,base.metrics,base.solver_manifest,base.diagnostics,())
+    return validate_layout_result(panel,base)
 
 def _load(path:str)->dict[str,Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
