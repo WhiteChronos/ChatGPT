@@ -105,6 +105,8 @@ sequence:
       - door_components_not_duplicated_on_mounting_plate
       - no_distortion
       - common_mm_scale_applied
+      - side_open_view_real_aspect_ratio
+      - depth_section_image_6_real_scale
       - lower_zone_present
       - cable_exit_clearance_validated
       - bend_radius_and_gland_access_validated
@@ -135,6 +137,8 @@ sequence:
       - internal_view_shows_only_physical_backside_when_applicable
       - manufacturer_geometry_used
       - common_mm_scale_applied
+      - side_open_view_real_aspect_ratio
+      - image_6_depth_section_gate_passed
       - one_panel_per_image
       - no_unapproved_recomposition
       - parity_footer_present
