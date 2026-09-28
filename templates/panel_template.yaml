@@ -37,6 +37,7 @@ image_standard:
     - front_internal_door_open
     - front_external_door_closed
     - right_side_view
+    - right_side_open_depth_section
     - material_list
     - load_schedule
     - electrical_architecture
@@ -57,6 +58,11 @@ image_standard:
     no_component_distortion: true
     component_geometry_source: OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING
     common_physical_scale_unit: mm
+    side_open_view_same_px_per_mm: true
+    side_open_view_aspect_ratio_formula: depth_external_mm / height_external_mm
+    pn_aut_01_side_open_aspect_ratio: 0.375
+    depth_section_block_id: image_6
+    depth_section_must_show: [external_depth, usable_depth, component_depths, ducts, clearances, bend_radius, cable_glands]
     render_requires_dimensional_closure: true
     duplicate_visual_instance_check_required: true
     mounting_clearances_from_manufacturer_required: true
