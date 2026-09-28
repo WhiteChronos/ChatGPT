@@ -33,6 +33,7 @@ contracts:
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
   panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
+  image_proportion_guard: pipeline/corrigir_proporcao_imagem.py
   panel_render_manifest_schema: schemas/panel_render_manifest_v1.schema.json
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
@@ -132,7 +133,7 @@ sequence:
     gate:
       - approved_template_id
       - approved_template_fingerprint
-      - visual_composition_v2_loaded
+      - visual_composition_v3_loaded
       - dimensional_closure_passed
       - render_derived_from_validated_layout
       - panel_render_gate_passed
@@ -154,6 +155,8 @@ sequence:
       - blender_render_guardian_passed
       - large_canvas_grow_only
       - no_block_downscale_to_fit
+      - image_proportion_guard_passed
+      - dimensional_raster_scale_x_equals_y_equals_1
       - removed_visual_blocks_4_and_8_absent
       - one_panel_per_image
       - no_unapproved_recomposition
@@ -168,6 +171,8 @@ sequence:
       - render_scale_and_proportion_check
       - geometry_guardian_approvals_present
       - no_fit_to_canvas_or_non_uniform_scale
+      - grow_only_raster_composition_verified
+      - raster_aspect_ratio_matches_engineering_view
       - blender_geometry_lock_verified
       - revit_ifc_consistency_verified_when_applicable
       - cable_exit_clearance_check
