@@ -96,7 +96,7 @@ panels:
     datasheet_json: datasheet/AUT_PANEL_DATA_SHEET.json
     normative_profile:
       baseline_group: panel_general
-      detected_conditions: [industrial_network, dc_ups_present, spd_present]
+      detected_conditions: [industrial_network, dc_ups_present, spd_present, hvac_automation]
       status: HOLD_UNTIL_NORMATIVE_REVIEW
   PN-AUT-02:
     li_id: LI-PN-AUT-02-R02
@@ -109,7 +109,7 @@ panels:
     datasheet_json: datasheet/PN-AUT-02_DATA_SHEET.json
     normative_profile:
       baseline_group: panel_general
-      detected_conditions: [industrial_network, dc_ups_present]
+      detected_conditions: [industrial_network, dc_ups_present, hvac_automation]
       status: HOLD_UNTIL_NORMATIVE_REVIEW
 change_control:
   standard_mutation_requires_user_authorization: true
