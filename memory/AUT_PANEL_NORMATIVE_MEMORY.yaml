@@ -1,0 +1,106 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+memory_type: TECHNICAL_NORMATIVE_CONTROL_MEMORY
+status: ACTIVE
+registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+purpose: >-
+  Preservar entre conversas o conjunto de referências normativas usadas na elaboração
+  dos quadros AUT, suas decisões de aplicabilidade, revisões verificadas, HOLDs,
+  conflitos e evidências de reverificação. Esta memória não contém o texto integral
+  de normas protegidas e não substitui a cópia oficial/licenciada.
+authority:
+  canonical_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  legal_sources_override_project_when_mandatory: true
+  project_contract_may_add_requirements: true
+  chat_cannot_override_registry: true
+  unverified_edition_never_becomes_valid_by_memory: true
+immutable_rules:
+  normative_metadata_must_be_traceable: true
+  standard_text_must_not_be_copied_into_memory: true
+  source_must_be_official_for_release: true
+  applicable_standard_requires_reverification_before_release: true
+  edition_conflict_status: HOLD
+  missing_applicability_decision_status: HOLD
+  legal_requirement_cannot_be_downgraded_by_ml: true
+  ml_cannot_activate_or_deactivate_norm_without_human_or_rule_based_gate: true
+  historical_normative_events_append_only: true
+bootstrap:
+  load_after:
+    - governance/golden_rules.yaml
+    - pipeline/pipeline.yaml
+    - datacenter/datacenter.yaml
+    - datasheet/datasheet.yaml
+  load:
+    - datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+    - memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  required_before:
+    - component_selection
+    - electrical_sizing
+    - layout
+    - diagram_generation
+    - qa
+    - release
+application_logic:
+  default_jurisdiction: BR
+  always_review_group: panel_general
+  conditional_activation:
+    machine_panel:
+      triggers: [machine_scope, nr12_scope, machinery_electrical_equipment]
+    motor_and_vfd:
+      triggers: [vfd_present, motor_starter_present, pds_present]
+    surge_and_lightning:
+      triggers: [spd_present, spda_interface, lightning_risk_scope, lpz_coordination]
+    ups:
+      triggers: [ups_present, dc_ups_present, energy_storage_present]
+    industrial_network:
+      triggers: [industrial_ethernet, fieldbus, remote_io, plc_network]
+    cybersecurity:
+      triggers: [external_network_interface, plant_network, remote_access, cybersecurity_requirement]
+    safety_function:
+      triggers: [safety_io, emergency_stop, safety_plc, sil_requirement, pl_requirement]
+    medium_voltage_interface:
+      triggers: [supply_above_1kv, mv_interface]
+    hazardous_area:
+      triggers: [classified_area, ex_equipment, intrinsic_safety]
+event_schema:
+  required_fields:
+    - event_id
+    - timestamp
+    - panel_id
+    - panel_revision
+    - normative_reference_id
+    - applicability
+    - source_status
+    - official_url
+    - edition_reverified_at
+    - evidence
+    - validators
+    - result
+  result_values: [APPLICABLE, NOT_APPLICABLE, HOLD, REPROVADO, VERIFIED]
+current_state:
+  revision: 1
+  last_sync_at: "2026-09-28T13:25:00-03:00"
+  registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+  registry_verified_at: "2026-09-28"
+  baseline_group: panel_general
+  release_policy: REVERIFY_ALL_APPLICABLE_REFERENCES
+  current_known_transition:
+    reference: NR-10
+    current_text_valid_until: "2027-05-31"
+    future_text_effective_from: "2027-06-01"
+    action: "usar texto vigente na data do projeto/emissão; reverificar antes de liberar"
+  open_normative_holds:
+    - id: HOLD-NORM-EDITION-CONDITIONAL
+      reason: "Referências condicionais com source_status VERIFY_CURRENT_OFFICIAL_BEFORE_USE exigem confirmação de edição somente quando ativadas."
+    - id: HOLD-NORM-NATIONAL-ADOPTION
+      reason: "Quando existir adoção ABNT da IEC aplicável, confirmar edição/equivalência nacional antes da emissão no Brasil."
+history:
+  - revision: 1
+    at: "2026-09-28T13:25:00-03:00"
+    actor: user+assistant
+    event: NORMATIVE_REGISTRY_AUTHORIZED_AND_CREATED
+    summary: >-
+      Usuário autorizou vincular as normas de referência de elaboração à memória
+      e ao Data Center. Foi criado registro controlado com referências base e condicionais,
+      política fail-closed, reverificação pré-emissão e separação entre metadados públicos
+      e conteúdo normativo protegido.
