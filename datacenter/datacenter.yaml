@@ -94,6 +94,10 @@ panels:
     image_template_id: IMG-PN-AUT-01-APPROVED-V1
     approved_image_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
     datasheet_json: datasheet/AUT_PANEL_DATA_SHEET.json
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, spd_present]
+      status: HOLD_UNTIL_NORMATIVE_REVIEW
   PN-AUT-02:
     li_id: LI-PN-AUT-02-R02
     li_revision: R02
@@ -103,6 +107,10 @@ panels:
     image_template_id: IMG-PN-AUT-02-APPROVED-V1
     approved_image_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
     datasheet_json: datasheet/PN-AUT-02_DATA_SHEET.json
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present]
+      status: HOLD_UNTIL_NORMATIVE_REVIEW
 change_control:
   standard_mutation_requires_user_authorization: true
   quantity_change_requires_new_li_revision: true
