@@ -117,5 +117,5 @@ conversation_contract_fingerprints:
   prompt_master_sha256: 2a5ee6ae749427335133d0a100b45bf08ee615d59fe151f8828193d98db70a7e
   bootstrap_prompt_sha256: 5fb9aebf6e330a4df2cc681c78cca98a0f7fa2a0a85cbaaae27f181420e1988a
   memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
-  memory_immutable_contract_sha256: d4c7ec9c1cc4f43bfe99dfbef435138222208bb9f07606696a7facebbdbb7e27
+  memory_immutable_contract_sha256: 77c29eb332d89164c8dfb8b12fab351c5062d1b31642134f20e90776e7d57429
   conversation_contract_script_id: AUT-PANEL-CONVERSATION-CONTRACT-V1
