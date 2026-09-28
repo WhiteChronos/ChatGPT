@@ -145,8 +145,13 @@ sequence:
       - side_open_view_real_aspect_ratio
       - image_6_depth_section_gate_passed
       - cad_3d_geometry_gate_passed
+      - cad_geometry_guardian_passed
+      - scale_proportion_guardian_passed
+      - canvas_composition_guardian_passed
+      - revit_bim_guardian_passed_when_applicable
       - same_3d_assembly_drives_all_views
       - orthographic_dimension_views
+      - blender_render_guardian_passed
       - large_canvas_grow_only
       - no_block_downscale_to_fit
       - removed_visual_blocks_4_and_8_absent
@@ -161,6 +166,10 @@ sequence:
       - door_vs_backplate_allocation_check
       - dimensional_catalog_traceability_check
       - render_scale_and_proportion_check
+      - geometry_guardian_approvals_present
+      - no_fit_to_canvas_or_non_uniform_scale
+      - blender_geometry_lock_verified
+      - revit_ifc_consistency_verified_when_applicable
       - cable_exit_clearance_check
       - workbook_structure_fingerprint
       - render_contract_fingerprint
