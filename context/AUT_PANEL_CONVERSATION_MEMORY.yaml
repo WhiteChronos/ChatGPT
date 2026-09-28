@@ -28,15 +28,15 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 3
-  last_sync_at: '2026-09-16T23:11:00-03:00'
+  sync_revision: 4
+  last_sync_at: '2026-09-28T10:37:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
     head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
   active_work:
-    objective: Consolidar controle de criação e revisão de LI - Lista de Material, preservando todas
-      as revisões históricas e preenchendo quantitativos corrigidos somente na nova revisão.
+    objective: Estruturar sistema multiagente de elaboração de quadros com Data Centers e memórias isolados,
+      banco relacional, machine learning consultivo, pipeline de aprendizado e autoevolução controlada.
     status: IMPLEMENTED
   li_material_control:
     control_id: LI-MATERIAL-CONTROL-V1
@@ -49,6 +49,23 @@ mutable_state:
     historical_revision_overwrite_forbidden: true
     quantity_evidence_required: true
     a_levantar_only_when_not_determinable: true
+  agent_learning_system:
+    system_id: AUT-PANEL-AGENT-SYSTEM-V1
+    agent_registry: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+    agent_datacenters: datacenter/agents/agent_datacenters.yaml
+    agent_memories: memory/agents/agent_memories.yaml
+    database_schema: database/aut_panel_schema.sql
+    database_script: pipeline/aut_panel_db.py
+    learning_pipeline: pipeline/learning_pipeline.yaml
+    learning_script: pipeline/aut_panel_learning.py
+    evolution_script: pipeline/evolution_engine.py
+    model_registry: ml/model_registry.yaml
+    open_source_registry: plugins/aut_panel_open_source_registry.json
+    engineering_skill: skills/aut-panel-engineering/SKILL.md
+    ml_status: LEARNING_COLD_START
+    ml_advisory_only: true
+    autoevolution_mode: PROPOSAL_ONLY
+    human_gate_required: true
   active_panels:
     PN-AUT-01:
       role: PLC principal HVAC + VRF
@@ -156,3 +173,10 @@ history:
   summary: Foi aprovado e integrado o padrão de manter todas as revisões históricas da LI intactas,
     preservar REV. 0, criar a nova revisão na coluna imediatamente à direita, rastrear quantitativos por
     evidência e registrar QA/regressão/memória específica da Lista de Material.
+- revision: 4
+  at: '2026-09-28T10:37:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_AGENT_ML_DATABASE_SYSTEM_IMPLEMENTED
+  summary: Usuário autorizou a estruturação de agentes com Data Center e memória próprios, banco SQLite,
+    pipeline de machine learning consultivo, autoevolução por proposta, registro open source e Skill
+    AUT Panel Engineering, mantendo o pipeline canônico e padrões aprovados como autoridade.
