@@ -30,13 +30,6 @@ canonical_sources:
   ml_model_registry: ml/model_registry.yaml
   open_source_registry: plugins/aut_panel_open_source_registry.json
   engineering_skill: skills/aut-panel-engineering/SKILL.md
-  normative_control:
-    registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
-    memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
-    default_jurisdiction: BR
-    reverify_before_release: true
-    unverified_applicable_edition_status: HOLD
-    conflicting_requirements_status: HOLD
   pipeline_yaml: pipeline/pipeline.yaml
   datasheet_yaml: datasheet/datasheet.yaml
   bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
@@ -44,6 +37,15 @@ canonical_sources:
   conversation_contract: pipeline/conversation_contract.py
   datacenter: datacenter/datacenter.yaml
   datasheet: datasheet/datasheet.yaml
+normative_control:
+  registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+  registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+  memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  default_jurisdiction: BR
+  reverify_before_release: true
+  unverified_applicable_edition_status: HOLD
+  conflicting_requirements_status: HOLD
 agent_learning_system:
   system_id: AUT-PANEL-AGENT-SYSTEM-V1
   agent_registry: agents/AUT_PANEL_AGENT_SYSTEM.yaml
