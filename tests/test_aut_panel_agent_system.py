@@ -280,3 +280,55 @@ def test_panel_render_gate_rejects_squeezed_side_open_view():
     assert result["status"] == "REPROVADO"
     assert any("rendered aspect ratio" in x for x in result["errors"])
     assert any("common px_per_mm" in x for x in result["errors"])
+
+
+def test_3d_geometry_gate_accepts_common_orthographic_assembly():
+    gate = load_module("panel_3d_geometry_gate_ok", "pipeline/panel_3d_geometry_gate.py")
+    manifest = {
+        "units": "mm",
+        "canvas_policy": "GROW_CANVAS_KEEP_SCALE",
+        "generative_geometry_authority": False,
+        "assembly_id": "PN-AUT-01-R03-ASM",
+        "components": [{
+            "instance_id": "HMI-01",
+            "geometry_authority": "MANUFACTURER_STEP_OR_IGES",
+            "official_bbox_mm": {"width": 273, "height": 203, "depth": 47},
+            "model_bbox_mm": {"width": 273, "height": 203, "depth": 47},
+        }],
+        "views": [
+            {"view_id":"front_internal","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+            {"view_id":"front_external","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+            {"view_id":"right_side","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+            {"view_id":"depth_section","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+        ],
+        "visual_blocks":["front_internal_door_open","front_external_door_closed","right_side_view","right_side_open_depth_section"],
+    }
+    result=gate.validate_geometry_manifest(manifest)
+    assert result["status"] == "PASS"
+
+
+def test_3d_geometry_gate_rejects_independent_view_scaling_and_removed_blocks():
+    gate = load_module("panel_3d_geometry_gate_bad", "pipeline/panel_3d_geometry_gate.py")
+    manifest = {
+        "units": "mm",
+        "canvas_policy": "FIT_TO_FIXED_POSTER",
+        "generative_geometry_authority": True,
+        "assembly_id": "PN-AUT-01-R03-ASM",
+        "components": [{
+            "instance_id": "HMI-01",
+            "geometry_authority": "MANUFACTURER_STEP_OR_IGES",
+            "official_bbox_mm": {"width": 273, "height": 203, "depth": 47},
+            "model_bbox_mm": {"width": 200, "height": 150, "depth": 47},
+        }],
+        "views": [
+            {"view_id":"front_internal","assembly_id":"OTHER","projection":"PERSPECTIVE","independent_scale":True},
+            {"view_id":"front_external","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+            {"view_id":"right_side","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+            {"view_id":"depth_section","assembly_id":"PN-AUT-01-R03-ASM","projection":"ORTHOGRAPHIC","independent_scale":False},
+        ],
+        "visual_blocks":["door_internal_hmi_detail","bottom_cable_exit_view"],
+    }
+    result=gate.validate_geometry_manifest(manifest)
+    assert result["status"] == "REPROVADO"
+    assert any("independent per-view scaling" in x for x in result["errors"])
+    assert any("removed visual blocks present" in x for x in result["errors"])
