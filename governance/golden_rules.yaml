@@ -198,4 +198,12 @@ required_rules:
   name: Memória de erro e regressão obrigatórias
   severity_on_violation: HOLD
   rule: Todo erro de engenharia ou visual confirmado deve gerar evento de memória, regra preventiva e teste automatizado de regressão antes de encerrar a correção.
+- id: GR-074
+  name: Vista lateral aberta e corte em profundidade preservam proporção real
+  severity_on_violation: REPROVADO
+  rule: Toda vista lateral aberta, corte lateral ou distribuição em profundidade deve usar a mesma escala global em milímetros das demais vistas. Para cada painel, a razão gráfica largura/altura deve ser igual a profundidade_externa/altura_externa; no PN-AUT-01 isso corresponde a 300/800 = 0,375. É proibido alargar, achatar ou comprimir a vista para preencher o canvas.
+- id: GR-075
+  name: Imagem 6 é corte dimensional verificável
+  severity_on_violation: REPROVADO
+  rule: O bloco visual identificado como Imagem 6 ou distribuição em profundidade deve exibir profundidade externa, profundidade útil, componentes na profundidade real, canaletas, folgas, raio de curvatura e prensa-cabos, todos derivados de dados dimensionais oficiais e da mesma escala global.
 
