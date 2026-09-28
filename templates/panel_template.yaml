@@ -47,10 +47,20 @@ image_standard:
     - parity_footer
   fixed_rules:
     hmi_on_door: true
+    hmi_quantity_physical_instance: 1
+    hmi_internal_duplicate_forbidden: true
+    internal_door_open_view_may_show_hmi_backside_only: true
+    door_mounted_components_not_counted_on_mounting_plate: true
     blue_white_engineering_identity: true
     preserve_approved_composition: true
     no_unapproved_recomposition: true
     no_component_distortion: true
+    component_geometry_source: OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING
+    common_physical_scale_unit: mm
+    render_requires_dimensional_closure: true
+    duplicate_visual_instance_check_required: true
+    mounting_clearances_from_manufacturer_required: true
+    cable_exit_clearance_and_bend_radius_required: true
     technical_values_from_reference_image_are_not_authoritative: true
     parity_footer_text: "LI = BOM = CARGA = LAYOUT = IMAGEM"
     high_information_density_engineering_sheet: true
