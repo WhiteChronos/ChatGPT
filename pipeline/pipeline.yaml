@@ -30,6 +30,8 @@ contracts:
   open_source_registry: plugins/aut_panel_open_source_registry.json
   github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
   visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
+  panel_render_gate: pipeline/panel_render_gate.py
+  panel_render_manifest_schema: schemas/panel_render_manifest_v1.schema.json
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
   conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
@@ -126,6 +128,7 @@ sequence:
       - visual_composition_v2_loaded
       - dimensional_closure_passed
       - render_derived_from_validated_layout
+      - panel_render_gate_passed
       - render_component_count_equals_li
       - no_duplicate_visual_instances
       - hmi_front_door_only
