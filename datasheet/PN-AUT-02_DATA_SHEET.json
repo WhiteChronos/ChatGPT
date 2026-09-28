@@ -322,7 +322,8 @@
     "baseline_group": "panel_general",
     "detected_conditions": [
       "industrial_network",
-      "dc_ups_present"
+      "dc_ups_present",
+      "hvac_automation"
     ],
     "conditional_group_review_required": true,
     "applicability_status": "HOLD_UNTIL_NORMATIVE_REVIEW",
