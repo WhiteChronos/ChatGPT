@@ -1,5 +1,5 @@
 {
-  "registry_version": "2.0",
+  "registry_version": "2.1",
   "registry_id": "AUT-PANEL-GITHUB-TOOLCHAIN-V2",
   "discovered_at": "2026-09-28",
   "scope": "Curated GitHub toolchain for electrical panel engineering, automation, documentation, rendering, QA and controlled improvement. Extensible; not a literal enumeration of every GitHub repository.",
@@ -342,7 +342,28 @@
         ],
         "status": "OPTIONAL"
       }
+    ],
+    "ai_cad_bridges": [
+      {
+        "repository": "neka-nat/freecad-mcp",
+        "roles": [
+          "CHATGPT_TO_FREECAD_BRIDGE",
+          "CAD_AGENT_CONTROL"
+        ],
+        "status": "EXPERIMENTAL_CONNECTOR_CANDIDATE",
+        "activation_note": "Requires security/license review, local FreeCAD environment, pinning and sandbox integration tests."
+      },
+      {
+        "repository": "ahujasid/mcp-for-blender",
+        "roles": [
+          "CHATGPT_TO_BLENDER_BRIDGE",
+          "RENDER_AGENT_CONTROL"
+        ],
+        "status": "EXPERIMENTAL_CONNECTOR_CANDIDATE",
+        "activation_note": "Requires security/license review, Blender environment, pinning and sandbox integration tests."
+      }
     ]
   },
-  "integration_rule": "Every candidate must be pinned, license/security reviewed, sandboxed and covered by regression tests before promotion to ACTIVE."
+  "integration_rule": "Every candidate must be pinned, license/security reviewed, sandboxed and covered by regression tests before promotion to ACTIVE.",
+  "geometry_toolchain_registry": "plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json"
 }
