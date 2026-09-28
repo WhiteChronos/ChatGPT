@@ -170,3 +170,32 @@ required_rules:
   name: Desenho determinístico é autoridade visual
   severity_on_violation: REPROVADO
   rule: Desenho vetorial derivado de BOM/layout validado é a autoridade visual de engenharia; imagem generativa é apenas referência suplementar.
+- id: GR-067
+  name: Instância física única por item da LI
+  severity_on_violation: REPROVADO
+  rule: Cada componente físico deve aparecer no layout/render exatamente na quantidade definida na LI/BOM. Representações de frente e traseira do mesmo componente não criam nova instância física.
+- id: GR-068
+  name: IHM única e exclusiva na porta
+  severity_on_violation: REPROVADO
+  rule: A IHM local é uma única instância física montada exclusivamente na porta frontal; é proibida uma segunda IHM na placa interna. Na vista de porta aberta, somente a traseira da mesma IHM pode aparecer, sem nova contagem.
+- id: GR-069
+  name: Fechamento dimensional antes do render
+  severity_on_violation: HOLD
+  rule: Nenhum render pode ser tratado como dimensional ou liberado para fabricação enquanto houver componente desenhável sem largura, altura, profundidade, montagem e folgas oficiais do fabricante.
+- id: GR-070
+  name: Escala física comum em milímetros
+  severity_on_violation: REPROVADO
+  rule: Gabinete, placa, trilhos, canaletas e componentes devem compartilhar a mesma escala física em milímetros; redimensionamento individual para caber é proibido.
+- id: GR-071
+  name: Superfície de montagem rastreada
+  severity_on_violation: REPROVADO
+  rule: Cada componente deve declarar sua superfície de montagem real, como porta, placa, trilho DIN ou fundo. Item montado na porta não pode ocupar simultaneamente área da placa interna.
+- id: GR-072
+  name: Saída de cabos e raio de curvatura validados
+  severity_on_violation: HOLD
+  rule: Antes do render final, a zona inferior de cabos, prensa-cabos, acesso e raio mínimo de curvatura devem ser validados. Falta de espaço resulta em HOLD_LAYOUT_CAPACITY.
+- id: GR-073
+  name: Memória de erro e regressão obrigatórias
+  severity_on_violation: HOLD
+  rule: Todo erro de engenharia ou visual confirmado deve gerar evento de memória, regra preventiva e teste automatizado de regressão antes de encerrar a correção.
+
