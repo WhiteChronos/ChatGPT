@@ -1,20 +1,24 @@
-from pipeline.layout_optimizer.infrastructure import build_cable_glands, build_din_rails, build_terminal_strips, build_wireways
-from pipeline.layout_optimizer.models import LayoutStatus, PanelGeometry, Placement, RectMM
+from pipeline.layout_optimizer.infrastructure import build_cable_glands, build_din_rails, build_lower_zones, build_wireways
+from pipeline.layout_optimizer.models import LayoutConfig, PanelGeometry, PhysicalInstance, Placement, ClearanceMM
 
 def _panel():
-    return PanelGeometry(panel_id="P",revision="R",external=RectMM("e","external",0,0,400,500),mounting_plate=RectMM("m","mounting_plate",0,0,350,450),door=RectMM("d","door",0,0,400,500),reserve_percent=20,bottom_zone_height=100)
+    return PanelGeometry("P","R",400,500,250,350,450,20,40,30,20,100,4)
 
-def test_infrastructure_uses_distinct_lower_bands():
-    panel=_panel()
-    terms,td=build_terminal_strips(panel,{"terminal":[{"source_tag":"XT","quantity":8}]})
-    ways,wd=build_wireways(panel,{"wireway":[{"source_tag":"WD","quantity":2}]})
-    glands,gd,status=build_cable_glands(panel,{"cable_gland":[{"source_tag":"CG","quantity":4}]})
-    assert status is None
-    assert terms and ways and glands
-    assert min(x.y_mm for x in terms) > max(x.y_mm for x in glands)
+def test_lower_bands_are_distinct():
+    z=build_lower_zones(_panel())
+    assert z["cable_exit"].top<=z["bend_clearance"].y
+    assert z["bend_clearance"].top<=z["lower_wireway"].y
+    assert z["lower_wireway"].top<=z["terminal_access"].top
 
-def test_din_rails_cover_mounted_devices():
-    panel=_panel()
-    devices=[Placement("A","A","mounting_plate",20,200,40,40),Placement("B","B","mounting_plate",80,200,40,40)]
-    rails=build_din_rails(panel,devices,{"din_rail":[{"source_tag":"DIN","quantity":2}]})
-    assert rails and max(r.width_mm for r in rails)>=100
+def test_din_rail_covers_devices():
+    p=_panel(); cfg=LayoutConfig()
+    inst={x.instance_id:x for x in [
+        PhysicalInstance("A","A","A",1,"mounting_plate",40,40,10,ClearanceMM(),rail_required=True),
+        PhysicalInstance("B","B","B",1,"mounting_plate",40,40,10,ClearanceMM(),rail_required=True)]}
+    dev=[Placement("A","A","A","mounting_plate",20,200,40,40),Placement("B","B","B","mounting_plate",80,200,40,40)]
+    rails,diags=build_din_rails(p,dev,inst,{"source_tag":"DIN","catalog_id":"DIN","quantity":2,"dimensions_mm":{"height":7.5}},cfg)
+    assert not diags and rails and max(r.width_mm for r in rails)>=100
+
+def test_cable_gland_overcrowding_is_diagnostic():
+    glands,diags=build_cable_glands(_panel(),{"source_tag":"CG","catalog_id":"CG","quantity":50,"dimensions_mm":{"width":20,"height":20}},LayoutConfig())
+    assert not glands and any("CABLE_GLAND_OVERCROWDING" in x for x in diags)
