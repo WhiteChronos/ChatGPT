@@ -32,6 +32,7 @@ contracts:
   visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
+  panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
   panel_render_manifest_schema: schemas/panel_render_manifest_v1.schema.json
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
@@ -143,6 +144,7 @@ sequence:
       - common_mm_scale_applied
       - side_open_view_real_aspect_ratio
       - image_6_depth_section_gate_passed
+      - cad_3d_geometry_gate_passed
       - same_3d_assembly_drives_all_views
       - orthographic_dimension_views
       - large_canvas_grow_only
