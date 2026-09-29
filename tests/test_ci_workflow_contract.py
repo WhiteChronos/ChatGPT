@@ -75,3 +75,25 @@ def test_candidate_workflow_executes_candidate_gates_and_regression():
     ]
     for token in required:
         assert token in text
+
+
+LEARNING_AUT_PANEL = ROOT / ".github" / "workflows" / "aut-panel-learning.yml"
+
+
+def test_learning_workflow_covers_all_auto_engineering_surfaces_and_r02_smoke():
+    assert LEARNING_AUT_PANEL.exists()
+    text = LEARNING_AUT_PANEL.read_text(encoding="utf-8")
+    required = [
+        "pipeline/aut_panel_candidate_revision.py",
+        "pipeline/aut_panel_mem0.py",
+        "pipeline/aut_panel_memory_context.py",
+        "pipeline/aut_panel_memory_benchmark.py",
+        "pipeline/aut_panel_memory_quality_gate.py",
+        "pipeline/aut_panel_artifact_verifier.py",
+        "tests/test_aut_panel_codex_contract.py",
+        "tests/test_aut_panel_artifact_verifier.py",
+        "sha256sum li/PN-AUT-01_LI.json",
+        "historical LI changed",
+    ]
+    for token in required:
+        assert token in text
