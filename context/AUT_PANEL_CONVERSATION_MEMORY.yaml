@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 15
+  sync_revision: 16
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -126,6 +126,18 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  external_technical_knowledge_base:
+    registry: datacenter/external/PN_AUT_001_EXTERNAL_SOURCE_REGISTRY.json
+    technical_kb: datacenter/external/PN_AUT_001_EXTERNAL_TECHNICAL_KB.md
+    academic_bibliography: datacenter/external/PN_AUT_001_ACADEMIC_BIBLIOGRAPHY.md
+    source_priority:
+      - manufacturer_official
+      - official_standard
+      - academic_publisher_or_peer_reviewed
+      - authorized_distributor
+      - secondary_support
+    copyright_policy: metadata_links_summaries_and_short_excerpts_only
+    status: ACTIVE
   consolidated_technical_base:
     base_id: PN-AUT-01-TECHNICAL-BASE-V1
     json: datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json
@@ -401,3 +413,19 @@ history:
     cargas conhecidas, alimentacao 12 V do gateway Trane, sinalizacao/I-O ainda faltante e todos
     os dados de campo necessarios para fechamento. PLC-01 permanece como controlador central.
     Excel final fica bloqueado ate fechamento da base tecnica ou aprovacao explicita de pendencias.
+
+- revision: 16
+  at: '2026-09-29T15:52:00-03:00'
+  actor: user+assistant
+  event: EXTERNAL_TECHNICAL_KNOWLEDGE_BASE_CREATED
+  summary: >-
+    Usuario autorizou pesquisa ampla em fabricantes, fornecedores, normas, artigos e livros
+    academicos para fechar as pendencias do PN-AUT-001. Criado registro estruturado de fontes
+    externas, base tecnica resumida e bibliografia academica dentro do Data Center. Conteudo
+    protegido por direitos autorais nao deve ser copiado integralmente: guardar metadados,
+    links oficiais, resumos tecnicos, paginas/secoes quando disponiveis e pequenos trechos
+    permitidos. Pesquisa externa passa a ser memoria tecnica persistente e auditavel do projeto.
+    Resultados relevantes registrados incluem metodo IEC 60909 para Ik/Icc, IEC 61439/60529,
+    Schneider Electrical Installation Guide, HMIST6500, ABL8RPS24100, ADEL CBI2420A, ET 200SP
+    HART, NOVUS/Siemens transmissores HART, candidatos de CO2, familia ClimaSys e literatura
+    oficial Trane TVR Smart com TCONTSMCB24V.
