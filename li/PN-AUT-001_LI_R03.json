@@ -1,0 +1,341 @@
+{
+  "schema_version": "1.0",
+  "li_id": "PN-AUT-001-LI-R03",
+  "panel_id": "PN-AUT-001",
+  "revision": "R03",
+  "status": "ENGINEERING_EXECUTED_HOLD_IP66_ASSEMBLY_PROOF",
+  "generated_at": "2026-09-29",
+  "basis": [
+    "LI-3501.02-8210-800-RPJ-702 Rev.0",
+    "FD-3501.01-8210-800-RPJ-001 Rev.A",
+    "datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json",
+    "datacenter/PN_AUT_001_CANONICAL_PREMISES.json",
+    "datacenter/external/PN_AUT_001_EXTERNAL_SOURCE_REGISTRY.json"
+  ],
+  "engineering_summary": {
+    "supply": "220 Vac, 2F, TN-S",
+    "feeder": "10 m, Cu, multipolar exposed; final engineering selection 4 mm2, 2F+PE",
+    "main_breaker": "Schneider Acti9 iC60H A9F84220, 2P, 20A, curve C, 30kA at 220/240Vac",
+    "ups": "ADEL CBI2420A 24Vdc 20A + 2x Yuasa NP24-12IFR 12V 24Ah in series",
+    "ups_autonomy": "30 min minimum + 20% aging/reserve margin",
+    "plc": "Siemens CPU 1515-2 PN 6ES7515-2AN03-0AB0",
+    "io": "ET 200SP HA: 2x 16AI 2-wire HART + 9x 4AI 2/4-wire HART ISOL = 68 physical AI channels",
+    "hmi": "Schneider HMIST6500",
+    "switch": "Siemens SCALANCE XC208G 6GK5208-0GA00-2AC2",
+    "vrf_gateway": "Trane TCONTCCMHCM04A + TCONTADPYCJA2A; 24Vac/dc gateway, BACnet IP/Modbus side",
+    "temperature": "Endress+Hauser TMT72 HART field-mount architecture, TEMP-WM retained as application reference",
+    "co2": "Omniguard Model 3100 configured CO2 0-5000 ppm, 4-20mA + HART Rev7, 24Vdc nominal",
+    "cooling": "Schneider ClimaSys CU NSYCU350DG, 350W L35-L35 / 240W L35-L50",
+    "cooling_ip_issue": "NSYCU350DG internal circuit is IP55; therefore the requested final IP66 assembly is NOT proven and remains the only release blocker."
+  },
+  "quantities": [
+    [
+      "ENC-01",
+      "Schneider Electric",
+      "NSYCRN128300",
+      1,
+      "PanelSet CRN enclosure 1200x800x300, IP66"
+    ],
+    [
+      "MP-01",
+      "Schneider Electric",
+      "NSYMM128",
+      1,
+      "Mounting plate 1200x800"
+    ],
+    [
+      "QS-01",
+      "Schneider Electric",
+      "VCF0",
+      1,
+      "25A lockable switch disconnector"
+    ],
+    [
+      "QF-01",
+      "Schneider Electric",
+      "A9F84220",
+      1,
+      "Acti9 iC60H 2P 20A curve C 30kA"
+    ],
+    [
+      "QF-UPS",
+      "Schneider Electric",
+      "A9F83216",
+      1,
+      "Acti9 iC60H 2P 16A curve B 30kA"
+    ],
+    [
+      "QF-CLIMA",
+      "Schneider Electric",
+      "A9F84216",
+      1,
+      "Acti9 iC60H 2P 16A curve C 30kA"
+    ],
+    [
+      "DPS-01",
+      "Schneider Electric",
+      "A9L40201",
+      1,
+      "Acti9 iPRD40r 2P 350V Type 2 40kA remote contact; connection scheme to be checked at detailed wiring stage"
+    ],
+    [
+      "UPS-01",
+      "ADEL System",
+      "CBI2420A",
+      1,
+      "All-in-one DC UPS 24Vdc 20A, Modbus RTU"
+    ],
+    [
+      "BAT-01A/B",
+      "GS Yuasa",
+      "NP24-12IFR",
+      2,
+      "12V 24Ah AGM VRLA, series string 24V"
+    ],
+    [
+      "PLC-01",
+      "Siemens",
+      "6ES7515-2AN03-0AB0",
+      1,
+      "SIMATIC S7-1500 CPU 1515-2 PN"
+    ],
+    [
+      "MC-01",
+      "Siemens",
+      "6ES7954-8LL04-0AA0",
+      1,
+      "SIMATIC memory card 256MB"
+    ],
+    [
+      "IM-01",
+      "Siemens",
+      "6DL1155-6AU00-0PM0",
+      1,
+      "ET 200SP HA IM155-6 PN"
+    ],
+    [
+      "CM-IM",
+      "Siemens",
+      "6DL1193-6BH00-0SM0",
+      1,
+      "ET 200SP HA single IM carrier"
+    ],
+    [
+      "BA-01",
+      "Siemens",
+      "6DL1193-6AR00-0AA0",
+      1,
+      "ET 200SP HA bus adapter 2xRJ45"
+    ],
+    [
+      "CM-8",
+      "Siemens",
+      "6DL1193-6GC00-0NN0",
+      2,
+      "ET 200SP HA 8-module carrier"
+    ],
+    [
+      "CM-2",
+      "Siemens",
+      "6DL1193-6GA00-0NN0",
+      1,
+      "ET 200SP HA 2-module carrier"
+    ],
+    [
+      "AI-TEMP",
+      "Siemens",
+      "6DL1134-6TH00-0PH1",
+      2,
+      "AI 16xI 2-wire HART HA; 28 temp + 4 spare"
+    ],
+    [
+      "TB-H1-L",
+      "Siemens",
+      "6DL1193-6TP00-0DH1",
+      1,
+      "H1 light terminal block, new power group"
+    ],
+    [
+      "TB-H1-D",
+      "Siemens",
+      "6DL1193-6TP00-0BH1",
+      1,
+      "H1 dark terminal block, continuation"
+    ],
+    [
+      "AI-CO2",
+      "Siemens",
+      "6DL1134-6UD00-0PK0",
+      9,
+      "AI 4xI 2/4-wire HART ISOL; 28 CO2 + 8 spare"
+    ],
+    [
+      "TB-K0-L",
+      "Siemens",
+      "6DL1193-6TP00-0DK0",
+      1,
+      "K0 light terminal block, new group"
+    ],
+    [
+      "TB-K0-D",
+      "Siemens",
+      "6DL1193-6TP00-0BK0",
+      8,
+      "K0 dark terminal blocks, continuation"
+    ],
+    [
+      "SW-01",
+      "Siemens",
+      "6GK5208-0GA00-2AC2",
+      1,
+      "SCALANCE XC208G, managed L2, 8x Gigabit"
+    ],
+    [
+      "HMI-01",
+      "Schneider Electric",
+      "HMIST6500",
+      1,
+      "Harmony ST6 10in HMI 24Vdc"
+    ],
+    [
+      "GW-01",
+      "Trane",
+      "TCONTCCMHCM04A",
+      1,
+      "Official Trane 24Vac/dc BACnet/IP-Modbus protocol converter"
+    ],
+    [
+      "GW-ADP",
+      "Trane",
+      "TCONTADPYCJA2A",
+      1,
+      "Required Trane gateway adapter"
+    ],
+    [
+      "CLIMA-01",
+      "Schneider Electric",
+      "NSYCU350DG",
+      1,
+      "ClimaSys CU 350W, 230Vac, IP55 internal circuit"
+    ],
+    [
+      "TT-001..028",
+      "Endress+Hauser",
+      "iTEMP TMT72 + TA30A + 71274372",
+      28,
+      "Wall/field mounted 4-20mA HART temperature measurement assembly; Pt100 element per configured assembly"
+    ],
+    [
+      "AT-001..028",
+      "Firefly / Omniguard",
+      "Model 3100 CO2 config 0-5000 ppm",
+      28,
+      "24Vdc nominal, 4-20mA, HART Rev7; industrial equivalent"
+    ],
+    [
+      "XT-24V",
+      "Phoenix Contact",
+      "PT 2,5 / 3209510",
+      80,
+      "24V distribution / marshalling terminals"
+    ],
+    [
+      "XPE",
+      "Phoenix Contact",
+      "PT 2,5-PE / 3209536",
+      24,
+      "Protective earth/shield terminals"
+    ],
+    [
+      "DIN",
+      "Phoenix Contact",
+      "NS 35/7,5 PERF / 0801733",
+      5,
+      "DIN rail 2m stock length / cut to layout"
+    ],
+    [
+      "WD",
+      "Engineering selection",
+      "Wiring duct",
+      8,
+      "Slotted wiring duct sections; exact cut lengths at layout"
+    ],
+    [
+      "ID",
+      "Phoenix Contact",
+      "MARKING SYSTEM",
+      1,
+      "Panel/terminal/wire marking kit"
+    ],
+    [
+      "CAB-ETH",
+      "Industrial Cat6 LSZH",
+      "CAT6 industrial",
+      1,
+      "Lot; Ethernet patch/field cables"
+    ],
+    [
+      "CAB-AI",
+      "Shielded instrumentation cable",
+      "2/4 conductor, >=1.0mm2",
+      1,
+      "Lot; lengths from field takeoff"
+    ],
+    [
+      "CAB-FEED",
+      "Cu multipolar 0.6/1kV",
+      "3G4 mm2 equivalent",
+      10,
+      "Feeder, 2F+PE, approximate meters"
+    ]
+  ],
+  "load_basis": {
+    "cpu_max_a_24v": 1.03,
+    "im_max_a_24v": 0.7,
+    "ai16_electronics_a": 0.18,
+    "temperature_loops_a": 0.56,
+    "ai4_electronics_a": 0.675,
+    "co2_max_a": 11.2,
+    "hmi_max_a": 0.525,
+    "switch_design_a": 0.4,
+    "gateway_adapter_design_allowance_a": 0.5,
+    "raw_24v_a": 15.77,
+    "reserve_percent": 20,
+    "design_24v_a": 18.924,
+    "ups_continuous_a": 20,
+    "battery_ideal_ah_after_load_and_aging_reserves": 11.3544,
+    "selected_battery_string": "2 x 12V 24Ah series",
+    "ac_current_cbi_max_at_230v_a": 4.5,
+    "ac_current_climasys_a": 1.3,
+    "ac_aux_allowance_a": 0.1,
+    "ac_raw_a": 5.9,
+    "ac_with_20pct_reserve_a": 7.08,
+    "main_breaker_a": 20,
+    "feeder_section_mm2": 4
+  },
+  "thermal_basis": {
+    "cbi_loss_w": 48,
+    "cpu_loss_w": 3.6,
+    "im_loss_w": 2.4,
+    "ai16_loss_w": 9,
+    "ai4_loss_w": 16.2,
+    "hmi_max_w": 12.6,
+    "switch_allowance_w": 10,
+    "gateway_adapter_allowance_w": 12,
+    "protection_wiring_allowance_w": 10,
+    "raw_internal_loss_w": 123.8,
+    "with_20pct_reserve_w": 148.56,
+    "climasys_l35_l50_capacity_w": 240,
+    "utilization_at_l35_l50": 0.619,
+    "note": "Field transmitters are outside enclosure and are excluded from internal heat, but included in UPS load."
+  },
+  "release_gate": {
+    "li_created": true,
+    "electrical_load_closed_for_engineering": true,
+    "ups_battery_closed_for_engineering": true,
+    "thermal_capacity_closed_for_engineering": true,
+    "ip66_final_assembly_proven": false,
+    "approved_for_issue": false,
+    "blocker": "Schneider NSYCU350DG declares IP55 internal circuit. The final IP66 assembly requested by the project is not demonstrated by manufacturer documentation."
+  }
+}
