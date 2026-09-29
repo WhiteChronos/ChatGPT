@@ -281,7 +281,9 @@
     "new_panel_enclosure_is_project_output": true,
     "reference_panel_dimensions_must_not_be_inherited": true,
     "enclosure_selection_requires_capacity_proof": true,
-    "target_datasheet_dimensions_required_before_render": true
+    "target_datasheet_dimensions_required_before_render": true,
+    "pn_image_elaboration_directive_required": true,
+    "pn_image_elaboration_memory_required": true
   },
   "panel_standards": {
     "PN-AUT-01": {
@@ -693,6 +695,27 @@
       "QA",
       "MEMORY_SYNC",
       "RELEASE"
+    ]
+  },
+  "pn_image_elaboration_directive": {
+    "directive_id": "PN-IMAGE-ELABORATION-DIRECTIVE-V1",
+    "prompt": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
+    "registry": "datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json",
+    "memory": "memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml",
+    "linked_model": "PN-IMAGE-MODEL-001",
+    "load_before_render": true,
+    "governs": [
+      "source_authority",
+      "target_enclosure_sizing",
+      "visual_sections",
+      "electrical_architecture",
+      "communication_architecture",
+      "command_diagram",
+      "dimensioning",
+      "branding",
+      "canvas",
+      "parity_QA",
+      "memory_sync"
     ]
   }
 }
