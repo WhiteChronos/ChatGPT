@@ -4,7 +4,7 @@
   "panel_id": "PN-AUT-01",
   "revision_basis": "R02",
   "status": "HOLD_UNTIL_ALL_COMPONENTS_AND_SIGNALS_DEFINED",
-  "release_label": "BASE TÉCNICA AVANÇADA / 7 HOLDS RESTANTES / EXCEL AINDA BLOQUEADO / “A DO QUADRO” NÃO EMITIDO",
+  "release_label": "BASE TECNICA AVANCADA / 6 HOLDS PRINCIPAIS / EXCEL BLOQUEADO / A DO QUADRO NAO EMITIDO",
   "architecture": {
     "panel_count": 1,
     "controller_role": "PLC-01 is the central controller; all I/O, commands, interlocks and communications are subordinated to the PN-AUT-01 architecture.",
@@ -657,5 +657,13 @@
       ],
       "release_blocker": "Prospective short-circuit current Ik/Icc is still unknown, so conductor short-circuit withstand and breaker breaking capacity cannot be finally validated."
     }
+  },
+  "user_release_decisions": {
+    "short_circuit_method": "CALCULATE_FROM_UPSTREAM_SYSTEM_DATA",
+    "temperature_transmitter": "SEARCH_AND_FREEZE_WALL_MOUNT_4_20MA_HART_EQUIVALENT",
+    "co2_transmitter": "SELECT_INDUSTRIAL_EQUIVALENT_0_5000PPM_4_20MA_HART",
+    "vrf_gateway": "ONLY_OFFICIAL_TRANE_24VDC_GATEWAY",
+    "thermal_management": "SCHNEIDER_CLIMASYS_OR_EQUIVALENT_WITH_IP66_ASSEMBLY_PROOF",
+    "excel_release_rule": "ONLY_AFTER_ALL_6_HOLDS_TECHNICALLY_CLOSED"
   }
 }
