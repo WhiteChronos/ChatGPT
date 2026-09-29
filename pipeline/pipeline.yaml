@@ -271,3 +271,12 @@ release_policy:
   ml_override_of_deterministic_gate: REPROVADO
   autoevolution_locked_mutation: REPROVADO
   fail_closed: true
+
+candidate_engineering:
+  policy: configs/auto_engineering_v1.yaml
+  revision_service: pipeline/aut_panel_candidate_revision.py
+  runner: pipeline/aut_panel_candidate_runner.py
+  historical_revision_mutation_allowed: false
+  stop_before_release: true
+  terminal_automatic_status: CANDIDATE_READY_FOR_HUMAN_REVIEW
+  release_requires_human: true
