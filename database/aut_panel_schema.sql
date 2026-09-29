@@ -279,3 +279,15 @@ CREATE INDEX IF NOT EXISTS idx_candidate_revisions_panel
   ON candidate_revisions(panel_id, source_revision, candidate_revision);
 CREATE INDEX IF NOT EXISTS idx_candidate_revision_changes_candidate
   ON candidate_revision_changes(candidate_id);
+
+CREATE TABLE IF NOT EXISTS memory_mirrors (
+  event_id TEXT NOT NULL,
+  backend TEXT NOT NULL,
+  status TEXT NOT NULL,
+  backend_memory_id TEXT,
+  last_error TEXT,
+  mirrored_at TEXT NOT NULL,
+  PRIMARY KEY (event_id, backend),
+  FOREIGN KEY (event_id) REFERENCES memory_events(event_id)
+);
+CREATE INDEX IF NOT EXISTS idx_memory_mirrors_status ON memory_mirrors(backend, status);
