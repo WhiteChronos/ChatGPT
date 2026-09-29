@@ -66,3 +66,79 @@ def test_enabled_backend_uses_injected_memory_and_panel_metadata():
     assert fake.added[0]["metadata"]["event_id"] == "MEM-1"
     rows = backend.search(query="door", panel_id="PN-AUT-01", panel_revision="R02", limit=5)
     assert rows[0]["metadata"]["panel_id"] == "PN-AUT-01"
+
+
+def _load_db_module():
+    spec = importlib.util.spec_from_file_location("mem0_db", ROOT / "pipeline/aut_panel_db.py")
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _seed_event(dbmod, db):
+    with dbmod.connect(db) as conn:
+        conn.execute(
+            """INSERT INTO memory_events
+            (event_id,agent_id,panel_id,panel_revision,event_type,event_at,summary,evidence_json,immutable_history)
+            VALUES (?,?,?,?,?,?,?,?,1)""",
+            (
+                "MEM-1",
+                "QA",
+                "PN-AUT-01",
+                "R02",
+                "REGRESSION",
+                "2026-09-28T00:00:00+00:00",
+                "door regression",
+                '{"sha256":"' + "a" * 64 + '"}',
+            ),
+        )
+
+
+def test_mirror_is_idempotent_and_preserves_canonical_event(tmp_path):
+    dbmod = _load_db_module()
+    mod = load_module()
+    db = tmp_path / "db.sqlite3"
+    dbmod.init_db(db)
+    _seed_event(dbmod, db)
+
+    class Backend:
+        name = "mem0"
+
+        def __init__(self):
+            self.calls = 0
+
+        def add_event(self, event):
+            self.calls += 1
+            assert event["panel_id"] == "PN-AUT-01"
+            return "MEM-1"
+
+    backend = Backend()
+    first = mod.mirror_memory_event("MEM-1", db_path=db, backend=backend)
+    second = mod.mirror_memory_event("MEM-1", db_path=db, backend=backend)
+    assert first["status"] == "PASS"
+    assert second["status"] == "ALREADY_MIRRORED"
+    assert backend.calls == 1
+    with dbmod.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM memory_events").fetchone()[0] == 1
+        assert conn.execute("SELECT status FROM memory_mirrors").fetchone()[0] == "PASS"
+
+
+def test_mem0_failure_does_not_remove_canonical_event(tmp_path):
+    dbmod = _load_db_module()
+    mod = load_module()
+    db = tmp_path / "db.sqlite3"
+    dbmod.init_db(db)
+    _seed_event(dbmod, db)
+
+    class Backend:
+        name = "mem0"
+
+        def add_event(self, event):
+            raise RuntimeError("offline")
+
+    out = mod.mirror_memory_event("MEM-1", db_path=db, backend=Backend())
+    assert out["status"] == "FAILED"
+    with dbmod.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM memory_events").fetchone()[0] == 1
+        assert conn.execute("SELECT status FROM memory_mirrors").fetchone()[0] == "FAILED"
