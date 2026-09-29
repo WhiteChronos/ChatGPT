@@ -1,0 +1,436 @@
+{
+  "schema_version": "1.0",
+  "base_id": "PN-AUT-01-TECHNICAL-BASE-V1",
+  "panel_id": "PN-AUT-01",
+  "revision_basis": "R02",
+  "status": "HOLD_UNTIL_ALL_COMPONENTS_AND_SIGNALS_DEFINED",
+  "release_label": "ELÉTRICO INTEGRADO / DADOS A COMPLETAR / RELEASE HOLD / “A DO QUADRO” NÃO INVENTADO",
+  "architecture": {
+    "panel_count": 1,
+    "controller_role": "PLC-01 is the central controller; all I/O, commands, interlocks and communications are subordinated to the PN-AUT-01 architecture.",
+    "remote_panel": false,
+    "remote_io_allowed": true,
+    "remote_io_rule": "Only as expansion of the same PLC architecture and only after I/O matrix closure."
+  },
+  "components": [
+    {
+      "tag": "ENC-01",
+      "manufacturer": "Schneider Electric",
+      "model": "NSYCRN86300",
+      "status": "CONFIRMED",
+      "function": "Enclosure",
+      "electrical": {},
+      "mechanical": {
+        "height_mm": 800,
+        "width_mm": 600,
+        "depth_mm": 300,
+        "ip": "IP66",
+        "ik": "IK10"
+      },
+      "source": {
+        "url": "https://www.se.com/br/pt/product/NSYCRN86300/caixa-de-sobrepor-metalica-800x600x300mm/",
+        "consulted": "2026-09-29"
+      }
+    },
+    {
+      "tag": "PS-01",
+      "manufacturer": "Schneider Electric",
+      "model": "ABL8RPS24100",
+      "status": "CONFIRMED",
+      "function": "24 Vdc power supply",
+      "electrical": {
+        "input_vac": "100-120 Vac 1ph or 200-500 Vac phase-phase",
+        "output_vdc": 24,
+        "output_a": 10,
+        "output_w": 240,
+        "temporary_boost": "1.5 x In for 4 s",
+        "inrush_a": 30,
+        "efficiency": 0.87,
+        "power_loss_w": 31
+      },
+      "source": {
+        "url": "https://eshop.se.com/sa/abl8rps24100-regulated-switch-power-supply-modicon-power-supply-1-or-2-phase-100-500v-24v-10a.html",
+        "consulted": "2026-09-29"
+      }
+    },
+    {
+      "tag": "UPS-01",
+      "manufacturer": "ADEL System",
+      "model": "CBI2420A",
+      "status": "CONFIRMED_PRODUCT_HOLD_APPLICATION",
+      "function": "DC UPS / charger",
+      "electrical": {
+        "input_vac": "115-230 Vac, 277 Vac operational",
+        "load_output_vdc": 24,
+        "load_output_a": 20,
+        "power_boost_a": 25,
+        "power_boost_duration_min": 4,
+        "battery_charge_vdc": 24,
+        "battery_charge_a": 20,
+        "communication": "Modbus RTU"
+      },
+      "source": {
+        "url": "https://adelsystem.com/hubfs/CBI2420A%20Data%20sheet%20_R40.pdf?hsLang=it",
+        "consulted": "2026-09-29"
+      },
+      "hold": "Battery chemistry/capacity/autonomy and final application coordination not closed."
+    },
+    {
+      "tag": "HMI-01",
+      "manufacturer": "Schneider Electric",
+      "model": "HMIST6500",
+      "status": "CONFIRMED",
+      "function": "Local HMI on door",
+      "electrical": {
+        "rated_vdc": 24,
+        "range_vdc": "19.2-28.8",
+        "max_power_w": 12.6,
+        "max_inrush_a": 30
+      },
+      "source": {
+        "url": "https://productinfo.se.com/harmony_st6/harmony-st6-user-manual/English/BM_Aurora%20Magelis%20HMIST%20User%20Manual_57d08d23_T001969321.xml/%24/TPC_AuroraElectricalSpecs_57d08d23_T001966710",
+        "consulted": "2026-09-29"
+      }
+    },
+    {
+      "tag": "SW-01",
+      "manufacturer": "Siemens",
+      "model": "SCALANCE X208 / 6GK5208-0BA10-2AA3",
+      "status": "LEGACY_HOLD_SUCCESSOR",
+      "function": "Industrial Ethernet switch",
+      "electrical": {
+        "rated_vdc": 24,
+        "current_ma": 185,
+        "power_w": 3.84
+      },
+      "source": {
+        "url": "https://support.industry.siemens.com/cs/attachments/102048719/BA_SCALANCE-X-200_52.pdf",
+        "consulted": "2026-09-29"
+      },
+      "successor_candidate": {
+        "model": "XC208",
+        "reference": "6GK5208-0BA00-2AC2",
+        "power_current_ma_at_24v": 175,
+        "source": "https://support.industry.siemens.com/cs/attachments/109755326/109755326_X_200_Migration_EN.pdf"
+      }
+    },
+    {
+      "tag": "GW-01",
+      "manufacturer": "Trane",
+      "model": "FIACNXYEKIT",
+      "status": "CONFIRMED_HOLD_12V_SUPPLY",
+      "function": "VRF gateway",
+      "electrical": {
+        "supply_vdc": 12
+      },
+      "communication": {
+        "vrf_port": "X/Y/E",
+        "central_control_ports": [
+          "X1/Y1/E",
+          "X2/Y2/E"
+        ],
+        "max_vrf_systems": 8,
+        "max_indoor_units": 64
+      },
+      "source": {
+        "url": "https://www.trane.com.br/content/dam/Trane/Commercial/lar/br/produtos-sistemas/equipamentos/Sistema_VRF/tvr-connect/tvr-connect---acessorios/IOM-PB-VRF-TVR-Connect-XYE-KIT-FIACNXYEKIT-TVR-SVX040A-PB-01152027.pdf",
+        "consulted": "2026-09-29"
+      },
+      "hold": "Define dedicated 12 Vdc supply or validated 24->12 Vdc conversion path."
+    },
+    {
+      "tag": "PLC-01",
+      "manufacturer": "Siemens",
+      "model": "SIMATIC S7-1500",
+      "status": "HOLD_EXACT_CPU",
+      "function": "Central PLC",
+      "source_family": {
+        "url": "https://www.siemens.com/pt-br/products/simatic/s7-1500/",
+        "consulted": "2026-09-29"
+      },
+      "candidate_reference_only": {
+        "model": "CPU 1511-1 PN",
+        "order_number": "6ES7511-1AL03-0AB0",
+        "rated_vdc": 24,
+        "range_vdc": "19.2-28.8",
+        "source": "https://support.industry.siemens.com/teddatasheet/?caller=SIOS&format=pdf&language=en&mlfbs=6ES7511-1AL03-0AB0"
+      },
+      "hold": "Exact CPU can only be frozen after final I/O, communications, performance and spare-capacity requirements."
+    },
+    {
+      "tag": "AI-01",
+      "manufacturer": "Siemens",
+      "model": "ET 200SP AI",
+      "status": "HOLD_EXACT_MODULE",
+      "function": "Analog inputs",
+      "candidate_reference_only": {
+        "order_number": "6ES7134-6GB00-0BA1",
+        "type": "AI 2xI 2-/4-wire ST",
+        "rated_vdc": 24,
+        "current_max_ma": 45,
+        "power_loss_typ_w": 1.1,
+        "sensor_supply_2wire_max_ma": 50,
+        "sensor_supply_4wire_max_ma": 200,
+        "lifecycle": "Active",
+        "source": "https://mall.industry.siemens.com/goos/catalog/Pages/mmpdata.ashx?MLFB1=6ES7134-6GB00-0BA1&lang=en"
+      },
+      "hold": "Final channel count and signal type must be known before selection."
+    },
+    {
+      "tag": "XT-01",
+      "manufacturer": "Phoenix Contact",
+      "model": "PT 2,5 / 3209510",
+      "status": "CONFIRMED",
+      "function": "Feed-through terminal",
+      "electrical": {
+        "rated_v": 800,
+        "rated_a": 24,
+        "max_load_a_with_4mm2": 30,
+        "power_dissipation_nominal_w": 0.77
+      },
+      "connection": {
+        "nominal_mm2": 2.5,
+        "range_mm2": "0.14-4",
+        "mounting": [
+          "NS 35/7.5",
+          "NS 35/15"
+        ]
+      },
+      "source": {
+        "url": "https://www.phoenixcontact.com/pt-br/produtos/borne-de-passagem-pt-25-3209510",
+        "consulted": "2026-09-29"
+      }
+    },
+    {
+      "tag": "XPE-01",
+      "manufacturer": "Phoenix Contact",
+      "model": "PT 2,5-PE / 3209536",
+      "status": "CANDIDATE_HOLD_CONFIRM_PROJECT",
+      "function": "Protective earth terminal",
+      "connection": {
+        "range_mm2": "0.14-4",
+        "mounting": [
+          "NS 35/7.5",
+          "NS 35/15"
+        ]
+      },
+      "source": {
+        "url": "https://www.phoenixcontact.com/pt-br/produtos/borne-terra-modular-pt-25-pe-3209536",
+        "consulted": "2026-09-29"
+      },
+      "hold": "Confirm this exact PE terminal as project selection."
+    },
+    {
+      "tag": "DIN-01..03",
+      "manufacturer": "Phoenix Contact",
+      "model": "NS 35/7,5 PERF 2000MM / 0801733",
+      "status": "CANDIDATE_HOLD_CUT_LENGTH",
+      "function": "DIN rail",
+      "mechanical": {
+        "width_mm": 35,
+        "depth_mm": 7.5,
+        "length_mm": 2000,
+        "material": "steel galvanized"
+      },
+      "electrical": {
+        "short_time_withstand_1s_ka": 1.92
+      },
+      "source": {
+        "url": "https://www.phoenixcontact.com/pt-br/produtos/trilho-de-fixacao-perfurado-ns-35-75-perf-2000mm-0801733",
+        "consulted": "2026-09-29"
+      },
+      "hold": "Final cut lengths depend on layout."
+    },
+    {
+      "tag": "QF-01",
+      "manufacturer": "Schneider Electric",
+      "model": "A9F84232",
+      "status": "CANDIDATE_NOT_SIZED",
+      "function": "Incoming circuit breaker candidate",
+      "electrical": {
+        "poles": 2,
+        "in_a": 32,
+        "curve": "C",
+        "breaking_capacity_ka_at_220_240vac": 30,
+        "standard": "IEC 60947-2"
+      },
+      "source": {
+        "url": "https://www.se.com/br/pt/product/A9F84232/disjuntor-acti9-ic60h-2p-32a-curva-c-30ka-em-220-240vca-609472/",
+        "consulted": "2026-09-29"
+      },
+      "hold": "Do not freeze 32 A until Ib, Iz, Ik and coordination are calculated."
+    },
+    {
+      "tag": "QF24-01..04",
+      "manufacturer": "Schneider Electric",
+      "model": "A9F84210",
+      "status": "CANDIDATE_NOT_SIZED",
+      "function": "24 Vdc branch breaker candidate",
+      "electrical": {
+        "poles": 2,
+        "in_a": 10,
+        "curve": "C",
+        "breaking_capacity_ka_at_220_240vac": 30,
+        "standard": "IEC 60947-2"
+      },
+      "source": {
+        "url": "https://www.se.com/br/pt/product/A9F84210/disjuntor-acti9-ic60h-2p-10a-curva-c-30ka-em-220-240vca-609472/",
+        "consulted": "2026-09-29"
+      },
+      "hold": "Branch protection rating/curve must follow actual DC loads and manufacturer application rules."
+    }
+  ],
+  "signal_register": {
+    "status": "HOLD_NO_FIELD_SIGNAL_LIST",
+    "rule": "Every physical and communication signal must be mapped to PLC-01 or a validated remote I/O expansion of PLC-01.",
+    "required_fields": [
+      "signal_tag",
+      "equipment",
+      "description",
+      "signal_type",
+      "electrical_standard",
+      "normal_state",
+      "fail_state",
+      "source_destination",
+      "plc_station",
+      "module_order_number",
+      "channel",
+      "terminal",
+      "cable",
+      "shielding",
+      "interlock",
+      "alarm",
+      "source_reference"
+    ],
+    "known_interfaces": [
+      {
+        "interface": "HMI-01 <-> PLC-01",
+        "type": "Industrial Ethernet/PROFINET or supported Ethernet protocol",
+        "status": "HOLD_EXACT_CONFIGURATION"
+      },
+      {
+        "interface": "SW-01 <-> PLC-01",
+        "type": "Industrial Ethernet",
+        "status": "HOLD_SUCCESSOR_SELECTION"
+      },
+      {
+        "interface": "GW-01 <-> VRF",
+        "type": "X/Y/E proprietary VRF interface",
+        "status": "CONFIRMED"
+      },
+      {
+        "interface": "GW-01 <-> central control platform",
+        "type": "X1/Y1/E and X2/Y2/E",
+        "status": "CONFIRMED"
+      },
+      {
+        "interface": "PLC field DI/DO/AI/RTD",
+        "type": "Hardwired / ET 200SP",
+        "status": "HOLD_SIGNAL_COUNT_AND_TYPES"
+      }
+    ],
+    "missing_signal_data": [
+      "Complete equipment list controlled by PLC",
+      "DI points and normal/fail states",
+      "DO points and load current per point",
+      "AI points and standard (4-20 mA, 0-10 V, etc.)",
+      "RTD points and sensor type/wiring",
+      "Interlocks and permissives",
+      "Alarm points",
+      "Communication nodes and protocols",
+      "Spare I/O percentage",
+      "Field power responsibility (panel or external)"
+    ]
+  },
+  "electrical_load_control": {
+    "known_24vdc_loads": [
+      {
+        "tag": "HMI-01",
+        "max_w": 12.6,
+        "calc_a_at_24v": 0.525,
+        "status": "CONFIRMED"
+      },
+      {
+        "tag": "SW-01",
+        "w": 3.84,
+        "a": 0.185,
+        "status": "LEGACY_CONFIRMED_REFERENCE"
+      }
+    ],
+    "not_24vdc_direct": [
+      {
+        "tag": "GW-01",
+        "supply_vdc": 12,
+        "status": "HOLD_SUPPLY_PATH"
+      }
+    ],
+    "pending_24vdc_loads": [
+      "PLC-01",
+      "IM-01",
+      "DI-01",
+      "DO-01",
+      "AI-01",
+      "RTD-01",
+      "KA-01..04",
+      "field sensors/transmitters powered by panel"
+    ],
+    "pending_ac_loads": [
+      "PS-01 input current at actual site voltage",
+      "UPS-01 input current at actual site voltage and operating mode",
+      "12 Vdc supply/converter if adopted"
+    ],
+    "thermal_known_w": [
+      {
+        "tag": "PS-01",
+        "loss_w": 31,
+        "status": "CONFIRMED"
+      },
+      {
+        "tag": "HMI-01",
+        "max_power_w": 12.6,
+        "status": "UPPER_BOUND_NOT_ALL_HEAT"
+      },
+      {
+        "tag": "SW-01",
+        "power_w": 3.84,
+        "status": "LEGACY_CONFIRMED_REFERENCE"
+      },
+      {
+        "tag": "AI-01",
+        "loss_w": 1.1,
+        "status": "CANDIDATE_REFERENCE_ONLY"
+      }
+    ]
+  },
+  "mandatory_missing_project_data": [
+    "Actual supply voltage at PN-AUT-01",
+    "Number of phases",
+    "Frequency confirmation",
+    "Earthing system",
+    "Prospective short-circuit current Ik/Icc at panel point",
+    "Feeder origin, length, installation method and conductor material",
+    "Maximum ambient temperature",
+    "Altitude",
+    "Indoor/outdoor installation and solar exposure if applicable",
+    "Required UPS autonomy",
+    "Battery manufacturer/model/chemistry",
+    "Complete field equipment list",
+    "Complete signal list and I/O matrix",
+    "Required spare I/O percentage",
+    "Whether 12 Vdc is externally available for FIACNXYEKIT",
+    "SPDA/LPS presence and SPD design basis"
+  ],
+  "release_gates": {
+    "exact_component_models_closed": false,
+    "signal_matrix_closed": false,
+    "load_24vdc_closed": false,
+    "ac_load_closed": false,
+    "gateway_12v_supply_closed": false,
+    "ups_battery_autonomy_closed": false,
+    "ib_in_iz_closed": false,
+    "ik_icu_closed": false,
+    "ina_icw_ipk_closed": false,
+    "thermal_verification_closed": false,
+    "final_a_do_quadro": false
+  }
+}
