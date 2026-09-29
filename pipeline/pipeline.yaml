@@ -30,6 +30,9 @@ contracts:
   open_source_registry: plugins/aut_panel_open_source_registry.json
   github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
   visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
+  pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
   panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
@@ -142,6 +145,9 @@ sequence:
     gate:
       - layout_quantity_equals_li
       - dimensions_real
+      - enclosure_capacity_proved_before_freeze
+      - enclosure_selected_from_target_project_content
+      - target_enclosure_dimensions_frozen_in_datasheet
       - component_dimensional_evidence_complete
       - manufacturer_mounting_clearances_loaded
       - hmi_on_door
@@ -175,6 +181,10 @@ sequence:
       - approved_template_id
       - approved_template_fingerprint
       - visual_composition_v3_loaded
+      - pn_image_model_001_loaded
+      - pn_image_model_001_prompt_loaded
+      - target_panel_dimensions_from_target_datasheet
+      - reference_panel_dimensions_not_inherited
       - dimensional_closure_passed
       - render_derived_from_validated_layout
       - panel_render_gate_passed
