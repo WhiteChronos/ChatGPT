@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/aut-panel-control-v1
+      - feat/aut-panel-auto-engineering-v1-impl
     paths:
       - '.github/workflows/aut-panel-learning.yml'
       - 'AGENTS.md'
