@@ -9,6 +9,7 @@ policy:
   locked_contract_change_requires_explicit_user_authorization: true
   ml_is_advisory_only: true
   autoevolution_mode: PROPOSAL_ONLY
+  autoengineering_mode: CANDIDATE_REVISION_ONLY
   human_gate_required_before_behavior_change: true
   per_panel_state_isolation: true
   append_only_memory_for_released_revisions: true
@@ -62,7 +63,7 @@ agents:
     result_schema: schemas/layout_optimizer_result_v1.schema.json
     solver: OR_TOOLS_CP_SAT
     dependency_graph: NetworkX
-    decision_policy: USER_DECISION_REQUIRED_FOR_ENCLOSURE_OR_SPLIT
+    decision_policy: AUTO_CANDIDATE_REVISION_FOR_ENCLOSURE_OR_SPLIT
   - {id: RENDERER, role: "Gerar desenho vetorial canônico e imagens derivadas.", datacenter_namespace: agent_dc.renderer, memory_namespace: agent_memory.renderer, read_scope: [validated_layout, approved_visual_template], write_scope: [vector_artifacts, raster_artifacts, render_metrics]}
   - {id: QA, role: "Verificar geometria, paridade, evidência, workbook, imagem e regressão.", datacenter_namespace: agent_dc.qa, memory_namespace: agent_memory.qa, read_scope: [all_artifacts, all_contracts], write_scope: [qa_runs, qa_findings]}
   - {id: MEMORY_CURATOR, role: "Registrar decisões, revisões, HOLDs e eventos sem sobrescrever histórico.", datacenter_namespace: agent_dc.memory, memory_namespace: agent_memory.curator, read_scope: [approved_decisions, qa_runs, revision_events, normative_events], write_scope: [memory_events]}
@@ -114,3 +115,13 @@ agents:
     required_skill: aut-panel-engineering
     canvas_policy: GROW_CANVAS_KEEP_SCALE
     failure_status: REPROVADO
+
+  - id: AUTO_ENGINEERING_COORDINATOR
+    role: "Criar e coordenar revisões candidatas automáticas sem alterar histórico nem liberar engenharia."
+    datacenter_namespace: agent_dc.auto_engineering
+    memory_namespace: agent_memory.auto_engineering
+    read_scope: [canonical_contracts, current_panel_revision, validated_sources, qa_findings, candidate_policy]
+    write_scope: [candidate_revisions, candidate_revision_changes, candidate_artifacts]
+    implementation: pipeline/aut_panel_candidate_revision.py
+    policy: configs/auto_engineering_v1.yaml
+    release_authority: false
