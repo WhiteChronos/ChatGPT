@@ -281,7 +281,7 @@
     }
   ],
   "signal_register": {
-    "status": "HOLD_NO_FIELD_SIGNAL_LIST",
+    "status": "PARTIALLY_CLOSED_BY_LI_702",
     "rule": "Every physical and communication signal must be mapped to PLC-01 or a validated remote I/O expansion of PLC-01.",
     "required_fields": [
       "signal_tag",
@@ -330,17 +330,21 @@
       }
     ],
     "missing_signal_data": [
-      "Complete equipment list controlled by PLC",
-      "DI points and normal/fail states",
-      "DO points and load current per point",
-      "AI points and standard (4-20 mA, 0-10 V, etc.)",
-      "RTD points and sensor type/wiring",
-      "Interlocks and permissives",
-      "Alarm points",
-      "Communication nodes and protocols",
-      "Spare I/O percentage",
-      "Field power responsibility (panel or external)"
-    ]
+      "Confirmar se LI-702 Rev.0 é a lista final para projeto executivo ou se haverá revisão com DI/DO/AO adicionais",
+      "Confirmar corrente máxima/consumo dos transmissores escolhidos, não apenas a faixa 4-20 mA",
+      "Confirmar se HART permanece requisito obrigatório da LI ou se prevalece a FD que diz que HART não é obrigatório para instrumentos de campo",
+      "Confirmar integração hardwired prioritária do SDAI e respectiva matriz de causa e efeito, caso gere DI/DO adicionais",
+      "Confirmar sinais físicos de status/falha/comando de UTA, renovação, exaustão e dampers que a FD prevê mas a LI atual resume como zero DI/DO/AO"
+    ],
+    "summary": {
+      "ai_2wire_4_20ma_hart_used": 56,
+      "ai_reserve": 11,
+      "ai_installed_total": 67,
+      "di": 0,
+      "do": 0,
+      "ao": 0,
+      "source": "LI-3501.02-8210-800-RPJ-702 Rev.0"
+    }
   },
   "electrical_load_control": {
     "known_24vdc_loads": [
@@ -400,25 +404,32 @@
         "loss_w": 1.1,
         "status": "CANDIDATE_REFERENCE_ONLY"
       }
-    ]
+    ],
+    "ai_load_from_project_docs": {
+      "used_loops": 56,
+      "reserve_channels": 11,
+      "installed_channels": 67,
+      "normal_full_scale_current_per_loop_ma": 20,
+      "used_loops_full_scale_a": 1.12,
+      "installed_capacity_full_scale_a": 1.34,
+      "status": "PRELIMINARY_FROM_SIGNAL_STANDARD",
+      "caveat": "Not a replacement for exact instrument maximum consumption/fault current from datasheets."
+    }
   },
   "mandatory_missing_project_data": [
-    "Actual supply voltage at PN-AUT-01",
-    "Number of phases",
-    "Frequency confirmation",
-    "Earthing system",
-    "Prospective short-circuit current Ik/Icc at panel point",
-    "Feeder origin, length, installation method and conductor material",
-    "Maximum ambient temperature",
-    "Altitude",
-    "Indoor/outdoor installation and solar exposure if applicable",
-    "Required UPS autonomy",
-    "Battery manufacturer/model/chemistry",
-    "Complete field equipment list",
-    "Complete signal list and I/O matrix",
-    "Required spare I/O percentage",
-    "Whether 12 Vdc is externally available for FIACNXYEKIT",
-    "SPDA/LPS presence and SPD design basis"
+    "Tensão real de alimentação CA do PN-AUT-001 (FD cita 120-230 Vac para a fonte, mas a tensão do ponto de alimentação do painel deve ser confirmada)",
+    "Número de fases e frequência efetiva do alimentador",
+    "Esquema de aterramento do ponto de instalação",
+    "Ik/Icc prospectivo no ponto do painel",
+    "Origem, comprimento, material, seção e método de instalação do alimentador",
+    "Temperatura ambiente máxima e altitude",
+    "Confirmação se LI-702 Rev.0 é final ou se haverá DI/DO/AO adicionais",
+    "Matriz de causa e efeito/SDAI e eventuais I/O hardwired adicionais",
+    "Modelos exatos dos 28 transmissores de temperatura e 28 sensores de CO2 para fechar consumo e alimentação",
+    "Decisão HART: obrigatório pela LI versus não obrigatório pela FD",
+    "Carga crítica final que ficará na UPS para fechar bateria de 20 min",
+    "Solução que reconcilie IP66 com ventilação forçada filtrada",
+    "Confirmação da solução de 12 Vcc do gateway FIACNXYEKIT, se esse gateway continuar selecionado"
   ],
   "release_gates": {
     "exact_component_models_closed": false,
@@ -432,5 +443,103 @@
     "ina_icw_ipk_closed": false,
     "thermal_verification_closed": false,
     "final_a_do_quadro": false
+  },
+  "source_documents": [
+    {
+      "id": "DOC-LI-702-R0",
+      "title": "LI-3501.02-8210-800-RPJ-702 Rev.0 - Lista de Entradas e Saídas",
+      "source_type": "USER_PROJECT_DOCUMENT",
+      "status": "CANONICAL_PROJECT_INPUT",
+      "key_facts": {
+        "actual_ai_2wire_4_20ma_hart": 56,
+        "installed_reserve_percent": 20,
+        "reserve_ai_channels": 11,
+        "installed_ai_total": 67,
+        "di": 0,
+        "do": 0,
+        "ao": 0,
+        "supply_for_listed_field_ai": "24 Vcc",
+        "redundancy": "NÃO",
+        "panel": "PN-AUT-001",
+        "signal_breakdown": {
+          "ambient_temperature_transmitters": 28,
+          "co2_sensors": 28
+        }
+      }
+    },
+    {
+      "id": "DOC-FD-001-A",
+      "title": "FD-3501.01-8210-800-RPJ-001 Rev.A - Sistema de Supervisão e Controle",
+      "source_type": "USER_PROJECT_DOCUMENT",
+      "status": "CANONICAL_PROJECT_INPUT",
+      "key_facts": {
+        "architecture": "01 painel principal PN-AUT-001; 01 CLP central; sem UTR",
+        "io_location": "Módulos de I/O instalados no PN-AUT-001",
+        "bms": "Integração com BMS do Prédio 534 via Modbus TCP/IP ou interface compatível",
+        "switch_requirement": "Gerenciável Layer 2, 8x RJ45 10/100/1000 Mbps, 24 Vcc, duas entradas redundantes",
+        "ups_minimum": "24 Vcc, mínimo 10 A / 240 W, autonomia mínima 20 min, VRLA AGM, monitoramento DC OK/Battery Mode/Alarm",
+        "cabinet_ip": "mínimo IP66",
+        "forced_ventilation": "ventilação forçada com filtros dimensionada por dissipação",
+        "fan_requirement": "24 Vcc, vazão >60 m3/h",
+        "auxiliary_supply_reference": "120-230 Vac input; 24-28 Vdc; 120 W reference Phoenix UNO2 or equivalent",
+        "selector_switch": "25 A, max 690 V, lockable red handle, IP65",
+        "surge_protection": "Classe II, Imax 40 kA, Up <1.5 kV, contato remoto",
+        "relay_requirement": "Slim 6.2 mm, 24 Vcc coil, 1NO/1NC, 6 A, LED",
+        "field_instrument_signals": "Prefer 4-20 mA; CO2 20-30 Vdc; DP and airflow instruments 24 Vdc nominal",
+        "applicable_standards": [
+          "PETROBRAS N-1521",
+          "PETROBRAS N-1710",
+          "PETROBRAS N-1882",
+          "PETROBRAS N-1883",
+          "PETROBRAS N-381",
+          "IEC 61131-3",
+          "ABNT NBR IEC 61439",
+          "ABNT NBR 16401",
+          "ABNT NBR 7256"
+        ]
+      }
+    }
+  ],
+  "resolved_engineering": {
+    "et200sp_ai_candidate": {
+      "model": "6ES7134-6TD00-0CA1",
+      "description": "ET 200SP AI 4xI 2-wire 4-20mA HART High Feature",
+      "lifecycle": "ACTIVE",
+      "channels_per_module": 4,
+      "modules_for_67_installed_channels": 17,
+      "provisioned_channels": 68,
+      "max_module_current_without_sensor_supply_ma": 25,
+      "typ_power_loss_without_sensor_supply_w": 0.65,
+      "sensor_supply_per_channel_max_ma": 20,
+      "basis": "17 x 4 = 68 >= 67 installed AI channels",
+      "source": "Siemens official"
+    },
+    "preliminary_ai_station_24v_load": {
+      "module_electronics_a": 0.425,
+      "field_loops_at_20ma_for_67_channels_a": 1.34,
+      "subtotal_a": 1.765,
+      "caveat": "Preliminary normal-range design basis only; final instrument datasheets and fault current behavior must be checked."
+    },
+    "switch_candidate": {
+      "model": "SCALANCE XC208G",
+      "order_number": "6GK5208-0GA00-2AC2",
+      "status": "ACTIVE",
+      "match": "Meets FD requirement: managed Layer 2, 8x RJ45 10/100/1000 Mbps, redundant 24 Vdc supply.",
+      "source": "Siemens official"
+    },
+    "ups_basis": {
+      "minimum_output": "24 Vdc, 10 A / 240 W",
+      "minimum_autonomy_min": 20,
+      "battery": "VRLA AGM 24 Vdc",
+      "status": "REQUIREMENT_RESOLVED_MODEL_PENDING_LOAD",
+      "note": "UPS exact battery/module cannot be frozen until final critical 24 Vdc load is calculated."
+    },
+    "ventilation_conflict": {
+      "status": "HOLD_TECHNICAL_CONFLICT",
+      "requirement_a": "Cabinet minimum IP66",
+      "requirement_b": "Forced filtered ventilation >60 m3/h",
+      "finding": "Typical Rittal filter-fan solutions found are IP54/IP55/IP56, so a standard cutout can reduce the enclosure protection below IP66.",
+      "action": "Either approve reduced enclosure IP at ventilation openings, or select a cooling method/accessory maintaining required protection; thermal calculation required first."
+    }
   }
 }
