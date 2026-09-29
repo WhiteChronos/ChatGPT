@@ -1,0 +1,11 @@
+{
+  "registry_id": "AUT-PANEL-AGENT-MEMORY-BENCHMARK-V1",
+  "repository": "vectorize-io/agent-memory-benchmark",
+  "pinned_commit": "03c1d0f1d27da63034f0931121c858faba512383",
+  "license_status": "HOLD_LICENSE_REVIEW",
+  "security_review_status": "PENDING",
+  "activation_allowed": false,
+  "integration_mode": "EXTERNAL_OPTIONAL",
+  "install_policy": "NO_IMPLICIT_INSTALL",
+  "engineering_release_authority": false
+}
