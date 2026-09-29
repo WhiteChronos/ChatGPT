@@ -20,6 +20,29 @@ def _enclosure_candidates(catalog: Mapping[str,Any]) -> list[Mapping[str,Any]]:
             out.append(item)
     return out
 
+def choose_enclosure_candidate(panel, instances, catalog: Mapping[str,Any], config) -> dict[str,Any] | None:
+    alternatives = find_larger_enclosure_candidates(
+        panel, instances, _enclosure_candidates(catalog), config
+    )
+    if not alternatives:
+        return None
+    selected = alternatives[0]
+    panel_data = dict(selected.panels[0]) if selected.panels else {}
+    return {
+        "change_type": "ENCLOSURE_CHANGE",
+        "alternative_id": selected.alternative_id,
+        "enclosure_catalog_id": panel_data.get("enclosure_catalog_id"),
+        "after": panel_data,
+        "evidence": {
+            "diagnostics": list(selected.diagnostics),
+            "metrics": dict(selected.metrics),
+        },
+        "invalidates": ["LOAD_BALANCE", "BOM", "LAYOUT", "RENDER_IMAGE", "QA", "MEMORY_SYNC", "RELEASE"],
+        "requires_candidate_revision": True,
+        "release_requires_human": True,
+    }
+
+
 def optimize_panel(panel_id: str, li: Mapping[str,Any], bom: Mapping[str,Any], catalog: Mapping[str,Any], project: Mapping[str,Any], config: LayoutConfig | None = None) -> LayoutResult:
     cfg=config or LayoutConfig()
     try:
