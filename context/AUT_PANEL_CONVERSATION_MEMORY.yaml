@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 14
+  sync_revision: 15
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -126,6 +126,15 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  consolidated_technical_base:
+    base_id: PN-AUT-01-TECHNICAL-BASE-V1
+    json: datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json
+    summary: docs/PN_AUT_01_TECHNICAL_BASE_V1.md
+    panel_count: 1
+    panel_id: PN-AUT-01
+    controller_authority: PLC-01
+    excel_creation_blocked_until_base_closure: true
+    status: HOLD
   li_technical_documentation_control:
     control_id: AUT-PANEL-LI-TECHNICAL-DOSSIER-V1
     registry: datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json
@@ -381,3 +390,14 @@ history:
     catalogo/familia, ficha/pagina tecnica exata quando houver codigo exato, lifecycle,
     data de consulta e status documental. Familia ou referencia visual nao fecha HOLD de
     modelo exato; documentacao incompleta permanece HOLD.
+
+- revision: 15
+  at: '2026-09-29T14:20:00-03:00'
+  actor: user+assistant
+  event: PN_AUT_01_CONSOLIDATED_TECHNICAL_BASE_CREATED
+  summary: >-
+    Criada base tecnica consolidada do unico painel PN-AUT-01 antes de qualquer novo Excel.
+    A base registra componente por componente, dados oficiais confirmados, referencias candidatas,
+    cargas conhecidas, alimentacao 12 V do gateway Trane, sinalizacao/I-O ainda faltante e todos
+    os dados de campo necessarios para fechamento. PLC-01 permanece como controlador central.
+    Excel final fica bloqueado ate fechamento da base tecnica ou aprovacao explicita de pendencias.
