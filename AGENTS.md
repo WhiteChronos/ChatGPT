@@ -191,6 +191,9 @@ When this guard or its tests change, Codex SHALL run the AUT panel agent-system 
 ## Auxiliary memory contract
 Mem0 is optional auxiliary context only. Canonical Git/SQLite records and approved evidence always win. Only MEMORY_CURATOR may mirror canonical events to Mem0. ORCHESTRATOR may consume only context returned by `pipeline/aut_panel_memory_context.py`; engineering agents must not write engineering facts directly from Mem0 results. Mem0 outage falls back to canonical-only execution and does not clear or create engineering HOLDs.
 
+## Codex automatic-engineering prompt
+For automatic candidate engineering, Codex SHALL read `prompts/PROMPT_CODEX_AUT_PANEL_AUTO_ENGINEERING_V1.md` in addition to the canonical bootstrap and approved design/plan documents.
+
 ## Automatic engineering candidate revisions
 Codex MAY create and modify new engineering candidate revisions using `pipeline/aut_panel_candidate_revision.py`, `pipeline/aut_panel_candidate_runner.py` and `pipeline/aut_panel_candidate_gate.py`. Candidate automation may revise enclosure, components, quantities, load sizing, I/O, communication, layout and candidate PLC logic when supported by validated evidence.
 
