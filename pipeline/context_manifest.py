@@ -27,6 +27,7 @@ CORE_INPUTS = (
     "datacenter/LI_MATERIAL_CONTROL.json",
     "memory/LI_MATERIAL_CONTROL_MEMORY.yaml",
     "configs/layout_optimizer_v1.yaml",
+    "configs/mem0_v1.yaml",
     "prompts/PROMPT_MASTER_AUT_PANEL_GITHUB_CODEX_V1.md",
     "context/AUT_PANEL_CONTEXT_MANIFEST_V1.yaml",
 )
@@ -241,6 +242,9 @@ def build_context_manifest(
                 "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
                 "memory/LI_MATERIAL_CONTROL_MEMORY.yaml",
             ],
+            "auxiliary_backend_config": "configs/mem0_v1.yaml",
+            "auxiliary_context_authoritative": False,
+            "reconciliation_module": "pipeline/aut_panel_memory_context.py",
         },
         "upstream_dependencies": ["BOOTSTRAP_CONTEXT", "DATACENTER", "DATASHEET"],
         "downstream_dependencies": {
