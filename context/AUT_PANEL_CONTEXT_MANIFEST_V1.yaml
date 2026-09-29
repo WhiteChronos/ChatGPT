@@ -63,6 +63,9 @@ visual_model_contract:
   model_id: PN-IMAGE-MODEL-001
   manifest: datacenter/images/PN_MODEL_001.json
   prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  elaboration_directive: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  elaboration_registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   target_panel_dimensions_source: target_datasheet
   reference_dimensions_inheritance_forbidden: true
 policy:
