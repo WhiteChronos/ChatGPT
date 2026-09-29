@@ -69,3 +69,25 @@ def test_runner_scores_must_include_and_must_exclude_without_llm():
     assert out["active_pass_rate"] == 0.5
     assert out["llm_judge_used"] is False
     assert out["results"][1]["unexpected_event_ids"] == ["B"]
+
+
+def test_memory_quality_gate_rejects_cross_panel_leakage():
+    mod=load_module('pipeline/aut_panel_memory_quality_gate.py','mq')
+    report={'active_pass_rate':0.99,'results':[{'category':'cross_panel','passed':False,'unexpected_event_ids':['MEM-PN2']}]}
+    out=mod.evaluate_memory_quality(report,min_active_pass_rate=0.90)
+    assert out['status']=='REPROVADO_MEMORY_ISOLATION'
+    assert out['engineering_release_authority'] is False
+
+
+def test_memory_quality_gate_holds_low_precision_without_isolation_failure():
+    mod=load_module('pipeline/aut_panel_memory_quality_gate.py','mq2')
+    report={'active_pass_rate':0.70,'results':[{'category':'stale_revision','passed':False,'unexpected_event_ids':['OLD']}]}
+    assert mod.evaluate_memory_quality(report,min_active_pass_rate=0.90)['status']=='HOLD_MEMORY_QUALITY'
+
+
+def test_memory_quality_gate_pass_is_memory_only():
+    mod=load_module('pipeline/aut_panel_memory_quality_gate.py','mq3')
+    report={'active_pass_rate':1.0,'results':[{'category':'cross_panel','passed':True,'unexpected_event_ids':[]}]}
+    out=mod.evaluate_memory_quality(report,min_active_pass_rate=0.90)
+    assert out['status']=='PASS'
+    assert out['engineering_release_authority'] is False
