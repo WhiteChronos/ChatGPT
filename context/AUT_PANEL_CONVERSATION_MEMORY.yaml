@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 12
-  last_sync_at: '2026-09-28T19:31:00-03:00'
+  sync_revision: 13
+  last_sync_at: '2026-09-28T22:42:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -208,6 +208,15 @@ mutable_state:
       slash: /refactor
       mode: BEHAVIOR_PRESERVING_WRITE
       behavior: Melhora estrutura sem mudar comportamento esperado e exige regressão/QA.
+auto_engineering_candidate_revision:
+  authorized: true
+  policy: configs/auto_engineering_v1.yaml
+  historical_r02_mutation_allowed: false
+  candidate_changes_allowed: [enclosure, component_substitution, quantities, layout, electrical_sizing, io, communication, plc_candidate, panel_split_proposal]
+  deterministic_gates_may_be_weakened: false
+  human_release_required: true
+  auto_merge_allowed: false
+  production_plc_download_allowed: false
 sync_policy:
   mandatory_read_on_new_conversation: true
   mandatory_write_after:
@@ -308,3 +317,14 @@ history:
     o modo dimensional não reduz raster para caber; scale_x=scale_y=1.0 e moldura
     menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard
     V3, CI e testes foram vinculados.
+
+- revision: 13
+  at: '2026-09-28T22:42:00-03:00'
+  actor: user+assistant
+  event: GOVERNED_AUTOMATIC_ENGINEERING_CANDIDATE_REVISIONS_AUTHORIZED
+  summary: >-
+    Usuário aprovou a especificação que autoriza alterações automáticas de engenharia
+    somente em nova revisão candidata, incluindo gabinete, componentes, quantitativos,
+    layout, cargas, I/O, comunicação e lógica candidata de CLP. A R02 e demais revisões
+    históricas permanecem imutáveis. Release para fabricação, compra vinculante,
+    auto-merge e download para CLP de produção permanecem sob controle humano.
