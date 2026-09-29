@@ -230,3 +230,34 @@ def test_rollback_candidate_marks_abandoned_without_deleting_history(tmp_path):
             "SELECT status FROM candidate_revisions WHERE candidate_id=?",
             (cand["candidate_id"],),
         ).fetchone()[0] == "ABANDONED"
+
+
+def test_apply_change_enforces_candidate_policy_and_blocks_governance_change(tmp_path):
+    import pytest
+    dbmod = load_module("dbsvc5", "pipeline/aut_panel_db.py")
+    db = tmp_path / "db.sqlite3"
+    dbmod.init_db(db)
+    seed_panel(dbmod, db)
+    svc = load_module("candidate5", "pipeline/aut_panel_candidate_revision.py")
+    cand = svc.create_candidate(
+        db,
+        panel_id="PN-AUT-01",
+        source_revision="R02",
+        trigger={"type": "POLICY"},
+        canonical_inputs={"li": "abc"},
+    )
+    with pytest.raises(ValueError, match="not authorized"):
+        svc.apply_change(
+            db,
+            candidate_id=cand["candidate_id"],
+            change={
+                "change_type": "GOLDEN_RULE_CHANGE",
+                "path": "governance/golden_rules.yaml",
+                "before": {},
+                "after": {},
+                "evidence": {},
+                "invalidates": ["QA", "RELEASE"],
+            },
+        )
+    with dbmod.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM candidate_revision_changes").fetchone()[0] == 0
