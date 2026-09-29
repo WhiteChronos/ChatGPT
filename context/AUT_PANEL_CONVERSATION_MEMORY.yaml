@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 18
+  sync_revision: 19
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -463,3 +463,20 @@ history:
     ClimaSys, carga final, protecao final, layout e dupla validacao permanecem como HOLDs.
     O arquivo Excel correspondente e CANDIDATO e nao deve receber status Aprovado para Emissao
     ate zerar QA_HOLDS.
+
+- revision: 19
+  at: '2026-09-29T16:59:00-03:00'
+  actor: user+assistant
+  event: PN_AUT_001_LI_R03_ENGINEERING_EXECUTED
+  summary: >-
+    Executada a engenharia e criada a LI R03 do PN-AUT-001 em li/PN-AUT-001_LI_R03.json.
+    Selecoes fechadas incluem CPU S7-1500 1515-2 PN, ET 200SP HA com 68 canais fisicos AI HART,
+    HMIST6500, SCALANCE XC208G, gateway Trane TCONTCCMHCM04A com adaptador, transmissor
+    de temperatura HART baseado em iTEMP TMT72/TA30A, CO2 Omniguard Model 3100 0-5000 ppm
+    4-20mA HART, ADEL CBI2420A, banco 24V 24Ah, protecao Acti9 iC60H e ClimaSys NSYCU350DG.
+    Carga 24V de projeto 18.924 A, autonomia 30 min + 20%, alimentador final 4 mm2 Cu,
+    perda termica de projeto 148.56 W e capacidade ClimaSys considerada 240 W em L35-L50.
+    Planilha de engenharia R03 foi gerada fora do repositorio como artefato XLSX.
+    Release permanece HOLD porque o NSYCU350DG e declarado IP55 no circuito interno e a
+    documentacao oficial nao comprova que o conjunto modificado mantenha o requisito IP66.
+    Dupla validacao/reverificacao final tambem permanece pendente para status Aprovado para emissao.
