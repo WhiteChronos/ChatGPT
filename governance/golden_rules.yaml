@@ -243,3 +243,20 @@ required_rules:
   severity_on_violation: REPROVADO
   rule: Imagens dimensionais derivadas do modelo 3D não podem ser redimensionadas para caber em molduras. Na composição raster, scale_x e scale_y devem permanecer iguais a 1,0; se a moldura for menor que a imagem, a moldura/canvas deve crescer. Letterbox/pillarbox só pode adicionar espaço vazio, nunca reduzir a geometria.
 
+
+- id: GR-085
+  name: MODEL 001 define composição, não dimensão física
+  severity_on_violation: REPROVADO
+  rule: PN-IMAGE-MODEL-001 é o padrão obrigatório de composição, linguagem gráfica e organização documental para novos painéis PN, mas suas dimensões de exemplo nunca podem ser herdadas como dimensões físicas de outro painel.
+- id: GR-086
+  name: Dimensão do gabinete é saída do projeto
+  severity_on_violation: REPROVADO
+  rule: Altura, largura e profundidade de cada novo painel PN devem ser determinadas a partir da LI/BOM do painel-alvo, dimensões e folgas oficiais dos componentes, canaletas, bornes, cabos, raio de curvatura, porta, UPS/baterias, climatização, manutenção e reserva física congelada. É proibido escolher o tamanho do gabinete copiando outro PN e depois forçar os componentes a caber.
+- id: GR-087
+  name: Selecionar gabinete após prova de capacidade
+  severity_on_violation: HOLD
+  rule: Para novo painel PN, o gabinete real de fabricante só pode ser congelado no Data Sheet após o layout dimensional provar capacidade e margem. Uma vez congelado para aquela revisão, mudança de gabinete invalida layout, render, QA e artefatos dependentes e exige revisão controlada.
+- id: GR-088
+  name: Prompt MODEL 001 obrigatório
+  severity_on_violation: REPROVADO
+  rule: Toda elaboração de imagem de painel PN deve carregar prompts/PROMPT_PN_IMAGE_MODEL_001.md e datacenter/images/PN_MODEL_001.json antes do dimensionamento visual e do render.
