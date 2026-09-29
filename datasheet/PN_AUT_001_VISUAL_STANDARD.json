@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "panel_id": "PN-AUT-001",
+  "datasheet_section": "VISUAL_STANDARD",
+  "revision": "R03",
+  "visual_template": {
+    "model_id": "PN-IMAGE-MODEL-001",
+    "manifest": "datacenter/images/PN_MODEL_001.json",
+    "status": "MANDATORY_BASELINE",
+    "usage": "Starting point for all PN image elaborations",
+    "cabinet_reference_mm": {
+      "height": 1800,
+      "width": 800,
+      "depth": 300
+    },
+    "side_view_dimension": "300 mm depth only, aligned to actual lateral/depth axis",
+    "required_sections": [
+      "Vistas gerais",
+      "Arquitetura eletrica",
+      "Arquitetura de comunicacao",
+      "Diagrama de comando",
+      "Dimensionamento do painel",
+      "Legenda e dados do quadro"
+    ],
+    "brand_rule": "No large manufacturer footer logos; technical manufacturer/model identification only where needed."
+  },
+  "source_of_truth_precedence": [
+    "Canonical project premises",
+    "Panel datasheet",
+    "LI/BOM",
+    "Electrical load and sizing calculations",
+    "Validated manufacturer documentation",
+    "MODEL 001 visual structure"
+  ]
+}
