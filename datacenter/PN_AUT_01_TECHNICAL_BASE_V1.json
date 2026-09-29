@@ -4,7 +4,7 @@
   "panel_id": "PN-AUT-01",
   "revision_basis": "R02",
   "status": "HOLD_UNTIL_ALL_COMPONENTS_AND_SIGNALS_DEFINED",
-  "release_label": "BASE TECNICA AVANCADA / 6 HOLDS PRINCIPAIS / EXCEL BLOQUEADO / A DO QUADRO NAO EMITIDO",
+  "release_label": "BASE TECNICA AVANCADA / PESQUISA E DIMENSIONAMENTO AUTORIZADOS / EXCEL BLOQUEADO ATE FECHAMENTO TECNICO / A DO QUADRO NAO EMITIDO",
   "architecture": {
     "panel_count": 1,
     "controller_role": "PLC-01 is the central controller; all I/O, commands, interlocks and communications are subordinated to the PN-AUT-01 architecture.",
@@ -569,11 +569,11 @@
       "caution": "FD-001 says HART is not mandatory for some field instruments, but user elected HART; LI-702 is maintained as the project I/O requirement."
     },
     "co2": {
-      "status": "HOLD_MODEL_IDENTITY_AND_COMPLIANCE",
-      "user_reference": "C732A - Honeywell",
-      "finding": "No official Honeywell C732A CO2 model located. Official Honeywell families located include C7232A; current Honeywell selection guides list C7232A variants with 0/4-20 mA or 0/2-10 Vdc outputs.",
-      "compliance_gap": "FD requires 0-5000 ppm and project requires HART. Located C7232A material is generally 0-2000 ppm and does not establish HART compatibility.",
-      "action": "Do not freeze C7232A until exact 0-5000 ppm + 4-20 mA + HART compliance is proven, or select an alternative technical equivalent that meets all three requirements."
+      "status": "REFERENCE_ACCEPTED_EQUIVALENT_RESEARCH_REQUIRED",
+      "user_reference": "Honeywell C732A (likely intended C7232A family, identity not yet proven)",
+      "official_candidate_found": "Honeywell Sensepoint XCL CO2 5000 ppm, 4-20 mA variants",
+      "hart_gap": "Sensepoint XCL page located does not establish HART. Honeywell XNX Universal Transmitter supports 4-20 mA + HART, but final CO2 sensor/transmitter combination must be validated for 0-5000 ppm HVAC application.",
+      "selected_solution_path": "Research/freeze an equivalent technical model meeting 0-5000 ppm, 4-20 mA, HART and 24 Vdc-compatible supply, without requiring user re-approval."
     },
     "gateway": {
       "status": "HOLD_SUPPLY_CONFLICT",
@@ -582,7 +582,7 @@
       "action": "If FIACNXYEKIT remains selected, add a validated 24->12 Vdc DC/DC converter or dedicated 12 Vdc supply. Alternatively select a homologated 24 Vdc gateway if available for the supplied VRF system."
     },
     "short_circuit": {
-      "status": "HOLD_UPSTREAM_IMPEDANCE_REQUIRED",
+      "status": "ENGINEERING_PROCEEDS_WITH_CONSERVATIVE_BREAKING_CAPACITY_RESIDUAL_VERIFICATION",
       "method": "IEC 60909-0:2026 / equivalent LV short-circuit method",
       "known": {
         "panel_voltage_vac": 220,
@@ -598,7 +598,9 @@
         "upstream transformer kVA, secondary voltage, uk%, upstream network data plus feeder conductor material/section/length to the adjacent panel",
         "PN-AUT-001 feeder conductor material/section/length (even if very short)"
       ],
-      "validation_note": "Field prospective-fault-current/loop-impedance measurement may be used as supporting verification where permitted, but design calculation/source data remain required for release."
+      "validation_note": "Field prospective-fault-current/loop-impedance measurement may be used as supporting verification where permitted, but design calculation/source data remain required for release.",
+      "provisional_breaker_candidate": "Schneider Acti9 iC60H A9F84232, 2P, 32 A, curve C, 30 kA at 220/240 Vac per IEC 60947-2",
+      "caveat": "30 kA is device breaking capacity, not the installation prospective fault current. Final release shall retain a residual verification note unless actual Ik/Icc is later obtained."
     },
     "hmi": {
       "status": "CLOSED",
@@ -616,31 +618,38 @@
       "source": "Schneider official"
     },
     "temperature_transmitter": {
-      "status": "HOLD_HART_CONFLICT",
+      "status": "REFERENCE_ACCEPTED_EQUIVALENT_RESEARCH_REQUIRED",
       "user_reference": "NOVUS TEMP-WM",
-      "official_findings": {
-        "output": "2-wire 4-20 mA loop powered",
+      "confirmed_official_data": {
+        "mounting": "wall",
+        "output": "2-wire 4-20 mA",
         "supply": "12-30 Vdc",
-        "protection": "IP65 housing / IP40 sensor capsule",
-        "hart": "Not supported by TEMP-WM documentation located"
+        "range": "-20 to 70 C current official page",
+        "ingress": "housing IP65; sensor capsule IP40",
+        "hart": "not supported in located TEMP-WM official documentation"
       },
-      "consequence": "TEMP-WM is not acceptable if HART remains mandatory.",
-      "novus_hart_alternative": "TxIsoPack-HART / TxIsoRail-HART provide 4-20 mA + superimposed HART but are not equivalent wall-mount ambient transmitters.",
-      "action": "Select a wall-mount temperature transmitter explicitly supporting 4-20 mA + HART, or formally relax HART for this point type."
+      "selected_solution_path": "Keep TEMP-WM as reference model; search/freeze technically equivalent room-temperature solution. If HART remains mandatory, equivalent may require wall RTD/room sensor plus separate HART transmitter such as NOVUS TxIsoRail-HRT/TxIsoBlock-HRT.",
+      "sources": [
+        "NOVUS TEMP-WM official",
+        "NOVUS TxIsoRail-HRT official"
+      ]
     },
     "gateway_24v": {
-      "status": "CANDIDATE_FOUND_HOLD_TRANE_APPROVAL",
-      "candidate": "CoolAutomation CoolMasterNet",
-      "power": "12-24 Vdc; 24 Vdc supported",
-      "communications": [
-        "Ethernet",
-        "Modbus RS-485",
-        "RS-232",
-        "USB"
-      ],
-      "trane_compatibility": "CoolAutomation publishes compatibility with Trane VRF families including 4TVH/4TVHR/4TVA/4TVW/4TVX/4TVD/4TVF/4TVG/4TVE/4TVC/4TVB.",
-      "caveat": "Project FD requires gateway homologated by the VRF manufacturer. CoolAutomation compatibility does not by itself prove Trane homologation for the exact TVR Connect equipment supplied.",
-      "action": "Obtain Trane written approval/submittal for the exact VRF model before freezing CoolMasterNet. Otherwise use Trane TCONTCNMODBUS, which is manufacturer-native but requires 12 Vdc."
+      "status": "RESEARCH_SELECT_WITHOUT_USER_REAPPROVAL",
+      "priority": "Official Trane gateway compatible with exact TVR family and project BMS protocol",
+      "official_trane_evidence": {
+        "tvr_smart_gateway_family": [
+          "TCONTCCMA164A",
+          "TCONTCCMA1ADB",
+          "TCONTCCMIGU02A",
+          "TCONTCCMHCM04A",
+          "TCONTCCMIGU07A",
+          "TCONTSMCB24V",
+          "TCONTSMREP01"
+        ],
+        "current_status": "TCONTSMCB24V is officially listed under Trane TVR Smart Gateways; supply/protocol still needs extraction from official PDF before freezing."
+      },
+      "fallback_rule": "If no official Trane 24 Vdc gateway is proven, select another manufacturer only if compatibility with the exact Trane VRF system is documented and project protocol requirements are met."
     },
     "feeder": {
       "status": "PRELIMINARY_ENGINEERING_SELECTION",
@@ -656,6 +665,13 @@
         "Final verification must include ampacity correction for 40 C, installation method, grouping, short-circuit withstand, and upstream protective-device coordination."
       ],
       "release_blocker": "Prospective short-circuit current Ik/Icc is still unknown, so conductor short-circuit withstand and breaker breaking capacity cannot be finally validated."
+    },
+    "thermal": {
+      "status": "CLIMASYS_SELECTED_IP66_ENGINEERING_PROOF_REQUIRED",
+      "selected_family": "Schneider ClimaSys CU or equivalent",
+      "known": "Closed-loop dual air circuits; suitable for sealed electrical enclosures; 40 C ambient is within the family operating concept.",
+      "ip_note": "Current Schneider installation guidance requires enclosure sealing at least IP55 side / IP54 roof to prevent condensation; this is not explicit proof that the modified final assembly remains IP66.",
+      "engineering_action": "Perform thermal sizing, select model, sealing/gasket/cutout arrangement, and retain final IP66 verification evidence for the assembled panel."
     }
   },
   "user_release_decisions": {
@@ -664,6 +680,12 @@
     "co2_transmitter": "SELECT_INDUSTRIAL_EQUIVALENT_0_5000PPM_4_20MA_HART",
     "vrf_gateway": "ONLY_OFFICIAL_TRANE_24VDC_GATEWAY",
     "thermal_management": "SCHNEIDER_CLIMASYS_OR_EQUIVALENT_WITH_IP66_ASSEMBLY_PROOF",
-    "excel_release_rule": "ONLY_AFTER_ALL_6_HOLDS_TECHNICALLY_CLOSED"
+    "excel_release_rule": "ONLY_AFTER_ALL_6_HOLDS_TECHNICALLY_CLOSED",
+    "short_circuit_strategy": "Proceed with market-available breaker having high breaking capacity; do not wait for site Ik to continue engineering. Keep residual verification note.",
+    "temperature_transmitter_strategy": "Use NOVUS TEMP-WM as project reference and research a technically compliant equivalent; if HART cannot be met by TEMP-WM itself, engineer an equivalent architecture that preserves the project requirement.",
+    "co2_transmitter_strategy": "Use the user-provided Honeywell reference as basis and research a technically compliant equivalent on the internet without further approval.",
+    "vrf_gateway_strategy": "Research and select a manufacturer solution that meets the project, without waiting for user approval; prioritize official Trane/VRF compatibility.",
+    "load_strategy": "Derive final 24 Vdc load from selected supplier/model data.",
+    "thermal_strategy": "Use Schneider ClimaSys or equivalent and provide evidence/engineering justification for final IP66 assembly."
   }
 }
