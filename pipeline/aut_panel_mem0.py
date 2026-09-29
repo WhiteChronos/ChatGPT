@@ -93,3 +93,81 @@ def build_memory_backend(
         memory = memory_factory(config)
 
     return Mem0MemoryBackend(memory=memory)
+
+
+def mirror_memory_event(
+    event_id: str,
+    *,
+    db_path,
+    backend,
+) -> dict[str, Any]:
+    import json
+    import sqlite3
+    from datetime import datetime, timezone
+
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    try:
+        row = conn.execute(
+            "SELECT * FROM memory_events WHERE event_id=?",
+            (event_id,),
+        ).fetchone()
+        if row is None:
+            raise ValueError(f"memory event not found: {event_id}")
+
+        backend_name = str(getattr(backend, "name", "memory"))
+        existing = conn.execute(
+            "SELECT status,backend_memory_id FROM memory_mirrors WHERE event_id=? AND backend=?",
+            (event_id, backend_name),
+        ).fetchone()
+        if existing is not None and existing["status"] == "PASS":
+            return {
+                "status": "ALREADY_MIRRORED",
+                "event_id": event_id,
+                "backend": backend_name,
+                "backend_memory_id": existing["backend_memory_id"],
+            }
+
+        event = {
+            "event_id": row["event_id"],
+            "agent_id": row["agent_id"],
+            "panel_id": row["panel_id"],
+            "panel_revision": row["panel_revision"],
+            "event_type": row["event_type"],
+            "event_at": row["event_at"],
+            "summary": row["summary"],
+            "evidence": json.loads(row["evidence_json"] or "{}"),
+        }
+
+        try:
+            backend_memory_id = backend.add_event(event)
+            status = "PASS"
+            error = None
+        except Exception as exc:
+            backend_memory_id = None
+            status = "FAILED"
+            error = str(exc)
+
+        conn.execute(
+            """INSERT INTO memory_mirrors
+               (event_id,backend,status,backend_memory_id,last_error,mirrored_at)
+               VALUES (?,?,?,?,?,?)
+               ON CONFLICT(event_id,backend) DO UPDATE SET
+                 status=excluded.status,
+                 backend_memory_id=excluded.backend_memory_id,
+                 last_error=excluded.last_error,
+                 mirrored_at=excluded.mirrored_at""",
+            (event_id, backend_name, status, backend_memory_id, error, now),
+        )
+        conn.commit()
+        return {
+            "status": status,
+            "event_id": event_id,
+            "backend": backend_name,
+            "backend_memory_id": backend_memory_id,
+            "error": error,
+        }
+    finally:
+        conn.close()
