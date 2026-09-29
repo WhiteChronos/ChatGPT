@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 16
+  sync_revision: 17
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -126,6 +126,14 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  canonical_project_premises:
+    source: datacenter/PN_AUT_001_CANONICAL_PREMISES.json
+    status: FROZEN_BASELINE
+    inheritance: mandatory_for_all_future_elaborations
+    reask_policy: do_not_reask_frozen_answers
+    override_policy: explicit_user_override_or_higher_priority_controlled_document_only
+    change_control: version_and_log_all_overrides
+    downstream_invalidation: true
   external_technical_knowledge_base:
     registry: datacenter/external/PN_AUT_001_EXTERNAL_SOURCE_REGISTRY.json
     technical_kb: datacenter/external/PN_AUT_001_EXTERNAL_TECHNICAL_KB.md
@@ -429,3 +437,16 @@ history:
     Schneider Electrical Installation Guide, HMIST6500, ABL8RPS24100, ADEL CBI2420A, ET 200SP
     HART, NOVUS/Siemens transmissores HART, candidatos de CO2, familia ClimaSys e literatura
     oficial Trane TVR Smart com TCONTSMCB24V.
+
+- revision: 17
+  at: '2026-09-29T15:52:00-03:00'
+  actor: user+assistant
+  event: CANONICAL_PROJECT_PREMISES_FROZEN
+  summary: >-
+    Todas as respostas fornecidas pelo usuario ao longo do fechamento tecnico do PN-AUT-001
+    foram consolidadas como premissas-base canonicas no Data Center e na memoria operacional.
+    Todas as futuras elaboracoes devem carregar essas premissas antes de executar calculos,
+    selecao de componentes, BOM, layout, diagramas, matriz de I/O, memorial, QA, Excel e PDF.
+    Premissas congeladas nao devem ser perguntadas novamente. Alteracoes somente por instrucao
+    explicita posterior do usuario ou documento controlado de maior prioridade, sempre com
+    versionamento, registro de valor anterior/novo, motivo e invalidacao dos artefatos dependentes.
