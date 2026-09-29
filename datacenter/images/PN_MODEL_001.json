@@ -1,19 +1,19 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "model_id": "PN-IMAGE-MODEL-001",
-  "title": "Modelo 001 - Padrao visual inicial para imagens de paineis PN",
+  "title": "Modelo 001 - Estrutura visual base para elaboração de imagens de painéis PN",
   "status": "FROZEN_VISUAL_BASELINE",
   "source_artifact": {
     "filename": "PN_MODEL_001.png",
     "sandbox_path": "/mnt/data/datacenter/images/PN_MODEL_001.png",
     "note": "Binary snapshot generated in the active artifact workspace; GitHub stores this canonical manifest because the connected GitHub text API does not persist binary image bytes through create_file/update_file."
   },
-  "scope": "Mandatory starting visual template for any future PN panel image.",
-  "inheritance_rule": "All future PN images must begin from MODEL 001 structure, then substitute only panel-specific engineering data from the corresponding datasheet/LI/BOM.",
+  "scope": "Mandatory visual/document structure for future PN panel images. It is NOT a fixed cabinet-size template.",
+  "inheritance_rule": "All future PN images must inherit the MODEL 001 document structure and visual grammar, but panel dimensions, enclosure catalog, internal layout, component quantities, cooling solution and spacing must be recalculated for the target project.",
   "mandatory_layout": [
     "Top row: front closed view, front internal view with door open, right-side 3/4 view, legend/data block.",
     "Front view must show panel width and height dimensions using actual datasheet values.",
-    "Right-side 3/4 view must show only the cabinet depth dimension, aligned with the visible side/depth axis; for PN-AUT-001 this dimension is 300 mm.",
+    "Right-side 3/4 view must show only the target cabinet depth dimension, aligned with the visible side/depth axis; the numeric value must come from the target panel datasheet.",
     "Electrical architecture block: incoming supply, main protection, SPD, UPS, battery, 24 Vdc bus, PLC/network/gateway/I-O/instrumentation loads.",
     "Communication architecture block: BMS/supervisory network, Ethernet/PROFINET/BACnet/Modbus as applicable, PLC, switch, gateway and field equipment.",
     "Command diagram block: local emergency, HMI/local commands, supervisory commands, PLC logic/interlocks, gateway/field commands and feedback.",
@@ -22,12 +22,14 @@
     "Do not place large manufacturer footer logos as page branding. Manufacturer/model names may appear only where technically needed in component identification or source data."
   ],
   "engineering_rules": [
+    "MODEL 001 defines document composition and visual grammar, never the physical size of a future panel.",
+    "Before rendering a new PN, determine enclosure size from the target LI/BOM, exact component geometry, clearances, wiring space, thermal management, maintenance access and physical reserve.",
     "Visual content is downstream of canonical premises, datasheet, LI/BOM, load calculation and validated component selection.",
-    "Never reuse PN-AUT-001 dimensions or component quantities for another PN unless its datasheet confirms them.",
     "Image is illustrative engineering communication, not authority over LI/BOM/datasheet.",
     "LI = BOM = LOAD = LAYOUT = IMAGE consistency is mandatory.",
     "If a dimension or equipment selection is not technically closed, mark it HOLD instead of inventing a value.",
-    "For side views, dimension arrows must follow the real measured cabinet axis and must not dimension the projected perspective width."
+    "For side views, dimension arrows must follow the real measured cabinet axis and must not dimension the projected perspective width.",
+    "PN-AUT-001 dimensions in this manifest are a worked reference instance only and shall not be inherited by other panels."
   ],
   "pn_aut_001_reference": {
     "panel_id": "PN-AUT-001",
@@ -39,11 +41,32 @@
     "side_dimension_rule": "300 mm depth only on right-side 3/4 view",
     "supply": "220 Vac, 2F, TN-S",
     "command_voltage": "24 Vdc via UPS",
-    "ambient": "40 C, altitude 0 m"
+    "ambient": "40 C, altitude 0 m",
+    "reference_role": "EXAMPLE_INSTANCE_ONLY_NOT_TEMPLATE_DIMENSIONS"
   },
   "change_control": {
     "mode": "EXPLICIT_USER_OVERRIDE_ONLY",
-    "rule": "MODEL 001 remains the starting visual baseline until explicitly superseded by a later approved visual model (MODEL 002, MODEL 003, etc.).",
+    "rule": "MODEL 001 remains the visual/document starting baseline until explicitly superseded by a later approved visual model. Target-panel dimensions are expected to vary and do not constitute a change to MODEL 001.",
     "versioning": "Never overwrite the meaning of MODEL 001; future changes create a new model revision/id."
+  },
+  "dimension_policy": {
+    "mode": "VARIABLE_BY_PROJECT",
+    "mandatory": true,
+    "rule": "Cabinet height, width and depth are project outputs, not MODEL 001 constants.",
+    "sizing_inputs": [
+      "validated LI/BOM quantities and exact component dimensions",
+      "manufacturer mounting clearances",
+      "door-mounted devices and door/backplate interference",
+      "terminal quantity and marshalling space",
+      "cable ducts, cable-entry zone, gland access and bend radius",
+      "battery/UPS footprint and maintenance access",
+      "thermal losses and cooling equipment geometry",
+      "20 percent physical reserve unless target project defines another frozen reserve",
+      "segregation between power, control, communication and instrumentation",
+      "installation constraints and service access"
+    ],
+    "selection_rule": "Select an actual manufacturer enclosure only after the dimensional layout proves capacity. The target datasheet must freeze the selected enclosure dimensions before final rendering.",
+    "inheritance_prohibition": "Never copy 1800x800x300 mm or any other dimensions from PN-AUT-001 into a different PN merely because MODEL 001 is used.",
+    "existing_panel_rule": "Once a target panel enclosure is frozen in its datasheet/revision, changing it invalidates layout/render/QA and requires controlled revision."
   }
 }
