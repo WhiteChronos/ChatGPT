@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "AUT-PANEL-ELECTRICAL-SIZING-REFERENCES-V1",
+  "status": "CONTROLLED_REFERENCE_REGISTRY",
+  "verified_at": "2026-09-29",
+  "source_policy": "OFFICIAL_STANDARD_OR_MANUFACTURER_PRIMARY",
+  "references": [
+    {
+      "id": "ES-IEC-61439-1-2020",
+      "type": "standard",
+      "publisher": "IEC",
+      "reference": "IEC 61439-1:2020",
+      "title": "Low-voltage switchgear and controlgear assemblies - Part 1: General rules",
+      "official_url": "https://webstore.iec.ch/en/publication/32338",
+      "use": [
+        "assembly_rated_current_InA",
+        "temperature_rise",
+        "short_circuit",
+        "DC_in_assemblies"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-IEC-60204-1-6.1",
+      "type": "standard",
+      "publisher": "IEC",
+      "reference": "IEC 60204-1:2016+AMD1:2021 CSV",
+      "title": "Safety of machinery - Electrical equipment of machines - Part 1: General requirements",
+      "official_url": "https://webstore.iec.ch/en/publication/71256",
+      "use": [
+        "overcurrent",
+        "short_circuit_rating",
+        "protective_bonding",
+        "control_circuits",
+        "EMC"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-IEC-60947-2-2024",
+      "type": "standard",
+      "publisher": "IEC",
+      "reference": "IEC 60947-2:2024",
+      "title": "Low-voltage switchgear and controlgear - Part 2: Circuit-breakers",
+      "official_url": "https://webstore.iec.ch/en/publication/66277",
+      "use": [
+        "breaker_Icu_Ics",
+        "circuit_breaker_selection"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-IEC-60890-2022",
+      "type": "technical_report",
+      "publisher": "IEC",
+      "reference": "IEC TR 60890:2022",
+      "title": "A method of temperature-rise verification of low-voltage switchgear and controlgear assemblies by calculation",
+      "official_url": "https://webstore.iec.ch/en/publication/66007",
+      "use": [
+        "thermal_rise_calculation"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-IEC-62477-1-2022",
+      "type": "standard",
+      "publisher": "IEC",
+      "reference": "IEC 62477-1:2022 + COR1:2024",
+      "title": "Safety requirements for power electronic converter systems and equipment - Part 1: General",
+      "official_url": "https://webstore.iec.ch/en/publication/28936",
+      "use": [
+        "DC_power_supply",
+        "UPS_power_electronics"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-IEC-62485-2-2010",
+      "type": "standard",
+      "publisher": "IEC",
+      "reference": "IEC 62485-2:2010",
+      "title": "Safety requirements for secondary batteries and battery installations - Part 2: Stationary batteries",
+      "official_url": "https://webstore.iec.ch/en/publication/7091",
+      "use": [
+        "stationary_battery_safety"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-NR10-2026",
+      "type": "regulation",
+      "publisher": "Ministério do Trabalho e Emprego",
+      "reference": "NR-10",
+      "title": "Segurança em Instalações e Serviços em Eletricidade",
+      "official_url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-10-nr-10",
+      "use": [
+        "project_execution_operation_maintenance_safety"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29_NOTE_NEW_TEXT_EFFECTIVE_2027-06-01"
+    },
+    {
+      "id": "ES-SCHNEIDER-EIG",
+      "type": "manufacturer_guide",
+      "publisher": "Schneider Electric",
+      "reference": "Electrical Installation Guide",
+      "title": "Electrical Installation Guide - IEC standards",
+      "official_url": "https://www.se.com/ww/en/work/products/product-launch/electrical-installation-guide/",
+      "use": [
+        "cable_sizing",
+        "voltage_drop",
+        "protection",
+        "short_circuit",
+        "earthing",
+        "EMC",
+        "harmonics"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-SCHNEIDER-COORD-2026",
+      "type": "manufacturer_guide",
+      "publisher": "Schneider Electric",
+      "reference": "LVPED318033EN v4.0 2026",
+      "title": "Selectivity, Cascading and Coordination Guide 2026",
+      "official_url": "https://www.se.com/in/en/download/document/LVPED318033EN/",
+      "use": [
+        "selectivity",
+        "cascading",
+        "coordination"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-SCHNEIDER-ABL8RPS24100",
+      "type": "manufacturer_product",
+      "publisher": "Schneider Electric",
+      "reference": "ABL8RPS24100",
+      "title": "24 Vdc 10 A 240 W regulated power supply",
+      "official_url": "https://www.se.com/br/pt/product/ABL8RPS24100/",
+      "use": [
+        "PN-AUT-01_power_supply_capacity"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-SCHNEIDER-HMIST6500",
+      "type": "manufacturer_product",
+      "publisher": "Schneider Electric",
+      "reference": "HMIST6500",
+      "title": "Harmony ST6 electrical specifications",
+      "official_url": "https://productinfo.se.com/harmony_st6/harmony-st6-user-manual/English/BM_Aurora%20Magelis%20HMIST%20User%20Manual_57d08d23_T001969321.xml/%24/TPC_AuroraElectricalSpecs_57d08d23_T001966710",
+      "use": [
+        "24VDC_load",
+        "thermal_loss_upper_bound"
+      ],
+      "data": {
+        "rated_voltage_vdc": 24,
+        "max_power_w": 12.6,
+        "inrush_current_max_a": 30
+      },
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-SIEMENS-ET200SP-SM-2025",
+      "type": "manufacturer_manual",
+      "publisher": "Siemens",
+      "reference": "ET 200SP System Manual 06/2025 A5E03576849-AQ",
+      "title": "SIMATIC ET 200SP distributed I/O system",
+      "official_url": "https://support.industry.siemens.com/cs/attachments/download/58649293/et200sp_system_manual_en-US_en-US.pdf",
+      "use": [
+        "potential_groups",
+        "current_carrying_capacity",
+        "module_supply"
+      ],
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-SIEMENS-X208",
+      "type": "manufacturer_manual",
+      "publisher": "Siemens",
+      "reference": "SCALANCE X-200",
+      "title": "SCALANCE X208 technical data",
+      "official_url": "https://support.industry.siemens.com/cs/attachments/102051962/BA_SCALANCE-X-200_76.pdf",
+      "use": [
+        "24VDC_load_reference_only"
+      ],
+      "data": {
+        "rated_voltage_vdc": 24,
+        "current_a": 0.185,
+        "power_loss_w": 3.84
+      },
+      "status": "OFFICIAL_VERIFIED_LEGACY_REFERENCE_2026-09-29"
+    },
+    {
+      "id": "ES-PHOENIX-PT25-3209510",
+      "type": "manufacturer_product",
+      "publisher": "Phoenix Contact",
+      "reference": "PT 2,5 - 3209510",
+      "title": "Borne de passagem PT 2,5",
+      "official_url": "https://www.phoenixcontact.com/pt-br/produtos/borne-de-passagem-pt-25-3209510",
+      "use": [
+        "terminal_current_rating",
+        "conductor_range"
+      ],
+      "data": {
+        "rated_current_a": 24,
+        "rated_voltage_v": 800,
+        "cross_section_nominal_mm2": 2.5
+      },
+      "status": "OFFICIAL_VERIFIED_2026-09-29"
+    },
+    {
+      "id": "ES-PULS-CP10.241",
+      "type": "manufacturer_product",
+      "publisher": "PULS",
+      "reference": "CP10.241",
+      "title": "24 V 10 A 240 W DIN rail power supply",
+      "official_url": "https://products.pulspower.com/us/cp10-241.html",
+      "use": [
+        "PN-AUT-02_candidate_power_supply_reference_only"
+      ],
+      "data": {
+        "rated_output_vdc": 24,
+        "rated_output_current_a": 10,
+        "rated_output_power_w": 240,
+        "power_loss_typ_w": 12.1
+      },
+      "status": "OFFICIAL_VERIFIED_2026-09-29_NOT_SAME_AS_LI_CPS.241"
+    },
+    {
+      "id": "ES-ADEL-CBI2420A",
+      "type": "manufacturer_product",
+      "publisher": "ADEL System",
+      "reference": "CBI2420A",
+      "title": "DC UPS controller - exact current datasheet pending reverification",
+      "official_url": "https://www.adelsystem.com/",
+      "use": [
+        "DC_UPS",
+        "battery_charge_path"
+      ],
+      "status": "PENDING_EXACT_OFFICIAL_DOCUMENT"
+    }
+  ],
+  "manufacturer_validation_rules": {
+    "exact_part_number_required": true,
+    "family_page_cannot_replace_exact_datasheet": true,
+    "coordination_must_use_tested_manufacturer_tables": true,
+    "obsolete_reference_requires_successor_validation": true,
+    "thermal_loss_must_come_from_exact_component_data": true
+  }
+}
