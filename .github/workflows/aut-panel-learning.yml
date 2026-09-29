@@ -37,6 +37,21 @@ on:
       - 'configs/auto_engineering_v1.yaml'
       - 'tests/test_aut_panel_candidate_*.py'
       - 'database/aut_panel_schema.sql'
+      - 'pipeline/aut_panel_mem0.py'
+      - 'pipeline/aut_panel_memory_context.py'
+      - 'pipeline/aut_panel_memory_benchmark.py'
+      - 'pipeline/aut_panel_memory_quality_gate.py'
+      - 'pipeline/aut_panel_artifact_verifier.py'
+      - 'configs/mem0_v1.yaml'
+      - 'memory/benchmark/**'
+      - 'plugins/agent_memory_benchmark_registry.json'
+      - 'prompts/PROMPT_CODEX_AUT_PANEL_AUTO_ENGINEERING_V1.md'
+      - 'prompts/PROMPT_CODEX_AUT_PANEL_CANDIDATE_REVIEW_V1.md'
+      - 'tests/test_aut_panel_mem0.py'
+      - 'tests/test_aut_panel_memory_context.py'
+      - 'tests/test_aut_panel_memory_benchmark.py'
+      - 'tests/test_aut_panel_codex_contract.py'
+      - 'tests/test_aut_panel_artifact_verifier.py'
   pull_request:
     branches: [main]
     paths:
@@ -55,6 +70,26 @@ on:
       - 'pipeline/panel_render_gate.py'
       - 'pipeline/corrigir_proporcao_imagem.py'
       - 'pipeline/evolution_engine.py'
+      - 'pipeline/aut_panel_candidate_revision.py'
+      - 'pipeline/aut_panel_candidate_runner.py'
+      - 'pipeline/aut_panel_candidate_gate.py'
+      - 'pipeline/aut_panel_mem0.py'
+      - 'pipeline/aut_panel_memory_context.py'
+      - 'pipeline/aut_panel_memory_benchmark.py'
+      - 'pipeline/aut_panel_memory_quality_gate.py'
+      - 'pipeline/aut_panel_artifact_verifier.py'
+      - 'configs/auto_engineering_v1.yaml'
+      - 'configs/mem0_v1.yaml'
+      - 'memory/benchmark/**'
+      - 'plugins/agent_memory_benchmark_registry.json'
+      - 'prompts/PROMPT_CODEX_AUT_PANEL_AUTO_ENGINEERING_V1.md'
+      - 'prompts/PROMPT_CODEX_AUT_PANEL_CANDIDATE_REVIEW_V1.md'
+      - 'tests/test_aut_panel_candidate_*.py'
+      - 'tests/test_aut_panel_mem0.py'
+      - 'tests/test_aut_panel_memory_context.py'
+      - 'tests/test_aut_panel_memory_benchmark.py'
+      - 'tests/test_aut_panel_codex_contract.py'
+      - 'tests/test_aut_panel_artifact_verifier.py'
       - 'pipeline/learning_pipeline.yaml'
       - 'pipeline/layout_optimizer/**'
       - 'configs/layout_optimizer_v1.yaml'
@@ -107,6 +142,11 @@ jobs:
             tests/test_aut_panel_fast_context.py \
             tests/test_aut_panel_cache.py \
             tests/test_aut_panel_candidate_*.py \
+            tests/test_aut_panel_mem0.py \
+            tests/test_aut_panel_memory_context.py \
+            tests/test_aut_panel_memory_benchmark.py \
+            tests/test_aut_panel_codex_contract.py \
+            tests/test_aut_panel_artifact_verifier.py \
             tests/test_layout_optimizer_*.py
       - name: Smoke test Fast Context CLI
         run: |
@@ -157,6 +197,44 @@ jobs:
           mkdir -p build/aut-panel-learning
           python pipeline/aut_panel_db.py --db build/aut-panel-learning/aut_panel.sqlite3 init
           python pipeline/aut_panel_db.py --db build/aut-panel-learning/aut_panel.sqlite3 status
+      - name: Verify historical LI remains immutable during candidate smoke
+        run: |
+          before="$(sha256sum li/PN-AUT-01_LI.json | awk '{print $1}')"
+          python - <<'PY'
+          from pathlib import Path
+          from pipeline import aut_panel_db
+          from pipeline.aut_panel_candidate_revision import create_candidate, apply_change
+          db = Path("build/aut-panel-learning/candidate-smoke.sqlite3")
+          aut_panel_db.init_db(db)
+          with aut_panel_db.connect(db) as conn:
+              conn.execute(
+                  "INSERT INTO panels(panel_id,revision,title,engineering_status,created_at) VALUES (?,?,?,?,?)",
+                  ("PN-AUT-01","R02","PN-AUT-01","HOLD","2026-09-28T00:00:00+00:00"),
+              )
+          candidate = create_candidate(
+              db,
+              panel_id="PN-AUT-01",
+              source_revision="R02",
+              trigger={"type":"CI_SMOKE"},
+              canonical_inputs={"li":"CI_HASH"},
+          )
+          apply_change(
+              db,
+              candidate_id=candidate["candidate_id"],
+              change={
+                  "change_type":"LAYOUT_CHANGE",
+                  "path":"layout",
+                  "before":{},
+                  "after":{"candidate":True},
+                  "evidence":{"kind":"CI"},
+                  "invalidates":["RENDER_IMAGE","QA","RELEASE"],
+              },
+          )
+          assert candidate["source_revision"] == "R02"
+          assert candidate["candidate_revision"] != "R02"
+          PY
+          after="$(sha256sum li/PN-AUT-01_LI.json | awk '{print $1}')"
+          test "$before" = "$after" || { echo "historical LI changed"; exit 1; }
       - name: Verify cold-start learning behavior
         run: |
           printf '%s\n' '{"features":{"quantity_mismatch":0.0},"label":"accepted","reviewed_by_human":true}' > build/aut-panel-learning/train.jsonl
