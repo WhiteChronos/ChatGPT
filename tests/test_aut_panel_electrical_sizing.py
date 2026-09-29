@@ -109,3 +109,20 @@ def test_rejects_in_below_ib_and_icu_below_ik():
     codes = {x["code"] for x in result["holds"]}
     assert "HOLD_IN_LT_IB" in codes
     assert "HOLD_ICU_LT_IK" in codes
+
+
+def test_pipeline_load_balance_is_wired_to_electrical_sizing_engine():
+    import yaml
+    pipeline = yaml.safe_load((ROOT / "pipeline/pipeline.yaml").read_text(encoding="utf-8"))
+    stage = next(x for x in pipeline["sequence"] if x["id"] == "LOAD_BALANCE")
+    assert stage["implementation"] == "pipeline/aut_panel_electrical_sizing.py"
+    assert stage["inputs"] == "datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json"
+    required = set(stage["gate"])
+    assert {
+        "prospective_short_circuit_current_known",
+        "ib_le_in_le_iz_verified",
+        "breaker_icu_not_less_than_ik",
+        "assembly_ina_verified",
+        "temperature_rise_verified",
+        "battery_autonomy_and_capacity_verified",
+    } <= required
