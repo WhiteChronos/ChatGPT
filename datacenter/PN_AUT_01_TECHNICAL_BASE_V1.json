@@ -417,23 +417,18 @@
     }
   },
   "mandatory_missing_project_data": [
-    "Tensão real de alimentação CA do PN-AUT-001 (FD cita 120-230 Vac para a fonte, mas a tensão do ponto de alimentação do painel deve ser confirmada)",
-    "Número de fases e frequência efetiva do alimentador",
-    "Esquema de aterramento do ponto de instalação",
-    "Ik/Icc prospectivo no ponto do painel",
-    "Origem, comprimento, material, seção e método de instalação do alimentador",
-    "Temperatura ambiente máxima e altitude",
-    "Confirmação se LI-702 Rev.0 é final ou se haverá DI/DO/AO adicionais",
-    "Matriz de causa e efeito/SDAI e eventuais I/O hardwired adicionais",
-    "Modelos exatos dos 28 transmissores de temperatura e 28 sensores de CO2 para fechar consumo e alimentação",
-    "Decisão HART: obrigatório pela LI versus não obrigatório pela FD",
-    "Carga crítica final que ficará na UPS para fechar bateria de 20 min",
-    "Solução que reconcilie IP66 com ventilação forçada filtrada",
-    "Confirmação da solução de 12 Vcc do gateway FIACNXYEKIT, se esse gateway continuar selecionado"
+    "Confirmar configuração da alimentação 220 Vca: 1F+N, 2F ou 3F.",
+    "Obter Ik/Icc no painel 220 V adjacente ou dados do transformador/rede para cálculo IEC 60909.",
+    "Informar material, seção e comprimento do alimentador entre painel 220 V e PN-AUT-001.",
+    "Confirmar modelo exato dos transmissores de temperatura.",
+    "Resolver modelo de CO2: referência 'C732A' não localizada; comprovar 0-5000 ppm + 4-20 mA + HART.",
+    "Resolver alimentação do FIACNXYEKIT: manual indica 12 Vcc; definir conversor 24->12 Vcc/fonte 12 Vcc ou gateway homologado 24 Vcc.",
+    "Selecionar solução térmica que mantenha IP66 integral a 40 °C.",
+    "Fechar carga crítica 24 Vcc final para dimensionar UPS/bateria de autonomia mínima 20 min."
   ],
   "release_gates": {
     "exact_component_models_closed": false,
-    "signal_matrix_closed": false,
+    "signal_matrix_closed": true,
     "load_24vdc_closed": false,
     "ac_load_closed": false,
     "gateway_12v_supply_closed": false,
@@ -540,6 +535,64 @@
       "requirement_b": "Forced filtered ventilation >60 m3/h",
       "finding": "Typical Rittal filter-fan solutions found are IP54/IP55/IP56, so a standard cutout can reduce the enclosure protection below IP66.",
       "action": "Either approve reduced enclosure IP at ventilation openings, or select a cooling method/accessory maintaining required protection; thermal calculation required first."
+    }
+  },
+  "project_answers": {
+    "received_at": "2026-09-29T14:42:00-03:00",
+    "supply_voltage_vac": 220,
+    "supply_phase_configuration": "PENDING_CONFIRMATION",
+    "earthing_system": "TN-S",
+    "prospective_short_circuit_ka": null,
+    "upstream_origin": "Painel elétrico 220 V localizado ao lado do PN-AUT-001",
+    "ambient_temperature_c": 40,
+    "altitude_m": 0,
+    "li_702_rev0_final": true,
+    "additional_sdai_hardwired_signals": false,
+    "hart_required_by_project": true,
+    "co2_user_reference": "C732A - Honeywell, igual ou similar técnico",
+    "gateway_user_supply_statement": "24 Vcc",
+    "enclosure_ip66_after_climate_control": true
+  },
+  "engineering_reconciliation": {
+    "hart": {
+      "status": "CLOSED_AS_PROJECT_REQUIREMENT",
+      "basis": [
+        "LI-3501.02-8210-800-RPJ-702 Rev.0 explicitly specifies 2-wire 4-20 mA + HART.",
+        "PETROBRAS N-1882 Rev.F (11/2023) is the current public catalog edition; secondary accessible text for 9.1.4 states that 4-20 mA transmitters/detectors/control-valve positioners shall have HART."
+      ],
+      "caution": "FD-001 says HART is not mandatory for some field instruments, but user elected HART; LI-702 is maintained as the project I/O requirement."
+    },
+    "co2": {
+      "status": "HOLD_MODEL_IDENTITY_AND_COMPLIANCE",
+      "user_reference": "C732A - Honeywell",
+      "finding": "No official Honeywell C732A CO2 model located. Official Honeywell families located include C7232A; current Honeywell selection guides list C7232A variants with 0/4-20 mA or 0/2-10 Vdc outputs.",
+      "compliance_gap": "FD requires 0-5000 ppm and project requires HART. Located C7232A material is generally 0-2000 ppm and does not establish HART compatibility.",
+      "action": "Do not freeze C7232A until exact 0-5000 ppm + 4-20 mA + HART compliance is proven, or select an alternative technical equivalent that meets all three requirements."
+    },
+    "gateway": {
+      "status": "HOLD_SUPPLY_CONFLICT",
+      "user_statement": "24 Vcc",
+      "official_product_evidence": "FIACNXYEKIT manual indicates 12 Vdc supply.",
+      "action": "If FIACNXYEKIT remains selected, add a validated 24->12 Vdc DC/DC converter or dedicated 12 Vdc supply. Alternatively select a homologated 24 Vdc gateway if available for the supplied VRF system."
+    },
+    "short_circuit": {
+      "status": "HOLD_UPSTREAM_IMPEDANCE_REQUIRED",
+      "method": "IEC 60909-0:2026 / equivalent LV short-circuit method",
+      "known": {
+        "panel_voltage_vac": 220,
+        "upstream_panel_adjacent": true
+      },
+      "cannot_be_derived_from": [
+        "breaker ampere rating alone",
+        "breaker Icu alone",
+        "physical proximity alone"
+      ],
+      "required_minimum": [
+        "Icc/Ik declared or calculated at the adjacent 220 V panel; OR",
+        "upstream transformer kVA, secondary voltage, uk%, upstream network data plus feeder conductor material/section/length to the adjacent panel",
+        "PN-AUT-001 feeder conductor material/section/length (even if very short)"
+      ],
+      "validation_note": "Field prospective-fault-current/loop-impedance measurement may be used as supporting verification where permitted, but design calculation/source data remain required for release."
     }
   }
 }
