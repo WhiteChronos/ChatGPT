@@ -1,0 +1,346 @@
+{
+  "schema_version": "1.0",
+  "sizing_id": "AUT-PANEL-ELECTRICAL-SIZING-INPUTS-R00",
+  "status": "DRAFT_HOLD_UNTIL_SITE_AND_EXACT_COMPONENT_DATA",
+  "policy": {
+    "no_estimated_panel_current": true,
+    "no_automatic_breaker_selection_without_manufacturer_coordination": true,
+    "no_release_without_short_circuit_data": true,
+    "no_release_without_thermal_verification": true,
+    "no_release_without_two_source_validators": true
+  },
+  "panels": {
+    "PN-AUT-01": {
+      "revision": "R02",
+      "site": {
+        "supply_voltage_v": null,
+        "phases": null,
+        "frequency_hz": null,
+        "earthing_system": null,
+        "prospective_short_circuit_ka": null,
+        "ambient_temperature_c": null,
+        "altitude_m": null,
+        "design_power_factor": null,
+        "design_efficiency": null
+      },
+      "ac_load_summary": {
+        "demand_va": null,
+        "design_current_a": null
+      },
+      "dc_bus": {
+        "nominal_voltage_v": 24,
+        "design_reserve_percent": 20
+      },
+      "power_supply": {
+        "model": "ABL8RPS24100",
+        "rated_output_current_a": 10,
+        "rated_output_power_w": 240,
+        "reference_ids": [
+          "ES-SCHNEIDER-ABL8RPS24100"
+        ]
+      },
+      "dc_loads": [
+        {
+          "tag": "HMI-01",
+          "quantity": 1,
+          "power_w": 12.6,
+          "current_a": null,
+          "reference_ids": [
+            "ES-SCHNEIDER-HMIST6500"
+          ]
+        },
+        {
+          "tag": "SW-01",
+          "quantity": 1,
+          "power_w": 3.84,
+          "current_a": 0.185,
+          "reference_ids": [
+            "ES-SIEMENS-X208"
+          ],
+          "status": "LEGACY_REFERENCE_HOLD"
+        },
+        {
+          "tag": "PLC-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_CPU_PENDING"
+        },
+        {
+          "tag": "IM-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "DI-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "DO-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "AI-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "RTD-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "GW-01",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_GATEWAY_DATA_PENDING"
+        },
+        {
+          "tag": "KA-01..04",
+          "quantity": 4,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_RELAY_COIL_PENDING"
+        }
+      ],
+      "battery": {
+        "series_units": 2,
+        "installed_capacity_ah": 12,
+        "required_autonomy_h": null,
+        "max_depth_of_discharge": null,
+        "aging_factor": null,
+        "temperature_factor": null,
+        "reference_ids": [
+          "ES-IEC-62485-2-2010"
+        ]
+      },
+      "protection": {
+        "incoming_breaker_in_a": null,
+        "incoming_conductor_iz_a": null,
+        "incoming_breaker_icu_ka": null,
+        "assembly_rated_current_ina_a": null,
+        "assembly_icw_ka_1s": null,
+        "assembly_ipk_ka": null,
+        "incoming_protection_verified": false,
+        "conductor_ampacity_verified": false,
+        "voltage_drop_verified": false,
+        "short_circuit_withstand_verified": false,
+        "selectivity_or_backup_verified": false
+      },
+      "verification": {
+        "thermal_rise_verified": false,
+        "protective_bonding_verified": false
+      },
+      "thermal": {
+        "component_losses": [
+          {
+            "tag": "PS-01",
+            "quantity": 1,
+            "loss_w": null
+          },
+          {
+            "tag": "UPS-01",
+            "quantity": 1,
+            "loss_w": null
+          },
+          {
+            "tag": "HMI-01",
+            "quantity": 1,
+            "loss_w": 12.6
+          },
+          {
+            "tag": "SW-01",
+            "quantity": 1,
+            "loss_w": 3.84
+          },
+          {
+            "tag": "PLC-01",
+            "quantity": 1,
+            "loss_w": null
+          }
+        ]
+      },
+      "reference_ids": [
+        "ES-IEC-61439-1-2020",
+        "ES-IEC-60947-2-2024",
+        "ES-IEC-60890-2022",
+        "ES-IEC-62477-1-2022",
+        "ES-IEC-62485-2-2010",
+        "ES-SCHNEIDER-EIG",
+        "ES-SCHNEIDER-COORD-2026"
+      ]
+    },
+    "PN-AUT-02": {
+      "revision": "R02",
+      "site": {
+        "supply_voltage_v": null,
+        "phases": null,
+        "frequency_hz": null,
+        "earthing_system": null,
+        "prospective_short_circuit_ka": null,
+        "ambient_temperature_c": null,
+        "altitude_m": null,
+        "design_power_factor": null,
+        "design_efficiency": null
+      },
+      "ac_load_summary": {
+        "demand_va": null,
+        "design_current_a": null
+      },
+      "dc_bus": {
+        "nominal_voltage_v": 24,
+        "design_reserve_percent": 20
+      },
+      "power_supply": {
+        "model": "CPS.241 - EXACT MODEL PENDING",
+        "rated_output_current_a": null,
+        "rated_output_power_w": null,
+        "reference_ids": [
+          "ES-PULS-CP10.241"
+        ]
+      },
+      "dc_loads": [
+        {
+          "tag": "HMI-02",
+          "quantity": 1,
+          "power_w": 12.6,
+          "current_a": null,
+          "reference_ids": [
+            "ES-SCHNEIDER-HMIST6500"
+          ]
+        },
+        {
+          "tag": "SW-02",
+          "quantity": 1,
+          "power_w": 3.84,
+          "current_a": 0.185,
+          "reference_ids": [
+            "ES-SIEMENS-X208"
+          ],
+          "status": "LEGACY_REFERENCE_HOLD"
+        },
+        {
+          "tag": "RTU-02",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_RTU_PENDING"
+        },
+        {
+          "tag": "DI-02",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "DO-02",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "AI-02",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "RTD-02",
+          "quantity": 1,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_MODULE_PENDING"
+        },
+        {
+          "tag": "KA-05..08",
+          "quantity": 4,
+          "power_w": null,
+          "current_a": null,
+          "status": "EXACT_RELAY_COIL_PENDING"
+        }
+      ],
+      "battery": {
+        "series_units": 2,
+        "installed_capacity_ah": 12,
+        "required_autonomy_h": null,
+        "max_depth_of_discharge": null,
+        "aging_factor": null,
+        "temperature_factor": null,
+        "reference_ids": [
+          "ES-IEC-62485-2-2010"
+        ]
+      },
+      "protection": {
+        "incoming_breaker_in_a": null,
+        "incoming_conductor_iz_a": null,
+        "incoming_breaker_icu_ka": null,
+        "assembly_rated_current_ina_a": null,
+        "assembly_icw_ka_1s": null,
+        "assembly_ipk_ka": null,
+        "incoming_protection_verified": false,
+        "conductor_ampacity_verified": false,
+        "voltage_drop_verified": false,
+        "short_circuit_withstand_verified": false,
+        "selectivity_or_backup_verified": false
+      },
+      "verification": {
+        "thermal_rise_verified": false,
+        "protective_bonding_verified": false
+      },
+      "thermal": {
+        "component_losses": [
+          {
+            "tag": "PS-02",
+            "quantity": 1,
+            "loss_w": null
+          },
+          {
+            "tag": "UPS-02",
+            "quantity": 1,
+            "loss_w": null
+          },
+          {
+            "tag": "HMI-02",
+            "quantity": 1,
+            "loss_w": 12.6
+          },
+          {
+            "tag": "SW-02",
+            "quantity": 1,
+            "loss_w": 3.84
+          },
+          {
+            "tag": "RTU-02",
+            "quantity": 1,
+            "loss_w": null
+          }
+        ]
+      },
+      "reference_ids": [
+        "ES-IEC-61439-1-2020",
+        "ES-IEC-60947-2-2024",
+        "ES-IEC-60890-2022",
+        "ES-IEC-62477-1-2022",
+        "ES-IEC-62485-2-2010",
+        "ES-SCHNEIDER-EIG",
+        "ES-SCHNEIDER-COORD-2026"
+      ]
+    }
+  }
+}
