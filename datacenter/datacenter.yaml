@@ -34,6 +34,9 @@ canonical_sources:
   github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
+  pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   pipeline_yaml: pipeline/pipeline.yaml
   datasheet_yaml: datasheet/datasheet.yaml
@@ -69,6 +72,14 @@ agent_learning_system:
   github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+pn_image_model_001:
+  id: PN-IMAGE-MODEL-001
+  role: VISUAL_DOCUMENT_BASELINE
+  dimensions_fixed: false
+  dimension_policy: VARIABLE_BY_PROJECT_AND_INTERNAL_CONTENT
+  reference_image_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
+  mandatory_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  rule: "Usar a estrutura do MODEL 001; calcular e congelar as dimensões próprias de cada PN antes do render."
 workbook_baseline:
   template_id: XLSX-PN-AUT-01-MASTER-R02
   master_panel: PN-AUT-01
