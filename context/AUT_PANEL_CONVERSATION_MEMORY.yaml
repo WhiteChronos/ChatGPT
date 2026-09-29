@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 17
+  sync_revision: 18
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -450,3 +450,16 @@ history:
     Premissas congeladas nao devem ser perguntadas novamente. Alteracoes somente por instrucao
     explicita posterior do usuario ou documento controlado de maior prioridade, sempre com
     versionamento, registro de valor anterior/novo, motivo e invalidacao dos artefatos dependentes.
+
+- revision: 18
+  at: '2026-09-29T16:59:00-03:00'
+  actor: user+assistant
+  event: PN_AUT_001_LI_R03_CANDIDATE_CREATED
+  summary: >-
+    Usuario autorizou executar e criar a LI. Foi criada a LI R03 candidata do unico painel
+    PN-AUT-001, herdando todas as premissas canonicas. A LI inclui CPU S7-1500 atual,
+    17 AI HART, BaseUnits, HMIST6500, XC208G, arquitetura de temperatura com sensor ambiente
+    mais transmissor HART, UPS CBI2420A, bornes e demais itens. CO2, gateway Trane, modelo
+    ClimaSys, carga final, protecao final, layout e dupla validacao permanecem como HOLDs.
+    O arquivo Excel correspondente e CANDIDATO e nao deve receber status Aprovado para Emissao
+    ate zerar QA_HOLDS.
