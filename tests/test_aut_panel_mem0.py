@@ -142,3 +142,55 @@ def test_mem0_failure_does_not_remove_canonical_event(tmp_path):
     with dbmod.connect(db) as conn:
         assert conn.execute("SELECT COUNT(*) FROM memory_events").fetchone()[0] == 1
         assert conn.execute("SELECT status FROM memory_mirrors").fetchone()[0] == "FAILED"
+
+
+def test_record_memory_event_optionally_mirrors_after_canonical_commit(tmp_path):
+    dbmod = _load_db_module()
+    db = tmp_path / "db.sqlite3"
+    dbmod.init_db(db)
+
+    class Backend:
+        name = "mem0"
+        def __init__(self):
+            self.calls = []
+        def add_event(self, event):
+            self.calls.append(event)
+            return event["event_id"]
+
+    backend = Backend()
+    event_id = dbmod.record_memory_event(
+        db,
+        agent_id="QA",
+        event_type="REGRESSION",
+        summary="door regression",
+        panel_id="PN-AUT-01",
+        panel_revision="R02",
+        evidence={"sha256": "a" * 64},
+        mirror_backend=backend,
+    )
+    assert backend.calls and backend.calls[0]["event_id"] == event_id
+    with dbmod.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM memory_events WHERE event_id=?", (event_id,)).fetchone()[0] == 1
+        assert conn.execute("SELECT status FROM memory_mirrors WHERE event_id=?", (event_id,)).fetchone()[0] == "PASS"
+
+
+def test_record_memory_event_survives_auxiliary_mirror_failure(tmp_path):
+    dbmod = _load_db_module()
+    db = tmp_path / "db.sqlite3"
+    dbmod.init_db(db)
+
+    class Backend:
+        name = "mem0"
+        def add_event(self, event):
+            raise RuntimeError("offline")
+
+    event_id = dbmod.record_memory_event(
+        db,
+        agent_id="QA",
+        event_type="TEST",
+        summary="canonical first",
+        mirror_backend=Backend(),
+    )
+    with dbmod.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM memory_events WHERE event_id=?", (event_id,)).fetchone()[0] == 1
+        assert conn.execute("SELECT status FROM memory_mirrors WHERE event_id=?", (event_id,)).fetchone()[0] == "FAILED"
