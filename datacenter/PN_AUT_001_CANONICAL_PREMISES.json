@@ -6,5 +6,13 @@
   "inheritance_rule": "Mandatory for all future elaborations",
   "override_rule": "Only explicit user override or higher-priority controlled document",
   "reask_rule": "Do not re-ask frozen premises",
-  "change_control": "Version and log all overrides; invalidate dependent artifacts when applicable"
+  "change_control": "Version and log all overrides; invalidate dependent artifacts when applicable",
+  "visual_standard": {
+    "model_id": "PN-IMAGE-MODEL-001",
+    "manifest": "datacenter/images/PN_MODEL_001.json",
+    "datasheet": "datasheet/PN_AUT_001_VISUAL_STANDARD.json",
+    "status": "FROZEN_VISUAL_BASELINE",
+    "mandatory_for_future_pn_images": true,
+    "rule": "Start every PN image elaboration from MODEL 001 structure; replace dimensions, components and diagrams only from the target panel's canonical engineering data."
+  }
 }
