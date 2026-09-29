@@ -8,6 +8,9 @@ model_001_contract:
   model_id: PN-IMAGE-MODEL-001
   manifest: datacenter/images/PN_MODEL_001.json
   prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  elaboration_directive: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  elaboration_registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   reference_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
   role: VISUAL_DOCUMENT_STRUCTURE_ONLY
   dimension_policy: VARIABLE_BY_TARGET_PROJECT
