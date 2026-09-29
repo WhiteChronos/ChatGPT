@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "directive_id": "PN-IMAGE-ELABORATION-DIRECTIVE-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "prompt": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
+  "model_001_manifest": "datacenter/images/PN_MODEL_001.json",
+  "model_001_memory": "memory/PN_IMAGE_MODEL_001_MEMORY.yaml",
+  "dedicated_memory": "memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml",
+  "scope": "All PN panel image elaboration and revision tasks",
+  "authority_role": "Process directive for image elaboration; engineering data remains authoritative in project-controlled sources.",
+  "mandatory_load_before_render": true,
+  "core_rules": [
+    "MODEL 001 defines visual/document structure, not target-panel physical size.",
+    "Target enclosure size is derived from target engineering content and frozen in target datasheet before render.",
+    "Image is downstream of LI/BOM/load/layout/geometry.",
+    "Electrical architecture, communication architecture, command diagram and panel sizing are mandatory when applicable.",
+    "Side 3/4 view dimensions only the real target enclosure depth on the real depth axis.",
+    "No large manufacturer footer logos.",
+    "Never distort geometry to fit the page; grow the canvas.",
+    "Synchronize Data Center and memory after approved visual changes."
+  ],
+  "pre_render_required_inputs": [
+    "canonical_premises",
+    "target_datasheet",
+    "current_li_bom",
+    "exact_component_models",
+    "official_dimensions",
+    "load_calculation",
+    "io_matrix",
+    "communication_architecture",
+    "command_architecture",
+    "thermal_calculation",
+    "selected_enclosure",
+    "MODEL_001"
+  ],
+  "fail_closed_states": [
+    "HOLD_DIMENSIONAL_DATA",
+    "HOLD_LAYOUT_CAPACITY",
+    "HOLD_ENGINEERING_DATA",
+    "REPROVADO"
+  ],
+  "change_control": {
+    "prompt_change_requires_explicit_user_authorization": true,
+    "model_001_structure_change_requires_new_model_id": true,
+    "target_panel_dimension_change_requires_target_revision_control": true
+  }
+}
