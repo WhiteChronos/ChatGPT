@@ -244,3 +244,38 @@ CREATE INDEX IF NOT EXISTS idx_panel_components_component ON panel_components(co
 CREATE INDEX IF NOT EXISTS idx_qa_findings_run ON qa_findings(qa_run_id);
 CREATE INDEX IF NOT EXISTS idx_training_examples_panel ON training_examples(panel_id, panel_revision);
 CREATE INDEX IF NOT EXISTS idx_memory_events_panel ON memory_events(panel_id, panel_revision);
+
+
+CREATE TABLE IF NOT EXISTS candidate_revisions (
+  candidate_id TEXT PRIMARY KEY,
+  panel_id TEXT NOT NULL,
+  source_revision TEXT NOT NULL,
+  candidate_revision TEXT NOT NULL,
+  status TEXT NOT NULL,
+  trigger_type TEXT NOT NULL,
+  trigger_json TEXT NOT NULL,
+  canonical_inputs_json TEXT NOT NULL,
+  rollback_target TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE(panel_id, candidate_revision),
+  FOREIGN KEY (panel_id, source_revision) REFERENCES panels(panel_id, revision)
+);
+
+CREATE TABLE IF NOT EXISTS candidate_revision_changes (
+  change_id TEXT PRIMARY KEY,
+  candidate_id TEXT NOT NULL,
+  change_type TEXT NOT NULL,
+  path TEXT NOT NULL,
+  before_json TEXT,
+  after_json TEXT,
+  evidence_json TEXT NOT NULL,
+  invalidates_json TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (candidate_id) REFERENCES candidate_revisions(candidate_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_candidate_revisions_panel
+  ON candidate_revisions(panel_id, source_revision, candidate_revision);
+CREATE INDEX IF NOT EXISTS idx_candidate_revision_changes_candidate
+  ON candidate_revision_changes(candidate_id);
