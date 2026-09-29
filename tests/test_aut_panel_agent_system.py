@@ -415,3 +415,17 @@ def test_image_proportion_guard_rejects_wrong_engineering_ratio(tmp_path):
     Image.new("RGB", (800, 600), "white").save(src)
     result = guard.verify_expected_ratio(src, 600, 800)
     assert result["status"] == "REPROVADO"
+
+
+def test_auxiliary_memory_is_curated_and_non_authoritative():
+    data = yaml.safe_load((ROOT / "agents/AUT_PANEL_AGENT_SYSTEM.yaml").read_text(encoding="utf-8"))
+    aux = data["auxiliary_memory"]
+    assert aux["canonical_owner"] == "MEMORY_CURATOR"
+    assert aux["context_consumer"] == "ORCHESTRATOR"
+    assert aux["direct_engineering_writes_from_memory"] is False
+    assert aux["backend_authoritative"] is False
+    agents = {x["id"]: x for x in data["agents"]}
+    assert "memory_mirrors" in agents["MEMORY_CURATOR"]["write_scope"]
+    for agent_id, agent in agents.items():
+        if agent_id != "MEMORY_CURATOR":
+            assert "memory_mirrors" not in (agent.get("write_scope") or [])
