@@ -4,7 +4,7 @@
   "panel_id": "PN-AUT-01",
   "revision_basis": "R02",
   "status": "HOLD_UNTIL_ALL_COMPONENTS_AND_SIGNALS_DEFINED",
-  "release_label": "ELÉTRICO INTEGRADO / DADOS A COMPLETAR / RELEASE HOLD / “A DO QUADRO” NÃO INVENTADO",
+  "release_label": "BASE TÉCNICA AVANÇADA / 7 HOLDS RESTANTES / EXCEL AINDA BLOQUEADO / “A DO QUADRO” NÃO EMITIDO",
   "architecture": {
     "panel_count": 1,
     "controller_role": "PLC-01 is the central controller; all I/O, commands, interlocks and communications are subordinated to the PN-AUT-01 architecture.",
@@ -422,7 +422,7 @@
     "Selecionar transmissor de temperatura ambiente 4-20 mA + HART; NOVUS TEMP-WM não comprova HART.",
     "Resolver sensor de CO2 0-5000 ppm + 4-20 mA + HART.",
     "Obter homologação Trane para gateway 24 Vdc candidato CoolMasterNet ou adotar gateway Trane TCONTCNMODBUS com alimentação 12 Vdc.",
-    "Fechar carga crítica 24 Vcc final para dimensionar UPS/bateria de 20 min.",
+    "Fechar carga crítica 24 Vcc final para dimensionar UPS/bateria de 30 min.",
     "Selecionar solução térmica que mantenha IP66 integral a 40 C."
   ],
   "release_gates": {
@@ -523,10 +523,10 @@
     },
     "ups_basis": {
       "minimum_output": "24 Vdc, 10 A / 240 W",
-      "minimum_autonomy_min": 20,
+      "minimum_autonomy_min": 30,
       "battery": "VRLA AGM 24 Vdc",
       "status": "REQUIREMENT_RESOLVED_MODEL_PENDING_LOAD",
-      "note": "UPS exact battery/module cannot be frozen until final critical 24 Vdc load is calculated."
+      "note": "UPS exact battery/module cannot be frozen until final critical 24 Vdc load is calculated for 30 min autonomy."
     },
     "ventilation_conflict": {
       "status": "HOLD_TECHNICAL_CONFLICT",
@@ -556,7 +556,8 @@
     "feeder_section_mm2": null,
     "hmi_model": "Schneider Electric Harmony ST6 HMIST6500",
     "temperature_transmitter_user_reference": "NOVUS TEMP-WM, equal or technical similar",
-    "gateway_requirement": "Find homologated VRF gateway accepting 24 Vdc"
+    "gateway_requirement": "Find homologated VRF gateway accepting 24 Vdc",
+    "ups_required_autonomy_min": 30
   },
   "engineering_reconciliation": {
     "hart": {
