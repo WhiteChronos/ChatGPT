@@ -13,6 +13,8 @@
     "datasheet": "datasheet/PN_AUT_001_VISUAL_STANDARD.json",
     "status": "FROZEN_VISUAL_BASELINE",
     "mandatory_for_future_pn_images": true,
-    "rule": "Start every PN image elaboration from MODEL 001 structure; replace dimensions, components and diagrams only from the target panel's canonical engineering data."
+    "rule": "Start every PN image elaboration from MODEL 001 document structure, but calculate and freeze the target panel enclosure/layout from its own engineering data before rendering.",
+    "dimension_policy": "VARIABLE_BY_PROJECT_AND_INTERNAL_CONTENT",
+    "do_not_inherit_pn_aut_001_dimensions": true
   }
 }
