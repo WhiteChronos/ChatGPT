@@ -249,7 +249,14 @@
     "battery_autonomy_calculation_required": true,
     "thermal_loss_inventory_required": true,
     "temperature_rise_verification_required": true,
-    "manufacturer_selectivity_or_backup_evidence_required": true
+    "manufacturer_selectivity_or_backup_evidence_required": true,
+    "li_technical_dossier_required": true,
+    "every_li_line_must_have_manufacturer": true,
+    "every_li_line_must_have_catalog_or_family_link": true,
+    "exact_model_must_have_exact_datasheet_or_technical_page": true,
+    "generic_family_document_cannot_release_exact_item": true,
+    "lifecycle_status_required_for_every_li_component": true,
+    "enriched_li_artifact_required_before_release": true
   },
   "panel_standards": {
     "PN-AUT-01": {
@@ -644,5 +651,7 @@
   "electrical_sizing_script": "pipeline/aut_panel_electrical_sizing.py",
   "electrical_sizing_inputs": "datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json",
   "electrical_sizing_schema": "schemas/aut_panel_electrical_sizing_v1.schema.json",
-  "electrical_sizing_reference_registry": "datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json"
+  "electrical_sizing_reference_registry": "datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json",
+  "li_technical_dossier": "datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json",
+  "li_technical_dossier_script": "pipeline/li_technical_dossier.py"
 }
