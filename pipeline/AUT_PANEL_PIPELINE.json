@@ -167,6 +167,26 @@
       "name": "Desenho determinístico canônico",
       "status": "MANDATORY",
       "rule": "Imagem generativa não é autoridade de engenharia."
+    },
+    "GR-085": {
+      "name": "MODEL 001 composição, não dimensão",
+      "status": "MANDATORY",
+      "rule": "MODEL 001 governa a estrutura visual; dimensões físicas são específicas do painel-alvo."
+    },
+    "GR-086": {
+      "name": "Dimensão do gabinete é saída do projeto",
+      "status": "MANDATORY",
+      "rule": "Novo PN deve ter gabinete dimensionado pelo próprio conteúdo e restrições de engenharia."
+    },
+    "GR-087": {
+      "name": "Gabinete após prova de capacidade",
+      "status": "MANDATORY",
+      "rule": "Gabinete real é congelado no Data Sheet apenas após layout dimensional provar capacidade."
+    },
+    "GR-088": {
+      "name": "Prompt MODEL 001 obrigatório",
+      "status": "MANDATORY",
+      "rule": "Carregar manifest e prompt MODEL 001 antes de elaborar imagem PN."
     }
   },
   "standard_sequence": [
@@ -256,7 +276,12 @@
     "exact_model_must_have_exact_datasheet_or_technical_page": true,
     "generic_family_document_cannot_release_exact_item": true,
     "lifecycle_status_required_for_every_li_component": true,
-    "enriched_li_artifact_required_before_release": true
+    "enriched_li_artifact_required_before_release": true,
+    "pn_image_model_001_required_for_render": true,
+    "new_panel_enclosure_is_project_output": true,
+    "reference_panel_dimensions_must_not_be_inherited": true,
+    "enclosure_selection_requires_capacity_proof": true,
+    "target_datasheet_dimensions_required_before_render": true
   },
   "panel_standards": {
     "PN-AUT-01": {
@@ -653,5 +678,21 @@
   "electrical_sizing_schema": "schemas/aut_panel_electrical_sizing_v1.schema.json",
   "electrical_sizing_reference_registry": "datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json",
   "li_technical_dossier": "datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json",
-  "li_technical_dossier_script": "pipeline/li_technical_dossier.py"
+  "li_technical_dossier_script": "pipeline/li_technical_dossier.py",
+  "pn_image_model_001": {
+    "model_id": "PN-IMAGE-MODEL-001",
+    "manifest": "datacenter/images/PN_MODEL_001.json",
+    "prompt": "prompts/PROMPT_PN_IMAGE_MODEL_001.md",
+    "role": "VISUAL_DOCUMENT_STRUCTURE_ONLY",
+    "dimension_policy": "VARIABLE_BY_TARGET_PROJECT",
+    "enclosure_selection_rule": "For a new PN, determine H/W/D from target LI/BOM, official geometry, clearances, wiring, thermal management, maintenance and physical reserve; freeze in target datasheet only after capacity proof.",
+    "inherit_reference_panel_dimensions": false,
+    "frozen_enclosure_change_invalidates": [
+      "LAYOUT",
+      "RENDER_IMAGE",
+      "QA",
+      "MEMORY_SYNC",
+      "RELEASE"
+    ]
+  }
 }
