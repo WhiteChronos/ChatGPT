@@ -8,6 +8,7 @@ stages:
   - {order: 20, id: FEATURE_EXTRACT, input: [candidate_training_events], output: [training_examples], gates: [provenance_present, label_human_reviewed, panel_id_present, revision_present]}
   - {order: 30, id: TRAIN, input: [training_examples], output: [candidate_model], gates: [minimum_labeled_examples, dataset_fingerprint, reproducible_seed]}
   - {order: 40, id: EVALUATE, input: [candidate_model, holdout_examples], output: [model_metrics], gates: [metrics_recorded, deterministic_baseline_compared]}
+  - {order: 45, id: MEMORY_EVALUATE, input: [memory_benchmark_report], output: [memory_quality_status], gates: [cross_panel_isolation, active_pass_rate_threshold, memory_non_authoritative]}
   - {order: 50, id: PROPOSE, input: [model_metrics, recurring_findings], output: [evolution_proposal], gates: [problem_evidence, affected_files, expected_benefit, risk, rollback, tests]}
   - {order: 60, id: SANDBOX_SIMULATE, input: [evolution_proposal], output: [simulation_result], gates: [no_locked_contract_mutation, regression_tests, artifact_diff]}
   - {order: 70, id: HUMAN_GATE, input: [evolution_proposal, simulation_result], output: [approved_or_rejected], gates: [explicit_approval_for_behavior_change]}
@@ -20,3 +21,5 @@ hard_constraints:
   auto_apply_locked_change_forbidden: true
   training_from_unreviewed_generated_output_forbidden: true
   cold_start_minimum_examples: 25
+  memory_benchmark_cannot_release_engineering: true
+  cross_panel_memory_leakage_is_reprovado: true
