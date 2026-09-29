@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 12
-  last_sync_at: '2026-09-28T19:31:00-03:00'
+  sync_revision: 13
+  last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -126,6 +126,35 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  electrical_sizing_control:
+    control_id: AUT-PANEL-ELECTRICAL-SIZING-V1
+    script: pipeline/aut_panel_electrical_sizing.py
+    inputs: datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json
+    schema: schemas/aut_panel_electrical_sizing_v1.schema.json
+    reference_registry: datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json
+    integration_stage: LOAD_BALANCE
+    fail_closed: true
+    panel_current_estimation_forbidden: true
+    a_do_quadro_requires_full_gate_pass: true
+    required_core_checks:
+    - Ib
+    - In
+    - Iz
+    - Ik
+    - Icu
+    - InA
+    - Icw
+    - Ipk
+    - voltage_drop
+    - selectivity_or_backup
+    - 24Vdc_load
+    - PSU_capacity
+    - UPS_path
+    - battery_autonomy
+    - thermal_losses
+    - temperature_rise
+    current_status: HOLD
+    reason: Dados de campo, modelos exatos e verificacoes de curto-circuito/termica ainda incompletos.
   normative_control:
     registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
     registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
@@ -308,3 +337,15 @@ history:
     o modo dimensional não reduz raster para caber; scale_x=scale_y=1.0 e moldura
     menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard
     V3, CI e testes foram vinculados.
+
+- revision: 13
+  at: '2026-09-29T13:31:00-03:00'
+  actor: user+assistant
+  event: ELECTRICAL_SIZING_LAYER_INTEGRATED
+  summary: >-
+    Usuario autorizou integrar a camada completa de dimensionamento eletrico sem destruir o
+    historico do PR #23. Foram adicionados motor fail-closed, schema, baseline PN-AUT-01/02,
+    registro de referencias IEC/fabricantes e testes; LOAD_BALANCE passou a exigir Ib/In/Iz,
+    Ik/Icu, InA/Icw/Ipk, 24 Vcc, UPS/baterias, seletividade/backup e verificacao termica.
+    Enquanto os dados obrigatorios estiverem incompletos, o A do quadro permanece nulo e o
+    release permanece HOLD.
