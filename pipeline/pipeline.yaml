@@ -45,6 +45,8 @@ contracts:
   electrical_sizing_inputs: datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json
   electrical_sizing_schema: schemas/aut_panel_electrical_sizing_v1.schema.json
   electrical_sizing_references: datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json
+  li_technical_dossier: datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json
+  li_technical_dossier_script: pipeline/li_technical_dossier.py
 learning_extension:
   mode: CONTROLLED_EVOLUTION
   canonical_sequence_unchanged: true
@@ -94,6 +96,13 @@ sequence:
       - new_revision_quantity_has_traceable_evidence
       - a_levantar_only_when_not_determinable
       - li_material_control_memory_linked
+      - every_li_line_has_technical_dossier_record
+      - manufacturer_identified_for_every_li_line
+      - exact_model_or_controlled_hold_for_every_li_line
+      - official_catalog_or_family_reference_linked
+      - exact_datasheet_or_technical_page_linked_when_model_exact
+      - lifecycle_status_recorded
+      - technical_documentation_reverified_before_release
   - order: 60
     id: LOAD_BALANCE
     implementation: pipeline/aut_panel_electrical_sizing.py
@@ -222,6 +231,8 @@ sequence:
       - electrical_sizing_manifest_present
       - electrical_sizing_status_reviewed
       - a_do_quadro_emitted_only_after_sizing_pass
+      - enriched_li_technical_artifact_present
+      - li_technical_documentation_holds_reviewed
   - order: 110
     id: MEMORY_SYNC
     gate:
@@ -312,6 +323,11 @@ release_policy:
   assembly_ina_below_design_current: HOLD
   battery_sizing_incomplete: HOLD
   thermal_verification_incomplete: HOLD
+  li_technical_dossier_missing: HOLD
+  li_catalog_missing: HOLD
+  li_datasheet_missing: HOLD
+  li_exact_model_missing: HOLD
+  li_lifecycle_unverified: HOLD
   ml_override_of_deterministic_gate: REPROVADO
   autoevolution_locked_mutation: REPROVADO
   fail_closed: true
