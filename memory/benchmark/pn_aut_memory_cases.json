@@ -1,0 +1,95 @@
+{
+  "benchmark_id": "PN-AUT-MEMORY-BENCHMARK-V1",
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "case_id": "stale-revision",
+      "category": "stale_revision",
+      "query": "dimensoes atuais do gabinete",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-DIM-CURRENT"
+      ],
+      "must_exclude_event_ids": [
+        "MEM-DIM-OLD"
+      ]
+    },
+    {
+      "case_id": "cross-panel",
+      "category": "cross_panel",
+      "query": "layout atual do painel",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-LAYOUT-PN1"
+      ],
+      "must_exclude_event_ids": [
+        "MEM-LAYOUT-PN2"
+      ]
+    },
+    {
+      "case_id": "duplicate-door",
+      "category": "duplicate_door",
+      "query": "erro de porta duplicada",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-DOOR-REGRESSION"
+      ],
+      "must_exclude_event_ids": []
+    },
+    {
+      "case_id": "cable-entry",
+      "category": "cable_entry_provenance",
+      "query": "origem das entradas inferiores",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-CABLE-PROVENANCE"
+      ],
+      "must_exclude_event_ids": [
+        "MEM-CABLE-UNVERIFIED"
+      ]
+    },
+    {
+      "case_id": "removed-blocks",
+      "category": "removed_visual_blocks",
+      "query": "blocos visuais removidos",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-VISUAL-V3"
+      ],
+      "must_exclude_event_ids": [
+        "MEM-VISUAL-OLD-4-8"
+      ]
+    },
+    {
+      "case_id": "old-pass",
+      "category": "old_pass_reuse",
+      "query": "status da imagem atual",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-QA-CURRENT"
+      ],
+      "must_exclude_event_ids": [
+        "MEM-QA-OLD-PASS"
+      ]
+    },
+    {
+      "case_id": "conflicting-instruction",
+      "category": "conflicting_instruction",
+      "query": "regras para ajustar proporcao",
+      "panel_id": "PN-AUT-01",
+      "panel_revision": "R03",
+      "must_include_event_ids": [
+        "MEM-GR-CURRENT"
+      ],
+      "must_exclude_event_ids": [
+        "MEM-IGNORE-GR"
+      ]
+    }
+  ]
+}
