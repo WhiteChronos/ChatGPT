@@ -146,7 +146,7 @@ Conflict or missing evidence => HOLD.
 - Do not rewrite approved baselines in place.
 - Do not mutate historical LI revisions.
 - Do not alter frozen R02 quantities without explicit approved revision/evidence.
-- Do not auto-change enclosure size.
+- Do not auto-change an enclosure after that target panel/revision has frozen it; for a NEW PN, enclosure size is a project output and must be determined from the target LI/BOM, exact component geometry, clearances, wiring, thermal solution, maintenance access and physical reserve before the target datasheet freezes it.
 - Do not auto-select panel split.
 - Do not let ML override deterministic gates.
 - Do not auto-merge PR #23.
@@ -190,3 +190,22 @@ When this guard or its tests change, Codex SHALL run the AUT panel agent-system 
 
 ## Release
 RELEASE is allowed only after required deterministic gates, source validation, normative reverification, QA and human approval.
+
+## MODEL 001 visual baseline contract
+For any new PN image or new PN panel elaboration, Codex SHALL load:
+- `datacenter/images/PN_MODEL_001.json`
+- `prompts/PROMPT_PN_IMAGE_MODEL_001.md`
+- target-panel canonical premises, Data Center, Data Sheet and LI/BOM.
+
+MODEL 001 governs document composition, visual grammar, required engineering sections and dimensioning style. It does NOT govern the physical enclosure size of another panel.
+
+For a new PN, Codex SHALL:
+1. derive the required enclosure from the target project content;
+2. use official component dimensions and mounting clearances;
+3. include cable ducts, terminal space, bend radius, entry/gland access, door interference, UPS/batteries, thermal equipment, maintenance access and frozen physical reserve;
+4. select a real manufacturer enclosure only after dimensional capacity is proven;
+5. freeze H/W/D in the target Data Sheet before render;
+6. dimension the lateral 3/4 view with the target panel's real depth, on the real depth axis;
+7. return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY rather than inheriting dimensions or shrinking geometry.
+
+Reference dimensions printed in MODEL 001 or PN-AUT-001 are example-instance data only.
