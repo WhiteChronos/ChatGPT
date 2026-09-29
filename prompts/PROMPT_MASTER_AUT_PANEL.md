@@ -22,6 +22,7 @@ Antes de responder tecnicamente, editar código, gerar BOM, layout, imagem, Exce
 7. `prompts/PROMPT_MASTER_AUT_PANEL.md`
 8. `datacenter/images/PN_MODEL_001.json`
 9. `prompts/PROMPT_PN_IMAGE_MODEL_001.md`
+10. `prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md`
 
 Execute o contrato de validação por `pipeline/conversation_contract.py validate` quando houver ambiente de código. Se a validação falhar, não avance: classifique como `HOLD` ou `REPROVADO` conforme a regra infringida.
 
@@ -63,6 +64,7 @@ A sequência aprovada é:
 9.3. MODEL 001 define a estrutura visual/documental, não o tamanho físico do gabinete. Para cada novo PN, altura, largura e profundidade devem ser calculadas a partir da LI/BOM, dimensões oficiais, folgas, cabos, porta, UPS/baterias, térmica, manutenção e reserva física do próprio projeto.
 9.4. É proibido reutilizar as dimensões do PN-AUT-001 como padrão de outro painel. O gabinete do novo PN só é congelado no Data Sheet após prova dimensional de capacidade; depois de congelado, qualquer mudança invalida layout/render/QA da revisão.
 9.5. Toda geração de imagem PN deve carregar `datacenter/images/PN_MODEL_001.json` e `prompts/PROMPT_PN_IMAGE_MODEL_001.md`.
+9.6. Toda elaboração, revisão ou correção de imagem PN deve carregar também `prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md`; esta diretriz governa o processo completo de elaboração visual, QA e sincronização de memória/Data Center.
 10. Gere uma imagem por painel. Não combine PN-AUT-01 e PN-AUT-02 na mesma imagem.
 11. Use o MODEL 001 como base de composição e linguagem visual, com identidade/fingerprint registrados no Data Center; use sempre as dimensões próprias congeladas no Data Sheet do painel-alvo e nunca as dimensões físicas da imagem de referência.
 12. Preserve a composição visual V2 aprovada em `datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml`: cabeçalho com painel/título/aplicação/configuração/revisão/ano/conformidade; vista frontal interna com porta aberta; vista frontal externa com porta fechada; vista lateral direita; lista de material; quadro de carga; arquitetura elétrica; arquitetura de comunicação; equipamentos de campo; dimensões do gabinete; notas técnicas; e rodapé obrigatório `LI = BOM = CARGA = LAYOUT = IMAGEM`.
