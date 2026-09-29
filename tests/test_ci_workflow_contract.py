@@ -48,3 +48,30 @@ def test_tool_discovery_is_scheduled_and_never_installs_candidates():
     assert "schedule:" in text
     assert "audit_document_plugins" in text
     assert "pip install" not in text
+
+
+CANDIDATE_AUT_PANEL = ROOT / ".github" / "workflows" / "aut-panel-candidate-engineering.yml"
+
+
+def test_candidate_workflow_is_read_only_and_has_no_unsafe_pr_trigger():
+    assert CANDIDATE_AUT_PANEL.exists()
+    text = CANDIDATE_AUT_PANEL.read_text(encoding="utf-8")
+    assert "permissions:\n  contents: read" in text
+    assert "pull_request_target" not in text
+    for forbidden in ["gh pr merge", "merge_pull_request", "PLC_PRODUCTION_DOWNLOAD", "FABRICATION_RELEASE"]:
+        assert forbidden not in text
+
+
+def test_candidate_workflow_executes_candidate_gates_and_regression():
+    text = CANDIDATE_AUT_PANEL.read_text(encoding="utf-8")
+    required = [
+        "python-version: '3.12'",
+        "aut_panel_candidate_runner.py",
+        "aut_panel_candidate_gate.py",
+        "test_aut_panel_candidate_",
+        "CANDIDATE_READY_FOR_HUMAN_REVIEW",
+        "github.sha",
+        "candidate_id",
+    ]
+    for token in required:
+        assert token in text
