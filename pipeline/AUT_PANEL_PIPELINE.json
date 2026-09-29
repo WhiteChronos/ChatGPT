@@ -235,7 +235,21 @@
     "deterministic_vector_render_is_canonical": true,
     "normative_registry_required": true,
     "normative_applicability_review_required": true,
-    "normative_reverification_before_release": true
+    "normative_reverification_before_release": true,
+    "electrical_sizing_fail_closed": true,
+    "panel_current_must_not_be_estimated": true,
+    "panel_a_do_quadro_requires_sizing_pass": true,
+    "site_short_circuit_current_required": true,
+    "ib_in_iz_coordination_required": true,
+    "breaker_icu_vs_ik_check_required": true,
+    "assembly_ina_required": true,
+    "assembly_icw_ipk_review_required": true,
+    "dc_load_exact_consumption_required": true,
+    "dc_power_supply_capacity_check_required": true,
+    "battery_autonomy_calculation_required": true,
+    "thermal_loss_inventory_required": true,
+    "temperature_rise_verification_required": true,
+    "manufacturer_selectivity_or_backup_evidence_required": true
   },
   "panel_standards": {
     "PN-AUT-01": {
@@ -626,5 +640,9 @@
     "script": "pipeline/aut_panel_normative_control.py",
     "output_artifact": "AUT_PANEL_NORMATIVE_APPLICABILITY.json"
   },
-  "normative_script": "pipeline/aut_panel_normative_control.py"
+  "normative_script": "pipeline/aut_panel_normative_control.py",
+  "electrical_sizing_script": "pipeline/aut_panel_electrical_sizing.py",
+  "electrical_sizing_inputs": "datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json",
+  "electrical_sizing_schema": "schemas/aut_panel_electrical_sizing_v1.schema.json",
+  "electrical_sizing_reference_registry": "datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json"
 }
