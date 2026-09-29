@@ -37,6 +37,9 @@ canonical_sources:
   pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
   pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
   pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
+  pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   pipeline_yaml: pipeline/pipeline.yaml
   datasheet_yaml: datasheet/datasheet.yaml
@@ -80,6 +83,15 @@ pn_image_model_001:
   reference_image_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
   mandatory_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
   rule: "Usar a estrutura do MODEL 001; calcular e congelar as dimensões próprias de cada PN antes do render."
+pn_image_elaboration:
+  directive_id: PN-IMAGE-ELABORATION-DIRECTIVE-V1
+  status: MANDATORY_CONTROLLED
+  prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+  linked_model: PN-IMAGE-MODEL-001
+  load_before_render: true
+  rule: "Toda imagem PN deve carregar MODEL 001 e esta diretriz; a engenharia do painel-alvo governa dimensoes e conteudo."
 workbook_baseline:
   template_id: XLSX-PN-AUT-01-MASTER-R02
   master_panel: PN-AUT-01
