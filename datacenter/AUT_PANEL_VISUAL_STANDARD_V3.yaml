@@ -4,6 +4,15 @@ status: USER_APPROVED_REFERENCE
 approved_at: "2026-09-28"
 authority: USER_APPROVED_VISUAL_REFERENCE
 supersedes: AUT-PANEL-VISUAL-STANDARD-V2
+model_001_contract:
+  model_id: PN-IMAGE-MODEL-001
+  manifest: datacenter/images/PN_MODEL_001.json
+  prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  reference_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
+  role: VISUAL_DOCUMENT_STRUCTURE_ONLY
+  dimension_policy: VARIABLE_BY_TARGET_PROJECT
+  rule: "MODEL 001 governa composição e linguagem visual; dimensões físicas são calculadas para cada painel a partir do seu próprio conteúdo de engenharia."
+  do_not_inherit_reference_dimensions: true
 scope:
   applies_to: [PN-AUT-01, PN-AUT-02, future_AUT_panels]
   purpose: "Large-canvas, geometry-first engineering composition for dimensionally faithful panel presentation."
@@ -77,13 +86,20 @@ geometry_authority:
     - INDEPENDENT_PER_VIEW_RESIZING
     - PERSPECTIVE_CAMERA_FOR_DIMENSIONAL_VIEWS
     - STRETCH_TO_FILL
+enclosure_dimension_policy:
+  mode: VARIABLE_BY_PROJECT
+  size_is_project_output: true
+  derive_from: [LI_BOM, component_dimensions, mounting_clearances, wiring_space, cable_bend_radius, door_interference, ups_battery_space, thermal_solution, maintenance_access, physical_reserve]
+  default_physical_reserve_percent_when_not_otherwise_frozen: 20
+  select_manufacturer_enclosure_after_capacity_proof: true
+  frozen_panel_enclosure_change_invalidates: [LAYOUT, RENDER_IMAGE, QA, RELEASE]
 engineering_rules:
   same_physical_assembly_drives_all_views: true
   dimensions_in_mm: true
   orthographic_dimensional_views: true
   bbox_match_tolerance_percent: 1.0
   side_open_view_aspect_ratio_formula: depth_external_mm / height_external_mm
-  pn_aut_01_side_open_aspect_ratio: 0.375
+  pn_aut_01_side_open_aspect_ratio: 0.375 # reference instance only; never inherit as another panel dimension
   hmi_physical_quantity: 1
   hmi_surface: door
   lower_cable_zone_preserved: true
