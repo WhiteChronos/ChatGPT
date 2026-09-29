@@ -145,9 +145,9 @@ Conflict or missing evidence => HOLD.
 ## Locked behavior
 - Do not rewrite approved baselines in place.
 - Do not mutate historical LI revisions.
-- Do not alter frozen R02 quantities without explicit approved revision/evidence.
-- Do not auto-change enclosure size.
-- Do not auto-select panel split.
+- Do not alter frozen R02 quantities in place. Authorized engineering changes must create a new candidate revision with evidence and delta traceability.
+- Enclosure size, component selection, quantities and panel split may be changed automatically only inside a governed candidate revision under `configs/auto_engineering_v1.yaml`.
+- Historical LI revisions and released/frozen artifacts remain immutable.
 - Do not let ML override deterministic gates.
 - Do not auto-merge PR #23.
 
@@ -187,6 +187,11 @@ For dimensional raster views, Codex SHALL use `pipeline/corrigir_proporcao_image
 - no raster utility may be used to hide an upstream CAD/3D geometry error.
 
 When this guard or its tests change, Codex SHALL run the AUT panel agent-system regression suite and report the result in PR #23.
+
+## Automatic engineering candidate revisions
+Codex MAY create and modify new engineering candidate revisions using `pipeline/aut_panel_candidate_revision.py`, `pipeline/aut_panel_candidate_runner.py` and `pipeline/aut_panel_candidate_gate.py`. Candidate automation may revise enclosure, components, quantities, load sizing, I/O, communication, layout and candidate PLC logic when supported by validated evidence.
+
+Codex SHALL NOT overwrite historical R02/released revisions, weaken deterministic gates, auto-merge, issue fabrication release, create binding procurement, or download to production PLC hardware. A candidate that passes deterministic QA ends at `CANDIDATE_READY_FOR_HUMAN_REVIEW`. Human approval may create a release-authorization artifact but does not itself execute merge, fabrication or PLC deployment.
 
 ## Release
 RELEASE is allowed only after required deterministic gates, source validation, normative reverification, QA and human approval.
