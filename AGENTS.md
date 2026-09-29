@@ -209,3 +209,11 @@ For a new PN, Codex SHALL:
 7. return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY rather than inheriting dimensions or shrinking geometry.
 
 Reference dimensions printed in MODEL 001 or PN-AUT-001 are example-instance data only.
+
+## PN image elaboration master directive
+Every PN image task SHALL load `prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md` together with MODEL 001.
+
+The directive governs the complete image workflow:
+canonical premises -> Data Center -> Data Sheet -> LI/BOM -> component selection -> load/I-O/thermal -> target enclosure sizing -> layout -> geometry -> MODEL 001 -> render -> QA -> memory sync.
+
+Codex SHALL NOT treat MODEL 001 as a source of target-panel physical dimensions and SHALL NOT treat a generated image as engineering authority.
