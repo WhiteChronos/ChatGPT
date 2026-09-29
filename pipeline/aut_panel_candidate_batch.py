@@ -2,14 +2,28 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-from pipeline.aut_panel_candidate_revision import ROOT, _connect, _now_iso
 from pipeline.evolution_engine import classify_candidate_change
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def _connect(db_path: Path) -> sqlite3.Connection:
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
 
 
 def apply_changes_atomic(
