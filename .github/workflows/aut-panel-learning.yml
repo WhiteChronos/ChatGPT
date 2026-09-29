@@ -30,6 +30,13 @@ on:
       - 'tests/test_aut_panel_fast_context.py'
       - 'tests/test_aut_panel_cache.py'
       - 'tests/test_aut_panel_agent_system.py'
+      - 'pipeline/aut_panel_candidate_revision.py'
+      - 'pipeline/aut_panel_candidate_runner.py'
+      - 'pipeline/aut_panel_candidate_gate.py'
+      - 'schemas/aut_panel_candidate_revision_v1.schema.json'
+      - 'configs/auto_engineering_v1.yaml'
+      - 'tests/test_aut_panel_candidate_*.py'
+      - 'database/aut_panel_schema.sql'
   pull_request:
     branches: [main]
     paths:
