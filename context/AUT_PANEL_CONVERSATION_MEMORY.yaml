@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 19
+  sync_revision: 20
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -126,6 +126,16 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  pn_image_model_001:
+    model_id: PN-IMAGE-MODEL-001
+    manifest: datacenter/images/PN_MODEL_001.json
+    datasheet: datasheet/PN_AUT_001_VISUAL_STANDARD.json
+    status: FROZEN_VISUAL_BASELINE
+    mandatory_starting_point_for_all_pn_images: true
+    side_view_dimension_rule: actual cabinet depth only, aligned with lateral/depth axis
+    pn_aut_001_depth_mm: 300
+    manufacturer_footer_logos: prohibited
+    override_policy: explicit_user_override_only_or_new_visual_model_id
   canonical_project_premises:
     source: datacenter/PN_AUT_001_CANONICAL_PREMISES.json
     status: FROZEN_BASELINE
@@ -480,3 +490,18 @@ history:
     Release permanece HOLD porque o NSYCU350DG e declarado IP55 no circuito interno e a
     documentacao oficial nao comprova que o conjunto modificado mantenha o requisito IP66.
     Dupla validacao/reverificacao final tambem permanece pendente para status Aprovado para emissao.
+
+- revision: 20
+  at: '2026-09-29T18:05:00-03:00'
+  actor: user+assistant
+  event: PN_IMAGE_MODEL_001_FROZEN
+  summary: >-
+    A imagem final aprovada pelo usuario foi registrada como PN-IMAGE-MODEL-001 e passa a ser
+    o padrao visual obrigatorio para o inicio de qualquer nova elaboracao de imagem de painel PN.
+    O modelo exige vistas gerais, arquitetura eletrica, arquitetura de comunicacao, diagrama de
+    comando, dimensionamento do painel, legenda e dados do quadro. A vista lateral em perspectiva
+    deve cotar somente a profundidade real do gabinete no eixo lateral; para o PN-AUT-001, 300 mm.
+    Logos grandes de fabricantes no rodape ficam proibidos; fabricante/modelo pode aparecer apenas
+    em identificacao tecnica de componentes. O modelo visual e downstream do datasheet, LI/BOM,
+    calculos de carga e selecoes validadas e nunca pode sobrescrever dados de engenharia.
+    Alteracoes futuras no padrao devem gerar novo MODEL ID e nao redefinir silenciosamente MODEL 001.
