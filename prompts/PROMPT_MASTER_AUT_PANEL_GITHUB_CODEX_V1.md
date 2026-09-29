@@ -32,6 +32,9 @@ Carregar somente o contexto necessario e sempre verificar os arquivos atuais ant
 - configs/layout_optimizer_v1.yaml
 - datacenter/images/PN_MODEL_001.json
 - prompts/PROMPT_PN_IMAGE_MODEL_001.md
+- prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+- datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+- memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
 - pipeline/aut_panel_learning.py
 - pipeline/evolution_engine.py
 - pipeline/layout_optimizer/
