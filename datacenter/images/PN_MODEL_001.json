@@ -6,7 +6,13 @@
   "source_artifact": {
     "filename": "PN_MODEL_001.png",
     "sandbox_path": "/mnt/data/datacenter/images/PN_MODEL_001.png",
-    "note": "Binary snapshot generated in the active artifact workspace; GitHub stores this canonical manifest because the connected GitHub text API does not persist binary image bytes through create_file/update_file."
+    "note": "Binary snapshot generated in the active artifact workspace; GitHub stores this canonical manifest because the connected GitHub text API does not persist binary image bytes through create_file/update_file.",
+    "sha256": "aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf",
+    "pixel_size": {
+      "width": 1024,
+      "height": 1536
+    },
+    "storage_policy": "Binary snapshot retained in project artifact Data Center; GitHub manifest stores immutable identity, SHA-256, dimensions and governing rules."
   },
   "scope": "Mandatory visual/document structure for future PN panel images. It is NOT a fixed cabinet-size template.",
   "inheritance_rule": "All future PN images must inherit the MODEL 001 document structure and visual grammar, but panel dimensions, enclosure catalog, internal layout, component quantities, cooling solution and spacing must be recalculated for the target project.",
