@@ -703,5 +703,114 @@
   "design_rules": {
     "user_questions_rule": "Do not re-ask frozen decisions. Research manufacturer/standards first. Ask user only for unresolved project/field decisions.",
     "visualize_rule": "When a new user decision is required, present questions in Visualize with a final selectable/copyable answer block."
+  },
+  "canonical_project_premises": {
+    "status": "FROZEN_BASELINE",
+    "precedence": "These premises are inherited by all future PN-AUT-001 elaborations unless explicitly superseded by a later user decision or a higher-priority controlled project document.",
+    "architecture": {
+      "panel_count": 1,
+      "panel_id": "PN-AUT-001",
+      "architecture": "Centralized PLC architecture",
+      "plc_central": true,
+      "remote_terminal_unit": false,
+      "remote_io_policy": "Only as expansion of the same PLC architecture if ever required",
+      "hmi_local_on_panel": true
+    },
+    "electrical_supply": {
+      "nominal_voltage_vac": 220,
+      "phase_configuration": "2F",
+      "earthing_system": "TN-S",
+      "feeder_origin": "Adjacent 220 Vac electrical panel",
+      "feeder_length_m": 10,
+      "feeder_material": "Copper",
+      "feeder_installation": "Exposed multipolar cable",
+      "feeder_preliminary_section_mm2": 2.5,
+      "feeder_conductors": "2F + PE",
+      "ambient_temperature_c": 40,
+      "altitude_m": 0
+    },
+    "io_and_signals": {
+      "li_reference": "LI-3501.02-8210-800-RPJ-702 Rev.0",
+      "li_final_for_executive_design": true,
+      "ai_used": 56,
+      "ai_reserve": 11,
+      "ai_installed_total": 67,
+      "di": 0,
+      "do": 0,
+      "ao": 0,
+      "ai_type": "2-wire 4-20 mA + HART",
+      "ai_supply_vdc": 24,
+      "hart_required": true,
+      "additional_sdai_hardwired_signals": false,
+      "known_field_signal_breakdown": {
+        "ambient_temperature_transmitters": 28,
+        "co2_sensors": 28
+      }
+    },
+    "hmi": {
+      "manufacturer": "Schneider Electric",
+      "family": "Harmony ST6",
+      "model": "HMIST6500",
+      "supply_vdc": 24,
+      "selection_status": "FROZEN"
+    },
+    "plc_and_io_selection": {
+      "platform": "Siemens S7-1500 + ET 200SP",
+      "cpu_selection_rule": "Select S7-1500 CPU with higher reserve for future expansion",
+      "ai_module_candidate": "6ES7134-6TD00-0CA1",
+      "ai_modules_quantity": 17,
+      "ai_channels_provisioned": 68,
+      "future_reserve_percent": 20
+    },
+    "instruments": {
+      "temperature_reference_model": "NOVUS TEMP-WM",
+      "temperature_final_rule": "Use TEMP-WM as application reference and select wall-mount equivalent with 4-20 mA + HART; if a single device is unavailable, use an engineered wall sensor + HART transmitter architecture.",
+      "co2_user_reference": "Honeywell C732A reference as stated by user; exact identity must be validated",
+      "co2_final_rule": "Prioritize Honeywell or technically equivalent recognized manufacturer meeting 0-5000 ppm, 4-20 mA, HART and 24 Vdc-compatible supply."
+    },
+    "vrf_gateway": {
+      "selection_rule": "Prioritize official Trane gateway with 24 Vdc supply and compatible open protocol for PLC/BMS integration",
+      "user_approval_required_for_equivalent": false,
+      "current_status": "Manufacturer research to freeze exact model"
+    },
+    "ups": {
+      "autonomy_min": 30,
+      "ageing_and_reserve_margin_percent": 20,
+      "protected_load_scope": "All 24 Vdc equipment in PN-AUT-001",
+      "selection_rule": "Final UPS and battery sizing from supplier/model load data"
+    },
+    "protection": {
+      "main_breaker_family": "Schneider Acti9 iC60H 2P",
+      "final_current_rule": "Final ampere rating calculated from final load",
+      "short_circuit_strategy": "Proceed with a market breaker with high breaking capacity; do not block engineering waiting for site Ik/Icc, but retain residual verification note.",
+      "provisional_high_breaking_capacity_reference": "30 kA class at 220/240 Vac where applicable"
+    },
+    "thermal_and_enclosure": {
+      "enclosure_ip_required": "IP66",
+      "ip66_must_be_preserved_after_climate_control": true,
+      "climate_control_family": "Schneider ClimaSys",
+      "final_rule": "Select exact ClimaSys model after thermal calculation and retain evidence that final assembled solution preserves IP66",
+      "ambient_design_c": 40
+    },
+    "reserve_policy": {
+      "load_percent": 20,
+      "io_percent": 20,
+      "power_supply_percent": 20,
+      "ups_percent": 20,
+      "physical_space_percent": 20
+    },
+    "documentation_and_release": {
+      "excel_generation_rule": "Generate final Excel only after full technical closure and validation of references.",
+      "external_research_rule": "Research manufacturer, supplier, standards, academic articles and technical books before asking the user for information that can be obtained externally.",
+      "datacenter_rule": "Relevant external findings must be registered in the Data Center with source metadata, status, application and technical summary.",
+      "memory_rule": "All frozen answers and premises must be persisted in project memory and inherited by future elaborations.",
+      "question_rule": "Do not re-ask frozen premises. Ask only for genuinely unresolved project/field decisions.",
+      "visualize_rule": "When a new user decision is required, present the questions in Visualize with a final selectable/copyable answer block."
+    }
+  },
+  "premise_change_control": {
+    "change_mode": "EXPLICIT_OVERRIDE_ONLY",
+    "rule": "A frozen premise may be changed only by an explicit later user instruction or a higher-priority controlled project document. Any change must be versioned and logged with old value, new value, reason, date and affected artifacts.",
+    "downstream_effect": "A changed premise invalidates dependent sizing, BOM, layout, drawings, load calculations, thermal calculations and release status as applicable."
   }
 }
