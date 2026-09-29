@@ -104,7 +104,7 @@ def create_and_plan_candidate(
     canonical_inputs: dict[str, str],
     changes: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    from pipeline.aut_panel_candidate_revision import create_candidate, apply_change
+    from pipeline.aut_panel_candidate_revision import create_candidate, apply_changes_atomic
 
     candidate = create_candidate(
         db_path,
@@ -113,15 +113,11 @@ def create_and_plan_candidate(
         trigger=trigger,
         canonical_inputs=canonical_inputs,
     )
-    applied: list[dict[str, Any]] = []
-    for change in changes:
-        applied.append(
-            apply_change(
-                db_path,
-                candidate_id=candidate["candidate_id"],
-                change=change,
-            )
-        )
+    applied = apply_changes_atomic(
+        db_path,
+        candidate_id=candidate["candidate_id"],
+        changes=changes,
+    )
 
     contract = yaml.safe_load(
         (root / "pipeline" / "pipeline.yaml").read_text(encoding="utf-8")
