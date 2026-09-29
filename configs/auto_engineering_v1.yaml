@@ -1,0 +1,25 @@
+schema_version: "1.0"
+policy_id: AUT-PANEL-AUTO-ENGINEERING-V1
+mode: CANDIDATE_REVISION_ONLY
+allowed_candidate_changes:
+  - ENCLOSURE_CHANGE
+  - COMPONENT_SUBSTITUTION
+  - QUANTITY_CHANGE
+  - LAYOUT_CHANGE
+  - ELECTRICAL_SIZING_CHANGE
+  - IO_CHANGE
+  - COMMUNICATION_CHANGE
+  - PLC_CANDIDATE_CHANGE
+  - PANEL_SPLIT_PROPOSAL
+denied_changes:
+  - GOLDEN_RULE_CHANGE
+  - RELEASE_APPROVAL
+  - AUTO_MERGE
+  - PLC_PRODUCTION_DOWNLOAD
+  - FABRICATION_RELEASE
+  - BINDING_PROCUREMENT
+rules:
+  requires_candidate_revision: true
+  release_requires_human: true
+  historical_revision_mutation_allowed: false
+  fail_closed_on_unknown_change: true
