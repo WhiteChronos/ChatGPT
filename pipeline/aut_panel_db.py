@@ -36,7 +36,7 @@ def db_fingerprint(db_path: Path) -> str:
 
 def record_memory_event(db_path: Path, *, agent_id: str, event_type: str, summary: str,
                         panel_id: str | None = None, panel_revision: str | None = None,
-                        evidence: dict[str, Any] | None = None) -> str:
+                        evidence: dict[str, Any] | None = None, mirror_backend: Any | None = None) -> str:
     event_id = f"MEM-{uuid.uuid4().hex[:16].upper()}"
     with connect(db_path) as conn:
         conn.execute(
@@ -46,6 +46,9 @@ def record_memory_event(db_path: Path, *, agent_id: str, event_type: str, summar
             (event_id, agent_id, panel_id, panel_revision, event_type, now_iso(), summary,
              json.dumps(evidence or {}, ensure_ascii=False, sort_keys=True)),
         )
+    if mirror_backend is not None:
+        from pipeline.aut_panel_mem0 import mirror_memory_event
+        mirror_memory_event(event_id, db_path=db_path, backend=mirror_backend)
     return event_id
 
 def record_agent_run(db_path: Path, *, run_id: str, agent_id: str, stage: str, status: str,
