@@ -1,0 +1,17 @@
+schema_version: "1.0"
+memory_backend_id: AUT-PANEL-MEM0-V1
+enabled: false
+provider: mem0
+package: mem0ai
+package_version: "2.2.1"
+fork_repository: WhiteChronos/mem0
+fork_commit: 94c3fe9f238f3dbf29c9ce98643bd71eb13077cd
+authority: AUXILIARY_CONTEXT_ONLY
+canonical_memory: SQLite
+isolation:
+  key: panel_id
+  revision_metadata_required: true
+failure_policy:
+  backend_unavailable: FALLBACK_TO_CANONICAL_ONLY
+  canonical_write_must_succeed_first: true
+  mem0_write_failure_blocks_engineering: false
