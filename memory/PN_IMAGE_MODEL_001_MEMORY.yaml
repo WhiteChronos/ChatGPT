@@ -1,0 +1,55 @@
+schema_version: "1.0"
+memory_id: PN-IMAGE-MODEL-001-MEMORY
+status: CONTROLLED_ACTIVE
+model_id: PN-IMAGE-MODEL-001
+reference:
+  manifest: datacenter/images/PN_MODEL_001.json
+  prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  visual_standard: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  reference_image_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
+  reference_image_pixel_size: {width: 1024, height: 1536}
+core_memory:
+  - "MODEL 001 is the mandatory visual/document starting structure for PN panel images."
+  - "MODEL 001 is NOT a fixed-size cabinet template."
+  - "Every target PN panel has project-specific H/W/D determined from its own engineering content."
+  - "Never inherit PN-AUT-001 dimensions into another PN."
+  - "For a new PN, select enclosure only after LI/BOM, exact component geometry, clearances, wiring/cable zones, door interference, UPS/battery space, thermal equipment, maintenance access and physical reserve are evaluated."
+  - "Default physical reserve is 20 percent only when the target project has not frozen another reserve."
+  - "Once the target enclosure is frozen in its Data Sheet/revision, enclosure changes invalidate layout, render, QA and release and require controlled revision."
+  - "The lateral 3/4 dimension shows only the real target enclosure depth aligned to the actual depth axis."
+  - "MODEL 001 mandatory content: general views, electrical architecture, communication architecture, command diagram, panel sizing, legend and panel data."
+  - "No large manufacturer footer logos; manufacturer/model only as technical identification."
+  - "Generative imagery is communication only; engineering authority remains canonical premises, Data Sheet, LI/BOM, calculations and official manufacturer geometry."
+agent_inheritance:
+  ORCHESTRATOR: mandatory
+  TECHNICAL_RESEARCH: read
+  DATACENTER_CURATOR: mandatory
+  ELECTRICAL_SIZING: read
+  AUTOMATION_IO: read
+  LI_BOM: read
+  LAYOUT_OPTIMIZER: mandatory
+  RENDERER: mandatory
+  QA: mandatory
+  MEMORY_CURATOR: mandatory
+  CAD_GEOMETRY_GUARDIAN: mandatory
+  SCALE_PROPORTION_GUARDIAN: mandatory
+  BLENDER_RENDER_GUARDIAN: mandatory
+  CANVAS_COMPOSITION_GUARDIAN: mandatory
+release_checks:
+  - model_001_loaded
+  - model_001_prompt_loaded
+  - target_datasheet_loaded
+  - target_dimensions_not_inherited_from_reference
+  - target_enclosure_capacity_proved
+  - target_enclosure_frozen_before_render
+  - li_bom_load_layout_image_parity
+  - side_depth_dimension_matches_target_datasheet
+change_control:
+  user_authorization_required: true
+  model_001_structure_change_creates_new_model_id: true
+  target_panel_dimension_change_does_not_change_model_001: true
+history:
+  - revision: 1
+    date: "2026-09-29"
+    event: MODEL_001_VARIABLE_DIMENSION_POLICY_FROZEN
+    summary: "User clarified that cabinet size is variable by project and internal content; MODEL 001 is the base structure for elaborating other PN models, not a physical-size template."
