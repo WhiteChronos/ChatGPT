@@ -33,3 +33,39 @@ def test_benchmark_schema_requires_precision_fields():
         "query", "panel_id", "panel_revision", "must_include_event_ids",
         "must_exclude_event_ids", "category",
     }.issubset(set(item["required"]))
+
+
+def test_runner_scores_must_include_and_must_exclude_without_llm():
+    mod = load_module("pipeline/aut_panel_memory_benchmark.py", "memory_benchmark")
+    cases = [
+        {
+            "case_id": "ok",
+            "query": "q1",
+            "panel_id": "PN-AUT-01",
+            "panel_revision": "R03",
+            "must_include_event_ids": ["A"],
+            "must_exclude_event_ids": ["B"],
+            "category": "x",
+        },
+        {
+            "case_id": "bad",
+            "query": "q2",
+            "panel_id": "PN-AUT-01",
+            "panel_revision": "R03",
+            "must_include_event_ids": ["A"],
+            "must_exclude_event_ids": ["B"],
+            "category": "x",
+        },
+    ]
+
+    class Provider:
+        def search(self, **kwargs):
+            ids = ["A"] if kwargs["query"] == "q1" else ["A", "B"]
+            return [{"metadata": {"event_id": event_id}} for event_id in ids]
+
+    out = mod.run_retrieval_benchmark(cases, Provider())
+    assert out["total_cases"] == 2
+    assert out["passed_cases"] == 1
+    assert out["active_pass_rate"] == 0.5
+    assert out["llm_judge_used"] is False
+    assert out["results"][1]["unexpected_event_ids"] == ["B"]
