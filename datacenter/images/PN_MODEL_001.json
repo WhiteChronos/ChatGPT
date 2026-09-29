@@ -74,5 +74,13 @@
     "selection_rule": "Select an actual manufacturer enclosure only after the dimensional layout proves capacity. The target datasheet must freeze the selected enclosure dimensions before final rendering.",
     "inheritance_prohibition": "Never copy 1800x800x300 mm or any other dimensions from PN-AUT-001 into a different PN merely because MODEL 001 is used.",
     "existing_panel_rule": "Once a target panel enclosure is frozen in its datasheet/revision, changing it invalidates layout/render/QA and requires controlled revision."
+  },
+  "image_elaboration_directive": {
+    "id": "PN-IMAGE-ELABORATION-DIRECTIVE-V1",
+    "prompt": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
+    "registry": "datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json",
+    "memory": "memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml",
+    "mandatory": true,
+    "rule": "MODEL 001 and the image elaboration directive must be loaded together for every PN image task."
   }
 }
