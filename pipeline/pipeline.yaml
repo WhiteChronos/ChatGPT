@@ -41,6 +41,10 @@ contracts:
   conversation_contract: pipeline/conversation_contract.py
   datacenter: datacenter/datacenter.yaml
   datasheet: datasheet/datasheet.yaml
+  electrical_sizing_script: pipeline/aut_panel_electrical_sizing.py
+  electrical_sizing_inputs: datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json
+  electrical_sizing_schema: schemas/aut_panel_electrical_sizing_v1.schema.json
+  electrical_sizing_references: datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json
 learning_extension:
   mode: CONTROLLED_EVOLUTION
   canonical_sequence_unchanged: true
@@ -92,7 +96,35 @@ sequence:
       - li_material_control_memory_linked
   - order: 60
     id: LOAD_BALANCE
-    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present, applicable_norms_loaded]
+    implementation: pipeline/aut_panel_electrical_sizing.py
+    inputs: datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json
+    reference_registry: datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json
+    gate:
+      - load_sheet_present
+      - equipment_loads_traced
+      - totals_24vdc_127vac_220vac_present
+      - applicable_norms_loaded
+      - supply_voltage_and_phases_known
+      - earthing_system_known
+      - ambient_temperature_and_altitude_known
+      - prospective_short_circuit_current_known
+      - dc_load_consumption_traced_to_exact_component
+      - dc_power_supply_capacity_verified
+      - dc_ups_path_verified
+      - battery_autonomy_and_capacity_verified
+      - panel_design_current_ib_calculated
+      - incoming_breaker_in_verified
+      - incoming_conductor_iz_verified
+      - ib_le_in_le_iz_verified
+      - voltage_drop_verified
+      - breaker_icu_not_less_than_ik
+      - assembly_ina_verified
+      - assembly_icw_ipk_verified_when_applicable
+      - selectivity_or_backup_verified_from_manufacturer_tables
+      - protective_bonding_verified
+      - thermal_losses_complete
+      - temperature_rise_verified
+      - electrical_sizing_holds_empty_for_release
   - order: 70
     id: BOM
     gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line, applicable_norms_loaded]
@@ -187,6 +219,9 @@ sequence:
       - hashes
       - normative_applicability_reviewed
       - normative_source_status_checked
+      - electrical_sizing_manifest_present
+      - electrical_sizing_status_reviewed
+      - a_do_quadro_emitted_only_after_sizing_pass
   - order: 110
     id: MEMORY_SYNC
     gate:
@@ -268,6 +303,15 @@ release_policy:
   missing_memory_sync_when_required: HOLD
   unverified_applicable_normative_edition: HOLD
   normative_requirement_conflict: HOLD
+  missing_electrical_sizing_input: HOLD
+  incomplete_dc_load_consumption: HOLD
+  missing_short_circuit_level: HOLD
+  breaker_icu_below_prospective_short_circuit: HOLD
+  breaker_current_below_design_current: HOLD
+  breaker_current_above_conductor_ampacity: HOLD
+  assembly_ina_below_design_current: HOLD
+  battery_sizing_incomplete: HOLD
+  thermal_verification_incomplete: HOLD
   ml_override_of_deterministic_gate: REPROVADO
   autoevolution_locked_mutation: REPROVADO
   fail_closed: true
