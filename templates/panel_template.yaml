@@ -25,6 +25,11 @@ workbook_master:
     Verificação Visual: {max_row: 14, max_column: 5, freeze_panes: A8, merged_ranges_count: 4}
     Referências: {max_row: 9, max_column: 6, freeze_panes: null, merged_ranges_count: 1}
 image_standard:
+  model_001_id: PN-IMAGE-MODEL-001
+  model_001_manifest: datacenter/images/PN_MODEL_001.json
+  model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  model_001_role: VISUAL_STRUCTURE_NOT_FIXED_ENCLOSURE
+  enclosure_dimension_policy: VARIABLE_BY_TARGET_PROJECT
   visual_standard_id: IMG-AUT-PANEL-MASTER-V1
   active_composition_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
   active_composition_revision: AUT-PANEL-VISUAL-STANDARD-V3
@@ -72,6 +77,9 @@ image_standard:
     mounting_clearances_from_manufacturer_required: true
     cable_exit_clearance_and_bend_radius_required: true
     technical_values_from_reference_image_are_not_authoritative: true
+    target_panel_dimensions_must_come_from_datasheet: true
+    reference_panel_dimensions_must_not_be_inherited: true
+    enclosure_selected_after_real_layout_capacity_proof: true
     parity_footer_text: "LI = BOM = CARGA = LAYOUT = IMAGEM"
     high_information_density_engineering_sheet: true
 panels:
