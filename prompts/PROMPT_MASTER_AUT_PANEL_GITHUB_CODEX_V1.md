@@ -30,6 +30,8 @@ Carregar somente o contexto necessario e sempre verificar os arquivos atuais ant
 - datacenter/LI_MATERIAL_CONTROL.json
 - memory/LI_MATERIAL_CONTROL_MEMORY.yaml
 - configs/layout_optimizer_v1.yaml
+- datacenter/images/PN_MODEL_001.json
+- prompts/PROMPT_PN_IMAGE_MODEL_001.md
 - pipeline/aut_panel_learning.py
 - pipeline/evolution_engine.py
 - pipeline/layout_optimizer/
@@ -91,7 +93,7 @@ Ambos:
 - IHM na porta.
 - Layout Optimizer e deterministico.
 - Se BOM nao cabe: HOLD_LAYOUT_CAPACITY.
-- Nao alterar gabinete automaticamente.
+- Para painel já congelado em uma revisão: não alterar gabinete automaticamente. Para NOVO PN: determinar o gabinete pela engenharia do painel-alvo e congelá-lo no Data Sheet somente após prova de capacidade dimensional.
 - Divisao em paineis e estudo, nunca decisao automatica.
 - SVG/layout deterministico e autoridade visual; imagem generativa e apoio.
 
@@ -208,3 +210,20 @@ Evolucao e proposal-only + sandbox + human gate + rollback.
 ## Regra final
 Nunca alterar um padrao aprovado sem autorizacao explicita.
 Quando houver duvida material, conflito de fonte, edicao normativa nao verificada, quantidade sem evidencia, capacidade insuficiente ou divergencia LI/BOM/Data Sheet/layout/render: HOLD.
+
+## MODEL 001 / novos painéis PN
+PN-IMAGE-MODEL-001 é a baseline de composição visual e documental para futuras imagens PN.
+
+Regra principal:
+MODEL 001 DEFINE A FORMA DO DOCUMENTO; O PROJETO DEFINE O TAMANHO E O CONTEÚDO DO PAINEL.
+
+Codex deve:
+- carregar `datacenter/images/PN_MODEL_001.json` e `prompts/PROMPT_PN_IMAGE_MODEL_001.md`;
+- carregar os dados canônicos do painel-alvo;
+- dimensionar o gabinete a partir da LI/BOM, geometria oficial dos componentes, folgas, cabos, bornes, porta, UPS/baterias, solução térmica, manutenção e reserva física;
+- não herdar 1800x800x300 mm ou qualquer dimensão de outro PN;
+- congelar o gabinete real de fabricante no Data Sheet após o layout provar capacidade;
+- usar a profundidade real do painel-alvo na cota da vista lateral 3/4;
+- se faltar dado dimensional, emitir HOLD_DIMENSIONAL_DATA;
+- se o conteúdo não couber, emitir HOLD_LAYOUT_CAPACITY e selecionar gabinete maior mediante o fluxo controlado;
+- manter a estrutura do MODEL 001: vistas gerais, arquitetura elétrica, comunicação, comando, dimensionamento, legenda/dados.
