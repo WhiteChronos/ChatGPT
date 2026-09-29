@@ -92,3 +92,47 @@ def run_candidate(
         "release_requires_human": True,
         "rollback_target": candidate["rollback_target"],
     }
+
+
+def create_and_plan_candidate(
+    *,
+    db_path: Path,
+    root: Path,
+    panel_id: str,
+    source_revision: str,
+    trigger: dict[str, Any],
+    canonical_inputs: dict[str, str],
+    changes: list[dict[str, Any]],
+) -> dict[str, Any]:
+    from pipeline.aut_panel_candidate_revision import create_candidate, apply_change
+
+    candidate = create_candidate(
+        db_path,
+        panel_id=panel_id,
+        source_revision=source_revision,
+        trigger=trigger,
+        canonical_inputs=canonical_inputs,
+    )
+    applied: list[dict[str, Any]] = []
+    for change in changes:
+        applied.append(
+            apply_change(
+                db_path,
+                candidate_id=candidate["candidate_id"],
+                change=change,
+            )
+        )
+
+    contract = yaml.safe_load(
+        (root / "pipeline" / "pipeline.yaml").read_text(encoding="utf-8")
+    )
+    planned = build_candidate_execution_plan({"changes": applied}, contract)
+    return {
+        **candidate,
+        "status": "IN_PROGRESS",
+        "changes": applied,
+        "planned_stages": planned,
+        "stage_execution_mode": "GITHUB_CODEX_AUTOMATION",
+        "release_executed": False,
+        "release_requires_human": True,
+    }
