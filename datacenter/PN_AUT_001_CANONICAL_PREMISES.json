@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "project": "PN-AUT-001",
+  "status": "FROZEN_BASELINE",
+  "canonical_source": "datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json#canonical_project_premises",
+  "inheritance_rule": "Mandatory for all future elaborations",
+  "override_rule": "Only explicit user override or higher-priority controlled document",
+  "reask_rule": "Do not re-ask frozen premises",
+  "change_control": "Version and log all overrides; invalidate dependent artifacts when applicable"
+}
