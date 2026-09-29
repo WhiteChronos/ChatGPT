@@ -188,6 +188,9 @@ For dimensional raster views, Codex SHALL use `pipeline/corrigir_proporcao_image
 
 When this guard or its tests change, Codex SHALL run the AUT panel agent-system regression suite and report the result in PR #23.
 
+## Auxiliary memory contract
+Mem0 is optional auxiliary context only. Canonical Git/SQLite records and approved evidence always win. Only MEMORY_CURATOR may mirror canonical events to Mem0. ORCHESTRATOR may consume only context returned by `pipeline/aut_panel_memory_context.py`; engineering agents must not write engineering facts directly from Mem0 results. Mem0 outage falls back to canonical-only execution and does not clear or create engineering HOLDs.
+
 ## Automatic engineering candidate revisions
 Codex MAY create and modify new engineering candidate revisions using `pipeline/aut_panel_candidate_revision.py`, `pipeline/aut_panel_candidate_runner.py` and `pipeline/aut_panel_candidate_gate.py`. Candidate automation may revise enclosure, components, quantities, load sizing, I/O, communication, layout and candidate PLC logic when supported by validated evidence.
 
