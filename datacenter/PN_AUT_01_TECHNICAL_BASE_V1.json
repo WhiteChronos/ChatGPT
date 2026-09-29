@@ -417,14 +417,13 @@
     }
   },
   "mandatory_missing_project_data": [
-    "Confirmar configuração da alimentação 220 Vca: 1F+N, 2F ou 3F.",
-    "Obter Ik/Icc no painel 220 V adjacente ou dados do transformador/rede para cálculo IEC 60909.",
-    "Informar material, seção e comprimento do alimentador entre painel 220 V e PN-AUT-001.",
-    "Confirmar modelo exato dos transmissores de temperatura.",
-    "Resolver modelo de CO2: referência 'C732A' não localizada; comprovar 0-5000 ppm + 4-20 mA + HART.",
-    "Resolver alimentação do FIACNXYEKIT: manual indica 12 Vcc; definir conversor 24->12 Vcc/fonte 12 Vcc ou gateway homologado 24 Vcc.",
-    "Selecionar solução térmica que mantenha IP66 integral a 40 °C.",
-    "Fechar carga crítica 24 Vcc final para dimensionar UPS/bateria de autonomia mínima 20 min."
+    "Obter Ik/Icc no painel 220 V adjacente ou dados suficientes para cálculo IEC 60909.",
+    "Confirmar método de instalação/agrupamento do alimentador 2F+PE de 10 m para validar definitivamente 2.5 mm2 Cu a 40 C.",
+    "Selecionar transmissor de temperatura ambiente 4-20 mA + HART; NOVUS TEMP-WM não comprova HART.",
+    "Resolver sensor de CO2 0-5000 ppm + 4-20 mA + HART.",
+    "Obter homologação Trane para gateway 24 Vdc candidato CoolMasterNet ou adotar gateway Trane TCONTCNMODBUS com alimentação 12 Vdc.",
+    "Fechar carga crítica 24 Vcc final para dimensionar UPS/bateria de 20 min.",
+    "Selecionar solução térmica que mantenha IP66 integral a 40 C."
   ],
   "release_gates": {
     "exact_component_models_closed": false,
@@ -540,7 +539,7 @@
   "project_answers": {
     "received_at": "2026-09-29T14:42:00-03:00",
     "supply_voltage_vac": 220,
-    "supply_phase_configuration": "PENDING_CONFIRMATION",
+    "supply_phase_configuration": "2F",
     "earthing_system": "TN-S",
     "prospective_short_circuit_ka": null,
     "upstream_origin": "Painel elétrico 220 V localizado ao lado do PN-AUT-001",
@@ -551,7 +550,13 @@
     "hart_required_by_project": true,
     "co2_user_reference": "C732A - Honeywell, igual ou similar técnico",
     "gateway_user_supply_statement": "24 Vcc",
-    "enclosure_ip66_after_climate_control": true
+    "enclosure_ip66_after_climate_control": true,
+    "feeder_length_m": 10,
+    "feeder_material": "CU_SELECTED_BY_ENGINEERING",
+    "feeder_section_mm2": null,
+    "hmi_model": "Schneider Electric Harmony ST6 HMIST6500",
+    "temperature_transmitter_user_reference": "NOVUS TEMP-WM, equal or technical similar",
+    "gateway_requirement": "Find homologated VRF gateway accepting 24 Vdc"
   },
   "engineering_reconciliation": {
     "hart": {
@@ -593,6 +598,63 @@
         "PN-AUT-001 feeder conductor material/section/length (even if very short)"
       ],
       "validation_note": "Field prospective-fault-current/loop-impedance measurement may be used as supporting verification where permitted, but design calculation/source data remain required for release."
+    },
+    "hmi": {
+      "status": "CLOSED",
+      "selected_model": "HMIST6500",
+      "manufacturer": "Schneider Electric",
+      "family": "Harmony ST6",
+      "power": "24 Vdc",
+      "interfaces": [
+        "2 COM",
+        "2 Ethernet",
+        "USB host",
+        "USB device"
+      ],
+      "display": "10 inch wide touch panel",
+      "source": "Schneider official"
+    },
+    "temperature_transmitter": {
+      "status": "HOLD_HART_CONFLICT",
+      "user_reference": "NOVUS TEMP-WM",
+      "official_findings": {
+        "output": "2-wire 4-20 mA loop powered",
+        "supply": "12-30 Vdc",
+        "protection": "IP65 housing / IP40 sensor capsule",
+        "hart": "Not supported by TEMP-WM documentation located"
+      },
+      "consequence": "TEMP-WM is not acceptable if HART remains mandatory.",
+      "novus_hart_alternative": "TxIsoPack-HART / TxIsoRail-HART provide 4-20 mA + superimposed HART but are not equivalent wall-mount ambient transmitters.",
+      "action": "Select a wall-mount temperature transmitter explicitly supporting 4-20 mA + HART, or formally relax HART for this point type."
+    },
+    "gateway_24v": {
+      "status": "CANDIDATE_FOUND_HOLD_TRANE_APPROVAL",
+      "candidate": "CoolAutomation CoolMasterNet",
+      "power": "12-24 Vdc; 24 Vdc supported",
+      "communications": [
+        "Ethernet",
+        "Modbus RS-485",
+        "RS-232",
+        "USB"
+      ],
+      "trane_compatibility": "CoolAutomation publishes compatibility with Trane VRF families including 4TVH/4TVHR/4TVA/4TVW/4TVX/4TVD/4TVF/4TVG/4TVE/4TVC/4TVB.",
+      "caveat": "Project FD requires gateway homologated by the VRF manufacturer. CoolAutomation compatibility does not by itself prove Trane homologation for the exact TVR Connect equipment supplied.",
+      "action": "Obtain Trane written approval/submittal for the exact VRF model before freezing CoolMasterNet. Otherwise use Trane TCONTCNMODBUS, which is manufacturer-native but requires 12 Vdc."
+    },
+    "feeder": {
+      "status": "PRELIMINARY_ENGINEERING_SELECTION",
+      "system": "220 Vac, 2F, TN-S, 10 m",
+      "selected_material": "Copper",
+      "preliminary_section_mm2": 2.5,
+      "conductors": "2F + PE",
+      "pe_section_mm2": 2.5,
+      "rationale": [
+        "The expected panel load is far below typical ampacity of 2.5 mm2 Cu.",
+        "10 m run at this load yields negligible voltage drop.",
+        "2.5 mm2 Cu is a conservative minimum feeder proposal pending final Ib and installation method.",
+        "Final verification must include ampacity correction for 40 C, installation method, grouping, short-circuit withstand, and upstream protective-device coordination."
+      ],
+      "release_blocker": "Prospective short-circuit current Ik/Icc is still unknown, so conductor short-circuit withstand and breaker breaking capacity cannot be finally validated."
     }
   }
 }
