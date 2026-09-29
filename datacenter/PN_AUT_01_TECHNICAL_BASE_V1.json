@@ -4,7 +4,7 @@
   "panel_id": "PN-AUT-01",
   "revision_basis": "R02",
   "status": "HOLD_UNTIL_ALL_COMPONENTS_AND_SIGNALS_DEFINED",
-  "release_label": "BASE TECNICA AVANCADA / PESQUISA E DIMENSIONAMENTO AUTORIZADOS / EXCEL BLOQUEADO ATE FECHAMENTO TECNICO / A DO QUADRO NAO EMITIDO",
+  "release_label": "DECISOES DE ENGENHARIA CONGELADAS / PESQUISA E DIMENSIONAMENTO PENDENTES / EXCEL BLOQUEADO ATE FECHAMENTO TECNICO / A DO QUADRO NAO EMITIDO",
   "architecture": {
     "panel_count": 1,
     "controller_role": "PLC-01 is the central controller; all I/O, commands, interlocks and communications are subordinated to the PN-AUT-01 architecture.",
@@ -687,5 +687,21 @@
     "vrf_gateway_strategy": "Research and select a manufacturer solution that meets the project, without waiting for user approval; prioritize official Trane/VRF compatibility.",
     "load_strategy": "Derive final 24 Vdc load from selected supplier/model data.",
     "thermal_strategy": "Use Schneider ClimaSys or equivalent and provide evidence/engineering justification for final IP66 assembly."
+  },
+  "final_engineering_decisions": {
+    "temperature_transmitter": "Use NOVUS TEMP-WM as application reference and select a wall-mount equivalent with 4-20 mA + HART.",
+    "co2_transmitter": "Prioritize Honeywell or equivalent from a recognized manufacturer.",
+    "vrf_gateway": "Prioritize official Trane gateway with 24 Vdc supply.",
+    "plc_cpu": "Select S7-1500 CPU with higher reserve for future expansion.",
+    "future_reserve": "Apply 20% reserve to load, I/O, power supply, UPS and physical panel space.",
+    "main_protection": "Use Schneider Acti9 iC60H 2P; final ampere rating to be calculated from final load.",
+    "ups": "30 minutes autonomy plus 20% ageing/reserve margin; all 24 Vdc panel loads backed up.",
+    "thermal_management": "Use Schneider ClimaSys; exact model after thermal calculation.",
+    "excel_release_rule": "Generate final Excel only after full technical closure and validation of references.",
+    "status": "FROZEN_BY_USER"
+  },
+  "design_rules": {
+    "user_questions_rule": "Do not re-ask frozen decisions. Research manufacturer/standards first. Ask user only for unresolved project/field decisions.",
+    "visualize_rule": "When a new user decision is required, present questions in Visualize with a final selectable/copyable answer block."
   }
 }
