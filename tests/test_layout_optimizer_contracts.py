@@ -22,7 +22,10 @@ def test_agent_registry_points_layout_optimizer_to_contract():
     assert agent["implementation"]=="pipeline/layout_optimizer/cli.py"
     assert agent["config"]=="configs/layout_optimizer_v1.yaml"
     assert agent["result_schema"]=="schemas/layout_optimizer_result_v1.schema.json"
-    assert agent["decision_policy"]=="USER_DECISION_REQUIRED_FOR_ENCLOSURE_OR_SPLIT"
+    assert agent["decision_policy"]=="AUTO_CANDIDATE_REVISION_FOR_ENCLOSURE_OR_SPLIT"
+    coordinator=next(x for x in agents["agents"] if x["id"]=="AUTO_ENGINEERING_COORDINATOR")
+    assert coordinator["release_authority"] is False
+    assert coordinator["policy"]=="configs/auto_engineering_v1.yaml"
 
 def test_json_pipeline_registers_optimizer_metadata():
     pipe=json.loads((ROOT/"pipeline/AUT_PANEL_PIPELINE.json").read_text(encoding="utf-8"))
