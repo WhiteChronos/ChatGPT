@@ -11,6 +11,11 @@ production_contract:
   image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
   visual_composition_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
   visual_composition_revision: AUT-PANEL-VISUAL-STANDARD-V3
+  pn_image_model_001_id: PN-IMAGE-MODEL-001
+  pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
+  pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  panel_dimensions_are_project_specific: true
+  enclosure_selected_after_dimensional_capacity_proof: true
   prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
   li_material_prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
   li_material_control_registry: datacenter/LI_MATERIAL_CONTROL.json
