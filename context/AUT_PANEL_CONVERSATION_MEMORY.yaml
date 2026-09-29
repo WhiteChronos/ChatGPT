@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 20
+  sync_revision: 21
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -129,11 +129,17 @@ mutable_state:
   pn_image_model_001:
     model_id: PN-IMAGE-MODEL-001
     manifest: datacenter/images/PN_MODEL_001.json
+    prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+    memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
     datasheet: datasheet/PN_AUT_001_VISUAL_STANDARD.json
+    reference_image_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
     status: FROZEN_VISUAL_BASELINE
+    role: VISUAL_DOCUMENT_STRUCTURE_NOT_FIXED_PANEL_SIZE
     mandatory_starting_point_for_all_pn_images: true
-    side_view_dimension_rule: actual cabinet depth only, aligned with lateral/depth axis
-    pn_aut_001_depth_mm: 300
+    dimension_policy: VARIABLE_BY_TARGET_PROJECT_AND_INTERNAL_CONTENT
+    reference_dimensions_inheritance_forbidden: true
+    enclosure_selection_rule: derive_from_target_LI_BOM_geometry_clearances_wiring_thermal_maintenance_and_reserve_then_freeze_in_target_datasheet
+    side_view_dimension_rule: actual_target_cabinet_depth_only_aligned_with_lateral_axis
     manufacturer_footer_logos: prohibited
     override_policy: explicit_user_override_only_or_new_visual_model_id
   canonical_project_premises:
@@ -505,3 +511,20 @@ history:
     em identificacao tecnica de componentes. O modelo visual e downstream do datasheet, LI/BOM,
     calculos de carga e selecoes validadas e nunca pode sobrescrever dados de engenharia.
     Alteracoes futuras no padrao devem gerar novo MODEL ID e nao redefinir silenciosamente MODEL 001.
+
+- revision: 21
+  at: '2026-09-29T19:02:00-03:00'
+  actor: user+assistant
+  event: MODEL_001_REDEFINED_AS_VARIABLE_DIMENSION_PN_BASE
+  summary: >-
+    Usuario esclareceu que o tamanho do painel e variavel conforme projeto e conteudo interno.
+    PN-IMAGE-MODEL-001 permanece como base obrigatoria de composicao, linguagem visual e estrutura
+    documental para elaborar todos os futuros paineis PN, mas nao como template de dimensoes fisicas.
+    Para cada novo PN, H/W/D devem ser calculados pela LI/BOM, dimensoes e folgas oficiais dos
+    componentes, canaletas/bornes/cabos, raio de curvatura, porta, UPS/baterias, termica, manutencao
+    e reserva fisica. O gabinete real somente e congelado no Data Sheet depois de prova dimensional
+    de capacidade. Dimensoes do PN-AUT-001 sao exemplo de instancia e nao podem contaminar outro PN.
+    Criado prompt obrigatorio prompts/PROMPT_PN_IMAGE_MODEL_001.md e memoria dedicada
+    memory/PN_IMAGE_MODEL_001_MEMORY.yaml. AGENTS.md, Prompt Master, Prompt GitHub/Codex, Golden Rules,
+    pipeline, Data Center, Data Sheet, Context Manifest, template visual e memorias de agentes foram
+    atualizados para carregar e aplicar essa regra.
