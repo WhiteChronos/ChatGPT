@@ -15,6 +15,37 @@ def is_locked_path(path: str) -> bool:
     norm = path.replace("\\", "/").lstrip("./")
     return norm in LOCKED_EXACT or norm.startswith(LOCKED_PREFIXES)
 
+def classify_candidate_change(change: dict[str, Any], policy: dict[str, Any]) -> dict[str, Any]:
+    change_type = str(change.get("change_type") or "").strip()
+    allowed = set(policy.get("allowed_candidate_changes") or [])
+    denied = set(policy.get("denied_changes") or [])
+    rules = policy.get("rules") or {}
+
+    if change_type in denied:
+        return {
+            "change_type": change_type,
+            "allowed": False,
+            "requires_candidate_revision": bool(rules.get("requires_candidate_revision", True)),
+            "release_requires_human": True,
+            "reason": "explicitly_denied_change",
+        }
+    if change_type in allowed:
+        return {
+            "change_type": change_type,
+            "allowed": True,
+            "requires_candidate_revision": True,
+            "release_requires_human": True,
+            "reason": "authorized_candidate_revision_change",
+        }
+    return {
+        "change_type": change_type,
+        "allowed": False,
+        "requires_candidate_revision": bool(rules.get("requires_candidate_revision", True)),
+        "release_requires_human": True,
+        "reason": "unknown_change_fail_closed",
+    }
+
+
 def build_proposal(data: dict[str, Any]) -> dict[str, Any]:
     affected = [str(x) for x in data.get("affected_files", [])]
     touches_locked = any(is_locked_path(p) for p in affected)
