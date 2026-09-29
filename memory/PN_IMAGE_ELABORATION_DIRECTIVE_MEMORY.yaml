@@ -1,0 +1,48 @@
+schema_version: "1.0"
+memory_id: PN-IMAGE-ELABORATION-DIRECTIVE-MEMORY-V1
+status: CONTROLLED_ACTIVE
+directive_id: PN-IMAGE-ELABORATION-DIRECTIVE-V1
+prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+datacenter_registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+model_001: datacenter/images/PN_MODEL_001.json
+
+core_memory:
+  - "Toda imagem PN e derivada de dados de engenharia; nunca e fonte primaria."
+  - "MODEL 001 fixa composicao e linguagem visual, nunca dimensoes de outro painel."
+  - "Cada PN deve ter gabinete dimensionado pelo conteudo proprio antes do render."
+  - "Vistas gerais, arquitetura eletrica, arquitetura de comunicacao, diagrama de comando e dimensionamento fazem parte da diretriz base."
+  - "A cota lateral 3/4 representa somente a profundidade real do painel-alvo no eixo lateral real."
+  - "Imagem deve respeitar LI = BOM = CARGA = DATASHEET = LAYOUT = GEOMETRIA = IMAGEM."
+  - "Se a pagina nao comportar o conteudo, crescer canvas; nunca reduzir engenharia."
+  - "Nao usar logos grandes de fabricantes como decoracao."
+  - "Perguntar ao usuario somente apos esgotar Data Center, Data Sheet, memoria, fabricantes, normas e literatura tecnica."
+  - "Novas perguntas ao usuario devem ser apresentadas em Visualize com bloco final copiavel."
+  - "Apos alteracao visual aprovada, sincronizar Data Center, Data Sheet quando aplicavel e memorias."
+
+mandatory_for:
+  - ORCHESTRATOR
+  - DATACENTER_CURATOR
+  - LAYOUT_OPTIMIZER
+  - RENDERER
+  - QA
+  - MEMORY_CURATOR
+  - CAD_GEOMETRY_GUARDIAN
+  - SCALE_PROPORTION_GUARDIAN
+  - BLENDER_RENDER_GUARDIAN
+  - CANVAS_COMPOSITION_GUARDIAN
+
+release_memory_checks:
+  - directive_loaded
+  - model_001_loaded
+  - target_engineering_sources_loaded
+  - target_dimensions_closed
+  - image_sections_complete
+  - parity_checked
+  - datacenter_synced
+  - memory_synced
+
+history:
+  - revision: 1
+    date: "2026-09-29"
+    event: IMAGE_ELABORATION_MASTER_DIRECTIVE_CREATED
+    summary: "Criada diretriz mestre consolidando todo o entendimento aprovado para elaboracao de imagens PN e vinculada ao MODEL 001."
