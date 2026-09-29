@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "panel_id": "PN-AUT-001",
+  "revision": "R03-CANDIDATA",
+  "status": "NOT_APPROVED_FOR_ISSUE",
+  "generated_at": "2026-09-29T16:59:00-03:00",
+  "basis": [
+    "LI-3501.02-8210-800-RPJ-702 Rev.0",
+    "FD-3501.01-8210-800-RPJ-001 Rev.A",
+    "datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json",
+    "datacenter/PN_AUT_001_CANONICAL_PREMISES.json",
+    "datacenter/external/PN_AUT_001_EXTERNAL_SOURCE_REGISTRY.json"
+  ],
+  "architecture": {
+    "panel_count": 1,
+    "central_plc": true,
+    "utr": false
+  },
+  "items": [
+    {
+      "tag": "ENC-01",
+      "manufacturer": "Schneider Electric",
+      "model": "NSYCRN86300",
+      "qty": 1,
+      "status": "CONFIRMED"
+    },
+    {
+      "tag": "MP-01",
+      "manufacturer": "Schneider Electric",
+      "model": "NSYMM86",
+      "qty": 1,
+      "status": "CONFIRMED"
+    },
+    {
+      "tag": "QG-01",
+      "manufacturer": "Schneider Electric",
+      "model": "Acti9 iC60H 2P - final In pending",
+      "qty": 1,
+      "status": "CONDITIONAL"
+    },
+    {
+      "tag": "DPS-01",
+      "manufacturer": "Schneider Electric",
+      "model": "iPRD Class II - exact model pending",
+      "qty": 1,
+      "status": "CONDITIONAL"
+    },
+    {
+      "tag": "UPS-01",
+      "manufacturer": "ADEL System",
+      "model": "CBI2420A",
+      "qty": 1,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "BAT-01A/B",
+      "manufacturer": "TBD",
+      "model": "VRLA AGM 12 V - Ah pending",
+      "qty": 2,
+      "status": "CONDITIONAL"
+    },
+    {
+      "tag": "PLC-01",
+      "manufacturer": "Siemens",
+      "model": "6ES7513-1AM03-0AB0",
+      "qty": 1,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "IM-01",
+      "manufacturer": "Siemens",
+      "model": "6ES7155-6AU02-0BN0",
+      "qty": 1,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "AI-01..17",
+      "manufacturer": "Siemens",
+      "model": "6ES7134-6TD00-0CA1",
+      "qty": 17,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "BU-START",
+      "manufacturer": "Siemens",
+      "model": "6ES7193-6BP00-0DA0",
+      "qty": 1,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "BU-02..17",
+      "manufacturer": "Siemens",
+      "model": "6ES7193-6BP00-0BA0",
+      "qty": 16,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "HMI-01",
+      "manufacturer": "Schneider Electric",
+      "model": "HMIST6500",
+      "qty": 1,
+      "status": "FROZEN"
+    },
+    {
+      "tag": "SW-01",
+      "manufacturer": "Siemens",
+      "model": "6GK5208-0GA00-2AC2",
+      "qty": 1,
+      "status": "SELECTED"
+    },
+    {
+      "tag": "TT-SENS-01..28",
+      "manufacturer": "Siemens",
+      "model": "QAA2012",
+      "qty": 28,
+      "status": "ARCHITECTURE_SELECTED"
+    },
+    {
+      "tag": "TT-TX-01..28",
+      "manufacturer": "NOVUS",
+      "model": "TxIsoRail-HRT",
+      "qty": 28,
+      "status": "ARCHITECTURE_SELECTED"
+    },
+    {
+      "tag": "AT-CO2-01..28",
+      "manufacturer": "Honeywell/equivalent",
+      "model": "FINAL MODEL HOLD",
+      "qty": 28,
+      "status": "HOLD"
+    },
+    {
+      "tag": "GW-01",
+      "manufacturer": "Trane",
+      "model": "TCONTSMCB24V - technical validation pending",
+      "qty": 1,
+      "status": "HOLD"
+    },
+    {
+      "tag": "CLIMA-01",
+      "manufacturer": "Schneider Electric",
+      "model": "ClimaSys CU - model after thermal calculation",
+      "qty": 1,
+      "status": "HOLD"
+    },
+    {
+      "tag": "XT-AI",
+      "manufacturer": "Phoenix Contact",
+      "model": "PT 2,5 / 3209510",
+      "qty": 134,
+      "status": "PRELIMINARY"
+    },
+    {
+      "tag": "XPE",
+      "manufacturer": "Phoenix Contact",
+      "model": "PT 2,5-PE / 3209536",
+      "qty": 20,
+      "status": "PRELIMINARY"
+    }
+  ],
+  "io_summary": {
+    "ai_used": 56,
+    "ai_reserve": 11,
+    "ai_total": 67,
+    "di": 0,
+    "do": 0,
+    "ao": 0,
+    "signal": "2-wire 4-20 mA + HART",
+    "supply_vdc": 24
+  },
+  "release_holds": [
+    "CO2 final model/interface",
+    "Trane gateway official technical validation",
+    "ClimaSys final model and IP66 proof",
+    "Final 24 Vdc load and UPS battery Ah",
+    "Final breaker current and cable/protection closure",
+    "Physical layout/enclosure validation with 20% spare space",
+    "Two-agent source validation and reverification"
+  ],
+  "excel_artifact": "LI_PN_AUT_001_R03_CANDIDATA.xlsx"
+}
