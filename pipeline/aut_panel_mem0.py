@@ -54,7 +54,7 @@ class Mem0MemoryBackend:
         panel_revision: str | None,
         limit: int,
     ) -> list[dict[str, Any]]:
-        raw = self.memory.search(query, user_id=panel_id, limit=limit)
+        raw = self.memory.search(query=query, user_id=panel_id, limit=limit)
         entries = raw.get("results", raw) if isinstance(raw, dict) else raw
         out: list[dict[str, Any]] = []
         for item in entries or []:
