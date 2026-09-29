@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 21
+  sync_revision: 22
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -126,6 +126,15 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  pn_image_elaboration_directive:
+    directive_id: PN-IMAGE-ELABORATION-DIRECTIVE-V1
+    prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+    registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+    memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+    model: PN-IMAGE-MODEL-001
+    status: MANDATORY_CONTROLLED
+    load_before_any_pn_image_task: true
+    governs: source_authority_target_sizing_visual_sections_dimensioning_branding_canvas_parity_QA_memory_sync
   pn_image_model_001:
     model_id: PN-IMAGE-MODEL-001
     manifest: datacenter/images/PN_MODEL_001.json
@@ -528,3 +537,16 @@ history:
     memory/PN_IMAGE_MODEL_001_MEMORY.yaml. AGENTS.md, Prompt Master, Prompt GitHub/Codex, Golden Rules,
     pipeline, Data Center, Data Sheet, Context Manifest, template visual e memorias de agentes foram
     atualizados para carregar e aplicar essa regra.
+
+- revision: 22
+  at: '2026-09-29T19:15:00-03:00'
+  actor: user+assistant
+  event: PN_IMAGE_ELABORATION_MASTER_DIRECTIVE_CREATED
+  summary: >-
+    Criada a Diretriz Mestra PROMPT-DIRETRIZ-IMAGEM-PN-V1 consolidando todo o entendimento aprovado
+    para elaboracao de imagens de paineis PN. A diretriz vincula MODEL 001, precedencia das fontes,
+    dimensionamento variavel por projeto, vistas gerais, arquitetura eletrica, arquitetura de
+    comunicacao, diagrama de comando, dimensionamento do painel, regras de cotagem lateral,
+    paridade LI/BOM/CARGA/DATASHEET/LAYOUT/GEOMETRIA/IMAGEM, branding, canvas grow-only, estados HOLD,
+    QA e sincronizacao obrigatoria com Data Center e memorias. Passa a ser carregada obrigatoriamente
+    por Codex, Renderer, Layout, QA e agentes guardioes antes de qualquer elaboracao ou revisao visual.
