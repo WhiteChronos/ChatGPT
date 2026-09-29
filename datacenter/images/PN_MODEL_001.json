@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "model_id": "PN-IMAGE-MODEL-001",
+  "title": "Modelo 001 - Padrao visual inicial para imagens de paineis PN",
+  "status": "FROZEN_VISUAL_BASELINE",
+  "source_artifact": {
+    "filename": "PN_MODEL_001.png",
+    "sandbox_path": "/mnt/data/datacenter/images/PN_MODEL_001.png",
+    "note": "Binary snapshot generated in the active artifact workspace; GitHub stores this canonical manifest because the connected GitHub text API does not persist binary image bytes through create_file/update_file."
+  },
+  "scope": "Mandatory starting visual template for any future PN panel image.",
+  "inheritance_rule": "All future PN images must begin from MODEL 001 structure, then substitute only panel-specific engineering data from the corresponding datasheet/LI/BOM.",
+  "mandatory_layout": [
+    "Top row: front closed view, front internal view with door open, right-side 3/4 view, legend/data block.",
+    "Front view must show panel width and height dimensions using actual datasheet values.",
+    "Right-side 3/4 view must show only the cabinet depth dimension, aligned with the visible side/depth axis; for PN-AUT-001 this dimension is 300 mm.",
+    "Electrical architecture block: incoming supply, main protection, SPD, UPS, battery, 24 Vdc bus, PLC/network/gateway/I-O/instrumentation loads.",
+    "Communication architecture block: BMS/supervisory network, Ethernet/PROFINET/BACnet/Modbus as applicable, PLC, switch, gateway and field equipment.",
+    "Command diagram block: local emergency, HMI/local commands, supervisory commands, PLC logic/interlocks, gateway/field commands and feedback.",
+    "Panel sizing block: enclosure dimensions, supply, feeder, main protection, 24 Vdc load, UPS/battery autonomy, thermal dissipation, climate-control selection, enclosure protection requirement.",
+    "Use clean engineering infographic style, white background, blue section headers, consistent tag notation and dimension arrows.",
+    "Do not place large manufacturer footer logos as page branding. Manufacturer/model names may appear only where technically needed in component identification or source data."
+  ],
+  "engineering_rules": [
+    "Visual content is downstream of canonical premises, datasheet, LI/BOM, load calculation and validated component selection.",
+    "Never reuse PN-AUT-001 dimensions or component quantities for another PN unless its datasheet confirms them.",
+    "Image is illustrative engineering communication, not authority over LI/BOM/datasheet.",
+    "LI = BOM = LOAD = LAYOUT = IMAGE consistency is mandatory.",
+    "If a dimension or equipment selection is not technically closed, mark it HOLD instead of inventing a value.",
+    "For side views, dimension arrows must follow the real measured cabinet axis and must not dimension the projected perspective width."
+  ],
+  "pn_aut_001_reference": {
+    "panel_id": "PN-AUT-001",
+    "enclosure_dimensions_mm": {
+      "height": 1800,
+      "width": 800,
+      "depth": 300
+    },
+    "side_dimension_rule": "300 mm depth only on right-side 3/4 view",
+    "supply": "220 Vac, 2F, TN-S",
+    "command_voltage": "24 Vdc via UPS",
+    "ambient": "40 C, altitude 0 m"
+  },
+  "change_control": {
+    "mode": "EXPLICIT_USER_OVERRIDE_ONLY",
+    "rule": "MODEL 001 remains the starting visual baseline until explicitly superseded by a later approved visual model (MODEL 002, MODEL 003, etc.).",
+    "versioning": "Never overwrite the meaning of MODEL 001; future changes create a new model revision/id."
+  }
+}
