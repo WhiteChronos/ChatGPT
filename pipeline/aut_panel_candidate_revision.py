@@ -8,6 +8,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -109,6 +113,16 @@ def apply_change(
         raise ValueError("invalidates must be a list")
     if not isinstance(change["evidence"], dict):
         raise ValueError("evidence must be an object")
+
+    from pipeline.evolution_engine import classify_candidate_change
+    policy = yaml.safe_load(
+        (ROOT / "configs" / "auto_engineering_v1.yaml").read_text(encoding="utf-8")
+    )
+    decision = classify_candidate_change(change, policy)
+    if not decision["allowed"]:
+        raise ValueError(
+            f"change_type not authorized for candidate revision: {change.get('change_type')}"
+        )
 
     change_id = f"CHG-{uuid.uuid4().hex[:16].upper()}"
     now = _now_iso()
