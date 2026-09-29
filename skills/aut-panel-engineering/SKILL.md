@@ -126,3 +126,8 @@ For dimensional panel views:
 - use letterbox/pillarbox only by adding empty space around the image;
 - verify image aspect ratio against the engineering width/height before composing the poster;
 - do not use this raster guard to correct upstream CAD geometry; fix the 3D assembly instead.
+
+
+## Auxiliary Mem0 memory
+
+Use `configs/mem0_v1.yaml`, `pipeline/aut_panel_mem0.py`, and `pipeline/aut_panel_memory_context.py` when auxiliary memory is enabled. SQLite/Git events remain canonical. MEMORY_CURATOR mirrors eligible events only after the canonical SQLite write succeeds. ORCHESTRATOR may use only reconciled `accepted` context; `historical` context is explanatory and `rejected` context never enters engineering decisions. A Mem0 outage falls back to canonical-only operation.
