@@ -50,6 +50,9 @@ on:
       - 'datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json'
       - 'schemas/aut_panel_electrical_sizing_v1.schema.json'
       - 'tests/test_aut_panel_electrical_sizing.py'
+      - 'pipeline/li_technical_dossier.py'
+      - 'datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json'
+      - 'tests/test_li_technical_dossier.py'
   push:
     branches: [main]
     paths:
@@ -160,6 +163,35 @@ jobs:
           assert ds['revision_behavior']['new_revision_column_adjacent_right'] is True
           assert ps['revision_model']['historical_columns_immutable'] is True
           assert mem['immutable_rules']['previous_revision_columns_immutable'] is True
+          PY
+      - name: Generate enriched LI technical dossiers
+        run: |
+          python -m pytest -q tests/test_li_technical_dossier.py
+          mkdir -p build/aut-panel/PN-AUT-01 build/aut-panel/PN-AUT-02
+          set +e
+          python pipeline/li_technical_dossier.py \
+            --li li/PN-AUT-01_LI.json \
+            --dossier datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json \
+            --output build/aut-panel/PN-AUT-01/AUT_PANEL_LI_TECHNICAL.json
+          rc1=$?
+          python pipeline/li_technical_dossier.py \
+            --li li/PN-AUT-02_LI.json \
+            --dossier datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json \
+            --output build/aut-panel/PN-AUT-02/AUT_PANEL_LI_TECHNICAL.json
+          rc2=$?
+          set -e
+          test "$rc1" -eq 3
+          test "$rc2" -eq 3
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for panel in ('PN-AUT-01','PN-AUT-02'):
+              p=Path('build/aut-panel')/panel/'AUT_PANEL_LI_TECHNICAL.json'
+              data=json.loads(p.read_text(encoding='utf-8'))
+              assert data['status']=='HOLD'
+              assert data['source_li_immutable'] is True
+              assert all('technical_documentation' in x for x in data['lines'])
+              assert data['holds']
           PY
       - name: Validate electrical sizing baseline
         run: |
