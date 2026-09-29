@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"AUT-PANEL-LAYOUT-OPTIMIZER-RESULT-V1",
+  "type":"object",
+  "required":["panel_id","panel_revision","status","placements","metrics","solver_manifest","diagnostics","alternatives"],
+  "properties":{
+    "panel_id":{"type":"string"},
+    "panel_revision":{"type":"string"},
+    "status":{"type":"string"},
+    "placements":{"type":"array"},
+    "metrics":{"type":"object"},
+    "solver_manifest":{"type":"object"},
+    "diagnostics":{"type":"array"},
+    "alternatives":{"type":"array"}
+  },
+  "additionalProperties":false
+}

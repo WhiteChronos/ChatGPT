@@ -1,0 +1,369 @@
+{
+  "registry_version": "2.1",
+  "registry_id": "AUT-PANEL-GITHUB-TOOLCHAIN-V2",
+  "discovered_at": "2026-09-28",
+  "scope": "Curated GitHub toolchain for electrical panel engineering, automation, documentation, rendering, QA and controlled improvement. Extensible; not a literal enumeration of every GitHub repository.",
+  "policy": {
+    "activation_requires_version_or_commit_pin": true,
+    "license_review_required": true,
+    "security_review_required": true,
+    "regression_test_required": true,
+    "sandbox_required_for_new_tool": true,
+    "no_auto_install_into_core_pipeline": true,
+    "archived_repository_cannot_be_new_core_dependency": true,
+    "generated_output_never_overrides_engineering_evidence": true,
+    "deterministic_tools_precede_ml": true
+  },
+  "categories": {
+    "electrical_schematic": [
+      {
+        "repository": "cdelker/schemdraw",
+        "roles": [
+          "ELECTRICAL_SCHEMATIC_RENDERING",
+          "VECTOR_SYMBOLS"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "qelectrotech/qelectrotech-source-mirror",
+        "roles": [
+          "ELECTRICAL_SCHEMATIC_AUTHORING",
+          "IEC_SYMBOL_WORKFLOW"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "qelectrotech/qelectrotech-elements",
+        "roles": [
+          "ELECTRICAL_SYMBOL_LIBRARY"
+        ],
+        "status": "CANDIDATE"
+      }
+    ],
+    "cad_and_geometry": [
+      {
+        "repository": "FreeCAD/FreeCAD",
+        "roles": [
+          "3D_ENCLOSURE",
+          "MECHANICAL_LAYOUT",
+          "STEP_WORKFLOW"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "FreeCAD/FreeCAD-library",
+        "roles": [
+          "3D_COMPONENT_LIBRARY"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "CadQuery/cadquery",
+        "roles": [
+          "PARAMETRIC_3D",
+          "ENCLOSURE_GEOMETRY"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "gumyr/build123d",
+        "roles": [
+          "PARAMETRIC_3D",
+          "AUTOMATED_GEOMETRY"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "tpaviot/pythonocc-core",
+        "roles": [
+          "STEP_IGES_BREP",
+          "CAD_KERNEL_AUTOMATION"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "mozman/ezdxf",
+        "roles": [
+          "DXF_READ_WRITE",
+          "2D_CAD_INTERCHANGE"
+        ],
+        "status": "VERIFY_REPOSITORY_CANONICAL_URL"
+      }
+    ],
+    "layout_and_optimization": [
+      {
+        "repository": "google/or-tools",
+        "roles": [
+          "CONSTRAINT_LAYOUT_OPTIMIZATION",
+          "PLACEMENT_SEARCH"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "networkx/networkx",
+        "roles": [
+          "CONNECTION_GRAPH",
+          "DEPENDENCY_GRAPH",
+          "NETWORK_TOPOLOGY"
+        ],
+        "status": "CANDIDATE"
+      }
+    ],
+    "rendering_and_visual_qa": [
+      {
+        "repository": "Kozea/CairoSVG",
+        "roles": [
+          "SVG_RASTERIZATION",
+          "PNG_PDF_RENDER_SUPPORT"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "opencv/opencv",
+        "roles": [
+          "VISUAL_REGRESSION",
+          "GEOMETRY_DETECTION",
+          "IMAGE_QA"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "python-pillow/Pillow",
+        "roles": [
+          "IMAGE_COMPOSITION",
+          "PIXEL_QA"
+        ],
+        "status": "VERIFY_REPOSITORY_CANONICAL_URL"
+      }
+    ],
+    "plc_and_iec61131": [
+      {
+        "repository": "beremiz/beremiz",
+        "roles": [
+          "IEC61131_ENGINEERING",
+          "PLC_TOOLCHAIN"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "FellowWithLaptop/FB_CaseStateMachine",
+        "roles": [
+          "IEC61131_STATE_MACHINE_REFERENCE"
+        ],
+        "status": "REFERENCE_ONLY"
+      },
+      {
+        "repository": "HeytalePazguato/tree-sitter-iec61131-3-st",
+        "roles": [
+          "STRUCTURED_TEXT_PARSER",
+          "STATIC_ANALYSIS"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "highlightjs/highlightjs-structured-text",
+        "roles": [
+          "STRUCTURED_TEXT_SYNTAX"
+        ],
+        "status": "OPTIONAL"
+      },
+      {
+        "repository": "thiagoralves/OpenPLC_v3",
+        "roles": [
+          "PLC_RUNTIME_REFERENCE"
+        ],
+        "status": "ARCHIVED_REFERENCE_ONLY"
+      }
+    ],
+    "industrial_protocols": [
+      {
+        "repository": "pymodbus-dev/pymodbus",
+        "roles": [
+          "MODBUS_TCP",
+          "MODBUS_RTU",
+          "SIMULATION_TEST"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "pymodbus-dev/modbus-simulator",
+        "roles": [
+          "MODBUS_SIMULATION",
+          "FAT_SUPPORT"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "ChristianTremblay/BAC0",
+        "roles": [
+          "BACNET_AUTOMATION",
+          "BMS_INTEGRATION_TEST"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "JoelBender/BACpypes3",
+        "roles": [
+          "BACNET_PROTOCOL_STACK"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "FreeOpcUa/opcua-asyncio",
+        "roles": [
+          "OPCUA_CLIENT_SERVER",
+          "INTEGRATION_TEST"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "gijzelaerr/python-snap7",
+        "roles": [
+          "SIEMENS_S7_CONNECTIVITY",
+          "PLC_TEST_INTERFACE"
+        ],
+        "status": "CANDIDATE"
+      }
+    ],
+    "documents_and_pdf": [
+      {
+        "repository": "pikepdf/pikepdf",
+        "roles": [
+          "PDF_STRUCTURE",
+          "PDF_QA"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "pymupdf/PyMuPDF",
+        "roles": [
+          "PDF_RENDER",
+          "TEXT_EXTRACTION",
+          "PDF_QA"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "ArtifexSoftware/pdf2docx",
+        "roles": [
+          "PDF_TO_DOCX_SUPPORT"
+        ],
+        "status": "OPTIONAL"
+      },
+      {
+        "repository": "python-excel/xlrd",
+        "roles": [
+          "LEGACY_XLS_READ"
+        ],
+        "status": "OPTIONAL"
+      },
+      {
+        "repository": "pre-commit/pre-commit",
+        "roles": [
+          "REPOSITORY_QA",
+          "PRE_COMMIT_GATES"
+        ],
+        "status": "CANDIDATE"
+      }
+    ],
+    "data_and_validation": [
+      {
+        "repository": "pydantic/pydantic",
+        "roles": [
+          "RUNTIME_SCHEMA_VALIDATION",
+          "AGENT_MESSAGE_CONTRACTS"
+        ],
+        "status": "CANDIDATE"
+      },
+      {
+        "repository": "duckdb/duckdb",
+        "roles": [
+          "LOCAL_ANALYTICS",
+          "QA_HISTORY_QUERY"
+        ],
+        "status": "OPTIONAL"
+      },
+      {
+        "repository": "sqlalchemy/sqlalchemy",
+        "roles": [
+          "DATABASE_ABSTRACTION",
+          "POSTGRES_PORTABILITY"
+        ],
+        "status": "OPTIONAL"
+      }
+    ],
+    "ml_and_evolution": [
+      {
+        "repository": "online-ml/river",
+        "roles": [
+          "ONLINE_MACHINE_LEARNING",
+          "INCREMENTAL_QUALITY_MODEL"
+        ],
+        "status": "CANDIDATE_ADVISORY_ONLY"
+      },
+      {
+        "repository": "mlflow/mlflow",
+        "roles": [
+          "MODEL_REGISTRY",
+          "EXPERIMENT_TRACKING"
+        ],
+        "status": "CANDIDATE_ADVISORY_ONLY"
+      },
+      {
+        "repository": "iterative/dvc",
+        "roles": [
+          "DATASET_VERSIONING",
+          "MODEL_ARTIFACT_VERSIONING"
+        ],
+        "status": "CANDIDATE_ADVISORY_ONLY"
+      },
+      {
+        "repository": "evidentlyai/evidently",
+        "roles": [
+          "DATA_QUALITY_MONITORING",
+          "MODEL_DRIFT"
+        ],
+        "status": "CANDIDATE_ADVISORY_ONLY"
+      },
+      {
+        "repository": "optuna/optuna",
+        "roles": [
+          "HYPERPARAMETER_SEARCH",
+          "HEURISTIC_TUNING"
+        ],
+        "status": "CANDIDATE_ADVISORY_ONLY"
+      },
+      {
+        "repository": "PrefectHQ/prefect",
+        "roles": [
+          "WORKFLOW_ORCHESTRATION",
+          "RETRIES",
+          "OBSERVABILITY"
+        ],
+        "status": "OPTIONAL"
+      }
+    ],
+    "ai_cad_bridges": [
+      {
+        "repository": "neka-nat/freecad-mcp",
+        "roles": [
+          "CHATGPT_TO_FREECAD_BRIDGE",
+          "CAD_AGENT_CONTROL"
+        ],
+        "status": "EXPERIMENTAL_CONNECTOR_CANDIDATE",
+        "activation_note": "Requires security/license review, local FreeCAD environment, pinning and sandbox integration tests."
+      },
+      {
+        "repository": "ahujasid/mcp-for-blender",
+        "roles": [
+          "CHATGPT_TO_BLENDER_BRIDGE",
+          "RENDER_AGENT_CONTROL"
+        ],
+        "status": "EXPERIMENTAL_CONNECTOR_CANDIDATE",
+        "activation_note": "Requires security/license review, Blender environment, pinning and sandbox integration tests."
+      }
+    ]
+  },
+  "integration_rule": "Every candidate must be pinned, license/security reviewed, sandboxed and covered by regression tests before promotion to ACTIVE.",
+  "geometry_toolchain_registry": "plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json"
+}

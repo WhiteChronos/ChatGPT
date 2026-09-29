@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/WhiteChronos/ChatGPT/schemas/aut_panel_candidate_revision_v1.schema.json",
+  "title": "AUT Panel Candidate Revision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate_id",
+    "panel_id",
+    "source_revision",
+    "candidate_revision",
+    "status",
+    "trigger",
+    "canonical_inputs",
+    "rollback_target",
+    "changes",
+    "historical_source_mutation_allowed"
+  ],
+  "properties": {
+    "candidate_id": {
+      "type": "string",
+      "pattern": "^CAND-[A-Z0-9-]+$"
+    },
+    "panel_id": {
+      "enum": [
+        "PN-AUT-01",
+        "PN-AUT-02"
+      ]
+    },
+    "source_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidate_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "IN_PROGRESS",
+        "HOLD",
+        "REPROVADO",
+        "CANDIDATE_READY_FOR_HUMAN_REVIEW",
+        "ABANDONED"
+      ]
+    },
+    "trigger": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "canonical_inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "rollback_target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "historical_source_mutation_allowed": {
+      "const": false
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "change_id",
+          "change_type",
+          "path",
+          "before",
+          "after",
+          "evidence",
+          "invalidates"
+        ],
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "change_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "before": {},
+          "after": {},
+          "evidence": {
+            "type": "object"
+          },
+          "invalidates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

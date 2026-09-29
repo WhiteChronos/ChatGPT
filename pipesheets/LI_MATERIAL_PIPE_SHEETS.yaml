@@ -1,0 +1,85 @@
+schema_version: '1.0'
+pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
+script: pipeline/li_material_control.py
+memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+datacenter: datacenter/LI_MATERIAL_CONTROL.json
+datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+
+revision_model:
+  historical_columns_immutable: true
+  preserve_rev_0: true
+  new_revision_immediately_right_of_previous: true
+  allowed_sequence_example: [REV. 0, REV. A, REV. B, REV. C]
+  overwrite_previous_revision_forbidden: true
+  previous_revision_change_status: REPROVADO
+
+workbook_invariants:
+  preserve_cover: true
+  preserve_sheet_order: true
+  preserve_sheet_names: true
+  preserve_merged_cells: true
+  preserve_column_widths: true
+  preserve_structural_row_heights: true
+  preserve_print_area: true
+  preserve_page_setup: true
+  preserve_headers_footers: true
+  preserve_existing_revision_values: true
+
+source_priority:
+  - OFFICIAL_PROJECT_DRAWING
+  - USER_APPROVED_PANEL_DRAWING
+  - USER_APPROVED_REFERENCE_WORKBOOK
+  - DATACENTER_DATASHEET
+  - OFFICIAL_MANUFACTURER_DOCUMENT
+  - DETERMINISTIC_CALCULATION_FROM_APPROVED_SOURCE
+
+quantity_policy:
+  source_required: true
+  deterministic_count_preferred: true
+  copy_old_revision_without_evidence_forbidden: true
+  invented_quantity_forbidden: true
+  conflict_action: HOLD
+  a_levantar:
+    allowed_only_when_not_determinable: true
+    reason_required: true
+    source_gap_required: true
+
+stages:
+  - order: 10
+    id: CAPTURE_BASELINE
+    gates: [xlsx_valid, workbook_structure_snapshot, historical_revision_snapshot]
+  - order: 20
+    id: IDENTIFY_REVISION_COLUMNS
+    gates: [previous_revision_found, target_revision_defined, target_column_adjacent]
+  - order: 30
+    id: LOCK_HISTORICAL_REVISIONS
+    gates: [historical_cells_read_only_contract, rev_0_preserved]
+  - order: 40
+    id: COLLECT_EVIDENCE
+    gates: [source_registry, source_precedence, conflict_detection]
+  - order: 50
+    id: UPDATE_NEW_REVISION
+    gates: [write_only_target_revision, quantity_traceability, no_silent_guess]
+  - order: 60
+    id: QA_STRUCTURAL
+    gates: [cover_preserved, layout_preserved, print_area_preserved, oo_xml_valid]
+  - order: 70
+    id: QA_SEMANTIC
+    gates: [historical_revision_unchanged, semantic_diff_reviewed, a_levantar_justified]
+  - order: 80
+    id: MEMORY_SYNC
+    gates: [revision_event_recorded, source_list_recorded, qa_status_recorded]
+  - order: 90
+    id: RELEASE
+    gates: [no_REPROVADO, no_unresolved_HOLD_for_issue, revision_columns_valid]
+
+open_source_qa:
+  registry: plugins/li_material_qa_registry.json
+  policy:
+    auto_install: false
+    human_review_before_repair: true
+    fail_closed_for_core_checks: true
+    optional_tool_unavailable_status: COVERAGE_REDUCED

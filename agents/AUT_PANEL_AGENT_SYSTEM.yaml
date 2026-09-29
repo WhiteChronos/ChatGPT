@@ -1,0 +1,135 @@
+schema_version: "1.0"
+system_id: AUT-PANEL-AGENT-SYSTEM-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: CONTROLLED_ACTIVE
+policy:
+  fail_closed: true
+  canonical_engineering_pipeline_unchanged: true
+  generated_image_is_never_engineering_authority: true
+  locked_contract_change_requires_explicit_user_authorization: true
+  ml_is_advisory_only: true
+  autoevolution_mode: PROPOSAL_ONLY
+  autoengineering_mode: CANDIDATE_REVISION_ONLY
+  human_gate_required_before_behavior_change: true
+  per_panel_state_isolation: true
+  append_only_memory_for_released_revisions: true
+auxiliary_memory:
+  config: configs/mem0_v1.yaml
+  adapter: pipeline/aut_panel_mem0.py
+  reconciliation: pipeline/aut_panel_memory_context.py
+  canonical_owner: MEMORY_CURATOR
+  context_consumer: ORCHESTRATOR
+  direct_engineering_writes_from_memory: false
+  backend_authoritative: false
+database:
+  local_baseline: SQLite
+  schema: database/aut_panel_schema.sql
+  script: pipeline/aut_panel_db.py
+  optional_targets: [PostgreSQL, Supabase_Postgres]
+normative_control:
+  primary_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  supplemental_registry: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  persistent_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  applicability_resolver: pipeline/aut_panel_normative_control.py
+  use_as_engineering_reference: true
+  reverify_before_release: true
+  mandatory_for_agents:
+    - TECHNICAL_RESEARCH
+    - SOURCE_VALIDATOR_A
+    - SOURCE_VALIDATOR_B
+    - DATACENTER_CURATOR
+    - ELECTRICAL_SIZING
+    - AUTOMATION_IO
+    - LI_BOM
+    - LAYOUT_OPTIMIZER
+    - RENDERER
+    - QA
+learning:
+  pipeline: pipeline/learning_pipeline.yaml
+  script: pipeline/aut_panel_learning.py
+  evolution_script: pipeline/evolution_engine.py
+  minimum_labeled_examples: 25
+  cold_start_status: LEARNING_COLD_START
+  registry: ml/model_registry.yaml
+agents:
+  - {id: ORCHESTRATOR, role: "Controlar ordem, gates, dependências e manifesto.", datacenter_namespace: agent_dc.orchestrator, memory_namespace: agent_memory.orchestrator, read_scope: [all_canonical_contracts, panel_state, qa_state], write_scope: [agent_runs, artifacts, stage_state]}
+  - {id: TECHNICAL_RESEARCH, role: "Localizar fabricante, modelo, documentos, protocolos, fornecedores e alternativas.", datacenter_namespace: agent_dc.research, memory_namespace: agent_memory.research, read_scope: [project_inputs, manufacturer_sources, approved_internal_references, normative_registry], write_scope: [source_candidates, supplier_candidates, normative_candidates]}
+  - {id: SOURCE_VALIDATOR_A, role: "Validar independentemente domínio, modelo, revisão, página, lifecycle, tensão, corrente e protocolo.", datacenter_namespace: agent_dc.source_validator_a, memory_namespace: agent_memory.source_validator_a, read_scope: [source_candidates, normative_registry], write_scope: [source_validations_a, normative_validations_a]}
+  - {id: SOURCE_VALIDATOR_B, role: "Executar segunda validação independente.", datacenter_namespace: agent_dc.source_validator_b, memory_namespace: agent_memory.source_validator_b, read_scope: [source_candidates, normative_registry], write_scope: [source_validations_b, normative_validations_b]}
+  - {id: DATACENTER_CURATOR, role: "Normalizar catálogo, referências, dimensões, ratings, lifecycle e fornecedores.", datacenter_namespace: agent_dc.datacenter_curator, memory_namespace: agent_memory.datacenter_curator, read_scope: [validated_sources_a, validated_sources_b, normative_registry], write_scope: [components, sources, suppliers, normative_applicability]}
+  - {id: ELECTRICAL_SIZING, role: "Calcular cargas, fonte, UPS, baterias e proteções.", datacenter_namespace: agent_dc.electrical_sizing, memory_namespace: agent_memory.electrical_sizing, read_scope: [li, catalog, official_ratings, power_topology, applicable_norms], write_scope: [load_calculations, sizing_results]}
+  - {id: AUTOMATION_IO, role: "Mapear CLP/UTR, I/O, rede, protocolos e intertravamentos.", datacenter_namespace: agent_dc.automation_io, memory_namespace: agent_memory.automation_io, read_scope: [project_drawings, io_lists, protocol_docs, applicable_norms], write_scope: [io_points, network_points, interlocks]}
+  - {id: LI_BOM, role: "Congelar LI e gerar BOM com paridade estrita.", datacenter_namespace: agent_dc.li_bom, memory_namespace: agent_memory.li_bom, read_scope: [selected_components, quantity_registry, evidence], write_scope: [li_revisions, bom_lines]}
+  - id: LAYOUT_OPTIMIZER
+    role: "Posicionar componentes por restrições geométricas, térmicas e funcionais."
+    datacenter_namespace: agent_dc.layout
+    memory_namespace: agent_memory.layout
+    read_scope: [bom, dimensions, enclosure_contract, clearance_rules, applicable_normative_constraints]
+    write_scope: [layout_candidates, layout_metrics]
+    implementation: pipeline/layout_optimizer/cli.py
+    config: configs/layout_optimizer_v1.yaml
+    result_schema: schemas/layout_optimizer_result_v1.schema.json
+    solver: OR_TOOLS_CP_SAT
+    dependency_graph: NetworkX
+    decision_policy: AUTO_CANDIDATE_REVISION_FOR_ENCLOSURE_OR_SPLIT
+  - {id: RENDERER, role: "Gerar desenho vetorial canônico e imagens derivadas.", datacenter_namespace: agent_dc.renderer, memory_namespace: agent_memory.renderer, read_scope: [validated_layout, approved_visual_template], write_scope: [vector_artifacts, raster_artifacts, render_metrics]}
+  - {id: QA, role: "Verificar geometria, paridade, evidência, workbook, imagem e regressão.", datacenter_namespace: agent_dc.qa, memory_namespace: agent_memory.qa, read_scope: [all_artifacts, all_contracts], write_scope: [qa_runs, qa_findings]}
+  - {id: MEMORY_CURATOR, role: "Registrar decisões, revisões, HOLDs e eventos sem sobrescrever histórico; espelhar eventos elegíveis no backend auxiliar.", datacenter_namespace: agent_dc.memory, memory_namespace: agent_memory.curator, read_scope: [approved_decisions, qa_runs, revision_events, normative_events], write_scope: [memory_events, memory_mirrors]}
+  - {id: ML_QUALITY, role: "Aprender com histórico rotulado e estimar risco sem substituir gates determinísticos.", datacenter_namespace: agent_dc.ml_quality, memory_namespace: agent_memory.ml_quality, read_scope: [training_examples, qa_history, render_metrics], write_scope: [model_registry, model_metrics, risk_scores]}
+  - {id: EVOLUTION_PROPOSER, role: "Criar propostas de melhoria com evidência, testes e rollback; nunca autoaplicar mudança bloqueada.", datacenter_namespace: agent_dc.evolution, memory_namespace: agent_memory.evolution, read_scope: [qa_history, model_metrics, repeated_failures, tool_registry], write_scope: [evolution_proposals]}
+
+  - id: CAD_GEOMETRY_GUARDIAN
+    role: "Garantir que toda geometria venha de CAD/datasheet oficial, uma unica montagem 3D em mm e bounding boxes sem distorcao."
+    datacenter_namespace: agent_dc.cad_geometry
+    memory_namespace: agent_memory.cad_geometry
+    read_scope: [bom, official_dimensions, manufacturer_cad, geometry_toolchain, validated_layout]
+    write_scope: [geometry_manifests, bbox_validations, cad_findings]
+    required_skill: aut-panel-engineering
+    blocking_gate: panel_3d_geometry_gate
+    failure_status: REPROVADO
+  - id: SCALE_PROPORTION_GUARDIAN
+    role: "Vigiar escala global, proporcoes 3D, vistas ortograficas, px/mm e impedir fit-to-canvas, squeeze ou stretch."
+    datacenter_namespace: agent_dc.scale_guard
+    memory_namespace: agent_memory.scale_guard
+    read_scope: [geometry_manifests, panel_dimensions, render_manifests, visual_standard]
+    write_scope: [scale_validations, proportion_findings]
+    required_skill: aut-panel-engineering
+    blocking_gate: panel_render_gate
+    failure_status: REPROVADO
+  - id: BLENDER_RENDER_GUARDIAN
+    role: "Renderizar somente geometria congelada usando camera ortografica quando dimensional; alterar apenas materiais, luz e apresentacao."
+    datacenter_namespace: agent_dc.blender_render
+    memory_namespace: agent_memory.blender_render
+    read_scope: [frozen_3d_assembly, materials, cameras, visual_standard]
+    write_scope: [blender_render_artifacts, render_metadata]
+    required_skill: aut-panel-engineering
+    geometry_change_allowed: false
+    failure_status: REPROVADO
+  - id: REVIT_BIM_INTEROP_GUARDIAN
+    role: "Validar intercambio BIM/Revit por IFC/CAD e preservar unidades, bounding boxes, coordenadas e identidade fisica dos componentes."
+    datacenter_namespace: agent_dc.revit_bim
+    memory_namespace: agent_memory.revit_bim
+    read_scope: [manufacturer_cad, ifc_exports, revit_exports, official_dimensions, geometry_manifests]
+    write_scope: [bim_interop_findings, ifc_validation, revit_exchange_metadata]
+    required_skill: aut-panel-engineering
+    execution_note: "Revit e proprietario; execucao requer ambiente Autodesk autorizado. pyRevit/RevitPythonShell/IFC sao pontes opcionais, nao autoridade de engenharia."
+    failure_status: HOLD
+  - id: CANVAS_COMPOSITION_GUARDIAN
+    role: "Garantir que o canvas aumente para preservar escala, todos os blocos obrigatorios e legibilidade; nunca reduzir vistas ou componentes para caber."
+    datacenter_namespace: agent_dc.canvas_guard
+    memory_namespace: agent_memory.canvas_guard
+    read_scope: [visual_standard, validated_views, tables, diagrams, render_metrics]
+    write_scope: [canvas_plan, composition_findings]
+    required_skill: aut-panel-engineering
+    canvas_policy: GROW_CANVAS_KEEP_SCALE
+    failure_status: REPROVADO
+
+  - id: AUTO_ENGINEERING_COORDINATOR
+    role: "Criar e coordenar revisões candidatas automáticas sem alterar histórico nem liberar engenharia."
+    datacenter_namespace: agent_dc.auto_engineering
+    memory_namespace: agent_memory.auto_engineering
+    read_scope: [canonical_contracts, current_panel_revision, validated_sources, qa_findings, candidate_policy]
+    write_scope: [candidate_revisions, candidate_revision_changes, candidate_artifacts]
+    implementation: pipeline/aut_panel_candidate_revision.py
+    policy: configs/auto_engineering_v1.yaml
+    release_authority: false

@@ -1,0 +1,32 @@
+schema_version: "1.0"
+registry_id: AUT-PANEL-AGENT-MEMORIES-V1
+storage:
+  canonical_event_table: memory_events
+  database_schema: database/aut_panel_schema.sql
+policy:
+  append_only_for_released_revision: true
+  no_chat_memory_override: true
+  immutable_event_history: true
+  every_event_requires_agent_id: true
+  panel_scoped_events_require_panel_id_and_revision: true
+namespaces:
+  ORCHESTRATOR: agent_memory.orchestrator
+  TECHNICAL_RESEARCH: agent_memory.research
+  SOURCE_VALIDATOR_A: agent_memory.source_validator_a
+  SOURCE_VALIDATOR_B: agent_memory.source_validator_b
+  DATACENTER_CURATOR: agent_memory.datacenter_curator
+  ELECTRICAL_SIZING: agent_memory.electrical_sizing
+  AUTOMATION_IO: agent_memory.automation_io
+  LI_BOM: agent_memory.li_bom
+  LAYOUT_OPTIMIZER: agent_memory.layout
+  RENDERER: agent_memory.renderer
+  QA: agent_memory.qa
+  MEMORY_CURATOR: agent_memory.curator
+  ML_QUALITY: agent_memory.ml_quality
+  EVOLUTION_PROPOSER: agent_memory.evolution
+
+  CAD_GEOMETRY_GUARDIAN: agent_memory.cad_geometry
+  SCALE_PROPORTION_GUARDIAN: agent_memory.scale_guard
+  BLENDER_RENDER_GUARDIAN: agent_memory.blender_render
+  REVIT_BIM_INTEROP_GUARDIAN: agent_memory.revit_bim
+  CANVAS_COMPOSITION_GUARDIAN: agent_memory.canvas_guard

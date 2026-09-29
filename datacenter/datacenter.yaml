@@ -1,0 +1,140 @@
+schema_version: '1.2'
+datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+canonical_sources:
+  component_catalog: datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json
+  quantity_registry: datacenter/AUT_PANEL_PANEL_QUANTITIES.json
+  document_standard_registry: datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_supplement: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  normative_script: pipeline/aut_panel_normative_control.py
+  golden_rules_yaml: governance/golden_rules.yaml
+  panel_template_yaml: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  li_material_prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
+  li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
+  li_material_control: datacenter/LI_MATERIAL_CONTROL.json
+  li_material_datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+  li_material_script: pipeline/li_material_control.py
+  li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+  li_material_open_source_qa: plugins/li_material_qa_registry.json
+  agent_system: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  agent_datacenters: datacenter/agents/agent_datacenters.yaml
+  agent_memories: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_script: pipeline/aut_panel_db.py
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  learning_script: pipeline/aut_panel_learning.py
+  evolution_script: pipeline/evolution_engine.py
+  ml_model_registry: ml/model_registry.yaml
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  engineering_skill: skills/aut-panel-engineering/SKILL.md
+  pipeline_yaml: pipeline/pipeline.yaml
+  datasheet_yaml: datasheet/datasheet.yaml
+  bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
+  conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  conversation_contract: pipeline/conversation_contract.py
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
+normative_control:
+  registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+  registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  supplemental_registry_path: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+  memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  default_jurisdiction: BR
+  reverify_before_release: true
+  unverified_applicable_edition_status: HOLD
+  conflicting_requirements_status: HOLD
+agent_learning_system:
+  system_id: AUT-PANEL-AGENT-SYSTEM-V1
+  agent_registry: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  datacenter_registry: datacenter/agents/agent_datacenters.yaml
+  memory_registry: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_engine: SQLite
+  optional_database_targets: [PostgreSQL, Supabase_Postgres]
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  model_registry: ml/model_registry.yaml
+  ml_mode: ADVISORY_ONLY
+  autoevolution_mode: PROPOSAL_ONLY
+  minimum_labeled_examples: 25
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+workbook_baseline:
+  template_id: XLSX-PN-AUT-01-MASTER-R02
+  master_panel: PN-AUT-01
+  structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
+li_material_revision_standard:
+  registry_id: LI-MATERIAL-CONTROL-V1
+  prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+  pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+  memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+  preserve_previous_revision_columns: true
+  preserve_rev_0: true
+  new_revision_adjacent_right: true
+  overwrite_historical_revision_forbidden: true
+  preserve_cover_and_format: true
+  source_conflict_status: HOLD
+  historical_revision_mutation_status: REPROVADO
+  quantity_source_priority:
+    - OFFICIAL_PROJECT_DRAWING
+    - USER_APPROVED_PANEL_DRAWING
+    - USER_APPROVED_REFERENCE_WORKBOOK
+    - DATACENTER_DATASHEET
+    - OFFICIAL_MANUFACTURER_DOCUMENT
+    - DETERMINISTIC_CALCULATION_FROM_APPROVED_SOURCE
+  open_source_qa_registry: plugins/li_material_qa_registry.json
+panels:
+  PN-AUT-01:
+    li_id: LI-PN-AUT-01-R02
+    li_revision: R02
+    li_status: QUANTITY_FROZEN
+    li_file: li/PN-AUT-01_LI.json
+    workbook_snapshot_sha256: 47e85e1466246133fdf7a23e6ce3b036c7e979b2abd6c31c2964d00f78eb0d87
+    image_template_id: IMG-PN-AUT-01-APPROVED-V1
+    approved_image_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
+    datasheet_json: datasheet/AUT_PANEL_DATA_SHEET.json
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, spd_present, hvac_automation]
+      status: HOLD_UNTIL_NORMATIVE_REVIEW
+  PN-AUT-02:
+    li_id: LI-PN-AUT-02-R02
+    li_revision: R02
+    li_status: QUANTITY_FROZEN
+    li_file: li/PN-AUT-02_LI.json
+    workbook_snapshot_sha256: 2376433d865077d34b463a1bca9d1af85907bd85889f80aaabb8c7a5655e88c7
+    image_template_id: IMG-PN-AUT-02-APPROVED-V1
+    approved_image_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
+    datasheet_json: datasheet/PN-AUT-02_DATA_SHEET.json
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, hvac_automation]
+      status: HOLD_UNTIL_NORMATIVE_REVIEW
+change_control:
+  standard_mutation_requires_user_authorization: true
+  quantity_change_requires_new_li_revision: true
+  li_historical_revision_change_forbidden: true
+  li_new_revision_requires_adjacent_column: true
+  li_revision_requires_memory_event: true
+  image_template_change_requires_new_approved_template_revision: true
+  unauthorized_change_status: REPROVADO
+  conversation_memory_immutable_contract_requires_user_authorization: true
+  conversation_prompt_change_requires_user_authorization: true
+  refactor_behavior_change_forbidden: true
+conversation_contract_fingerprints:
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  prompt_master_sha256: a1d02e718207783445bc10a7e3a1e71d7f74cd32ab7a5669f045750fefe03ea3
+  bootstrap_prompt_sha256: 5fb9aebf6e330a4df2cc681c78cca98a0f7fa2a0a85cbaaae27f181420e1988a
+  memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+  memory_immutable_contract_sha256: 77c29eb332d89164c8dfb8b12fab351c5062d1b31642134f20e90776e7d57429
+  conversation_contract_script_id: AUT-PANEL-CONVERSATION-CONTRACT-V1

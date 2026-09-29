@@ -1,0 +1,67 @@
+schema_version: "1.0"
+manifest_id: AUT-PANEL-CONTEXT-MANIFEST-V1
+status: CONTROLLED_ACTIVE
+purpose: "Contrato de contexto minimo para GitHub/Codex no sistema AUT Paineis"
+required:
+  - task_id
+  - intent
+  - panel_id
+  - panel_revision
+  - agent
+  - canonical_inputs
+  - golden_rules
+  - normative_manifest
+  - memory_scope
+  - upstream_dependencies
+  - downstream_dependencies
+  - cache
+  - holds
+properties:
+  canonical_inputs:
+    item_fields: [path, sha256, role, authority]
+  normative_manifest:
+    type: canonical_normative_resolution
+    fields:
+      - registry_id
+      - normative_memory_id
+      - resolved_groups
+      - detected_conditions
+      - references
+      - hold_reasons
+      - status
+      - release_rule
+    reference_fields:
+      - id
+      - reference
+      - title
+      - publisher
+      - applicability
+      - source_status
+      - official_url
+      - registry_verified_at
+      - applicability_decision
+  cache:
+    fields: [key, status, invalidation_reason]
+  holds:
+    item_fields: [hold_id, reason, blocking, owner, next_action]
+handoff_contract:
+  fields:
+    - handoff_id
+    - task_id
+    - from
+    - to
+    - panel
+    - revision
+    - status
+    - outputs
+    - validated_facts
+    - source_refs
+    - holds
+    - next_action
+policy:
+  canonical_repo_wins_over_chat: true
+  no_chain_of_thought_handoff: true
+  no_auto_merge: true
+  ml_advisory_only: true
+  human_gate_for_locked_changes: true
+  unresolved_conflict: HOLD

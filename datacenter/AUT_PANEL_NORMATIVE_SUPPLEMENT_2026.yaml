@@ -1,0 +1,185 @@
+schema_version: "1.0"
+registry_id: AUT-PANEL-NORMATIVE-SUPPLEMENT-2026-V1
+parent_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+status: CONTROLLED_ACTIVE
+verified_at: "2026-09-28"
+purpose: >-
+  Referências normativas complementares para elaboração de quadros de automação.
+  Este suplemento amplia o catálogo principal sem declarar exaustividade universal.
+  Toda referência só se torna aplicável por regra de escopo, requisito contratual,
+  condição técnica ou decisão formal de aplicabilidade.
+copyright_policy:
+  metadata_only: true
+  normative_text_not_stored: true
+  official_or_licensed_source_required_for_release: true
+release_policy:
+  reverify_edition_before_release: true
+  national_adoption_check_for_br_projects: true
+  conflicting_requirement_status: HOLD
+  unverified_applicability_status: HOLD
+references:
+  - id: NORM-S069
+    reference: "IEC 61326-1:2020"
+    title: "Electrical equipment for measurement, control and laboratory use - EMC requirements - Part 1: General requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: EMC_MEDICAO_CONTROLE
+    applicability: CONDITIONAL
+    use_in_elaboration: "EMC de equipamentos de medição e controle quando o produto ou escopo declarar esta família"
+    mandatory_when: "equipamento de medição/controle estiver no escopo da IEC 61326"
+    official_url: "https://webstore.iec.ch/en/publication/62793"
+    source_status: OFFICIAL_VERIFIED
+    verified_at: "2026-09-28"
+
+  - id: NORM-S070
+    reference: "IEC 60751:2022"
+    title: "Industrial platinum resistance thermometers and platinum temperature sensors"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SENSOR_RTD
+    applicability: CONDITIONAL
+    use_in_elaboration: "sensores industriais de resistência de platina e interfaces Pt100/Pt1000"
+    mandatory_when: "sensor RTD de platina fizer parte da instrumentação"
+    official_url: "https://webstore.iec.ch/en/publication/63753"
+    source_status: OFFICIAL_VERIFIED
+    verified_at: "2026-09-28"
+
+  - id: NORM-S071
+    reference: "IEC 60364-6:2016"
+    title: "Low voltage electrical installations - Part 6: Verification"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: VERIFICACAO_INSTALACAO_BT
+    applicability: CONDITIONAL
+    use_in_elaboration: "inspeção, ensaios e verificação da instalação BT quando referência IEC for requerida"
+    mandatory_when: "contrato ou jurisdição exigir IEC 60364 para verificação"
+    official_url: "https://webstore.iec.ch/en/publication/24656"
+    source_status: OFFICIAL_VERIFIED_TRANSITION
+    verified_at: "2026-09-28"
+    notes: "IEC 60364-6:2026 estava em pre-release em 2026-09-28; reverificar edição publicada antes da emissão."
+
+  - id: NORM-S072
+    reference: "IEC 62443-3-2:2020"
+    title: "Security for industrial automation and control systems - Part 3-2: Security risk assessment for system design"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CIBERSEGURANCA_RISCO
+    applicability: CONDITIONAL
+    use_in_elaboration: "avaliação de risco IACS, zonas, conduítes e nível de segurança alvo"
+    mandatory_when: "cibersegurança IACS fizer parte do escopo"
+    official_url: "https://webstore.iec.ch/en/publication/30727"
+    source_status: OFFICIAL_VERIFIED
+    verified_at: "2026-09-28"
+
+  - id: NORM-S073
+    reference: "IEC 62443-4-1:2018"
+    title: "Security for industrial automation and control systems - Part 4-1: Secure product development lifecycle requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CIBERSEGURANCA_PRODUTO
+    applicability: CONDITIONAL
+    use_in_elaboration: "requisitos de ciclo de desenvolvimento seguro de produtos IACS quando exigidos"
+    mandatory_when: "especificação exigir seleção/desenvolvimento de produto segundo IEC 62443-4-1"
+    official_url: "https://webstore.iec.ch/en/publication/33615"
+    source_status: OFFICIAL_VERIFIED
+    verified_at: "2026-09-28"
+
+  - id: NORM-S074
+    reference: "IEC 62443-4-2:2019/COR1:2022"
+    title: "Security for industrial automation and control systems - Part 4-2: Technical security requirements for IACS components"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: CIBERSEGURANCA_COMPONENTES
+    applicability: CONDITIONAL
+    use_in_elaboration: "requisitos técnicos de segurança de componentes IACS"
+    mandatory_when: "componentes forem especificados segundo IEC 62443-4-2"
+    official_url: "https://webstore.iec.ch/en/publication/34421"
+    source_status: OFFICIAL_VERIFIED
+    verified_at: "2026-09-28"
+    notes: "Considerar Corrigendum 1:2022 na reverificação."
+
+  - id: NORM-S075
+    reference: "ISO 13849-2:2012"
+    title: "Safety of machinery - Safety-related parts of control systems - Part 2: Validation"
+    publisher: ISO
+    jurisdiction: INTERNATIONAL
+    category: VALIDACAO_SEGURANCA_MAQUINAS
+    applicability: CONDITIONAL
+    use_in_elaboration: "validação de funções de segurança e SRP/CS projetadas segundo ISO 13849-1"
+    mandatory_when: "arquitetura de segurança utilizar ISO 13849-1"
+    official_url: "https://www.iso.org/standard/53640.html"
+    source_status: OFFICIAL_VERIFIED_TRANSITION
+    verified_at: "2026-09-28"
+    notes: "ISO 13849-2:2012 permanece publicada; revisão sucessora estava em desenvolvimento em 2026."
+
+  - id: NORM-S076
+    reference: "IEC 62040-3:2021"
+    title: "Uninterruptible power systems (UPS) - Part 3: Method of specifying the performance and test requirements"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: UPS_DESEMPENHO
+    applicability: CONDITIONAL
+    use_in_elaboration: "desempenho, classificação e ensaios de UPS CA quando aplicável"
+    mandatory_when: "UPS abrangida pela IEC 62040-3 fizer parte do escopo"
+    official_url: "https://webstore.iec.ch/en/publication/60140"
+    source_status: OFFICIAL_VERIFIED_TRANSITION
+    verified_at: "2026-09-28"
+    notes: "Stability date IEC indicada como 2026; reverificar edição antes da emissão."
+
+  - id: NORM-S077
+    reference: "IEC 61131-3:2025"
+    title: "Programmable controllers - Part 3: Programming languages"
+    publisher: IEC
+    jurisdiction: INTERNATIONAL
+    category: SOFTWARE_PLC
+    applicability: CONDITIONAL
+    use_in_elaboration: "linguagens e estrutura de software PLC/PAC quando entrega de lógica fizer parte do escopo"
+    mandatory_when: "escopo incluir software de controlador conforme IEC 61131"
+    official_url: "https://webstore.iec.ch/en/publication/68533"
+    source_status: OFFICIAL_VERIFIED
+    verified_at: "2026-09-28"
+    notes: "Edição 2025 substituiu IEC 61131-3:2013."
+
+activation_groups:
+  measurement_control_equipment: [NORM-S069]
+  rtd_temperature: [NORM-S070]
+  installation_verification: [NORM-S071]
+  cybersecurity_extended: [NORM-S072, NORM-S073, NORM-S074]
+  safety_validation: [NORM-S075]
+  ups_performance: [NORM-S076]
+  plc_software: [NORM-S077]
+
+reference_record_contract:
+  required_metadata:
+    - id
+    - reference
+    - title
+    - publisher
+    - jurisdiction
+    - category
+    - applicability
+    - use_in_elaboration
+    - mandatory_when
+    - official_url
+    - source_status
+    - verified_at
+  project_application_record:
+    - panel_id
+    - panel_revision
+    - normative_reference_id
+    - applicability_decision
+    - project_requirement_or_reason
+    - impacted_artifacts
+    - edition_reverified_at
+    - validator_a
+    - validator_b
+    - result
+
+coverage_policy:
+  universal_exhaustiveness_claimed: false
+  uncovered_feature_status: HOLD
+  uncovered_feature_action: TECHNICAL_RESEARCH_OFFICIAL_NORM_DISCOVERY
+  rule: >-
+    O sistema deve pesquisar e acrescentar normas específicas sempre que surgir
+    nova tecnologia, jurisdição, equipamento, protocolo, área classificada,
+    função de segurança ou requisito contratual não coberto pelo catálogo atual.

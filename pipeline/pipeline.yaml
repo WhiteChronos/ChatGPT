@@ -1,0 +1,282 @@
+schema_version: "1.3"
+pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+contracts:
+  golden_rules: governance/golden_rules.yaml
+  panel_template: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_supplement: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  normative_script: pipeline/aut_panel_normative_control.py
+  li_material_prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
+  li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
+  li_material_control: datacenter/LI_MATERIAL_CONTROL.json
+  li_material_datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+  li_material_script: pipeline/li_material_control.py
+  li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+  li_material_open_source_qa: plugins/li_material_qa_registry.json
+  agent_system: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  agent_datacenters: datacenter/agents/agent_datacenters.yaml
+  agent_memories: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_script: pipeline/aut_panel_db.py
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  learning_script: pipeline/aut_panel_learning.py
+  evolution_script: pipeline/evolution_engine.py
+  ml_model_registry: ml/model_registry.yaml
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  panel_render_gate: pipeline/panel_render_gate.py
+  panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
+  image_proportion_guard: pipeline/corrigir_proporcao_imagem.py
+  panel_render_manifest_schema: schemas/panel_render_manifest_v1.schema.json
+  engineering_skill: skills/aut-panel-engineering/SKILL.md
+  bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
+  conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  conversation_contract: pipeline/conversation_contract.py
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
+learning_extension:
+  mode: CONTROLLED_EVOLUTION
+  canonical_sequence_unchanged: true
+  pipeline: pipeline/learning_pipeline.yaml
+  minimum_human_reviewed_examples: 25
+  ml_advisory_only: true
+  deterministic_gate_precedes_ml: true
+  autoevolution_proposal_only: true
+  locked_change_requires_human_gate: true
+  auto_merge: false
+sequence:
+  - order: 10
+    id: BOOTSTRAP_CONTEXT
+    gate:
+      - prompt_master_loaded
+      - golden_rules_loaded
+      - pipeline_loaded
+      - datacenter_loaded
+      - datasheet_loaded
+      - panel_template_loaded
+      - normative_registry_loaded
+      - normative_memory_loaded
+      - conversation_memory_loaded
+      - normative_registry_loaded
+      - normative_supplement_loaded
+      - normative_memory_loaded
+      - conversation_contract_validated
+  - order: 20
+    id: DATACENTER
+    gate: [catalog_registered, quantity_baseline_registered, approved_template_fingerprint_registered, li_material_revision_contract_registered, normative_registry_registered, normative_source_authority]
+  - order: 30
+    id: DATASHEET
+    gate: [panel_registered, dimensions_locked, production_contract_locked, prompt_master_linked, memory_linked, li_material_datasheet_linked, normative_profile_present]
+  - order: 40
+    id: SELECT
+    gate: [reference_model_present, lifecycle_checked, technical_status_known, normative_applicability_reviewed]
+  - order: 50
+    id: LI_QUANTITY
+    gate:
+      - li_exists
+      - li_revision_matches_baseline
+      - quantity_positive
+      - quantity_registry_match
+      - historical_revision_columns_immutable
+      - rev_0_preserved
+      - new_revision_in_adjacent_column
+      - new_revision_quantity_has_traceable_evidence
+      - a_levantar_only_when_not_determinable
+      - li_material_control_memory_linked
+  - order: 60
+    id: LOAD_BALANCE
+    gate: [load_sheet_present, equipment_loads_traced, totals_24vdc_127vac_220vac_present, applicable_norms_loaded]
+  - order: 70
+    id: BOM
+    gate: [bom_derived_from_li, bom_quantity_equals_li, reference_model_on_every_line, applicable_norms_loaded]
+  - order: 80
+    id: LAYOUT
+    gate:
+      - layout_quantity_equals_li
+      - dimensions_real
+      - component_dimensional_evidence_complete
+      - manufacturer_mounting_clearances_loaded
+      - hmi_on_door
+      - hmi_unique_physical_instance
+      - door_components_not_duplicated_on_mounting_plate
+      - no_distortion
+      - common_mm_scale_applied
+      - side_open_view_real_aspect_ratio
+      - depth_section_image_6_real_scale
+      - single_3d_assembly_coordinates
+      - cad_or_parametric_geometry_authority
+      - component_bbox_matches_official_dimensions
+      - lower_zone_present
+      - cable_exit_clearance_validated
+      - bend_radius_and_gland_access_validated
+      - applicable_normative_constraints_loaded
+    optimizer:
+      id: LAYOUT-OPTIMIZER-V1
+      implementation: pipeline/layout_optimizer/cli.py
+      config: configs/layout_optimizer_v1.yaml
+      result_schema: schemas/layout_optimizer_result_v1.schema.json
+      solver: OR_TOOLS_CP_SAT
+      dependency_graph: NetworkX
+      locked_enclosure_auto_change: false
+      split_auto_select: false
+      capacity_failure_status: HOLD_LAYOUT_CAPACITY
+      decision_status: USER_DECISION_REQUIRED
+  - order: 90
+    id: RENDER_IMAGE
+    gate:
+      - approved_template_id
+      - approved_template_fingerprint
+      - visual_composition_v3_loaded
+      - dimensional_closure_passed
+      - render_derived_from_validated_layout
+      - panel_render_gate_passed
+      - render_component_count_equals_li
+      - no_duplicate_visual_instances
+      - hmi_front_door_only
+      - internal_view_shows_only_physical_backside_when_applicable
+      - manufacturer_geometry_used
+      - common_mm_scale_applied
+      - side_open_view_real_aspect_ratio
+      - image_6_depth_section_gate_passed
+      - cad_3d_geometry_gate_passed
+      - cad_geometry_guardian_passed
+      - scale_proportion_guardian_passed
+      - canvas_composition_guardian_passed
+      - revit_bim_guardian_passed_when_applicable
+      - same_3d_assembly_drives_all_views
+      - orthographic_dimension_views
+      - blender_render_guardian_passed
+      - large_canvas_grow_only
+      - no_block_downscale_to_fit
+      - image_proportion_guard_passed
+      - dimensional_raster_scale_x_equals_y_equals_1
+      - removed_visual_blocks_4_and_8_absent
+      - one_panel_per_image
+      - no_unapproved_recomposition
+      - parity_footer_present
+  - order: 100
+    id: QA
+    gate:
+      - li_bom_layout_render_parity
+      - duplicate_component_instance_check
+      - door_vs_backplate_allocation_check
+      - dimensional_catalog_traceability_check
+      - render_scale_and_proportion_check
+      - geometry_guardian_approvals_present
+      - no_fit_to_canvas_or_non_uniform_scale
+      - grow_only_raster_composition_verified
+      - raster_aspect_ratio_matches_engineering_view
+      - blender_geometry_lock_verified
+      - revit_ifc_consistency_verified_when_applicable
+      - cable_exit_clearance_check
+      - workbook_structure_fingerprint
+      - render_contract_fingerprint
+      - conversation_contract_valid
+      - li_historical_revision_diff
+      - li_new_revision_column_diff
+      - li_cover_and_format_preserved
+      - li_semantic_diff_reviewed
+      - li_open_source_qa_coverage_recorded
+      - hashes
+      - normative_applicability_reviewed
+      - normative_source_status_checked
+  - order: 110
+    id: MEMORY_SYNC
+    gate:
+      - memory_id_valid
+      - immutable_contract_unchanged
+      - mutable_state_revision_incremented_when_required
+      - li_material_revision_event_recorded_when_applicable
+  - order: 120
+    id: RELEASE
+    gate: [no_REPROVADO, no_HOLD_for_release, source_validation_two_agents, reverification_done, normative_reverification_done, memory_synced]
+conversation_commands:
+  /explaincode:
+    mode: READ_ONLY
+    description: Explica código em partes sem modificar o alvo.
+    required_context: [pipeline, datacenter, datasheet, golden_rules, conversation_memory]
+    output_sections:
+      - finalidade
+      - visão geral do fluxo
+      - explicação por bloco/função
+      - entradas e saídas
+      - invariantes e Regras de Ouro
+      - riscos/erros possíveis
+      - vínculo com Data Center/Data Sheet/pipeline
+  /refactor:
+    mode: BEHAVIOR_PRESERVING_WRITE
+    description: Melhora estrutura sem mudar comportamento esperado.
+    behavior_change_allowed: false
+    locked_contract_change_requires_explicit_user_authorization: true
+    mandatory_gates:
+      - capture_before_baseline
+      - compile_or_parse
+      - regression_tests
+      - conversation_contract_validate
+      - diff_review
+      - qa
+      - memory_sync_if_major_change
+invalidations:
+  li_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  li_historical_revision_change:
+    allowed: false
+    action: REPROVADO
+  li_new_revision_change:
+    requires_new_revision_event: true
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_model_change:
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_dimension_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  component_mounting_surface_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  enclosure_change:
+    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  approved_template_change:
+    requires_explicit_user_authorization: true
+    invalidates: [RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+  immutable_contract_change:
+    requires_explicit_user_authorization: true
+    invalidates: [BOOTSTRAP_CONTEXT, QA, MEMORY_SYNC, RELEASE]
+  behavior_change_during_refactor:
+    allowed: false
+    action: STOP_REFACTOR_AND_OPEN_CONTROLLED_CHANGE
+release_policy:
+  unauthorized_standard_change: REPROVADO
+  missing_exact_model_or_evidence: HOLD
+  geometric_distortion: REPROVADO
+  duplicate_physical_component_in_render: REPROVADO
+  door_component_duplicated_on_backplate: REPROVADO
+  render_before_dimensional_closure: REPROVADO
+  unofficial_or_unverified_component_dimensions: HOLD
+  missing_mounting_clearance_or_cable_exit_validation: HOLD
+  quantity_mismatch: REPROVADO
+  historical_revision_changed: REPROVADO
+  new_revision_column_not_adjacent: REPROVADO
+  li_template_changed_without_authorization: REPROVADO
+  li_source_conflict: HOLD
+  a_levantar_without_justification: HOLD
+  conversation_contract_mismatch: REPROVADO
+  missing_memory_sync_when_required: HOLD
+  unverified_applicable_normative_edition: HOLD
+  normative_requirement_conflict: HOLD
+  ml_override_of_deterministic_gate: REPROVADO
+  autoevolution_locked_mutation: REPROVADO
+  fail_closed: true
+
+candidate_engineering:
+  policy: configs/auto_engineering_v1.yaml
+  revision_service: pipeline/aut_panel_candidate_revision.py
+  runner: pipeline/aut_panel_candidate_runner.py
+  historical_revision_mutation_allowed: false
+  stop_before_release: true
+  terminal_automatic_status: CANDIDATE_READY_FOR_HUMAN_REVIEW
+  release_requires_human: true

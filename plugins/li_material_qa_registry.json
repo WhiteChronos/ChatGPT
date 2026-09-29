@@ -1,0 +1,86 @@
+{
+  "registry_version": "1.0",
+  "registry_id": "LI-MATERIAL-OPEN-SOURCE-QA-V1",
+  "policy": {
+    "auto_install_forbidden": true,
+    "pin_release_or_commit_required": true,
+    "license_review_required": true,
+    "human_approval_before_repair": true,
+    "core_checks_must_have_local_fallback": true,
+    "optional_tool_absence_must_be_reported": true
+  },
+  "tools": [
+    {
+      "repository": "chenweixin123/workbooklens",
+      "license": "Apache-2.0",
+      "status": "APPROVED_OPTIONAL",
+      "role": ["XLSX_LINT", "SEMANTIC_DIFF", "REGRESSION_TEST", "CONSERVATIVE_REPAIR"],
+      "activation": "local_or_ci_after_version_pin",
+      "notes": "Prefer scan/test/diff. Repair remains human-reviewed."
+    },
+    {
+      "repository": "Atomics-hub/sheetparity",
+      "license": "MIT",
+      "status": "APPROVED_OPTIONAL",
+      "role": ["XLSX_ENGINE_RECALCULATION", "STRUCTURAL_DIFF", "FORMULA_VALUE_DIFF"],
+      "activation": "ci_with_pinned_release_and_libreoffice",
+      "notes": "Use LibreOffice lane for deterministic recalculation evidence; do not claim native Excel equivalence."
+    },
+    {
+      "repository": "LibreOffice/core",
+      "license": "MPL-2.0",
+      "status": "APPROVED_CORE",
+      "role": ["HEADLESS_OPEN", "RECALCULATION", "PDF_EXPORT", "VISUAL_QA"]
+    },
+    {
+      "repository": "lxml/lxml",
+      "license": "BSD-3-Clause",
+      "status": "APPROVED_CORE",
+      "role": ["OOXML_XML_VALIDATION", "SURGICAL_XML_INSPECTION"]
+    },
+    {
+      "repository": "python-pillow/Pillow",
+      "license": "HPND",
+      "status": "APPROVED_CORE",
+      "role": ["RENDER_IMAGE_DIFF", "VISUAL_REGRESSION"]
+    },
+    {
+      "repository": "pytest-dev/pytest",
+      "license": "MIT",
+      "status": "APPROVED_CORE",
+      "role": ["REGRESSION_TEST", "FAIL_CLOSED_GATE"]
+    },
+    {
+      "repository": "pre-commit/pre-commit",
+      "license": "MIT",
+      "status": "APPROVED_OPTIONAL",
+      "role": ["LOCAL_PRECOMMIT_GATE"]
+    }
+  ],
+  "qa_layers": [
+    {
+      "order": 10,
+      "id": "CORE_PYTHON",
+      "mandatory": true,
+      "checks": ["zip_ooxml_valid", "sheet_structure", "revision_cells", "merged_ranges", "print_area", "external_links"]
+    },
+    {
+      "order": 20,
+      "id": "WORKBOOKLENS",
+      "mandatory_when_available": true,
+      "checks": ["lint", "semantic_diff", "layout_risk", "regression"]
+    },
+    {
+      "order": 30,
+      "id": "SHEETPARITY_LIBREOFFICE",
+      "mandatory_when_formulas_or_cached_values_matter": true,
+      "checks": ["recalculate", "formula_value_diff", "structural_loss"]
+    },
+    {
+      "order": 40,
+      "id": "VISUAL_RENDER_DIFF",
+      "mandatory_when_layout_is_issue_critical": true,
+      "checks": ["render_pdf", "compare_pages", "cover_and_revision_columns"]
+    }
+  ]
+}

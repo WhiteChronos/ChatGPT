@@ -1,0 +1,105 @@
+schema_version: "3.0"
+visual_standard_registry_id: AUT-PANEL-VISUAL-STANDARD-V3
+status: USER_APPROVED_REFERENCE
+approved_at: "2026-09-28"
+authority: USER_APPROVED_VISUAL_REFERENCE
+supersedes: AUT-PANEL-VISUAL-STANDARD-V2
+scope:
+  applies_to: [PN-AUT-01, PN-AUT-02, future_AUT_panels]
+  purpose: "Large-canvas, geometry-first engineering composition for dimensionally faithful panel presentation."
+composition:
+  numbering:
+    "1": front_internal_door_open
+    "2": front_external_door_closed
+    "3": right_side_view
+    "4": REMOVED
+    "5": electrical_architecture
+    "6": right_side_open_depth_section
+    "7": material_list
+    "8": REMOVED
+    "9": communication_architecture
+    "10": command_architecture
+    "11": enclosure_and_component_dimensions
+    "12": standards_and_notes
+    "13": load_schedule
+  removed_blocks:
+    - id: door_internal_hmi_detail
+      former_item: 4
+      reason: "Redundant dedicated block. HMI backside may appear only inside the main open-door view as the same physical instance."
+    - id: bottom_cable_exit_view
+      former_item: 8
+      reason: "Redundant dedicated block. Cable exit is dimensioned in the main internal view and depth section."
+  required_blocks:
+    - header
+    - front_internal_door_open
+    - front_external_door_closed
+    - right_side_view
+    - right_side_open_depth_section
+    - material_list
+    - load_schedule
+    - electrical_architecture
+    - communication_architecture
+    - command_architecture
+    - enclosure_and_component_dimensions
+    - standards_and_notes
+    - parity_footer
+canvas:
+  policy: GROW_CANVAS_KEEP_SCALE
+  raster_composition_guard: pipeline/corrigir_proporcao_imagem.py
+  dimensional_raster_scale: {x: 1.0, y: 1.0}
+  smaller_frame_action: GROW_FRAME_OR_REPROVADO
+  minimum_px: {width: 2048, height: 1536}
+  no_block_downscale_to_fit: true
+  no_component_downscale_to_fit: true
+  letterbox_only_adds_space: true
+  raster_resize_of_dimensional_views_forbidden: true
+  allow_larger_than_minimum: true
+  primary_view_priority: front_internal_door_open
+geometry_authority:
+  registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  pipeline:
+    - acquire_manufacturer_cad_or_dimensions
+    - normalize_units_to_mm
+    - create_or_import_single_3d_instance
+    - validate_bounding_box_against_datasheet
+    - assemble_panel_in_real_coordinates
+    - generate_orthographic_views_from_same_assembly
+    - validate_view_scale_and_aspect
+    - render_realistic_materials_without_geometry_change
+    - compose_large_canvas_without_downscaling
+  source_priority:
+    - MANUFACTURER_STEP_OR_IGES
+    - MANUFACTURER_DXF_OR_NATIVE_CAD
+    - PARAMETRIC_RECONSTRUCTION_FROM_OFFICIAL_DIMENSIONAL_DRAWING
+    - OFFICIAL_DIMENSIONAL_BBOX_PROXY
+  forbidden:
+    - IMAGE_INFERRED_COMPONENT_GEOMETRY_AS_AUTHORITY
+    - INDEPENDENT_PER_VIEW_RESIZING
+    - PERSPECTIVE_CAMERA_FOR_DIMENSIONAL_VIEWS
+    - STRETCH_TO_FILL
+engineering_rules:
+  same_physical_assembly_drives_all_views: true
+  dimensions_in_mm: true
+  orthographic_dimensional_views: true
+  bbox_match_tolerance_percent: 1.0
+  side_open_view_aspect_ratio_formula: depth_external_mm / height_external_mm
+  pn_aut_01_side_open_aspect_ratio: 0.375
+  hmi_physical_quantity: 1
+  hmi_surface: door
+  lower_cable_zone_preserved: true
+  cable_exit_still_engineered_even_when_item_8_removed: true
+  li_bom_layout_render_parity: true
+  manufacturer_catalog_and_cad_traceability: true
+visual_identity:
+  palette: BLUE_WHITE_ENGINEERING
+  realism: TECHNICAL_PHOTOREALISTIC
+  text_and_tables: VECTOR_OVERLAY
+  dimensional_annotations: VECTOR_OVERLAY
+  component_render: CAD_DERIVED
+  generative_finish: OPTIONAL_NON_GEOMETRIC_ONLY
+footer:
+  parity_statement: "LI = BOM = CARGA = LAYOUT = GEOMETRIA 3D = IMAGEM"
+change_control:
+  previous_visual_standards_remain_historical: true
+  generated_image_never_overrides_engineering_data: true
+  geometry_toolchain_change_requires_QA: true

@@ -1,0 +1,25 @@
+schema_version: "1.0"
+registry_id: AUT-PANEL-ML-MODEL-REGISTRY-V1
+status: COLD_START
+policy:
+  advisory_only: true
+  engineering_truth_source: false
+  minimum_labeled_examples: 25
+  human_reviewed_labels_only: true
+  deterministic_gate_has_precedence: true
+  locked_change_auto_apply_forbidden: true
+  model_artifact_commit_forbidden_until_reviewed: true
+feature_schema_version: AUT-PANEL-ML-FEATURES-V1
+models: []
+candidate_features:
+  - source_uncertainty
+  - lifecycle_uncertainty
+  - quantity_mismatch
+  - overlap_ratio
+  - template_diff
+  - unresolved_hold_ratio
+  - enclosure_fill_ratio
+  - minimum_clearance_mm
+  - routing_complexity
+  - reviewer_correction_count
+  - historical_failure_frequency

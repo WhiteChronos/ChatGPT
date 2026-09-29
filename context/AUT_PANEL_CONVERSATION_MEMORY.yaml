@@ -1,0 +1,330 @@
+schema_version: '1.0'
+memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+memory_type: OPERATIONAL_CROSS_CHAT_CONTEXT
+status: ACTIVE
+purpose: Estado operacional canônico para continuidade do projeto AUTOMAÇÃO EQUIPAMENTO entre conversas.
+  Não substitui Golden Rules, Data Center, Data Sheet ou LI.
+immutable_contract:
+  standard_id: AUT-PAINEL-COMPACT-V2.4
+  pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  golden_rules_id: GOLDEN-RULES-IMMUTABLE-V1
+  datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
+  datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  workbook_template_id: XLSX-PN-AUT-01-MASTER-R02
+  image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  repository: WhiteChronos/ChatGPT
+  source_precedence:
+  - governance/golden_rules.yaml
+  - pipeline/pipeline.yaml
+  - datacenter/datacenter.yaml
+  - datasheet/datasheet.yaml
+  - datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  - memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  - li vigente
+  - templates/panel_template.yaml
+  - context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  - conversa atual
+  mutation_policy:
+    explicit_user_authorization_required_for_immutable_contract: true
+    chat_memory_cannot_override_canonical_files: true
+    fail_closed: true
+mutable_state:
+  sync_revision: 13
+  last_sync_at: '2026-09-28T22:42:00-03:00'
+  repository:
+    branch: feat/aut-panel-control-v1
+    pull_request: 23
+    head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
+  active_work:
+    objective: Impedir regressão de duplicidade de IHM e renders fora de escala, exigindo fechamento
+      dimensional, instância física única, superfície de montagem e validação de saída de cabos antes do render.
+    status: IMPLEMENTED
+  raster_proportion_guard:
+    script: pipeline/corrigir_proporcao_imagem.py
+    source_sha256: 835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31
+    policy: GROW_CANVAS_KEEP_SCALE
+    dimensional_scale: {x: 1.0, y: 1.0}
+    smaller_frame_action: GROW_FRAME_OR_REPROVADO
+    raster_resize_to_fit_forbidden: true
+  geometry_guardians:
+    required: [CAD_GEOMETRY_GUARDIAN, SCALE_PROPORTION_GUARDIAN, BLENDER_RENDER_GUARDIAN, CANVAS_COMPOSITION_GUARDIAN]
+    conditional: [REVIT_BIM_INTEROP_GUARDIAN]
+    canonical_skill: skills/aut-panel-engineering/SKILL.md
+    no_fit_to_canvas: true
+    never_non_uniform_scale: true
+    canvas_must_grow: true
+    blender_geometry_change_allowed: false
+    revit_execution_requires_authorized_autodesk_environment: true
+  geometry_first_3d:
+    visual_standard: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+    geometry_toolchain: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+    common_assembly_required: true
+    manufacturer_cad_preferred: true
+    parametric_reconstruction_from_official_dimensions_allowed: true
+    generative_geometry_authority: false
+    dimensional_views_projection: ORTHOGRAPHIC
+    canvas_policy: GROW_CANVAS_KEEP_SCALE
+    removed_visual_blocks: [door_internal_hmi_detail, bottom_cable_exit_view]
+  render_integrity:
+    dimensional_closure_required: true
+    official_manufacturer_dimensions_required: true
+    common_scale_unit: mm
+    physical_instance_count_must_equal_li_bom: true
+    hmi_physical_quantity: 1
+    hmi_mounting_surface: door
+    hmi_duplicate_on_backplate_forbidden: true
+    open_door_view_may_show_same_hmi_backside: true
+    cable_exit_clearance_required: true
+    bend_radius_validation_required: true
+    side_open_real_scale: true
+    side_open_aspect_ratio_formula: depth_external_mm / height_external_mm
+    pn_aut_01_side_open_aspect_ratio: 0.375
+    image_6_depth_section_required: true
+    failure_modes:
+      missing_dimension: HOLD_DIMENSIONAL_DATA
+      capacity_failure: HOLD_LAYOUT_CAPACITY
+      duplicate_component: REPROVADO
+  visual_standard_v2:
+    registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
+    reference_sha256: 56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6
+    reference_pixel_size: {width: 1536, height: 1024}
+    role: COMPOSITION_REFERENCE_NOT_ENGINEERING_DATA
+    legacy_panel_fingerprints_preserved: true
+    parity_footer: "LI = BOM = CARGA = LAYOUT = IMAGEM"
+  github_toolchain:
+    registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+    skill_reference: skills/aut-panel-engineering/references/github-toolchain.md
+    activation_policy: PIN_LICENSE_SECURITY_SANDBOX_REGRESSION
+  li_material_control:
+    control_id: LI-MATERIAL-CONTROL-V1
+    prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+    pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+    memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+    rule: A revisão antiga permanece na própria coluna; a nova revisão ocupa a coluna imediatamente
+      à direita e recebe somente os valores revisados.
+    preserve_rev_0: true
+    historical_revision_overwrite_forbidden: true
+    quantity_evidence_required: true
+    a_levantar_only_when_not_determinable: true
+  agent_learning_system:
+    system_id: AUT-PANEL-AGENT-SYSTEM-V1
+    agent_registry: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+    agent_datacenters: datacenter/agents/agent_datacenters.yaml
+    agent_memories: memory/agents/agent_memories.yaml
+    database_schema: database/aut_panel_schema.sql
+    database_script: pipeline/aut_panel_db.py
+    learning_pipeline: pipeline/learning_pipeline.yaml
+    learning_script: pipeline/aut_panel_learning.py
+    evolution_script: pipeline/evolution_engine.py
+    model_registry: ml/model_registry.yaml
+    open_source_registry: plugins/aut_panel_open_source_registry.json
+    engineering_skill: skills/aut-panel-engineering/SKILL.md
+    ml_status: LEARNING_COLD_START
+    ml_advisory_only: true
+    autoevolution_mode: PROPOSAL_ONLY
+    human_gate_required: true
+  normative_control:
+    registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+    registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+    supplemental_registry_path: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+    memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+    memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+    script: pipeline/aut_panel_normative_control.py
+    default_jurisdiction: BR
+    baseline_group: panel_general
+    reverify_before_release: true
+    unverified_edition_status: HOLD
+    conflict_status: HOLD
+  active_panels:
+    PN-AUT-01:
+      role: PLC principal HVAC + VRF
+      li_id: LI-PN-AUT-01-R02
+      li_revision: R02
+      li_status: QUANTITY_FROZEN
+      enclosure_mm:
+        height: 800
+        width: 600
+        depth: 300
+      mounting_plate_mm:
+        height: 750
+        width: 550
+      hmi_surface: door
+      mandatory_power_chain:
+      - power_supply_24vdc
+      - dc_ups_24vdc
+      - battery_bank
+    PN-AUT-02:
+      role: UTR remota segundo pavimento
+      li_id: LI-PN-AUT-02-R02
+      li_revision: R02
+      li_status: QUANTITY_FROZEN
+      enclosure_mm:
+        height: 500
+        width: 400
+        depth: 250
+      mounting_plate_mm:
+        height: 450
+        width: 350
+      hmi_surface: door
+      mandatory_power_chain:
+      - power_supply_24vdc
+      - dc_ups_24vdc
+      - battery_bank
+  engineering_status:
+    quantitative_baseline: FROZEN_R02
+    formal_release: HOLD
+    reason: Há itens ainda pendentes de código exato, dimensões, lifecycle, compatibilidade ou documentação
+      oficial; CI pode passar sem liberar engenharia.
+  open_holds:
+  - id: HOLD-PLC-EXACT
+    scope: PN-AUT-01
+    item: PLC CPU e módulos ET 200SP
+    reason: código exato deve ser congelado somente após I/O oficial e compatibilidade.
+  - id: HOLD-RTU-EXACT
+    scope: PN-AUT-02
+    item: UTR e cartões de I/O
+    reason: modelo e ecossistema de expansão precisam de compatibilidade oficial.
+  - id: HOLD-SWITCH-LIFECYCLE
+    scope: PN-AUT-01/PN-AUT-02
+    item: switch industrial
+    reason: referência SCALANCE X208 é legada e sucessor atual deve ser validado.
+  - id: HOLD-BATTERY-SIZING
+    scope: PN-AUT-01/PN-AUT-02
+    item: banco de baterias
+    reason: Ah/autonomia devem ser calculados pela carga real e requisito de autonomia.
+  - id: HOLD-GATEWAY-VRF
+    scope: PN-AUT-01
+    item: gateway VRF
+    reason: manter somente código oficial verificado; referência visual não é evidência.
+  command_contract:
+    explaincode:
+      slash: /explaincode
+      mode: READ_ONLY
+      behavior: Explica código em partes sem modificar o alvo.
+    refactor:
+      slash: /refactor
+      mode: BEHAVIOR_PRESERVING_WRITE
+      behavior: Melhora estrutura sem mudar comportamento esperado e exige regressão/QA.
+auto_engineering_candidate_revision:
+  authorized: true
+  policy: configs/auto_engineering_v1.yaml
+  historical_r02_mutation_allowed: false
+  candidate_changes_allowed: [enclosure, component_substitution, quantities, layout, electrical_sizing, io, communication, plc_candidate, panel_split_proposal]
+  deterministic_gates_may_be_weakened: false
+  human_release_required: true
+  auto_merge_allowed: false
+  production_plc_download_allowed: false
+sync_policy:
+  mandatory_read_on_new_conversation: true
+  mandatory_write_after:
+  - user_authorized_standard_change
+  - new_li_revision
+  - li_material_revision_update
+  - exact_model_frozen
+  - qa_status_change
+  - release_decision
+  - major_pipeline_change
+  - normative_registry_change
+  - normative_applicability_change
+  conflict_resolution:
+    chat_vs_memory: MEMORY_FILE_WINS
+    memory_vs_datacenter: DATACENTER_WINS_AND_MEMORY_MUST_BE_REPAIRED
+    memory_vs_datasheet: DATASHEET_WINS_AND_MEMORY_MUST_BE_REPAIRED
+    missing_evidence: HOLD
+    standard_violation: REPROVADO
+history:
+- revision: 1
+  at: '2026-09-15T20:08:00-03:00'
+  actor: user+assistant
+  event: CONVERSATION_BRIDGE_CREATED
+  summary: Usuário autorizou criar um prompt portátil, memória operacional vinculada entre conversas,
+    comandos /explaincode e /refactor e integração desses contratos ao pipeline.
+- revision: 2
+  at: '2026-09-15T20:08:00-03:00'
+  actor: user+assistant
+  event: CONVERSATION_BRIDGE_IMPLEMENTED
+  summary: Prompt V2, bootstrap portátil, memória operacional, /explaincode, /refactor, script de contrato,
+    testes e CI foram integrados à branch feat/aut-panel-control-v1. O head deve ser resolvido dinamicamente
+    no bootstrap para evitar auto-referência do arquivo de memória.
+- revision: 3
+  at: '2026-09-16T23:11:00-03:00'
+  actor: user+assistant
+  event: LI_MATERIAL_REVISION_CONTROL_IMPLEMENTED
+  summary: Foi aprovado e integrado o padrão de manter todas as revisões históricas da LI intactas,
+    preservar REV. 0, criar a nova revisão na coluna imediatamente à direita, rastrear quantitativos por
+    evidência e registrar QA/regressão/memória específica da Lista de Material.
+- revision: 4
+  at: '2026-09-28T10:37:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_AGENT_ML_DATABASE_SYSTEM_IMPLEMENTED
+  summary: Usuário autorizou a estruturação de agentes com Data Center e memória próprios, banco SQLite,
+    pipeline de machine learning consultivo, autoevolução por proposta, registro open source e Skill
+    AUT Panel Engineering, mantendo o pipeline canônico e padrões aprovados como autoridade.
+
+- revision: 5
+  at: '2026-09-28T12:43:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_NORMATIVE_REGISTRY_LINKED
+  summary: Usuário autorizou incluir as normas de referência de elaboração no Data Center e na memória persistente. Foi criado registro normativo base/condicional, política de reverificação pré-emissão e vínculo canônico ao pipeline, Data Sheet e bootstrap.
+
+- revision: 6
+  at: '2026-09-28T14:05:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_NORMATIVE_SUPPLEMENT_LINKED
+  summary: Catálogo complementar de normas oficiais foi vinculado ao Data Center e à memória normativa para uso como referência de elaboração. A aplicabilidade é resolvida por condição técnica e a edição deve ser reverificada antes da emissão.
+
+- revision: 7
+  at: '2026-09-28T16:55:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_VISUAL_STANDARD_V2_AND_GITHUB_TOOLCHAIN_LINKED
+  summary: Usuário aprovou a imagem fornecida como padrão de composição para elaboração dos quadros. Foi registrado o SHA-256 da referência, preservados os fingerprints históricos dos painéis, e vinculados o padrão visual V2 e o toolchain GitHub V2 à Skill, Data Center, Data Sheet e pipeline. Valores técnicos visíveis na imagem não se tornam fatos de projeto sem validação independente.
+
+- revision: 8
+  at: '2026-09-28T18:10:00-03:00'
+  actor: user+assistant
+  event: HMI_DUPLICATION_AND_DIMENSIONAL_RENDER_REGRESSION_PREVENTION
+  summary: Usuário determinou que o erro de IHM duplicada e escala visual aproximada não volte a ocorrer. O pipeline foi endurecido para exigir uma única instância física da IHM na porta, fechamento dimensional por catálogo oficial, escala comum em milímetros, validação porta x placa, zona de saída de cabos e teste automatizado de regressão antes do render final.
+
+- revision: 9
+  at: '2026-09-28T18:21:00-03:00'
+  actor: user+assistant
+  event: SIDE_OPEN_AND_DEPTH_SECTION_REAL_SCALE_STANDARDIZED
+  summary: Usuário identificou compressão indevida na vista lateral aberta/corte em profundidade. Foi autorizado tornar obrigatório o uso da mesma escala global em mm, com razão profundidade/altura real do gabinete. No PN-AUT-01, 300/800 = 0,375. A Imagem 6 passa a ser corte dimensional obrigatório com profundidade útil, componentes, canaletas, folgas, raio de curvatura e prensa-cabos, sem distorção.
+
+- revision: 10
+  at: '2026-09-28T18:35:00-03:00'
+  actor: user+assistant
+  event: CAD_FIRST_3D_GEOMETRY_AND_LARGE_CANVAS_STANDARD
+  summary: Usuário determinou resolver perda de proporcionalidade, dimensionamento real e entendimento 3D usando ferramentas open source/GitHub. Foi criado padrão visual V3 geometry-first, toolchain FreeCAD/OpenCascade/CadQuery/build123d/trimesh/Open3D/Blender, gate de montagem 3D única, canvas grow-only e remoção dos blocos dedicados 4 e 8. Imagem generativa deixa de ser autoridade geométrica.
+
+- revision: 11
+  at: '2026-09-28T19:24:00-03:00'
+  actor: user+assistant
+  event: PERMANENT_GEOMETRY_GUARDIANS_AND_NEVER_FIT_TO_CANVAS
+  summary: Usuário determinou que o sistema nunca mais comprima, estique, reduza ou altere proporções para fazer o painel caber no canvas. Foram adicionados agentes permanentes de geometria CAD, escala/proporção, Blender render, Revit/BIM e composição de canvas. Blender fica restrito a materiais/luz/render; Revit é interoperabilidade BIM condicionada a ambiente Autodesk autorizado. O canvas deve crescer sem limite prático necessário para preservar geometria, medidas e legibilidade.
+
+- revision: 12
+  at: '2026-09-28T19:31:00-03:00'
+  actor: user+assistant
+  event: USER_PROPORTION_SCRIPT_INTEGRATED_WITH_CODEX_GITHUB
+  summary: >-
+    Script corrigir_proporcao_imagem.py fornecido pelo usuário, SHA-256
+    835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31, foi integrado
+    ao pipeline em versão endurecida para engenharia. Diferente do fit genérico,
+    o modo dimensional não reduz raster para caber; scale_x=scale_y=1.0 e moldura
+    menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard
+    V3, CI e testes foram vinculados.
+
+- revision: 13
+  at: '2026-09-28T22:42:00-03:00'
+  actor: user+assistant
+  event: GOVERNED_AUTOMATIC_ENGINEERING_CANDIDATE_REVISIONS_AUTHORIZED
+  summary: >-
+    Usuário aprovou a especificação que autoriza alterações automáticas de engenharia
+    somente em nova revisão candidata, incluindo gabinete, componentes, quantitativos,
+    layout, cargas, I/O, comunicação e lógica candidata de CLP. A R02 e demais revisões
+    históricas permanecem imutáveis. Release para fabricação, compra vinculante,
+    auto-merge e download para CLP de produção permanecem sob controle humano.

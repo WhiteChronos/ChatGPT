@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AUT-PANEL-RENDER-MANIFEST-V1",
+  "title": "AUT Panel Dimensional Render Manifest",
+  "type": "object",
+  "required": [
+    "panel_id",
+    "panel_revision",
+    "px_per_mm",
+    "bom_counts",
+    "physical_instances",
+    "view_representations",
+    "cable_exit",
+    "panel_views"
+  ],
+  "properties": {
+    "panel_id": {
+      "type": "string"
+    },
+    "panel_revision": {
+      "type": "string"
+    },
+    "px_per_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "bom_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "physical_instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "instance_id",
+          "physical_instance_key",
+          "catalog_id",
+          "component_class",
+          "mounting_surface",
+          "geometry_source",
+          "official_dimensions_mm",
+          "layout_dimensions_mm"
+        ],
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "physical_instance_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "catalog_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "component_class": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mounting_surface": {
+            "enum": [
+              "door",
+              "backplate",
+              "din",
+              "enclosure",
+              "other"
+            ]
+          },
+          "geometry_source": {
+            "const": "OFFICIAL_MANUFACTURER_DIMENSIONAL_DRAWING"
+          },
+          "orientation_deg": {
+            "enum": [
+              0,
+              90,
+              180,
+              270
+            ]
+          },
+          "official_dimensions_mm": {
+            "$ref": "#/$defs/dims"
+          },
+          "layout_dimensions_mm": {
+            "$ref": "#/$defs/dims"
+          }
+        }
+      }
+    },
+    "view_representations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "instance_id",
+          "representation_role"
+        ],
+        "properties": {
+          "instance_id": {
+            "type": "string"
+          },
+          "representation_role": {
+            "enum": [
+              "front",
+              "side",
+              "backside",
+              "internal",
+              "external"
+            ]
+          }
+        }
+      }
+    },
+    "cable_exit": {
+      "type": "object",
+      "required": [
+        "actual_clearance_mm",
+        "required_clearance_mm",
+        "bend_radius_validated",
+        "gland_access_validated"
+      ],
+      "properties": {
+        "actual_clearance_mm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "required_clearance_mm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "bend_radius_validated": {
+          "type": "boolean"
+        },
+        "gland_access_validated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "panel_views": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "view_id",
+          "physical_dimensions_mm",
+          "rendered_dimensions_px",
+          "dimensional",
+          "annotations"
+        ],
+        "properties": {
+          "view_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "physical_dimensions_mm": {
+            "type": "object",
+            "required": [
+              "width",
+              "height"
+            ],
+            "properties": {
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          },
+          "rendered_dimensions_px": {
+            "type": "object",
+            "required": [
+              "width",
+              "height"
+            ],
+            "properties": {
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          },
+          "dimensional": {
+            "type": "boolean"
+          },
+          "annotations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "dims": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "depth"
+      ],
+      "properties": {
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "depth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    }
+  }
+}

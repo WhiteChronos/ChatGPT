@@ -123,3 +123,81 @@ A datasheet may declare `PASS` only when all of the following are true:
 
 ## Pull request compatibility
 A pull request that changes compatibility-analysis logic, engineering schemas, Data Center manifests, datasheets, report-generation code or either compatibility validator MUST pass the Engineering Compatibility Visualize Gate and repository governance checks before merge.
+
+# AUT Panel Control extension
+
+## Scope
+This branch implements AUT - Paineis de Automacao e Controle.
+
+## Mandatory bootstrap
+Before changing engineering logic, data contracts, panel layout, LI/BOM, normative data, QA, ML or evolution behavior, read:
+1. prompts/PROMPT_MASTER_AUT_PANEL_GITHUB_CODEX_V1.md
+2. context/AUT_PANEL_CONTEXT_MANIFEST_V1.yaml
+3. datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+4. datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+5. datacenter/LI_MATERIAL_CONTROL.json
+6. configs/layout_optimizer_v1.yaml
+
+## Authority
+Repository canonical files and approved technical evidence override chat memory.
+Conflict or missing evidence => HOLD.
+
+## Locked behavior
+- Do not rewrite approved baselines in place.
+- Do not mutate historical LI revisions.
+- Do not alter frozen R02 quantities in place. Authorized engineering changes must create a new candidate revision with evidence and delta traceability.
+- Enclosure size, component selection, quantities and panel split may be changed automatically only inside a governed candidate revision under `configs/auto_engineering_v1.yaml`.
+- Historical LI revisions and released/frozen artifacts remain immutable.
+- Do not let ML override deterministic gates.
+- Do not auto-merge PR #23.
+
+## Codex execution contract
+Every substantive change must report:
+- files changed;
+- canonical inputs and SHAs;
+- tests run and results;
+- engineering HOLDs;
+- regressions/risks;
+- rollback path.
+
+CI green is not engineering approval.
+
+## Routing
+Known intent -> deterministic router.
+Ambiguous intent -> ML_ROUTE_HINT only.
+Conflict -> deterministic rules win.
+
+## Panel render integrity
+Before any AUT panel render is treated as dimensional or fabrication-relevant, agents SHALL:
+- prove official manufacturer dimensions and mounting clearances for every drawable component;
+- use one common millimetre scale;
+- reconcile physical instance counts against LI/BOM;
+- keep the HMI as one door-mounted physical instance only;
+- never duplicate a door-mounted component on the backplate;
+- validate door/backplate interference, cable-exit space, gland access and bend radius;
+- return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY instead of visually shrinking components;
+- record confirmed mistakes in project memory and add a regression test before closure.
+
+## Raster proportion guard
+For dimensional raster views, Codex SHALL use `pipeline/corrigir_proporcao_imagem.py` or equivalent validated gate before composition. A fixed frame may not force any resize of engineering geometry. Required invariants:
+- `scale_x = scale_y = 1.0`;
+- smaller target frame => grow canvas or REPROVADO;
+- aspect ratio must match the engineering width/height;
+- letterbox/pillarbox may add empty space only;
+- no raster utility may be used to hide an upstream CAD/3D geometry error.
+
+When this guard or its tests change, Codex SHALL run the AUT panel agent-system regression suite and report the result in PR #23.
+
+## Auxiliary memory contract
+Mem0 is optional auxiliary context only. Canonical Git/SQLite records and approved evidence always win. Only MEMORY_CURATOR may mirror canonical events to Mem0. ORCHESTRATOR may consume only context returned by `pipeline/aut_panel_memory_context.py`; engineering agents must not write engineering facts directly from Mem0 results. Mem0 outage falls back to canonical-only execution and does not clear or create engineering HOLDs.
+
+## Codex automatic-engineering prompt
+For automatic candidate engineering, Codex SHALL read `prompts/PROMPT_CODEX_AUT_PANEL_AUTO_ENGINEERING_V1.md` in addition to the canonical bootstrap and approved design/plan documents. Candidate review SHALL use `prompts/PROMPT_CODEX_AUT_PANEL_CANDIDATE_REVIEW_V1.md`; a Codex review is evidence/recommendation only and never human release authorization.
+
+## Automatic engineering candidate revisions
+Codex MAY create and modify new engineering candidate revisions using `pipeline/aut_panel_candidate_revision.py`, `pipeline/aut_panel_candidate_runner.py` and `pipeline/aut_panel_candidate_gate.py`. Candidate automation may revise enclosure, components, quantities, load sizing, I/O, communication, layout and candidate PLC logic when supported by validated evidence.
+
+Codex SHALL NOT overwrite historical R02/released revisions, weaken deterministic gates, auto-merge, issue fabrication release, create binding procurement, or download to production PLC hardware. A candidate that passes deterministic QA ends at `CANDIDATE_READY_FOR_HUMAN_REVIEW`. Human approval may create a release-authorization artifact but does not itself execute merge, fabrication or PLC deployment.
+
+## Release
+RELEASE is allowed only after required deterministic gates, source validation, normative reverification, QA and human approval.
