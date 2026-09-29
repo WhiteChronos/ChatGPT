@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 13
+  sync_revision: 14
   last_sync_at: '2026-09-29T13:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -126,6 +126,25 @@ mutable_state:
     ml_advisory_only: true
     autoevolution_mode: PROPOSAL_ONLY
     human_gate_required: true
+  li_technical_documentation_control:
+    control_id: AUT-PANEL-LI-TECHNICAL-DOSSIER-V1
+    registry: datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json
+    generator: pipeline/li_technical_dossier.py
+    source_li_policy: COMPANION_DOSSIER_DO_NOT_MUTATE_FROZEN_LI
+    required_per_line:
+    - manufacturer
+    - family
+    - model
+    - catalog_or_family_url
+    - datasheet_or_technical_page_url
+    - lifecycle_status
+    - document_status
+    - consultation_date
+    exact_model_requires_exact_datasheet: true
+    family_document_cannot_close_exact_model_hold: true
+    enriched_li_output: AUT_PANEL_LI_TECHNICAL.json
+    current_status: HOLD
+    reason: Parte dos itens da LI ainda possui somente familia/referencia visual, modelo legado ou fabricante/modelo exato pendente.
   electrical_sizing_control:
     control_id: AUT-PANEL-ELECTRICAL-SIZING-V1
     script: pipeline/aut_panel_electrical_sizing.py
@@ -349,3 +368,16 @@ history:
     Ik/Icu, InA/Icw/Ipk, 24 Vcc, UPS/baterias, seletividade/backup e verificacao termica.
     Enquanto os dados obrigatorios estiverem incompletos, o A do quadro permanece nulo e o
     release permanece HOLD.
+
+- revision: 14
+  at: '2026-09-29T13:31:00-03:00'
+  actor: user+assistant
+  event: LI_TECHNICAL_DOSSIER_INTEGRATED
+  summary: >-
+    Usuario determinou juntar a LI completa com catalogo e ficha tecnica de cada componente
+    ao estado ELÉTRICO INTEGRADO / DADOS A COMPLETAR / RELEASE HOLD / “A DO QUADRO” NÃO
+    INVENTADO. Para preservar as LIs R02 congeladas, foi criado dossie tecnico companion
+    por catalog_id/li_tag e gerador de LI enriquecida. Cada linha exige fabricante, modelo,
+    catalogo/familia, ficha/pagina tecnica exata quando houver codigo exato, lifecycle,
+    data de consulta e status documental. Familia ou referencia visual nao fecha HOLD de
+    modelo exato; documentacao incompleta permanece HOLD.
