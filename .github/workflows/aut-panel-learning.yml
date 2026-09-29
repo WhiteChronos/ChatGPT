@@ -106,6 +106,7 @@ jobs:
             tests/test_aut_panel_agent_system.py \
             tests/test_aut_panel_fast_context.py \
             tests/test_aut_panel_cache.py \
+            tests/test_aut_panel_candidate_*.py \
             tests/test_layout_optimizer_*.py
       - name: Smoke test Fast Context CLI
         run: |
