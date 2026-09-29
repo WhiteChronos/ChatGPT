@@ -33,6 +33,9 @@ contracts:
   pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
   pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
   pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
+  pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
   panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
@@ -183,6 +186,8 @@ sequence:
       - visual_composition_v3_loaded
       - pn_image_model_001_loaded
       - pn_image_model_001_prompt_loaded
+      - pn_image_elaboration_directive_loaded
+      - pn_image_elaboration_memory_loaded
       - target_panel_dimensions_from_target_datasheet
       - reference_panel_dimensions_not_inherited
       - dimensional_closure_passed
