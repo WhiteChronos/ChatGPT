@@ -196,3 +196,5 @@ def rollback_candidate(
         "rollback_target": candidate["rollback_target"],
         "reason": reason,
     }
+
+from pipeline.aut_panel_candidate_batch import apply_changes_atomic
