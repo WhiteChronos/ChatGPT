@@ -58,6 +58,13 @@ handoff_contract:
     - source_refs
     - holds
     - next_action
+visual_model_contract:
+  required_for_render_tasks: true
+  model_id: PN-IMAGE-MODEL-001
+  manifest: datacenter/images/PN_MODEL_001.json
+  prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  target_panel_dimensions_source: target_datasheet
+  reference_dimensions_inheritance_forbidden: true
 policy:
   canonical_repo_wins_over_chat: true
   no_chain_of_thought_handoff: true
