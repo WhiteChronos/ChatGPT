@@ -15,6 +15,9 @@ production_contract:
   pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
   pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
   pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
+  pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   panel_dimensions_are_project_specific: true
   enclosure_selected_after_dimensional_capacity_proof: true
   prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
