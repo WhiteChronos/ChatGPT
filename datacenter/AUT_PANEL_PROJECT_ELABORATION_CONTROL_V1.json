@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.4",
+  "schema_version": "1.5",
   "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
@@ -14,6 +14,7 @@
     "skills/aut-panel-electrical-sizing/SKILL.md",
     "skills/aut-panel-li-load-quantification/SKILL.md",
     "skills/aut-panel-layout/SKILL.md",
+    "skills/aut-panel-pn-image-fidelity/SKILL.md",
     "skills/aut-panel-image-document/SKILL.md",
     "skills/aut-panel-qa-release/SKILL.md",
     "skills/aut-panel-learning-memory/SKILL.md"
@@ -54,7 +55,7 @@
   },
   "authority_rule": "Plugins are support tools. Official project/manufacturer/standard evidence remains authoritative.",
   "evolution_mode": "PROPOSAL_ONLY_HUMAN_GATE",
-  "release_rule": "No project artifact may be released from a stale or unresolved cross-artifact state.",
+  "release_rule": "No project visual artifact may be released unless Step 4 LI/load, Step 5 multiview image fidelity, and Step 6 engineering document parity all pass.",
   "geometry_authority_rule": "For dimensional engineering, use manufacturer CAD or deterministic parametric geometry. to3D/ImageGen/Adobe are downstream visualization aids only.",
   "step_1": {
     "control": "datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json",
@@ -113,5 +114,23 @@
     "quantification_rule": "All quantities and internal wire metres require documentary or deterministic mathematical basis.",
     "links_rule": "Each material line carries REF_ID and official manufacturer/document/supplier links.",
     "downstream_rule": "Physical sizing, final layout and image require STEP4_LI_LOAD_FROZEN."
+  },
+  "step_5": {
+    "control": "datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json",
+    "prompt": "prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md",
+    "memory": "memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml",
+    "references": "datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json",
+    "skill": "skills/aut-panel-pn-image-fidelity/SKILL.md",
+    "pass_status": "STEP5_PN_IMAGE_FIDELITY_FROZEN",
+    "rule": "One canonical real-scale 3D assembly per PANEL_ID/revision; all angles derive from the same geometry and door object."
+  },
+  "step_6": {
+    "control": "datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json",
+    "prompt": "prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md",
+    "memory": "memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml",
+    "skill": "skills/aut-panel-image-document/SKILL.md",
+    "model": "PN-IMAGE-MODEL-001",
+    "pass_status": "STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN",
+    "rule": "Compose Step 5 image with legend, panel data, electrical architecture, communication architecture, command diagram and dimensions using grow-only canvas."
   }
 }
