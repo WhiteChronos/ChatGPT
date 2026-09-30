@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AutomationRoutingRecord",
+  "type": "object",
+  "required": [
+    "route_id",
+    "route_type",
+    "drawing_id",
+    "scale",
+    "segments"
+  ],
+  "properties": {
+    "route_id": {
+      "type": "string"
+    },
+    "route_type": {
+      "enum": [
+        "cable_tray",
+        "conduit",
+        "hart_cable",
+        "digital_hvac_cable"
+      ]
+    },
+    "drawing_id": {
+      "type": "string"
+    },
+    "scale": {
+      "type": "string"
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "segment_id",
+          "measured_length"
+        ],
+        "properties": {
+          "segment_id": {
+            "type": "string"
+          },
+          "measured_length": {
+            "type": "number",
+            "minimum": 0
+          },
+          "scale_denominator": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        }
+      }
+    }
+  }
+}

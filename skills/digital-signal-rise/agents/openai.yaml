@@ -1,0 +1,3 @@
+interface:
+  display_name: "Subida do sinal digital HVAC"
+  short_description: "Passo interno do fluxo de cálculo de automação"

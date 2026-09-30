@@ -1,0 +1,3 @@
+interface:
+  display_name: "Continuar eletrocalha entre pavimentos"
+  short_description: "Passo interno do fluxo de cálculo de automação"

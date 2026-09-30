@@ -1,0 +1,3 @@
+interface:
+  display_name: "Orquestrador de Cabos de Automação"
+  short_description: "Coordena os 18 passos e checkpoints"

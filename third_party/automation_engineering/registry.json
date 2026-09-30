@@ -1,0 +1,53 @@
+{
+  "policy": "Linked upstream dependencies for internal use; review licenses before vendoring or redistribution.",
+  "repositories": [
+    {
+      "repo": "sympy/sympy",
+      "use": "symbolic mathematics"
+    },
+    {
+      "repo": "scipy/scipy",
+      "use": "scientific computing"
+    },
+    {
+      "repo": "hgrecco/pint",
+      "use": "engineering units"
+    },
+    {
+      "repo": "networkx/networkx",
+      "use": "route graphs"
+    },
+    {
+      "repo": "shapely/shapely",
+      "use": "2D geometry"
+    },
+    {
+      "repo": "opencv/opencv",
+      "use": "image processing"
+    },
+    {
+      "repo": "LibreDWG/libredwg",
+      "use": "DWG"
+    },
+    {
+      "repo": "LibreCAD/LibreCAD",
+      "use": "2D CAD/DXF"
+    },
+    {
+      "repo": "mozman/ezdxf",
+      "use": "DXF"
+    },
+    {
+      "repo": "pymupdf/PyMuPDF",
+      "use": "PDF; review license"
+    },
+    {
+      "repo": "jsvine/pdfplumber",
+      "use": "PDF extraction"
+    },
+    {
+      "repo": "ocrmypdf/OCRmyPDF",
+      "use": "OCR"
+    }
+  ]
+}
