@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 26
-  last_sync_at: '2026-09-30T17:45:00-03:00'
+  sync_revision: 27
+  last_sync_at: '2026-09-30T18:16:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -650,3 +650,22 @@ history:
     pode detectar erros, comparar ferramentas, pontuar e registrar sugestoes, criar testes e propor
     automacoes de forma autonoma, mas nao pode promover dependencias, alterar Golden Rules, limpar HOLD,
     modificar estado congelado ou aprovar emissao sem HUMAN GATE.
+
+- revision: 27
+  at: '2026-09-30T18:16:00-03:00'
+  actor: user+assistant
+  event: LI_FIRST_GATEWAY_REBUILD_R05
+  summary: >-
+    Correcao metodologica aplicada apos erro de sequenciamento. A partir deste ponto,
+    nenhuma imagem PN pode ser gerada antes da LI/BOM vigente, capacidade de comunicacao,
+    carga, layout real e dimensoes H/W/D estarem congelados. PN-AUT-001 R05 candidate foi
+    reconstruido com 3 gateways IRT-MED-Mod, limite de projeto/fornecedor de 12 unidades
+    internas por gateway, capacidade instalada 36 para 32 unidades (distribuicao 12+12+8),
+    3 interfaces Siemens CM PtP RS232 HF, 32 IRT-Bus-Mod de campo e 1 CM PtP RS422/485 HF
+    para VFD-01/VFD-02 conforme recorte de LI fornecido pelo usuario. A referencia oficial
+    IRTrans declara ate 15 Bus Modules por Mediacontroller; o limite mais restritivo de 12
+    do projeto governa. O IRT-MED-Mod requer 8-16 Vcc e, como o barramento UPS e 24 Vcc,
+    a conversao 24->12 Vcc deve ser dimensionada antes de fechar carga/UPS/termica.
+    Gabinete 1200x800x300 permanece somente candidato: a adicao dos gateways nao autoriza
+    aumento automatico; executar layout completo em escala real com 20% de reserva fisica.
+    Imagem MODEL 001 permanece bloqueada ate o congelamento da LI e do layout.
