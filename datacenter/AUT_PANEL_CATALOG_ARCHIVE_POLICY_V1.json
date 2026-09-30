@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "AUT-PANEL-CATALOG-ARCHIVE-POLICY-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "purpose": "Govern controlled copies of manufacturer catalogs/manuals/datasheets used by projects.",
+  "storage": {
+    "library_pattern": "datacenter/catalogs/<manufacturer>/<family_or_model>/<document_code>/<revision>/",
+    "project_reference_pattern": "datacenter/projects/<PROJECT_NUMBER>/references/",
+    "metadata_required": [
+      "manufacturer",
+      "family_or_model",
+      "document_type",
+      "title",
+      "document_code",
+      "revision",
+      "publication_date",
+      "language",
+      "official_url",
+      "consulted_at",
+      "sha256",
+      "lifecycle_status",
+      "project_application",
+      "pages_sections_used"
+    ],
+    "binary_copy_rule": "Store a controlled local copy when access, licensing and repository constraints permit. Otherwise store official URL, checksum when obtainable, metadata and retrieval status.",
+    "memory_rule": "Project memory stores pointers, hashes, extracted parameters and decisions; it does not duplicate full binary catalogs."
+  },
+  "validation": {
+    "official_source_preferred": true,
+    "distributor_copy_is_secondary": true,
+    "reverify_before_release": true,
+    "superseded_document_must_remain_in_history": true
+  }
+}
