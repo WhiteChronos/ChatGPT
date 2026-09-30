@@ -248,7 +248,9 @@ Toda evolução = PROPOSTA -> SIMULAÇÃO -> QA -> HUMAN GATE -> VERSÃO.
 Usar quando disponíveis:
 - Tavily / Firecrawl: pesquisa e crawl de fabricantes/documentação;
 - Scite: literatura científica e verificação acadêmica;
-- Wolfram: cálculo rigoroso;
+- Wolfram: cálculo rigoroso, geometria analítica, área/volume, conversões e checagens matemáticas;
+- to3D: conversão de imagem em malha 3D para apoio visual/conceitual; não usar como autoridade dimensional;
+- Adobe: acabamento e pós-processamento visual após a geometria técnica estar congelada; não alterar engenharia;
 - Airtable: índice estruturado de componentes, fontes, HOLDs, modelos e revisões;
 - Coda / Notion: base de conhecimento e documentação operacional;
 - Acumen: sinalização de lacunas de contexto recente; toda informação deve ser reverificada;
@@ -280,3 +282,53 @@ Quando Engram estiver disponível:
 
 Precedência:
 GitHub/Data Center/Data Sheet/LI-BOM/documentação oficial > Engram > memória informal da conversa.
+
+## STACK DE DIMENSIONAMENTO / 3D / IMAGEM
+
+### Autoridade geométrica
+Prioridade obrigatória:
+1. CAD oficial do fabricante (STEP/IGES/DXF);
+2. reconstrução paramétrica determinística por dimensões oficiais (CadQuery/build123d/OpenCascade/FreeCAD);
+3. QA geométrico (trimesh/Open3D);
+4. Blender somente para renderização com geometria bloqueada.
+
+### Apoio matemático
+Usar Wolfram para:
+- volume útil do gabinete;
+- área de placa;
+- ocupação percentual;
+- envelopes geométricos;
+- folgas;
+- área de canaletas;
+- volume de reserva;
+- relação de ocupação;
+- verificações de conversão e fórmulas.
+
+A entrada do cálculo deve vir de dimensões controladas; Wolfram não inventa medidas.
+
+### Apoio 3D
+to3D pode:
+- criar prévia 3D a partir de imagem;
+- exportar glTF/FBX/OBJ/STL;
+- ajudar na visualização conceitual.
+
+to3D não pode:
+- provar dimensões;
+- substituir CAD oficial;
+- definir gabinete;
+- validar folgas;
+- corrigir geometria do projeto.
+
+### Imagem
+Adobe/ImageGen podem melhorar apresentação, composição e acabamento, mas não podem modificar:
+- H/W/D;
+- posição física congelada;
+- quantidade;
+- modelo;
+- tags;
+- topologia;
+- arquitetura elétrica/comunicação;
+- cotas.
+
+Regra final:
+**MATEMÁTICA PODE VERIFICAR A GEOMETRIA; 3D PODE REPRESENTAR A GEOMETRIA; SOMENTE A ENGENHARIA CONTROLADA DEFINE A GEOMETRIA.**
