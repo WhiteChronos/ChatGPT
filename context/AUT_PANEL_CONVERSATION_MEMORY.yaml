@@ -32,7 +32,7 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 27
+  sync_revision: 28
   last_sync_at: '2026-09-30T18:16:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
@@ -669,3 +669,9 @@ history:
     Gabinete 1200x800x300 permanece somente candidato: a adicao dos gateways nao autoriza
     aumento automatico; executar layout completo em escala real com 20% de reserva fisica.
     Imagem MODEL 001 permanece bloqueada ate o congelamento da LI e do layout.
+
+- revision: 28
+  at: '2026-09-30T18:25:00-03:00'
+  actor: user+assistant
+  event: R06_RECALCULATED_STATE
+  summary: 'Gateway power, 24 V load, UPS, battery and thermal capacity recalculated and closed. Enclosure 1200x800x300 is the current dimensional basis pending layout validation. Remaining external engineering hold: final IP66 proof of enclosure plus cooling assembly.'
