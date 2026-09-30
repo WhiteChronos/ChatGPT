@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "ENGRAM-MEMORY-POLICY-V1",
+  "status": "ACTIVE",
+  "role": "SUPPLEMENTAL_LONG_TERM_MEMORY",
+  "canonical_authority_order": [
+    "controlled project documents",
+    "GitHub Data Center",
+    "target Data Sheet",
+    "LI/BOM",
+    "deterministic calculations",
+    "official manufacturer/standard evidence",
+    "Engram supplemental memory",
+    "informal conversation recall"
+  ],
+  "allowed_content": [
+    "non-sensitive project context summaries",
+    "user-approved engineering decisions",
+    "confirmed errors and root causes",
+    "methodology lessons",
+    "workflow milestones",
+    "links/pointers to canonical GitHub artifacts"
+  ],
+  "forbidden_content": [
+    "credentials",
+    "API keys",
+    "passwords",
+    "secrets",
+    "sensitive personal data",
+    "unverified engineering claims promoted as facts"
+  ],
+  "read_policy": [
+    "Search Engram by PANEL_ID/project before resuming long-running work when prior context may matter.",
+    "Reconcile retrieved memory against canonical GitHub files before using it.",
+    "If Engram conflicts with canonical project files, canonical project files win and the conflict must be logged."
+  ],
+  "write_policy": [
+    "Write only concise non-sensitive summaries after significant project milestones or confirmed methodological learning.",
+    "Store pointers to canonical artifacts rather than duplicating large technical records.",
+    "A successful Engram write does not replace GitHub memory synchronization."
+  ],
+  "failure_policy": "If Engram is unavailable or a write is blocked by platform security, continue with GitHub canonical memory and deterministic gates. Never weaken release control.",
+  "current_connection_check": {
+    "date": "2026-09-30",
+    "status": "CONNECTED",
+    "write_test": "BLOCKED_BY_OPENAI_SECURITY_POLICY",
+    "consequence": "Integration is configured, but no Engram write is claimed until a write succeeds."
+  }
+}
