@@ -38,9 +38,20 @@
     "canonical_audit": [
       "GitHub",
       "Codex"
+    ],
+    "math_geometry": [
+      "Wolfram"
+    ],
+    "visual_3d_preview": [
+      "to3D"
+    ],
+    "image_postprocess": [
+      "Adobe",
+      "native ImageGen"
     ]
   },
   "authority_rule": "Plugins are support tools. Official project/manufacturer/standard evidence remains authoritative.",
   "evolution_mode": "PROPOSAL_ONLY_HUMAN_GATE",
-  "release_rule": "No project artifact may be released from a stale or unresolved cross-artifact state."
+  "release_rule": "No project artifact may be released from a stale or unresolved cross-artifact state.",
+  "geometry_authority_rule": "For dimensional engineering, use manufacturer CAD or deterministic parametric geometry. to3D/ImageGen/Adobe are downstream visualization aids only."
 }
