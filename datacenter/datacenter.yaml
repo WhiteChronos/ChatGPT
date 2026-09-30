@@ -54,6 +54,15 @@ canonical_sources:
   step4_li_load_prompt: prompts/PROMPT_STEP4_LI_LOAD_V1.md
   step4_li_load_memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
   step4_li_load_skill: skills/aut-panel-li-load-quantification/SKILL.md
+  step5_pn_image_fidelity_control: datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json
+  step5_pn_image_fidelity_prompt: prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md
+  step5_pn_image_fidelity_memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
+  step5_visual_reference_registry: datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json
+  step5_pn_image_fidelity_skill: skills/aut-panel-pn-image-fidelity/SKILL.md
+  step6_engineering_image_document_control: datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json
+  step6_engineering_image_document_prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
+  step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
+  step6_engineering_image_document_skill: skills/aut-panel-image-document/SKILL.md
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   aut_panel_plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
