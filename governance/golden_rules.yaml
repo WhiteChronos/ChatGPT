@@ -318,3 +318,36 @@ required_rules:
   name: Um PN por documento visual de engenharia
   severity_on_violation: REPROVADO
   rule: Cada PANEL_ID gera seu próprio conjunto de imagem física no Passo 5 e seu próprio documento visual de engenharia no Passo 6. Combinação de múltiplos painéis só pode ocorrer em artefato posterior explicitamente definido.
+
+- id: GR-103
+  name: Passo 7 é verificação e não correção
+  severity_on_violation: REPROVADO
+  rule: O Passo 7 não pode alterar geometria, enquadramento, cotas ou composição para obter aprovação. Deve apenas medir, comparar, reprovar/aprovar e retornar a falha ao Passo 4, 5 ou 6 conforme a causa.
+- id: GR-104
+  name: Proporção ortográfica deve concordar com H W D reais
+  severity_on_violation: REPROVADO
+  rule: Em vistas ortográficas, a razão em pixels da bbox do painel deve concordar com a razão física correspondente W/H ou D/H dentro da tolerância congelada do projeto.
+- id: GR-105
+  name: Escala px por mm comum nas vistas dimensionais
+  severity_on_violation: REPROVADO
+  rule: Todas as vistas ortográficas dimensionais devem preservar uma escala comum em pixels por milímetro nos dois eixos e entre vistas. Escala independente para enquadrar ou fazer caber é proibida.
+- id: GR-106
+  name: Vista 3/4 é validada por câmera e reprojeção
+  severity_on_violation: HOLD
+  rule: A fidelidade geométrica de vista 3/4 ou perspectiva deve ser verificada pela relação câmera-modelo, usando matriz de projeção e landmarks 3D/2D ou equivalente determinístico. Comprimento aparente em perspectiva não pode ser usado como medida.
+- id: GR-107
+  name: Enquadramento final sem clipping
+  severity_on_violation: REPROVADO
+  rule: Nenhum bloco obrigatório, vista, cota, legenda ou diagrama pode ultrapassar ou ser recortado pelo canvas final. Margens mínimas e regras de centralização declaradas devem ser verificadas matematicamente.
+- id: GR-108
+  name: Cotas finais são comparadas diretamente ao dado controlado
+  severity_on_violation: REPROVADO
+  rule: Textos de H, W e D da imagem final devem ser iguais aos valores controlados para a revisão. OCR ou medição do raster nunca substitui o manifest/Data Sheet como autoridade dimensional.
+- id: GR-109
+  name: Regressão visual é camada secundária
+  severity_on_violation: HOLD
+  rule: SSIM, perceptual hash, edge overlap e outras métricas de similaridade podem detectar anomalias, mas não podem aprovar uma imagem que falhou em geometria, escala, câmera, dimensões ou paridade de revisão.
+- id: GR-110
+  name: Tolerâncias de QA visual são versionadas
+  severity_on_violation: REPROVADO
+  rule: Tolerâncias de aspect ratio, px/mm, reprojeção, dimensão e enquadramento devem ser registradas por revisão. É proibido afrouxar uma tolerância congelada apenas para obter PASS.
