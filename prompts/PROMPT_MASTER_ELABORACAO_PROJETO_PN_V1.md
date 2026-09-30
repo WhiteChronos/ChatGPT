@@ -16,7 +16,7 @@ Nunca usar imagem, memória informal ou painel anterior para sobrescrever dados 
 
 1. Carregar Golden Rules, pipeline, Data Center, memória metodológica, registros de plugins e controles de evolução.
 2. Verificar se o PROJECT_NUMBER já existe no repositório e carregar seu histórico quando aplicável.
-3. Não iniciar engenharia detalhada do painel antes do fechamento das ETAPAS 1, 2 e 3.
+3. Não iniciar a LI/Carga antes do fechamento das ETAPAS 1, 2 e 3; não iniciar layout/imagem antes do fechamento da ETAPA 4.
 
 ## ETAPA 1 — LEVANTAMENTO DOCUMENTAL + NÚMERO DO PROJETO + QUANTIDADE DE PAINÉIS
 
@@ -285,135 +285,151 @@ Estados de bloqueio:
 Regra:
 **PESQUISAR MAIS, PERGUNTAR MENOS, NÃO ASSUMIR. ARQUIVAR A EVIDÊNCIA, NÃO SOMENTE A RESPOSTA.**
 
-## ETAPA 4 — PESQUISA TÉCNICA
+## ETAPA 4 — LISTA DE MATERIAIS + CARGA POR PN
 
-Para cada item:
-1. localizar fabricante oficial;
-2. localizar modelo/família;
-3. localizar manual/datasheet/CAD;
-4. verificar lifecycle;
-5. verificar alimentação;
-6. verificar consumo;
-7. verificar dimensões;
-8. verificar montagem;
-9. verificar interfaces;
-10. verificar capacidade máxima;
-11. registrar documento, revisão, página/seção, link, data e aplicação no projeto.
+Carregar obrigatoriamente:
+- `datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json`;
+- `prompts/PROMPT_STEP4_LI_LOAD_V1.md`;
+- `memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml`;
+- `skills/aut-panel-li-load-quantification/SKILL.md`.
 
-Usar primeiro fabricante oficial. Plugins de pesquisa servem para descoberta e coleta, não como autoridade final.
+### 4.1 Saída única do passo
 
-## ETAPA 5 — ARQUITETURA DE AUTOMAÇÃO
+Criar um único workbook do projeto.
 
-Criar inventário de endpoints.
+Para cada PANEL_ID criar exatamente:
+- `<PANEL_ID>_MATERIAIS`;
+- `<PANEL_ID>_CARGA`.
 
-Para cada gateway/interface distinguir:
-- quantidade de conectores físicos;
-- quantidade de buses;
-- quantidade de dispositivos por bus;
-- quantidade de endereços;
-- quantidade máxima de unidades internas;
-- quantidade máxima de unidades externas/sistemas;
-- protocolos;
-- alimentação;
-- topologia permitida.
+Para N painéis devem existir exatamente 2N abas.
 
-Nunca chamar limite de endereços de "portas" sem confirmar a natureza do limite.
+Não criar capa, QA, referências, arquitetura, memória, controle ou abas ocultas no workbook emitido.
 
-Criar tabela:
-ORIGEM -> INTERFACE -> REDE/BUS -> GATEWAY -> EQUIPAMENTOS -> QUANTIDADE -> CAPACIDADE -> UTILIZAÇÃO -> RESERVA.
+### 4.2 Engenharia necessária para a LI
 
-Se quantidade requerida > capacidade: REPROVADO/HOLD até redimensionar a arquitetura.
+Dentro do Passo 4, executar antes da emissão:
+1. pesquisa técnica dos fabricantes e fornecedores;
+2. fechamento da arquitetura necessária para quantificar componentes;
+3. inventário I/O/comunicação e endpoints;
+4. seleção de componentes e acessórios;
+5. grafo de conexões;
+6. carga elétrica por PN;
+7. geometria suficiente para medir materiais lineares;
+8. cadeia completa de montagem;
+9. quantitativo matemático;
+10. QA de paridade.
 
-## ETAPA 6 — I/O E COMUNICAÇÃO
+Esses subpassos existem para gerar a LI/Carga correta; não criam abas adicionais.
 
-1. Elaborar matriz I/O.
-2. Elaborar matriz de comunicação.
-3. Mapear todos os pontos ao PLC/gateway.
-4. Verificar canais e 20% de reserva quando essa premissa estiver vigente.
-5. Verificar módulos, BaseUnits, interfaces e acessórios.
-6. Fechar protocolos e endereçamento.
-7. Reconciliar I/O com LI/BOM.
+### 4.3 Materiais
 
-## ETAPA 7 — SELEÇÃO DE COMPONENTES
-
-Selecionar:
-- PLC/CPU;
-- I/O;
-- switch;
-- gateways;
-- fontes;
-- UPS;
-- baterias;
-- proteções;
-- DPS;
+A aba MATERIAIS deve conter todo item fisicamente consumido:
+- gabinete/placa/acessórios;
+- automação, I/O, rede e gateways;
+- fonte/UPS/bateria/conversores;
+- proteção/distribuição;
 - relés/interfaces;
-- bornes;
-- cabos;
-- gabinete;
+- bornes e todos os acessórios;
+- trilhos DIN;
+- canaletas/tampas/fittings;
+- fios internos com tipo, seção, cor e metragem;
+- PE/equipotencialização/trança de porta;
+- cabos de comunicação;
+- ferrules/ilhós/terminais/heat-shrink;
+- marcação;
+- prensa-cabos/tampões/passagens;
 - climatização;
-- instrumentos.
+- fixadores e kits;
+- qualquer peça exigida pelo fabricante para montagem correta.
 
-Exigir compatibilidade integral e documentação oficial.
+### 4.4 Quantificação matemática
 
-## ETAPA 8 — CARGA E DIMENSIONAMENTO ELÉTRICO
+Metragem interna deve vir de:
+`GRAFO DE CONEXÕES + LAYOUT REAL + ROTAS`.
 
-Calcular:
-- carga 24 Vcc;
-- carga CA;
-- reserva;
-- fonte;
-- UPS;
-- autonomia;
-- bateria;
-- Ib;
-- In;
-- Iz;
-- queda de tensão;
-- Icu versus Ik quando Ik estiver disponível;
-- DPS;
-- perdas térmicas;
-- corrente nominal do conjunto;
-- verificações aplicáveis de Icw/Ipk.
+Para cada condutor:
+`L_corte = L_rota + L_terminal_origem + L_terminal_destino + L_service_loop`.
 
-"A DO QUADRO" somente após fechamento do gate elétrico.
+Quantidade de compra só pode acrescentar margem de fabricação explicitamente parametrizada.
 
-## ETAPA 9 — LI/BOM
+Materiais lineares como trilho, canaleta, PE e cabos internos também devem ser medidos geometricamente.
 
-1. LI antes do desenho.
-2. Quantidades rastreáveis.
-3. Modelos exatos.
-4. Acessórios obrigatórios incluídos.
-5. Gateway dimensionado para a quantidade real de equipamentos.
-6. Mudança de quantidade/modelo cria nova revisão e invalida downstream.
+Bornes, jumpers, separadores, end stops, ferrules, terminais e marcadores devem ser derivados do grafo/plano de conexões.
 
-## ETAPA 10 — DIMENSIONAMENTO FÍSICO DO QUADRO
+### 4.5 Ferramentas
+
+Prioridade:
+- CAD/dimensões oficiais do fabricante;
+- QElectroTech para esquemas/conexões;
+- WireViz/QetWireManager para apoio à lista de fios;
+- NetworkX para integridade do grafo;
+- OR-Tools para otimização opcional de rotas;
+- FreeCAD/CadQuery/build123d/OpenCascade para geometria/medição;
+- Wolfram para conferência matemática de comprimento, área, volume, ocupação e carga;
+- Remote Desktop Commander para operar ferramentas locais autorizadas;
+- B&A Diagrams/tldraw/Miro apenas para revisão visual;
+- Tavily/Firecrawl para fabricante/fornecedor;
+- Scite/Consensus para suporte técnico/acadêmico.
+
+### 4.6 Links e fornecedores
+
+Cada item deve ter:
+- REF_ID;
+- link oficial do produto;
+- link oficial de datasheet/manual;
+- link de fornecedor/distribuidor autorizado quando disponível;
+- lifecycle/status.
+
+### 4.7 Carga
+
+A aba CARGA de cada PN deve registrar os equipamentos energizados daquele PN, com:
+- fabricante/modelo;
+- quantidade;
+- tensão;
+- corrente/potência;
+- duty/diversity apenas quando documentado;
+- carga bruta;
+- carga de projeto;
+- criticidade UPS;
+- perda térmica quando disponível;
+- REF_ID;
+- link oficial.
+
+### 4.8 Evidência de montagem
+
+Usar normas e estudos do Passo 3, manuais oficiais de instalação, catálogos, treinamentos oficiais e vídeos de montagem como apoio secundário.
+
+Vídeo não define corrente, seção, Icu, IP, capacidade ou requisito normativo.
+
+### 4.9 Gate
+
+Saídas:
+- LI_LOAD_WORKBOOK;
+- MATERIAL_QUANTITY_TRACE;
+- INTERNAL_WIRE_CUTLIST;
+- LOAD_CALCULATION_TRACE.
+
+Status:
+`STEP4_LI_LOAD_FROZEN`.
+
+Bloquear se houver quantidade sem base, metragem estimada sem rota, cadeia de acessórios incompleta, link/modelo divergente, carga sem rastreabilidade ou workbook com abas extras.
+
+## ETAPA 5 — DIMENSIONAMENTO FÍSICO DO QUADRO
+
+Usar a LI congelada do Passo 4 como entrada obrigatória.
 
 O tamanho do quadro é variável por projeto.
 
-Dimensionar a partir de:
-- componentes;
-- folgas;
-- canaletas;
-- trilhos;
-- bornes;
-- cabos;
-- raio de curvatura;
-- entrada/saída;
-- porta;
-- IHM;
-- UPS/baterias;
-- climatização;
-- manutenção;
-- reserva física.
+Dimensionar a partir de componentes, folgas, canaletas, trilhos, bornes, cabos, raio de curvatura, entrada/saída, porta, IHM, UPS/baterias, climatização, manutenção e reserva física.
 
 Selecionar gabinete real somente depois de provar capacidade.
 
 Nunca copiar H x W x D do MODEL 001 ou de outro PN.
 
-## ETAPA 11 — LAYOUT
+## ETAPA 6 — LAYOUT
 
 1. Uma escala em mm.
-2. Uma única instância física de cada item.
+2. Uma única instância física de cada item da LI.
 3. IHM somente na porta.
 4. Separação funcional.
 5. Acesso de manutenção.
@@ -422,70 +438,35 @@ Nunca copiar H x W x D do MODEL 001 ou de outro PN.
 8. Validar interferência porta x placa.
 9. Validar climatização e recortes.
 10. Validar reserva remanescente.
+11. Revalidar metragem interna se a rota física mudar.
 
-## ETAPA 12 — IMAGEM / MODEL 001
+Mudança de layout que altere metragem/quantidade retorna ao Passo 4 e gera nova revisão.
 
-Carregar obrigatoriamente:
-- PN_MODEL_001;
-- PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.
+## ETAPA 7 — IMAGEM / MODEL 001
 
-Gerar:
-- vista frontal externa;
-- vista frontal interna;
-- vista lateral 3/4;
-- legenda/dados;
-- arquitetura elétrica;
-- arquitetura de comunicação;
-- diagrama de comando;
-- dimensionamento do painel.
+Somente após STEP4_LI_LOAD_FROZEN e fechamento dimensional/layout.
 
-A cota lateral deve representar somente a profundidade real do painel-alvo.
+Carregar PN_MODEL_001 e PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.
 
-## ETAPA 13 — QA CRUZADO
+Gerar vistas, arquitetura elétrica, comunicação, comando, dimensionamento, legenda e dados usando a LI/Layout vigentes.
+
+## ETAPA 8 — QA CRUZADO
 
 Verificar:
-LI = BOM = CARGA = I/O = COMUNICAÇÃO = DATASHEET = LAYOUT = GEOMETRIA = IMAGEM.
+LI = CARGA = CONEXÕES = LAYOUT = GEOMETRIA = IMAGEM.
 
-Rejeitar:
-- dimensões desatualizadas;
-- gateway subdimensionado;
-- quantidade divergente;
-- protocolo inventado;
-- componente duplicado;
-- item sem fonte;
-- imagem com dado antigo.
+Rejeitar dimensões desatualizadas, gateway subdimensionado, quantidade divergente, protocolo inventado, componente duplicado, item sem fonte, metragem incompatível com rota ou imagem com dado antigo.
 
-## ETAPA 14 — MEMÓRIA E DATACENTER
+## ETAPA 9 — MEMÓRIA E DATACENTER
 
-Após todo marco:
-- registrar decisão;
-- registrar erro;
-- registrar solução;
-- registrar fonte;
-- registrar mudança de premissa;
-- registrar invalidadores;
-- atualizar memória do painel;
-- atualizar memória metodológica;
-- atualizar Data Center.
+Registrar decisão, erro, solução, fonte, mudança de premissa, invalidadores, parâmetros aprendidos, quantitativos validados e artefatos emitidos.
 
-## ETAPA 15 — EVOLUÇÃO CONTROLADA
+## ETAPA 10 — EVOLUÇÃO CONTROLADA
 
-O sistema pode:
-- detectar padrões de erro;
-- sugerir novos checks;
-- sugerir automações;
-- propor ferramentas;
-- propor novas regras;
-- propor testes de regressão.
+O sistema pode detectar padrões de erro, sugerir checks, automações, ferramentas, regras e testes.
 
-O sistema não pode:
-- alterar Golden Rules automaticamente;
-- aprovar engenharia automaticamente;
-- apagar HOLD;
-- promover fato sem evidência;
-- alterar revisão congelada sem controle.
-
-Toda evolução = PROPOSTA -> SIMULAÇÃO -> QA -> HUMAN GATE -> VERSÃO.
+Mudança bloqueada exige:
+PROPOSTA -> SIMULAÇÃO -> QA -> HUMAN GATE -> VERSÃO.
 
 ## PLUGINS / FERRAMENTAS
 
