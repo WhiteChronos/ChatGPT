@@ -8,6 +8,28 @@
 
 ---
 
+## 0. Divisão obrigatória em Passo 5 e Passo 6
+
+A elaboração visual foi dividida em duas etapas independentes e sequenciais:
+
+**Passo 5 — imagem física do PN**
+- um PANEL_ID por conjunto;
+- uma montagem 3D canônica;
+- mesma porta/tampa em todos os ângulos;
+- somente câmera e rotação rígida no eixo de dobradiça podem mudar;
+- sem legenda, arquiteturas, comando ou bloco documental final;
+- saída: STEP5_PN_IMAGE_FIDELITY_FROZEN.
+
+**Passo 6 — documento visual de engenharia**
+- reutiliza a imagem/fingerprint congelado do Passo 5;
+- adiciona legenda, dados, arquitetura elétrica, arquitetura de comunicação, diagrama de comando e dimensionamento;
+- não altera geometria;
+- canvas cresce e vistas dimensionais não encolhem;
+- cotas vêm de H/W/D controlados e nunca da medição do raster;
+- saída: STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN.
+
+Se o Passo 6 detectar erro físico, deve retornar ao Passo 5.
+
 ## 1. Objetivo
 
 Produzir imagens técnicas de painéis PN com aparência consistente, rastreabilidade de engenharia e fidelidade ao projeto, usando o **MODEL 001** como base de composição visual e documental.
