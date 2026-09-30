@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
+  "visual_model": "PN-IMAGE-MODEL-001",
+  "visual_directive": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
+  "skill_chain": [
+    "skills/aut-panel-bootstrap/SKILL.md",
+    "skills/aut-panel-source-research/SKILL.md",
+    "skills/aut-panel-component-selection/SKILL.md",
+    "skills/aut-panel-automation-io/SKILL.md",
+    "skills/aut-panel-electrical-sizing/SKILL.md",
+    "skills/aut-panel-layout/SKILL.md",
+    "skills/aut-panel-image-document/SKILL.md",
+    "skills/aut-panel-qa-release/SKILL.md",
+    "skills/aut-panel-learning-memory/SKILL.md"
+  ],
+  "plugin_capabilities": {
+    "web_research": [
+      "Tavily",
+      "Firecrawl"
+    ],
+    "current_context_gap_detection": [
+      "Acumen by Talarion"
+    ],
+    "academic": [
+      "Scite"
+    ],
+    "computation": [
+      "Wolfram"
+    ],
+    "structured_memory": [
+      "Airtable",
+      "Coda",
+      "Notion"
+    ],
+    "canonical_audit": [
+      "GitHub",
+      "Codex"
+    ]
+  },
+  "authority_rule": "Plugins are support tools. Official project/manufacturer/standard evidence remains authoritative.",
+  "evolution_mode": "PROPOSAL_ONLY_HUMAN_GATE",
+  "release_rule": "No project artifact may be released from a stale or unresolved cross-artifact state."
+}
