@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 29
-  last_sync_at: '2026-09-30T19:05:00-03:00'
+  sync_revision: 30
+  last_sync_at: '2026-09-30T19:34:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -74,6 +74,17 @@ mutable_state:
       question_policy: ask_only_after_docs_datacenter_memory_catalogs_manufacturer_norms
       ui_policy: VISUALIZE_WITH_COPYABLE_ANSWER_BLOCK
       learning_policy: reduce_questions_by_validated_parameter_reuse_not_assumption
+    normative_academic_review:
+      step: 3
+      control: datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json
+      prompt: prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md
+      memory: memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml
+      archive_policy: datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json
+      skill: skills/aut-panel-normative-academic-review/SKILL.md
+      output: [NORMATIVE_APPLICABILITY_MATRIX, ACADEMIC_EVIDENCE_MATRIX, BIBLIOGRAPHIC_REFERENCE_REGISTER, CONTROLLED_SOURCE_ARCHIVE_INDEX, NORMATIVE_CONFLICT_REGISTER, STEP3_REVIEW_SUMMARY, MEMORY_SYNC_RECORD]
+      pass_status: STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN
+      archive_rule: full_copy_only_when_permitted_otherwise_metadata_link_citation_summary_and_used_sections
+      memory_rule: pointers_hashes_extracted_rules_applicability_conclusions_not_full_binaries
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -706,3 +717,19 @@ history:
     permitido; memoria guarda ponteiro, hash, parametros extraidos e decisoes. Correcao de dado preserva
     historico, marca valor anterior SUPERSEDED e invalida downstream. Perguntas ao usuario permanecem no
     padrao Visualize com bloco final copiavel.
+
+- revision: 30
+  at: '2026-09-30T19:34:00-03:00'
+  actor: user+assistant
+  event: STEP3_NORMATIVE_ACADEMIC_BIBLIOGRAPHIC_REVIEW_CONSOLIDATED
+  summary: >-
+    Passo 3 consolidado como conferencia normativa, estudos academicos e referencias bibliograficas
+    de todos os assuntos efetivamente presentes no projeto. Para cada fonte devem ser registrados
+    REF_ID, numero/codigo, edicao, autores/organismo, DOI/ISBN/ISSN quando aplicavel, URL oficial,
+    data de consulta, paginas/secoes usadas, aplicabilidade, requisito/fato extraido e efeito no projeto.
+    Copias integrais sao arquivadas no Data Center quando o acesso e a licenca permitem; normas,
+    livros e artigos restritos permanecem com metadados, citacao, link oficial, resumo controlado e
+    trechos permitidos, salvo copia licenciada fornecida pelo usuario/projeto. A memoria nao duplica
+    binarios completos: guarda ponteiros, SHA-256, regras/parametros extraidos, decisoes de aplicabilidade,
+    conflitos e conclusoes. Criados control, prompt, memoria, politica de arquivo bibliografico e skill
+    dedicada. Gate final: STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN.
