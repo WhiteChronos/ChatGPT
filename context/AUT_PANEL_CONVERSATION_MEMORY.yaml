@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 25
-  last_sync_at: '2026-09-30T17:31:00-03:00'
+  sync_revision: 26
+  last_sync_at: '2026-09-30T17:45:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -49,6 +49,15 @@ mutable_state:
     adobe: presentation_postprocess_only
     imagegen: illustrative_render_only
     deterministic_geometry_authority: manufacturer_CAD_or_parametric_geometry
+  autonomous_improvement_system:
+    control: datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json
+    backlog: improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json
+    open_source_registry: plugins/aut_panel_open_source_registry.json
+    plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+    open_source_skill: skills/aut-panel-open-source-toolchain/SKILL.md
+    improvement_skill: skills/aut-panel-autonomous-improvement/SKILL.md
+    autonomous_allowed: [observe, classify, compare, score, propose, sandbox, suggest_tests, refresh_non_authoritative_metadata]
+    human_gate_required: [core_dependency_promotion, golden_rule_change, frozen_state_change, hold_clearance, release_approval]
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -626,3 +635,18 @@ history:
     mas nao possui autoridade dimensional; Adobe e ImageGen ficam restritos ao acabamento visual.
     Geometria de engenharia continua obrigatoriamente baseada em CAD oficial de fabricante ou
     reconstrucao parametrica deterministica validada em milimetros.
+
+- revision: 26
+  at: '2026-09-30T17:45:00-03:00'
+  actor: user+assistant
+  event: OPEN_SOURCE_PLUGIN_AUTONOMOUS_IMPROVEMENT_LAYER_ADDED
+  summary: >-
+    Integrada camada de plugins ChatGPT, repositorios open source e skills de evolucao controlada.
+    Registry open source foi expandido com FreeCAD, OCCT, CadQuery, build123d, trimesh, Open3D,
+    IfcOpenShell, Blender, pyRevit e frameworks de agentes como referencias. Registry de plugins
+    passou a registrar Wolfram, Scite, Consensus, Acumen, Tavily, Firecrawl, Notion, Coda, Airtable,
+    Engram, to3D, Adobe, Vercel, OpenAI Developers e o conector GitHub como capacidades de suporte.
+    Criadas skills aut-panel-open-source-toolchain e aut-panel-autonomous-improvement. O sistema
+    pode detectar erros, comparar ferramentas, pontuar e registrar sugestoes, criar testes e propor
+    automacoes de forma autonoma, mas nao pode promover dependencias, alterar Golden Rules, limpar HOLD,
+    modificar estado congelado ou aprovar emissao sem HUMAN GATE.
