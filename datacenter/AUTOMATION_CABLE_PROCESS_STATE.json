@@ -1,13 +1,13 @@
 {
-  "version": "0.16.0",
+  "version": "0.18.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
   "phase": "learning_user_method",
   "workflow": {
-    "current_step": 16,
-    "step_name": "interpret_digital_ac_signal",
+    "current_step": 18,
+    "step_name": "conduit_crossing_below",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
@@ -93,11 +93,23 @@
       "cable_as_taught": "1,0 mm + SH",
       "service": "digital signal for air-conditioning equipment",
       "rise_symbol": "continues same route to next-floor drawing"
+    },
+    "digital_ac_cabling": {
+      "topology": "cascade_return_to_panel",
+      "sequence": "panel -> AC equipment(s) -> final AC -> panel",
+      "different_from_hart": true
+    },
+    "conduit_crossing_rule": {
+      "meaning": "passes below other apparent conduit",
+      "route_continuity": true,
+      "terminates": false,
+      "branches": false,
+      "restarts": false
     }
   },
-  "last_checkpoint_id": "ACP-20260930-STEP16-016",
-  "last_completed_action": "Corrected rise association and captured digital AC signal notation",
-  "next_action": "Capture user Step 17",
+  "last_checkpoint_id": "ACP-20260930-STEP18-018",
+  "last_completed_action": "Captured digital cascade Step 17 and conduit-below crossing Step 18",
+  "next_action": "Capture user Step 19",
   "source_of_truth": "github",
   "status": "active"
 }
