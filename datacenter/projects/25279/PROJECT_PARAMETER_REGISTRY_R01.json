@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "project_number": "25279",
+  "panel_id": "PN-AUT-01",
+  "revision": "R01-STEP2",
+  "parameters": [
+    {
+      "parameter_id": "PAR-25279-001",
+      "name": "PROJECT_NUMBER",
+      "value": "25279",
+      "scope": "PROJECT",
+      "status": "USER_CONFIRMED",
+      "origin": "user"
+    },
+    {
+      "parameter_id": "PAR-25279-002",
+      "name": "PANEL_ID",
+      "value": "PN-AUT-01",
+      "scope": "PANEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user",
+      "supersedes": "PN-AUT-001 historical alias"
+    },
+    {
+      "parameter_id": "PAR-25279-003",
+      "name": "AI_USED",
+      "value": 56,
+      "unit": "channels",
+      "scope": "PANEL",
+      "status": "DOCUMENT_CONFIRMED",
+      "origin": "DOC-LI-702-R0"
+    },
+    {
+      "parameter_id": "PAR-25279-004",
+      "name": "AI_RESERVE_REQUIRED",
+      "value": 11,
+      "unit": "channels",
+      "scope": "PANEL",
+      "status": "DOCUMENT_CONFIRMED",
+      "origin": "DOC-LI-702-R0"
+    },
+    {
+      "parameter_id": "PAR-25279-005",
+      "name": "AI_REQUIRED_TOTAL",
+      "value": 67,
+      "unit": "channels",
+      "scope": "PANEL",
+      "status": "CALCULATED_VALIDATED",
+      "origin": "56+11"
+    },
+    {
+      "parameter_id": "PAR-25279-006",
+      "name": "TEMP_TRANSMITTER_QTY",
+      "value": 28,
+      "unit": "ea",
+      "scope": "PANEL",
+      "status": "DOCUMENT_CONFIRMED",
+      "origin": "DOC-LI-702-R0"
+    },
+    {
+      "parameter_id": "PAR-25279-007",
+      "name": "CO2_TRANSMITTER_QTY",
+      "value": 28,
+      "unit": "ea",
+      "scope": "PANEL",
+      "status": "DOCUMENT_CONFIRMED",
+      "origin": "DOC-LI-702-R0"
+    },
+    {
+      "parameter_id": "PAR-25279-008",
+      "name": "AI_MODULE",
+      "value": "6ES7134-6TD00-0CA1",
+      "scope": "EQUIPMENT_MODEL",
+      "status": "MANUFACTURER_CONFIRMED",
+      "origin": "Siemens official"
+    },
+    {
+      "parameter_id": "PAR-25279-009",
+      "name": "AI_MODULE_QTY",
+      "value": 17,
+      "unit": "ea",
+      "scope": "PANEL",
+      "status": "CALCULATED_VALIDATED",
+      "origin": "ceil(67/4)=17"
+    },
+    {
+      "parameter_id": "PAR-25279-010",
+      "name": "AI_PHYSICAL_CHANNELS",
+      "value": 68,
+      "unit": "channels",
+      "scope": "PANEL",
+      "status": "CALCULATED_VALIDATED",
+      "origin": "17*4"
+    },
+    {
+      "parameter_id": "PAR-25279-011",
+      "name": "PLC_CPU",
+      "value": "6ES7515-2AN03-0AB0",
+      "scope": "EQUIPMENT_MODEL",
+      "status": "MANUFACTURER_CONFIRMED",
+      "origin": "Siemens official"
+    },
+    {
+      "parameter_id": "PAR-25279-012",
+      "name": "HMI_MODEL",
+      "value": "HMIST6500",
+      "scope": "EQUIPMENT_MODEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user"
+    },
+    {
+      "parameter_id": "PAR-25279-013",
+      "name": "HMI_QTY",
+      "value": 1,
+      "unit": "ea",
+      "scope": "PANEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user"
+    },
+    {
+      "parameter_id": "PAR-25279-014",
+      "name": "LOCAL_MEDIA_CONVERTER",
+      "value": "SCALANCE XCM102 6GK5102-1GS00-2AC2",
+      "scope": "EQUIPMENT_MODEL",
+      "status": "MANUFACTURER_CONFIRMED",
+      "origin": "Siemens official"
+    },
+    {
+      "parameter_id": "PAR-25279-015",
+      "name": "LOCAL_MEDIA_CONVERTER_QTY",
+      "value": 1,
+      "unit": "ea",
+      "scope": "PANEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user requirement interpreted as one compact CAT6-to-fiber conversion device inside PN"
+    },
+    {
+      "parameter_id": "PAR-25279-016",
+      "name": "FIBER_SFP_MODEL",
+      "value": null,
+      "scope": "PANEL",
+      "status": "PENDING",
+      "origin": "DE drawings required",
+      "invalidator": "fiber type/distance/connector"
+    },
+    {
+      "parameter_id": "PAR-25279-017",
+      "name": "HVAC_GATEWAY_SELECTION",
+      "value": "FUNCTIONAL_PROVISIONAL",
+      "scope": "PANEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user"
+    },
+    {
+      "parameter_id": "PAR-25279-018",
+      "name": "POWER_TOPOLOGY",
+      "value": "220Vac -> AC/DC 24V -> DC-UPS -> protected 24Vdc bus",
+      "scope": "PANEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user"
+    },
+    {
+      "parameter_id": "PAR-25279-019",
+      "name": "RELAY_POLICY",
+      "value": "ONLY_VERIFIED_HARDWIRED_DO",
+      "scope": "PANEL",
+      "status": "USER_CONFIRMED",
+      "origin": "user"
+    },
+    {
+      "parameter_id": "PAR-25279-020",
+      "name": "CURRENT_DO_COUNT",
+      "value": 0,
+      "unit": "channels",
+      "scope": "PANEL",
+      "status": "DOCUMENT_CONFIRMED",
+      "origin": "DOC-LI-702-R0"
+    }
+  ]
+}
