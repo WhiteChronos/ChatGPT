@@ -261,3 +261,22 @@ Before physical panel sizing/layout/render, load:
 - `skills/aut-panel-li-load-quantification/SKILL.md`
 
 The issued workbook must contain exactly two sheets per PANEL_ID: MATERIALS and LOAD. All internal wiring and linear-material quantities must be derived from a validated connection graph and real layout routes. No image may be used as quantity authority.
+
+## Step 5 physical PN image fidelity
+Before any engineering-document composition, load:
+- `datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json`
+- `prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md`
+- `memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml`
+- `datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json`
+- `skills/aut-panel-pn-image-fidelity/SKILL.md`
+
+Every view of one PN/revision must derive from one canonical real-scale assembly. The same door object, local bounding box, hinge axis, component instances and H/W/D must survive all camera views.
+
+## Step 6 engineering image document
+After `STEP5_PN_IMAGE_FIDELITY_FROZEN`, load:
+- `datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json`
+- `prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md`
+- `memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml`
+- `skills/aut-panel-image-document/SKILL.md`
+
+Step 6 composes the frozen physical image with legend, panel data, electrical architecture, communication architecture, command diagram and dimensions. Grow the canvas; never scale down dimensional content to fit.
