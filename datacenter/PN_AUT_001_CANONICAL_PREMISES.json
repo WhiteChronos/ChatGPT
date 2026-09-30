@@ -16,5 +16,26 @@
     "rule": "Start every PN image elaboration from MODEL 001 document structure, but calculate and freeze the target panel enclosure/layout from its own engineering data before rendering.",
     "dimension_policy": "VARIABLE_BY_PROJECT_AND_INTERNAL_CONTENT",
     "do_not_inherit_pn_aut_001_dimensions": true
+  },
+  "current_panel_geometry": {
+    "source": "datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json",
+    "manufacturer": "Schneider Electric",
+    "model": "NSYCRN128300",
+    "height_mm": 1200,
+    "width_mm": 800,
+    "depth_mm": 300,
+    "status": "CURRENT_PROJECT_VALUE",
+    "stale_values_forbidden": [
+      "1800x800x300",
+      "800x600x300"
+    ]
+  },
+  "current_gateway_architecture": {
+    "status": "HOLD_REDESIGN",
+    "review": "datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json",
+    "indoor_units": 32,
+    "outdoor_condensing_units": 6,
+    "current_single_gateway_selection_valid": false,
+    "rule": "Gateway capacity must be checked against real HVAC endpoint/system counts before selection or render."
   }
 }
