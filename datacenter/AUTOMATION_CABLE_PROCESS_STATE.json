@@ -7,7 +7,7 @@
   "phase": "learning_user_method",
   "workflow": {
     "current_step": 13,
-    "step_name": "identify_hart_cable",
+    "step_name": "calculate_individual_hart_cables",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
@@ -58,11 +58,21 @@
         "manufacturer",
         "length_rule"
       ]
+    },
+    "hart_rule": {
+      "conduit_callout": "Ø1\" - 4-20mA + HART",
+      "conduit_size_inch": 1,
+      "signal": "4-20mA + HART",
+      "cable_allocation": "one cable per instrument/equipment",
+      "applicable_examples": [
+        "AT",
+        "TT"
+      ]
     }
   },
   "last_checkpoint_id": "ACP-20260930-STEP13-013",
-  "last_completed_action": "Captured HART cable notation, conduit size, signal type and AT/TT destinations",
-  "next_action": "Capture next cable calculation rule",
+  "last_completed_action": "Captured one-individual-cable-per-equipment rule for 4-20mA + HART",
+  "next_action": "Capture user Step 14",
   "source_of_truth": "github",
   "status": "active"
 }
