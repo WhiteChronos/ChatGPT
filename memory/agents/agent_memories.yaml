@@ -10,6 +10,7 @@ policy:
   step4_li_load_memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
   step5_pn_image_fidelity_memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
   step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
+  step7_final_image_verification_memory: memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   renderer_must_load_model_001: true
   renderer_must_load_image_elaboration_directive: true
