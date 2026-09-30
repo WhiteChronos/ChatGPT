@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "AUT-PANEL-PLUGIN-CAPABILITIES-V1",
+  "status": "ACTIVE",
+  "confirmed_on": "2026-09-30",
+  "policy": {
+    "engineering_authority": "Official project/manufacturer/standard evidence",
+    "plugin_role": "support_only",
+    "promotion_rule": "No plugin result becomes a released engineering fact without source validation and Data Center registration."
+  },
+  "plugins": [
+    {
+      "name": "Tavily",
+      "installed": true,
+      "role": [
+        "web search",
+        "manufacturer discovery",
+        "crawl planning"
+      ],
+      "engineering_use": "Find current official pages and documentation; preserve original URLs."
+    },
+    {
+      "name": "Firecrawl",
+      "installed": true,
+      "role": [
+        "page extraction",
+        "site crawl",
+        "technical documentation discovery"
+      ],
+      "engineering_use": "Extract manufacturer pages and documentation for controlled review."
+    },
+    {
+      "name": "Scite",
+      "installed": true,
+      "role": [
+        "academic literature",
+        "citation context"
+      ],
+      "engineering_use": "Support methodology and technical literature reviews; not primary source for manufacturer ratings."
+    },
+    {
+      "name": "Wolfram",
+      "installed": true,
+      "role": [
+        "calculation",
+        "verified mathematics"
+      ],
+      "engineering_use": "Independent calculation support for sizing, checks and formulas."
+    },
+    {
+      "name": "Airtable",
+      "installed": true,
+      "role": [
+        "structured memory",
+        "component registry",
+        "HOLD register",
+        "source index",
+        "revision tracking"
+      ],
+      "engineering_use": "Optional operational mirror/index; GitHub Data Center remains canonical."
+    },
+    {
+      "name": "Coda",
+      "installed": true,
+      "role": [
+        "structured project knowledge",
+        "tables",
+        "workflow tracking"
+      ],
+      "engineering_use": "Optional working knowledge layer."
+    },
+    {
+      "name": "Notion",
+      "installed": true,
+      "role": [
+        "knowledge capture",
+        "research documentation"
+      ],
+      "engineering_use": "Optional documentation layer; canonical project records stay in GitHub."
+    },
+    {
+      "name": "Acumen by Talarion",
+      "installed": true,
+      "role": [
+        "current-context gap detection",
+        "missing-information warnings"
+      ],
+      "engineering_use": "Advisory detector only. Every surfaced fact requires independent verification."
+    }
+  ],
+  "recommended_data_model": {
+    "component_table": [
+      "panel_id",
+      "tag",
+      "manufacturer",
+      "model",
+      "catalog_id",
+      "qty",
+      "status",
+      "datasheet_url",
+      "dimensions",
+      "power",
+      "protocol",
+      "lifecycle",
+      "verified_at"
+    ],
+    "source_table": [
+      "ref_id",
+      "manufacturer",
+      "document",
+      "revision",
+      "date",
+      "url",
+      "page_section",
+      "fact_used",
+      "validator_a",
+      "validator_b",
+      "reverified_at"
+    ],
+    "hold_table": [
+      "hold_id",
+      "panel_id",
+      "scope",
+      "reason",
+      "blocking",
+      "owner",
+      "next_action",
+      "status"
+    ],
+    "decision_table": [
+      "decision_id",
+      "panel_id",
+      "revision",
+      "old_value",
+      "new_value",
+      "source",
+      "date",
+      "downstream_invalidations"
+    ]
+  }
+}
