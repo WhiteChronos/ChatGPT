@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "panel_id": "PN-AUT-001",
+  "revision_basis": "R06-ENGINEERING",
+  "consulted_on": "2026-09-30",
+  "references": [
+    {
+      "ref_id": "REF-R06-001",
+      "manufacturer": "IRTrans GmbH",
+      "model_family": "IRTrans Mediacontroller / Bus Module",
+      "type": "Official users manual",
+      "title": "Installation and Operation IRTrans - English",
+      "official_url": "http://www.irtrans.de/download/Docs/Installation%20und%20Bedienung%20IRTrans_EN-A5.pdf",
+      "facts_used": [
+        "3-wire bus power supply: about 50 mA for each IRTrans connected to the bus",
+        "Mediacontroller external supply: 8-16 Vdc, about 100 mA"
+      ],
+      "application": "Gateway 12 Vdc load calculation"
+    },
+    {
+      "ref_id": "REF-R06-002",
+      "manufacturer": "IRTrans GmbH",
+      "model_family": "IRT-MED-Mod",
+      "type": "Official technical page",
+      "title": "IRTrans Mediacontroller",
+      "official_url": "http://www.irtrans.de/en/technicalinfo/mediacontroller.php",
+      "facts_used": [
+        "72 x 50 x 15 mm case",
+        "up to 15 IRTrans Bus Modules per Mediacontroller"
+      ],
+      "application": "Gateway capacity and physical layout"
+    },
+    {
+      "ref_id": "REF-R06-003",
+      "manufacturer": "Phoenix Contact",
+      "model": "1066704",
+      "type": "Official product page",
+      "title": "QUINT4-PS/12-24DC/5-15DC/2.5/PT",
+      "official_url": "https://www.phoenixcontact.com/en-pc/products/dc-dc-converters-quint4-ps-12-24dc-5-15dc-25-pt-1066704",
+      "facts_used": [
+        "12/24 Vdc input",
+        "12 Vdc nominal output",
+        "2.5 A / 30 W nominal output",
+        "92.2% typical efficiency at 12 Vdc",
+        "max nominal-load loss <2.7 W",
+        "22.5 x 106 x 90 mm"
+      ],
+      "application": "Central 24->12 Vdc gateway converter selection"
+    },
+    {
+      "ref_id": "REF-R06-004",
+      "manufacturer": "ADEL System",
+      "model": "CBI2420A",
+      "type": "Official datasheet",
+      "title": "CBI2420A Data Sheet R40",
+      "official_url": "https://adelsystem.com/hubfs/CBI2420A%20Data%20sheet%20_R40.pdf?hsLang=en",
+      "facts_used": [
+        "24 Vdc 20 A continuous output",
+        "25 A power boost for 4 minutes",
+        "48 W maximum dissipation at max load",
+        "150 x 115 x 135 mm",
+        "30 minute selectable buffering interval"
+      ],
+      "application": "UPS capacity and thermal calculation"
+    },
+    {
+      "ref_id": "REF-R06-005",
+      "manufacturer": "Siemens",
+      "model": "6ES7541-1AD01-0AB0",
+      "type": "Official technical data",
+      "title": "CM PtP RS232 HF",
+      "official_url": "https://support.industry.siemens.com/cs/mdm/109973090",
+      "facts_used": [
+        "35 mm module width",
+        "50 mA rated current from backplane",
+        "0.75 W backplane power basis"
+      ],
+      "application": "Three gateway serial communication modules"
+    },
+    {
+      "ref_id": "REF-R06-006",
+      "manufacturer": "Siemens",
+      "model": "6ES7541-1AB01-0AB0",
+      "type": "Official datasheet",
+      "title": "CM PtP RS422/485 HF",
+      "official_url": "https://support.industry.siemens.com/teddatasheet/?caller=SIOS&format=pdf&language=en&mlfbs=6ES7541-1AB01-0AB0",
+      "facts_used": [
+        "43 mA rated current from backplane",
+        "0.65 W backplane power",
+        "0.6 W typical power loss"
+      ],
+      "application": "VFD communication module"
+    },
+    {
+      "ref_id": "REF-R06-007",
+      "manufacturer": "GS Yuasa",
+      "model": "NP24-12IFR",
+      "type": "Official technical datasheet",
+      "title": "Yuasa NP24-12IFR 12V 24Ah",
+      "official_url": "https://www.yuasa.com/uk/datasheet/index/download/?sku=NP24-12%2FI%2FFR%2FBox",
+      "facts_used": [
+        "24 Ah 20-hour capacity",
+        "166 x 175 x 125 mm",
+        "maximum discharge current ratings"
+      ],
+      "application": "Battery autonomy check"
+    }
+  ],
+  "calculation_summary": {
+    "gateway_12v_raw_a": 1.9,
+    "gateway_12v_with_20pct_a": 2.28,
+    "gateway_12v_with_20pct_w": 27.36,
+    "selected_converter_output_a": 2.5,
+    "total_24v_raw_a": 16.49337,
+    "total_24v_design_a_with_20pct": 19.79204,
+    "ups_continuous_a": 20,
+    "battery_ah_30min": 9.89602,
+    "battery_ah_with_additional_20pct_aging": 11.87523,
+    "selected_battery_ah": 24,
+    "thermal_raw_w": 116.9,
+    "thermal_with_20pct_w": 140.28,
+    "cooling_capacity_basis_w": 240
+  }
+}
