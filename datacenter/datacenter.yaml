@@ -44,6 +44,10 @@ canonical_sources:
   aut_panel_project_elaboration_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
   aut_panel_plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
   aut_panel_method_evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
+  autonomous_improvement_control: datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json
+  autonomous_improvement_backlog: improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json
+  open_source_toolchain_skill: skills/aut-panel-open-source-toolchain/SKILL.md
+  autonomous_improvement_skill: skills/aut-panel-autonomous-improvement/SKILL.md
   engram_memory_policy: datacenter/ENGRAM_MEMORY_POLICY_V1.json
   pn_aut_001_project_control: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
   pn_aut_001_gateway_review: datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json
