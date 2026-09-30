@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 30
-  last_sync_at: '2026-09-30T19:34:00-03:00'
+  sync_revision: 31
+  last_sync_at: '2026-09-30T19:48:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -85,6 +85,18 @@ mutable_state:
       pass_status: STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN
       archive_rule: full_copy_only_when_permitted_otherwise_metadata_link_citation_summary_and_used_sections
       memory_rule: pointers_hashes_extracted_rules_applicability_conclusions_not_full_binaries
+    step4_li_load:
+      step: 4
+      control: datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json
+      prompt: prompts/PROMPT_STEP4_LI_LOAD_V1.md
+      memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
+      skill: skills/aut-panel-li-load-quantification/SKILL.md
+      workbook_rule: exactly_two_sheets_per_panel_materials_and_load
+      quantity_rule: connection_graph_plus_real_layout_geometry
+      internal_wire_rule: route_plus_termination_plus_service_loop_plus_explicit_allowance
+      output: [LI_LOAD_WORKBOOK, MATERIAL_QUANTITY_TRACE, INTERNAL_WIRE_CUTLIST, LOAD_CALCULATION_TRACE]
+      pass_status: STEP4_LI_LOAD_FROZEN
+      no_image_before_step4: true
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -733,3 +745,19 @@ history:
     binarios completos: guarda ponteiros, SHA-256, regras/parametros extraidos, decisoes de aplicabilidade,
     conflitos e conclusoes. Criados control, prompt, memoria, politica de arquivo bibliografico e skill
     dedicada. Gate final: STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN.
+
+- revision: 31
+  at: '2026-09-30T19:48:00-03:00'
+  actor: user+assistant
+  event: STEP4_LI_LOAD_MATERIAL_AND_WIRING_QUANTIFICATION_CONSOLIDATED
+  summary: >-
+    Passo 4 consolidado como Lista de Materiais + Carga por PN. O workbook possui exatamente duas abas
+    por painel, MATERIAIS e CARGA, e nenhuma outra aba. Todo item fisicamente usado na montagem deve ser
+    quantificado, incluindo acessorios, bornes, jumpers, trilhos, canaletas, fixadores, marcacao, prensa-cabos,
+    PE, cabos e fiacao interna. Metragens sao derivadas de grafo de conexoes + layout real + rota em milimetros,
+    com margem de fabricacao somente quando parametrizada. Criada skill aut-panel-li-load-quantification,
+    script deterministico de corte de fios, control/prompt/memoria do Passo 4 e Golden Rules GR-089..GR-094.
+    Toolchain de conexao inclui QElectroTech, WireViz, QetWireManager, NetworkX, OR-Tools, CAD parametrico e
+    Wolfram; plugins B&A Diagrams/tldraw/Miro ficam apenas como revisao visual e Remote Desktop Commander como
+    ponte para ferramentas locais autorizadas. Pesquisa de plugins nao encontrou substituto dedicado de
+    engenharia eletrica para QElectroTech/EPLAN/AutoCAD Electrical, portanto a metodologia usa stack governado.
