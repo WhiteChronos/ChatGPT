@@ -252,3 +252,12 @@ Before detailed panel engineering, load:
 - `skills/aut-panel-normative-academic-review/SKILL.md`
 
 The agent must distinguish normative applicability from technical relevance, archive permitted controlled copies in the Data Center, keep metadata/official links for restricted sources, and preserve only pointers/hashes/extracted knowledge in memory.
+
+## Step 4 LI and load quantification
+Before physical panel sizing/layout/render, load:
+- `datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json`
+- `prompts/PROMPT_STEP4_LI_LOAD_V1.md`
+- `memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml`
+- `skills/aut-panel-li-load-quantification/SKILL.md`
+
+The issued workbook must contain exactly two sheets per PANEL_ID: MATERIALS and LOAD. All internal wiring and linear-material quantities must be derived from a validated connection graph and real layout routes. No image may be used as quantity authority.
