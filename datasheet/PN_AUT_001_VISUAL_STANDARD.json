@@ -8,7 +8,7 @@
     "manifest": "datacenter/images/PN_MODEL_001.json",
     "status": "MANDATORY_BASELINE",
     "usage": "Mandatory document/visual structure for PN images; physical dimensions are always target-project specific.",
-    "side_view_dimension": "Show only the actual target-panel depth along the real lateral/depth axis; PN-AUT-001 example = 300 mm.",
+    "side_view_dimension": "Show only actual target-panel depth on the real lateral/depth axis; PN-AUT-001 current depth = 300 mm.",
     "required_sections": [
       "Vistas gerais",
       "Arquitetura eletrica",
@@ -25,10 +25,11 @@
       "freeze_point": "Selected enclosure and dimensions become authoritative only after target datasheet dimensional closure."
     },
     "pn_aut_001_instance_reference_mm": {
-      "height": 1800,
+      "height": 1200,
       "width": 800,
       "depth": 300
-    }
+    },
+    "dimension_conflict_resolution": "PN-AUT-001 current project enclosure is 1200x800x300 mm. Any 1800 mm height image is stale and must be regenerated."
   },
   "source_of_truth_precedence": [
     "Canonical project premises",
