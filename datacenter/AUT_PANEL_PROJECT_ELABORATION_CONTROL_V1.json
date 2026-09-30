@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.2",
+  "schema_version": "1.3",
   "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
@@ -7,6 +7,7 @@
   "visual_directive": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
   "skill_chain": [
     "skills/aut-panel-bootstrap/SKILL.md",
+    "skills/aut-panel-normative-academic-review/SKILL.md",
     "skills/aut-panel-source-research/SKILL.md",
     "skills/aut-panel-component-selection/SKILL.md",
     "skills/aut-panel-automation-io/SKILL.md",
@@ -84,5 +85,21 @@
     "no_scope_promotion_without_validation": true,
     "supersede_instead_of_overwrite": true,
     "invalidate_downstream_on_correction": true
+  },
+  "step_3": {
+    "control": "datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json",
+    "prompt": "prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md",
+    "memory": "memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml",
+    "archive_policy": "datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json",
+    "skill": "skills/aut-panel-normative-academic-review/SKILL.md",
+    "title": "Normative, academic and bibliographic evidence review",
+    "pass_status": "STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN",
+    "hold_statuses": [
+      "HOLD_NORMATIVE_CONFLICT",
+      "HOLD_NORMATIVE_EDITION",
+      "HOLD_APPLICABILITY_UNCERTAIN"
+    ],
+    "archive_rule": "Archive full controlled copies only when copying is permitted; otherwise retain metadata, official link/DOI/ISBN, citation, used sections, permitted excerpts and controlled summary.",
+    "memory_rule": "Memory stores pointers/hashes/extracted knowledge, not full binary documents."
   }
 }
