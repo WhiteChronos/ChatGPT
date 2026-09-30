@@ -163,3 +163,21 @@ Example:
 2 instruments served by the same 1-inch conduit -> 2 individual 4-20 mA + HART cables.
 
 Next action: capture Step 14 from the user.
+
+
+### Step 14 — Calculate each cable from panel to endpoint
+When many cables leave the automation panel, the common initial containment may be a cable tray. Along the route, the cable tray may branch into conduits that reach individual instruments/equipment.
+
+Taught rules:
+- Every cable starts at the automation panel.
+- Each equipment/instrument endpoint has its own cable.
+- For each cable, trace the full route from the panel to that endpoint.
+- A cable route may include shared cable-tray segments plus downstream conduit segments.
+- Shared cable-tray segments count once in the length of every cable that actually uses them.
+- After branching, add the specific downstream arrival path for that endpoint.
+- Total cable length is the sum of all individual panel-to-endpoint cable routes.
+- Physical containment quantity and cumulative cable quantity are different calculations.
+- For the current example, use drawing scale 1:50.
+- Do not add slack, termination allowance, reserve percentage or procurement rounding until explicitly taught.
+
+Next action: capture Step 15 from the user.
