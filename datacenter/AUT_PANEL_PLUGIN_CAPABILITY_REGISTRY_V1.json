@@ -6,7 +6,8 @@
   "policy": {
     "engineering_authority": "Official project/manufacturer/standard evidence",
     "plugin_role": "support_only",
-    "promotion_rule": "No plugin result becomes a released engineering fact without source validation and Data Center registration."
+    "promotion_rule": "No plugin result becomes a released engineering fact without source validation and Data Center registration.",
+    "engram_authority": "SUPPLEMENTAL_MEMORY_ONLY"
   },
   "plugins": [
     {
@@ -86,6 +87,18 @@
         "missing-information warnings"
       ],
       "engineering_use": "Advisory detector only. Every surfaced fact requires independent verification."
+    },
+    {
+      "name": "Engram",
+      "installed": true,
+      "role": [
+        "supplemental long-term memory",
+        "semantic retrieval of prior project context",
+        "cross-session recall"
+      ],
+      "engineering_use": "Store and retrieve non-sensitive project context, decisions and methodology snapshots. GitHub Data Center/Data Sheet/LI-BOM remain canonical engineering authority.",
+      "write_status": "CONNECTED_BUT_WRITE_TEST_BLOCKED_BY_OPENAI_SECURITY_POLICY_ON_2026-09-30",
+      "fail_safe_rule": "If Engram write/search is unavailable, continue using GitHub canonical memory and project files without weakening engineering gates."
     }
   ],
   "recommended_data_model": {
