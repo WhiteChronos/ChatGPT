@@ -1,5 +1,5 @@
 {
-  "registry_version": "1.2",
+  "registry_version": "1.3",
   "registry_id": "AUT-PANEL-OPEN-SOURCE-REGISTRY-V1",
   "discovered_at": "2026-09-30",
   "policy": {
@@ -266,6 +266,48 @@
       ],
       "status": "REFERENCE_ONLY",
       "archived": false
+    },
+    {
+      "repository": "qelectrotech/qelectrotech-source-mirror",
+      "role": [
+        "ELECTRICAL_SCHEMATIC_AUTHORING",
+        "CONNECTION_DOCUMENTATION",
+        "PANEL_WIRING_SUPPORT"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false,
+      "license": "GPL-2.0-or-later"
+    },
+    {
+      "repository": "qelectrotech/qelectrotech-elements",
+      "role": [
+        "ELECTRICAL_SYMBOL_LIBRARY",
+        "COMPONENT_ELEMENT_LIBRARY"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false
+    },
+    {
+      "repository": "Kliurka/QetWireManager",
+      "role": [
+        "QET_WIRE_MANAGEMENT",
+        "WIRE_LIST_SUPPORT",
+        "CONNECTION_TRACE"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repository": "wireviz/WireViz",
+      "role": [
+        "WIRE_HARNESS_DESCRIPTION",
+        "WIRE_LIST",
+        "CONNECTION_VISUALIZATION"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false,
+      "license": "GPL-3.0"
     }
   ],
   "excluded_from_new_core_dependency": [
@@ -279,5 +321,5 @@
     }
   ],
   "extended_toolchain_registry": "plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json",
-  "note": "Expanded with deterministic CAD/3D/BIM tooling and agent-framework references. Discovery/proposals may be autonomous; promotion into the core pipeline always requires pinning, license/security review, sandbox/regression validation and human approval."
+  "note": "Expanded for Step 4 with QElectroTech/QetWireManager/WireViz connection and wire-list tooling. Core production use still requires pin, security/license review, sandbox/regression and human gate."
 }
