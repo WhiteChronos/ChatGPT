@@ -41,6 +41,11 @@ contracts:
   project_intake_step1: datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json
   panel_definition_step2: datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json
   panel_definition_step2_prompt: prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md
+  step3_normative_academic_review: datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json
+  step3_normative_academic_prompt: prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md
+  step3_normative_academic_memory: memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml
+  bibliographic_archive_policy: datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json
+  step3_normative_academic_skill: skills/aut-panel-normative-academic-review/SKILL.md
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   plugin_capability_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
