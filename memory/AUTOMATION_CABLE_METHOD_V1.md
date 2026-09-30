@@ -27,3 +27,14 @@
 
 ## Governança
 Desenho/legenda são evidência primária. Regra não ensinada fica pendente. Toda ação substantiva gera checkpoint no GitHub.
+
+
+## Toolchain integrado
+- Adobe Acrobat: PDF/OCR e extração documental.
+- Wolfram: verificação matemática, de escala e de unidades; nunca substitui regra de engenharia.
+- tldraw: revisão visual/topológica de grafos, rotas, subidas, derivações e cascatas; nunca substitui DWG/DXF como fonte dimensional.
+- GitHub/Codex: memória persistente, versionamento, skills, agente, código e checkpoints.
+- Open source: SymPy, SciPy, Pint, NetworkX, Shapely, OpenCV, ezdxf, LibreCAD, LibreDWG, pdfplumber, OCRmyPDF e PyMuPDF conforme licença.
+
+### Pipeline
+Documento fonte -> interpretação visual -> grafo técnico -> cálculo determinístico -> verificação Wolfram -> revisão tldraw -> validação -> checkpoint GitHub.
