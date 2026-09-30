@@ -36,6 +36,10 @@ contracts:
   pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
   pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
   pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+  project_elaboration_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
+  project_elaboration_control: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
+  plugin_capability_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+  method_evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
   panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
