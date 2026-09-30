@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.5",
+  "schema_version": "1.6",
   "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
@@ -17,6 +17,7 @@
     "skills/aut-panel-pn-image-fidelity/SKILL.md",
     "skills/aut-panel-image-document/SKILL.md",
     "skills/aut-panel-qa-release/SKILL.md",
+    "skills/aut-panel-final-image-verification/SKILL.md",
     "skills/aut-panel-learning-memory/SKILL.md"
   ],
   "plugin_capabilities": {
@@ -55,7 +56,7 @@
   },
   "authority_rule": "Plugins are support tools. Official project/manufacturer/standard evidence remains authoritative.",
   "evolution_mode": "PROPOSAL_ONLY_HUMAN_GATE",
-  "release_rule": "No project visual artifact may be released unless Step 4 LI/load, Step 5 multiview image fidelity, and Step 6 engineering document parity all pass.",
+  "release_rule": "No project visual artifact may be released unless Step 4 LI/load, Step 5 physical multiview fidelity, Step 6 engineering document composition, and Step 7 final image verification all pass.",
   "geometry_authority_rule": "For dimensional engineering, use manufacturer CAD or deterministic parametric geometry. to3D/ImageGen/Adobe are downstream visualization aids only.",
   "step_1": {
     "control": "datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json",
@@ -132,5 +133,14 @@
     "model": "PN-IMAGE-MODEL-001",
     "pass_status": "STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN",
     "rule": "Compose Step 5 image with legend, panel data, electrical architecture, communication architecture, command diagram and dimensions using grow-only canvas."
+  },
+  "step_7": {
+    "control": "datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json",
+    "toolchain": "datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json",
+    "prompt": "prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md",
+    "memory": "memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml",
+    "skill": "skills/aut-panel-final-image-verification/SKILL.md",
+    "pass_status": "STEP7_FINAL_IMAGE_VERIFIED",
+    "rule": "Verify framing, proportions, common px/mm scale, H/W/D labels, multiview identity, camera reprojection and visual regression without repairing the image."
   }
 }
