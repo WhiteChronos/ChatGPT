@@ -242,3 +242,13 @@ Load when tool discovery, methodology improvement, repeated failures, plugin cha
 - `datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json`
 
 Autonomy is allowed for observation, comparison, scoring and proposal creation. Human approval is mandatory before changing locked engineering rules, frozen project state, core dependencies or release status.
+
+## Step 3 normative and academic review
+Before detailed panel engineering, load:
+- `datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json`
+- `prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md`
+- `memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml`
+- `datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json`
+- `skills/aut-panel-normative-academic-review/SKILL.md`
+
+The agent must distinguish normative applicability from technical relevance, archive permitted controlled copies in the Data Center, keep metadata/official links for restricted sources, and preserve only pointers/hashes/extracted knowledge in memory.
