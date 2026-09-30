@@ -171,6 +171,46 @@
       ],
       "engineering_use": "Primary auditable storage and change-control mechanism for project artifacts in this environment.",
       "authority": "CANONICAL_AUDIT_TOOL"
+    },
+    {
+      "name": "Remote Desktop Commander",
+      "installed": true,
+      "role": [
+        "authorized local engineering application bridge",
+        "file/terminal automation"
+      ],
+      "engineering_use": "Operate locally installed QElectroTech/FreeCAD/other authorized engineering tools when the user's connected machine provides them. Does not itself validate engineering.",
+      "authority": "EXECUTION_BRIDGE_ONLY"
+    },
+    {
+      "name": "B&A Diagrams",
+      "installed": true,
+      "role": [
+        "diagram review",
+        "architecture visualization"
+      ],
+      "engineering_use": "Review connection/topology concepts; not a source of quantities, conductor lengths or ratings.",
+      "authority": "REVIEW_VISUAL_ONLY"
+    },
+    {
+      "name": "tldraw",
+      "installed": true,
+      "role": [
+        "editable engineering review canvas",
+        "annotation"
+      ],
+      "engineering_use": "Review/annotate connection/layout concepts; not dimensional or quantity authority.",
+      "authority": "REVIEW_VISUAL_ONLY"
+    },
+    {
+      "name": "Miro",
+      "installed": true,
+      "role": [
+        "collaborative architecture review",
+        "tables and diagrams"
+      ],
+      "engineering_use": "Collaborative review of architecture and decisions; not quantity authority.",
+      "authority": "REVIEW_VISUAL_ONLY"
     }
   ],
   "recommended_data_model": {
@@ -271,5 +311,28 @@
     "modify_engineering_rules": "HUMAN_GATE_REQUIRED",
     "clear_hold": "FORBIDDEN_AUTONOMOUSLY",
     "release_approval": "FORBIDDEN_AUTONOMOUSLY"
+  },
+  "step4_li_load_stack": {
+    "calculation": [
+      "Wolfram"
+    ],
+    "local_engineering_bridge": [
+      "Remote Desktop Commander"
+    ],
+    "review_visuals": [
+      "B&A Diagrams",
+      "tldraw",
+      "Miro"
+    ],
+    "research": [
+      "Tavily",
+      "Firecrawl",
+      "Scite",
+      "Consensus"
+    ],
+    "canonical_storage": [
+      "GitHub Connector"
+    ],
+    "exact_electrical_connection_tooling": "No dedicated ChatGPT plugin found in current directory; governed QElectroTech/WireViz/QetWireManager open-source/local stack is used instead."
   }
 }
