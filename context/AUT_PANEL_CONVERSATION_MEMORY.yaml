@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 24
-  last_sync_at: '2026-09-30T17:20:00-03:00'
+  sync_revision: 25
+  last_sync_at: '2026-09-30T17:31:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -42,6 +42,13 @@ mutable_state:
     registry: datacenter/ENGRAM_MEMORY_POLICY_V1.json
     role: supplemental_long_term_memory
     canonical_authority: github_datacenter_datasheet_li_bom_official_sources
+  math_3d_image_toolchain:
+    registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+    wolfram: rigorous_math_volume_area_geometry_checks
+    to3d: conceptual_mesh_only_not_dimensional_authority
+    adobe: presentation_postprocess_only
+    imagegen: illustrative_render_only
+    deterministic_geometry_authority: manufacturer_CAD_or_parametric_geometry
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -608,3 +615,14 @@ history:
     Engram foi registrado como memoria persistente suplementar da metodologia AUT Panel.
     Toda informacao recuperada deve ser reconciliada com GitHub, Data Center, Data Sheet,
     LI/BOM e fontes oficiais antes de uso em engenharia.
+
+- revision: 25
+  at: '2026-09-30T17:31:00-03:00'
+  actor: user+assistant
+  event: MATH_3D_IMAGE_PLUGIN_STACK_REGISTERED
+  summary: >-
+    Registrado stack de apoio para dimensionamento, calculo de area/volume, modelo 3D e imagem.
+    Wolfram passa a ser apoio matematico rigoroso; to3D pode gerar malha conceitual a partir de imagem
+    mas nao possui autoridade dimensional; Adobe e ImageGen ficam restritos ao acabamento visual.
+    Geometria de engenharia continua obrigatoriamente baseada em CAD oficial de fabricante ou
+    reconstrucao parametrica deterministica validada em milimetros.
