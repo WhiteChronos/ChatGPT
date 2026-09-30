@@ -144,3 +144,22 @@ Keep these three attributes separate in the data model:
 Do not infer cable construction, pair count, conductor cross-section, shielding details, manufacturer, loop count, or length rule until the user teaches those items.
 
 Next action: capture the user's next cable-calculation rule.
+
+
+### Step 13 — Calculate individual 4-20 mA + HART cables
+Interpret drawing callouts such as `Ø1" - 4-20mA + HART` as:
+- conduit size: 1 inch;
+- signal type: 4-20 mA + HART;
+- cable allocation: one individual cable per instrument/equipment endpoint.
+
+Taught rules:
+- AT and TT instruments using this signal each receive their own individual cable.
+- If one conduit contains routes to two instruments, count two cables, one for each instrument.
+- Cable quantity is driven by the number of individual equipment/instrument endpoints, not merely by the number of conduits.
+- Each cable must later inherit the physical route from its endpoint back to the automation panel through the actual conduit/cable-tray path.
+- Do not yet invent cable construction, pair count, conductor section, shielding details, spare percentage, slack allowance or procurement length until taught.
+
+Example:
+2 instruments served by the same 1-inch conduit -> 2 individual 4-20 mA + HART cables.
+
+Next action: capture Step 14 from the user.
