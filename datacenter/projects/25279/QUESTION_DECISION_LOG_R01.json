@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "project_number": "25279",
+  "panel_id": "PN-AUT-01",
+  "revision": "R01-STEP2",
+  "questions": [
+    {
+      "question_id": "Q-25279-STEP2-001",
+      "topic": "DE drawings / fiber / instrument reconciliation",
+      "reason": "The user required instrument quantities to be aligned with LI-702 and DE drawings and the fiber point-to-point interface to match the project. LI-702 data is available in the Data Center, but the DE drawings themselves are not accessible in the current project files inspected.",
+      "already_known": {
+        "li_702": "56 used AI = 28 temperature + 28 CO2; 11 reserve; 67 required installed AI; DI/DO/AO=0",
+        "fiber_interface_family": "SCALANCE XCM102, one local RJ45-to-SFP converter",
+        "sfp_candidates": "multimode SFP992-1+ or single-mode SFP992-1LD"
+      },
+      "required_answer": "Provide/upload or identify the DE drawings used for PN-AUT-01. If the DE drawings do not state the fiber, specify single-mode or multimode, number of point-to-point fiber links, and approximate link distance.",
+      "impact": "Without DE reconciliation, Step 2 cannot be frozen and the Step 4 LI cannot be issued as final.",
+      "status": "OPEN_SINGLE_REQUIRED_USER_INPUT"
+    }
+  ],
+  "total_questions": 1
+}
