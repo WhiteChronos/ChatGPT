@@ -414,54 +414,211 @@ Status:
 
 Bloquear se houver quantidade sem base, metragem estimada sem rota, cadeia de acessórios incompleta, link/modelo divergente, carga sem rastreabilidade ou workbook com abas extras.
 
-## ETAPA 5 — DIMENSIONAMENTO FÍSICO DO QUADRO
+## ETAPA 5 — IMAGEM FÍSICA INDIVIDUAL E FIDELIDADE MULTIVISTA
 
-Usar a LI congelada do Passo 4 como entrada obrigatória.
+Pré-requisito:
+`STEP4_LI_LOAD_FROZEN`.
 
-O tamanho do quadro é variável por projeto.
+Carregar obrigatoriamente:
+- `datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json`;
+- `datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json`;
+- `prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md`;
+- `memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml`;
+- `skills/aut-panel-pn-image-fidelity/SKILL.md`.
 
-Dimensionar a partir de componentes, folgas, canaletas, trilhos, bornes, cabos, raio de curvatura, entrada/saída, porta, IHM, UPS/baterias, climatização, manutenção e reserva física.
+### 5.1 Ordem interna
 
-Selecionar gabinete real somente depois de provar capacidade.
+Antes de renderizar:
+1. carregar LI/Carga congeladas do Passo 4;
+2. fechar dimensões H/W/D próprias daquele PN;
+3. selecionar/validar gabinete real;
+4. criar layout físico em escala real;
+5. montar geometria canônica única em mm;
+6. validar porta/tampa, placa, trilhos, canaletas, componentes, folgas e profundidade;
+7. registrar ASSEMBLY_HASH;
+8. somente então renderizar as vistas.
 
-Nunca copiar H x W x D do MODEL 001 ou de outro PN.
+Se o layout alterar quantitativo ou metragem, retornar ao Passo 4.
 
-## ETAPA 6 — LAYOUT
+### 5.2 Uma única montagem
 
-1. Uma escala em mm.
-2. Uma única instância física de cada item da LI.
-3. IHM somente na porta.
-4. Separação funcional.
-5. Acesso de manutenção.
-6. Canaletas e bornes dimensionados.
-7. Validar profundidade.
-8. Validar interferência porta x placa.
-9. Validar climatização e recortes.
-10. Validar reserva remanescente.
-11. Revalidar metragem interna se a rota física mudar.
+Todas as vistas do mesmo PN/revisão devem vir da mesma montagem 3D.
 
-Mudança de layout que altere metragem/quantidade retorna ao Passo 4 e gera nova revisão.
+A porta/tampa é um único objeto rígido:
+- mesma largura;
+- mesma altura;
+- mesma espessura;
+- mesmos recortes;
+- mesma IHM;
+- mesmas dobradiças;
+- mesmas coordenadas locais.
 
-## ETAPA 7 — IMAGEM / MODEL 001
+Abrir/fechar a porta = rotação rígida no eixo de dobradiça congelado.
 
-Somente após STEP4_LI_LOAD_FROZEN e fechamento dimensional/layout.
+É proibido redesenhar ou redimensionar a tampa para outra vista.
 
-Carregar PN_MODEL_001 e PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.
+### 5.3 Dimensional
 
-Gerar vistas, arquitetura elétrica, comunicação, comando, dimensionamento, legenda e dados usando a LI/Layout vigentes.
+H/W/D vêm da engenharia do painel-alvo.
 
-## ETAPA 8 — QA CRUZADO
+Vistas dimensionais usam projeção ortográfica/calibrada.
+
+Vista 3/4:
+- preferir isométrica ortográfica;
+- perspectiva controlada é permitida apenas para realismo;
+- nunca inferir cotas pela perspectiva.
+
+### 5.4 Realismo e referências
+
+Usar como referência:
+- CAD e desenhos oficiais;
+- manuais de gabinete;
+- instruções de montagem;
+- referências de montagem/fiação de fabricantes;
+- normas e evidências do Passo 3;
+- referências acadêmicas/técnicas;
+- treinamentos oficiais;
+- vídeos de montagem como apoio secundário.
+
+Materiais, iluminação e sombra podem ser realistas, mas não podem alterar geometria.
+
+### 5.5 Ferramentas
+
+Geometria:
+manufacturer CAD -> FreeCAD/CadQuery/build123d/OpenCascade.
+
+QA:
+trimesh/Open3D + OpenCV; ImageHash apenas suplementar.
+
+Render:
+Blender após congelamento geométrico.
+
+Matemática:
+Wolfram para dimensões, transformações, área, volume e verificações.
+
+Plugins generativos:
+to3D/Adobe/ImageGen somente como apresentação.
+
+### 5.6 Saída
+
+Cada PN gera seu próprio conjunto:
+- CANONICAL_3D_ASSEMBLY_MANIFEST;
+- MULTIVIEW_RENDER_MANIFEST;
+- frontal fechada;
+- interna/porta aberta;
+- lateral/3-4;
+- corte de profundidade quando aplicável;
+- STEP5_MULTIVIEW_QA_REPORT.
+
+Status:
+`STEP5_PN_IMAGE_FIDELITY_FROZEN`.
+
+## ETAPA 6 — DOCUMENTO VISUAL DE ENGENHARIA DE CADA PN
+
+Pré-requisito:
+`STEP5_PN_IMAGE_FIDELITY_FROZEN`.
+
+Carregar:
+- `datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json`;
+- `prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md`;
+- `memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml`;
+- `skills/aut-panel-image-document/SKILL.md`;
+- `PN-IMAGE-MODEL-001`.
+
+### 6.1 Princípio
+
+O Passo 6 não recria o painel.
+
+Ele usa a imagem física validada no Passo 5 e monta o documento visual técnico.
+
+Se houver erro físico, voltar ao Passo 5.
+
+### 6.2 Blocos obrigatórios
+
+Para cada PN:
+- imagem física validada;
+- legenda dos principais componentes;
+- dados do quadro;
+- arquitetura elétrica;
+- arquitetura de comunicação;
+- diagrama de comando;
+- dimensionamento do painel.
+
+### 6.3 Canvas grow-only
+
+O tamanho do documento é consequência da engenharia.
+
+Nunca reduzir o painel, vista dimensional, diagrama ou tabela para caber.
+
+Processo:
+1. calcular tamanho nativo dos blocos;
+2. posicionar blocos;
+3. calcular bounding boxes;
+4. ampliar canvas;
+5. manter scale_x = scale_y = 1.0 nas vistas dimensionais.
+
+### 6.4 Dimensionamento
+
+Cotas vêm de valores H/W/D controlados.
+
+Nunca medir o raster para determinar dimensão.
+
+Nunca usar perspectiva para calcular profundidade.
+
+A cota lateral deve representar a profundidade real no eixo de profundidade.
+
+### 6.5 Diagramas
+
+Arquitetura elétrica:
+derivada da topologia de potência/carga validada.
+
+Arquitetura de comunicação:
+derivada do inventário de endpoints/protocolos/gateways validado.
+
+Diagrama de comando:
+derivado da lógica/I/O/comunicação aprovada.
+
+Preferir QElectroTech, SchemDraw/SVG, NetworkX/SVG e CairoSVG.
+
+Plugins de diagrama servem para revisão, não como autoridade.
+
+### 6.6 QA
 
 Verificar:
-LI = CARGA = CONEXÕES = LAYOUT = GEOMETRIA = IMAGEM.
+STEP5 fingerprint = imagem inserida;
+LI = instâncias físicas;
+H/W/D = cotas;
+carga = arquitetura elétrica;
+endpoints = comunicação;
+I/O/lógica = comando;
+nenhum bloco dimensional reduzido;
+canvas suficiente;
+legibilidade preservada.
 
-Rejeitar dimensões desatualizadas, gateway subdimensionado, quantidade divergente, protocolo inventado, componente duplicado, item sem fonte, metragem incompatível com rota ou imagem com dado antigo.
+Status:
+`STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`.
 
-## ETAPA 9 — MEMÓRIA E DATACENTER
+## ETAPA 7 — QA CRUZADO
 
-Registrar decisão, erro, solução, fonte, mudança de premissa, invalidadores, parâmetros aprendidos, quantitativos validados e artefatos emitidos.
+Verificar:
+LI = CARGA = CONEXÕES = GEOMETRIA = STEP5 = STEP6.
 
-## ETAPA 10 — EVOLUÇÃO CONTROLADA
+Rejeitar:
+- dimensão desatualizada;
+- porta/tampa diferente entre vistas;
+- escala por vista;
+- imagem física divergente da LI;
+- protocolo inventado;
+- componente duplicado;
+- cota derivada do raster;
+- bloco reduzido para caber;
+- diagrama incoerente com topologia controlada.
+
+## ETAPA 8 — MEMÓRIA E DATACENTER
+
+Registrar decisão, erro, solução, fonte, mudança de premissa, invalidadores, hashes geométricos, câmera, parâmetros aprendidos, quantitativos e artefatos emitidos.
+
+## ETAPA 9 — EVOLUÇÃO CONTROLADA
 
 O sistema pode detectar padrões de erro, sugerir checks, automações, ferramentas, regras e testes.
 
