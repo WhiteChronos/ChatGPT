@@ -1,14 +1,44 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
-  "phase": "foundation_and_persistence",
-  "last_checkpoint_id": "ACP-20260930-003800-001",
-  "last_completed_action": "Created automation-process-memory skill and persistence protocol",
-  "next_action": "Implement deterministic 24Vdc and 4-20mA calculation module with tests",
+  "phase": "foundation_persistence_and_tooling",
+  "last_checkpoint_id": "ACP-20260930-004600-002",
+  "last_completed_action": "Expanded skill with calculation, image, PDF and DWG/DXF/CAD tool routing",
+  "next_action": "Implement deterministic 24Vdc and 4-20mA calculation module with tests and optional Wolfram verification hooks",
   "source_of_truth": "github",
+  "tool_routing": {
+    "calculation": {
+      "primary": "deterministic_engineering_rules",
+      "verifier": "Wolfram_when_connected"
+    },
+    "pdf": {
+      "primary": "Adobe Acrobat",
+      "open_source": [
+        "pymupdf/PyMuPDF",
+        "jsvine/pdfplumber"
+      ]
+    },
+    "images": {
+      "primary": "built_in_vision",
+      "open_source": [
+        "opencv/opencv"
+      ]
+    },
+    "cad": {
+      "primary": "open_source_conversion_and_validation",
+      "repositories": [
+        "LibreDWG/libredwg",
+        "LibreCAD/LibreCAD"
+      ],
+      "dwg_plugin_found": false
+    },
+    "diagrams": {
+      "optional": "tldraw_when_connected"
+    }
+  },
   "secondary_memory_candidates": [
     "WhiteChronos/mem0",
     "WhiteChronos/graphiti",
@@ -23,7 +53,8 @@
     "ml_advisory_only",
     "automation_cables_scope",
     "checkpoint_every_substantive_action",
-    "preserve_provenance"
+    "preserve_provenance",
+    "tool_results_require_validation"
   ],
   "status": "active"
 }
