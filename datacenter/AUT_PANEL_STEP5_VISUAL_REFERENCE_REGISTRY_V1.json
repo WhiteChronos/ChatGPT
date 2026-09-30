@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "AUT-PANEL-STEP5-VISUAL-REFERENCE-REGISTRY-V1",
+  "status": "CONTROLLED_REFERENCE_LIBRARY",
+  "consulted_on": "2026-09-30",
+  "official_manufacturer_references": [
+    {
+      "ref_id": "VIS-REF-001",
+      "organization": "Schneider Electric",
+      "title": "PanelSeT SFN (Assembled Supply) and Main Accessories – Instruction Sheet",
+      "document_code": "PKR3506801",
+      "version": "02",
+      "url": "https://www.se.com/us/en/download/document/PKR3506801/",
+      "use": "Enclosure assembly/accessory realism and mounting sequence reference",
+      "authority": "MANUFACTURER_OFFICIAL"
+    },
+    {
+      "ref_id": "VIS-REF-002",
+      "organization": "Rittal",
+      "title": "Enclosure systems VX25, VX SE - technical documentation / installation variants",
+      "url": "https://www.rittal.com/imf3/none/3_6979/8604000____EN/",
+      "use": "Door/side-panel/hinge/enclosure construction and installation reference",
+      "authority": "MANUFACTURER_OFFICIAL"
+    },
+    {
+      "ref_id": "VIS-REF-003",
+      "organization": "nVent HOFFMAN",
+      "title": "Floor-standing enclosure mounting instructions",
+      "url": "https://www.nvent.com/sites/default/files/dam/floor-standing-mcf-mounting-instructions-document.pdf",
+      "use": "Enclosure panel/fastener/mounting realism reference",
+      "authority": "MANUFACTURER_OFFICIAL"
+    },
+    {
+      "ref_id": "VIS-REF-004",
+      "organization": "Phoenix Contact",
+      "title": "Control cabinet mounting and wiring",
+      "url": "https://www.phoenixcontact.com/en-us/industries/control-cabinet-building/mounting-and-wiring",
+      "use": "Control-cabinet assembly, wiring workflow and mounting process reference",
+      "authority": "MANUFACTURER_OFFICIAL"
+    },
+    {
+      "ref_id": "VIS-REF-005",
+      "organization": "Phoenix Contact",
+      "title": "Engineering in control cabinet building",
+      "url": "https://www.phoenixcontact.com/en-us/industries/control-cabinet-building/engineering",
+      "use": "Digital engineering/process-chain reference",
+      "authority": "MANUFACTURER_OFFICIAL"
+    }
+  ],
+  "open_source_references": [
+    {
+      "repository": "FreeCAD/FreeCAD",
+      "role": [
+        "PARAMETRIC_CAD",
+        "TECHDRAW",
+        "STEP_REVIEW"
+      ]
+    },
+    {
+      "repository": "CadQuery/cadquery",
+      "role": [
+        "PARAMETRIC_GEOMETRY",
+        "STEP_EXPORT"
+      ]
+    },
+    {
+      "repository": "gumyr/build123d",
+      "role": [
+        "PARAMETRIC_GEOMETRY"
+      ]
+    },
+    {
+      "repository": "Open-Cascade-SAS/OCCT",
+      "role": [
+        "SOLID_GEOMETRY_KERNEL"
+      ]
+    },
+    {
+      "repository": "mikedh/trimesh",
+      "role": [
+        "BOUNDING_BOX",
+        "COLLISION",
+        "SCENE_QA"
+      ]
+    },
+    {
+      "repository": "isl-org/Open3D",
+      "role": [
+        "3D_GEOMETRY_QA"
+      ]
+    },
+    {
+      "repository": "blender/blender",
+      "role": [
+        "LOCKED_GEOMETRY_RENDERING",
+        "CAMERA",
+        "MATERIALS",
+        "LIGHTING"
+      ]
+    },
+    {
+      "repository": "opencv/opencv",
+      "role": [
+        "VISUAL_REGRESSION",
+        "IMAGE_REGISTRATION"
+      ]
+    },
+    {
+      "repository": "JohannesBuchner/imagehash",
+      "role": [
+        "SUPPLEMENTARY_IMAGE_FINGERPRINT"
+      ]
+    },
+    {
+      "repository": "mozman/ezdxf",
+      "role": [
+        "DXF_INTEROP"
+      ]
+    },
+    {
+      "repository": "cdelker/schemdraw",
+      "role": [
+        "VECTOR_ENGINEERING_DIAGRAMS"
+      ]
+    },
+    {
+      "repository": "Kozea/CairoSVG",
+      "role": [
+        "SVG_RENDERING"
+      ]
+    }
+  ],
+  "reuse_rule": "References support fidelity/process only. Target-project documents, manufacturer CAD/dimensions, Step 4 LI/load, Step 5 canonical geometry and applicable standards remain authoritative."
+}
