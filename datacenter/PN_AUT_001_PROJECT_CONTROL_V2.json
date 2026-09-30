@@ -10,21 +10,41 @@
     "width_mm": 800,
     "depth_mm": 300,
     "source": "li/PN-AUT-001_LI_R03.json and generated R03 Excel",
-    "status": "CURRENT_PROJECT_VALUE",
+    "status": "CANDIDATE_REQUIRES_REAL_SCALE_LAYOUT_REVALIDATION",
     "conflict_resolution": "Any image showing 1800x800x300 for PN-AUT-001 is stale and invalidated."
   },
   "visual_reference": {
     "model_id": "PN-IMAGE-MODEL-001",
     "rule": "Use MODEL 001 composition but target dimensions from this project control/Data Sheet.",
-    "current_image_status": "INVALIDATED_BY_DIMENSION_CONFLICT_AND_GATEWAY_REVIEW"
+    "current_image_status": "BLOCKED_UNTIL_R05_LAYOUT_AND_DIMENSIONS_FROZEN"
   },
   "gateway_review": "datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json",
   "methodology": "datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json",
   "release_status": "HOLD",
   "holds": [
-    "HOLD-GATEWAY-CAPACITY",
-    "HOLD-GATEWAY-FAMILY-COMPATIBILITY",
-    "HOLD-IMAGE-STALE-DIMENSION",
-    "HOLD-DOWNSTREAM-RECALCULATION"
-  ]
+    "HOLD-GATEWAY-DC-POWER-SIZING",
+    "HOLD-24V-LOAD-RECALCULATION",
+    "HOLD-LAYOUT-REVALIDATION",
+    "HOLD-ENCLOSURE-FREEZE",
+    "HOLD-IP66-ASSEMBLY-PROOF",
+    "HOLD-IMAGE-BEFORE-LI-LAYOUT"
+  ],
+  "current_li": "li/PN-AUT-001_LI_R05_CANDIDATE.json",
+  "gateway_architecture": {
+    "status": "R05_REBUILT",
+    "indoor_units": 32,
+    "project_capacity_per_gateway": 12,
+    "gateway_quantity": 3,
+    "installed_capacity": 36,
+    "spare_endpoints": 4,
+    "distribution": [
+      12,
+      12,
+      8
+    ],
+    "cm_gateway_rs232_quantity": 3,
+    "field_bus_modules_quantity": 32,
+    "power_conversion_status": "HOLD_24_TO_12VDC_RATING",
+    "note": "IRTrans official reference states up to 15 bus modules/master, but stricter project/supplier limit of 12 governs."
+  }
 }
