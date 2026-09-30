@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "directive_id": "PN-IMAGE-ELABORATION-DIRECTIVE-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
@@ -13,11 +13,13 @@
     "MODEL 001 defines visual/document structure, not target-panel physical size.",
     "Target enclosure size is derived from target engineering content and frozen in target datasheet before render.",
     "Image is downstream of LI/BOM/load/layout/geometry.",
-    "Electrical architecture, communication architecture, command diagram and panel sizing are mandatory when applicable.",
     "Side 3/4 view dimensions only the real target enclosure depth on the real depth axis.",
     "No large manufacturer footer logos.",
     "Never distort geometry to fit the page; grow the canvas.",
-    "Synchronize Data Center and memory after approved visual changes."
+    "Synchronize Data Center and memory after approved visual changes.",
+    "Step 5 produces only the physical PN image set; Step 6 adds legend, panel data, electrical architecture, communication architecture, command diagram and dimensions.",
+    "Door/tampa geometry is invariant across angles and may only undergo rigid hinge rotation.",
+    "Step 6 dimensions are sourced from controlled H/W/D values, never inferred from raster/perspective."
   ],
   "pre_render_required_inputs": [
     "canonical_premises",
@@ -43,5 +45,21 @@
     "prompt_change_requires_explicit_user_authorization": true,
     "model_001_structure_change_requires_new_model_id": true,
     "target_panel_dimension_change_requires_target_revision_control": true
+  },
+  "step_split": {
+    "step5": {
+      "id": "STEP5_PN_IMAGE_FIDELITY",
+      "control": "datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json",
+      "skill": "skills/aut-panel-pn-image-fidelity/SKILL.md",
+      "output": "Physical PN image set only",
+      "rule": "One canonical assembly and same door geometry across all angles."
+    },
+    "step6": {
+      "id": "STEP6_ENGINEERING_IMAGE_DOCUMENT",
+      "control": "datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json",
+      "skill": "skills/aut-panel-image-document/SKILL.md",
+      "output": "MODEL 001 engineering visual document",
+      "rule": "Compose frozen Step 5 physical image with legend/data/electrical/communication/command/dimensions using grow-only canvas."
+    }
   }
 }
