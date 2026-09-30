@@ -1,0 +1,43 @@
+{
+  "version": "0.1.0",
+  "project": "ADEQUAÇÃO DO SISTEMA DE AR - CONDICIONADO DE MACAÉ P 537",
+  "discipline": "AUTOMAÇÃO",
+  "step": "01_inserir_desenhos_do_projeto",
+  "drawings": [
+    {
+      "document_id": "DE-3501.02-8210-800-RPJ-703",
+      "revision": "0",
+      "title": "PROJETO BÁSICO - AUTOMAÇÃO - PLANTA BAIXA - TÉRREO",
+      "sheet": "01/01",
+      "scale": "INDICADA; planta principal 1:50",
+      "program": "AUTOCAD-2026",
+      "status": "EMISSÃO ORIGINAL - PARA CONSTRUÇÃO",
+      "date": "2026-09-25",
+      "floor": "TÉRREO",
+      "source": "uploaded_pdf"
+    },
+    {
+      "document_id": "DE-3501.02-8210-800-RPJ-704",
+      "revision": "0",
+      "title": "PROJETO BÁSICO - AUTOMAÇÃO - PLANTA BAIXA - 1º PAVIMENTO",
+      "sheet": "01/01",
+      "scale": "INDICADA; planta principal 1:25",
+      "program": "AUTOCAD-2026",
+      "status": "EMISSÃO ORIGINAL - PARA CONSTRUÇÃO",
+      "date": "2026-09-25",
+      "floor": "1º PAVIMENTO",
+      "source": "uploaded_pdf"
+    }
+  ],
+  "observed_content": [
+    "rotas de eletrodutos e eletrocalhas",
+    "tabela de encaminhamento",
+    "instrumentos AT/TT",
+    "sinais 4-20mA + HART",
+    "sinais discretos",
+    "pontos de rede",
+    "painel PN-AUT-001",
+    "detalhes típicos de eletrodutos, fixação e chegada de cabos"
+  ],
+  "rule": "Nenhum cálculo de eletroduto, eletrocalha ou cabo deve começar antes do registro e identificação dos desenhos aplicáveis."
+}

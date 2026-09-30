@@ -1,0 +1,156 @@
+{
+  "version": "1.1.0",
+  "repository": "WhiteChronos/ChatGPT",
+  "branch": "feature/automation-cable-ml",
+  "pull_request": 35,
+  "scope": "automation_and_instrumentation_cables",
+  "phase": "toolchain_integrated",
+  "workflow": {
+    "current_step": 18,
+    "step_name": "conduit_crossing_below",
+    "status": "consolidated",
+    "registered_drawings": [
+      "DE-3501.02-8210-800-RPJ-703 Rev.0",
+      "DE-3501.02-8210-800-RPJ-704 Rev.0"
+    ],
+    "rules": [
+      "automation_panel_is_route_origin",
+      "one_route_record_per_distinct_path",
+      "measure_actual_drawn_path",
+      "convert_by_drawing_scale",
+      "current_ground_floor_scale_1_50"
+    ],
+    "reduction_rule": {
+      "status": "partially_defined",
+      "known": [
+        "identify_dimension_transitions",
+        "associate_reduction_with_route_and_location",
+        "keep_reduction_separate_from_straight_length"
+      ],
+      "pending": [
+        "quantity_rule",
+        "equivalent_length_rule",
+        "material_code_rule",
+        "allowance_rule"
+      ]
+    },
+    "interfloor_rule": {
+      "meaning": "vertical_rise_continuation",
+      "preserve_route_identity": true,
+      "current_example": {
+        "from": "DE-3501.02-8210-800-RPJ-703 / Terreo",
+        "to": "DE-3501.02-8210-800-RPJ-704 / 1 Pavimento"
+      }
+    },
+    "hart_cable_rule": {
+      "notation": "Ø1\" - 4-20mA + HART",
+      "conduit_size": "1 inch",
+      "signal": "4-20mA + HART",
+      "destinations": [
+        "AT",
+        "TT"
+      ],
+      "pending": [
+        "cable_construction",
+        "pair_count",
+        "cross_section",
+        "shield",
+        "manufacturer",
+        "length_rule"
+      ]
+    },
+    "hart_rule": {
+      "conduit_callout": "Ø1\" - 4-20mA + HART",
+      "conduit_size_inch": 1,
+      "signal": "4-20mA + HART",
+      "cable_allocation": "one cable per instrument/equipment",
+      "applicable_examples": [
+        "AT",
+        "TT"
+      ]
+    },
+    "cable_length_rule": {
+      "origin": "automation_panel",
+      "per_endpoint_individual_cable": true,
+      "route_components": [
+        "cable_tray",
+        "conduit"
+      ],
+      "shared_segments": "count_once_per_cable_that_uses_segment",
+      "physical_containment": "count_physical_segment_once",
+      "total_rule": "sum_all_individual_panel_to_endpoint_routes",
+      "scale_current_example": "1:50",
+      "pending": [
+        "slack",
+        "termination_allowance",
+        "reserve_percentage",
+        "procurement_rounding"
+      ]
+    },
+    "digital_ac_signal_rule": {
+      "notation": "Ø1\" - 1P#1,0mm+SH",
+      "conduit_size": "1 inch",
+      "cable_as_taught": "1,0 mm + SH",
+      "service": "digital signal for air-conditioning equipment",
+      "rise_symbol": "continues same route to next-floor drawing"
+    },
+    "digital_ac_cabling": {
+      "topology": "cascade_return_to_panel",
+      "sequence": "panel -> AC equipment(s) -> final AC -> panel",
+      "different_from_hart": true
+    },
+    "conduit_crossing_rule": {
+      "meaning": "passes below other apparent conduit",
+      "route_continuity": true,
+      "terminates": false,
+      "branches": false,
+      "restarts": false
+    }
+  },
+  "last_checkpoint_id": "ACP-20260930-TOOLCHAIN-020",
+  "last_completed_action": "Integrated Wolfram and tldraw into the automation cable operating process",
+  "next_action": "Execute the integrated pipeline on project drawings",
+  "source_of_truth": "github",
+  "status": "active",
+  "skills": {
+    "step_skills": [
+      "project-drawings",
+      "automation-panel",
+      "routing-legend",
+      "instruments-disciplines",
+      "symbol-legend",
+      "tray-route-length",
+      "tray-reductions",
+      "tray-interfloor",
+      "conduit-identification",
+      "conduit-direct-panel",
+      "conduit-from-tray",
+      "conduit-total-length",
+      "hart-cables",
+      "cable-route-sum",
+      "digital-signal-rise",
+      "digital-ac-cable",
+      "digital-ac-cascade",
+      "conduit-undercrossing"
+    ],
+    "orchestrator": "automation-cable-orchestrator"
+  },
+  "agent": "agents/automation-cable-engineer/AGENT.md",
+  "codex_contract": "codex/automation-cable/AGENTS.md",
+  "tooling": [
+    "tools/automation_cable/route_engine.py",
+    "schemas/automation_routing.schema.json",
+    "third_party/automation_engineering/registry.json"
+  ],
+  "connected_verifiers": [
+    "Wolfram",
+    "tldraw",
+    "Adobe Acrobat"
+  ],
+  "toolchain_rules": [
+    "deterministic_engine_primary",
+    "wolfram_secondary_math_and_units_verifier",
+    "tldraw_visual_topology_reviewer",
+    "drawing_and_legend_remain_primary_evidence"
+  ]
+}
