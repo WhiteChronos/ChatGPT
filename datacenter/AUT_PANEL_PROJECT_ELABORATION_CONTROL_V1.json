@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.2",
   "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
@@ -53,5 +53,36 @@
   "authority_rule": "Plugins are support tools. Official project/manufacturer/standard evidence remains authoritative.",
   "evolution_mode": "PROPOSAL_ONLY_HUMAN_GATE",
   "release_rule": "No project artifact may be released from a stale or unresolved cross-artifact state.",
-  "geometry_authority_rule": "For dimensional engineering, use manufacturer CAD or deterministic parametric geometry. to3D/ImageGen/Adobe are downstream visualization aids only."
+  "geometry_authority_rule": "For dimensional engineering, use manufacturer CAD or deterministic parametric geometry. to3D/ImageGen/Adobe are downstream visualization aids only.",
+  "step_1": {
+    "control": "datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json",
+    "title": "Document intake + project number + panel count",
+    "pass_status": "STEP1_SCOPE_FROZEN",
+    "blocks_downstream_until_pass": true,
+    "identity_rule": "Every downstream artifact carries PROJECT_NUMBER + PANEL_ID + revision/status."
+  },
+  "step_2": {
+    "control": "datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json",
+    "prompt": "prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md",
+    "parametric_memory": "memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml",
+    "catalog_policy": "datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json",
+    "title": "Parametric panel definition and dynamic question engine",
+    "pass_status": "STEP2_PANEL_DEFINITION_FROZEN",
+    "hold_status": "HOLD_PANEL_DEFINITION_CONFLICT",
+    "question_rule": "Ask only unresolved decisions after consulting project documents, Data Center, project/panel memory, catalogs, manufacturer sources and applicable standards.",
+    "learning_rule": "Question count should decrease over time through validated parameter reuse, never through silent assumptions.",
+    "question_ui": "VISUALIZE_WITH_COPYABLE_ANSWER_BLOCK"
+  },
+  "memory_evolution": {
+    "parameter_scopes": [
+      "GLOBAL_METHOD",
+      "PROJECT",
+      "PANEL",
+      "MANUFACTURER_FAMILY",
+      "EQUIPMENT_MODEL"
+    ],
+    "no_scope_promotion_without_validation": true,
+    "supersede_instead_of_overwrite": true,
+    "invalidate_downstream_on_correction": true
+  }
 }
