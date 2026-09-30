@@ -1,13 +1,13 @@
 {
-  "version": "0.7.0",
+  "version": "0.8.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
   "phase": "learning_user_method",
   "workflow": {
-    "current_step": 7,
-    "step_name": "identify_and_calculate_cable_tray_reductions",
+    "current_step": 8,
+    "step_name": "continue_route_to_next_floor",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
@@ -33,11 +33,19 @@
         "material_code_rule",
         "allowance_rule"
       ]
+    },
+    "interfloor_rule": {
+      "meaning": "vertical_rise_continuation",
+      "preserve_route_identity": true,
+      "current_example": {
+        "from": "DE-3501.02-8210-800-RPJ-703 / Terreo",
+        "to": "DE-3501.02-8210-800-RPJ-704 / 1 Pavimento"
+      }
     }
   },
-  "last_checkpoint_id": "ACP-20260930-STEP7-007",
-  "last_completed_action": "Captured cable-tray reductions as mandatory Step 7",
-  "next_action": "Capture detailed reduction calculation rule or user Step 8",
+  "last_checkpoint_id": "ACP-20260930-STEP8-008",
+  "last_completed_action": "Captured vertical rise symbol as route continuation to next-floor drawing",
+  "next_action": "Capture user Step 9",
   "source_of_truth": "github",
   "status": "active"
 }
