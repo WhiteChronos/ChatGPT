@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 28
-  last_sync_at: '2026-09-30T18:16:00-03:00'
+  sync_revision: 29
+  last_sync_at: '2026-09-30T19:05:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -58,6 +58,22 @@ mutable_state:
     improvement_skill: skills/aut-panel-autonomous-improvement/SKILL.md
     autonomous_allowed: [observe, classify, compare, score, propose, sandbox, suggest_tests, refresh_non_authoritative_metadata]
     human_gate_required: [core_dependency_promotion, golden_rule_change, frozen_state_change, hold_clearance, release_approval]
+  project_process_front_end:
+    step1:
+      control: datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json
+      output: PROJECT_INTAKE_MANIFEST
+      pass_status: STEP1_SCOPE_FROZEN
+      required: [PROJECT_NUMBER, document_register, panel_count, panel_register, source_evidence]
+    step2:
+      control: datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json
+      prompt: prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md
+      memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
+      catalog_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
+      output: [PANEL_DEFINITION_MANIFEST, PROJECT_PARAMETER_REGISTRY, QUESTION_DECISION_LOG, CATALOG_INDEX, MEMORY_SYNC_RECORD]
+      pass_status: STEP2_PANEL_DEFINITION_FROZEN
+      question_policy: ask_only_after_docs_datacenter_memory_catalogs_manufacturer_norms
+      ui_policy: VISUALIZE_WITH_COPYABLE_ANSWER_BLOCK
+      learning_policy: reduce_questions_by_validated_parameter_reuse_not_assumption
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -675,3 +691,18 @@ history:
   actor: user+assistant
   event: R06_RECALCULATED_STATE
   summary: 'Gateway power, 24 V load, UPS, battery and thermal capacity recalculated and closed. Enclosure 1200x800x300 is the current dimensional basis pending layout validation. Remaining external engineering hold: final IP66 proof of enclosure plus cooling assembly.'
+
+- revision: 29
+  at: '2026-09-30T19:05:00-03:00'
+  actor: user+assistant
+  event: PROJECT_PROCESS_STEP1_STEP2_CONSOLIDATED
+  summary: >-
+    Processo frontal consolidado. Passo 1 = levantamento documental, PROJECT_NUMBER, quantidade de paineis,
+    PANEL_IDs e evidencias de escopo. Passo 2 = definicao parametrica de cada painel por motor de perguntas
+    dinamico. Antes de perguntar, o sistema consulta documentos, Data Center, memoria do projeto/painel,
+    catalogos, fabricante, normas e parametros reutilizaveis. Cada resposta/fato validado vira parametro
+    versionado com escopo e origem. Perguntas devem diminuir ao longo do tempo por reutilizacao validada,
+    nunca por suposicao. Catalogos usados entram no Data Center com metadados e copia controlada quando
+    permitido; memoria guarda ponteiro, hash, parametros extraidos e decisoes. Correcao de dado preserva
+    historico, marca valor anterior SUPERSEDED e invalida downstream. Perguntas ao usuario permanecem no
+    padrao Visualize com bloco final copiavel.
