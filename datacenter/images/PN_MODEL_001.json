@@ -40,7 +40,7 @@
   "pn_aut_001_reference": {
     "panel_id": "PN-AUT-001",
     "enclosure_dimensions_mm": {
-      "height": 1800,
+      "height": 1200,
       "width": 800,
       "depth": 300
     },
@@ -48,7 +48,9 @@
     "supply": "220 Vac, 2F, TN-S",
     "command_voltage": "24 Vdc via UPS",
     "ambient": "40 C, altitude 0 m",
-    "reference_role": "EXAMPLE_INSTANCE_ONLY_NOT_TEMPLATE_DIMENSIONS"
+    "reference_role": "EXAMPLE_INSTANCE_ONLY_NOT_TEMPLATE_DIMENSIONS",
+    "current_project_source": "PN-AUT-001 R03 engineering LI / project control V2",
+    "previous_1800_height_status": "INVALIDATED_STALE_IMAGE_VALUE"
   },
   "change_control": {
     "mode": "EXPLICIT_USER_OVERRIDE_ONLY",
