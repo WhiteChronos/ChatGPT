@@ -43,10 +43,14 @@
       "name": "Wolfram",
       "installed": true,
       "role": [
-        "calculation",
-        "verified mathematics"
+        "rigorous mathematics",
+        "volume/area calculations",
+        "geometry checks",
+        "unit conversion",
+        "engineering formulas"
       ],
-      "engineering_use": "Independent calculation support for sizing, checks and formulas."
+      "engineering_use": "Independent mathematical support for volume, area, clearances, utilization, battery/thermal/electrical calculations and geometric checks. Inputs must come from controlled engineering sources.",
+      "authority": "CALCULATION_SUPPORT_NOT_SOURCE_OF_COMPONENT_RATINGS"
     },
     {
       "name": "Airtable",
@@ -99,6 +103,34 @@
       "engineering_use": "Store and retrieve non-sensitive project context, decisions and methodology snapshots. GitHub Data Center/Data Sheet/LI-BOM remain canonical engineering authority.",
       "write_status": "CONNECTED_BUT_WRITE_TEST_BLOCKED_BY_OPENAI_SECURITY_POLICY_ON_2026-09-30",
       "fail_safe_rule": "If Engram write/search is unavailable, continue using GitHub canonical memory and project files without weakening engineering gates."
+    },
+    {
+      "name": "to3D",
+      "installed": true,
+      "role": [
+        "image-to-3D conversion",
+        "conceptual 3D preview",
+        "mesh export glTF/FBX/OBJ/STL"
+      ],
+      "engineering_use": "Use only as supplemental visualization or rough mesh generation from a reference image. Never use generated mesh as dimensional authority for cabinet/components.",
+      "authority": "NON_DIMENSIONAL_VISUAL_SUPPORT",
+      "formats": [
+        "gltf",
+        "fbx",
+        "obj",
+        "stl"
+      ]
+    },
+    {
+      "name": "Adobe",
+      "installed": true,
+      "role": [
+        "image cleanup",
+        "layout polish",
+        "document/media refinement"
+      ],
+      "engineering_use": "Use after engineering geometry/render is frozen, for visual cleanup and presentation only. It may not alter engineering geometry, quantities, dimensions or tags.",
+      "authority": "PRESENTATION_ONLY"
     }
   ],
   "recommended_data_model": {
@@ -150,5 +182,20 @@
       "date",
       "downstream_invalidations"
     ]
+  },
+  "geometry_and_image_stack": {
+    "deterministic_geometry_authority": [
+      "Manufacturer STEP/IGES/DXF when available",
+      "CadQuery/build123d/OpenCascade/FreeCAD parametric geometry",
+      "trimesh/Open3D geometry QA",
+      "Blender for rendering only after geometry lock"
+    ],
+    "plugin_support": {
+      "Wolfram": "mathematics, volume/area and cross-check calculations",
+      "to3D": "visual/concept mesh from images; not dimensional authority",
+      "Adobe": "presentation cleanup only",
+      "ImageGen": "illustrative/render support only; never engineering geometry authority"
+    },
+    "hard_rule": "Generated 3D/image tools cannot change the frozen engineering geometry or prove component dimensions."
   }
 }
