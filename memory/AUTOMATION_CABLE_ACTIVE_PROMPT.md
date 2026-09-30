@@ -89,3 +89,20 @@ Current taught rules:
 Current interpretation from the project context: available tray sizes include 100x50 mm and 50x50 mm, so a transition between these sizes is a candidate reduction when actually shown in the route.
 
 Next action: capture the user's detailed reduction calculation rule or Step 8.
+
+
+### Step 8 — Continue routes between floors
+Identify the project symbol that indicates a vertical rise/continuation to the next floor.
+
+Taught rules:
+- This symbol means the routing element does not terminate at that point.
+- Continue tracing the same route in the drawing for the floor immediately above.
+- Preserve route identity across the floor transition; do not create an unrelated new route merely because the drawing sheet changes.
+- Record the origin floor, transition point, destination floor, source drawing and destination drawing.
+- The next-floor drawing must be consulted to locate the corresponding continuation before the route is considered complete.
+- Do not invent vertical distance, riser allowance, fitting quantity or transition length until the user teaches those rules.
+
+Current project example:
+DE-3501.02-8210-800-RPJ-703 (Térreo) -> vertical rise symbol -> DE-3501.02-8210-800-RPJ-704 (1º Pavimento).
+
+Next action: capture Step 9 from the user.
