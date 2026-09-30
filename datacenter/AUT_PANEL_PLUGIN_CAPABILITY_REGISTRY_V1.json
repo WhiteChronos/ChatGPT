@@ -383,5 +383,33 @@
       "Wolfram"
     ],
     "composition_rule": "Grow-only canvas; dimensional views remain scale_x=scale_y=1.0."
+  },
+  "step7_final_image_verification_stack": {
+    "math": [
+      "Wolfram"
+    ],
+    "local_execution": [
+      "Remote Desktop Commander"
+    ],
+    "deterministic_open_source": [
+      "OpenCV",
+      "scikit-image",
+      "pytransform3d",
+      "trimesh",
+      "Open3D",
+      "Blender metadata",
+      "FreeCAD/CadQuery/build123d"
+    ],
+    "supplementary_visual_regression": [
+      "ImageHash",
+      "Visual Regression Tracker"
+    ],
+    "review_only": [
+      "Adobe",
+      "tldraw",
+      "Miro"
+    ],
+    "plugin_directory_result": "No dedicated ChatGPT plugin is promoted as engineering authority for calibrated image geometry or dimensional visual QA.",
+    "hard_rule": "Step 7 pass is based on controlled geometry/camera/dimension manifests and deterministic calculations, not visual similarity alone."
   }
 }
