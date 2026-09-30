@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-STEP2-PANEL-DEFINITION-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "title": "Passo 2 - Definicao parametrica dos paineis",
+  "depends_on": "STEP1_SCOPE_FROZEN",
+  "purpose": "Definir cada painel por perguntas dinamicas, pesquisa documental e memoria evolutiva, reduzindo perguntas repetidas ao longo do tempo sem perder rastreabilidade.",
+  "outputs": [
+    "PANEL_DEFINITION_MANIFEST",
+    "PROJECT_PARAMETER_REGISTRY",
+    "QUESTION_DECISION_LOG",
+    "CATALOG_INDEX",
+    "STEP2_PANEL_DEFINITION_FROZEN"
+  ]
+}
