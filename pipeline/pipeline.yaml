@@ -50,6 +50,15 @@ contracts:
   step4_li_load_prompt: prompts/PROMPT_STEP4_LI_LOAD_V1.md
   step4_li_load_memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
   step4_li_load_skill: skills/aut-panel-li-load-quantification/SKILL.md
+  step5_pn_image_fidelity_control: datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json
+  step5_pn_image_fidelity_prompt: prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md
+  step5_pn_image_fidelity_memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
+  step5_visual_reference_registry: datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json
+  step5_pn_image_fidelity_skill: skills/aut-panel-pn-image-fidelity/SKILL.md
+  step6_engineering_image_document_control: datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json
+  step6_engineering_image_document_prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
+  step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
+  step6_engineering_image_document_skill: skills/aut-panel-image-document/SKILL.md
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   plugin_capability_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
@@ -229,6 +238,14 @@ sequence:
       - canvas_composition_guardian_passed
       - revit_bim_guardian_passed_when_applicable
       - same_3d_assembly_drives_all_views
+      - same_assembly_hash_all_views
+      - same_door_object_all_views
+      - same_door_local_bbox_all_views
+      - same_enclosure_bbox_all_views
+      - fixed_hinge_axis_all_views
+      - rigid_door_transform_only
+      - object_scale_xyz_equals_1
+      - camera_manifest_recorded
       - orthographic_dimension_views
       - blender_render_guardian_passed
       - large_canvas_grow_only
@@ -239,6 +256,24 @@ sequence:
       - one_panel_per_image
       - no_unapproved_recomposition
       - parity_footer_present
+  - order: 95
+    id: ENGINEERING_IMAGE_DOCUMENT
+    gate:
+      - step5_pn_image_fidelity_frozen
+      - step5_fingerprint_matches_inserted_physical_view
+      - model_001_composition_loaded
+      - principal_component_legend_present
+      - panel_project_data_present
+      - electrical_architecture_from_validated_topology
+      - communication_architecture_from_validated_topology
+      - command_diagram_from_validated_logic
+      - dimensions_from_controlled_h_w_d
+      - no_raster_dimension_inference
+      - grow_only_canvas
+      - dimensional_blocks_scale_x_equals_y_equals_1
+      - no_non_uniform_scaling
+      - vector_diagram_sources_preserved
+      - one_panel_per_engineering_document
   - order: 100
     id: QA
     gate:
@@ -308,24 +343,24 @@ conversation_commands:
       - memory_sync_if_major_change
 invalidations:
   li_change:
-    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   li_historical_revision_change:
     allowed: false
     action: REPROVADO
   li_new_revision_change:
     requires_new_revision_event: true
-    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   component_model_change:
-    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   component_dimension_change:
-    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   component_mounting_surface_change:
-    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   enclosure_change:
-    invalidates: [LAYOUT, RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   approved_template_change:
     requires_explicit_user_authorization: true
-    invalidates: [RENDER_IMAGE, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
   immutable_contract_change:
     requires_explicit_user_authorization: true
     invalidates: [BOOTSTRAP_CONTEXT, QA, MEMORY_SYNC, RELEASE]
