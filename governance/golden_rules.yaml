@@ -260,3 +260,28 @@ required_rules:
   name: Prompt MODEL 001 obrigatório
   severity_on_violation: REPROVADO
   rule: Toda elaboração de imagem de painel PN deve carregar prompts/PROMPT_PN_IMAGE_MODEL_001.md e datacenter/images/PN_MODEL_001.json antes do dimensionamento visual e do render.
+
+- id: GR-089
+  name: Workbook Step 4 possui somente duas abas por painel
+  severity_on_violation: REPROVADO
+  rule: A LI emitida no Passo 4 deve possuir exatamente duas abas por PANEL_ID, <PANEL_ID>_MATERIAIS e <PANEL_ID>_CARGA. Para N painéis devem existir exatamente 2N abas; capa, QA, referências, arquitetura, controle e abas ocultas são proibidas no workbook emitido.
+- id: GR-090
+  name: Todo material físico entra na LI
+  severity_on_violation: REPROVADO
+  rule: Todo item fisicamente consumido na montagem do painel deve existir na LI, incluindo acessórios de fabricante, trilhos, canaletas, bornes e acessórios, fiação interna, PE, conectores, terminação, marcação, prensa-cabos, climatização e fixadores.
+- id: GR-091
+  name: Metragem interna é derivada de conexão e geometria
+  severity_on_violation: HOLD
+  rule: Fiação interna e materiais lineares só podem ter quantidade em metros quando derivados de grafo de conexões, rota física em layout real e allowances explicitamente parametrizados. Estimativa visual ou metragem por regra de bolso é proibida.
+- id: GR-092
+  name: Carga é separada por painel
+  severity_on_violation: REPROVADO
+  rule: Cada PANEL_ID deve possuir sua própria aba de carga. Itens energizados da LI devem estar rastreados na carga daquele mesmo painel ou possuir justificativa documentada.
+- id: GR-093
+  name: Links e evidência acompanham a linha da LI
+  severity_on_violation: HOLD
+  rule: Cada item da LI deve possuir REF_ID, identificação exata do modelo e links oficiais de produto/documentação; quando disponível, incluir fornecedor ou distribuidor autorizado.
+- id: GR-094
+  name: Vídeo de montagem é evidência secundária
+  severity_on_violation: REPROVADO
+  rule: Vídeos podem apoiar método de montagem e treinamento, mas não podem definir corrente, seção de cabo, Icu, grau IP, capacidade, requisito normativo ou substituir documentação oficial.
