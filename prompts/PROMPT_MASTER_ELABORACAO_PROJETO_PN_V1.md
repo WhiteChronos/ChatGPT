@@ -252,6 +252,7 @@ Usar quando disponíveis:
 - Airtable: índice estruturado de componentes, fontes, HOLDs, modelos e revisões;
 - Coda / Notion: base de conhecimento e documentação operacional;
 - Acumen: sinalização de lacunas de contexto recente; toda informação deve ser reverificada;
+- Engram: memória persistente suplementar entre sessões para contexto, decisões e histórico de metodologia; nunca substituir GitHub/Data Center/Data Sheet/LI-BOM como autoridade;
 - GitHub/Codex: fonte auditável, versionamento, QA e automação.
 
 Plugins nunca substituem documentação oficial.
@@ -265,3 +266,17 @@ LI/BOM = quantidades/modelos.
 Data Center = evidências.
 Memória = decisões/erros/aprendizado.
 Pipeline = ordem obrigatória.
+
+## MEMÓRIA PERSISTENTE / ENGRAM
+
+Quando Engram estiver disponível:
+1. recuperar primeiro contexto relevante do projeto pelo PANEL_ID;
+2. usar o resultado apenas como memória suplementar;
+3. reconciliar qualquer lembrança com GitHub, Data Center, Data Sheet, LI/BOM e documentos controlados;
+4. nunca promover memória Engram diretamente a fato de engenharia;
+5. gravar apenas resumos não sensíveis de decisões, erros confirmados, regras metodológicas e marcos do projeto;
+6. não gravar credenciais, segredos, dados pessoais sensíveis ou material incompatível com a política de segurança;
+7. se a escrita for bloqueada ou indisponível, continuar com a memória canônica do repositório sem reduzir os gates.
+
+Precedência:
+GitHub/Data Center/Data Sheet/LI-BOM/documentação oficial > Engram > memória informal da conversa.
