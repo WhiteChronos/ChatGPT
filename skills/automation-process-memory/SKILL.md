@@ -1,6 +1,6 @@
 ---
 name: automation-process-memory
-description: Persist and recover engineering work for automation/instrumentation projects by checkpointing every substantive action to GitHub, maintaining a living master prompt, structured action ledger, source provenance, and optional open-source memory backends. Use for automation cable calculations, engineering document workflows, GitHub-backed project memory, datacenter synchronization, prompt evolution, checkpointing, process recovery, or any task where the user asks to never lose progress or to save/update state after each action.
+description: Persist and recover engineering work for automation/instrumentation projects by checkpointing every substantive action to GitHub, maintaining a living master prompt, structured action ledger, source provenance, optional open-source memory backends, and engineering tool routing for calculation, image analysis, PDF, DWG/DXF/CAD, and diagrams. Use for automation cable calculations, engineering document workflows, GitHub-backed project memory, datacenter synchronization, prompt evolution, checkpointing, process recovery, technical image/PDF/CAD analysis, or any task where the user asks to never lose progress or to save/update state after each action.
 ---
 
 # Automation Process Memory
@@ -9,7 +9,7 @@ description: Persist and recover engineering work for automation/instrumentation
 
 Treat `WhiteChronos/ChatGPT` as the durable system of record unless the user explicitly selects another repository.
 
-After every substantive action, create a checkpoint before finishing the turn. A substantive action includes research, engineering decision, calculation-rule change, source addition, code/file edit, schema change, prompt change, model change, document decision, validation result, or new pending item.
+After every substantive action, create a checkpoint before finishing the turn. A substantive action includes research, engineering decision, calculation-rule change, source addition, code/file edit, schema change, prompt change, model change, document decision, validation result, technical image/PDF/CAD analysis result, or new pending item.
 
 Do not claim background or automatic persistence outside the current turn. Persist through explicit GitHub connector writes performed in the turn.
 
@@ -22,6 +22,8 @@ Maintain:
 - `datacenter/AUTOMATION_CABLE_MODEL.json`
 - `memory/AUTOMATION_CABLE_MEMORY.md`
 
+Read `references/checkpoint-schema.md` before creating checkpoints, `references/open-source-memory.md` for memory backends, and `references/engineering-tools.md` for calculation/image/PDF/CAD routing.
+
 ## Per-action workflow
 
 1. Recover state from the active prompt, process state, action log, and repository governance.
@@ -33,11 +35,23 @@ Maintain:
 
 ## Prompt evolution
 
-Keep mission, repository/branch, invariants, architecture, current task, last completed action, accepted sources, versions, unresolved items, next action, and checkpoint protocol. Remove superseded temporary instructions from the active prompt while preserving history in the ledger.
+Keep mission, repository/branch, invariants, architecture, current task, last completed action, accepted sources, tool routing, versions, unresolved items, next action, and checkpoint protocol. Remove superseded temporary instructions from the active prompt while preserving history in the ledger.
 
 ## Open-source memory strategy
 
 GitHub history is the primary audit trail. Mem0, Graphiti, Cognee, Hindsight, Letta, OpenMemory, memU and related systems are secondary indexes/retrieval layers only. Engineering calculations must not depend on a single memory backend.
+
+## Engineering tool routing
+
+Use `references/engineering-tools.md`.
+
+- Calculation: deterministic formulas/rules first; use Wolfram as an independent numerical/symbolic verifier when connected.
+- Images: built-in vision first for inspection; use connected image/document tools only when they add deterministic value such as cleanup, conversion, or comparison.
+- PDF: prefer Adobe Acrobat when available for OCR, extraction, conversion and page operations; preserve page/revision provenance.
+- DWG/DXF/CAD: no dedicated trustworthy DWG ChatGPT plugin is assumed. Use LibreDWG/LibreCAD/DXF tooling and explicit conversion/validation. Never treat a diagramming tool as CAD.
+- Diagramming: tldraw may be used for explanatory diagrams/annotations when connected.
+
+Every tool-assisted engineering result must be checkpointed with source/tool identity, version when available, inputs, outputs, and validation notes.
 
 ## Engineering/ML separation
 
