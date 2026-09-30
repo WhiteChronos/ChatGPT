@@ -1,13 +1,13 @@
 {
-  "version": "0.13.0",
+  "version": "0.14.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
   "phase": "learning_user_method",
   "workflow": {
-    "current_step": 13,
-    "step_name": "calculate_individual_hart_cables",
+    "current_step": 14,
+    "step_name": "calculate_each_cable_panel_to_endpoint",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
@@ -68,11 +68,29 @@
         "AT",
         "TT"
       ]
+    },
+    "cable_length_rule": {
+      "origin": "automation_panel",
+      "per_endpoint_individual_cable": true,
+      "route_components": [
+        "cable_tray",
+        "conduit"
+      ],
+      "shared_segments": "count_once_per_cable_that_uses_segment",
+      "physical_containment": "count_physical_segment_once",
+      "total_rule": "sum_all_individual_panel_to_endpoint_routes",
+      "scale_current_example": "1:50",
+      "pending": [
+        "slack",
+        "termination_allowance",
+        "reserve_percentage",
+        "procurement_rounding"
+      ]
     }
   },
-  "last_checkpoint_id": "ACP-20260930-STEP13-013",
-  "last_completed_action": "Captured one-individual-cable-per-equipment rule for 4-20mA + HART",
-  "next_action": "Capture user Step 14",
+  "last_checkpoint_id": "ACP-20260930-STEP14-014",
+  "last_completed_action": "Captured panel-to-endpoint cable route summation through shared tray and branched conduits",
+  "next_action": "Capture user Step 15",
   "source_of_truth": "github",
   "status": "active"
 }
