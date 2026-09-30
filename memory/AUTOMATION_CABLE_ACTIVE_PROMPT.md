@@ -57,3 +57,20 @@ Wait for and capture the user's Step 2 of the conduit/cable-tray/cable calculati
 
 ## Checkpoint protocol
 After every substantive action: recover state -> execute -> validate -> append action checkpoint -> update this prompt -> update machine-readable process state -> confirm persistence.
+
+
+### Step 6 — Calculate cable-tray route lengths
+Use the automation panel as the common origin. For every distinct cable-tray route/path leaving the panel, create a separate route line/record and measure its path length on the project drawing.
+
+Current taught rules:
+- Every cable-tray calculation starts from the automation panel.
+- Create one route line for each distinct path.
+- Measure along the actual drawn route, following changes in direction.
+- Convert drawing length to real project length using the drawing scale.
+- For the current ground-floor plan, the user states the working scale is 1:50.
+- Keep route identity separate so later loads/cables can be associated with the correct path.
+- Do not yet apply occupancy, spare capacity, fitting allowance, vertical allowance or cable-count rules unless taught in a later step.
+
+## Current learning state
+Steps captured: 1 drawings, 2 automation panel, 3 routing types from legend, 4 instruments/signals/disciplines, 5 confirm symbols in legend, 6 cable-tray route measurement from the panel.
+Next action: capture Step 7 from the user.
