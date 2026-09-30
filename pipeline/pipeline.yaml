@@ -59,6 +59,11 @@ contracts:
   step6_engineering_image_document_prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
   step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
   step6_engineering_image_document_skill: skills/aut-panel-image-document/SKILL.md
+  step7_final_image_verification_control: datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json
+  step7_image_verification_toolchain: datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json
+  step7_final_image_verification_prompt: prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md
+  step7_final_image_verification_memory: memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml
+  step7_final_image_verification_skill: skills/aut-panel-final-image-verification/SKILL.md
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   plugin_capability_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
@@ -274,6 +279,24 @@ sequence:
       - no_non_uniform_scaling
       - vector_diagram_sources_preserved
       - one_panel_per_engineering_document
+  - order: 97
+    id: FINAL_IMAGE_VERIFICATION
+    gate:
+      - step6_engineering_image_document_frozen
+      - same_project_panel_revision_fingerprints
+      - same_step5_assembly_hash
+      - multiview_h_w_d_parity
+      - enclosure_and_door_bbox_parity
+      - rigid_hinge_transform_parity
+      - orthographic_aspect_ratio_check
+      - axis_px_per_mm_consistency
+      - cross_view_common_px_per_mm_consistency
+      - calibrated_view_reprojection_rmse_check
+      - framing_margin_and_clipping_check
+      - dimension_labels_match_controlled_h_w_d
+      - no_raster_dimension_inference
+      - visual_regression_review_when_baseline_exists
+      - final_image_verification_report_present
   - order: 100
     id: QA
     gate:
@@ -343,24 +366,24 @@ conversation_commands:
       - memory_sync_if_major_change
 invalidations:
   li_change:
-    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   li_historical_revision_change:
     allowed: false
     action: REPROVADO
   li_new_revision_change:
     requires_new_revision_event: true
-    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   component_model_change:
-    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LOAD_BALANCE, BOM, LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   component_dimension_change:
-    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   component_mounting_surface_change:
-    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   enclosure_change:
-    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [LAYOUT, RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   approved_template_change:
     requires_explicit_user_authorization: true
-    invalidates: [RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, QA, MEMORY_SYNC, RELEASE]
+    invalidates: [RENDER_IMAGE, ENGINEERING_IMAGE_DOCUMENT, FINAL_IMAGE_VERIFICATION, QA, MEMORY_SYNC, RELEASE]
   immutable_contract_change:
     requires_explicit_user_authorization: true
     invalidates: [BOOTSTRAP_CONTEXT, QA, MEMORY_SYNC, RELEASE]
@@ -406,24 +429,44 @@ release_policy:
 
 project_front_end_gates:
   - step: STEP1_PROJECT_INTAKE
-    requires:
-      - project_number
-      - document_register
-      - panel_count
-      - panel_register
-      - panel_count_source_evidence
+    requires: [project_number, document_register, panel_count, panel_register, panel_count_source_evidence]
     pass: step1_scope_frozen
     failure: HOLD_SCOPE_CONFLICT
   - step: STEP2_PANEL_DEFINITION
     depends_on: step1_scope_frozen
-    requires:
-      - panel_definition_manifest
-      - project_parameter_registry
-      - question_decision_log
-      - catalog_index
-      - memory_sync_record
+    requires: [panel_definition_manifest, project_parameter_registry, question_decision_log, catalog_index, memory_sync_record]
     pass: step2_panel_definition_frozen
     failure: HOLD_PANEL_DEFINITION_CONFLICT
+  - step: STEP3_NORMATIVE_ACADEMIC_REVIEW
+    depends_on: step2_panel_definition_frozen
+    requires: [normative_applicability_matrix, academic_evidence_matrix, bibliographic_reference_register, controlled_source_archive_index, normative_conflict_register, step3_review_summary]
+    pass: step3_normative_academic_base_frozen
+    failure: HOLD_NORMATIVE_CONFLICT
+  - step: STEP4_LI_LOAD
+    depends_on: step3_normative_academic_base_frozen
+    requires: [li_load_workbook, material_quantity_trace, internal_wire_cutlist, load_calculation_trace]
+    pass: step4_li_load_frozen
+    failure: HOLD_QUANTITY_BASIS
+  - step: STEP5_PN_IMAGE_FIDELITY
+    depends_on: step4_li_load_frozen
+    requires: [canonical_3d_assembly_manifest, multiview_render_manifest, pn_physical_image_set, step5_multiview_qa_report]
+    pass: step5_pn_image_fidelity_frozen
+    failure: HOLD_MULTIVIEW_INCONSISTENCY
+  - step: STEP6_ENGINEERING_IMAGE_DOCUMENT
+    depends_on: step5_pn_image_fidelity_frozen
+    requires: [step6_engineering_document_manifest, pn_engineering_image_document, vector_diagram_sources, step6_document_qa_report]
+    pass: step6_engineering_image_document_frozen
+    failure: HOLD_CANVAS_SCALING_VIOLATION
+  - step: STEP7_FINAL_IMAGE_VERIFICATION
+    depends_on: step6_engineering_image_document_frozen
+    requires: [final_image_qa_manifest, mathematical_image_precision_report, multiview_consistency_report, framing_and_canvas_report]
+    pass: step7_final_image_verified
+    failure: HOLD_FINAL_IMAGE_MULTIVIEW_MISMATCH
   downstream_requires:
     - step1_scope_frozen
     - step2_panel_definition_frozen
+    - step3_normative_academic_base_frozen
+    - step4_li_load_frozen
+    - step5_pn_image_fidelity_frozen
+    - step6_engineering_image_document_frozen
+    - step7_final_image_verified
