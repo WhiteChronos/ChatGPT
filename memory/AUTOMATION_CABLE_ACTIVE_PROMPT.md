@@ -126,3 +126,21 @@ Scale relation for the current drawing:
 L_real = L_measured_on_drawing x 50, provided both lengths use compatible units.
 
 Next action: capture Step 13 from the user.
+
+
+### Step 13 — Identify HART cable
+Start cable calculation by identifying the HART cable notation in the drawing.
+
+Taught interpretation of the notation:
+- Ø1" = the cable is routed inside a 1-inch conduit.
+- 4-20mA + HART = the signal type carried by the cable.
+- This cable goes to AT and TT instruments/equipment in the shown automation system.
+
+Keep these three attributes separate in the data model:
+1. containment/conduit size;
+2. signal type;
+3. destination instruments/equipment.
+
+Do not infer cable construction, pair count, conductor cross-section, shielding details, manufacturer, loop count, or length rule until the user teaches those items.
+
+Next action: capture the user's next cable-calculation rule.
