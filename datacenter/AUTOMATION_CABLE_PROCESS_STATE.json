@@ -1,14 +1,14 @@
 {
-  "version": "0.18.0",
+  "version": "1.0.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
-  "phase": "learning_user_method",
+  "phase": "consolidated_internal_system",
   "workflow": {
     "current_step": 18,
     "step_name": "conduit_crossing_below",
-    "status": "captured",
+    "status": "consolidated",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
       "DE-3501.02-8210-800-RPJ-704 Rev.0"
@@ -107,9 +107,39 @@
       "restarts": false
     }
   },
-  "last_checkpoint_id": "ACP-20260930-STEP18-018",
-  "last_completed_action": "Captured digital cascade Step 17 and conduit-below crossing Step 18",
-  "next_action": "Capture user Step 19",
+  "last_checkpoint_id": "ACP-20260930-CONSOLIDATE-019",
+  "last_completed_action": "Consolidated 18-step method into skills, Codex agent and internal tooling",
+  "next_action": "Run consolidated workflow on project calculations or capture Step 19",
   "source_of_truth": "github",
-  "status": "active"
+  "status": "active",
+  "skills": {
+    "step_skills": [
+      "project-drawings",
+      "automation-panel",
+      "routing-legend",
+      "instruments-disciplines",
+      "symbol-legend",
+      "tray-route-length",
+      "tray-reductions",
+      "tray-interfloor",
+      "conduit-identification",
+      "conduit-direct-panel",
+      "conduit-from-tray",
+      "conduit-total-length",
+      "hart-cables",
+      "cable-route-sum",
+      "digital-signal-rise",
+      "digital-ac-cable",
+      "digital-ac-cascade",
+      "conduit-undercrossing"
+    ],
+    "orchestrator": "automation-cable-orchestrator"
+  },
+  "agent": "agents/automation-cable-engineer/AGENT.md",
+  "codex_contract": "codex/automation-cable/AGENTS.md",
+  "tooling": [
+    "tools/automation_cable/route_engine.py",
+    "schemas/automation_routing.schema.json",
+    "third_party/automation_engineering/registry.json"
+  ]
 }
