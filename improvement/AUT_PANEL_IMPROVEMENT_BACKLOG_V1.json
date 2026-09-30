@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "backlog_id": "AUT-PANEL-IMPROVEMENT-BACKLOG-V1",
+  "status": "ACTIVE",
+  "proposals": [
+    {
+      "proposal_id": "IMP-001",
+      "title": "Automatic dimension parity gate",
+      "trigger": "PN-AUT-001 Excel 1200x800x300 vs stale image 1800x800x300",
+      "status": "PROPOSED",
+      "priority_score": 96,
+      "proposed_change": "Compare target Data Sheet H/W/D with layout manifest and rendered dimension labels before image QA.",
+      "regression_test": "Fail if any image dimension text differs from canonical target-panel dimensions."
+    },
+    {
+      "proposal_id": "IMP-002",
+      "title": "Gateway capacity topology gate",
+      "trigger": "32 indoor units + 6 outdoor systems exceeded unverified single-gateway architecture",
+      "status": "PROPOSED",
+      "priority_score": 95,
+      "proposed_change": "Require endpoint inventory and manufacturer capacity matrix before gateway selection and BOM freeze.",
+      "regression_test": "Fail when required addressed endpoints/systems exceed documented gateway topology capacity."
+    },
+    {
+      "proposal_id": "IMP-003",
+      "title": "Plugin/repository capability recommender",
+      "trigger": "Repeated requests for memory, research, calculations, CAD/3D and image tooling",
+      "status": "PROPOSED",
+      "priority_score": 82,
+      "proposed_change": "Map capability gaps to installed ChatGPT plugins and governed open-source candidates, then propose only non-duplicative additions.",
+      "regression_test": "Do not recommend already-installed tools or candidates without a defined project gap."
+    },
+    {
+      "proposal_id": "IMP-004",
+      "title": "Source freshness/lifecycle watcher",
+      "trigger": "Component lifecycle and manufacturer documentation may change",
+      "status": "PROPOSED",
+      "priority_score": 88,
+      "proposed_change": "Schedule periodic non-authoritative source checks and create review proposals when official lifecycle/revision changes are detected.",
+      "regression_test": "Never auto-change selected model; create a review/HOLD proposal only."
+    }
+  ]
+}
