@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "directive_id": "PN-IMAGE-ELABORATION-DIRECTIVE-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
@@ -19,7 +19,9 @@
     "Synchronize Data Center and memory after approved visual changes.",
     "Step 5 produces only the physical PN image set; Step 6 adds legend, panel data, electrical architecture, communication architecture, command diagram and dimensions.",
     "Door/tampa geometry is invariant across angles and may only undergo rigid hinge rotation.",
-    "Step 6 dimensions are sourced from controlled H/W/D values, never inferred from raster/perspective."
+    "Step 6 dimensions are sourced from controlled H/W/D values, never inferred from raster/perspective.",
+    "Step 7 verifies the final Step 6 image mathematically and visually before release; it does not repair the image.",
+    "Orthographic views must preserve physical aspect ratio and common px/mm scale; 3/4 views are verified through camera reprojection, not apparent edge length."
   ],
   "pre_render_required_inputs": [
     "canonical_premises",
@@ -60,6 +62,13 @@
       "skill": "skills/aut-panel-image-document/SKILL.md",
       "output": "MODEL 001 engineering visual document",
       "rule": "Compose frozen Step 5 physical image with legend/data/electrical/communication/command/dimensions using grow-only canvas."
+    },
+    "step7": {
+      "id": "STEP7_FINAL_IMAGE_VERIFICATION",
+      "control": "datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json",
+      "skill": "skills/aut-panel-final-image-verification/SKILL.md",
+      "output": "Mathematical and visual verification report",
+      "rule": "Verify final framing, proportions, common px/mm scale, controlled dimension labels and calibrated-view reprojection; do not repair the image."
     }
   }
 }
