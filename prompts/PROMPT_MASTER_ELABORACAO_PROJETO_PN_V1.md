@@ -598,27 +598,125 @@ legibilidade preservada.
 Status:
 `STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`.
 
-## ETAPA 7 — QA CRUZADO
+## ETAPA 7 — VERIFICAÇÃO FINAL MATEMÁTICA E VISUAL DA IMAGEM
+
+Pré-requisito:
+`STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`.
+
+Carregar:
+- `datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json`;
+- `datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json`;
+- `prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md`;
+- `memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml`;
+- `skills/aut-panel-final-image-verification/SKILL.md`.
+
+### 7.1 Identidade e paridade
+
+Confirmar mesmo:
+PROJECT_NUMBER, PANEL_ID, revisão, LI/Carga, ASSEMBLY_HASH e fingerprint físico do Passo 5/6.
+
+### 7.2 Concordância multivista
 
 Verificar:
-LI = CARGA = CONEXÕES = GEOMETRIA = STEP5 = STEP6.
+- H/W/D;
+- bbox do gabinete;
+- bbox local da porta/tampa;
+- eixo da dobradiça;
+- instâncias físicas;
+- escalas 1,1,1;
+- câmera/projeção registradas.
 
-Rejeitar:
-- dimensão desatualizada;
-- porta/tampa diferente entre vistas;
-- escala por vista;
-- imagem física divergente da LI;
-- protocolo inventado;
-- componente duplicado;
-- cota derivada do raster;
-- bloco reduzido para caber;
-- diagrama incoerente com topologia controlada.
+### 7.3 Proporção matemática
 
-## ETAPA 8 — MEMÓRIA E DATACENTER
+Frontal/interna:
+`ratio_ref = W_mm/H_mm`.
 
-Registrar decisão, erro, solução, fonte, mudança de premissa, invalidadores, hashes geométricos, câmera, parâmetros aprendidos, quantitativos e artefatos emitidos.
+Lateral/corte:
+`ratio_ref = D_mm/H_mm`.
 
-## ETAPA 9 — EVOLUÇÃO CONTROLADA
+Comparar contra o ratio em pixels da bbox renderizada e calcular erro percentual.
+
+### 7.4 Escala global
+
+Calcular px/mm em ambos os eixos de cada vista ortográfica e comparar:
+- eixo X versus eixo Y;
+- cada vista versus a escala global.
+
+Nenhuma vista dimensional pode ter escala própria para caber.
+
+### 7.5 Vista 3/4 e câmera
+
+Não medir dimensão aparente.
+
+Usar matriz de projeção da câmera + landmarks 3D canônicos + landmarks 2D renderizados e calcular RMSE de reprojeção em pixels.
+
+### 7.6 Enquadramento
+
+Verificar:
+- ausência de clipping;
+- margens mínimas;
+- conteúdo dentro do canvas;
+- centralização quando especificada;
+- nenhum bloco dimensional reduzido;
+- MODEL 001 integral.
+
+### 7.7 Cotas
+
+Os valores H/W/D exibidos devem ser idênticos aos dados controlados.
+
+Nunca validar dimensão a partir da medição do raster quando o manifest controlado existir.
+
+### 7.8 Regressão visual
+
+Quando houver baseline aprovado da mesma vista:
+- SSIM;
+- máscara/contorno;
+- perceptual hash;
+- diferenças de canvas/resolução.
+
+Esses resultados são QA secundário e não substituem geometria, câmera e dimensões.
+
+### 7.9 Ferramentas
+
+- Wolfram: matemática independente;
+- OpenCV: câmera, reprojeção, registro, contornos;
+- scikit-image: SSIM;
+- pytransform3d: transformações rígidas;
+- trimesh/Open3D: geometria/bbox;
+- Blender: metadata reprodutível de câmera/render;
+- FreeCAD/CadQuery/build123d: geometria;
+- ImageHash/Visual Regression Tracker: regressão suplementar;
+- Remote Desktop Commander: execução local autorizada.
+
+### 7.10 Gate
+
+Saídas:
+- FINAL_IMAGE_QA_MANIFEST;
+- MATHEMATICAL_IMAGE_PRECISION_REPORT;
+- MULTIVIEW_CONSISTENCY_REPORT;
+- FRAMING_AND_CANVAS_REPORT;
+- VISUAL_REGRESSION_REPORT;
+- STEP7_FINAL_IMAGE_VERIFIED.
+
+Falhas de geometria retornam ao Passo 5.
+Falhas de composição/documento retornam ao Passo 6.
+Falhas de quantidade retornam ao Passo 4.
+
+Status:
+`STEP7_FINAL_IMAGE_VERIFIED`.
+
+## ETAPA 8 — QA CRUZADO DE ENGENHARIA
+
+Verificar:
+LI = CARGA = CONEXÕES = GEOMETRIA = STEP5 = STEP6 = STEP7.
+
+Rejeitar dimensão desatualizada, quantidade divergente, protocolo inventado, componente duplicado, cota errada, escala divergente, erro de reprojeção não resolvido ou documento visual sem paridade.
+
+## ETAPA 9 — MEMÓRIA E DATACENTER
+
+Registrar decisão, erro, solução, fonte, mudança de premissa, invalidadores, hashes geométricos, câmera, parâmetros aprendidos, quantitativos, tolerâncias e relatórios de verificação.
+
+## ETAPA 10 — EVOLUÇÃO CONTROLADA
 
 O sistema pode detectar padrões de erro, sugerir checks, automações, ferramentas, regras e testes.
 
