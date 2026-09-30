@@ -12,36 +12,177 @@
 
 Nunca usar imagem, memória informal ou painel anterior para sobrescrever dados canônicos.
 
-## ETAPA 0 — BOOTSTRAP E CONFLITOS
+## ETAPA 0 — BOOTSTRAP DO SISTEMA
 
-1. Identificar PANEL_ID e revisão.
-2. Carregar premissas canônicas, Data Center, Data Sheet, LI/BOM, memória, Golden Rules, pipeline, MODEL 001 e diretriz de imagem.
-3. Reconciliar dimensões, quantidades, topologia, modelos, cargas, protocolos e HOLDs.
-4. Se houver conflito entre Excel, imagem e Data Sheet, bloquear o downstream até determinar a fonte de autoridade.
-5. Registrar o conflito, a decisão e quais artefatos ficaram inválidos.
+1. Carregar Golden Rules, pipeline, Data Center, memória metodológica, registros de plugins e controles de evolução.
+2. Verificar se o PROJECT_NUMBER já existe no repositório e carregar seu histórico quando aplicável.
+3. Não iniciar engenharia específica de painel antes do fechamento das ETAPAS 1 e 2.
 
-## ETAPA 1 — LEVANTAMENTO DO PROJETO
+## ETAPA 1 — LEVANTAMENTO DOCUMENTAL + NÚMERO DO PROJETO + QUANTIDADE DE PAINÉIS
 
-Levantar:
-- lista de equipamentos de campo;
-- equipamentos internos do quadro;
-- quantidade de unidades HVAC internas e externas;
-- sinais hardwired;
-- sinais analógicos;
-- HART;
-- redes;
-- gateways;
-- comandos;
-- feedbacks;
-- alimentação;
-- autonomia;
-- ambiente;
-- grau de proteção;
-- requisitos de manutenção e expansão.
+Esta é a primeira etapa de engenharia do projeto.
 
-Nenhum equipamento pode ficar sem destino lógico/físico.
+### 1.1 Identidade do projeto
 
-## ETAPA 2 — PESQUISA TÉCNICA
+Todo projeto de painéis deve possuir obrigatoriamente:
+- PROJECT_NUMBER;
+- título/descrição quando disponível;
+- revisão do projeto quando disponível;
+- cliente/local quando aplicável.
+
+PROJECT_NUMBER identifica o projeto completo.
+PANEL_ID identifica um painel dentro daquele projeto.
+
+Todo artefato downstream deve carregar:
+PROJECT_NUMBER + PANEL_ID + DOCUMENT_TYPE + REVISION + STATUS.
+
+### 1.2 Levantamento documental
+
+Antes de LI/BOM, cálculo, seleção, layout ou imagem:
+1. reunir os documentos recebidos;
+2. cadastrar cada documento como REF-001, REF-002, ...;
+3. registrar código, revisão, data, origem, idioma, link, página/seção e aplicação no projeto;
+4. identificar documentos faltantes;
+5. registrar conflitos.
+
+### 1.3 Quantidade de painéis
+
+Determinar, pelos documentos controlados:
+- quantidade total de painéis;
+- PANEL_ID de cada painel;
+- função;
+- localização quando disponível;
+- documento/página que comprova sua existência.
+
+Não transformar automaticamente em painel:
+- I/O remoto;
+- gateway;
+- caixa de campo;
+- caixa de junção;
+- field device;
+- equipamento instalado dentro de outro painel.
+
+### 1.4 Saída e gate
+
+Saída:
+PROJECT_INTAKE_MANIFEST
+
+Status de aprovação:
+STEP1_SCOPE_FROZEN
+
+Se documentos divergirem sobre número de painéis/PANEL_ID:
+HOLD_SCOPE_CONFLICT
+
+Até STEP1_SCOPE_FROZEN ficam bloqueadas as etapas de definição técnica do painel e todas as etapas downstream.
+
+## ETAPA 2 — DEFINIÇÃO PARAMÉTRICA DOS PAINÉIS E MOTOR DE PERGUNTAS
+
+Carregar obrigatoriamente:
+- datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json;
+- prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md;
+- memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml;
+- datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json.
+
+### 2.1 Objetivo
+
+Para cada painel do PROJECT_INTAKE_MANIFEST:
+1. reunir tudo que já é conhecido;
+2. resolver automaticamente o que puder ser sustentado por documentos, Data Center, memória, fabricante ou normas;
+3. gerar perguntas somente para lacunas reais;
+4. transformar respostas e evidências em parâmetros versionados;
+5. reduzir perguntas futuras pela reutilização validada desses parâmetros.
+
+### 2.2 Ordem antes de perguntar ao usuário
+
+Consultar nesta ordem:
+1. documentos controlados do mesmo projeto;
+2. Data Center do projeto;
+3. memória do mesmo PROJECT_NUMBER;
+4. memória do mesmo PANEL_ID;
+5. catálogo/manual oficial já arquivado;
+6. fabricante oficial;
+7. normas aplicáveis;
+8. parâmetros reutilizáveis compatíveis.
+
+Somente depois gerar pergunta.
+
+### 2.3 Perguntas
+
+Toda pergunta deve ter:
+- QUESTION_ID;
+- PROJECT_NUMBER;
+- PANEL_ID;
+- tema;
+- motivo;
+- contexto já conhecido;
+- lacuna real;
+- impacto;
+- opções quando aplicável;
+- fontes já consultadas.
+
+As perguntas ao usuário devem seguir:
+VISUALIZE + BLOCO FINAL COPIÁVEL.
+
+### 2.4 Memória evolutiva
+
+Cada resposta confirmada ou fato validado vira parâmetro versionado com:
+- PARAMETER_ID;
+- escopo;
+- valor/unidade;
+- origem;
+- REF_ID;
+- revisão;
+- status;
+- regra de reutilização;
+- invalidadores.
+
+Escopos:
+GLOBAL_METHOD, PROJECT, PANEL, MANUFACTURER_FAMILY, EQUIPMENT_MODEL.
+
+Nunca promover automaticamente PANEL/PROJECT para GLOBAL.
+
+### 2.5 Catálogos e documentação técnica
+
+Todo catálogo/manual/datasheet usado:
+- deve entrar no índice do Data Center;
+- deve possuir URL oficial e metadados;
+- quando tecnicamente/juridicamente possível, deve ter cópia controlada arquivada;
+- deve possuir SHA-256 quando a cópia estiver disponível;
+- deve registrar páginas/seções utilizadas.
+
+A memória guarda ponteiro/hash/parâmetros extraídos e não duplica PDFs completos.
+
+### 2.6 Tratamento de erro
+
+Quando um dado estiver errado:
+1. detectar conflito;
+2. preservar histórico;
+3. marcar valor antigo como SUPERSEDED;
+4. registrar novo valor/fonte;
+5. invalidar downstream;
+6. recalcular/revalidar;
+7. perguntar somente se a hierarquia das fontes não resolver.
+
+### 2.7 Gate
+
+Saídas:
+- PANEL_DEFINITION_MANIFEST;
+- PROJECT_PARAMETER_REGISTRY;
+- QUESTION_DECISION_LOG;
+- CATALOG_INDEX;
+- MEMORY_SYNC_RECORD.
+
+Status:
+STEP2_PANEL_DEFINITION_FROZEN
+
+Conflito crítico:
+HOLD_PANEL_DEFINITION_CONFLICT
+
+Regra:
+PERGUNTAR MENOS NÃO SIGNIFICA ASSUMIR MAIS.
+PERGUNTAR MENOS SIGNIFICA REUTILIZAR MELHOR DADOS VÁLIDOS, VERSIONADOS E RASTREÁVEIS.
+
+## ETAPA 3 — PESQUISA TÉCNICA
 
 Para cada item:
 1. localizar fabricante oficial;
@@ -58,7 +199,7 @@ Para cada item:
 
 Usar primeiro fabricante oficial. Plugins de pesquisa servem para descoberta e coleta, não como autoridade final.
 
-## ETAPA 3 — ARQUITETURA DE AUTOMAÇÃO
+## ETAPA 4 — ARQUITETURA DE AUTOMAÇÃO
 
 Criar inventário de endpoints.
 
@@ -80,7 +221,7 @@ ORIGEM -> INTERFACE -> REDE/BUS -> GATEWAY -> EQUIPAMENTOS -> QUANTIDADE -> CAPA
 
 Se quantidade requerida > capacidade: REPROVADO/HOLD até redimensionar a arquitetura.
 
-## ETAPA 4 — I/O E COMUNICAÇÃO
+## ETAPA 5 — I/O E COMUNICAÇÃO
 
 1. Elaborar matriz I/O.
 2. Elaborar matriz de comunicação.
@@ -90,7 +231,7 @@ Se quantidade requerida > capacidade: REPROVADO/HOLD até redimensionar a arquit
 6. Fechar protocolos e endereçamento.
 7. Reconciliar I/O com LI/BOM.
 
-## ETAPA 5 — SELEÇÃO DE COMPONENTES
+## ETAPA 6 — SELEÇÃO DE COMPONENTES
 
 Selecionar:
 - PLC/CPU;
@@ -111,7 +252,7 @@ Selecionar:
 
 Exigir compatibilidade integral e documentação oficial.
 
-## ETAPA 6 — CARGA E DIMENSIONAMENTO ELÉTRICO
+## ETAPA 7 — CARGA E DIMENSIONAMENTO ELÉTRICO
 
 Calcular:
 - carga 24 Vcc;
@@ -133,7 +274,7 @@ Calcular:
 
 "A DO QUADRO" somente após fechamento do gate elétrico.
 
-## ETAPA 7 — LI/BOM
+## ETAPA 8 — LI/BOM
 
 1. LI antes do desenho.
 2. Quantidades rastreáveis.
@@ -142,7 +283,7 @@ Calcular:
 5. Gateway dimensionado para a quantidade real de equipamentos.
 6. Mudança de quantidade/modelo cria nova revisão e invalida downstream.
 
-## ETAPA 8 — DIMENSIONAMENTO FÍSICO DO QUADRO
+## ETAPA 9 — DIMENSIONAMENTO FÍSICO DO QUADRO
 
 O tamanho do quadro é variável por projeto.
 
@@ -166,7 +307,7 @@ Selecionar gabinete real somente depois de provar capacidade.
 
 Nunca copiar H x W x D do MODEL 001 ou de outro PN.
 
-## ETAPA 9 — LAYOUT
+## ETAPA 10 — LAYOUT
 
 1. Uma escala em mm.
 2. Uma única instância física de cada item.
@@ -179,7 +320,7 @@ Nunca copiar H x W x D do MODEL 001 ou de outro PN.
 9. Validar climatização e recortes.
 10. Validar reserva remanescente.
 
-## ETAPA 10 — IMAGEM / MODEL 001
+## ETAPA 11 — IMAGEM / MODEL 001
 
 Carregar obrigatoriamente:
 - PN_MODEL_001;
@@ -197,7 +338,7 @@ Gerar:
 
 A cota lateral deve representar somente a profundidade real do painel-alvo.
 
-## ETAPA 11 — QA CRUZADO
+## ETAPA 12 — QA CRUZADO
 
 Verificar:
 LI = BOM = CARGA = I/O = COMUNICAÇÃO = DATASHEET = LAYOUT = GEOMETRIA = IMAGEM.
@@ -211,7 +352,7 @@ Rejeitar:
 - item sem fonte;
 - imagem com dado antigo.
 
-## ETAPA 12 — MEMÓRIA E DATACENTER
+## ETAPA 13 — MEMÓRIA E DATACENTER
 
 Após todo marco:
 - registrar decisão;
@@ -224,7 +365,7 @@ Após todo marco:
 - atualizar memória metodológica;
 - atualizar Data Center.
 
-## ETAPA 13 — EVOLUÇÃO CONTROLADA
+## ETAPA 14 — EVOLUÇÃO CONTROLADA
 
 O sistema pode:
 - detectar padrões de erro;
