@@ -106,3 +106,23 @@ Current project example:
 DE-3501.02-8210-800-RPJ-703 (Térreo) -> vertical rise symbol -> DE-3501.02-8210-800-RPJ-704 (1º Pavimento).
 
 Next action: capture Step 9 from the user.
+
+
+### Step 12 — Sum total conduit route length
+Calculate the total conduit quantity by tracing the complete conduit routing from the automation panel, following all directions/branches shown in the drawing, and summing the lengths of the physical route segments that make up the conduit coverage.
+
+Taught rules:
+- Start from the automation panel.
+- Follow the actual conduit geometry shown in the drawing, including changes of direction and branches.
+- Measure all conduit segments that compose the route coverage.
+- Sum those measured segments to obtain the total conduit route length.
+- Do not use straight-line distance between panel and instruments.
+- Convert drawing measurements to real project dimensions using the drawing scale.
+- For the current example, use scale 1:50.
+- Keep the conduit total separate from cable-tray quantities and cable lengths.
+- Do not yet add vertical allowances, bend allowances, fitting equivalents, spare percentage or procurement rounding unless explicitly taught later.
+
+Scale relation for the current drawing:
+L_real = L_measured_on_drawing x 50, provided both lengths use compatible units.
+
+Next action: capture Step 13 from the user.
