@@ -231,3 +231,14 @@ For full PN elaboration, apply the specialized skill chain in order:
 9. aut-panel-learning-memory
 
 The chain may loop backward whenever a later gate invalidates upstream assumptions. Gateway-capacity and enclosure-dimension conflicts are mandatory rollback triggers.
+
+## Open-source toolchain and autonomous improvement
+Load when tool discovery, methodology improvement, repeated failures, plugin changes, CAD/3D extensions, or workflow evolution are involved:
+- `skills/aut-panel-open-source-toolchain/SKILL.md`
+- `skills/aut-panel-autonomous-improvement/SKILL.md`
+- `datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json`
+- `improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json`
+- `plugins/aut_panel_open_source_registry.json`
+- `datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json`
+
+Autonomy is allowed for observation, comparison, scoring and proposal creation. Human approval is mandatory before changing locked engineering rules, frozen project state, core dependencies or release status.
