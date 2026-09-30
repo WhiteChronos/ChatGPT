@@ -32,12 +32,37 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 22
-  last_sync_at: '2026-09-29T13:31:00-03:00'
+  sync_revision: 23
+  last_sync_at: '2026-09-30T17:12:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
     head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
+  current_project_control_v2:
+    panel_id: PN-AUT-001
+    registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
+    methodology: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
+    master_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
+    plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+    evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
+    enclosure_mm: {height: 1200, width: 800, depth: 300}
+    enclosure_model: NSYCRN128300
+    stale_image_dimension_1800x800x300: INVALIDATED
+    gateway_review: datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json
+    hvac_inventory: {indoor_units: 32, outdoor_condensing_units: 6}
+    gateway_architecture_status: HOLD_REDESIGN
+    image_status: INVALIDATED_PENDING_GATEWAY_AND_DIMENSION_REGENERATION
+    excel_status: HOLD_PENDING_PROJECT_RECONCILIATION
+  skill_chain:
+    - skills/aut-panel-bootstrap/SKILL.md
+    - skills/aut-panel-source-research/SKILL.md
+    - skills/aut-panel-component-selection/SKILL.md
+    - skills/aut-panel-automation-io/SKILL.md
+    - skills/aut-panel-electrical-sizing/SKILL.md
+    - skills/aut-panel-layout/SKILL.md
+    - skills/aut-panel-image-document/SKILL.md
+    - skills/aut-panel-qa-release/SKILL.md
+    - skills/aut-panel-learning-memory/SKILL.md
   active_work:
     objective: Impedir regressão de duplicidade de IHM e renders fora de escala, exigindo fechamento
       dimensional, instância física única, superfície de montagem e validação de saída de cabos antes do render.
@@ -81,7 +106,8 @@ mutable_state:
     bend_radius_validation_required: true
     side_open_real_scale: true
     side_open_aspect_ratio_formula: depth_external_mm / height_external_mm
-    pn_aut_01_side_open_aspect_ratio: 0.375
+    pn_aut_01_side_open_aspect_ratio: 0.375 # legacy PN-AUT-01 reference only
+    pn_aut_001_side_open_aspect_ratio: 0.25 # current PN-AUT-001 = 300/1200
     image_6_depth_section_required: true
     failure_modes:
       missing_dimension: HOLD_DIMENSIONAL_DATA
@@ -550,3 +576,22 @@ history:
     paridade LI/BOM/CARGA/DATASHEET/LAYOUT/GEOMETRIA/IMAGEM, branding, canvas grow-only, estados HOLD,
     QA e sincronizacao obrigatoria com Data Center e memorias. Passa a ser carregada obrigatoriamente
     por Codex, Renderer, Layout, QA e agentes guardioes antes de qualquer elaboracao ou revisao visual.
+
+- revision: 23
+  at: '2026-09-30T17:12:00-03:00'
+  actor: user+assistant
+  event: PROJECT_RECONCILIATION_GATEWAY_SKILL_PLUGIN_UPGRADE
+  summary: >-
+    Usuario identificou dois erros de coerencia no PN-AUT-001: Excel R03 usa gabinete
+    1200x800x300 mm enquanto a imagem usava 1800x800x300 mm; e a arquitetura de gateway
+    precisa atender 32 unidades internas e 6 condensadoras/sistemas, portanto um gateway
+    nao pode ser aceito sem verificacao numerica de capacidade. O valor 1800 mm foi
+    invalidado para o PN-AUT-001 e o valor corrente passou a ser 1200x800x300 mm conforme
+    LI/Excel R03 e projeto control V2. Criado review de gateway. IRTrans IRT-MED-Mod
+    controla ate 15 bus modules por busmaster; para 32 unidades internas, a arquitetura
+    IRTrans de um bus module por unidade exige no minimo 3 Mediacontrollers e 32 bus modules.
+    As 6 condensadoras nao devem ser automaticamente contadas como IR bus modules; integrar
+    conforme topologia nativa do fabricante HVAC. A selecao anterior de um unico
+    TCONTCCMHCM04A foi reaberta e downstream de comunicacao/BOM/carga/layout/imagem/QA ficou
+    HOLD. Criado prompt mestre completo de elaboracao do projeto, registry de plugins,
+    memoria de evolucao metodologica e cadeia de 9 skills especializadas.
