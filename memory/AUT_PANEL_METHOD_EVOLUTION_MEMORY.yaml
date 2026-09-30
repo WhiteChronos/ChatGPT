@@ -30,6 +30,13 @@ known_error_patterns:
       - "MODEL 001 define estrutura apenas."
       - "Dados numericos sempre do painel-alvo."
 
+  - id: ERR-LI-QUANTITY-ROUTE-001
+    pattern: "LI com fios, canaletas, trilhos ou acessórios estimados sem conexão/rota/geométrica rastreável."
+    prevention:
+      - "Calcular fiação por grafo de conexões e rota real em mm."
+      - "Calcular materiais lineares pela geometria do layout."
+      - "Incluir cadeia completa de acessórios e montagem."
+      - "Bloquear workbook se houver quantidade sem trace ID ou REF_ID."
 learning_loop:
   stages:
     - OBSERVE
