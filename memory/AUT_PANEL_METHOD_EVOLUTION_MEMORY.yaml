@@ -51,6 +51,15 @@ known_error_patterns:
       - "Grow-only canvas."
       - "scale_x=scale_y=1.0 para vistas dimensionais."
       - "Cotas sempre de valores controlados, nunca de raster."
+  - id: ERR-FINAL-IMAGE-PRECISION-001
+    pattern: "Imagem final visualmente plausivel, mas com proporcao, escala px/mm, enquadramento ou reprojecao incompatível com a geometria controlada."
+    prevention:
+      - "Executar Step 7 antes de release."
+      - "Comparar W/H e D/H físicos contra bbox em pixels nas vistas ortograficas."
+      - "Comparar px/mm entre eixos e entre vistas."
+      - "Validar 3/4 por matriz de camera e RMSE de reprojecao."
+      - "Bloquear clipping e cota divergente."
+      - "Usar SSIM/hash apenas como camada secundaria."
 learning_loop:
   stages:
     - OBSERVE
