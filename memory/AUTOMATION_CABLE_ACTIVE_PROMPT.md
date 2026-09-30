@@ -195,3 +195,26 @@ Interpret the drawing callout exactly as taught:
 
 Do not infer additional conductor/pair semantics, cable construction, spare cores or termination rules until explicitly taught.
 Next action: capture Step 17 from the user.
+
+
+### Step 17 — Digital AC signal cascade
+The digital air-conditioning signal cable uses a cascade/daisy-chain topology rather than the HART one-cable-per-instrument topology.
+
+Taught rules:
+- Start at the automation panel.
+- Continue from one AC equipment to the next in the project sequence.
+- Do not create an independent panel-to-each-equipment cable for this digital signal.
+- After the final equipment, the route returns to the automation panel.
+- Preserve this chain across floor transitions when the route rises.
+- Do not infer protocol, termination, node limits, voltage or redundancy until taught.
+
+### Step 18 — Conduit crossing below another apparent conduit
+Interpret the shown break/bridge symbol at a conduit crossing as vertical separation, not a route break.
+Taught rules:
+- The conduit continues through the crossing.
+- The symbol indicates this conduit passes below the other apparent conduit.
+- Do not terminate, branch, split, or restart the route at this symbol.
+- Preserve route identity and include the continuous segment in conduit and cable path calculations.
+- Treat it only as a graphical crossing/level indication unless later rules add a physical fitting or allowance.
+
+Next action: capture Step 19 from the user.
