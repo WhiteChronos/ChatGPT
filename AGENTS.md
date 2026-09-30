@@ -123,3 +123,16 @@ A datasheet may declare `PASS` only when all of the following are true:
 
 ## Pull request compatibility
 A pull request that changes compatibility-analysis logic, engineering schemas, Data Center manifests, datasheets, report-generation code or either compatibility validator MUST pass the Engineering Compatibility Visualize Gate and repository governance checks before merge.
+
+
+## Automation cable calculation contract
+
+For automation cable-tray, conduit and cable calculations, Codex SHALL read:
+- `memory/AUTOMATION_CABLE_METHOD_V1.md`
+- `memory/AUTOMATION_CABLE_ACTIVE_PROMPT.md`
+- `datacenter/AUTOMATION_CABLE_PROCESS_STATE.json`
+- `datacenter/AUTOMATION_CABLE_PROJECT_DRAWING_REGISTER.json`
+- `skills/automation-cable-orchestrator/SKILL.md`
+- `codex/automation-cable/AGENTS.md`
+
+Codex SHALL preserve the 18 user-taught steps, keep physical containment and cumulative cable quantities separate, use deterministic calculations, and create a checkpoint after every substantive action.
