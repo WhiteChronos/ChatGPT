@@ -334,5 +334,54 @@
       "GitHub Connector"
     ],
     "exact_electrical_connection_tooling": "No dedicated ChatGPT plugin found in current directory; governed QElectroTech/WireViz/QetWireManager open-source/local stack is used instead."
+  },
+  "step5_visual_fidelity_stack": {
+    "geometry_authority": [
+      "manufacturer CAD",
+      "FreeCAD",
+      "CadQuery",
+      "build123d",
+      "OpenCascade"
+    ],
+    "qa": [
+      "trimesh",
+      "Open3D",
+      "OpenCV",
+      "ImageHash supplementary"
+    ],
+    "rendering": [
+      "Blender"
+    ],
+    "math": [
+      "Wolfram"
+    ],
+    "local_tool_bridge": [
+      "Remote Desktop Commander"
+    ],
+    "presentation_only": [
+      "to3D",
+      "Adobe",
+      "ImageGen"
+    ],
+    "invariant": "Same canonical assembly and door object across every camera view."
+  },
+  "step6_engineering_document_stack": {
+    "physical_view_authority": "STEP5_PN_IMAGE_FIDELITY_FROZEN",
+    "vector_diagrams": [
+      "QElectroTech",
+      "SchemDraw",
+      "NetworkX/SVG",
+      "CairoSVG",
+      "ezdxf when required"
+    ],
+    "review_plugins": [
+      "B&A Diagrams",
+      "tldraw",
+      "Miro"
+    ],
+    "math": [
+      "Wolfram"
+    ],
+    "composition_rule": "Grow-only canvas; dimensional views remain scale_x=scale_y=1.0."
   }
 }
