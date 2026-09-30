@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-AUTONOMOUS-IMPROVEMENT-V1",
+  "status": "ACTIVE_CONTROLLED",
+  "purpose": "Continuously observe the AUT Panel workflow, detect regressions/opportunities, and propose improvements while preventing autonomous mutation of locked engineering state.",
+  "skill": "skills/aut-panel-autonomous-improvement/SKILL.md",
+  "open_source_skill": "skills/aut-panel-open-source-toolchain/SKILL.md",
+  "plugin_registry": "datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json",
+  "open_source_registry": "plugins/aut_panel_open_source_registry.json",
+  "method_memory": "memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml",
+  "loop": [
+    "OBSERVE",
+    "CLASSIFY",
+    "ROOT_CAUSE",
+    "PROPOSE",
+    "SCORE",
+    "SANDBOX_SIMULATE",
+    "REGRESSION_TEST",
+    "QA",
+    "HUMAN_GATE",
+    "APPLY_VERSION",
+    "MEASURE"
+  ],
+  "autonomous_actions_allowed": [
+    "scan current project state for inconsistencies",
+    "detect stale downstream artifacts",
+    "compare plugin/open-source candidates",
+    "refresh non-authoritative discovery metadata",
+    "create improvement proposals",
+    "suggest new regression tests",
+    "suggest new skills/tools",
+    "suggest automation opportunities",
+    "score proposal priority",
+    "create HOLD/review recommendation when evidence shows a conflict"
+  ],
+  "autonomous_actions_forbidden": [
+    "approve for issue",
+    "clear engineering HOLD",
+    "change frozen LI/BOM",
+    "change frozen enclosure dimensions",
+    "change Golden Rules",
+    "auto-merge pull requests",
+    "install/connect external plugins without user action",
+    "promote repository dependency without license/security/sandbox/regression review",
+    "replace official evidence with plugin/memory output"
+  ],
+  "proposal_contract": {
+    "required_fields": [
+      "proposal_id",
+      "trigger",
+      "evidence",
+      "root_cause",
+      "affected_artifacts",
+      "severity",
+      "frequency",
+      "detectability",
+      "expected_benefit",
+      "implementation_risk",
+      "proposed_change",
+      "rollback_plan",
+      "regression_test",
+      "sandbox_result",
+      "human_gate_status"
+    ],
+    "priority_score": "0-100 via skills/aut-panel-autonomous-improvement/scripts/score_candidate.py",
+    "lifecycle": [
+      "PROPOSED",
+      "SANDBOXED",
+      "QA_PASSED",
+      "HUMAN_APPROVED",
+      "APPLIED",
+      "MEASURED",
+      "REJECTED"
+    ]
+  },
+  "mandatory_triggers": [
+    "user correction",
+    "QA failure",
+    "source conflict",
+    "dimension mismatch",
+    "gateway/capacity mismatch",
+    "CI regression",
+    "new plugin/repository discovery",
+    "repeated HOLD pattern",
+    "new manufacturer revision/lifecycle change"
+  ],
+  "release_rule": "Improvement engine may propose but never authorize engineering release."
+}
