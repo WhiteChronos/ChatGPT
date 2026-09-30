@@ -63,6 +63,11 @@ canonical_sources:
   step6_engineering_image_document_prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
   step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
   step6_engineering_image_document_skill: skills/aut-panel-image-document/SKILL.md
+  step7_final_image_verification_control: datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json
+  step7_image_verification_toolchain: datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json
+  step7_final_image_verification_prompt: prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md
+  step7_final_image_verification_memory: memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml
+  step7_final_image_verification_skill: skills/aut-panel-final-image-verification/SKILL.md
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   aut_panel_plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
