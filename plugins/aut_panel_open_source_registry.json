@@ -1,14 +1,19 @@
 {
-  "registry_version": "1.1",
+  "registry_version": "1.2",
   "registry_id": "AUT-PANEL-OPEN-SOURCE-REGISTRY-V1",
-  "discovered_at": "2026-09-28",
+  "discovered_at": "2026-09-30",
   "policy": {
     "activation_requires_version_or_commit_pin": true,
     "license_review_required": true,
     "security_review_required": true,
     "no_auto_install_into_core_pipeline": true,
     "archived_repository_cannot_be_new_core_dependency": true,
-    "generated_output_never_overrides_engineering_evidence": true
+    "generated_output_never_overrides_engineering_evidence": true,
+    "autonomous_discovery_allowed": true,
+    "autonomous_promotion_forbidden": true,
+    "human_gate_for_core_dependency": true,
+    "regression_test_required": true,
+    "system_may_propose_improvements": true
   },
   "repositories": [
     {
@@ -143,6 +148,124 @@
       ],
       "status": "DISCOVERED_OPTIONAL",
       "archived": false
+    },
+    {
+      "repository": "FreeCAD/FreeCAD",
+      "role": [
+        "PARAMETRIC_CAD",
+        "STEP_IGES_REVIEW",
+        "GEOMETRY_AUTHORING"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "Open-Cascade-SAS/OCCT",
+      "role": [
+        "B_REP_GEOMETRY_KERNEL",
+        "SOLID_MODELING"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "CadQuery/cadquery",
+      "role": [
+        "PYTHON_PARAMETRIC_CAD",
+        "STEP_EXPORT",
+        "DETERMINISTIC_GEOMETRY"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "gumyr/build123d",
+      "role": [
+        "PYTHON_PARAMETRIC_CAD",
+        "DETERMINISTIC_GEOMETRY"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "mikedh/trimesh",
+      "role": [
+        "MESH_QA",
+        "BOUNDING_BOX_QA",
+        "SCENE_VALIDATION"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "isl-org/Open3D",
+      "role": [
+        "3D_GEOMETRY_QA",
+        "POINT_CLOUD",
+        "SPATIAL_VALIDATION"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "IfcOpenShell/IfcOpenShell",
+      "role": [
+        "IFC_BIM_INTEROP",
+        "BIM_GEOMETRY"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "blender/blender",
+      "role": [
+        "PHOTOREAL_RENDERING",
+        "CAMERA_LIGHTING_MATERIALS"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "pyrevitlabs/pyRevit",
+      "role": [
+        "REVIT_AUTOMATION_BRIDGE",
+        "BIM_INTEROP"
+      ],
+      "status": "DISCOVERED_OPTIONAL_AUTHORIZED_AUTODESK_REQUIRED",
+      "archived": false
+    },
+    {
+      "repository": "microsoft/autogen",
+      "role": [
+        "MULTI_AGENT_ARCHITECTURE_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY_DO_NOT_REPLACE_CANONICAL_AGENT_SYSTEM",
+      "archived": false
+    },
+    {
+      "repository": "langchain-ai/langgraph",
+      "role": [
+        "STATEFUL_WORKFLOW_GRAPH_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY_DO_NOT_REPLACE_CANONICAL_AGENT_SYSTEM",
+      "archived": false
+    },
+    {
+      "repository": "crewAIInc/crewAI",
+      "role": [
+        "MULTI_AGENT_WORKFLOW_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY_DO_NOT_REPLACE_CANONICAL_AGENT_SYSTEM",
+      "archived": false
+    },
+    {
+      "repository": "openai/openai-cookbook",
+      "role": [
+        "OPENAI_IMPLEMENTATION_PATTERNS",
+        "AGENT_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY",
+      "archived": false
     }
   ],
   "excluded_from_new_core_dependency": [
@@ -156,5 +279,5 @@
     }
   ],
   "extended_toolchain_registry": "plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json",
-  "note": "Legacy discovery registry preserved; comprehensive categorized candidates are maintained in AUT_PANEL_GITHUB_TOOLCHAIN_V2.json."
+  "note": "Expanded with deterministic CAD/3D/BIM tooling and agent-framework references. Discovery/proposals may be autonomous; promotion into the core pipeline always requires pinning, license/security review, sandbox/regression validation and human approval."
 }
