@@ -42,6 +42,11 @@ canonical_sources:
   pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   aut_panel_project_elaboration_control: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
   aut_panel_project_elaboration_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
+  project_intake_step1: datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json
+  panel_definition_step2: datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json
+  panel_definition_step2_prompt: prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md
+  parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
+  catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   aut_panel_plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
   aut_panel_method_evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
   autonomous_improvement_control: datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json
