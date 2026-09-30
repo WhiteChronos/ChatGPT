@@ -131,6 +131,46 @@
       ],
       "engineering_use": "Use after engineering geometry/render is frozen, for visual cleanup and presentation only. It may not alter engineering geometry, quantities, dimensions or tags.",
       "authority": "PRESENTATION_ONLY"
+    },
+    {
+      "name": "Consensus",
+      "installed": true,
+      "role": [
+        "academic literature review",
+        "research synthesis"
+      ],
+      "engineering_use": "Support technical methodology and literature review; manufacturer ratings and normative facts still require primary sources.",
+      "authority": "SECONDARY_RESEARCH_SUPPORT"
+    },
+    {
+      "name": "Vercel",
+      "installed": true,
+      "role": [
+        "web app deployment",
+        "agent app hosting"
+      ],
+      "engineering_use": "Optional deployment target for dashboards, review portals or agent utilities; never engineering authority.",
+      "authority": "DEPLOYMENT_SUPPORT"
+    },
+    {
+      "name": "OpenAI Developers",
+      "installed": true,
+      "role": [
+        "OpenAI app/agent development guidance"
+      ],
+      "engineering_use": "Reference for implementation patterns and agent tooling; changes still follow project governance.",
+      "authority": "IMPLEMENTATION_REFERENCE"
+    },
+    {
+      "name": "GitHub Connector",
+      "installed": true,
+      "role": [
+        "canonical repository audit",
+        "version control",
+        "PR/issue/code access"
+      ],
+      "engineering_use": "Primary auditable storage and change-control mechanism for project artifacts in this environment.",
+      "authority": "CANONICAL_AUDIT_TOOL"
     }
   ],
   "recommended_data_model": {
@@ -197,5 +237,39 @@
       "ImageGen": "illustrative/render support only; never engineering geometry authority"
     },
     "hard_rule": "Generated 3D/image tools cannot change the frozen engineering geometry or prove component dimensions."
+  },
+  "candidates": [
+    {
+      "name": "GitBook",
+      "status": "AVAILABLE_NOT_REQUIRED",
+      "role": [
+        "published engineering knowledge base"
+      ]
+    },
+    {
+      "name": "TinyFish",
+      "status": "AVAILABLE_NOT_REQUIRED",
+      "role": [
+        "interactive browser workflows"
+      ]
+    },
+    {
+      "name": "AgentMail",
+      "status": "AVAILABLE_NOT_REQUIRED",
+      "role": [
+        "agent communication channel"
+      ]
+    }
+  ],
+  "autonomy_policy": {
+    "discovery": "AUTONOMOUS_ALLOWED",
+    "comparison": "AUTONOMOUS_ALLOWED",
+    "suggestion_generation": "AUTONOMOUS_ALLOWED",
+    "registry_refresh": "AUTONOMOUS_ALLOWED_FOR_NON_AUTHORITATIVE_METADATA",
+    "install_or_connect": "USER_ACTION_REQUIRED",
+    "promote_to_core": "HUMAN_GATE_REQUIRED",
+    "modify_engineering_rules": "HUMAN_GATE_REQUIRED",
+    "clear_hold": "FORBIDDEN_AUTONOMOUSLY",
+    "release_approval": "FORBIDDEN_AUTONOMOUSLY"
   }
 }
