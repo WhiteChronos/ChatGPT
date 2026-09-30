@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "project_number": "25279",
+  "panel_id": "PN-AUT-01",
+  "status": "STEP2_REOPENED",
+  "current_step": 2,
+  "active_manifest": "datacenter/projects/25279/STEP2_PANEL_DEFINITION_MANIFEST_R01.json",
+  "active_parameter_registry": "datacenter/projects/25279/PROJECT_PARAMETER_REGISTRY_R01.json",
+  "question_log": "datacenter/projects/25279/QUESTION_DECISION_LOG_R01.json",
+  "catalog_index": "datacenter/projects/25279/CATALOG_INDEX_R01.json",
+  "next_sequence": [
+    "resolve DE source/fiber physical-medium item",
+    "freeze STEP2",
+    "rerun Step 3 focused normative/manufacturer review for revised communication and power architecture",
+    "rebuild Step 4 LI/Carga",
+    "recalculate load/UPS/battery/thermal and material quantities",
+    "rebuild Step 5 PN physical image",
+    "rebuild Step 6 engineering image document",
+    "run Step 7 final image verification"
+  ],
+  "downstream_status": "INVALIDATED_FROM_PREVIOUS_R06_ASSUMPTIONS",
+  "previous_project_alias": "PN-AUT-001",
+  "preservation_rule": "Do not delete historical PN-AUT-001 artifacts; preserve as superseded history."
+}
