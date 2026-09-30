@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 32
-  last_sync_at: '2026-09-30T23:22:00-03:00'
+  sync_revision: 33
+  last_sync_at: '2026-09-30T23:48:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -97,6 +97,31 @@ mutable_state:
       output: [LI_LOAD_WORKBOOK, MATERIAL_QUANTITY_TRACE, INTERNAL_WIRE_CUTLIST, LOAD_CALCULATION_TRACE]
       pass_status: STEP4_LI_LOAD_FROZEN
       no_image_before_step4: true
+    step5_image_fidelity:
+      step: 5
+      control: datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json
+      prompt: prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md
+      memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
+      skill: skills/aut-panel-pn-image-fidelity/SKILL.md
+      pass_status: STEP5_PN_IMAGE_FIDELITY_FROZEN
+      rule: one_canonical_assembly_same_door_all_views
+    step6_engineering_document:
+      step: 6
+      control: datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json
+      prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
+      memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
+      skill: skills/aut-panel-image-document/SKILL.md
+      pass_status: STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN
+      rule: grow_only_canvas_no_geometry_change
+    step7_final_image_verification:
+      step: 7
+      control: datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json
+      toolchain: datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json
+      prompt: prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md
+      memory: memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml
+      skill: skills/aut-panel-final-image-verification/SKILL.md
+      pass_status: STEP7_FINAL_IMAGE_VERIFIED
+      rule: verify_only_math_framing_scale_reprojection_no_repair
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -119,7 +144,9 @@ mutable_state:
     - skills/aut-panel-automation-io/SKILL.md
     - skills/aut-panel-electrical-sizing/SKILL.md
     - skills/aut-panel-layout/SKILL.md
+    - skills/aut-panel-pn-image-fidelity/SKILL.md
     - skills/aut-panel-image-document/SKILL.md
+    - skills/aut-panel-final-image-verification/SKILL.md
     - skills/aut-panel-qa-release/SKILL.md
     - skills/aut-panel-learning-memory/SKILL.md
   active_work:
@@ -777,3 +804,21 @@ history:
     scale_x=scale_y=1.0 e cotas vem de H/W/D controlados, nunca de raster ou perspectiva. Criados controles,
     prompts, memorias, registry de referencias, skill aut-panel-pn-image-fidelity e atualizada a skill
     aut-panel-image-document. Golden Rules GR-095..GR-102 adicionadas.
+
+- revision: 33
+  at: '2026-09-30T23:48:00-03:00'
+  actor: user+assistant
+  event: STEP7_FINAL_IMAGE_MATHEMATICAL_VERIFICATION_CONSOLIDATED
+  summary: >-
+    Passo 7 consolidado como verificacao final da imagem por PN, sem correcao cosmetica.
+    Verifica identidade de revisao/fingerprint, concordancia multivista, H/W/D, bbox de gabinete
+    e porta, escala de objetos, proporcao ortografica W/H e D/H, px/mm por eixo e entre vistas,
+    enquadramento/clipping, cotas controladas e reprojecao de landmarks 3D/2D para vistas 3/4.
+    Defaults internos de QA: aspect ratio 0.25%, mismatch px/mm 0.25%, desvio de escala comum
+    0.50%, reprojecao 1.5 px, dimensao CAD/modelo 0.10 mm e desequilibrio de margem 5%.
+    Esses valores nao sao limites normativos e nao podem ser afrouxados silenciosamente.
+    Open source levantado: OpenCV, scikit-image, COLMAP, openMVG, pytransform3d, trimesh,
+    Open3D, Blender, FreeCAD, CadQuery, build123d, ImageHash e Visual Regression Tracker.
+    Criados control, toolchain, prompt, memoria, skill, scripts e testes de regressao.
+    Golden Rules GR-103..GR-110 adicionadas. Falha de geometria retorna ao Passo 5,
+    composicao ao Passo 6 e quantidade ao Passo 4.
