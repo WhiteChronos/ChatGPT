@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 33
-  last_sync_at: '2026-09-30T23:48:00-03:00'
+  sync_revision: 34
+  last_sync_at: '2026-09-30T20:40:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -822,3 +822,24 @@ history:
     Criados control, toolchain, prompt, memoria, skill, scripts e testes de regressao.
     Golden Rules GR-103..GR-110 adicionadas. Falha de geometria retorna ao Passo 5,
     composicao ao Passo 6 e quantidade ao Passo 4.
+
+- revision: 34
+  at: '2026-09-30T20:40:00-03:00'
+  actor: user+assistant
+  event: PROJECT_25279_PN_AUT_01_RETURNED_TO_STEP2
+  summary: >-
+    Active identity corrected to PROJECT_NUMBER 25279 / PANEL_ID PN-AUT-01. Historical PN-AUT-001 artifacts
+    are preserved but superseded for active scope. Step 2 reopened before LI/image rebuild. LI-702 Rev.0 remains
+    the canonical I/O basis currently available: 56 used AI (28 temperature + 28 CO2), 11 reserve required,
+    67 installed requirement; DI=0, DO=0, AO=0. Siemens platform retained with CPU 1515-2 PN 6ES7515-2AN03-0AB0
+    and ET 200SP AI 4xI 2-wire HART 6ES7134-6TD00-0CA1; 17 modules = 68 physical channels. Generic relays are
+    removed; only verified hardwired DO may create interposing relay quantities. Exactly one HMIST6500 remains;
+    Schneider EOTE documentation supports TIA Portal Ethernet driver for S7-1500 communication. Previous 8-port
+    SCALANCE switch is superseded by a compact point-to-point copper/fiber media-converter function. Siemens
+    SCALANCE XCM102 6GK5102-1GS00-2AC2 selected as local panel family: 1x RJ45 + 1x SFP, 100/1000 Mbps, 24 V AC/DC
+    redundant. SFP exact model waits for project fiber type: SFP992-1+ multimode or SFP992-1LD single-mode.
+    HVAC gateway changed from frozen IRTrans selection to FUNCTIONAL_PROVISIONAL until HVAC executive documents
+    establish the native topology. Power architecture changed to separate AC/DC 24 V supply + DC-UPS; Siemens
+    SITOP PSU6200/8200 + UPS1600 families are the preferred architecture, exact ratings to be recalculated in
+    Step 4. Only unresolved Step 2 input is the DE drawing set needed to cross-check instrument quantities and
+    define fiber physical medium/link details. Downstream R06 LI/load/layout/image assumptions are invalidated.
