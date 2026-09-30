@@ -1,60 +1,22 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
-  "phase": "foundation_persistence_and_tooling",
-  "last_checkpoint_id": "ACP-20260930-004600-002",
-  "last_completed_action": "Expanded skill with calculation, image, PDF and DWG/DXF/CAD tool routing",
-  "next_action": "Implement deterministic 24Vdc and 4-20mA calculation module with tests and optional Wolfram verification hooks",
-  "source_of_truth": "github",
-  "tool_routing": {
-    "calculation": {
-      "primary": "deterministic_engineering_rules",
-      "verifier": "Wolfram_when_connected"
-    },
-    "pdf": {
-      "primary": "Adobe Acrobat",
-      "open_source": [
-        "pymupdf/PyMuPDF",
-        "jsvine/pdfplumber"
-      ]
-    },
-    "images": {
-      "primary": "built_in_vision",
-      "open_source": [
-        "opencv/opencv"
-      ]
-    },
-    "cad": {
-      "primary": "open_source_conversion_and_validation",
-      "repositories": [
-        "LibreDWG/libredwg",
-        "LibreCAD/LibreCAD"
-      ],
-      "dwg_plugin_found": false
-    },
-    "diagrams": {
-      "optional": "tldraw_when_connected"
-    }
+  "phase": "learning_user_method",
+  "workflow": {
+    "current_step": 1,
+    "step_name": "insert_project_drawings",
+    "status": "captured",
+    "registered_drawings": [
+      "DE-3501.02-8210-800-RPJ-703 Rev.0",
+      "DE-3501.02-8210-800-RPJ-704 Rev.0"
+    ]
   },
-  "secondary_memory_candidates": [
-    "WhiteChronos/mem0",
-    "WhiteChronos/graphiti",
-    "WhiteChronos/cognee",
-    "WhiteChronos/hindsight",
-    "WhiteChronos/letta",
-    "WhiteChronos/openmemory",
-    "WhiteChronos/memU"
-  ],
-  "engineering_invariants": [
-    "deterministic_rules_authoritative",
-    "ml_advisory_only",
-    "automation_cables_scope",
-    "checkpoint_every_substantive_action",
-    "preserve_provenance",
-    "tool_results_require_validation"
-  ],
+  "last_checkpoint_id": "ACP-20260930-STEP1-003",
+  "last_completed_action": "Registered project drawings as mandatory Step 1",
+  "next_action": "Capture user Step 2",
+  "source_of_truth": "github",
   "status": "active"
 }
