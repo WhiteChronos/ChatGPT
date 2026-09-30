@@ -217,3 +217,17 @@ The directive governs the complete image workflow:
 canonical premises -> Data Center -> Data Sheet -> LI/BOM -> component selection -> load/I-O/thermal -> target enclosure sizing -> layout -> geometry -> MODEL 001 -> render -> QA -> memory sync.
 
 Codex SHALL NOT treat MODEL 001 as a source of target-panel physical dimensions and SHALL NOT treat a generated image as engineering authority.
+
+## Modular PN skill chain
+For full PN elaboration, apply the specialized skill chain in order:
+1. aut-panel-bootstrap
+2. aut-panel-source-research
+3. aut-panel-component-selection
+4. aut-panel-automation-io
+5. aut-panel-electrical-sizing
+6. aut-panel-layout
+7. aut-panel-image-document
+8. aut-panel-qa-release
+9. aut-panel-learning-memory
+
+The chain may loop backward whenever a later gate invalidates upstream assumptions. Gateway-capacity and enclosure-dimension conflicts are mandatory rollback triggers.
