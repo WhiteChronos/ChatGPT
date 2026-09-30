@@ -1,0 +1,30 @@
+{
+  "schema_version": "2.0",
+  "panel_id": "PN-AUT-001",
+  "status": "ACTIVE_REVIEW",
+  "current_revision_basis": "R03 engineering LI + user corrections 2026-09-30",
+  "canonical_enclosure": {
+    "manufacturer": "Schneider Electric",
+    "model": "NSYCRN128300",
+    "height_mm": 1200,
+    "width_mm": 800,
+    "depth_mm": 300,
+    "source": "li/PN-AUT-001_LI_R03.json and generated R03 Excel",
+    "status": "CURRENT_PROJECT_VALUE",
+    "conflict_resolution": "Any image showing 1800x800x300 for PN-AUT-001 is stale and invalidated."
+  },
+  "visual_reference": {
+    "model_id": "PN-IMAGE-MODEL-001",
+    "rule": "Use MODEL 001 composition but target dimensions from this project control/Data Sheet.",
+    "current_image_status": "INVALIDATED_BY_DIMENSION_CONFLICT_AND_GATEWAY_REVIEW"
+  },
+  "gateway_review": "datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json",
+  "methodology": "datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json",
+  "release_status": "HOLD",
+  "holds": [
+    "HOLD-GATEWAY-CAPACITY",
+    "HOLD-GATEWAY-FAMILY-COMPATIBILITY",
+    "HOLD-IMAGE-STALE-DIMENSION",
+    "HOLD-DOWNSTREAM-RECALCULATION"
+  ]
+}
