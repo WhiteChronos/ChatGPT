@@ -23,5 +23,6 @@ Preserve useful learning without contaminating engineering authority.
 - Scite: academic evidence.
 - Wolfram: calculations.
 - Acumen: detect potentially missing current context; validate all surfaced facts independently.
+- Engram: supplemental long-term memory for cross-session project context and validated methodology summaries. Reconcile every retrieved memory against canonical GitHub project records before use.
 
 Never promote an unverified plugin result directly into a released engineering fact.
