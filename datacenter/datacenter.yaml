@@ -40,6 +40,12 @@ canonical_sources:
   pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
   pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
   pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+  aut_panel_project_elaboration_control: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
+  aut_panel_project_elaboration_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
+  aut_panel_plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+  aut_panel_method_evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
+  pn_aut_001_project_control: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
+  pn_aut_001_gateway_review: datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json
   engineering_skill: skills/aut-panel-engineering/SKILL.md
   pipeline_yaml: pipeline/pipeline.yaml
   datasheet_yaml: datasheet/datasheet.yaml
