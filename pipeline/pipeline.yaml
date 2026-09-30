@@ -394,6 +394,12 @@ release_policy:
   unauthorized_standard_change: REPROVADO
   missing_exact_model_or_evidence: HOLD
   geometric_distortion: REPROVADO
+  final_image_aspect_ratio_mismatch: REPROVADO
+  final_image_common_scale_mismatch: REPROVADO
+  final_image_clipping: REPROVADO
+  final_image_dimension_label_mismatch: REPROVADO
+  final_image_reprojection_error: HOLD
+  final_image_visual_regression_anomaly: HOLD
   duplicate_physical_component_in_render: REPROVADO
   door_component_duplicated_on_backplate: REPROVADO
   render_before_dimensional_closure: REPROVADO
