@@ -46,6 +46,10 @@ contracts:
   step3_normative_academic_memory: memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml
   bibliographic_archive_policy: datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json
   step3_normative_academic_skill: skills/aut-panel-normative-academic-review/SKILL.md
+  step4_li_load_control: datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json
+  step4_li_load_prompt: prompts/PROMPT_STEP4_LI_LOAD_V1.md
+  step4_li_load_memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
+  step4_li_load_skill: skills/aut-panel-li-load-quantification/SKILL.md
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
   plugin_capability_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
