@@ -16,7 +16,7 @@ Nunca usar imagem, memória informal ou painel anterior para sobrescrever dados 
 
 1. Carregar Golden Rules, pipeline, Data Center, memória metodológica, registros de plugins e controles de evolução.
 2. Verificar se o PROJECT_NUMBER já existe no repositório e carregar seu histórico quando aplicável.
-3. Não iniciar engenharia específica de painel antes do fechamento das ETAPAS 1 e 2.
+3. Não iniciar engenharia detalhada do painel antes do fechamento das ETAPAS 1, 2 e 3.
 
 ## ETAPA 1 — LEVANTAMENTO DOCUMENTAL + NÚMERO DO PROJETO + QUANTIDADE DE PAINÉIS
 
@@ -182,7 +182,110 @@ Regra:
 PERGUNTAR MENOS NÃO SIGNIFICA ASSUMIR MAIS.
 PERGUNTAR MENOS SIGNIFICA REUTILIZAR MELHOR DADOS VÁLIDOS, VERSIONADOS E RASTREÁVEIS.
 
-## ETAPA 3 — PESQUISA TÉCNICA
+## ETAPA 3 — CONFERÊNCIA NORMATIVA, ESTUDOS ACADÊMICOS E REFERÊNCIAS BIBLIOGRÁFICAS
+
+Carregar obrigatoriamente:
+- `datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json`;
+- `prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md`;
+- `memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml`;
+- `datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json`;
+- `skills/aut-panel-normative-academic-review/SKILL.md`.
+
+### 3.1 Objetivo
+
+Conferir os assuntos presentes no projeto contra:
+- regulamentos;
+- normas técnicas;
+- documentação oficial de fabricantes;
+- artigos revisados por pares;
+- estudos acadêmicos;
+- livros e handbooks técnicos;
+- teses/dissertações;
+- referências bibliográficas reconhecidas.
+
+A revisão deve produzir evidência rastreável para sustentar as etapas seguintes.
+
+### 3.2 Aplicabilidade normativa
+
+Para cada norma/regulamento:
+- registrar número, título, organismo, edição/ano e status;
+- identificar escopo e exclusões;
+- registrar a base de aplicabilidade;
+- apontar seção/página utilizada;
+- registrar requisito extraído e efeito no projeto;
+- registrar divergências.
+
+Uma norma relevante não é automaticamente obrigatória. Aplicabilidade deve ser demonstrada por lei/regulamento, contrato, especificação, adoção do projeto, requisito do cliente ou escopo técnico documentado.
+
+### 3.3 Estudos acadêmicos e bibliografia
+
+Para cada artigo/livro/tese:
+- registrar autores;
+- título;
+- ano;
+- journal/editora;
+- DOI/ISBN/ISSN;
+- tipo de estudo;
+- tema;
+- resultado relevante;
+- limitações;
+- aplicação ao projeto.
+
+Evidência acadêmica não deve ser tratada como requisito normativo.
+
+### 3.4 Cópias controladas no Data Center
+
+Todo documento utilizado deve possuir registro no Data Center.
+
+Quando a cópia integral for permitida:
+- arquivar cópia controlada;
+- calcular SHA-256;
+- registrar caminho e revisão;
+- preservar versões substituídas.
+
+Quando a cópia integral não for permitida:
+- não contornar paywall, DRM ou licença;
+- registrar metadados;
+- link/DOI/ISBN;
+- citação bibliográfica;
+- resumo técnico;
+- páginas/seções consultadas;
+- pequenos trechos permitidos quando necessários.
+
+A memória não duplica PDFs/binários completos. Ela guarda ponteiros, hashes, parâmetros/regras extraídos, aplicabilidade, conclusões e conflitos.
+
+### 3.5 Ferramentas de pesquisa
+
+Quando disponíveis:
+- Scite e Consensus para literatura acadêmica;
+- Tavily e Firecrawl para descoberta de fontes oficiais;
+- GitHub/Data Center como armazenamento auditável;
+- Engram como memória suplementar;
+- Wolfram apenas para cálculos, nunca para decidir aplicabilidade normativa.
+
+### 3.6 Saídas e gate
+
+Saídas:
+- NORMATIVE_APPLICABILITY_MATRIX;
+- ACADEMIC_EVIDENCE_MATRIX;
+- BIBLIOGRAPHIC_REFERENCE_REGISTER;
+- CONTROLLED_SOURCE_ARCHIVE_INDEX;
+- NORMATIVE_CONFLICT_REGISTER;
+- STEP3_REVIEW_SUMMARY;
+- MEMORY_SYNC_RECORD.
+
+Status:
+`STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN`
+
+Estados de bloqueio:
+- `HOLD_NORMATIVE_CONFLICT`;
+- `HOLD_NORMATIVE_EDITION`;
+- `HOLD_APPLICABILITY_UNCERTAIN`.
+
+Regra:
+**PESQUISAR MAIS, PERGUNTAR MENOS, NÃO ASSUMIR. ARQUIVAR A EVIDÊNCIA, NÃO SOMENTE A RESPOSTA.**
+
+## ETAPA 4 — PESQUISA TÉCNICA
 
 Para cada item:
 1. localizar fabricante oficial;
@@ -199,7 +302,7 @@ Para cada item:
 
 Usar primeiro fabricante oficial. Plugins de pesquisa servem para descoberta e coleta, não como autoridade final.
 
-## ETAPA 4 — ARQUITETURA DE AUTOMAÇÃO
+## ETAPA 5 — ARQUITETURA DE AUTOMAÇÃO
 
 Criar inventário de endpoints.
 
@@ -221,7 +324,7 @@ ORIGEM -> INTERFACE -> REDE/BUS -> GATEWAY -> EQUIPAMENTOS -> QUANTIDADE -> CAPA
 
 Se quantidade requerida > capacidade: REPROVADO/HOLD até redimensionar a arquitetura.
 
-## ETAPA 5 — I/O E COMUNICAÇÃO
+## ETAPA 6 — I/O E COMUNICAÇÃO
 
 1. Elaborar matriz I/O.
 2. Elaborar matriz de comunicação.
@@ -231,7 +334,7 @@ Se quantidade requerida > capacidade: REPROVADO/HOLD até redimensionar a arquit
 6. Fechar protocolos e endereçamento.
 7. Reconciliar I/O com LI/BOM.
 
-## ETAPA 6 — SELEÇÃO DE COMPONENTES
+## ETAPA 7 — SELEÇÃO DE COMPONENTES
 
 Selecionar:
 - PLC/CPU;
@@ -252,7 +355,7 @@ Selecionar:
 
 Exigir compatibilidade integral e documentação oficial.
 
-## ETAPA 7 — CARGA E DIMENSIONAMENTO ELÉTRICO
+## ETAPA 8 — CARGA E DIMENSIONAMENTO ELÉTRICO
 
 Calcular:
 - carga 24 Vcc;
@@ -274,7 +377,7 @@ Calcular:
 
 "A DO QUADRO" somente após fechamento do gate elétrico.
 
-## ETAPA 8 — LI/BOM
+## ETAPA 9 — LI/BOM
 
 1. LI antes do desenho.
 2. Quantidades rastreáveis.
@@ -283,7 +386,7 @@ Calcular:
 5. Gateway dimensionado para a quantidade real de equipamentos.
 6. Mudança de quantidade/modelo cria nova revisão e invalida downstream.
 
-## ETAPA 9 — DIMENSIONAMENTO FÍSICO DO QUADRO
+## ETAPA 10 — DIMENSIONAMENTO FÍSICO DO QUADRO
 
 O tamanho do quadro é variável por projeto.
 
@@ -307,7 +410,7 @@ Selecionar gabinete real somente depois de provar capacidade.
 
 Nunca copiar H x W x D do MODEL 001 ou de outro PN.
 
-## ETAPA 10 — LAYOUT
+## ETAPA 11 — LAYOUT
 
 1. Uma escala em mm.
 2. Uma única instância física de cada item.
@@ -320,7 +423,7 @@ Nunca copiar H x W x D do MODEL 001 ou de outro PN.
 9. Validar climatização e recortes.
 10. Validar reserva remanescente.
 
-## ETAPA 11 — IMAGEM / MODEL 001
+## ETAPA 12 — IMAGEM / MODEL 001
 
 Carregar obrigatoriamente:
 - PN_MODEL_001;
@@ -338,7 +441,7 @@ Gerar:
 
 A cota lateral deve representar somente a profundidade real do painel-alvo.
 
-## ETAPA 12 — QA CRUZADO
+## ETAPA 13 — QA CRUZADO
 
 Verificar:
 LI = BOM = CARGA = I/O = COMUNICAÇÃO = DATASHEET = LAYOUT = GEOMETRIA = IMAGEM.
@@ -352,7 +455,7 @@ Rejeitar:
 - item sem fonte;
 - imagem com dado antigo.
 
-## ETAPA 13 — MEMÓRIA E DATACENTER
+## ETAPA 14 — MEMÓRIA E DATACENTER
 
 Após todo marco:
 - registrar decisão;
@@ -365,7 +468,7 @@ Após todo marco:
 - atualizar memória metodológica;
 - atualizar Data Center.
 
-## ETAPA 14 — EVOLUÇÃO CONTROLADA
+## ETAPA 15 — EVOLUÇÃO CONTROLADA
 
 O sistema pode:
 - detectar padrões de erro;
