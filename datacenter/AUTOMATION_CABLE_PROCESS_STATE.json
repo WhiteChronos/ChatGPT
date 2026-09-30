@@ -1,13 +1,13 @@
 {
-  "version": "0.14.0",
+  "version": "0.16.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
   "phase": "learning_user_method",
   "workflow": {
-    "current_step": 14,
-    "step_name": "calculate_each_cable_panel_to_endpoint",
+    "current_step": 16,
+    "step_name": "interpret_digital_ac_signal",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
@@ -86,11 +86,18 @@
         "reserve_percentage",
         "procurement_rounding"
       ]
+    },
+    "digital_ac_signal_rule": {
+      "notation": "Ø1\" - 1P#1,0mm+SH",
+      "conduit_size": "1 inch",
+      "cable_as_taught": "1,0 mm + SH",
+      "service": "digital signal for air-conditioning equipment",
+      "rise_symbol": "continues same route to next-floor drawing"
     }
   },
-  "last_checkpoint_id": "ACP-20260930-STEP14-014",
-  "last_completed_action": "Captured panel-to-endpoint cable route summation through shared tray and branched conduits",
-  "next_action": "Capture user Step 15",
+  "last_checkpoint_id": "ACP-20260930-STEP16-016",
+  "last_completed_action": "Corrected rise association and captured digital AC signal notation",
+  "next_action": "Capture user Step 17",
   "source_of_truth": "github",
   "status": "active"
 }
