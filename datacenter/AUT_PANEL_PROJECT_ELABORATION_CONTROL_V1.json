@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.3",
+  "schema_version": "1.4",
   "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
   "status": "MANDATORY_CONTROLLED",
   "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
@@ -12,6 +12,7 @@
     "skills/aut-panel-component-selection/SKILL.md",
     "skills/aut-panel-automation-io/SKILL.md",
     "skills/aut-panel-electrical-sizing/SKILL.md",
+    "skills/aut-panel-li-load-quantification/SKILL.md",
     "skills/aut-panel-layout/SKILL.md",
     "skills/aut-panel-image-document/SKILL.md",
     "skills/aut-panel-qa-release/SKILL.md",
@@ -101,5 +102,16 @@
     ],
     "archive_rule": "Archive full controlled copies only when copying is permitted; otherwise retain metadata, official link/DOI/ISBN, citation, used sections, permitted excerpts and controlled summary.",
     "memory_rule": "Memory stores pointers/hashes/extracted knowledge, not full binary documents."
+  },
+  "step_4": {
+    "control": "datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json",
+    "prompt": "prompts/PROMPT_STEP4_LI_LOAD_V1.md",
+    "memory": "memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml",
+    "skill": "skills/aut-panel-li-load-quantification/SKILL.md",
+    "pass_status": "STEP4_LI_LOAD_FROZEN",
+    "workbook_rule": "Exactly two sheets per PANEL_ID: MATERIALS and LOAD; no extra or hidden sheets.",
+    "quantification_rule": "All quantities and internal wire metres require documentary or deterministic mathematical basis.",
+    "links_rule": "Each material line carries REF_ID and official manufacturer/document/supplier links.",
+    "downstream_rule": "Physical sizing, final layout and image require STEP4_LI_LOAD_FROZEN."
   }
 }
