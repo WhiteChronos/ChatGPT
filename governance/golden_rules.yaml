@@ -285,3 +285,36 @@ required_rules:
   name: Vídeo de montagem é evidência secundária
   severity_on_violation: REPROVADO
   rule: Vídeos podem apoiar método de montagem e treinamento, mas não podem definir corrente, seção de cabo, Icu, grau IP, capacidade, requisito normativo ou substituir documentação oficial.
+
+- id: GR-095
+  name: Porta e tampa são a mesma geometria em todas as vistas
+  severity_on_violation: REPROVADO
+  rule: Para cada PANEL_ID/revisão, porta/tampa, recortes, IHM, dobradiças, espessura e dimensões locais devem ser uma única geometria canônica. Entre vistas só podem mudar a câmera e a transformação rígida de abertura no eixo de dobradiça congelado.
+- id: GR-096
+  name: Hash de montagem único em todas as vistas
+  severity_on_violation: REPROVADO
+  rule: Frontal, interna, lateral, 3/4 e corte devem apontar para o mesmo ASSEMBLY_HASH e o mesmo conjunto de instâncias físicas. Reconstrução independente por vista é proibida.
+- id: GR-097
+  name: Escala de objeto invariável entre vistas
+  severity_on_violation: REPROVADO
+  rule: Todos os objetos do modelo canônico devem permanecer com scale_x=scale_y=scale_z=1 no espaço de engenharia. Nenhuma câmera ou render pode alterar escala, bounding box ou coordenadas físicas.
+- id: GR-098
+  name: Passo 5 gera somente imagem física do PN
+  severity_on_violation: REPROVADO
+  rule: O Passo 5 gera o conjunto de imagens físicas limpas e separadas de um único PN. Legenda, dados, arquiteturas, comando e bloco de dimensionamento pertencem ao Passo 6.
+- id: GR-099
+  name: Passo 6 não altera a geometria congelada
+  severity_on_violation: REPROVADO
+  rule: O documento visual do Passo 6 deve reutilizar a imagem/fingerprint aprovado no Passo 5. Erro físico obriga retorno ao Passo 5; correção cosmética/raster da geometria é proibida.
+- id: GR-100
+  name: Cotas vêm de valores controlados e não do raster
+  severity_on_violation: REPROVADO
+  rule: H, W e D exibidos no documento devem vir do Data Sheet/geometria controlada. É proibido medir pixels ou perspectiva para determinar cota.
+- id: GR-101
+  name: Documento cresce e engenharia mantém tamanho nativo
+  severity_on_violation: REPROVADO
+  rule: No Passo 6, vistas dimensionais permanecem scale_x=scale_y=1.0. O canvas/documento deve crescer para receber imagem, legenda, dados, arquiteturas, comando e dimensionamento; nenhum bloco de engenharia pode ser reduzido para caber.
+- id: GR-102
+  name: Um PN por documento visual de engenharia
+  severity_on_violation: REPROVADO
+  rule: Cada PANEL_ID gera seu próprio conjunto de imagem física no Passo 5 e seu próprio documento visual de engenharia no Passo 6. Combinação de múltiplos painéis só pode ocorrer em artefato posterior explicitamente definido.
