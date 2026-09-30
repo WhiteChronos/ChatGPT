@@ -1,0 +1,31 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-STEP4-LI-LOAD-MEMORY-V1
+status: CONTROLLED_ACTIVE
+
+core_rules:
+  - "Workbook Step 4 possui exatamente duas abas por PN: MATERIAIS e CARGA."
+  - "Nao existem abas extras ou ocultas no workbook emitido."
+  - "Todo item fisicamente usado no painel deve existir na LI."
+  - "Fiacao interna e materiais lineares sao calculados por grafo de conexao + rota geometrica real."
+  - "Margem de fabricacao nunca e escondida; precisa ser parametro explicito."
+  - "Volume/area ajudam na verificacao, mas nao substituem layout, colisao e folgas."
+  - "Links oficiais e REF_ID acompanham as linhas da LI/Carga."
+  - "Videos sao evidencia secundaria de montagem e nunca autoridade normativa/eletrica."
+  - "QElectroTech/WireViz/QetWireManager sao suporte de conexao; CAD parametrico e fabricante governam geometria."
+  - "Mudanca de quantidade invalida layout/imagem downstream."
+
+learning_targets:
+  - wire_length_models
+  - duct_fill_models
+  - terminal_accessory_chains
+  - manufacturer_mounting_kits
+  - standard_fastener_patterns
+  - panel_specific_load_models
+  - supplier_link_quality
+  - assembly_method_evidence
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: STEP4_LI_LOAD_METHOD_CREATED
+    summary: "Passo 4 consolidado para LI e carga por PN com quantificacao matematica de materiais e fiacao."
