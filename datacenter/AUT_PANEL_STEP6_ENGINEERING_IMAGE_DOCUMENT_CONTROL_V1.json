@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-STEP6-ENGINEERING-IMAGE-DOCUMENT-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "step_number": 6,
+  "title": "Documento visual de engenharia por PN",
+  "depends_on": [
+    "STEP5_PN_IMAGE_FIDELITY_FROZEN"
+  ],
+  "purpose": "Compor a imagem física congelada do PN com legenda, dados, arquitetura elétrica, arquitetura de comunicação, diagrama de comando e dimensionamento sem alterar a geometria do painel.",
+  "one_document_per_panel": true,
+  "model": "PN-IMAGE-MODEL-001",
+  "required_blocks": [
+    "PHYSICAL_PANEL_VIEW",
+    "PRINCIPAL_COMPONENT_LEGEND",
+    "PANEL_PROJECT_DATA",
+    "ELECTRICAL_ARCHITECTURE",
+    "COMMUNICATION_ARCHITECTURE",
+    "COMMAND_DIAGRAM",
+    "PANEL_DIMENSIONING"
+  ],
+  "canvas_policy": {
+    "grow_only": true,
+    "dimensional_view_scale_x": 1,
+    "dimensional_view_scale_y": 1,
+    "non_uniform_scaling_forbidden": true,
+    "fit_to_page_downscale_forbidden": true,
+    "rule": "O documento cresce até comportar os blocos; a engenharia nunca diminui para caber."
+  },
+  "diagram_policy": {
+    "vector_first": true,
+    "electrical_command_tools": [
+      "QElectroTech",
+      "SchemDraw",
+      "SVG",
+      "CairoSVG"
+    ],
+    "communication_tools": [
+      "NetworkX",
+      "SVG"
+    ],
+    "diagram_plugins_for_review_only": [
+      "B&A Diagrams",
+      "tldraw",
+      "Miro"
+    ]
+  },
+  "dimension_policy": {
+    "source": "CONTROLLED_H_W_D_FROM_STEP5_DATASHEET",
+    "raster_measurement_forbidden": true,
+    "perspective_dimension_inference_forbidden": true,
+    "math_cross_check": "Wolfram"
+  },
+  "skill": "skills/aut-panel-image-document/SKILL.md",
+  "prompt": "prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md",
+  "memory": "memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml",
+  "outputs": [
+    "STEP6_ENGINEERING_DOCUMENT_MANIFEST",
+    "PN_ENGINEERING_IMAGE_DOCUMENT",
+    "VECTOR_DIAGRAM_SOURCES",
+    "STEP6_DOCUMENT_QA_REPORT"
+  ],
+  "pass_status": "STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN",
+  "failure_statuses": [
+    "HOLD_STEP5_FINGERPRINT_MISMATCH",
+    "HOLD_DIAGRAM_TOPOLOGY_MISMATCH",
+    "HOLD_DIMENSION_DOCUMENT_CONFLICT",
+    "HOLD_CANVAS_SCALING_VIOLATION"
+  ]
+}

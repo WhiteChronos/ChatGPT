@@ -1,0 +1,845 @@
+schema_version: '1.0'
+memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+memory_type: OPERATIONAL_CROSS_CHAT_CONTEXT
+status: ACTIVE
+purpose: Estado operacional canônico para continuidade do projeto AUTOMAÇÃO EQUIPAMENTO entre conversas.
+  Não substitui Golden Rules, Data Center, Data Sheet ou LI.
+immutable_contract:
+  standard_id: AUT-PAINEL-COMPACT-V2.4
+  pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  golden_rules_id: GOLDEN-RULES-IMMUTABLE-V1
+  datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
+  datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  workbook_template_id: XLSX-PN-AUT-01-MASTER-R02
+  image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  repository: WhiteChronos/ChatGPT
+  source_precedence:
+  - governance/golden_rules.yaml
+  - pipeline/pipeline.yaml
+  - datacenter/datacenter.yaml
+  - datasheet/datasheet.yaml
+  - datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  - memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  - li vigente
+  - templates/panel_template.yaml
+  - context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  - conversa atual
+  mutation_policy:
+    explicit_user_authorization_required_for_immutable_contract: true
+    chat_memory_cannot_override_canonical_files: true
+    fail_closed: true
+mutable_state:
+  sync_revision: 34
+  last_sync_at: '2026-09-30T20:40:00-03:00'
+  repository:
+    branch: feat/aut-panel-control-v1
+    pull_request: 23
+    head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
+  engram_memory_policy:
+    registry: datacenter/ENGRAM_MEMORY_POLICY_V1.json
+    role: supplemental_long_term_memory
+    canonical_authority: github_datacenter_datasheet_li_bom_official_sources
+  math_3d_image_toolchain:
+    registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+    wolfram: rigorous_math_volume_area_geometry_checks
+    to3d: conceptual_mesh_only_not_dimensional_authority
+    adobe: presentation_postprocess_only
+    imagegen: illustrative_render_only
+    deterministic_geometry_authority: manufacturer_CAD_or_parametric_geometry
+  autonomous_improvement_system:
+    control: datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json
+    backlog: improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json
+    open_source_registry: plugins/aut_panel_open_source_registry.json
+    plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+    open_source_skill: skills/aut-panel-open-source-toolchain/SKILL.md
+    improvement_skill: skills/aut-panel-autonomous-improvement/SKILL.md
+    autonomous_allowed: [observe, classify, compare, score, propose, sandbox, suggest_tests, refresh_non_authoritative_metadata]
+    human_gate_required: [core_dependency_promotion, golden_rule_change, frozen_state_change, hold_clearance, release_approval]
+  project_process_front_end:
+    step1:
+      control: datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json
+      output: PROJECT_INTAKE_MANIFEST
+      pass_status: STEP1_SCOPE_FROZEN
+      required: [PROJECT_NUMBER, document_register, panel_count, panel_register, source_evidence]
+    step2:
+      control: datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json
+      prompt: prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md
+      memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
+      catalog_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
+      output: [PANEL_DEFINITION_MANIFEST, PROJECT_PARAMETER_REGISTRY, QUESTION_DECISION_LOG, CATALOG_INDEX, MEMORY_SYNC_RECORD]
+      pass_status: STEP2_PANEL_DEFINITION_FROZEN
+      question_policy: ask_only_after_docs_datacenter_memory_catalogs_manufacturer_norms
+      ui_policy: VISUALIZE_WITH_COPYABLE_ANSWER_BLOCK
+      learning_policy: reduce_questions_by_validated_parameter_reuse_not_assumption
+    normative_academic_review:
+      step: 3
+      control: datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json
+      prompt: prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md
+      memory: memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml
+      archive_policy: datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json
+      skill: skills/aut-panel-normative-academic-review/SKILL.md
+      output: [NORMATIVE_APPLICABILITY_MATRIX, ACADEMIC_EVIDENCE_MATRIX, BIBLIOGRAPHIC_REFERENCE_REGISTER, CONTROLLED_SOURCE_ARCHIVE_INDEX, NORMATIVE_CONFLICT_REGISTER, STEP3_REVIEW_SUMMARY, MEMORY_SYNC_RECORD]
+      pass_status: STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN
+      archive_rule: full_copy_only_when_permitted_otherwise_metadata_link_citation_summary_and_used_sections
+      memory_rule: pointers_hashes_extracted_rules_applicability_conclusions_not_full_binaries
+    step4_li_load:
+      step: 4
+      control: datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json
+      prompt: prompts/PROMPT_STEP4_LI_LOAD_V1.md
+      memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
+      skill: skills/aut-panel-li-load-quantification/SKILL.md
+      workbook_rule: exactly_two_sheets_per_panel_materials_and_load
+      quantity_rule: connection_graph_plus_real_layout_geometry
+      internal_wire_rule: route_plus_termination_plus_service_loop_plus_explicit_allowance
+      output: [LI_LOAD_WORKBOOK, MATERIAL_QUANTITY_TRACE, INTERNAL_WIRE_CUTLIST, LOAD_CALCULATION_TRACE]
+      pass_status: STEP4_LI_LOAD_FROZEN
+      no_image_before_step4: true
+    step5_image_fidelity:
+      step: 5
+      control: datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json
+      prompt: prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md
+      memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
+      skill: skills/aut-panel-pn-image-fidelity/SKILL.md
+      pass_status: STEP5_PN_IMAGE_FIDELITY_FROZEN
+      rule: one_canonical_assembly_same_door_all_views
+    step6_engineering_document:
+      step: 6
+      control: datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json
+      prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
+      memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
+      skill: skills/aut-panel-image-document/SKILL.md
+      pass_status: STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN
+      rule: grow_only_canvas_no_geometry_change
+    step7_final_image_verification:
+      step: 7
+      control: datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json
+      toolchain: datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json
+      prompt: prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md
+      memory: memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml
+      skill: skills/aut-panel-final-image-verification/SKILL.md
+      pass_status: STEP7_FINAL_IMAGE_VERIFIED
+      rule: verify_only_math_framing_scale_reprojection_no_repair
+  current_project_control_v2:
+    panel_id: PN-AUT-001
+    registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
+    methodology: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
+    master_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
+    plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+    evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
+    enclosure_mm: {height: 1200, width: 800, depth: 300}
+    enclosure_model: NSYCRN128300
+    stale_image_dimension_1800x800x300: INVALIDATED
+    gateway_review: datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json
+    hvac_inventory: {indoor_units: 32, outdoor_condensing_units: 6}
+    gateway_architecture_status: HOLD_REDESIGN
+    image_status: INVALIDATED_PENDING_GATEWAY_AND_DIMENSION_REGENERATION
+    excel_status: HOLD_PENDING_PROJECT_RECONCILIATION
+  skill_chain:
+    - skills/aut-panel-bootstrap/SKILL.md
+    - skills/aut-panel-source-research/SKILL.md
+    - skills/aut-panel-component-selection/SKILL.md
+    - skills/aut-panel-automation-io/SKILL.md
+    - skills/aut-panel-electrical-sizing/SKILL.md
+    - skills/aut-panel-layout/SKILL.md
+    - skills/aut-panel-pn-image-fidelity/SKILL.md
+    - skills/aut-panel-image-document/SKILL.md
+    - skills/aut-panel-final-image-verification/SKILL.md
+    - skills/aut-panel-qa-release/SKILL.md
+    - skills/aut-panel-learning-memory/SKILL.md
+  active_work:
+    objective: Impedir regressão de duplicidade de IHM e renders fora de escala, exigindo fechamento
+      dimensional, instância física única, superfície de montagem e validação de saída de cabos antes do render.
+    status: IMPLEMENTED
+  raster_proportion_guard:
+    script: pipeline/corrigir_proporcao_imagem.py
+    source_sha256: 835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31
+    policy: GROW_CANVAS_KEEP_SCALE
+    dimensional_scale: {x: 1.0, y: 1.0}
+    smaller_frame_action: GROW_FRAME_OR_REPROVADO
+    raster_resize_to_fit_forbidden: true
+  geometry_guardians:
+    required: [CAD_GEOMETRY_GUARDIAN, SCALE_PROPORTION_GUARDIAN, BLENDER_RENDER_GUARDIAN, CANVAS_COMPOSITION_GUARDIAN]
+    conditional: [REVIT_BIM_INTEROP_GUARDIAN]
+    canonical_skill: skills/aut-panel-engineering/SKILL.md
+    no_fit_to_canvas: true
+    never_non_uniform_scale: true
+    canvas_must_grow: true
+    blender_geometry_change_allowed: false
+    revit_execution_requires_authorized_autodesk_environment: true
+  geometry_first_3d:
+    visual_standard: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+    geometry_toolchain: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+    common_assembly_required: true
+    manufacturer_cad_preferred: true
+    parametric_reconstruction_from_official_dimensions_allowed: true
+    generative_geometry_authority: false
+    dimensional_views_projection: ORTHOGRAPHIC
+    canvas_policy: GROW_CANVAS_KEEP_SCALE
+    removed_visual_blocks: [door_internal_hmi_detail, bottom_cable_exit_view]
+  render_integrity:
+    dimensional_closure_required: true
+    official_manufacturer_dimensions_required: true
+    common_scale_unit: mm
+    physical_instance_count_must_equal_li_bom: true
+    hmi_physical_quantity: 1
+    hmi_mounting_surface: door
+    hmi_duplicate_on_backplate_forbidden: true
+    open_door_view_may_show_same_hmi_backside: true
+    cable_exit_clearance_required: true
+    bend_radius_validation_required: true
+    side_open_real_scale: true
+    side_open_aspect_ratio_formula: depth_external_mm / height_external_mm
+    pn_aut_01_side_open_aspect_ratio: 0.375 # legacy PN-AUT-01 reference only
+    pn_aut_001_side_open_aspect_ratio: 0.25 # current PN-AUT-001 = 300/1200
+    image_6_depth_section_required: true
+    failure_modes:
+      missing_dimension: HOLD_DIMENSIONAL_DATA
+      capacity_failure: HOLD_LAYOUT_CAPACITY
+      duplicate_component: REPROVADO
+  visual_standard_v2:
+    registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V2.yaml
+    reference_sha256: 56a92c5071da7b174616bd8fec1c984143add229cab7a8fbcf0f84880b9a93b6
+    reference_pixel_size: {width: 1536, height: 1024}
+    role: COMPOSITION_REFERENCE_NOT_ENGINEERING_DATA
+    legacy_panel_fingerprints_preserved: true
+    parity_footer: "LI = BOM = CARGA = LAYOUT = IMAGEM"
+  github_toolchain:
+    registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+    skill_reference: skills/aut-panel-engineering/references/github-toolchain.md
+    activation_policy: PIN_LICENSE_SECURITY_SANDBOX_REGRESSION
+  li_material_control:
+    control_id: LI-MATERIAL-CONTROL-V1
+    prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+    pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+    memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+    rule: A revisão antiga permanece na própria coluna; a nova revisão ocupa a coluna imediatamente
+      à direita e recebe somente os valores revisados.
+    preserve_rev_0: true
+    historical_revision_overwrite_forbidden: true
+    quantity_evidence_required: true
+    a_levantar_only_when_not_determinable: true
+  agent_learning_system:
+    system_id: AUT-PANEL-AGENT-SYSTEM-V1
+    agent_registry: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+    agent_datacenters: datacenter/agents/agent_datacenters.yaml
+    agent_memories: memory/agents/agent_memories.yaml
+    database_schema: database/aut_panel_schema.sql
+    database_script: pipeline/aut_panel_db.py
+    learning_pipeline: pipeline/learning_pipeline.yaml
+    learning_script: pipeline/aut_panel_learning.py
+    evolution_script: pipeline/evolution_engine.py
+    model_registry: ml/model_registry.yaml
+    open_source_registry: plugins/aut_panel_open_source_registry.json
+    engineering_skill: skills/aut-panel-engineering/SKILL.md
+    ml_status: LEARNING_COLD_START
+    ml_advisory_only: true
+    autoevolution_mode: PROPOSAL_ONLY
+    human_gate_required: true
+  pn_image_elaboration_directive:
+    directive_id: PN-IMAGE-ELABORATION-DIRECTIVE-V1
+    prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+    registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+    memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+    model: PN-IMAGE-MODEL-001
+    status: MANDATORY_CONTROLLED
+    load_before_any_pn_image_task: true
+    governs: source_authority_target_sizing_visual_sections_dimensioning_branding_canvas_parity_QA_memory_sync
+  pn_image_model_001:
+    model_id: PN-IMAGE-MODEL-001
+    manifest: datacenter/images/PN_MODEL_001.json
+    prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+    memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
+    datasheet: datasheet/PN_AUT_001_VISUAL_STANDARD.json
+    reference_image_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
+    status: FROZEN_VISUAL_BASELINE
+    role: VISUAL_DOCUMENT_STRUCTURE_NOT_FIXED_PANEL_SIZE
+    mandatory_starting_point_for_all_pn_images: true
+    dimension_policy: VARIABLE_BY_TARGET_PROJECT_AND_INTERNAL_CONTENT
+    reference_dimensions_inheritance_forbidden: true
+    enclosure_selection_rule: derive_from_target_LI_BOM_geometry_clearances_wiring_thermal_maintenance_and_reserve_then_freeze_in_target_datasheet
+    side_view_dimension_rule: actual_target_cabinet_depth_only_aligned_with_lateral_axis
+    manufacturer_footer_logos: prohibited
+    override_policy: explicit_user_override_only_or_new_visual_model_id
+  canonical_project_premises:
+    source: datacenter/PN_AUT_001_CANONICAL_PREMISES.json
+    status: FROZEN_BASELINE
+    inheritance: mandatory_for_all_future_elaborations
+    reask_policy: do_not_reask_frozen_answers
+    override_policy: explicit_user_override_or_higher_priority_controlled_document_only
+    change_control: version_and_log_all_overrides
+    downstream_invalidation: true
+  external_technical_knowledge_base:
+    registry: datacenter/external/PN_AUT_001_EXTERNAL_SOURCE_REGISTRY.json
+    technical_kb: datacenter/external/PN_AUT_001_EXTERNAL_TECHNICAL_KB.md
+    academic_bibliography: datacenter/external/PN_AUT_001_ACADEMIC_BIBLIOGRAPHY.md
+    source_priority:
+      - manufacturer_official
+      - official_standard
+      - academic_publisher_or_peer_reviewed
+      - authorized_distributor
+      - secondary_support
+    copyright_policy: metadata_links_summaries_and_short_excerpts_only
+    status: ACTIVE
+  consolidated_technical_base:
+    base_id: PN-AUT-01-TECHNICAL-BASE-V1
+    json: datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json
+    summary: docs/PN_AUT_01_TECHNICAL_BASE_V1.md
+    panel_count: 1
+    panel_id: PN-AUT-01
+    controller_authority: PLC-01
+    excel_creation_blocked_until_base_closure: true
+    status: HOLD
+  li_technical_documentation_control:
+    control_id: AUT-PANEL-LI-TECHNICAL-DOSSIER-V1
+    registry: datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json
+    generator: pipeline/li_technical_dossier.py
+    source_li_policy: COMPANION_DOSSIER_DO_NOT_MUTATE_FROZEN_LI
+    required_per_line:
+    - manufacturer
+    - family
+    - model
+    - catalog_or_family_url
+    - datasheet_or_technical_page_url
+    - lifecycle_status
+    - document_status
+    - consultation_date
+    exact_model_requires_exact_datasheet: true
+    family_document_cannot_close_exact_model_hold: true
+    enriched_li_output: AUT_PANEL_LI_TECHNICAL.json
+    current_status: HOLD
+    reason: Parte dos itens da LI ainda possui somente familia/referencia visual, modelo legado ou fabricante/modelo exato pendente.
+  electrical_sizing_control:
+    control_id: AUT-PANEL-ELECTRICAL-SIZING-V1
+    script: pipeline/aut_panel_electrical_sizing.py
+    inputs: datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json
+    schema: schemas/aut_panel_electrical_sizing_v1.schema.json
+    reference_registry: datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json
+    integration_stage: LOAD_BALANCE
+    fail_closed: true
+    panel_current_estimation_forbidden: true
+    a_do_quadro_requires_full_gate_pass: true
+    required_core_checks:
+    - Ib
+    - In
+    - Iz
+    - Ik
+    - Icu
+    - InA
+    - Icw
+    - Ipk
+    - voltage_drop
+    - selectivity_or_backup
+    - 24Vdc_load
+    - PSU_capacity
+    - UPS_path
+    - battery_autonomy
+    - thermal_losses
+    - temperature_rise
+    current_status: HOLD
+    reason: Dados de campo, modelos exatos e verificacoes de curto-circuito/termica ainda incompletos.
+  normative_control:
+    registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+    registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+    supplemental_registry_path: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+    memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+    memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+    script: pipeline/aut_panel_normative_control.py
+    default_jurisdiction: BR
+    baseline_group: panel_general
+    reverify_before_release: true
+    unverified_edition_status: HOLD
+    conflict_status: HOLD
+  active_panels:
+    PN-AUT-01:
+      role: PLC principal HVAC + VRF
+      li_id: LI-PN-AUT-01-R02
+      li_revision: R02
+      li_status: QUANTITY_FROZEN
+      enclosure_mm:
+        height: 800
+        width: 600
+        depth: 300
+      mounting_plate_mm:
+        height: 750
+        width: 550
+      hmi_surface: door
+      mandatory_power_chain:
+      - power_supply_24vdc
+      - dc_ups_24vdc
+      - battery_bank
+    PN-AUT-02:
+      role: UTR remota segundo pavimento
+      li_id: LI-PN-AUT-02-R02
+      li_revision: R02
+      li_status: QUANTITY_FROZEN
+      enclosure_mm:
+        height: 500
+        width: 400
+        depth: 250
+      mounting_plate_mm:
+        height: 450
+        width: 350
+      hmi_surface: door
+      mandatory_power_chain:
+      - power_supply_24vdc
+      - dc_ups_24vdc
+      - battery_bank
+  engineering_status:
+    quantitative_baseline: FROZEN_R02
+    formal_release: HOLD
+    reason: Há itens ainda pendentes de código exato, dimensões, lifecycle, compatibilidade ou documentação
+      oficial; CI pode passar sem liberar engenharia.
+  open_holds:
+  - id: HOLD-PLC-EXACT
+    scope: PN-AUT-01
+    item: PLC CPU e módulos ET 200SP
+    reason: código exato deve ser congelado somente após I/O oficial e compatibilidade.
+  - id: HOLD-RTU-EXACT
+    scope: PN-AUT-02
+    item: UTR e cartões de I/O
+    reason: modelo e ecossistema de expansão precisam de compatibilidade oficial.
+  - id: HOLD-SWITCH-LIFECYCLE
+    scope: PN-AUT-01/PN-AUT-02
+    item: switch industrial
+    reason: referência SCALANCE X208 é legada e sucessor atual deve ser validado.
+  - id: HOLD-BATTERY-SIZING
+    scope: PN-AUT-01/PN-AUT-02
+    item: banco de baterias
+    reason: Ah/autonomia devem ser calculados pela carga real e requisito de autonomia.
+  - id: HOLD-GATEWAY-VRF
+    scope: PN-AUT-01
+    item: gateway VRF
+    reason: manter somente código oficial verificado; referência visual não é evidência.
+  command_contract:
+    explaincode:
+      slash: /explaincode
+      mode: READ_ONLY
+      behavior: Explica código em partes sem modificar o alvo.
+    refactor:
+      slash: /refactor
+      mode: BEHAVIOR_PRESERVING_WRITE
+      behavior: Melhora estrutura sem mudar comportamento esperado e exige regressão/QA.
+sync_policy:
+  mandatory_read_on_new_conversation: true
+  mandatory_write_after:
+  - user_authorized_standard_change
+  - new_li_revision
+  - li_material_revision_update
+  - exact_model_frozen
+  - qa_status_change
+  - release_decision
+  - major_pipeline_change
+  - normative_registry_change
+  - normative_applicability_change
+  conflict_resolution:
+    chat_vs_memory: MEMORY_FILE_WINS
+    memory_vs_datacenter: DATACENTER_WINS_AND_MEMORY_MUST_BE_REPAIRED
+    memory_vs_datasheet: DATASHEET_WINS_AND_MEMORY_MUST_BE_REPAIRED
+    missing_evidence: HOLD
+    standard_violation: REPROVADO
+history:
+- revision: 1
+  at: '2026-09-15T20:08:00-03:00'
+  actor: user+assistant
+  event: CONVERSATION_BRIDGE_CREATED
+  summary: Usuário autorizou criar um prompt portátil, memória operacional vinculada entre conversas,
+    comandos /explaincode e /refactor e integração desses contratos ao pipeline.
+- revision: 2
+  at: '2026-09-15T20:08:00-03:00'
+  actor: user+assistant
+  event: CONVERSATION_BRIDGE_IMPLEMENTED
+  summary: Prompt V2, bootstrap portátil, memória operacional, /explaincode, /refactor, script de contrato,
+    testes e CI foram integrados à branch feat/aut-panel-control-v1. O head deve ser resolvido dinamicamente
+    no bootstrap para evitar auto-referência do arquivo de memória.
+- revision: 3
+  at: '2026-09-16T23:11:00-03:00'
+  actor: user+assistant
+  event: LI_MATERIAL_REVISION_CONTROL_IMPLEMENTED
+  summary: Foi aprovado e integrado o padrão de manter todas as revisões históricas da LI intactas,
+    preservar REV. 0, criar a nova revisão na coluna imediatamente à direita, rastrear quantitativos por
+    evidência e registrar QA/regressão/memória específica da Lista de Material.
+- revision: 4
+  at: '2026-09-28T10:37:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_AGENT_ML_DATABASE_SYSTEM_IMPLEMENTED
+  summary: Usuário autorizou a estruturação de agentes com Data Center e memória próprios, banco SQLite,
+    pipeline de machine learning consultivo, autoevolução por proposta, registro open source e Skill
+    AUT Panel Engineering, mantendo o pipeline canônico e padrões aprovados como autoridade.
+
+- revision: 5
+  at: '2026-09-28T12:43:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_NORMATIVE_REGISTRY_LINKED
+  summary: Usuário autorizou incluir as normas de referência de elaboração no Data Center e na memória persistente. Foi criado registro normativo base/condicional, política de reverificação pré-emissão e vínculo canônico ao pipeline, Data Sheet e bootstrap.
+
+- revision: 6
+  at: '2026-09-28T14:05:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_NORMATIVE_SUPPLEMENT_LINKED
+  summary: Catálogo complementar de normas oficiais foi vinculado ao Data Center e à memória normativa para uso como referência de elaboração. A aplicabilidade é resolvida por condição técnica e a edição deve ser reverificada antes da emissão.
+
+- revision: 7
+  at: '2026-09-28T16:55:00-03:00'
+  actor: user+assistant
+  event: AUT_PANEL_VISUAL_STANDARD_V2_AND_GITHUB_TOOLCHAIN_LINKED
+  summary: Usuário aprovou a imagem fornecida como padrão de composição para elaboração dos quadros. Foi registrado o SHA-256 da referência, preservados os fingerprints históricos dos painéis, e vinculados o padrão visual V2 e o toolchain GitHub V2 à Skill, Data Center, Data Sheet e pipeline. Valores técnicos visíveis na imagem não se tornam fatos de projeto sem validação independente.
+
+- revision: 8
+  at: '2026-09-28T18:10:00-03:00'
+  actor: user+assistant
+  event: HMI_DUPLICATION_AND_DIMENSIONAL_RENDER_REGRESSION_PREVENTION
+  summary: Usuário determinou que o erro de IHM duplicada e escala visual aproximada não volte a ocorrer. O pipeline foi endurecido para exigir uma única instância física da IHM na porta, fechamento dimensional por catálogo oficial, escala comum em milímetros, validação porta x placa, zona de saída de cabos e teste automatizado de regressão antes do render final.
+
+- revision: 9
+  at: '2026-09-28T18:21:00-03:00'
+  actor: user+assistant
+  event: SIDE_OPEN_AND_DEPTH_SECTION_REAL_SCALE_STANDARDIZED
+  summary: Usuário identificou compressão indevida na vista lateral aberta/corte em profundidade. Foi autorizado tornar obrigatório o uso da mesma escala global em mm, com razão profundidade/altura real do gabinete. No PN-AUT-01, 300/800 = 0,375. A Imagem 6 passa a ser corte dimensional obrigatório com profundidade útil, componentes, canaletas, folgas, raio de curvatura e prensa-cabos, sem distorção.
+
+- revision: 10
+  at: '2026-09-28T18:35:00-03:00'
+  actor: user+assistant
+  event: CAD_FIRST_3D_GEOMETRY_AND_LARGE_CANVAS_STANDARD
+  summary: Usuário determinou resolver perda de proporcionalidade, dimensionamento real e entendimento 3D usando ferramentas open source/GitHub. Foi criado padrão visual V3 geometry-first, toolchain FreeCAD/OpenCascade/CadQuery/build123d/trimesh/Open3D/Blender, gate de montagem 3D única, canvas grow-only e remoção dos blocos dedicados 4 e 8. Imagem generativa deixa de ser autoridade geométrica.
+
+- revision: 11
+  at: '2026-09-28T19:24:00-03:00'
+  actor: user+assistant
+  event: PERMANENT_GEOMETRY_GUARDIANS_AND_NEVER_FIT_TO_CANVAS
+  summary: Usuário determinou que o sistema nunca mais comprima, estique, reduza ou altere proporções para fazer o painel caber no canvas. Foram adicionados agentes permanentes de geometria CAD, escala/proporção, Blender render, Revit/BIM e composição de canvas. Blender fica restrito a materiais/luz/render; Revit é interoperabilidade BIM condicionada a ambiente Autodesk autorizado. O canvas deve crescer sem limite prático necessário para preservar geometria, medidas e legibilidade.
+
+- revision: 12
+  at: '2026-09-28T19:31:00-03:00'
+  actor: user+assistant
+  event: USER_PROPORTION_SCRIPT_INTEGRATED_WITH_CODEX_GITHUB
+  summary: >-
+    Script corrigir_proporcao_imagem.py fornecido pelo usuário, SHA-256
+    835d2cf2293169fffd25b2f5279412e33500d6f7b05afffbe2cc8faeaa17ce31, foi integrado
+    ao pipeline em versão endurecida para engenharia. Diferente do fit genérico,
+    o modo dimensional não reduz raster para caber; scale_x=scale_y=1.0 e moldura
+    menor exige crescimento do canvas ou REPROVADO. Skill, Codex, Visual Standard
+    V3, CI e testes foram vinculados.
+
+- revision: 13
+  at: '2026-09-29T13:31:00-03:00'
+  actor: user+assistant
+  event: ELECTRICAL_SIZING_LAYER_INTEGRATED
+  summary: >-
+    Usuario autorizou integrar a camada completa de dimensionamento eletrico sem destruir o
+    historico do PR #23. Foram adicionados motor fail-closed, schema, baseline PN-AUT-01/02,
+    registro de referencias IEC/fabricantes e testes; LOAD_BALANCE passou a exigir Ib/In/Iz,
+    Ik/Icu, InA/Icw/Ipk, 24 Vcc, UPS/baterias, seletividade/backup e verificacao termica.
+    Enquanto os dados obrigatorios estiverem incompletos, o A do quadro permanece nulo e o
+    release permanece HOLD.
+
+- revision: 14
+  at: '2026-09-29T13:31:00-03:00'
+  actor: user+assistant
+  event: LI_TECHNICAL_DOSSIER_INTEGRATED
+  summary: >-
+    Usuario determinou juntar a LI completa com catalogo e ficha tecnica de cada componente
+    ao estado ELÉTRICO INTEGRADO / DADOS A COMPLETAR / RELEASE HOLD / “A DO QUADRO” NÃO
+    INVENTADO. Para preservar as LIs R02 congeladas, foi criado dossie tecnico companion
+    por catalog_id/li_tag e gerador de LI enriquecida. Cada linha exige fabricante, modelo,
+    catalogo/familia, ficha/pagina tecnica exata quando houver codigo exato, lifecycle,
+    data de consulta e status documental. Familia ou referencia visual nao fecha HOLD de
+    modelo exato; documentacao incompleta permanece HOLD.
+
+- revision: 15
+  at: '2026-09-29T14:20:00-03:00'
+  actor: user+assistant
+  event: PN_AUT_01_CONSOLIDATED_TECHNICAL_BASE_CREATED
+  summary: >-
+    Criada base tecnica consolidada do unico painel PN-AUT-01 antes de qualquer novo Excel.
+    A base registra componente por componente, dados oficiais confirmados, referencias candidatas,
+    cargas conhecidas, alimentacao 12 V do gateway Trane, sinalizacao/I-O ainda faltante e todos
+    os dados de campo necessarios para fechamento. PLC-01 permanece como controlador central.
+    Excel final fica bloqueado ate fechamento da base tecnica ou aprovacao explicita de pendencias.
+
+- revision: 16
+  at: '2026-09-29T15:52:00-03:00'
+  actor: user+assistant
+  event: EXTERNAL_TECHNICAL_KNOWLEDGE_BASE_CREATED
+  summary: >-
+    Usuario autorizou pesquisa ampla em fabricantes, fornecedores, normas, artigos e livros
+    academicos para fechar as pendencias do PN-AUT-001. Criado registro estruturado de fontes
+    externas, base tecnica resumida e bibliografia academica dentro do Data Center. Conteudo
+    protegido por direitos autorais nao deve ser copiado integralmente: guardar metadados,
+    links oficiais, resumos tecnicos, paginas/secoes quando disponiveis e pequenos trechos
+    permitidos. Pesquisa externa passa a ser memoria tecnica persistente e auditavel do projeto.
+    Resultados relevantes registrados incluem metodo IEC 60909 para Ik/Icc, IEC 61439/60529,
+    Schneider Electrical Installation Guide, HMIST6500, ABL8RPS24100, ADEL CBI2420A, ET 200SP
+    HART, NOVUS/Siemens transmissores HART, candidatos de CO2, familia ClimaSys e literatura
+    oficial Trane TVR Smart com TCONTSMCB24V.
+
+- revision: 17
+  at: '2026-09-29T15:52:00-03:00'
+  actor: user+assistant
+  event: CANONICAL_PROJECT_PREMISES_FROZEN
+  summary: >-
+    Todas as respostas fornecidas pelo usuario ao longo do fechamento tecnico do PN-AUT-001
+    foram consolidadas como premissas-base canonicas no Data Center e na memoria operacional.
+    Todas as futuras elaboracoes devem carregar essas premissas antes de executar calculos,
+    selecao de componentes, BOM, layout, diagramas, matriz de I/O, memorial, QA, Excel e PDF.
+    Premissas congeladas nao devem ser perguntadas novamente. Alteracoes somente por instrucao
+    explicita posterior do usuario ou documento controlado de maior prioridade, sempre com
+    versionamento, registro de valor anterior/novo, motivo e invalidacao dos artefatos dependentes.
+
+- revision: 18
+  at: '2026-09-29T16:59:00-03:00'
+  actor: user+assistant
+  event: PN_AUT_001_LI_R03_CANDIDATE_CREATED
+  summary: >-
+    Usuario autorizou executar e criar a LI. Foi criada a LI R03 candidata do unico painel
+    PN-AUT-001, herdando todas as premissas canonicas. A LI inclui CPU S7-1500 atual,
+    17 AI HART, BaseUnits, HMIST6500, XC208G, arquitetura de temperatura com sensor ambiente
+    mais transmissor HART, UPS CBI2420A, bornes e demais itens. CO2, gateway Trane, modelo
+    ClimaSys, carga final, protecao final, layout e dupla validacao permanecem como HOLDs.
+    O arquivo Excel correspondente e CANDIDATO e nao deve receber status Aprovado para Emissao
+    ate zerar QA_HOLDS.
+
+- revision: 19
+  at: '2026-09-29T16:59:00-03:00'
+  actor: user+assistant
+  event: PN_AUT_001_LI_R03_ENGINEERING_EXECUTED
+  summary: >-
+    Executada a engenharia e criada a LI R03 do PN-AUT-001 em li/PN-AUT-001_LI_R03.json.
+    Selecoes fechadas incluem CPU S7-1500 1515-2 PN, ET 200SP HA com 68 canais fisicos AI HART,
+    HMIST6500, SCALANCE XC208G, gateway Trane TCONTCCMHCM04A com adaptador, transmissor
+    de temperatura HART baseado em iTEMP TMT72/TA30A, CO2 Omniguard Model 3100 0-5000 ppm
+    4-20mA HART, ADEL CBI2420A, banco 24V 24Ah, protecao Acti9 iC60H e ClimaSys NSYCU350DG.
+    Carga 24V de projeto 18.924 A, autonomia 30 min + 20%, alimentador final 4 mm2 Cu,
+    perda termica de projeto 148.56 W e capacidade ClimaSys considerada 240 W em L35-L50.
+    Planilha de engenharia R03 foi gerada fora do repositorio como artefato XLSX.
+    Release permanece HOLD porque o NSYCU350DG e declarado IP55 no circuito interno e a
+    documentacao oficial nao comprova que o conjunto modificado mantenha o requisito IP66.
+    Dupla validacao/reverificacao final tambem permanece pendente para status Aprovado para emissao.
+
+- revision: 20
+  at: '2026-09-29T18:05:00-03:00'
+  actor: user+assistant
+  event: PN_IMAGE_MODEL_001_FROZEN
+  summary: >-
+    A imagem final aprovada pelo usuario foi registrada como PN-IMAGE-MODEL-001 e passa a ser
+    o padrao visual obrigatorio para o inicio de qualquer nova elaboracao de imagem de painel PN.
+    O modelo exige vistas gerais, arquitetura eletrica, arquitetura de comunicacao, diagrama de
+    comando, dimensionamento do painel, legenda e dados do quadro. A vista lateral em perspectiva
+    deve cotar somente a profundidade real do gabinete no eixo lateral; para o PN-AUT-001, 300 mm.
+    Logos grandes de fabricantes no rodape ficam proibidos; fabricante/modelo pode aparecer apenas
+    em identificacao tecnica de componentes. O modelo visual e downstream do datasheet, LI/BOM,
+    calculos de carga e selecoes validadas e nunca pode sobrescrever dados de engenharia.
+    Alteracoes futuras no padrao devem gerar novo MODEL ID e nao redefinir silenciosamente MODEL 001.
+
+- revision: 21
+  at: '2026-09-29T19:02:00-03:00'
+  actor: user+assistant
+  event: MODEL_001_REDEFINED_AS_VARIABLE_DIMENSION_PN_BASE
+  summary: >-
+    Usuario esclareceu que o tamanho do painel e variavel conforme projeto e conteudo interno.
+    PN-IMAGE-MODEL-001 permanece como base obrigatoria de composicao, linguagem visual e estrutura
+    documental para elaborar todos os futuros paineis PN, mas nao como template de dimensoes fisicas.
+    Para cada novo PN, H/W/D devem ser calculados pela LI/BOM, dimensoes e folgas oficiais dos
+    componentes, canaletas/bornes/cabos, raio de curvatura, porta, UPS/baterias, termica, manutencao
+    e reserva fisica. O gabinete real somente e congelado no Data Sheet depois de prova dimensional
+    de capacidade. Dimensoes do PN-AUT-001 sao exemplo de instancia e nao podem contaminar outro PN.
+    Criado prompt obrigatorio prompts/PROMPT_PN_IMAGE_MODEL_001.md e memoria dedicada
+    memory/PN_IMAGE_MODEL_001_MEMORY.yaml. AGENTS.md, Prompt Master, Prompt GitHub/Codex, Golden Rules,
+    pipeline, Data Center, Data Sheet, Context Manifest, template visual e memorias de agentes foram
+    atualizados para carregar e aplicar essa regra.
+
+- revision: 22
+  at: '2026-09-29T19:15:00-03:00'
+  actor: user+assistant
+  event: PN_IMAGE_ELABORATION_MASTER_DIRECTIVE_CREATED
+  summary: >-
+    Criada a Diretriz Mestra PROMPT-DIRETRIZ-IMAGEM-PN-V1 consolidando todo o entendimento aprovado
+    para elaboracao de imagens de paineis PN. A diretriz vincula MODEL 001, precedencia das fontes,
+    dimensionamento variavel por projeto, vistas gerais, arquitetura eletrica, arquitetura de
+    comunicacao, diagrama de comando, dimensionamento do painel, regras de cotagem lateral,
+    paridade LI/BOM/CARGA/DATASHEET/LAYOUT/GEOMETRIA/IMAGEM, branding, canvas grow-only, estados HOLD,
+    QA e sincronizacao obrigatoria com Data Center e memorias. Passa a ser carregada obrigatoriamente
+    por Codex, Renderer, Layout, QA e agentes guardioes antes de qualquer elaboracao ou revisao visual.
+
+- revision: 23
+  at: '2026-09-30T17:12:00-03:00'
+  actor: user+assistant
+  event: PROJECT_RECONCILIATION_GATEWAY_SKILL_PLUGIN_UPGRADE
+  summary: >-
+    Usuario identificou dois erros de coerencia no PN-AUT-001: Excel R03 usa gabinete
+    1200x800x300 mm enquanto a imagem usava 1800x800x300 mm; e a arquitetura de gateway
+    precisa atender 32 unidades internas e 6 condensadoras/sistemas, portanto um gateway
+    nao pode ser aceito sem verificacao numerica de capacidade. O valor 1800 mm foi
+    invalidado para o PN-AUT-001 e o valor corrente passou a ser 1200x800x300 mm conforme
+    LI/Excel R03 e projeto control V2. Criado review de gateway. IRTrans IRT-MED-Mod
+    controla ate 15 bus modules por busmaster; para 32 unidades internas, a arquitetura
+    IRTrans de um bus module por unidade exige no minimo 3 Mediacontrollers e 32 bus modules.
+    As 6 condensadoras nao devem ser automaticamente contadas como IR bus modules; integrar
+    conforme topologia nativa do fabricante HVAC. A selecao anterior de um unico
+    TCONTCCMHCM04A foi reaberta e downstream de comunicacao/BOM/carga/layout/imagem/QA ficou
+    HOLD. Criado prompt mestre completo de elaboracao do projeto, registry de plugins,
+    memoria de evolucao metodologica e cadeia de 9 skills especializadas.
+
+- revision: 24
+  at: '2026-09-30T17:20:00-03:00'
+  actor: user+assistant
+  event: ENGRAM_MEMORY_PLUGIN_REGISTERED
+  summary: >-
+    Engram foi registrado como memoria persistente suplementar da metodologia AUT Panel.
+    Toda informacao recuperada deve ser reconciliada com GitHub, Data Center, Data Sheet,
+    LI/BOM e fontes oficiais antes de uso em engenharia.
+
+- revision: 25
+  at: '2026-09-30T17:31:00-03:00'
+  actor: user+assistant
+  event: MATH_3D_IMAGE_PLUGIN_STACK_REGISTERED
+  summary: >-
+    Registrado stack de apoio para dimensionamento, calculo de area/volume, modelo 3D e imagem.
+    Wolfram passa a ser apoio matematico rigoroso; to3D pode gerar malha conceitual a partir de imagem
+    mas nao possui autoridade dimensional; Adobe e ImageGen ficam restritos ao acabamento visual.
+    Geometria de engenharia continua obrigatoriamente baseada em CAD oficial de fabricante ou
+    reconstrucao parametrica deterministica validada em milimetros.
+
+- revision: 26
+  at: '2026-09-30T17:45:00-03:00'
+  actor: user+assistant
+  event: OPEN_SOURCE_PLUGIN_AUTONOMOUS_IMPROVEMENT_LAYER_ADDED
+  summary: >-
+    Integrada camada de plugins ChatGPT, repositorios open source e skills de evolucao controlada.
+    Registry open source foi expandido com FreeCAD, OCCT, CadQuery, build123d, trimesh, Open3D,
+    IfcOpenShell, Blender, pyRevit e frameworks de agentes como referencias. Registry de plugins
+    passou a registrar Wolfram, Scite, Consensus, Acumen, Tavily, Firecrawl, Notion, Coda, Airtable,
+    Engram, to3D, Adobe, Vercel, OpenAI Developers e o conector GitHub como capacidades de suporte.
+    Criadas skills aut-panel-open-source-toolchain e aut-panel-autonomous-improvement. O sistema
+    pode detectar erros, comparar ferramentas, pontuar e registrar sugestoes, criar testes e propor
+    automacoes de forma autonoma, mas nao pode promover dependencias, alterar Golden Rules, limpar HOLD,
+    modificar estado congelado ou aprovar emissao sem HUMAN GATE.
+
+- revision: 27
+  at: '2026-09-30T18:16:00-03:00'
+  actor: user+assistant
+  event: LI_FIRST_GATEWAY_REBUILD_R05
+  summary: >-
+    Correcao metodologica aplicada apos erro de sequenciamento. A partir deste ponto,
+    nenhuma imagem PN pode ser gerada antes da LI/BOM vigente, capacidade de comunicacao,
+    carga, layout real e dimensoes H/W/D estarem congelados. PN-AUT-001 R05 candidate foi
+    reconstruido com 3 gateways IRT-MED-Mod, limite de projeto/fornecedor de 12 unidades
+    internas por gateway, capacidade instalada 36 para 32 unidades (distribuicao 12+12+8),
+    3 interfaces Siemens CM PtP RS232 HF, 32 IRT-Bus-Mod de campo e 1 CM PtP RS422/485 HF
+    para VFD-01/VFD-02 conforme recorte de LI fornecido pelo usuario. A referencia oficial
+    IRTrans declara ate 15 Bus Modules por Mediacontroller; o limite mais restritivo de 12
+    do projeto governa. O IRT-MED-Mod requer 8-16 Vcc e, como o barramento UPS e 24 Vcc,
+    a conversao 24->12 Vcc deve ser dimensionada antes de fechar carga/UPS/termica.
+    Gabinete 1200x800x300 permanece somente candidato: a adicao dos gateways nao autoriza
+    aumento automatico; executar layout completo em escala real com 20% de reserva fisica.
+    Imagem MODEL 001 permanece bloqueada ate o congelamento da LI e do layout.
+
+- revision: 28
+  at: '2026-09-30T18:25:00-03:00'
+  actor: user+assistant
+  event: R06_RECALCULATED_STATE
+  summary: 'Gateway power, 24 V load, UPS, battery and thermal capacity recalculated and closed. Enclosure 1200x800x300 is the current dimensional basis pending layout validation. Remaining external engineering hold: final IP66 proof of enclosure plus cooling assembly.'
+
+- revision: 29
+  at: '2026-09-30T19:05:00-03:00'
+  actor: user+assistant
+  event: PROJECT_PROCESS_STEP1_STEP2_CONSOLIDATED
+  summary: >-
+    Processo frontal consolidado. Passo 1 = levantamento documental, PROJECT_NUMBER, quantidade de paineis,
+    PANEL_IDs e evidencias de escopo. Passo 2 = definicao parametrica de cada painel por motor de perguntas
+    dinamico. Antes de perguntar, o sistema consulta documentos, Data Center, memoria do projeto/painel,
+    catalogos, fabricante, normas e parametros reutilizaveis. Cada resposta/fato validado vira parametro
+    versionado com escopo e origem. Perguntas devem diminuir ao longo do tempo por reutilizacao validada,
+    nunca por suposicao. Catalogos usados entram no Data Center com metadados e copia controlada quando
+    permitido; memoria guarda ponteiro, hash, parametros extraidos e decisoes. Correcao de dado preserva
+    historico, marca valor anterior SUPERSEDED e invalida downstream. Perguntas ao usuario permanecem no
+    padrao Visualize com bloco final copiavel.
+
+- revision: 30
+  at: '2026-09-30T19:34:00-03:00'
+  actor: user+assistant
+  event: STEP3_NORMATIVE_ACADEMIC_BIBLIOGRAPHIC_REVIEW_CONSOLIDATED
+  summary: >-
+    Passo 3 consolidado como conferencia normativa, estudos academicos e referencias bibliograficas
+    de todos os assuntos efetivamente presentes no projeto. Para cada fonte devem ser registrados
+    REF_ID, numero/codigo, edicao, autores/organismo, DOI/ISBN/ISSN quando aplicavel, URL oficial,
+    data de consulta, paginas/secoes usadas, aplicabilidade, requisito/fato extraido e efeito no projeto.
+    Copias integrais sao arquivadas no Data Center quando o acesso e a licenca permitem; normas,
+    livros e artigos restritos permanecem com metadados, citacao, link oficial, resumo controlado e
+    trechos permitidos, salvo copia licenciada fornecida pelo usuario/projeto. A memoria nao duplica
+    binarios completos: guarda ponteiros, SHA-256, regras/parametros extraidos, decisoes de aplicabilidade,
+    conflitos e conclusoes. Criados control, prompt, memoria, politica de arquivo bibliografico e skill
+    dedicada. Gate final: STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN.
+
+- revision: 31
+  at: '2026-09-30T19:48:00-03:00'
+  actor: user+assistant
+  event: STEP4_LI_LOAD_MATERIAL_AND_WIRING_QUANTIFICATION_CONSOLIDATED
+  summary: >-
+    Passo 4 consolidado como Lista de Materiais + Carga por PN. O workbook possui exatamente duas abas
+    por painel, MATERIAIS e CARGA, e nenhuma outra aba. Todo item fisicamente usado na montagem deve ser
+    quantificado, incluindo acessorios, bornes, jumpers, trilhos, canaletas, fixadores, marcacao, prensa-cabos,
+    PE, cabos e fiacao interna. Metragens sao derivadas de grafo de conexoes + layout real + rota em milimetros,
+    com margem de fabricacao somente quando parametrizada. Criada skill aut-panel-li-load-quantification,
+    script deterministico de corte de fios, control/prompt/memoria do Passo 4 e Golden Rules GR-089..GR-094.
+    Toolchain de conexao inclui QElectroTech, WireViz, QetWireManager, NetworkX, OR-Tools, CAD parametrico e
+    Wolfram; plugins B&A Diagrams/tldraw/Miro ficam apenas como revisao visual e Remote Desktop Commander como
+    ponte para ferramentas locais autorizadas. Pesquisa de plugins nao encontrou substituto dedicado de
+    engenharia eletrica para QElectroTech/EPLAN/AutoCAD Electrical, portanto a metodologia usa stack governado.
+
+- revision: 32
+  at: '2026-09-30T23:22:00-03:00'
+  actor: user+assistant
+  event: STEP5_STEP6_VISUAL_PROCESS_CONSOLIDATED
+  summary: >-
+    Processo visual consolidado em duas etapas. Passo 5 gera primeiro a imagem fisica separada de cada PN
+    a partir de uma unica montagem 3D canonica em milimetros. Porta/tampa, recortes, IHM, dobradicas, H/W/D,
+    instancias e bounding boxes sao invariantes entre vistas; somente camera e rotacao rigida da porta no
+    eixo congelado podem mudar. Ferramentas: CAD oficial, FreeCAD/CadQuery/build123d/OpenCascade, trimesh,
+    Open3D, Blender, Wolfram, OpenCV e ImageHash suplementar. Passo 6 reutiliza exatamente o fingerprint
+    aprovado do Passo 5 e monta o documento MODEL 001 com legenda, dados, arquitetura eletrica, arquitetura
+    de comunicacao, diagrama de comando e dimensionamento. Canvas e grow-only; vistas dimensionais ficam
+    scale_x=scale_y=1.0 e cotas vem de H/W/D controlados, nunca de raster ou perspectiva. Criados controles,
+    prompts, memorias, registry de referencias, skill aut-panel-pn-image-fidelity e atualizada a skill
+    aut-panel-image-document. Golden Rules GR-095..GR-102 adicionadas.
+
+- revision: 33
+  at: '2026-09-30T23:48:00-03:00'
+  actor: user+assistant
+  event: STEP7_FINAL_IMAGE_MATHEMATICAL_VERIFICATION_CONSOLIDATED
+  summary: >-
+    Passo 7 consolidado como verificacao final da imagem por PN, sem correcao cosmetica.
+    Verifica identidade de revisao/fingerprint, concordancia multivista, H/W/D, bbox de gabinete
+    e porta, escala de objetos, proporcao ortografica W/H e D/H, px/mm por eixo e entre vistas,
+    enquadramento/clipping, cotas controladas e reprojecao de landmarks 3D/2D para vistas 3/4.
+    Defaults internos de QA: aspect ratio 0.25%, mismatch px/mm 0.25%, desvio de escala comum
+    0.50%, reprojecao 1.5 px, dimensao CAD/modelo 0.10 mm e desequilibrio de margem 5%.
+    Esses valores nao sao limites normativos e nao podem ser afrouxados silenciosamente.
+    Open source levantado: OpenCV, scikit-image, COLMAP, openMVG, pytransform3d, trimesh,
+    Open3D, Blender, FreeCAD, CadQuery, build123d, ImageHash e Visual Regression Tracker.
+    Criados control, toolchain, prompt, memoria, skill, scripts e testes de regressao.
+    Golden Rules GR-103..GR-110 adicionadas. Falha de geometria retorna ao Passo 5,
+    composicao ao Passo 6 e quantidade ao Passo 4.
+
+- revision: 34
+  at: '2026-09-30T20:40:00-03:00'
+  actor: user+assistant
+  event: PROJECT_25279_PN_AUT_01_RETURNED_TO_STEP2
+  summary: >-
+    Active identity corrected to PROJECT_NUMBER 25279 / PANEL_ID PN-AUT-01. Historical PN-AUT-001 artifacts
+    are preserved but superseded for active scope. Step 2 reopened before LI/image rebuild. LI-702 Rev.0 remains
+    the canonical I/O basis currently available: 56 used AI (28 temperature + 28 CO2), 11 reserve required,
+    67 installed requirement; DI=0, DO=0, AO=0. Siemens platform retained with CPU 1515-2 PN 6ES7515-2AN03-0AB0
+    and ET 200SP AI 4xI 2-wire HART 6ES7134-6TD00-0CA1; 17 modules = 68 physical channels. Generic relays are
+    removed; only verified hardwired DO may create interposing relay quantities. Exactly one HMIST6500 remains;
+    Schneider EOTE documentation supports TIA Portal Ethernet driver for S7-1500 communication. Previous 8-port
+    SCALANCE switch is superseded by a compact point-to-point copper/fiber media-converter function. Siemens
+    SCALANCE XCM102 6GK5102-1GS00-2AC2 selected as local panel family: 1x RJ45 + 1x SFP, 100/1000 Mbps, 24 V AC/DC
+    redundant. SFP exact model waits for project fiber type: SFP992-1+ multimode or SFP992-1LD single-mode.
+    HVAC gateway changed from frozen IRTrans selection to FUNCTIONAL_PROVISIONAL until HVAC executive documents
+    establish the native topology. Power architecture changed to separate AC/DC 24 V supply + DC-UPS; Siemens
+    SITOP PSU6200/8200 + UPS1600 families are the preferred architecture, exact ratings to be recalculated in
+    Step 4. Only unresolved Step 2 input is the DE drawing set needed to cross-check instrument quantities and
+    define fiber physical medium/link details. Downstream R06 LI/load/layout/image assumptions are invalidated.

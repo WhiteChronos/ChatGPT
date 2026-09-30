@@ -1,0 +1,3 @@
+interface:
+  display_name: "AUT Panel Final Image Verification"
+  short_description: "Mathematically verify final PN image framing, proportions, views, and dimensions."

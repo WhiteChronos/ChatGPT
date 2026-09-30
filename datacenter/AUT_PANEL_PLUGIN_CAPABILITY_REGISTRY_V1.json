@@ -1,0 +1,415 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "AUT-PANEL-PLUGIN-CAPABILITIES-V1",
+  "status": "ACTIVE",
+  "confirmed_on": "2026-09-30",
+  "policy": {
+    "engineering_authority": "Official project/manufacturer/standard evidence",
+    "plugin_role": "support_only",
+    "promotion_rule": "No plugin result becomes a released engineering fact without source validation and Data Center registration.",
+    "engram_authority": "SUPPLEMENTAL_MEMORY_ONLY"
+  },
+  "plugins": [
+    {
+      "name": "Tavily",
+      "installed": true,
+      "role": [
+        "web search",
+        "manufacturer discovery",
+        "crawl planning"
+      ],
+      "engineering_use": "Find current official pages and documentation; preserve original URLs."
+    },
+    {
+      "name": "Firecrawl",
+      "installed": true,
+      "role": [
+        "page extraction",
+        "site crawl",
+        "technical documentation discovery"
+      ],
+      "engineering_use": "Extract manufacturer pages and documentation for controlled review."
+    },
+    {
+      "name": "Scite",
+      "installed": true,
+      "role": [
+        "academic literature",
+        "citation context"
+      ],
+      "engineering_use": "Support methodology and technical literature reviews; not primary source for manufacturer ratings."
+    },
+    {
+      "name": "Wolfram",
+      "installed": true,
+      "role": [
+        "rigorous mathematics",
+        "volume/area calculations",
+        "geometry checks",
+        "unit conversion",
+        "engineering formulas"
+      ],
+      "engineering_use": "Independent mathematical support for volume, area, clearances, utilization, battery/thermal/electrical calculations and geometric checks. Inputs must come from controlled engineering sources.",
+      "authority": "CALCULATION_SUPPORT_NOT_SOURCE_OF_COMPONENT_RATINGS"
+    },
+    {
+      "name": "Airtable",
+      "installed": true,
+      "role": [
+        "structured memory",
+        "component registry",
+        "HOLD register",
+        "source index",
+        "revision tracking"
+      ],
+      "engineering_use": "Optional operational mirror/index; GitHub Data Center remains canonical."
+    },
+    {
+      "name": "Coda",
+      "installed": true,
+      "role": [
+        "structured project knowledge",
+        "tables",
+        "workflow tracking"
+      ],
+      "engineering_use": "Optional working knowledge layer."
+    },
+    {
+      "name": "Notion",
+      "installed": true,
+      "role": [
+        "knowledge capture",
+        "research documentation"
+      ],
+      "engineering_use": "Optional documentation layer; canonical project records stay in GitHub."
+    },
+    {
+      "name": "Acumen by Talarion",
+      "installed": true,
+      "role": [
+        "current-context gap detection",
+        "missing-information warnings"
+      ],
+      "engineering_use": "Advisory detector only. Every surfaced fact requires independent verification."
+    },
+    {
+      "name": "Engram",
+      "installed": true,
+      "role": [
+        "supplemental long-term memory",
+        "semantic retrieval of prior project context",
+        "cross-session recall"
+      ],
+      "engineering_use": "Store and retrieve non-sensitive project context, decisions and methodology snapshots. GitHub Data Center/Data Sheet/LI-BOM remain canonical engineering authority.",
+      "write_status": "CONNECTED_BUT_WRITE_TEST_BLOCKED_BY_OPENAI_SECURITY_POLICY_ON_2026-09-30",
+      "fail_safe_rule": "If Engram write/search is unavailable, continue using GitHub canonical memory and project files without weakening engineering gates."
+    },
+    {
+      "name": "to3D",
+      "installed": true,
+      "role": [
+        "image-to-3D conversion",
+        "conceptual 3D preview",
+        "mesh export glTF/FBX/OBJ/STL"
+      ],
+      "engineering_use": "Use only as supplemental visualization or rough mesh generation from a reference image. Never use generated mesh as dimensional authority for cabinet/components.",
+      "authority": "NON_DIMENSIONAL_VISUAL_SUPPORT",
+      "formats": [
+        "gltf",
+        "fbx",
+        "obj",
+        "stl"
+      ]
+    },
+    {
+      "name": "Adobe",
+      "installed": true,
+      "role": [
+        "image cleanup",
+        "layout polish",
+        "document/media refinement"
+      ],
+      "engineering_use": "Use after engineering geometry/render is frozen, for visual cleanup and presentation only. It may not alter engineering geometry, quantities, dimensions or tags.",
+      "authority": "PRESENTATION_ONLY"
+    },
+    {
+      "name": "Consensus",
+      "installed": true,
+      "role": [
+        "academic literature review",
+        "research synthesis"
+      ],
+      "engineering_use": "Support technical methodology and literature review; manufacturer ratings and normative facts still require primary sources.",
+      "authority": "SECONDARY_RESEARCH_SUPPORT"
+    },
+    {
+      "name": "Vercel",
+      "installed": true,
+      "role": [
+        "web app deployment",
+        "agent app hosting"
+      ],
+      "engineering_use": "Optional deployment target for dashboards, review portals or agent utilities; never engineering authority.",
+      "authority": "DEPLOYMENT_SUPPORT"
+    },
+    {
+      "name": "OpenAI Developers",
+      "installed": true,
+      "role": [
+        "OpenAI app/agent development guidance"
+      ],
+      "engineering_use": "Reference for implementation patterns and agent tooling; changes still follow project governance.",
+      "authority": "IMPLEMENTATION_REFERENCE"
+    },
+    {
+      "name": "GitHub Connector",
+      "installed": true,
+      "role": [
+        "canonical repository audit",
+        "version control",
+        "PR/issue/code access"
+      ],
+      "engineering_use": "Primary auditable storage and change-control mechanism for project artifacts in this environment.",
+      "authority": "CANONICAL_AUDIT_TOOL"
+    },
+    {
+      "name": "Remote Desktop Commander",
+      "installed": true,
+      "role": [
+        "authorized local engineering application bridge",
+        "file/terminal automation"
+      ],
+      "engineering_use": "Operate locally installed QElectroTech/FreeCAD/other authorized engineering tools when the user's connected machine provides them. Does not itself validate engineering.",
+      "authority": "EXECUTION_BRIDGE_ONLY"
+    },
+    {
+      "name": "B&A Diagrams",
+      "installed": true,
+      "role": [
+        "diagram review",
+        "architecture visualization"
+      ],
+      "engineering_use": "Review connection/topology concepts; not a source of quantities, conductor lengths or ratings.",
+      "authority": "REVIEW_VISUAL_ONLY"
+    },
+    {
+      "name": "tldraw",
+      "installed": true,
+      "role": [
+        "editable engineering review canvas",
+        "annotation"
+      ],
+      "engineering_use": "Review/annotate connection/layout concepts; not dimensional or quantity authority.",
+      "authority": "REVIEW_VISUAL_ONLY"
+    },
+    {
+      "name": "Miro",
+      "installed": true,
+      "role": [
+        "collaborative architecture review",
+        "tables and diagrams"
+      ],
+      "engineering_use": "Collaborative review of architecture and decisions; not quantity authority.",
+      "authority": "REVIEW_VISUAL_ONLY"
+    }
+  ],
+  "recommended_data_model": {
+    "component_table": [
+      "panel_id",
+      "tag",
+      "manufacturer",
+      "model",
+      "catalog_id",
+      "qty",
+      "status",
+      "datasheet_url",
+      "dimensions",
+      "power",
+      "protocol",
+      "lifecycle",
+      "verified_at"
+    ],
+    "source_table": [
+      "ref_id",
+      "manufacturer",
+      "document",
+      "revision",
+      "date",
+      "url",
+      "page_section",
+      "fact_used",
+      "validator_a",
+      "validator_b",
+      "reverified_at"
+    ],
+    "hold_table": [
+      "hold_id",
+      "panel_id",
+      "scope",
+      "reason",
+      "blocking",
+      "owner",
+      "next_action",
+      "status"
+    ],
+    "decision_table": [
+      "decision_id",
+      "panel_id",
+      "revision",
+      "old_value",
+      "new_value",
+      "source",
+      "date",
+      "downstream_invalidations"
+    ]
+  },
+  "geometry_and_image_stack": {
+    "deterministic_geometry_authority": [
+      "Manufacturer STEP/IGES/DXF when available",
+      "CadQuery/build123d/OpenCascade/FreeCAD parametric geometry",
+      "trimesh/Open3D geometry QA",
+      "Blender for rendering only after geometry lock"
+    ],
+    "plugin_support": {
+      "Wolfram": "mathematics, volume/area and cross-check calculations",
+      "to3D": "visual/concept mesh from images; not dimensional authority",
+      "Adobe": "presentation cleanup only",
+      "ImageGen": "illustrative/render support only; never engineering geometry authority"
+    },
+    "hard_rule": "Generated 3D/image tools cannot change the frozen engineering geometry or prove component dimensions."
+  },
+  "candidates": [
+    {
+      "name": "GitBook",
+      "status": "AVAILABLE_NOT_REQUIRED",
+      "role": [
+        "published engineering knowledge base"
+      ]
+    },
+    {
+      "name": "TinyFish",
+      "status": "AVAILABLE_NOT_REQUIRED",
+      "role": [
+        "interactive browser workflows"
+      ]
+    },
+    {
+      "name": "AgentMail",
+      "status": "AVAILABLE_NOT_REQUIRED",
+      "role": [
+        "agent communication channel"
+      ]
+    }
+  ],
+  "autonomy_policy": {
+    "discovery": "AUTONOMOUS_ALLOWED",
+    "comparison": "AUTONOMOUS_ALLOWED",
+    "suggestion_generation": "AUTONOMOUS_ALLOWED",
+    "registry_refresh": "AUTONOMOUS_ALLOWED_FOR_NON_AUTHORITATIVE_METADATA",
+    "install_or_connect": "USER_ACTION_REQUIRED",
+    "promote_to_core": "HUMAN_GATE_REQUIRED",
+    "modify_engineering_rules": "HUMAN_GATE_REQUIRED",
+    "clear_hold": "FORBIDDEN_AUTONOMOUSLY",
+    "release_approval": "FORBIDDEN_AUTONOMOUSLY"
+  },
+  "step4_li_load_stack": {
+    "calculation": [
+      "Wolfram"
+    ],
+    "local_engineering_bridge": [
+      "Remote Desktop Commander"
+    ],
+    "review_visuals": [
+      "B&A Diagrams",
+      "tldraw",
+      "Miro"
+    ],
+    "research": [
+      "Tavily",
+      "Firecrawl",
+      "Scite",
+      "Consensus"
+    ],
+    "canonical_storage": [
+      "GitHub Connector"
+    ],
+    "exact_electrical_connection_tooling": "No dedicated ChatGPT plugin found in current directory; governed QElectroTech/WireViz/QetWireManager open-source/local stack is used instead."
+  },
+  "step5_visual_fidelity_stack": {
+    "geometry_authority": [
+      "manufacturer CAD",
+      "FreeCAD",
+      "CadQuery",
+      "build123d",
+      "OpenCascade"
+    ],
+    "qa": [
+      "trimesh",
+      "Open3D",
+      "OpenCV",
+      "ImageHash supplementary"
+    ],
+    "rendering": [
+      "Blender"
+    ],
+    "math": [
+      "Wolfram"
+    ],
+    "local_tool_bridge": [
+      "Remote Desktop Commander"
+    ],
+    "presentation_only": [
+      "to3D",
+      "Adobe",
+      "ImageGen"
+    ],
+    "invariant": "Same canonical assembly and door object across every camera view."
+  },
+  "step6_engineering_document_stack": {
+    "physical_view_authority": "STEP5_PN_IMAGE_FIDELITY_FROZEN",
+    "vector_diagrams": [
+      "QElectroTech",
+      "SchemDraw",
+      "NetworkX/SVG",
+      "CairoSVG",
+      "ezdxf when required"
+    ],
+    "review_plugins": [
+      "B&A Diagrams",
+      "tldraw",
+      "Miro"
+    ],
+    "math": [
+      "Wolfram"
+    ],
+    "composition_rule": "Grow-only canvas; dimensional views remain scale_x=scale_y=1.0."
+  },
+  "step7_final_image_verification_stack": {
+    "math": [
+      "Wolfram"
+    ],
+    "local_execution": [
+      "Remote Desktop Commander"
+    ],
+    "deterministic_open_source": [
+      "OpenCV",
+      "scikit-image",
+      "pytransform3d",
+      "trimesh",
+      "Open3D",
+      "Blender metadata",
+      "FreeCAD/CadQuery/build123d"
+    ],
+    "supplementary_visual_regression": [
+      "ImageHash",
+      "Visual Regression Tracker"
+    ],
+    "review_only": [
+      "Adobe",
+      "tldraw",
+      "Miro"
+    ],
+    "plugin_directory_result": "No dedicated ChatGPT plugin is promoted as engineering authority for calibrated image geometry or dimensional visual QA.",
+    "hard_rule": "Step 7 pass is based on controlled geometry/camera/dimension manifests and deterministic calculations, not visual similarity alone."
+  }
+}

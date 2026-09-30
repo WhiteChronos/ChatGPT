@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "panel_id": "PN-AUT-001",
+  "review_id": "PN-AUT-001-GATEWAY-REVIEW-V1",
+  "status": "HOLD_GATEWAY_ARCHITECTURE_REDESIGN",
+  "trigger": "User identified mismatch between field HVAC count and gateway capacity and provided project reference rows for IRT-MED-Mod / IRT-Bus-Mod.",
+  "field_inventory": {
+    "indoor_air_conditioners": 32,
+    "outdoor_condensing_units": 6,
+    "note": "Outdoor units must not be counted as IRTrans bus modules unless the manufacturer topology explicitly requires/permits that."
+  },
+  "current_project_reference": {
+    "gateway_tag": "GW-HVAC-01",
+    "model": "IRT-MED-Mod",
+    "manufacturer": "IRTrans",
+    "bus_module_model": "IRT-Bus-Mod",
+    "bus_module_quantity_shown": 15,
+    "interpretation": "One IRTrans Mediacontroller is a bus master and can control up to 15 additional IRTrans bus modules. This is an address/device limit on the serial bus, not 15 physical I/O ports."
+  },
+  "manufacturer_findings": [
+    {
+      "source": "IRTrans official technical information - Mediacontroller",
+      "official_url": "https://www.irtrans.de/en/technicalinfo/mediacontroller.php",
+      "fact": "One Mediacontroller can control up to 15 IRTrans Bus Modules; each bus module is uniquely addressable."
+    },
+    {
+      "source": "IRTrans official Software Manual",
+      "official_url": "https://www.irtrans.de/download/Docs/2013/Softwarehandbuch_EN.pdf",
+      "fact": "IRTrans modules with the bus can connect up to 15 additional bus modules to one bus master; the IRServer can address multiple buses."
+    },
+    {
+      "source": "Trane official U-Match catalogue",
+      "official_url": "https://www.trane.com/content/dam/Trane/Commercial/lar/br/produtos-sistemas/equipamentos/Minisplits/piso-teto-inverter/cat%C3%A1logo-comercial/sc-pb-u-match-convertible-inverter-60hz-mc-slb040-pb-04082021.pdf",
+      "fact": "TCONTCCMHCM04A + adapter is shown with capacity up to 23 indoor units in that U-Match application."
+    },
+    {
+      "source": "Trane official TCONTCCMHCM04A IOM",
+      "official_url": "https://www.trane.com/content/dam/Trane/Commercial/lar/br/produtos-sistemas/equipamentos/Minisplits/mult-split-inverter/manual-iom/controles/ms-svx082a-en-1.pdf",
+      "fact": "The protocol converter acts as a Modbus master and supports connection of 4 Modbus slave devices; exact HVAC system topology must be considered."
+    },
+    {
+      "source": "Trane TVR Connect official catalogue",
+      "official_url": "https://www.trane.com/content/dam/Trane/Commercial/lar/br/produtos-sistemas/equipamentos/Sistema_VRF/tvr-connect/tvr-connect.pdf",
+      "fact": "TCONTCNBACNET supports up to 192 indoor units and 24 refrigerant systems, with 24 Vac/dc supply, for the TVR Connect family."
+    }
+  ],
+  "calculations": {
+    "irtrans_if_one_bus_module_per_indoor_unit": {
+      "endpoint_count": 32,
+      "verified_capacity_per_mediacontroller": 15,
+      "minimum_mediacontrollers": 3,
+      "bus_modules_required": 32,
+      "spare_address_capacity": 13,
+      "formula": "ceil(32/15)=3"
+    }
+  },
+  "engineering_conclusions": [
+    "The previous single-gateway architecture is not acceptable for 32 indoor units when using IRT-MED-Mod with one bus module per indoor unit.",
+    "For the IRTrans architecture, use at least 3 Mediacontrollers and 32 IRT-Bus-Mod modules for 32 independently addressed indoor units.",
+    "The 6 condensers must be integrated according to the actual HVAC manufacturer's native topology; do not automatically allocate 6 additional IRTrans bus modules.",
+    "The R03 selection of one TCONTCCMHCM04A must be reopened because manufacturer evidence does not support 32 indoor units as a single direct solution in the referenced application.",
+    "Preferred redesign is a manufacturer-native Trane gateway sized for the exact supplied VRF family. If the system is TVR Connect, TCONTCNBACNET is a strong candidate because its documented capacity exceeds 32 indoor units and 6 refrigerant systems; exact unit family compatibility must be proven before freezing."
+  ],
+  "release_effect": {
+    "invalidates": [
+      "gateway_selection",
+      "communication_architecture",
+      "BOM_gateway_quantities",
+      "24V_load_if_gateway_changes",
+      "layout",
+      "render_image",
+      "QA"
+    ],
+    "excel_release": "HOLD",
+    "image_release": "HOLD",
+    "final_gateway_freeze_requires": "Exact HVAC indoor/outdoor model/family and official compatibility evidence."
+  }
+}

@@ -1,0 +1,25 @@
+schema_version: "1.0"
+registry_id: AUT-PANEL-AGENT-DATACENTERS-V1
+database_schema: database/aut_panel_schema.sql
+rule: Cada agente possui namespace lógico próprio; dados compartilhados só entram no Data Center canônico após gate e validação.
+namespaces:
+  ORCHESTRATOR: {namespace: agent_dc.orchestrator, tables: [agent_runs, artifacts]}
+  TECHNICAL_RESEARCH: {namespace: agent_dc.research, tables: [sources, suppliers]}
+  SOURCE_VALIDATOR_A: {namespace: agent_dc.source_validator_a, tables: [sources]}
+  SOURCE_VALIDATOR_B: {namespace: agent_dc.source_validator_b, tables: [sources]}
+  DATACENTER_CURATOR: {namespace: agent_dc.datacenter_curator, tables: [components, sources, suppliers]}
+  ELECTRICAL_SIZING: {namespace: agent_dc.electrical_sizing, tables: [artifacts, qa_findings]}
+  AUTOMATION_IO: {namespace: agent_dc.automation_io, tables: [io_points]}
+  LI_BOM: {namespace: agent_dc.li_bom, tables: [panel_components, artifacts]}
+  LAYOUT_OPTIMIZER: {namespace: agent_dc.layout, tables: [render_metrics, artifacts]}
+  RENDERER: {namespace: agent_dc.renderer, tables: [render_metrics, artifacts]}
+  QA: {namespace: agent_dc.qa, tables: [qa_runs, qa_findings]}
+  MEMORY_CURATOR: {namespace: agent_dc.memory, tables: [memory_events]}
+  ML_QUALITY: {namespace: agent_dc.ml_quality, tables: [training_examples, model_registry]}
+  EVOLUTION_PROPOSER: {namespace: agent_dc.evolution, tables: [evolution_proposals]}
+
+  CAD_GEOMETRY_GUARDIAN: {namespace: agent_dc.cad_geometry, tables: [artifacts, qa_findings, render_metrics]}
+  SCALE_PROPORTION_GUARDIAN: {namespace: agent_dc.scale_guard, tables: [qa_findings, render_metrics]}
+  BLENDER_RENDER_GUARDIAN: {namespace: agent_dc.blender_render, tables: [artifacts, render_metrics]}
+  REVIT_BIM_INTEROP_GUARDIAN: {namespace: agent_dc.revit_bim, tables: [artifacts, qa_findings]}
+  CANVAS_COMPOSITION_GUARDIAN: {namespace: agent_dc.canvas_guard, tables: [artifacts, qa_findings, render_metrics]}

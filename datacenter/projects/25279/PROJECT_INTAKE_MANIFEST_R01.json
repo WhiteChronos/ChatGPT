@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "project_number": "25279",
+  "project_title": "Automacao - PN-AUT-01",
+  "revision": "R01-SCOPE-RECONCILIATION",
+  "status": "STEP1_SCOPE_FROZEN",
+  "panel_count": 1,
+  "panel_register": [
+    {
+      "panel_id": "PN-AUT-01",
+      "function": "Painel principal de automacao HVAC/BMS com CLP central",
+      "status": "ACTIVE",
+      "source_basis": [
+        "user correction 2026-09-30",
+        "LI-3501.02-8210-800-RPJ-702 Rev.0",
+        "FD-3501.01-8210-800-RPJ-001 Rev.A"
+      ]
+    }
+  ],
+  "historical_aliases": [
+    {
+      "alias": "PN-AUT-001",
+      "status": "HISTORICAL_ALIAS_SUPERSEDED",
+      "note": "Earlier branch artifacts used PN-AUT-001. Active project identity is PN-AUT-01 under PROJECT_NUMBER 25279. Historical files are preserved for traceability."
+    }
+  ],
+  "scope_conflicts": [],
+  "missing_documents": [
+    "DE drawings referenced by the user for instrument and fiber reconciliation are not present in the current uploaded-file set and were not located among the project-specific branch artifacts inspected."
+  ]
+}

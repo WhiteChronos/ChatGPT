@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.6",
+  "control_id": "AUT-PANEL-PROJECT-ELABORATION-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "prompt": "prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md",
+  "visual_model": "PN-IMAGE-MODEL-001",
+  "visual_directive": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
+  "skill_chain": [
+    "skills/aut-panel-bootstrap/SKILL.md",
+    "skills/aut-panel-normative-academic-review/SKILL.md",
+    "skills/aut-panel-source-research/SKILL.md",
+    "skills/aut-panel-component-selection/SKILL.md",
+    "skills/aut-panel-automation-io/SKILL.md",
+    "skills/aut-panel-electrical-sizing/SKILL.md",
+    "skills/aut-panel-li-load-quantification/SKILL.md",
+    "skills/aut-panel-layout/SKILL.md",
+    "skills/aut-panel-pn-image-fidelity/SKILL.md",
+    "skills/aut-panel-image-document/SKILL.md",
+    "skills/aut-panel-qa-release/SKILL.md",
+    "skills/aut-panel-final-image-verification/SKILL.md",
+    "skills/aut-panel-learning-memory/SKILL.md"
+  ],
+  "plugin_capabilities": {
+    "web_research": [
+      "Tavily",
+      "Firecrawl"
+    ],
+    "current_context_gap_detection": [
+      "Acumen by Talarion"
+    ],
+    "academic": [
+      "Scite"
+    ],
+    "computation": [
+      "Wolfram"
+    ],
+    "structured_memory": [
+      "Airtable",
+      "Coda",
+      "Notion"
+    ],
+    "canonical_audit": [
+      "GitHub",
+      "Codex"
+    ],
+    "math_geometry": [
+      "Wolfram"
+    ],
+    "visual_3d_preview": [
+      "to3D"
+    ],
+    "image_postprocess": [
+      "Adobe",
+      "native ImageGen"
+    ]
+  },
+  "authority_rule": "Plugins are support tools. Official project/manufacturer/standard evidence remains authoritative.",
+  "evolution_mode": "PROPOSAL_ONLY_HUMAN_GATE",
+  "release_rule": "No project visual artifact may be released unless Step 4 LI/load, Step 5 physical multiview fidelity, Step 6 engineering document composition, and Step 7 final image verification all pass.",
+  "geometry_authority_rule": "For dimensional engineering, use manufacturer CAD or deterministic parametric geometry. to3D/ImageGen/Adobe are downstream visualization aids only.",
+  "step_1": {
+    "control": "datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json",
+    "title": "Document intake + project number + panel count",
+    "pass_status": "STEP1_SCOPE_FROZEN",
+    "blocks_downstream_until_pass": true,
+    "identity_rule": "Every downstream artifact carries PROJECT_NUMBER + PANEL_ID + revision/status."
+  },
+  "step_2": {
+    "control": "datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json",
+    "prompt": "prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md",
+    "parametric_memory": "memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml",
+    "catalog_policy": "datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json",
+    "title": "Parametric panel definition and dynamic question engine",
+    "pass_status": "STEP2_PANEL_DEFINITION_FROZEN",
+    "hold_status": "HOLD_PANEL_DEFINITION_CONFLICT",
+    "question_rule": "Ask only unresolved decisions after consulting project documents, Data Center, project/panel memory, catalogs, manufacturer sources and applicable standards.",
+    "learning_rule": "Question count should decrease over time through validated parameter reuse, never through silent assumptions.",
+    "question_ui": "VISUALIZE_WITH_COPYABLE_ANSWER_BLOCK"
+  },
+  "memory_evolution": {
+    "parameter_scopes": [
+      "GLOBAL_METHOD",
+      "PROJECT",
+      "PANEL",
+      "MANUFACTURER_FAMILY",
+      "EQUIPMENT_MODEL"
+    ],
+    "no_scope_promotion_without_validation": true,
+    "supersede_instead_of_overwrite": true,
+    "invalidate_downstream_on_correction": true
+  },
+  "step_3": {
+    "control": "datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json",
+    "prompt": "prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md",
+    "memory": "memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml",
+    "archive_policy": "datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json",
+    "skill": "skills/aut-panel-normative-academic-review/SKILL.md",
+    "title": "Normative, academic and bibliographic evidence review",
+    "pass_status": "STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN",
+    "hold_statuses": [
+      "HOLD_NORMATIVE_CONFLICT",
+      "HOLD_NORMATIVE_EDITION",
+      "HOLD_APPLICABILITY_UNCERTAIN"
+    ],
+    "archive_rule": "Archive full controlled copies only when copying is permitted; otherwise retain metadata, official link/DOI/ISBN, citation, used sections, permitted excerpts and controlled summary.",
+    "memory_rule": "Memory stores pointers/hashes/extracted knowledge, not full binary documents."
+  },
+  "step_4": {
+    "control": "datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json",
+    "prompt": "prompts/PROMPT_STEP4_LI_LOAD_V1.md",
+    "memory": "memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml",
+    "skill": "skills/aut-panel-li-load-quantification/SKILL.md",
+    "pass_status": "STEP4_LI_LOAD_FROZEN",
+    "workbook_rule": "Exactly two sheets per PANEL_ID: MATERIALS and LOAD; no extra or hidden sheets.",
+    "quantification_rule": "All quantities and internal wire metres require documentary or deterministic mathematical basis.",
+    "links_rule": "Each material line carries REF_ID and official manufacturer/document/supplier links.",
+    "downstream_rule": "Physical sizing, final layout and image require STEP4_LI_LOAD_FROZEN."
+  },
+  "step_5": {
+    "control": "datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json",
+    "prompt": "prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md",
+    "memory": "memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml",
+    "references": "datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json",
+    "skill": "skills/aut-panel-pn-image-fidelity/SKILL.md",
+    "pass_status": "STEP5_PN_IMAGE_FIDELITY_FROZEN",
+    "rule": "One canonical real-scale 3D assembly per PANEL_ID/revision; all angles derive from the same geometry and door object."
+  },
+  "step_6": {
+    "control": "datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json",
+    "prompt": "prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md",
+    "memory": "memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml",
+    "skill": "skills/aut-panel-image-document/SKILL.md",
+    "model": "PN-IMAGE-MODEL-001",
+    "pass_status": "STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN",
+    "rule": "Compose Step 5 image with legend, panel data, electrical architecture, communication architecture, command diagram and dimensions using grow-only canvas."
+  },
+  "step_7": {
+    "control": "datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json",
+    "toolchain": "datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json",
+    "prompt": "prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md",
+    "memory": "memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml",
+    "skill": "skills/aut-panel-final-image-verification/SKILL.md",
+    "pass_status": "STEP7_FINAL_IMAGE_VERIFIED",
+    "rule": "Verify framing, proportions, common px/mm scale, H/W/D labels, multiview identity, camera reprojection and visual regression without repairing the image."
+  }
+}

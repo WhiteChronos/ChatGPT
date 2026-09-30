@@ -1,0 +1,91 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-METHOD-EVOLUTION-MEMORY-V1
+status: CONTROLLED_ACTIVE
+
+principles:
+  - "Aprender com erro confirmado, nunca com suposicao."
+  - "Separar fato de projeto, regra metodologica e sugestao de melhoria."
+  - "Todo erro confirmado deve gerar causa raiz, regra preventiva e teste de regressao."
+  - "ML/plugins sao consultivos; gates deterministas prevalecem."
+  - "Mudanca metodologica bloqueada exige proposta, simulacao, QA e aprovacao humana."
+
+known_error_patterns:
+  - id: ERR-DIM-STALE-001
+    pattern: "Excel/Data Sheet com uma dimensao e imagem com dimensao antiga."
+    example: "PN-AUT-001: Excel R03 = 1200x800x300 mm; imagem mostrava 1800x800x300 mm."
+    prevention:
+      - "Antes do render, carregar dimensoes do Data Sheet/projeto atual."
+      - "Comparar texto de cotas da imagem com H/W/D canonicos."
+      - "Mudanca de gabinete invalida render anterior."
+  - id: ERR-GATEWAY-CAPACITY-001
+    pattern: "Gateway selecionado sem reconciliar capacidade com quantidade real de equipamentos."
+    example: "Arquitetura de gateway precisa atender 32 unidades internas + topologia de 6 condensadoras."
+    prevention:
+      - "Criar inventario de endpoints antes da selecao."
+      - "Distinguir portas fisicas, buses, enderecos e capacidade de unidades."
+      - "Calcular utilizacao e reserva do gateway."
+  - id: ERR-MODEL-CONTAMINATION-001
+    pattern: "Dados numericos da imagem/modelo de referencia contaminam outro painel."
+    prevention:
+      - "MODEL 001 define estrutura apenas."
+      - "Dados numericos sempre do painel-alvo."
+
+  - id: ERR-LI-QUANTITY-ROUTE-001
+    pattern: "LI com fios, canaletas, trilhos ou acessórios estimados sem conexão/rota/geométrica rastreável."
+    prevention:
+      - "Calcular fiação por grafo de conexões e rota real em mm."
+      - "Calcular materiais lineares pela geometria do layout."
+      - "Incluir cadeia completa de acessórios e montagem."
+      - "Bloquear workbook se houver quantidade sem trace ID ou REF_ID."
+  - id: ERR-MULTIVIEW-DOOR-001
+    pattern: "Porta/tampa ou gabinete muda de tamanho/proporcao entre frontal, aberta e 3/4."
+    prevention:
+      - "Usar uma unica montagem 3D canonica por PANEL_ID/revisao."
+      - "Usar o mesmo door_object_id, bbox local e eixo de dobradica em todas as vistas."
+      - "Permitir somente camera e transformacao rigida de abertura."
+      - "Executar validate_multiview_manifest antes do Step 5 freeze."
+  - id: ERR-DOCUMENT-DOWNSCALE-001
+    pattern: "Documento reduz painel/cotas/diagramas para caber em canvas fixo."
+    prevention:
+      - "Planejar bounding boxes em tamanho nativo."
+      - "Grow-only canvas."
+      - "scale_x=scale_y=1.0 para vistas dimensionais."
+      - "Cotas sempre de valores controlados, nunca de raster."
+  - id: ERR-FINAL-IMAGE-PRECISION-001
+    pattern: "Imagem final visualmente plausivel, mas com proporcao, escala px/mm, enquadramento ou reprojecao incompatível com a geometria controlada."
+    prevention:
+      - "Executar Step 7 antes de release."
+      - "Comparar W/H e D/H físicos contra bbox em pixels nas vistas ortograficas."
+      - "Comparar px/mm entre eixos e entre vistas."
+      - "Validar 3/4 por matriz de camera e RMSE de reprojecao."
+      - "Bloquear clipping e cota divergente."
+      - "Usar SSIM/hash apenas como camada secundaria."
+learning_loop:
+  stages:
+    - OBSERVE
+    - CLASSIFY_ERROR_OR_OPPORTUNITY
+    - ROOT_CAUSE
+    - PROPOSE_RULE_OR_AUTOMATION
+    - SANDBOX_SIMULATE
+    - REGRESSION_TEST
+    - HUMAN_GATE
+    - APPLY
+    - VERSION
+    - MEASURE
+  automatic_application_forbidden: true
+
+improvement_backlog:
+  - "Gate automatico de dimensoes: Data Sheet x LI x layout x texto de cotas do render."
+  - "Gate de capacidade de gateway: endpoints requeridos <= capacidade documentada."
+  - "Gerador de matriz de comunicacao por topologia."
+  - "Airtable opcional para indice de componentes, fontes, HOLDs e decisoes."
+  - "Acumen advisory para apontar possiveis lacunas de informacao recente antes da pesquisa."
+  - "Tavily/Firecrawl para descoberta e coleta de paginas oficiais."
+  - "Scite para fundamentacao metodologica."
+  - "Wolfram para validacao independente de calculos."
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: METHOD_EVOLUTION_MEMORY_CREATED
+    summary: "Criada memoria metodologica para registrar erros, regras preventivas, testes e propostas de automacao."

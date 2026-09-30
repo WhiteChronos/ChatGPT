@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-STEP7-FINAL-IMAGE-VERIFICATION-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "step_number": 7,
+  "title": "Verificacao final matematica e visual da imagem por PN",
+  "depends_on": [
+    "STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN"
+  ],
+  "purpose": "Verificar enquadramento, concordancia entre vistas, proporcoes reais, medidas, escala, camera, clipping, fidelidade multivista e consistencia final antes da liberacao visual.",
+  "internal_verification_models": [
+    "STEP5 canonical assembly hash",
+    "Step5/Step6 image fingerprints",
+    "controlled H/W/D",
+    "door/enclosure local bounding boxes",
+    "hinge axis and rigid transforms",
+    "camera/projection manifests",
+    "canonical 3D landmarks",
+    "projected object masks",
+    "MODEL 001 block bounding boxes",
+    "LI/load/topology revision fingerprints"
+  ],
+  "mathematical_checks": {
+    "orthographic_aspect_ratio": "observed_px_ratio versus physical_mm_ratio",
+    "axis_scale": "px_per_mm_x versus px_per_mm_y",
+    "cross_view_scale": "common px/mm across dimensional orthographic views",
+    "calibrated_view": "3D landmark reprojection RMSE using stored 3x4 camera projection",
+    "framing": "minimum margins, clipping, optional centered-margin balance",
+    "dimensions": "displayed H/W/D equals controlled values, no raster-derived dimensions",
+    "object_transform": "scale=1,1,1 and rigid transform invariants",
+    "visual_regression": "SSIM/edge/hash checks are secondary only"
+  },
+  "default_tolerances": {
+    "orthographic_aspect_error_percent": 0.25,
+    "axis_scale_error_percent": 0.25,
+    "common_scale_error_percent": 0.5,
+    "reprojection_rmse_px": 1.5,
+    "cad_model_dimension_tolerance_mm": 0.1,
+    "centered_margin_imbalance_fraction": 0.05,
+    "note": "Defaults are project starting values, not technical-standard limits. Frozen project tolerances may be stricter and cannot be loosened silently."
+  },
+  "toolchain_registry": "datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json",
+  "skill": "skills/aut-panel-final-image-verification/SKILL.md",
+  "prompt": "prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md",
+  "memory": "memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml",
+  "scripts": [
+    "skills/aut-panel-final-image-verification/scripts/verify_final_image_manifest.py",
+    "skills/aut-panel-final-image-verification/scripts/verify_visual_regression.py"
+  ],
+  "outputs": [
+    "FINAL_IMAGE_QA_MANIFEST",
+    "MATHEMATICAL_IMAGE_PRECISION_REPORT",
+    "MULTIVIEW_CONSISTENCY_REPORT",
+    "FRAMING_AND_CANVAS_REPORT",
+    "VISUAL_REGRESSION_REPORT",
+    "STEP7_FINAL_IMAGE_VERIFIED"
+  ],
+  "pass_status": "STEP7_FINAL_IMAGE_VERIFIED",
+  "failure_statuses": [
+    "HOLD_FINAL_IMAGE_FRAMING",
+    "HOLD_FINAL_IMAGE_SCALE",
+    "HOLD_FINAL_IMAGE_REPROJECTION",
+    "HOLD_FINAL_IMAGE_DIMENSION_LABEL",
+    "HOLD_FINAL_IMAGE_MULTIVIEW_MISMATCH",
+    "HOLD_FINAL_IMAGE_VISUAL_REGRESSION"
+  ],
+  "repair_policy": "Step 7 verifies and routes only. Geometry failures return to Step 5; document/composition failures return to Step 6; LI/load quantity failures return to Step 4."
+}

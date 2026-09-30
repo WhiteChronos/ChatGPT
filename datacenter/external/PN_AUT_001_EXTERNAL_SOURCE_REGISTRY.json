@@ -1,0 +1,325 @@
+{
+  "schema_version": "1.0",
+  "project": "PN-AUT-001",
+  "generated_at": "2026-09-29T15:52:00-03:00",
+  "policy": {
+    "source_priority": [
+      "manufacturer_official",
+      "official_standard",
+      "academic_publisher_or_peer_reviewed",
+      "authorized_distributor",
+      "secondary_support"
+    ],
+    "copyright_rule": "Do not reproduce full copyrighted standards, books or papers. Store metadata, official links, concise engineering summaries, page/section references when available, and only short permitted excerpts.",
+    "release_rule": "External evidence may close a technical requirement only when model/application compatibility is demonstrated; otherwise keep HOLD."
+  },
+  "sources": [
+    {
+      "id": "EXT-001",
+      "topic": "short_circuit",
+      "type": "standard",
+      "publisher": "IEC",
+      "title": "IEC 60909-0 - Short-circuit currents in three-phase a.c. systems - Part 0: Calculation of currents",
+      "edition_note": "current project basis; verify licensed edition before issue",
+      "url": "https://webstore.iec.ch/",
+      "status": "REFERENCE_REQUIRED_LICENSED_COPY",
+      "application": "Method for Ik/Icc, initial symmetrical current, peak current and equipment duty.",
+      "facts": [
+        "Fault level is a property of the upstream network and impedances, not a default supplied by a breaker manufacturer.",
+        "Final Icu/Icw/Ipk verification requires calculated or declared prospective fault current at the installation point."
+      ]
+    },
+    {
+      "id": "EXT-002",
+      "topic": "short_circuit;cable_sizing",
+      "type": "manufacturer_technical_guide",
+      "manufacturer": "Schneider Electric",
+      "title": "Electrical Installation Guide",
+      "url": "https://www.se.com/ww/en/work/products/product-launch/electrical-installation-guide/",
+      "status": "VALID_TECHNICAL_REFERENCE",
+      "application": "Short-circuit impedance method, conductor sizing workflow, voltage drop, protective-device coordination.",
+      "facts": [
+        "Conductor selection requires load current, installation method, ambient correction, voltage drop and short-circuit withstand.",
+        "Short-circuit current downstream can be derived from upstream fault level plus intervening impedance."
+      ]
+    },
+    {
+      "id": "EXT-003",
+      "topic": "panel_assembly",
+      "type": "standard",
+      "publisher": "IEC",
+      "title": "IEC 61439-1:2020 - Low-voltage switchgear and controlgear assemblies - General rules",
+      "url": "https://webstore.iec.ch/publication/67026",
+      "status": "VALID_STANDARD_METADATA",
+      "application": "Assembly ratings, verification, temperature-rise, declared characteristics including short-circuit withstand as applicable.",
+      "facts": [
+        "Temperature-rise verification is part of assembly verification.",
+        "Power supplies and UPS incorporated into an assembly remain subject to their product standards plus the assembly integration requirements."
+      ]
+    },
+    {
+      "id": "EXT-004",
+      "topic": "ip_rating",
+      "type": "standard",
+      "publisher": "IEC",
+      "title": "IEC 60529 - Degrees of protection provided by enclosures (IP Code)",
+      "url": "https://webstore.iec.ch/publication/2452",
+      "status": "VALID_STANDARD_METADATA",
+      "application": "IP66 requirement and verification of enclosure after modifications.",
+      "facts": [
+        "IP rating is verified by standardized tests.",
+        "After installing cooling equipment/cut-outs, the final assembled enclosure must still have evidence for the claimed IP degree."
+      ]
+    },
+    {
+      "id": "EXT-005",
+      "topic": "hmi",
+      "type": "manufacturer_official",
+      "manufacturer": "Schneider Electric",
+      "model": "HMIST6500",
+      "title": "Harmony ST6 - Electrical Specifications",
+      "url": "https://productinfo.se.com/harmony_st6/harmony-st6-user-manual/English/BM_Aurora%20Magelis%20HMIST%20User%20Manual_57d08d23_T001969321.xml/%24/TPC_AuroraElectricalSpecs_57d08d23_T001966710",
+      "status": "CONFIRMED",
+      "application": "24 Vdc UPS load and thermal model.",
+      "facts": [
+        "Rated input 24 Vdc.",
+        "Input range 19.2 to 28.8 Vdc.",
+        "Maximum power 12.6 W.",
+        "Inrush current up to 30 A."
+      ]
+    },
+    {
+      "id": "EXT-006",
+      "topic": "power_supply",
+      "type": "manufacturer_official",
+      "manufacturer": "Schneider Electric",
+      "model": "ABL8RPS24100",
+      "title": "Phaseo regulated power supply",
+      "url": "https://www.se.com/br/pt/product/ABL8RPS24100/",
+      "status": "CONFIRMED",
+      "application": "24 Vdc supply sizing and heat dissipation.",
+      "facts": [
+        "24 Vdc, 10 A, 240 W class.",
+        "Previously verified engineering data includes approximately 31 W full-load loss; reverify against current official datasheet at release."
+      ]
+    },
+    {
+      "id": "EXT-007",
+      "topic": "ups",
+      "type": "manufacturer_official",
+      "manufacturer": "ADEL System",
+      "model": "CBI2420A",
+      "title": "CBI2420A Data Sheet",
+      "url": "https://adelsystem.com/hubfs/CBI2420A%20Data%20sheet%20_R40.pdf?hsLang=it",
+      "status": "CONFIRMED_PRODUCT",
+      "application": "DC UPS/charger candidate for all 24 Vdc loads and 30 min autonomy.",
+      "facts": [
+        "24 Vdc system; high-current DC UPS/charger.",
+        "Final battery sizing depends on measured/calculated total protected load, temperature, ageing and allowed depth of discharge."
+      ]
+    },
+    {
+      "id": "EXT-008",
+      "topic": "analog_input",
+      "type": "manufacturer_official",
+      "manufacturer": "Siemens",
+      "model": "6ES7134-6TD00-0CA1",
+      "title": "SIMATIC ET 200SP AI 4xI 2-wire 4-20 mA HART High Feature",
+      "url": "https://mall.industry.siemens.com/mall/en/WW/Catalog/Product/6ES7134-6TD00-0CA1",
+      "status": "CANDIDATE_STRONG",
+      "application": "67 installed AI channels.",
+      "facts": [
+        "4 HART-capable current input channels per module.",
+        "17 modules provide 68 channels, covering 67 installed channels with one spare channel.",
+        "Exact BaseUnits and power-segment architecture still require final configuration."
+      ]
+    },
+    {
+      "id": "EXT-009",
+      "topic": "industrial_ethernet",
+      "type": "manufacturer_official",
+      "manufacturer": "Siemens",
+      "model": "6GK5208-0GA00-2AC2",
+      "title": "SCALANCE XC208G",
+      "url": "https://mall.industry.siemens.com/",
+      "status": "CANDIDATE_STRONG",
+      "application": "Managed Layer 2 eight-port Gigabit switch matching FD requirement.",
+      "facts": [
+        "Eight RJ45 Gigabit ports and redundant DC supply are consistent with project requirement; exact datasheet must be archived at release."
+      ]
+    },
+    {
+      "id": "EXT-010",
+      "topic": "temperature",
+      "type": "manufacturer_official",
+      "manufacturer": "NOVUS",
+      "model": "TEMP-WM",
+      "title": "TEMP-WM Wall Mount Temperature Transmitter",
+      "url": "https://www.novusautomation.com/en/product/temperature-transmitters/tempwm",
+      "status": "REJECTED_AS_FINAL_WITH_HART",
+      "application": "User reference only.",
+      "facts": [
+        "Wall mount, loop-powered 4-20 mA class, compatible with 24 Vdc supply range.",
+        "Official material located does not establish HART; therefore it cannot satisfy the frozen HART requirement by itself."
+      ]
+    },
+    {
+      "id": "EXT-011",
+      "topic": "temperature",
+      "type": "manufacturer_official",
+      "manufacturer": "NOVUS",
+      "model": "TxIsoBlock HRT / TxIsoRail HRT",
+      "title": "HART Temperature Transmitters",
+      "url": "https://www.novusautomation.com/en/product/temperature-transmitters",
+      "status": "CANDIDATE_ARCHITECTURE",
+      "application": "Possible HART transmitter paired with room sensor/RTD assembly.",
+      "facts": [
+        "Two-wire 4-20 mA with HART is available in NOVUS HRT transmitter families.",
+        "These are head/DIN-rail transmitters, so an ambient wall sensing assembly must be engineered separately."
+      ]
+    },
+    {
+      "id": "EXT-012",
+      "topic": "temperature",
+      "type": "manufacturer_official",
+      "manufacturer": "Siemens",
+      "model": "SITRANS TF320",
+      "title": "SITRANS TF320 Field Temperature Transmitter",
+      "url": "https://www.siemens.com/global/en/products/automation/process-instrumentation/temperature-measurement.html",
+      "status": "CANDIDATE_ARCHITECTURE",
+      "application": "Industrial HART temperature transmitter alternative.",
+      "facts": [
+        "4-20 mA and HART 7 family.",
+        "Field/wall/pipe-mounted enclosure concept, but not a compact room sensor; requires a suitable ambient sensing element and mounting arrangement."
+      ]
+    },
+    {
+      "id": "EXT-013",
+      "topic": "vrf_gateway",
+      "type": "manufacturer_official",
+      "manufacturer": "Trane",
+      "model": "TCONTSMCB24V",
+      "title": "TVR Smart Controls - Gateway literature",
+      "url": "https://www.trane.com.br/commercial/latin-america/br/pt/products-systems/vrff-e-mini-split/vrf/sistemas-tvr-smart/controles.html",
+      "direct_document_url": "https://www.trane.com.br/content/dam/Trane/Commercial/lar/br/produtos-sistemas/equipamentos/Sistema_VRF/TVR%20Smart/Controles/Gateways/iom-pb-tvr-tvr-smart-acessories-50-60hz-tcontsmcb24v-vrf-svn127a-pb.pdf",
+      "status": "OFFICIAL_DOCUMENT_LOCATED_TECHNICAL_CONTENT_PENDING_EXTRACTION",
+      "application": "Research path for user requirement: only official Trane 24 Vdc gateway.",
+      "facts": [
+        "Trane officially lists TCONTSMCB24V under Gateways for TVR Smart.",
+        "Model name alone is not proof of supply voltage/protocol; PDF technical content must be extracted and validated before freezing."
+      ]
+    },
+    {
+      "id": "EXT-014",
+      "topic": "vrf_gateway",
+      "type": "manufacturer_official",
+      "manufacturer": "Trane",
+      "model": "TCONTCCMA164A/TCONTCCMA1ADB/TCONTCCMIGU02A/TCONTCCMHCM04A/TCONTCCMIGU07A",
+      "title": "TVR Smart gateway family",
+      "url": "https://www.trane.com.br/commercial/latin-america/br/pt/products-systems/vrff-e-mini-split/vrf/sistemas-tvr-smart/controles.html",
+      "status": "OFFICIAL_FAMILY_REFERENCE",
+      "application": "Alternative official Trane gateways if TCONTSMCB24V does not meet requirements.",
+      "facts": [
+        "Official Trane page lists multiple gateway models and direct product literature links."
+      ]
+    },
+    {
+      "id": "EXT-015",
+      "topic": "thermal_management",
+      "type": "manufacturer_official",
+      "manufacturer": "Schneider Electric",
+      "family": "ClimaSys CU",
+      "title": "ClimaSys Cooling Unit Guide",
+      "url": "https://productinfo.se.com/climasys_coolingunit_guide/",
+      "status": "CANDIDATE_STRONG_IP_PROOF_PENDING",
+      "application": "Closed-loop cooling at 40 C while preserving enclosure sealing.",
+      "facts": [
+        "Closed-loop cooling is conceptually compatible with maintaining a sealed cabinet.",
+        "Manufacturer installation requirements found previously reference minimum enclosure sealing levels, but do not by themselves prove the final modified assembly remains IP66.",
+        "Final selection requires thermal-load calculation and explicit IP66 assembly/interface evidence."
+      ]
+    },
+    {
+      "id": "EXT-016",
+      "topic": "co2",
+      "type": "manufacturer_or_product_technical",
+      "manufacturer": "Analytical Technology Inc. (ATI)",
+      "model": "D12Ex-IR",
+      "title": "Infrared Gas Transmitter",
+      "url": "https://gas-sensing.com/downloads/ati/d12ir/D12Ex-iR-Manual.pdf",
+      "status": "CANDIDATE_APPLICATION_REVIEW",
+      "application": "Industrial candidate for CO2 0-5000 ppm + 4-20 mA + HART.",
+      "facts": [
+        "Research located a low-range CO2 configuration up to 5000 ppm with analog output and HART option.",
+        "It is an industrial gas detector rather than a conventional HVAC wall IAQ sensor; project suitability must be approved."
+      ]
+    },
+    {
+      "id": "EXT-017",
+      "topic": "co2",
+      "type": "manufacturer_product_page",
+      "manufacturer": "Firefly / Omniguard",
+      "model": "Model 3100",
+      "title": "Omniguard Gas Detector Model 3100",
+      "url": "https://omniguardbyfirefly.com/our-products/omniguard-gas-detector-model-3100/",
+      "status": "CANDIDATE_APPLICATION_REVIEW",
+      "application": "Alternative CO2 transmitter with HART.",
+      "facts": [
+        "Published options include CO2 0-5000 ppm and 4-20 mA/HART configuration.",
+        "HVAC-room suitability, availability and acceptance still need manufacturer/submittal verification."
+      ]
+    },
+    {
+      "id": "EXT-018",
+      "topic": "short_circuit",
+      "type": "technical_book_open_web",
+      "author": "Phase to Phase",
+      "title": "Networks for Electricity Distribution - Chapter 8: Short-circuit calculations",
+      "url": "https://www.phasetophase.nl/book/book_2_8.html",
+      "status": "ACADEMIC_TECHNICAL_SUPPORT",
+      "application": "Independent explanation of IEC 60909 impedance method and voltage factor c.",
+      "facts": [
+        "The method requires source/network impedance or short-circuit power/current and impedances of transformers/cables.",
+        "Supports the conclusion that 220 V alone is insufficient to derive the prospective fault current."
+      ]
+    },
+    {
+      "id": "EXT-019",
+      "topic": "short_circuit",
+      "type": "peer_reviewed_review",
+      "publisher": "MDPI Energies",
+      "title": "Short-Circuit Calculation and Overcurrent Relay Protection in AC Microgrids: A Review",
+      "year": 2026,
+      "doi": "10.3390/en19112510",
+      "url": "https://doi.org/10.3390/en19112510",
+      "status": "ACADEMIC_SUPPORT",
+      "application": "Background on IEC 60909 and limitations where converter-interfaced sources dominate.",
+      "facts": [
+        "IEC 60909 remains a core standardized method; model limitations matter in converter-dominated systems.",
+        "For this small automation panel, the main practical need remains accurate upstream source and cable data."
+      ]
+    },
+    {
+      "id": "EXT-020",
+      "topic": "cable_sizing",
+      "type": "technical_reference",
+      "title": "IEC-oriented cable sizing workflow",
+      "url": "https://www.cabledatasheet.com/faq-related-cable/cable-size-calculation-handbook/",
+      "status": "SECONDARY_SUPPORT_ONLY",
+      "application": "Cross-check workflow only; not primary design authority.",
+      "facts": [
+        "Final cable section must satisfy ampacity, derating, voltage drop, short-circuit withstand and protective-device coordination.",
+        "Use IEC 60364-5-52/IEC 60287 as primary normative basis."
+      ]
+    }
+  ],
+  "open_research_tasks": [
+    "Extract technical content from official Trane TCONTSMCB24V PDF and confirm actual supply voltage, protocol and compatible TVR families.",
+    "Find a true room/wall temperature transmitter assembly with 4-20 mA + HART suitable for HVAC occupied spaces, or define wall sensor + remote HART transmitter architecture.",
+    "Validate an industrial CO2 0-5000 ppm + 4-20 mA + HART product for occupied-room HVAC application, including supply, accuracy, calibration and lifecycle.",
+    "Close exact CPU, BaseUnits and ET 200SP power-segment architecture.",
+    "Calculate full 24 Vdc load and battery capacity for 30 min autonomy.",
+    "Perform enclosure thermal calculation and select ClimaSys/equivalent with final IP66 evidence.",
+    "Obtain upstream fault-level data for IEC 60909 calculation; manufacturer breaker ratings cannot replace site Ik/Icc."
+  ]
+}

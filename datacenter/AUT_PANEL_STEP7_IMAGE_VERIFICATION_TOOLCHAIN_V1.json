@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "AUT-PANEL-STEP7-IMAGE-VERIFICATION-TOOLCHAIN-V1",
+  "status": "CONTROLLED_CANDIDATE_STACK",
+  "consulted_on": "2026-09-30",
+  "chatgpt_plugins": [
+    {
+      "name": "Wolfram",
+      "installed": true,
+      "role": [
+        "independent mathematical verification",
+        "aspect ratio",
+        "scale",
+        "projection arithmetic",
+        "tolerance checks"
+      ],
+      "authority": "CALCULATION_SUPPORT"
+    },
+    {
+      "name": "Remote Desktop Commander",
+      "installed": true,
+      "role": [
+        "execute authorized local Blender/FreeCAD/OpenCV verification workflows"
+      ],
+      "authority": "EXECUTION_BRIDGE_ONLY"
+    },
+    {
+      "name": "Adobe",
+      "installed": true,
+      "role": [
+        "presentation review only"
+      ],
+      "authority": "NOT_DIMENSIONAL_QA"
+    },
+    {
+      "name": "tldraw",
+      "installed": true,
+      "role": [
+        "annotation/review only"
+      ],
+      "authority": "NOT_DIMENSIONAL_QA"
+    },
+    {
+      "name": "Miro",
+      "installed": true,
+      "role": [
+        "collaborative review only"
+      ],
+      "authority": "NOT_DIMENSIONAL_QA"
+    }
+  ],
+  "plugin_directory_result": "No dedicated ChatGPT plugin was found that should be treated as engineering authority for calibrated image geometry or dimensional visual QA. Use deterministic/open-source verification stack instead.",
+  "open_source": [
+    {
+      "repository": "opencv/opencv",
+      "role": [
+        "camera calibration",
+        "solvePnP",
+        "reprojection",
+        "image registration",
+        "contours",
+        "mask comparison"
+      ],
+      "status": "CANDIDATE_PIN_LICENSE_SECURITY_SANDBOX"
+    },
+    {
+      "repository": "scikit-image/scikit-image",
+      "role": [
+        "SSIM",
+        "image metrics"
+      ],
+      "status": "CANDIDATE_PIN_LICENSE_SECURITY_SANDBOX"
+    },
+    {
+      "repository": "colmap/colmap",
+      "role": [
+        "camera geometry",
+        "reprojection reference",
+        "multiview validation"
+      ],
+      "status": "REFERENCE_CANDIDATE"
+    },
+    {
+      "repository": "openMVG/openMVG",
+      "role": [
+        "multiple-view geometry reference"
+      ],
+      "status": "REFERENCE_CANDIDATE"
+    },
+    {
+      "repository": "dfki-ric/pytransform3d",
+      "role": [
+        "rigid transforms",
+        "rotation validation"
+      ],
+      "status": "CANDIDATE_PIN_LICENSE_SECURITY_SANDBOX"
+    },
+    {
+      "repository": "mikedh/trimesh",
+      "role": [
+        "3D bbox",
+        "scene transforms",
+        "geometry QA"
+      ],
+      "status": "ACTIVE_CANDIDATE"
+    },
+    {
+      "repository": "isl-org/Open3D",
+      "role": [
+        "3D geometry QA"
+      ],
+      "status": "ACTIVE_CANDIDATE"
+    },
+    {
+      "repository": "blender/blender",
+      "role": [
+        "camera/render metadata reproducibility"
+      ],
+      "status": "ACTIVE_CANDIDATE"
+    },
+    {
+      "repository": "FreeCAD/FreeCAD",
+      "role": [
+        "canonical CAD/TechDraw geometry"
+      ],
+      "status": "ACTIVE_CANDIDATE"
+    },
+    {
+      "repository": "CadQuery/cadquery",
+      "role": [
+        "deterministic parametric geometry"
+      ],
+      "status": "ACTIVE_CANDIDATE"
+    },
+    {
+      "repository": "gumyr/build123d",
+      "role": [
+        "deterministic parametric geometry"
+      ],
+      "status": "ACTIVE_CANDIDATE"
+    },
+    {
+      "repository": "JohannesBuchner/imagehash",
+      "role": [
+        "supplementary perceptual fingerprint"
+      ],
+      "status": "SECONDARY_QA"
+    },
+    {
+      "repository": "Visual-Regression-Tracker/Visual-Regression-Tracker",
+      "role": [
+        "visual regression workflow reference"
+      ],
+      "status": "REFERENCE_CANDIDATE"
+    }
+  ],
+  "authority_order": [
+    "controlled project geometry and H/W/D",
+    "Step 5 canonical assembly and camera manifests",
+    "Step 6 document manifest",
+    "deterministic mathematical verification",
+    "OpenCV/geometry QA",
+    "visual regression metrics",
+    "human visual review"
+  ],
+  "promotion_gate": "PIN -> LICENSE -> SECURITY -> SANDBOX -> REGRESSION -> HUMAN_GATE -> VERSION"
+}

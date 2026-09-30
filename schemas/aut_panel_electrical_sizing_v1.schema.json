@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whitechronos.example/schemas/aut_panel_electrical_sizing_v1.schema.json",
+  "title": "AUT Panel Electrical Sizing Inputs",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "sizing_id",
+    "panels"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "sizing_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string"
+    },
+    "policy": {
+      "type": "object"
+    },
+    "panels": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "site",
+          "dc_bus",
+          "power_supply",
+          "dc_loads",
+          "battery",
+          "protection",
+          "verification",
+          "thermal"
+        ],
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "site": {
+            "type": "object"
+          },
+          "ac_load_summary": {
+            "type": "object"
+          },
+          "dc_bus": {
+            "type": "object"
+          },
+          "power_supply": {
+            "type": "object"
+          },
+          "dc_loads": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tag",
+                "quantity"
+              ],
+              "properties": {
+                "tag": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "power_w": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "current_a": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "battery": {
+            "type": "object"
+          },
+          "protection": {
+            "type": "object"
+          },
+          "verification": {
+            "type": "object"
+          },
+          "thermal": {
+            "type": "object"
+          },
+          "reference_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

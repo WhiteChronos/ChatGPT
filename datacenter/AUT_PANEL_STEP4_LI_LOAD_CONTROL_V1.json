@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-STEP4-LI-LOAD-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "step_number": 4,
+  "title": "Lista de materiais e carga por painel",
+  "depends_on": [
+    "STEP1_SCOPE_FROZEN",
+    "STEP2_PANEL_DEFINITION_FROZEN",
+    "STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN"
+  ],
+  "purpose": "Gerar a LI/BOM e a carga de cada PN com quantitativos matematicamente rastreáveis, incluindo toda a montagem e fiação interna.",
+  "workbook_contract": {
+    "one_workbook_per_project": true,
+    "sheets_per_panel": 2,
+    "exact_sheet_pattern": [
+      "<PANEL_ID>_MATERIAIS",
+      "<PANEL_ID>_CARGA"
+    ],
+    "extra_sheets_forbidden": true,
+    "hidden_sheets_forbidden": true,
+    "all_traceability_must_be_in_allowed_sheets_or_datacenter": true
+  },
+  "material_scope": [
+    "gabinete e placa",
+    "componentes de automacao e comunicacao",
+    "fontes UPS baterias conversores",
+    "protecao e distribuicao",
+    "reles interfaces bornes e acessorios",
+    "trilhos DIN e acessorios",
+    "canaletas tampas e acessorios",
+    "fios internos por tipo secao cor e metragem calculada",
+    "PE equipotencializacao e tranças de porta",
+    "cabos internos de rede/bus e conectores",
+    "terminais ilhoses terminais olhal garfo e marcadores",
+    "prensa cabos tampoes passagens e sistemas de entrada",
+    "climatizacao e kits",
+    "fixadores parafusos porcas arruelas espacadores suportes",
+    "todos os kits e pecas exigidos pela cadeia de montagem do fabricante"
+  ],
+  "quantity_engine": {
+    "authority": "connection graph + real-scale layout geometry + manufacturer accessory requirements",
+    "internal_wire_formula": "route + origin termination + destination termination + service loop; procurement allowance only if explicit project parameter",
+    "linear_items": [
+      "wire",
+      "DIN rail",
+      "duct/trunking",
+      "bonding conductor",
+      "internal network/bus cable"
+    ],
+    "volume_area_checks": "Wolfram plus deterministic geometry; never volume-only for collision or clearance",
+    "duct_fill": "use conductor bundle cross-sectional area and applicable manufacturer/normative fill criteria",
+    "terminals": "derive from connection topology and terminal plan",
+    "ferrules_lugs_markers": "derive from actual conductor endpoints and termination technology"
+  },
+  "load_sheet": {
+    "per_panel_separate": true,
+    "trace_exact_models": true,
+    "include": [
+      "voltage",
+      "nominal current",
+      "nominal power",
+      "quantity",
+      "duty/diversity if documented",
+      "raw load",
+      "design load",
+      "UPS critical flag",
+      "heat loss if available",
+      "REF_ID",
+      "official URL"
+    ]
+  },
+  "links_required": [
+    "official product URL",
+    "official datasheet/manual URL",
+    "authorized supplier/distributor URL when available"
+  ],
+  "toolchain": {
+    "math": [
+      "Wolfram"
+    ],
+    "connection_and_wiring": [
+      "QElectroTech",
+      "WireViz",
+      "QetWireManager",
+      "NetworkX"
+    ],
+    "geometry_and_measurement": [
+      "manufacturer CAD",
+      "FreeCAD",
+      "CadQuery",
+      "build123d",
+      "OpenCascade"
+    ],
+    "optimization": [
+      "OR-Tools"
+    ],
+    "local_application_bridge": [
+      "Remote Desktop Commander"
+    ],
+    "review_diagrams": [
+      "B&A Diagrams",
+      "tldraw",
+      "Miro"
+    ],
+    "research": [
+      "Tavily",
+      "Firecrawl",
+      "Scite",
+      "Consensus"
+    ]
+  },
+  "source_learning_rule": "Standards/academic evidence from Step 3 plus manufacturer assembly manuals, official training and assembly videos may support methods. Videos are secondary and never authority for ratings or normative requirements.",
+  "outputs": [
+    "LI_LOAD_WORKBOOK",
+    "MATERIAL_QUANTITY_TRACE",
+    "INTERNAL_WIRE_CUTLIST",
+    "LOAD_CALCULATION_TRACE",
+    "STEP4_LI_LOAD_FROZEN"
+  ],
+  "pass_status": "STEP4_LI_LOAD_FROZEN",
+  "hold_statuses": [
+    "HOLD_QUANTITY_BASIS",
+    "HOLD_WIRING_ROUTE",
+    "HOLD_ACCESSORY_CHAIN",
+    "HOLD_PRODUCT_LINK_MISMATCH",
+    "HOLD_LOAD_TRACE"
+  ]
+}

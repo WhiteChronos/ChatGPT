@@ -1,0 +1,58 @@
+{
+  "schema_version": "2.0",
+  "panel_id": "PN-AUT-001",
+  "status": "SUPERSEDED_ACTIVE_SCOPE_MOVED_TO_PROJECT_25279_PN_AUT_01",
+  "current_revision_basis": "R03 engineering LI + user corrections 2026-09-30",
+  "canonical_enclosure": {
+    "manufacturer": "Schneider Electric",
+    "model": "NSYCRN128300",
+    "height_mm": 1200,
+    "width_mm": 800,
+    "depth_mm": 300,
+    "source": "li/PN-AUT-001_LI_R03.json and generated R03 Excel",
+    "status": "CURRENT_DIMENSIONAL_BASIS_PENDING_REAL_SCALE_LAYOUT_VALIDATION",
+    "conflict_resolution": "Any image showing 1800x800x300 for PN-AUT-001 is stale and invalidated."
+  },
+  "visual_reference": {
+    "model_id": "PN-IMAGE-MODEL-001",
+    "rule": "Use MODEL 001 composition but target dimensions from this project control/Data Sheet.",
+    "current_image_status": "BLOCKED_UNTIL_R05_LAYOUT_AND_DIMENSIONS_FROZEN"
+  },
+  "gateway_review": "datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json",
+  "methodology": "datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json",
+  "release_status": "HISTORICAL_REFERENCE_ONLY",
+  "holds": [
+    "VALIDATION-LAYOUT-REAL-SCALE",
+    "HOLD-IP66-ASSEMBLY-PROOF"
+  ],
+  "current_li": "li/PN-AUT-001_LI_R06_ENGINEERING.json",
+  "gateway_architecture": {
+    "status": "CLOSED_R06",
+    "indoor_units": 32,
+    "project_capacity_per_gateway": 12,
+    "gateway_quantity": 3,
+    "installed_capacity": 36,
+    "spare_endpoints": 4,
+    "distribution": [
+      12,
+      12,
+      8
+    ],
+    "cm_gateway_rs232_quantity": 3,
+    "field_bus_modules_quantity": 32,
+    "power_conversion_status": "CLOSED_PHOENIX_1066704",
+    "note": "IRTrans official reference states up to 15 bus modules/master, but stricter project/supplier limit of 12 governs."
+  },
+  "calculation_state": {
+    "gateway_power_closed": true,
+    "load_24v_closed": true,
+    "ups_battery_closed": true,
+    "thermal_capacity_closed": true,
+    "design_24v_a": 19.79204,
+    "ups_continuous_a": 20,
+    "thermal_with_reserve_w": 140.28,
+    "cooling_capacity_basis_w": 240
+  },
+  "superseded_by": "datacenter/projects/25279/PN_AUT_01_PROJECT_CONTROL_V1.json",
+  "supersession_note": "User explicitly corrected active identity to PROJECT_NUMBER 25279 / PANEL_ID PN-AUT-01 and reopened Step 2 before rebuilding LI and images. Preserve this file for history only."
+}

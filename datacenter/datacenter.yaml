@@ -1,0 +1,202 @@
+schema_version: '1.2'
+datacenter_id: AUT-PANEL-DATACENTER-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+canonical_sources:
+  component_catalog: datacenter/AUT_PANEL_COMPONENT_CATALOG_V2.json
+  quantity_registry: datacenter/AUT_PANEL_PANEL_QUANTITIES.json
+  document_standard_registry: datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_supplement: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  normative_script: pipeline/aut_panel_normative_control.py
+  golden_rules_yaml: governance/golden_rules.yaml
+  panel_template_yaml: templates/panel_template.yaml
+  prompt_master: prompts/PROMPT_MASTER_AUT_PANEL.md
+  li_material_prompt: prompts/PROMPT_MASTER_LI_MATERIAL.md
+  li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
+  li_material_control: datacenter/LI_MATERIAL_CONTROL.json
+  li_material_datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+  li_material_script: pipeline/li_material_control.py
+  li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+  li_material_open_source_qa: plugins/li_material_qa_registry.json
+  agent_system: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  agent_datacenters: datacenter/agents/agent_datacenters.yaml
+  agent_memories: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_script: pipeline/aut_panel_db.py
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  learning_script: pipeline/aut_panel_learning.py
+  evolution_script: pipeline/evolution_engine.py
+  ml_model_registry: ml/model_registry.yaml
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
+  pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
+  pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+  aut_panel_project_elaboration_control: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
+  aut_panel_project_elaboration_prompt: prompts/PROMPT_MASTER_ELABORACAO_PROJETO_PN_V1.md
+  project_intake_step1: datacenter/AUT_PANEL_PROJECT_INTAKE_STEP1_V1.json
+  panel_definition_step2: datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json
+  panel_definition_step2_prompt: prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md
+  step3_normative_academic_review: datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json
+  step3_normative_academic_prompt: prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md
+  step3_normative_academic_memory: memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml
+  bibliographic_archive_policy: datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json
+  step3_normative_academic_skill: skills/aut-panel-normative-academic-review/SKILL.md
+  step4_li_load_control: datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json
+  step4_li_load_prompt: prompts/PROMPT_STEP4_LI_LOAD_V1.md
+  step4_li_load_memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
+  step4_li_load_skill: skills/aut-panel-li-load-quantification/SKILL.md
+  step5_pn_image_fidelity_control: datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json
+  step5_pn_image_fidelity_prompt: prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md
+  step5_pn_image_fidelity_memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
+  step5_visual_reference_registry: datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json
+  step5_pn_image_fidelity_skill: skills/aut-panel-pn-image-fidelity/SKILL.md
+  step6_engineering_image_document_control: datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json
+  step6_engineering_image_document_prompt: prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md
+  step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
+  step6_engineering_image_document_skill: skills/aut-panel-image-document/SKILL.md
+  step7_final_image_verification_control: datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json
+  step7_image_verification_toolchain: datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json
+  step7_final_image_verification_prompt: prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md
+  step7_final_image_verification_memory: memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml
+  step7_final_image_verification_skill: skills/aut-panel-final-image-verification/SKILL.md
+  parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
+  catalog_archive_policy: datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json
+  aut_panel_plugin_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
+  aut_panel_method_evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
+  autonomous_improvement_control: datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json
+  autonomous_improvement_backlog: improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json
+  open_source_toolchain_skill: skills/aut-panel-open-source-toolchain/SKILL.md
+  autonomous_improvement_skill: skills/aut-panel-autonomous-improvement/SKILL.md
+  engram_memory_policy: datacenter/ENGRAM_MEMORY_POLICY_V1.json
+  pn_aut_001_project_control: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
+  pn_aut_001_gateway_review: datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json
+  engineering_skill: skills/aut-panel-engineering/SKILL.md
+  pipeline_yaml: pipeline/pipeline.yaml
+  datasheet_yaml: datasheet/datasheet.yaml
+  bootstrap_prompt: prompts/PROMPT_BOOTSTRAP_NOVA_CONVERSA.md
+  conversation_memory: context/AUT_PANEL_CONVERSATION_MEMORY.yaml
+  conversation_contract: pipeline/conversation_contract.py
+  datacenter: datacenter/datacenter.yaml
+  datasheet: datasheet/datasheet.yaml
+normative_control:
+  registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+  registry_path: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  supplemental_registry_path: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+  memory_path: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  default_jurisdiction: BR
+  reverify_before_release: true
+  unverified_applicable_edition_status: HOLD
+  conflicting_requirements_status: HOLD
+agent_learning_system:
+  system_id: AUT-PANEL-AGENT-SYSTEM-V1
+  agent_registry: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  datacenter_registry: datacenter/agents/agent_datacenters.yaml
+  memory_registry: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_engine: SQLite
+  optional_database_targets: [PostgreSQL, Supabase_Postgres]
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  model_registry: ml/model_registry.yaml
+  ml_mode: ADVISORY_ONLY
+  autoevolution_mode: PROPOSAL_ONLY
+  minimum_labeled_examples: 25
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  visual_standard_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+pn_image_model_001:
+  id: PN-IMAGE-MODEL-001
+  role: VISUAL_DOCUMENT_BASELINE
+  dimensions_fixed: false
+  dimension_policy: VARIABLE_BY_PROJECT_AND_INTERNAL_CONTENT
+  reference_image_sha256: aa335c4bd4cca925e20a77ce02fe390668fcae3a179da1980479f67e468fafbf
+  mandatory_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  rule: "Usar a estrutura do MODEL 001; calcular e congelar as dimensões próprias de cada PN antes do render."
+pn_image_elaboration:
+  directive_id: PN-IMAGE-ELABORATION-DIRECTIVE-V1
+  status: MANDATORY_CONTROLLED
+  prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  registry: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+  linked_model: PN-IMAGE-MODEL-001
+  load_before_render: true
+  rule: "Toda imagem PN deve carregar MODEL 001 e esta diretriz; a engenharia do painel-alvo governa dimensoes e conteudo."
+workbook_baseline:
+  template_id: XLSX-PN-AUT-01-MASTER-R02
+  master_panel: PN-AUT-01
+  structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
+li_material_revision_standard:
+  registry_id: LI-MATERIAL-CONTROL-V1
+  prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+  pipesheets_id: LI-MATERIAL-PIPE-SHEETS-V1
+  memory_id: LI-MATERIAL-CONTROL-MEMORY-V1
+  preserve_previous_revision_columns: true
+  preserve_rev_0: true
+  new_revision_adjacent_right: true
+  overwrite_historical_revision_forbidden: true
+  preserve_cover_and_format: true
+  source_conflict_status: HOLD
+  historical_revision_mutation_status: REPROVADO
+  quantity_source_priority:
+    - OFFICIAL_PROJECT_DRAWING
+    - USER_APPROVED_PANEL_DRAWING
+    - USER_APPROVED_REFERENCE_WORKBOOK
+    - DATACENTER_DATASHEET
+    - OFFICIAL_MANUFACTURER_DOCUMENT
+    - DETERMINISTIC_CALCULATION_FROM_APPROVED_SOURCE
+  open_source_qa_registry: plugins/li_material_qa_registry.json
+panels:
+  PN-AUT-01:
+    li_id: LI-PN-AUT-01-R02
+    li_revision: R02
+    li_status: QUANTITY_FROZEN
+    li_file: li/PN-AUT-01_LI.json
+    workbook_snapshot_sha256: 47e85e1466246133fdf7a23e6ce3b036c7e979b2abd6c31c2964d00f78eb0d87
+    image_template_id: IMG-PN-AUT-01-APPROVED-V1
+    approved_image_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
+    datasheet_json: datasheet/AUT_PANEL_DATA_SHEET.json
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, spd_present, hvac_automation]
+      status: HOLD_UNTIL_NORMATIVE_REVIEW
+  PN-AUT-02:
+    li_id: LI-PN-AUT-02-R02
+    li_revision: R02
+    li_status: QUANTITY_FROZEN
+    li_file: li/PN-AUT-02_LI.json
+    workbook_snapshot_sha256: 2376433d865077d34b463a1bca9d1af85907bd85889f80aaabb8c7a5655e88c7
+    image_template_id: IMG-PN-AUT-02-APPROVED-V1
+    approved_image_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
+    datasheet_json: datasheet/PN-AUT-02_DATA_SHEET.json
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, hvac_automation]
+      status: HOLD_UNTIL_NORMATIVE_REVIEW
+change_control:
+  standard_mutation_requires_user_authorization: true
+  quantity_change_requires_new_li_revision: true
+  li_historical_revision_change_forbidden: true
+  li_new_revision_requires_adjacent_column: true
+  li_revision_requires_memory_event: true
+  image_template_change_requires_new_approved_template_revision: true
+  unauthorized_change_status: REPROVADO
+  conversation_memory_immutable_contract_requires_user_authorization: true
+  conversation_prompt_change_requires_user_authorization: true
+  refactor_behavior_change_forbidden: true
+conversation_contract_fingerprints:
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  prompt_master_sha256: a1d02e718207783445bc10a7e3a1e71d7f74cd32ab7a5669f045750fefe03ea3
+  bootstrap_prompt_sha256: 5fb9aebf6e330a4df2cc681c78cca98a0f7fa2a0a85cbaaae27f181420e1988a
+  memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+  memory_immutable_contract_sha256: 77c29eb332d89164c8dfb8b12fab351c5062d1b31642134f20e90776e7d57429
+  conversation_contract_script_id: AUT-PANEL-CONVERSATION-CONTRACT-V1

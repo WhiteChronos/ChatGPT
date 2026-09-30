@@ -1,0 +1,3 @@
+interface:
+  display_name: "AUT Panel PN Image Fidelity"
+  short_description: "Keep one real-scale PN assembly consistent across all image angles."

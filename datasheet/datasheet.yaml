@@ -1,0 +1,127 @@
+schema_version: '1.2'
+datasheet_registry_id: AUT-PANEL-DATASHEET-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+production_contract:
+  golden_rules_id: GOLDEN-RULES-IMMUTABLE-V1
+  pipeline_id: AUT-PANEL-IMMUTABLE-V1.6
+  workbook_template_id: XLSX-PN-AUT-01-MASTER-R02
+  workbook_structural_fingerprint_sha256: c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc
+  image_visual_standard_id: IMG-AUT-PANEL-MASTER-V1
+  visual_composition_registry: datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml
+  visual_composition_revision: AUT-PANEL-VISUAL-STANDARD-V3
+  pn_image_model_001_id: PN-IMAGE-MODEL-001
+  pn_image_model_001_manifest: datacenter/images/PN_MODEL_001.json
+  pn_image_model_001_prompt: prompts/PROMPT_PN_IMAGE_MODEL_001.md
+  pn_image_model_001_memory: memory/PN_IMAGE_MODEL_001_MEMORY.yaml
+  pn_image_elaboration_directive: datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json
+  pn_image_elaboration_prompt: prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md
+  pn_image_elaboration_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
+  panel_dimensions_are_project_specific: true
+  enclosure_selected_after_dimensional_capacity_proof: true
+  prompt_master_id: PROMPT-MASTER-AUT-PANEL-V2
+  li_material_prompt_id: PROMPT-MASTER-LI-MATERIAL-V1
+  li_material_control_registry: datacenter/LI_MATERIAL_CONTROL.json
+  li_material_pipesheets: pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml
+  li_material_datasheet: datasheet/LI_MATERIAL_DATA_SHEET.json
+  li_material_script: pipeline/li_material_control.py
+  li_material_memory: memory/LI_MATERIAL_CONTROL_MEMORY.yaml
+  li_material_open_source_qa: plugins/li_material_qa_registry.json
+  normative_registry: datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+  normative_supplement: datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+  normative_memory: memory/AUT_PANEL_NORMATIVE_MEMORY.yaml
+  normative_script: pipeline/aut_panel_normative_control.py
+  normative_registry_id: AUT-PANEL-NORMATIVE-REFERENCES-V1
+  normative_memory_id: AUT-PANEL-NORMATIVE-MEMORY-V1
+  normative_reverification_before_release: true
+  agent_system: agents/AUT_PANEL_AGENT_SYSTEM.yaml
+  agent_datacenters: datacenter/agents/agent_datacenters.yaml
+  agent_memories: memory/agents/agent_memories.yaml
+  database_schema: database/aut_panel_schema.sql
+  database_script: pipeline/aut_panel_db.py
+  learning_pipeline: pipeline/learning_pipeline.yaml
+  learning_script: pipeline/aut_panel_learning.py
+  evolution_script: pipeline/evolution_engine.py
+  ml_model_registry: ml/model_registry.yaml
+  open_source_registry: plugins/aut_panel_open_source_registry.json
+  github_toolchain_registry: plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json
+  geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
+  engineering_skill: skills/aut-panel-engineering/SKILL.md
+  ml_advisory_only: true
+  deterministic_gate_precedes_ml: true
+  autoevolution_proposal_only: true
+  locked_change_requires_human_gate: true
+  per_panel_state_isolation: true
+  li_before_bom: true
+  load_balance_before_layout: true
+  bom_before_layout: true
+  layout_before_render: true
+  hmi_must_be_on_door: true
+  one_panel_per_image: true
+  no_distortion: true
+  standard_change_requires_explicit_user_authorization: true
+  memory_id: AUT-PANEL-CONVERSATION-BRIDGE-V1
+  conversation_contract_script: pipeline/conversation_contract.py
+  bootstrap_context_required: true
+  memory_sync_required_after_major_change: true
+  explaincode_mode: READ_ONLY
+  refactor_mode: BEHAVIOR_PRESERVING_WRITE
+  refactor_behavior_change_allowed: false
+li_material_revision_contract:
+  historical_revision_columns_immutable: true
+  preserve_rev_0: true
+  new_revision_adjacent_right: true
+  historical_revision_overwrite_forbidden: true
+  quantity_evidence_required: true
+  a_levantar_only_when_not_determinable: true
+  cover_preserved: true
+  format_preserved: true
+  semantic_diff_required: true
+  structural_diff_required: true
+  revision_memory_sync_required: true
+  conflict_status: HOLD
+  historical_revision_change_status: REPROVADO
+panels:
+  PN-AUT-01:
+    project_json: datasheet/AUT_PANEL_DATA_SHEET.json
+    li_id: LI-PN-AUT-01-R02
+    li_file: li/PN-AUT-01_LI.json
+    image_template_id: IMG-PN-AUT-01-APPROVED-V1
+    approved_image_sha256: d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402
+    enclosure_external_mm:
+      width: 600
+      height: 800
+      depth: 300
+    mounting_plate_mm:
+      width: 550
+      height: 750
+    hmi:
+      quantity: 1
+      surface: door
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, spd_present, hvac_automation]
+      conditional_group_review_required: true
+      applicability_status: HOLD_UNTIL_NORMATIVE_REVIEW
+  PN-AUT-02:
+    project_json: datasheet/PN-AUT-02_DATA_SHEET.json
+    li_id: LI-PN-AUT-02-R02
+    li_file: li/PN-AUT-02_LI.json
+    image_template_id: IMG-PN-AUT-02-APPROVED-V1
+    approved_image_sha256: daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89
+    enclosure_external_mm:
+      width: 400
+      height: 500
+      depth: 250
+    mounting_plate_mm:
+      width: 350
+      height: 450
+    hmi:
+      quantity: 1
+      surface: door
+    normative_profile:
+      baseline_group: panel_general
+      detected_conditions: [industrial_network, dc_ups_present, hvac_automation]
+      conditional_group_review_required: true
+      applicability_status: HOLD_UNTIL_NORMATIVE_REVIEW

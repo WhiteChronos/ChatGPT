@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-STEP3-NORMATIVE-ACADEMIC-REVIEW-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "step_number": 3,
+  "title": "Conferencia normativa, estudos academicos e referencias bibliograficas",
+  "depends_on": [
+    "STEP1_SCOPE_FROZEN",
+    "STEP2_PANEL_DEFINITION_FROZEN"
+  ],
+  "purpose": "Construir a base normativa e bibliografica rastreavel do projeto antes de consolidar a engenharia detalhada.",
+  "required_outputs": [
+    "NORMATIVE_APPLICABILITY_MATRIX",
+    "ACADEMIC_EVIDENCE_MATRIX",
+    "BIBLIOGRAPHIC_REFERENCE_REGISTER",
+    "CONTROLLED_SOURCE_ARCHIVE_INDEX",
+    "NORMATIVE_CONFLICT_REGISTER",
+    "STEP3_REVIEW_SUMMARY",
+    "MEMORY_SYNC_RECORD"
+  ],
+  "review_topics": [
+    "electrical panel assembly",
+    "control and automation",
+    "PLC and I/O",
+    "industrial communications",
+    "grounding and bonding",
+    "EMC",
+    "power supplies and UPS",
+    "battery systems",
+    "short circuit and protection",
+    "thermal management",
+    "enclosure and IP/IK",
+    "field instrumentation",
+    "HART where applicable",
+    "HVAC/VRF integration",
+    "functional/safety topics when applicable",
+    "project-specific topics found in controlled documents"
+  ],
+  "archive_policy": {
+    "full_copy_when_permitted": true,
+    "copyrighted_restricted_sources": "metadata_link_citation_summary_and_permitted_excerpt_only_unless_user_supplied_or_licensed",
+    "memory_binary_duplication_forbidden": true,
+    "memory_stores": [
+      "pointer",
+      "sha256",
+      "source_metadata",
+      "pages_sections_used",
+      "applicability_decision",
+      "extracted_rules",
+      "derived_parameters",
+      "conflicts",
+      "conclusions"
+    ]
+  },
+  "pass_status": "STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN",
+  "hold_statuses": [
+    "HOLD_NORMATIVE_CONFLICT",
+    "HOLD_NORMATIVE_EDITION",
+    "HOLD_APPLICABILITY_UNCERTAIN"
+  ],
+  "downstream_rule": "Detailed engineering may use Step 3 outputs as evidence; release-critical normative conflicts must be resolved before issue."
+}

@@ -1,0 +1,842 @@
+# PROMPT MASTER — ELABORAÇÃO COMPLETA DE PROJETO PN — V1
+
+**ID:** PROMPT-MASTER-ELABORACAO-PROJETO-PN-V1
+**Status:** MANDATORY / CONTROLLED
+**Aplicação:** todo novo painel PN e toda revisão de painel PN existente
+**Modelo visual:** PN-IMAGE-MODEL-001
+**Diretriz visual:** PROMPT-DIRETRIZ-IMAGEM-PN-V1
+
+## REGRA CENTRAL
+
+> O projeto governa os dados. A LI/BOM governa as quantidades. O Data Sheet governa a revisão do painel. O MODEL 001 governa somente a forma do documento visual.
+
+Nunca usar imagem, memória informal ou painel anterior para sobrescrever dados canônicos.
+
+## ETAPA 0 — BOOTSTRAP DO SISTEMA
+
+1. Carregar Golden Rules, pipeline, Data Center, memória metodológica, registros de plugins e controles de evolução.
+2. Verificar se o PROJECT_NUMBER já existe no repositório e carregar seu histórico quando aplicável.
+3. Não iniciar a LI/Carga antes do fechamento das ETAPAS 1, 2 e 3; não iniciar layout/imagem antes do fechamento da ETAPA 4.
+
+## ETAPA 1 — LEVANTAMENTO DOCUMENTAL + NÚMERO DO PROJETO + QUANTIDADE DE PAINÉIS
+
+Esta é a primeira etapa de engenharia do projeto.
+
+### 1.1 Identidade do projeto
+
+Todo projeto de painéis deve possuir obrigatoriamente:
+- PROJECT_NUMBER;
+- título/descrição quando disponível;
+- revisão do projeto quando disponível;
+- cliente/local quando aplicável.
+
+PROJECT_NUMBER identifica o projeto completo.
+PANEL_ID identifica um painel dentro daquele projeto.
+
+Todo artefato downstream deve carregar:
+PROJECT_NUMBER + PANEL_ID + DOCUMENT_TYPE + REVISION + STATUS.
+
+### 1.2 Levantamento documental
+
+Antes de LI/BOM, cálculo, seleção, layout ou imagem:
+1. reunir os documentos recebidos;
+2. cadastrar cada documento como REF-001, REF-002, ...;
+3. registrar código, revisão, data, origem, idioma, link, página/seção e aplicação no projeto;
+4. identificar documentos faltantes;
+5. registrar conflitos.
+
+### 1.3 Quantidade de painéis
+
+Determinar, pelos documentos controlados:
+- quantidade total de painéis;
+- PANEL_ID de cada painel;
+- função;
+- localização quando disponível;
+- documento/página que comprova sua existência.
+
+Não transformar automaticamente em painel:
+- I/O remoto;
+- gateway;
+- caixa de campo;
+- caixa de junção;
+- field device;
+- equipamento instalado dentro de outro painel.
+
+### 1.4 Saída e gate
+
+Saída:
+PROJECT_INTAKE_MANIFEST
+
+Status de aprovação:
+STEP1_SCOPE_FROZEN
+
+Se documentos divergirem sobre número de painéis/PANEL_ID:
+HOLD_SCOPE_CONFLICT
+
+Até STEP1_SCOPE_FROZEN ficam bloqueadas as etapas de definição técnica do painel e todas as etapas downstream.
+
+## ETAPA 2 — DEFINIÇÃO PARAMÉTRICA DOS PAINÉIS E MOTOR DE PERGUNTAS
+
+Carregar obrigatoriamente:
+- datacenter/AUT_PANEL_STEP2_PANEL_DEFINITION_V1.json;
+- prompts/PROMPT_STEP2_DEFINICAO_PARAMETRICA_PAINEL_V1.md;
+- memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml;
+- datacenter/AUT_PANEL_CATALOG_ARCHIVE_POLICY_V1.json.
+
+### 2.1 Objetivo
+
+Para cada painel do PROJECT_INTAKE_MANIFEST:
+1. reunir tudo que já é conhecido;
+2. resolver automaticamente o que puder ser sustentado por documentos, Data Center, memória, fabricante ou normas;
+3. gerar perguntas somente para lacunas reais;
+4. transformar respostas e evidências em parâmetros versionados;
+5. reduzir perguntas futuras pela reutilização validada desses parâmetros.
+
+### 2.2 Ordem antes de perguntar ao usuário
+
+Consultar nesta ordem:
+1. documentos controlados do mesmo projeto;
+2. Data Center do projeto;
+3. memória do mesmo PROJECT_NUMBER;
+4. memória do mesmo PANEL_ID;
+5. catálogo/manual oficial já arquivado;
+6. fabricante oficial;
+7. normas aplicáveis;
+8. parâmetros reutilizáveis compatíveis.
+
+Somente depois gerar pergunta.
+
+### 2.3 Perguntas
+
+Toda pergunta deve ter:
+- QUESTION_ID;
+- PROJECT_NUMBER;
+- PANEL_ID;
+- tema;
+- motivo;
+- contexto já conhecido;
+- lacuna real;
+- impacto;
+- opções quando aplicável;
+- fontes já consultadas.
+
+As perguntas ao usuário devem seguir:
+VISUALIZE + BLOCO FINAL COPIÁVEL.
+
+### 2.4 Memória evolutiva
+
+Cada resposta confirmada ou fato validado vira parâmetro versionado com:
+- PARAMETER_ID;
+- escopo;
+- valor/unidade;
+- origem;
+- REF_ID;
+- revisão;
+- status;
+- regra de reutilização;
+- invalidadores.
+
+Escopos:
+GLOBAL_METHOD, PROJECT, PANEL, MANUFACTURER_FAMILY, EQUIPMENT_MODEL.
+
+Nunca promover automaticamente PANEL/PROJECT para GLOBAL.
+
+### 2.5 Catálogos e documentação técnica
+
+Todo catálogo/manual/datasheet usado:
+- deve entrar no índice do Data Center;
+- deve possuir URL oficial e metadados;
+- quando tecnicamente/juridicamente possível, deve ter cópia controlada arquivada;
+- deve possuir SHA-256 quando a cópia estiver disponível;
+- deve registrar páginas/seções utilizadas.
+
+A memória guarda ponteiro/hash/parâmetros extraídos e não duplica PDFs completos.
+
+### 2.6 Tratamento de erro
+
+Quando um dado estiver errado:
+1. detectar conflito;
+2. preservar histórico;
+3. marcar valor antigo como SUPERSEDED;
+4. registrar novo valor/fonte;
+5. invalidar downstream;
+6. recalcular/revalidar;
+7. perguntar somente se a hierarquia das fontes não resolver.
+
+### 2.7 Gate
+
+Saídas:
+- PANEL_DEFINITION_MANIFEST;
+- PROJECT_PARAMETER_REGISTRY;
+- QUESTION_DECISION_LOG;
+- CATALOG_INDEX;
+- MEMORY_SYNC_RECORD.
+
+Status:
+STEP2_PANEL_DEFINITION_FROZEN
+
+Conflito crítico:
+HOLD_PANEL_DEFINITION_CONFLICT
+
+Regra:
+PERGUNTAR MENOS NÃO SIGNIFICA ASSUMIR MAIS.
+PERGUNTAR MENOS SIGNIFICA REUTILIZAR MELHOR DADOS VÁLIDOS, VERSIONADOS E RASTREÁVEIS.
+
+## ETAPA 3 — CONFERÊNCIA NORMATIVA, ESTUDOS ACADÊMICOS E REFERÊNCIAS BIBLIOGRÁFICAS
+
+Carregar obrigatoriamente:
+- `datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json`;
+- `prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md`;
+- `memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml`;
+- `datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json`;
+- `skills/aut-panel-normative-academic-review/SKILL.md`.
+
+### 3.1 Objetivo
+
+Conferir os assuntos presentes no projeto contra:
+- regulamentos;
+- normas técnicas;
+- documentação oficial de fabricantes;
+- artigos revisados por pares;
+- estudos acadêmicos;
+- livros e handbooks técnicos;
+- teses/dissertações;
+- referências bibliográficas reconhecidas.
+
+A revisão deve produzir evidência rastreável para sustentar as etapas seguintes.
+
+### 3.2 Aplicabilidade normativa
+
+Para cada norma/regulamento:
+- registrar número, título, organismo, edição/ano e status;
+- identificar escopo e exclusões;
+- registrar a base de aplicabilidade;
+- apontar seção/página utilizada;
+- registrar requisito extraído e efeito no projeto;
+- registrar divergências.
+
+Uma norma relevante não é automaticamente obrigatória. Aplicabilidade deve ser demonstrada por lei/regulamento, contrato, especificação, adoção do projeto, requisito do cliente ou escopo técnico documentado.
+
+### 3.3 Estudos acadêmicos e bibliografia
+
+Para cada artigo/livro/tese:
+- registrar autores;
+- título;
+- ano;
+- journal/editora;
+- DOI/ISBN/ISSN;
+- tipo de estudo;
+- tema;
+- resultado relevante;
+- limitações;
+- aplicação ao projeto.
+
+Evidência acadêmica não deve ser tratada como requisito normativo.
+
+### 3.4 Cópias controladas no Data Center
+
+Todo documento utilizado deve possuir registro no Data Center.
+
+Quando a cópia integral for permitida:
+- arquivar cópia controlada;
+- calcular SHA-256;
+- registrar caminho e revisão;
+- preservar versões substituídas.
+
+Quando a cópia integral não for permitida:
+- não contornar paywall, DRM ou licença;
+- registrar metadados;
+- link/DOI/ISBN;
+- citação bibliográfica;
+- resumo técnico;
+- páginas/seções consultadas;
+- pequenos trechos permitidos quando necessários.
+
+A memória não duplica PDFs/binários completos. Ela guarda ponteiros, hashes, parâmetros/regras extraídos, aplicabilidade, conclusões e conflitos.
+
+### 3.5 Ferramentas de pesquisa
+
+Quando disponíveis:
+- Scite e Consensus para literatura acadêmica;
+- Tavily e Firecrawl para descoberta de fontes oficiais;
+- GitHub/Data Center como armazenamento auditável;
+- Engram como memória suplementar;
+- Wolfram apenas para cálculos, nunca para decidir aplicabilidade normativa.
+
+### 3.6 Saídas e gate
+
+Saídas:
+- NORMATIVE_APPLICABILITY_MATRIX;
+- ACADEMIC_EVIDENCE_MATRIX;
+- BIBLIOGRAPHIC_REFERENCE_REGISTER;
+- CONTROLLED_SOURCE_ARCHIVE_INDEX;
+- NORMATIVE_CONFLICT_REGISTER;
+- STEP3_REVIEW_SUMMARY;
+- MEMORY_SYNC_RECORD.
+
+Status:
+`STEP3_NORMATIVE_ACADEMIC_BASE_FROZEN`
+
+Estados de bloqueio:
+- `HOLD_NORMATIVE_CONFLICT`;
+- `HOLD_NORMATIVE_EDITION`;
+- `HOLD_APPLICABILITY_UNCERTAIN`.
+
+Regra:
+**PESQUISAR MAIS, PERGUNTAR MENOS, NÃO ASSUMIR. ARQUIVAR A EVIDÊNCIA, NÃO SOMENTE A RESPOSTA.**
+
+## ETAPA 4 — LISTA DE MATERIAIS + CARGA POR PN
+
+Carregar obrigatoriamente:
+- `datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json`;
+- `prompts/PROMPT_STEP4_LI_LOAD_V1.md`;
+- `memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml`;
+- `skills/aut-panel-li-load-quantification/SKILL.md`.
+
+### 4.1 Saída única do passo
+
+Criar um único workbook do projeto.
+
+Para cada PANEL_ID criar exatamente:
+- `<PANEL_ID>_MATERIAIS`;
+- `<PANEL_ID>_CARGA`.
+
+Para N painéis devem existir exatamente 2N abas.
+
+Não criar capa, QA, referências, arquitetura, memória, controle ou abas ocultas no workbook emitido.
+
+### 4.2 Engenharia necessária para a LI
+
+Dentro do Passo 4, executar antes da emissão:
+1. pesquisa técnica dos fabricantes e fornecedores;
+2. fechamento da arquitetura necessária para quantificar componentes;
+3. inventário I/O/comunicação e endpoints;
+4. seleção de componentes e acessórios;
+5. grafo de conexões;
+6. carga elétrica por PN;
+7. geometria suficiente para medir materiais lineares;
+8. cadeia completa de montagem;
+9. quantitativo matemático;
+10. QA de paridade.
+
+Esses subpassos existem para gerar a LI/Carga correta; não criam abas adicionais.
+
+### 4.3 Materiais
+
+A aba MATERIAIS deve conter todo item fisicamente consumido:
+- gabinete/placa/acessórios;
+- automação, I/O, rede e gateways;
+- fonte/UPS/bateria/conversores;
+- proteção/distribuição;
+- relés/interfaces;
+- bornes e todos os acessórios;
+- trilhos DIN;
+- canaletas/tampas/fittings;
+- fios internos com tipo, seção, cor e metragem;
+- PE/equipotencialização/trança de porta;
+- cabos de comunicação;
+- ferrules/ilhós/terminais/heat-shrink;
+- marcação;
+- prensa-cabos/tampões/passagens;
+- climatização;
+- fixadores e kits;
+- qualquer peça exigida pelo fabricante para montagem correta.
+
+### 4.4 Quantificação matemática
+
+Metragem interna deve vir de:
+`GRAFO DE CONEXÕES + LAYOUT REAL + ROTAS`.
+
+Para cada condutor:
+`L_corte = L_rota + L_terminal_origem + L_terminal_destino + L_service_loop`.
+
+Quantidade de compra só pode acrescentar margem de fabricação explicitamente parametrizada.
+
+Materiais lineares como trilho, canaleta, PE e cabos internos também devem ser medidos geometricamente.
+
+Bornes, jumpers, separadores, end stops, ferrules, terminais e marcadores devem ser derivados do grafo/plano de conexões.
+
+### 4.5 Ferramentas
+
+Prioridade:
+- CAD/dimensões oficiais do fabricante;
+- QElectroTech para esquemas/conexões;
+- WireViz/QetWireManager para apoio à lista de fios;
+- NetworkX para integridade do grafo;
+- OR-Tools para otimização opcional de rotas;
+- FreeCAD/CadQuery/build123d/OpenCascade para geometria/medição;
+- Wolfram para conferência matemática de comprimento, área, volume, ocupação e carga;
+- Remote Desktop Commander para operar ferramentas locais autorizadas;
+- B&A Diagrams/tldraw/Miro apenas para revisão visual;
+- Tavily/Firecrawl para fabricante/fornecedor;
+- Scite/Consensus para suporte técnico/acadêmico.
+
+### 4.6 Links e fornecedores
+
+Cada item deve ter:
+- REF_ID;
+- link oficial do produto;
+- link oficial de datasheet/manual;
+- link de fornecedor/distribuidor autorizado quando disponível;
+- lifecycle/status.
+
+### 4.7 Carga
+
+A aba CARGA de cada PN deve registrar os equipamentos energizados daquele PN, com:
+- fabricante/modelo;
+- quantidade;
+- tensão;
+- corrente/potência;
+- duty/diversity apenas quando documentado;
+- carga bruta;
+- carga de projeto;
+- criticidade UPS;
+- perda térmica quando disponível;
+- REF_ID;
+- link oficial.
+
+### 4.8 Evidência de montagem
+
+Usar normas e estudos do Passo 3, manuais oficiais de instalação, catálogos, treinamentos oficiais e vídeos de montagem como apoio secundário.
+
+Vídeo não define corrente, seção, Icu, IP, capacidade ou requisito normativo.
+
+### 4.9 Gate
+
+Saídas:
+- LI_LOAD_WORKBOOK;
+- MATERIAL_QUANTITY_TRACE;
+- INTERNAL_WIRE_CUTLIST;
+- LOAD_CALCULATION_TRACE.
+
+Status:
+`STEP4_LI_LOAD_FROZEN`.
+
+Bloquear se houver quantidade sem base, metragem estimada sem rota, cadeia de acessórios incompleta, link/modelo divergente, carga sem rastreabilidade ou workbook com abas extras.
+
+## ETAPA 5 — IMAGEM FÍSICA INDIVIDUAL E FIDELIDADE MULTIVISTA
+
+Pré-requisito:
+`STEP4_LI_LOAD_FROZEN`.
+
+Carregar obrigatoriamente:
+- `datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json`;
+- `datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json`;
+- `prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md`;
+- `memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml`;
+- `skills/aut-panel-pn-image-fidelity/SKILL.md`.
+
+### 5.1 Ordem interna
+
+Antes de renderizar:
+1. carregar LI/Carga congeladas do Passo 4;
+2. fechar dimensões H/W/D próprias daquele PN;
+3. selecionar/validar gabinete real;
+4. criar layout físico em escala real;
+5. montar geometria canônica única em mm;
+6. validar porta/tampa, placa, trilhos, canaletas, componentes, folgas e profundidade;
+7. registrar ASSEMBLY_HASH;
+8. somente então renderizar as vistas.
+
+Se o layout alterar quantitativo ou metragem, retornar ao Passo 4.
+
+### 5.2 Uma única montagem
+
+Todas as vistas do mesmo PN/revisão devem vir da mesma montagem 3D.
+
+A porta/tampa é um único objeto rígido:
+- mesma largura;
+- mesma altura;
+- mesma espessura;
+- mesmos recortes;
+- mesma IHM;
+- mesmas dobradiças;
+- mesmas coordenadas locais.
+
+Abrir/fechar a porta = rotação rígida no eixo de dobradiça congelado.
+
+É proibido redesenhar ou redimensionar a tampa para outra vista.
+
+### 5.3 Dimensional
+
+H/W/D vêm da engenharia do painel-alvo.
+
+Vistas dimensionais usam projeção ortográfica/calibrada.
+
+Vista 3/4:
+- preferir isométrica ortográfica;
+- perspectiva controlada é permitida apenas para realismo;
+- nunca inferir cotas pela perspectiva.
+
+### 5.4 Realismo e referências
+
+Usar como referência:
+- CAD e desenhos oficiais;
+- manuais de gabinete;
+- instruções de montagem;
+- referências de montagem/fiação de fabricantes;
+- normas e evidências do Passo 3;
+- referências acadêmicas/técnicas;
+- treinamentos oficiais;
+- vídeos de montagem como apoio secundário.
+
+Materiais, iluminação e sombra podem ser realistas, mas não podem alterar geometria.
+
+### 5.5 Ferramentas
+
+Geometria:
+manufacturer CAD -> FreeCAD/CadQuery/build123d/OpenCascade.
+
+QA:
+trimesh/Open3D + OpenCV; ImageHash apenas suplementar.
+
+Render:
+Blender após congelamento geométrico.
+
+Matemática:
+Wolfram para dimensões, transformações, área, volume e verificações.
+
+Plugins generativos:
+to3D/Adobe/ImageGen somente como apresentação.
+
+### 5.6 Saída
+
+Cada PN gera seu próprio conjunto:
+- CANONICAL_3D_ASSEMBLY_MANIFEST;
+- MULTIVIEW_RENDER_MANIFEST;
+- frontal fechada;
+- interna/porta aberta;
+- lateral/3-4;
+- corte de profundidade quando aplicável;
+- STEP5_MULTIVIEW_QA_REPORT.
+
+Status:
+`STEP5_PN_IMAGE_FIDELITY_FROZEN`.
+
+## ETAPA 6 — DOCUMENTO VISUAL DE ENGENHARIA DE CADA PN
+
+Pré-requisito:
+`STEP5_PN_IMAGE_FIDELITY_FROZEN`.
+
+Carregar:
+- `datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json`;
+- `prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md`;
+- `memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml`;
+- `skills/aut-panel-image-document/SKILL.md`;
+- `PN-IMAGE-MODEL-001`.
+
+### 6.1 Princípio
+
+O Passo 6 não recria o painel.
+
+Ele usa a imagem física validada no Passo 5 e monta o documento visual técnico.
+
+Se houver erro físico, voltar ao Passo 5.
+
+### 6.2 Blocos obrigatórios
+
+Para cada PN:
+- imagem física validada;
+- legenda dos principais componentes;
+- dados do quadro;
+- arquitetura elétrica;
+- arquitetura de comunicação;
+- diagrama de comando;
+- dimensionamento do painel.
+
+### 6.3 Canvas grow-only
+
+O tamanho do documento é consequência da engenharia.
+
+Nunca reduzir o painel, vista dimensional, diagrama ou tabela para caber.
+
+Processo:
+1. calcular tamanho nativo dos blocos;
+2. posicionar blocos;
+3. calcular bounding boxes;
+4. ampliar canvas;
+5. manter scale_x = scale_y = 1.0 nas vistas dimensionais.
+
+### 6.4 Dimensionamento
+
+Cotas vêm de valores H/W/D controlados.
+
+Nunca medir o raster para determinar dimensão.
+
+Nunca usar perspectiva para calcular profundidade.
+
+A cota lateral deve representar a profundidade real no eixo de profundidade.
+
+### 6.5 Diagramas
+
+Arquitetura elétrica:
+derivada da topologia de potência/carga validada.
+
+Arquitetura de comunicação:
+derivada do inventário de endpoints/protocolos/gateways validado.
+
+Diagrama de comando:
+derivado da lógica/I/O/comunicação aprovada.
+
+Preferir QElectroTech, SchemDraw/SVG, NetworkX/SVG e CairoSVG.
+
+Plugins de diagrama servem para revisão, não como autoridade.
+
+### 6.6 QA
+
+Verificar:
+STEP5 fingerprint = imagem inserida;
+LI = instâncias físicas;
+H/W/D = cotas;
+carga = arquitetura elétrica;
+endpoints = comunicação;
+I/O/lógica = comando;
+nenhum bloco dimensional reduzido;
+canvas suficiente;
+legibilidade preservada.
+
+Status:
+`STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`.
+
+## ETAPA 7 — VERIFICAÇÃO FINAL MATEMÁTICA E VISUAL DA IMAGEM
+
+Pré-requisito:
+`STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`.
+
+Carregar:
+- `datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json`;
+- `datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json`;
+- `prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md`;
+- `memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml`;
+- `skills/aut-panel-final-image-verification/SKILL.md`.
+
+### 7.1 Identidade e paridade
+
+Confirmar mesmo:
+PROJECT_NUMBER, PANEL_ID, revisão, LI/Carga, ASSEMBLY_HASH e fingerprint físico do Passo 5/6.
+
+### 7.2 Concordância multivista
+
+Verificar:
+- H/W/D;
+- bbox do gabinete;
+- bbox local da porta/tampa;
+- eixo da dobradiça;
+- instâncias físicas;
+- escalas 1,1,1;
+- câmera/projeção registradas.
+
+### 7.3 Proporção matemática
+
+Frontal/interna:
+`ratio_ref = W_mm/H_mm`.
+
+Lateral/corte:
+`ratio_ref = D_mm/H_mm`.
+
+Comparar contra o ratio em pixels da bbox renderizada e calcular erro percentual.
+
+### 7.4 Escala global
+
+Calcular px/mm em ambos os eixos de cada vista ortográfica e comparar:
+- eixo X versus eixo Y;
+- cada vista versus a escala global.
+
+Nenhuma vista dimensional pode ter escala própria para caber.
+
+### 7.5 Vista 3/4 e câmera
+
+Não medir dimensão aparente.
+
+Usar matriz de projeção da câmera + landmarks 3D canônicos + landmarks 2D renderizados e calcular RMSE de reprojeção em pixels.
+
+### 7.6 Enquadramento
+
+Verificar:
+- ausência de clipping;
+- margens mínimas;
+- conteúdo dentro do canvas;
+- centralização quando especificada;
+- nenhum bloco dimensional reduzido;
+- MODEL 001 integral.
+
+### 7.7 Cotas
+
+Os valores H/W/D exibidos devem ser idênticos aos dados controlados.
+
+Nunca validar dimensão a partir da medição do raster quando o manifest controlado existir.
+
+### 7.8 Regressão visual
+
+Quando houver baseline aprovado da mesma vista:
+- SSIM;
+- máscara/contorno;
+- perceptual hash;
+- diferenças de canvas/resolução.
+
+Esses resultados são QA secundário e não substituem geometria, câmera e dimensões.
+
+### 7.9 Ferramentas
+
+- Wolfram: matemática independente;
+- OpenCV: câmera, reprojeção, registro, contornos;
+- scikit-image: SSIM;
+- pytransform3d: transformações rígidas;
+- trimesh/Open3D: geometria/bbox;
+- Blender: metadata reprodutível de câmera/render;
+- FreeCAD/CadQuery/build123d: geometria;
+- ImageHash/Visual Regression Tracker: regressão suplementar;
+- Remote Desktop Commander: execução local autorizada.
+
+### 7.10 Gate
+
+Saídas:
+- FINAL_IMAGE_QA_MANIFEST;
+- MATHEMATICAL_IMAGE_PRECISION_REPORT;
+- MULTIVIEW_CONSISTENCY_REPORT;
+- FRAMING_AND_CANVAS_REPORT;
+- VISUAL_REGRESSION_REPORT;
+- STEP7_FINAL_IMAGE_VERIFIED.
+
+Falhas de geometria retornam ao Passo 5.
+Falhas de composição/documento retornam ao Passo 6.
+Falhas de quantidade retornam ao Passo 4.
+
+Status:
+`STEP7_FINAL_IMAGE_VERIFIED`.
+
+## ETAPA 8 — QA CRUZADO DE ENGENHARIA
+
+Verificar:
+LI = CARGA = CONEXÕES = GEOMETRIA = STEP5 = STEP6 = STEP7.
+
+Rejeitar dimensão desatualizada, quantidade divergente, protocolo inventado, componente duplicado, cota errada, escala divergente, erro de reprojeção não resolvido ou documento visual sem paridade.
+
+## ETAPA 9 — MEMÓRIA E DATACENTER
+
+Registrar decisão, erro, solução, fonte, mudança de premissa, invalidadores, hashes geométricos, câmera, parâmetros aprendidos, quantitativos, tolerâncias e relatórios de verificação.
+
+## ETAPA 10 — EVOLUÇÃO CONTROLADA
+
+O sistema pode detectar padrões de erro, sugerir checks, automações, ferramentas, regras e testes.
+
+Mudança bloqueada exige:
+PROPOSTA -> SIMULAÇÃO -> QA -> HUMAN GATE -> VERSÃO.
+
+## PLUGINS / FERRAMENTAS
+
+Usar quando disponíveis:
+- Tavily / Firecrawl: pesquisa e crawl de fabricantes/documentação;
+- Scite: literatura científica e verificação acadêmica;
+- Wolfram: cálculo rigoroso, geometria analítica, área/volume, conversões e checagens matemáticas;
+- to3D: conversão de imagem em malha 3D para apoio visual/conceitual; não usar como autoridade dimensional;
+- Adobe: acabamento e pós-processamento visual após a geometria técnica estar congelada; não alterar engenharia;
+- Airtable: índice estruturado de componentes, fontes, HOLDs, modelos e revisões;
+- Coda / Notion: base de conhecimento e documentação operacional;
+- Acumen: sinalização de lacunas de contexto recente; toda informação deve ser reverificada;
+- Engram: memória persistente suplementar entre sessões para contexto, decisões e histórico de metodologia; nunca substituir GitHub/Data Center/Data Sheet/LI-BOM como autoridade;
+- GitHub/Codex: fonte auditável, versionamento, QA e automação.
+
+Plugins nunca substituem documentação oficial.
+
+## FRASE DE CONTROLE
+
+**NÃO PERDER A REFERÊNCIA DO MODELO:**
+MODEL 001 = estrutura visual.
+Data Sheet = painel/revisão.
+LI/BOM = quantidades/modelos.
+Data Center = evidências.
+Memória = decisões/erros/aprendizado.
+Pipeline = ordem obrigatória.
+
+## MEMÓRIA PERSISTENTE / ENGRAM
+
+Quando Engram estiver disponível:
+1. recuperar primeiro contexto relevante do projeto pelo PANEL_ID;
+2. usar o resultado apenas como memória suplementar;
+3. reconciliar qualquer lembrança com GitHub, Data Center, Data Sheet, LI/BOM e documentos controlados;
+4. nunca promover memória Engram diretamente a fato de engenharia;
+5. gravar apenas resumos não sensíveis de decisões, erros confirmados, regras metodológicas e marcos do projeto;
+6. não gravar credenciais, segredos, dados pessoais sensíveis ou material incompatível com a política de segurança;
+7. se a escrita for bloqueada ou indisponível, continuar com a memória canônica do repositório sem reduzir os gates.
+
+Precedência:
+GitHub/Data Center/Data Sheet/LI-BOM/documentação oficial > Engram > memória informal da conversa.
+
+## STACK DE DIMENSIONAMENTO / 3D / IMAGEM
+
+### Autoridade geométrica
+Prioridade obrigatória:
+1. CAD oficial do fabricante (STEP/IGES/DXF);
+2. reconstrução paramétrica determinística por dimensões oficiais (CadQuery/build123d/OpenCascade/FreeCAD);
+3. QA geométrico (trimesh/Open3D);
+4. Blender somente para renderização com geometria bloqueada.
+
+### Apoio matemático
+Usar Wolfram para:
+- volume útil do gabinete;
+- área de placa;
+- ocupação percentual;
+- envelopes geométricos;
+- folgas;
+- área de canaletas;
+- volume de reserva;
+- relação de ocupação;
+- verificações de conversão e fórmulas.
+
+A entrada do cálculo deve vir de dimensões controladas; Wolfram não inventa medidas.
+
+### Apoio 3D
+to3D pode:
+- criar prévia 3D a partir de imagem;
+- exportar glTF/FBX/OBJ/STL;
+- ajudar na visualização conceitual.
+
+to3D não pode:
+- provar dimensões;
+- substituir CAD oficial;
+- definir gabinete;
+- validar folgas;
+- corrigir geometria do projeto.
+
+### Imagem
+Adobe/ImageGen podem melhorar apresentação, composição e acabamento, mas não podem modificar:
+- H/W/D;
+- posição física congelada;
+- quantidade;
+- modelo;
+- tags;
+- topologia;
+- arquitetura elétrica/comunicação;
+- cotas.
+
+Regra final:
+**MATEMÁTICA PODE VERIFICAR A GEOMETRIA; 3D PODE REPRESENTAR A GEOMETRIA; SOMENTE A ENGENHARIA CONTROLADA DEFINE A GEOMETRIA.**
+
+## MELHORIA AUTÔNOMA CONTROLADA
+
+Ao final de cada marco ou quando houver erro/correção:
+1. carregar `skills/aut-panel-autonomous-improvement/SKILL.md`;
+2. classificar o evento e determinar causa raiz;
+3. comparar com histórico de erros e HOLDs;
+4. gerar proposta mensurável;
+5. calcular prioridade;
+6. propor teste de regressão;
+7. simular em sandbox quando aplicável;
+8. registrar no backlog;
+9. pedir HUMAN GATE antes de alterar Golden Rules, revisão congelada, dependência central ou release;
+10. depois da aprovação, versionar e medir resultado.
+
+Para ferramentas/plugins/repositórios:
+1. carregar `skills/aut-panel-open-source-toolchain/SKILL.md`;
+2. identificar lacuna real;
+3. preferir ferramenta já validada;
+4. registrar candidato;
+5. pin de versão/commit;
+6. licença;
+7. segurança;
+8. sandbox;
+9. teste/regressão;
+10. HUMAN GATE antes de promoção.
+
+O sistema deve sugerir melhorias autonomamente, mas não aplicá-las silenciosamente.

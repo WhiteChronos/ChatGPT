@@ -1,0 +1,19 @@
+schema_version: "1.0"
+optimizer_id: LAYOUT-OPTIMIZER-V1
+solver:
+  engine: OR_TOOLS_CP_SAT
+  solver_seed: 17
+  max_time_seconds: 10.0
+  coordinate_resolution_mm: 1.0
+  num_search_workers: 1
+objectives:
+  occupied_envelope: 100
+  connection_distance: 10
+  bottom_zone_margin: 1
+infrastructure:
+  rail_edge_allowance_mm: 10.0
+  infrastructure_gap_mm: 5.0
+policy:
+  locked_enclosure_auto_change: false
+  split_auto_select: false
+  ml_override: false

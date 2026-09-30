@@ -1,0 +1,430 @@
+{
+  "schema_version": "1.1",
+  "li_id": "PN-AUT-001-LI-R05-CANDIDATE",
+  "panel_id": "PN-AUT-001",
+  "revision": "R05-CANDIDATE",
+  "status": "LI_GATEWAY_ARCHITECTURE_REBUILT_LAYOUT_REVALIDATION_REQUIRED",
+  "generated_at": "2026-09-30",
+  "basis": [
+    "LI-3501.02-8210-800-RPJ-702 Rev.0",
+    "FD-3501.01-8210-800-RPJ-001 Rev.A",
+    "datacenter/PN_AUT_01_TECHNICAL_BASE_V1.json",
+    "datacenter/PN_AUT_001_CANONICAL_PREMISES.json",
+    "datacenter/external/PN_AUT_001_EXTERNAL_SOURCE_REGISTRY.json",
+    "datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json",
+    "datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json",
+    "user supplied LI screenshot: CM-VFD / CM-GW / GW-HVAC-01 / BM-AC",
+    "user decision 2026-09-30: 3 gateways, supplier design limit 12 indoor units per gateway",
+    "IRTrans official Mediacontroller technical page",
+    "IRTrans official IR Bus Module product page",
+    "Siemens official CM PtP RS232 HF technical data"
+  ],
+  "engineering_summary": {
+    "supply": "220 Vac, 2F, TN-S",
+    "feeder": "10 m, Cu, multipolar exposed; final engineering selection 4 mm2, 2F+PE",
+    "main_breaker": "Schneider Acti9 iC60H A9F84220, 2P, 20A, curve C, 30kA at 220/240Vac",
+    "ups": "ADEL CBI2420A 24Vdc 20A + 2x Yuasa NP24-12IFR 12V 24Ah in series",
+    "ups_autonomy": "30 min minimum + 20% aging/reserve margin",
+    "plc": "Siemens CPU 1515-2 PN 6ES7515-2AN03-0AB0",
+    "io": "ET 200SP HA: 2x 16AI 2-wire HART + 9x 4AI 2/4-wire HART ISOL = 68 physical AI channels",
+    "hmi": "Schneider HMIST6500",
+    "switch": "Siemens SCALANCE XC208G 6GK5208-0GA00-2AC2",
+    "vrf_gateway": "3 x IRTrans IRT-MED-Mod inside PN-AUT-001. Project/supplier design limit frozen at 12 indoor units per gateway: 36 installed endpoint capacity for 32 indoor units, 4 spare. IRTrans official documentation states up to 15 IRTrans Bus Modules per Mediacontroller; the stricter 12-endpoint project limit governs.",
+    "temperature": "Endress+Hauser TMT72 HART field-mount architecture, TEMP-WM retained as application reference",
+    "co2": "Omniguard Model 3100 configured CO2 0-5000 ppm, 4-20mA + HART Rev7, 24Vdc nominal",
+    "cooling": "Schneider ClimaSys CU NSYCU350DG, 350W L35-L35 / 240W L35-L50",
+    "cooling_ip_issue": "NSYCU350DG internal circuit is IP55; therefore the requested final IP66 assembly is NOT proven and remains the only release blocker.",
+    "enclosure": "Current project envelope 1200x800x300 mm remains a candidate only. It must be revalidated by real-scale layout with 3 gateways, 3 CM-GW, 1 CM-VFD and DC/DC gateway supplies before render. No automatic increase is allowed without capacity proof.",
+    "gateway_distribution": "GW-HVAC-01=12 indoor units; GW-HVAC-02=12; GW-HVAC-03=8; total 32.",
+    "gateway_field_modules": "32 x IRT-Bus-Mod in field, one per independently addressed indoor unit.",
+    "gateway_serial_interfaces": "3 x Siemens CM PtP RS232 HF 6ES7541-1AD01-0AB0, one point-to-point RS232 interface per gateway.",
+    "vfd_serial_interface": "1 x Siemens CM PtP RS422/485 HF 6ES7541-1AB01-0AB0 for VFD-01 + VFD-02 per user-provided LI screenshot.",
+    "gateway_power": "IRT-MED-Mod official hardware requires 8-16 Vdc external supply depending on variant/mainboard. Because the panel UPS bus is 24 Vdc, add dedicated 24->12 Vdc conversion. Exact DC/DC rating remains HOLD until field bus-module load per segment is verified."
+  },
+  "quantities": [
+    [
+      "ENC-01",
+      "Schneider Electric",
+      "NSYCRN128300",
+      1,
+      "PanelSet CRN enclosure 1200x800x300, IP66"
+    ],
+    [
+      "MP-01",
+      "Schneider Electric",
+      "NSYMM128",
+      1,
+      "Mounting plate 1200x800"
+    ],
+    [
+      "QS-01",
+      "Schneider Electric",
+      "VCF0",
+      1,
+      "25A lockable switch disconnector"
+    ],
+    [
+      "QF-01",
+      "Schneider Electric",
+      "A9F84220",
+      1,
+      "Acti9 iC60H 2P 20A curve C 30kA"
+    ],
+    [
+      "QF-UPS",
+      "Schneider Electric",
+      "A9F83216",
+      1,
+      "Acti9 iC60H 2P 16A curve B 30kA"
+    ],
+    [
+      "QF-CLIMA",
+      "Schneider Electric",
+      "A9F84216",
+      1,
+      "Acti9 iC60H 2P 16A curve C 30kA"
+    ],
+    [
+      "DPS-01",
+      "Schneider Electric",
+      "A9L40201",
+      1,
+      "Acti9 iPRD40r 2P 350V Type 2 40kA remote contact; connection scheme to be checked at detailed wiring stage"
+    ],
+    [
+      "UPS-01",
+      "ADEL System",
+      "CBI2420A",
+      1,
+      "All-in-one DC UPS 24Vdc 20A, Modbus RTU"
+    ],
+    [
+      "BAT-01A/B",
+      "GS Yuasa",
+      "NP24-12IFR",
+      2,
+      "12V 24Ah AGM VRLA, series string 24V"
+    ],
+    [
+      "PLC-01",
+      "Siemens",
+      "6ES7515-2AN03-0AB0",
+      1,
+      "SIMATIC S7-1500 CPU 1515-2 PN"
+    ],
+    [
+      "MC-01",
+      "Siemens",
+      "6ES7954-8LL04-0AA0",
+      1,
+      "SIMATIC memory card 256MB"
+    ],
+    [
+      "IM-01",
+      "Siemens",
+      "6DL1155-6AU00-0PM0",
+      1,
+      "ET 200SP HA IM155-6 PN"
+    ],
+    [
+      "CM-IM",
+      "Siemens",
+      "6DL1193-6BH00-0SM0",
+      1,
+      "ET 200SP HA single IM carrier"
+    ],
+    [
+      "BA-01",
+      "Siemens",
+      "6DL1193-6AR00-0AA0",
+      1,
+      "ET 200SP HA bus adapter 2xRJ45"
+    ],
+    [
+      "CM-8",
+      "Siemens",
+      "6DL1193-6GC00-0NN0",
+      2,
+      "ET 200SP HA 8-module carrier"
+    ],
+    [
+      "CM-2",
+      "Siemens",
+      "6DL1193-6GA00-0NN0",
+      1,
+      "ET 200SP HA 2-module carrier"
+    ],
+    [
+      "AI-TEMP",
+      "Siemens",
+      "6DL1134-6TH00-0PH1",
+      2,
+      "AI 16xI 2-wire HART HA; 28 temp + 4 spare"
+    ],
+    [
+      "TB-H1-L",
+      "Siemens",
+      "6DL1193-6TP00-0DH1",
+      1,
+      "H1 light terminal block, new power group"
+    ],
+    [
+      "TB-H1-D",
+      "Siemens",
+      "6DL1193-6TP00-0BH1",
+      1,
+      "H1 dark terminal block, continuation"
+    ],
+    [
+      "AI-CO2",
+      "Siemens",
+      "6DL1134-6UD00-0PK0",
+      9,
+      "AI 4xI 2/4-wire HART ISOL; 28 CO2 + 8 spare"
+    ],
+    [
+      "TB-K0-L",
+      "Siemens",
+      "6DL1193-6TP00-0DK0",
+      1,
+      "K0 light terminal block, new group"
+    ],
+    [
+      "TB-K0-D",
+      "Siemens",
+      "6DL1193-6TP00-0BK0",
+      8,
+      "K0 dark terminal blocks, continuation"
+    ],
+    [
+      "SW-01",
+      "Siemens",
+      "6GK5208-0GA00-2AC2",
+      1,
+      "SCALANCE XC208G, managed L2, 8x Gigabit"
+    ],
+    [
+      "HMI-01",
+      "Schneider Electric",
+      "HMIST6500",
+      1,
+      "Harmony ST6 10in HMI 24Vdc"
+    ],
+    [
+      "CM-VFD",
+      "Siemens",
+      "6ES7541-1AB01-0AB0",
+      1,
+      "QUADRO | CM PtP RS422/485 HF | Modbus RTU VFD-01 + VFD-02 | user-provided LI basis"
+    ],
+    [
+      "CM-GW-01..03",
+      "Siemens",
+      "6ES7541-1AD01-0AB0",
+      3,
+      "QUADRO | CM PtP RS232 HF | one point-to-point serial interface per IRT-MED-Mod gateway"
+    ],
+    [
+      "GW-HVAC-01..03",
+      "IRTrans",
+      "IRT-MED-Mod",
+      3,
+      "QUADRO | Mediacontroller | project/supplier design capacity 12 indoor units per gateway; official manufacturer page states up to 15 bus modules"
+    ],
+    [
+      "DC-GW-01..03",
+      "TBD after bus-load closure",
+      "24Vdc -> 12Vdc isolated DC/DC",
+      3,
+      "QUADRO | feed each IRTrans gateway/bus segment from UPS-backed 24 Vdc; exact catalog/rating HOLD pending segment load"
+    ],
+    [
+      "BM-AC-001..032",
+      "IRTrans",
+      "IRT-Bus-Mod",
+      32,
+      "CAMPO | one addressable IR bus module per indoor air-conditioning unit; 12+12+8 distribution across three gateways"
+    ],
+    [
+      "BUS-IR",
+      "IRTrans / compatible",
+      "2/3-wire serial bus cable",
+      1,
+      "CAMPO | lot | final lengths from field routing; IRTrans permits bus/star/mixed topologies and Cat5/6 as applicable"
+    ],
+    [
+      "CLIMA-01",
+      "Schneider Electric",
+      "NSYCU350DG",
+      1,
+      "ClimaSys CU 350W, 230Vac, IP55 internal circuit"
+    ],
+    [
+      "TT-001..028",
+      "Endress+Hauser",
+      "iTEMP TMT72 + TA30A + 71274372",
+      28,
+      "Wall/field mounted 4-20mA HART temperature measurement assembly; Pt100 element per configured assembly"
+    ],
+    [
+      "AT-001..028",
+      "Firefly / Omniguard",
+      "Model 3100 CO2 config 0-5000 ppm",
+      28,
+      "24Vdc nominal, 4-20mA, HART Rev7; industrial equivalent"
+    ],
+    [
+      "XT-24V",
+      "Phoenix Contact",
+      "PT 2,5 / 3209510",
+      80,
+      "24V distribution / marshalling terminals"
+    ],
+    [
+      "XPE",
+      "Phoenix Contact",
+      "PT 2,5-PE / 3209536",
+      24,
+      "Protective earth/shield terminals"
+    ],
+    [
+      "DIN",
+      "Phoenix Contact",
+      "NS 35/7,5 PERF / 0801733",
+      5,
+      "DIN rail 2m stock length / cut to layout"
+    ],
+    [
+      "WD",
+      "Engineering selection",
+      "Wiring duct",
+      8,
+      "Slotted wiring duct sections; exact cut lengths at layout"
+    ],
+    [
+      "ID",
+      "Phoenix Contact",
+      "MARKING SYSTEM",
+      1,
+      "Panel/terminal/wire marking kit"
+    ],
+    [
+      "CAB-ETH",
+      "Industrial Cat6 LSZH",
+      "CAT6 industrial",
+      1,
+      "Lot; Ethernet patch/field cables"
+    ],
+    [
+      "CAB-AI",
+      "Shielded instrumentation cable",
+      "2/4 conductor, >=1.0mm2",
+      1,
+      "Lot; lengths from field takeoff"
+    ],
+    [
+      "CAB-FEED",
+      "Cu multipolar 0.6/1kV",
+      "3G4 mm2 equivalent",
+      10,
+      "Feeder, 2F+PE, approximate meters"
+    ]
+  ],
+  "load_basis": {
+    "cpu_max_a_24v": 1.03,
+    "im_max_a_24v": 0.7,
+    "ai16_electronics_a": 0.18,
+    "temperature_loops_a": 0.56,
+    "ai4_electronics_a": 0.675,
+    "co2_max_a": 11.2,
+    "hmi_max_a": 0.525,
+    "switch_design_a": 0.4,
+    "gateway_adapter_design_allowance_a": null,
+    "raw_24v_a": null,
+    "reserve_percent": 20,
+    "design_24v_a": null,
+    "ups_continuous_a": 20,
+    "battery_ideal_ah_after_load_and_aging_reserves": null,
+    "selected_battery_string": "2 x 12V 24Ah series",
+    "ac_current_cbi_max_at_230v_a": 4.5,
+    "ac_current_climasys_a": 1.3,
+    "ac_aux_allowance_a": 0.1,
+    "ac_raw_a": 5.9,
+    "ac_with_20pct_reserve_a": 7.08,
+    "main_breaker_a": 20,
+    "feeder_section_mm2": 4
+  },
+  "thermal_basis": {
+    "cbi_loss_w": 48,
+    "cpu_loss_w": 3.6,
+    "im_loss_w": 2.4,
+    "ai16_loss_w": 9,
+    "ai4_loss_w": 16.2,
+    "hmi_max_w": 12.6,
+    "switch_allowance_w": 10,
+    "gateway_adapter_allowance_w": null,
+    "protection_wiring_allowance_w": 10,
+    "raw_internal_loss_w": null,
+    "with_20pct_reserve_w": null,
+    "climasys_l35_l50_capacity_w": 240,
+    "utilization_at_l35_l50": 0.619,
+    "note": "Field transmitters are outside enclosure and are excluded from internal heat, but included in UPS load."
+  },
+  "release_gate": {
+    "li_created": true,
+    "electrical_load_closed_for_engineering": false,
+    "ups_battery_closed_for_engineering": false,
+    "thermal_capacity_closed_for_engineering": false,
+    "ip66_final_assembly_proven": false,
+    "approved_for_issue": false,
+    "blocker": "Schneider NSYCU350DG declares IP55 internal circuit. The final IP66 assembly requested by the project is not demonstrated by manufacturer documentation.",
+    "blockers": [
+      "Exact 24->12 Vdc DC/DC converter rating for the three IRTrans bus segments requires verified total bus-module current.",
+      "Real-scale panel layout must be rerun with 3 gateways + 3 CM-GW + 1 CM-VFD + gateway DC/DC supplies before enclosure size is frozen.",
+      "Gateway endpoint spare is 4/36 (11.1% of installed capacity); three gateways follow the explicit user decision, not a 20% gateway-capacity reserve.",
+      "Final IP66 assembly proof with cooling remains pending.",
+      "Image MODEL 001 is blocked until LI R05 and dimensional layout are frozen."
+    ]
+  },
+  "gateway_capacity": {
+    "indoor_units": 32,
+    "project_capacity_per_gateway": 12,
+    "gateway_quantity": 3,
+    "installed_capacity": 36,
+    "spare_endpoints": 4,
+    "utilization_percent": 88.8889,
+    "spare_percent_of_installed_capacity": 11.1111,
+    "distribution": [
+      12,
+      12,
+      8
+    ],
+    "condensers_or_outdoor_systems": 6,
+    "condenser_rule": "Do not consume IRTrans indoor-unit addresses unless HVAC manufacturer topology explicitly requires it.",
+    "manufacturer_reference_capacity_per_mediacontroller": 15,
+    "manufacturer_reference_note": "IRTrans official page states up to 15 Bus Modules per Mediacontroller; project uses stricter supplier design limit of 12.",
+    "reserve_policy_note": "Three gateways satisfy the explicit user decision and current 32-unit scope. If the general 20% future-capacity rule is later extended to gateway endpoints, four gateways would be required."
+  },
+  "dimensioning_recheck": {
+    "current_candidate_enclosure_mm": {
+      "height": 1200,
+      "width": 800,
+      "depth": 300
+    },
+    "gateway_master_size_mm": {
+      "width": 72,
+      "height": 50,
+      "depth": 15
+    },
+    "cm_rs232_size_mm": {
+      "width": 35,
+      "height": 147,
+      "depth": 127
+    },
+    "new_inside_panel_gateway_master_area_mm2": 10800,
+    "new_inside_panel_communication_module_area_mm2": 20580,
+    "incremental_projected_area_vs_one_gateway_one_cm_mm2": 22635,
+    "incremental_percent_of_1200x800_front_area": 2.3578,
+    "conclusion": "Adding 3 small Mediacontrollers and 3 RS232 CMs does not by itself prove a larger enclosure is required. Re-run the complete real-scale layout including UPS, batteries, I/O, terminals, ducts, DC/DC converters and 20% physical reserve. Keep 1200x800x300 as candidate until that layout gate passes."
+  }
+}

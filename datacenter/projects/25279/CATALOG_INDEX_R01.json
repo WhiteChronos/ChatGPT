@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "project_number": "25279",
+  "panel_id": "PN-AUT-01",
+  "revision": "R01-STEP2",
+  "sources": [
+    {
+      "ref_id": "REF-25279-001",
+      "manufacturer": "Siemens",
+      "model": "6ES7515-2AN03-0AB0",
+      "title": "SIMATIC S7-1500 CPU 1515-2 PN",
+      "url": "https://sieportal.siemens.com/en-kr/products-services/detail/6ES7515-2AN03-0AB0",
+      "status": "ACTIVE_PRODUCT"
+    },
+    {
+      "ref_id": "REF-25279-002",
+      "manufacturer": "Siemens",
+      "model": "6ES7134-6TD00-0CA1",
+      "title": "SIMATIC ET 200SP AI 4xI 2-wire HART High Feature",
+      "url": "https://support.industry.siemens.com/teddatasheet/?caller=SIOS&format=pdf&language=en&mlfbs=6ES7134-6TD00-0CA1",
+      "status": "MANUFACTURER_CONFIRMED"
+    },
+    {
+      "ref_id": "REF-25279-003",
+      "manufacturer": "Siemens",
+      "model": "6GK5102-1GS00-2AC2",
+      "title": "SCALANCE XCM102 Media Converter",
+      "url": "https://cache.industry.siemens.com/dl/files/970/109962970/att_1274603/v1/GH_SCALANCE-XCM-100-MC_76_en-US.pdf",
+      "status": "MANUFACTURER_CONFIRMED"
+    },
+    {
+      "ref_id": "REF-25279-004",
+      "manufacturer": "Siemens",
+      "model": "6GK5992-1AG00-8AA0",
+      "title": "SFP992-1+ multimode LC",
+      "url": "https://support.industry.siemens.com/teddatasheet/?caller=SIOS&format=pdf&language=en&mlfbs=6GK5992-1AG00-8AA0",
+      "status": "OPTION_PENDING_FIBER_TYPE"
+    },
+    {
+      "ref_id": "REF-25279-005",
+      "manufacturer": "Siemens",
+      "model": "6GK5992-1AM00-8AA0",
+      "title": "SFP992-1LD single-mode LC",
+      "url": "https://support.industry.siemens.com/teddatasheet/?caller=SIOS&format=pdf&language=en&mlfbs=6GK5992-1AM00-8AA0",
+      "status": "OPTION_PENDING_FIBER_TYPE"
+    },
+    {
+      "ref_id": "REF-25279-006",
+      "manufacturer": "Siemens",
+      "model_family": "SITOP PSU6200/PSU8200",
+      "title": "SITOP AC/DC power supply family",
+      "url": "https://www.siemens.com/pt-br/products/sitop/psu6200/",
+      "status": "FAMILY_FROZEN_EXACT_CURRENT_STEP4"
+    },
+    {
+      "ref_id": "REF-25279-007",
+      "manufacturer": "Siemens",
+      "model_family": "SITOP UPS1600",
+      "title": "SITOP DC UPS family",
+      "url": "https://www.siemens.com/pt-br/products/sitop/dc-ups/",
+      "status": "FAMILY_FROZEN_EXACT_CURRENT_STEP4"
+    },
+    {
+      "ref_id": "REF-25279-008",
+      "manufacturer": "Schneider Electric",
+      "model": "HMIST6500",
+      "title": "Harmony ST6 / EcoStruxure Operator Terminal Expert",
+      "url": "https://download.se.com/files?p_Doc_Ref=DIA5ED2140703EN&p_File_Name=DIA5ED2140703EN.pdf&p_enDocType=Catalog",
+      "status": "COMPATIBILITY_VERIFIED_TIA_PORTAL_ETHERNET_DRIVER"
+    },
+    {
+      "ref_id": "DOC-LI-702-R0",
+      "type": "USER_PROJECT_DOCUMENT",
+      "title": "LI-3501.02-8210-800-RPJ-702 Rev.0",
+      "status": "CANONICAL_PROJECT_INPUT"
+    },
+    {
+      "ref_id": "DOC-FD-001-A",
+      "type": "USER_PROJECT_DOCUMENT",
+      "title": "FD-3501.01-8210-800-RPJ-001 Rev.A",
+      "status": "CANONICAL_PROJECT_INPUT"
+    },
+    {
+      "ref_id": "DOC-DE-PENDING",
+      "type": "USER_PROJECT_DOCUMENT",
+      "title": "DE drawings for PN-AUT-01",
+      "status": "NOT_LOCATED_REQUIRED_FOR_STEP2_FREEZE"
+    }
+  ]
+}

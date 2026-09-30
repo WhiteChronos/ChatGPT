@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-PROJECT-INTAKE-STEP1-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "step_number": 1,
+  "title": "Levantamento documental, numero do projeto e definicao da quantidade de paineis",
+  "required": {
+    "project_number": true,
+    "document_register": true,
+    "panel_count": true,
+    "panel_register": true,
+    "evidence_for_panel_count": true
+  },
+  "project_identity": {
+    "project_number_rule": "Every panel project has one PROJECT_NUMBER. Every downstream artifact must carry PROJECT_NUMBER + PANEL_ID + revision + status.",
+    "project_number_cannot_be_invented": true
+  },
+  "panel_scope_rules": [
+    "Determine panel_count from controlled project evidence before panel engineering.",
+    "Every panel must have PANEL_ID, function and source reference.",
+    "Remote I/O, gateways, field boxes and junction boxes are not additional panels unless controlled project documents classify them as panels.",
+    "Conflicting panel count or IDs produce HOLD_SCOPE_CONFLICT."
+  ],
+  "output": "PROJECT_INTAKE_MANIFEST",
+  "pass_status": "STEP1_SCOPE_FROZEN",
+  "hold_status": "HOLD_SCOPE_CONFLICT",
+  "downstream_blocked_until_pass": true
+}

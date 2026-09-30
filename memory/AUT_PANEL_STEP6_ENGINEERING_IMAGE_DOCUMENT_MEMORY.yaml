@@ -1,0 +1,17 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-STEP6-ENGINEERING-IMAGE-DOCUMENT-MEMORY-V1
+status: CONTROLLED_ACTIVE
+
+rules:
+  - "Passo 6 compoe o documento; nao altera a geometria do Passo 5."
+  - "Cada PN gera documento separado."
+  - "Legenda, dados, arquitetura eletrica, comunicacao, comando e dimensionamento sao obrigatorios."
+  - "Canvas cresce; blocos dimensionais nao encolhem."
+  - "Cotas vem de valores controlados, nunca de medicao de raster."
+  - "Diagramas devem ser gerados de dados/topologias controlados."
+  - "Divergencia fisica retorna ao Passo 5; nao corrigir cosmeticamente."
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: STEP6_ENGINEERING_DOCUMENT_METHOD_CREATED

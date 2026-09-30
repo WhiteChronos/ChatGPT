@@ -1,0 +1,167 @@
+name: AUT Panel Learning Control
+
+on:
+  push:
+    branches:
+      - feat/aut-panel-control-v1
+    paths:
+      - '.github/workflows/aut-panel-learning.yml'
+      - 'AGENTS.md'
+      - 'context/AUT_PANEL_CONTEXT_MANIFEST_V1.yaml'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL_GITHUB_CODEX_V1.md'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
+      - 'governance/golden_rules.yaml'
+      - 'templates/panel_template.yaml'
+      - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
+      - 'datacenter/datacenter.yaml'
+      - 'pipeline/aut_panel_router.py'
+      - 'pipeline/context_manifest.py'
+      - 'pipeline/aut_panel_cache.py'
+      - 'pipeline/aut_panel_handoff.py'
+      - 'pipeline/aut_panel_fast_context.py'
+      - 'pipeline/panel_render_gate.py'
+      - 'pipeline/panel_3d_geometry_gate.py'
+      - 'pipeline/corrigir_proporcao_imagem.py'
+      - 'schemas/aut_panel_handoff_v1.schema.json'
+      - 'schemas/panel_render_manifest_v1.schema.json'
+      - 'datacenter/AUT_PANEL_VISUAL_STANDARD_V3.yaml'
+      - 'plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json'
+      - 'tests/test_aut_panel_fast_context.py'
+      - 'tests/test_aut_panel_cache.py'
+      - 'tests/test_aut_panel_agent_system.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'agents/**'
+      - 'database/**'
+      - 'ml/**'
+      - 'memory/agents/**'
+      - 'plugins/aut_panel_open_source_registry.json'
+      - 'pipeline/aut_panel_db.py'
+      - 'pipeline/aut_panel_learning.py'
+      - 'pipeline/aut_panel_router.py'
+      - 'pipeline/context_manifest.py'
+      - 'pipeline/aut_panel_cache.py'
+      - 'pipeline/aut_panel_handoff.py'
+      - 'pipeline/aut_panel_fast_context.py'
+      - 'pipeline/panel_render_gate.py'
+      - 'pipeline/corrigir_proporcao_imagem.py'
+      - 'pipeline/evolution_engine.py'
+      - 'pipeline/learning_pipeline.yaml'
+      - 'pipeline/layout_optimizer/**'
+      - 'configs/layout_optimizer_v1.yaml'
+      - 'schemas/layout_optimizer_result_v1.schema.json'
+      - 'schemas/aut_panel_handoff_v1.schema.json'
+      - 'schemas/panel_render_manifest_v1.schema.json'
+      - 'context/AUT_PANEL_CONTEXT_MANIFEST_V1.yaml'
+      - 'context/AUT_PANEL_CONVERSATION_MEMORY.yaml'
+      - 'governance/golden_rules.yaml'
+      - 'templates/panel_template.yaml'
+      - 'datacenter/datacenter.yaml'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL.md'
+      - 'prompts/PROMPT_MASTER_AUT_PANEL_GITHUB_CODEX_V1.md'
+      - 'AGENTS.md'
+      - 'tests/test_layout_optimizer_*.py'
+      - 'skills/aut-panel-engineering/**'
+      - 'tests/test_aut_panel_agent_system.py'
+      - 'tests/test_aut_panel_fast_context.py'
+      - 'tests/test_aut_panel_cache.py'
+      - 'requirements-dev.txt'
+      - 'requirements-ml.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install core test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+      - name: Compile governed agent modules
+        run: python -m compileall -q pipeline tests
+      - name: Run agent-system tests
+        run: |
+          python -m pytest -q \
+            tests/test_aut_panel_agent_system.py \
+            tests/test_aut_panel_fast_context.py \
+            tests/test_aut_panel_cache.py \
+            tests/test_layout_optimizer_*.py
+      - name: Smoke test Fast Context CLI
+        run: |
+          rm -rf build/fast-context .cache/aut_panel
+          mkdir -p build/fast-context
+          python pipeline/aut_panel_fast_context.py bootstrap \
+            --task-id CI-FAST-CTX-001 \
+            --intent layout \
+            --panel PN-AUT-01 \
+            --output build/fast-context/manifest.yaml
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import yaml
+          manifest = yaml.safe_load(Path('build/fast-context/manifest.yaml').read_text(encoding='utf-8'))
+          assert manifest['agent'] == 'LAYOUT_OPTIMIZER'
+          assert len(manifest['cache']['key']) == 64
+          Path('build/fast-context/result.json').write_text(json.dumps({'status':'PASS'}), encoding='utf-8')
+          Path('build/fast-context/handoff_input.json').write_text(json.dumps({
+              'task_id':'CI-FAST-CTX-001',
+              'from':'LAYOUT_OPTIMIZER',
+              'to':'QA',
+              'panel':'PN-AUT-01',
+              'revision':manifest['panel_revision'],
+              'status':'PASS',
+              'outputs':[],
+              'validated_facts':[],
+              'source_refs':[],
+              'holds':manifest['holds'],
+              'next_action':'Run deterministic QA gates.'
+          }), encoding='utf-8')
+          PY
+          python pipeline/aut_panel_fast_context.py cache-store \
+            --manifest build/fast-context/manifest.yaml \
+            --result build/fast-context/result.json
+          python pipeline/aut_panel_fast_context.py bootstrap \
+            --task-id CI-FAST-CTX-002 \
+            --intent layout \
+            --panel PN-AUT-01 \
+            --output build/fast-context/manifest-hit.yaml
+          grep -q 'cache_status": "HIT"' <(python pipeline/aut_panel_fast_context.py bootstrap --task-id CI-FAST-CTX-003 --intent layout --panel PN-AUT-01 --output build/fast-context/manifest-hit-2.yaml)
+          python pipeline/aut_panel_fast_context.py handoff \
+            --input build/fast-context/handoff_input.json \
+            --output build/fast-context/handoff.json
+      - name: Initialize database
+        run: |
+          rm -rf build/aut-panel-learning
+          mkdir -p build/aut-panel-learning
+          python pipeline/aut_panel_db.py --db build/aut-panel-learning/aut_panel.sqlite3 init
+          python pipeline/aut_panel_db.py --db build/aut-panel-learning/aut_panel.sqlite3 status
+      - name: Verify cold-start learning behavior
+        run: |
+          printf '%s\n' '{"features":{"quantity_mismatch":0.0},"label":"accepted","reviewed_by_human":true}' > build/aut-panel-learning/train.jsonl
+          python pipeline/aut_panel_learning.py build/aut-panel-learning/train.jsonl | tee build/aut-panel-learning/learning.json
+          grep -q 'LEARNING_COLD_START' build/aut-panel-learning/learning.json
+      - name: Verify controlled evolution proposal
+        run: |
+          cat > build/aut-panel-learning/proposal_input.json <<'JSON'
+          {"problem":"test","affected_files":["governance/golden_rules.yaml"],"candidate_change":{"type":"test"},"tests":["pytest"]}
+          JSON
+          python pipeline/evolution_engine.py build/aut-panel-learning/proposal_input.json --output build/aut-panel-learning/proposal.json
+          python - <<'PY'
+          import json
+          p=json.load(open('build/aut-panel-learning/proposal.json'))
+          assert p['requires_human_approval'] is True
+          assert p['auto_apply_allowed'] is False
+          PY

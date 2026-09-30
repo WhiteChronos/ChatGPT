@@ -1,0 +1,353 @@
+schema_version: '1.2'
+registry_id: GOLDEN-RULES-IMMUTABLE-V1
+standard_id: AUT-PAINEL-COMPACT-V2.4
+status: LOCKED_APPROVED_STANDARD
+immutable: true
+change_control:
+  explicit_user_authorization_required: true
+  unauthorized_change_status: REPROVADO
+  authorization_evidence_required: true
+  rule: Nenhuma regra, estrutura de LI/Excel, composição visual, dimensão mestre, ordem do pipeline ou
+    template aprovado pode ser alterado sem autorização explícita do responsável do projeto.
+required_rules:
+- id: GR-021
+  name: Vista frontal externa é a geometria-mestra
+  severity_on_violation: REPROVADO
+  rule: A vista frontal externa/porta define largura e altura externas do gabinete.
+- id: GR-022
+  name: Vista interna frontal preserva o contorno externo
+  severity_on_violation: REPROVADO
+  rule: A vista interna frontal deve ter exatamente a mesma largura e altura externas da vista frontal externa.
+- id: GR-023
+  name: Vista lateral real
+  severity_on_violation: REPROVADO
+  rule: A vista lateral deve ser profundidade externa x altura externa.
+- id: GR-024
+  name: Escala global única
+  severity_on_violation: REPROVADO
+  rule: Todas as vistas usam um único PX_PER_MM; escala por vista é proibida.
+- id: GR-025
+  name: Proporção 1:1
+  severity_on_violation: REPROVADO
+  rule: É proibida escala individual ou distorção de componentes.
+- id: GR-026
+  name: Canvas grow-only
+  severity_on_violation: REPROVADO
+  rule: O canvas cresce para acomodar o quadro; o quadro nunca é comprimido.
+- id: GR-027
+  name: Zona inferior normativa
+  severity_on_violation: HOLD
+  rule: Bornes, canaleta inferior, curvatura/saída de cabos e prensa-cabos devem permanecer em zonas distintas.
+- id: GR-034
+  name: LI e BOM antes do desenho
+  severity_on_violation: REPROVADO
+  rule: A LI quantitativa é congelada antes da BOM; a BOM é validada antes do layout e da imagem.
+- id: GR-035
+  name: Paridade quantitativa
+  severity_on_violation: REPROVADO
+  rule: catalog_id e quantidade devem ser idênticos entre LI, BOM, Data Sheet/layout e desenho.
+- id: GR-036
+  name: Mudança da LI invalida artefatos posteriores
+  severity_on_violation: REPROVADO
+  rule: Alterar quantidade, catalog_id ou revisão da LI invalida BOM, layout, desenho, carga e QA anteriores.
+- id: GR-037
+  name: IHM na porta
+  severity_on_violation: REPROVADO
+  rule: A IHM local fica obrigatoriamente instalada na porta/tampa frontal externa.
+- id: GR-038
+  name: Sem distorção para caber
+  severity_on_violation: REPROVADO
+  rule: Se faltar espaço, reorganizar ou ampliar o gabinete; nunca reduzir ou deformar componentes.
+- id: GR-039
+  name: PN-AUT-01 é o template mestre de Excel
+  severity_on_violation: REPROVADO
+  rule: PN-AUT-02 e futuros quadros devem manter a estrutura documental e visual do workbook mestre do PN-AUT-01.
+- id: GR-040
+  name: Imagem individual no padrão visual aprovado
+  severity_on_violation: REPROVADO
+  rule: Cada painel possui uma imagem própria e deve seguir seu template visual aprovado, sem recomposição automática.
+- id: GR-041
+  name: Padrão aprovado imutável
+  severity_on_violation: REPROVADO
+  rule: Nenhum padrão aprovado pode ser alterado sem autorização explícita do usuário.
+- id: GR-042
+  name: Baseline da LI imutável
+  severity_on_violation: REPROVADO
+  rule: LI-PN-AUT-01-R02 e LI-PN-AUT-02-R02 são baselines congeladas; mudança exige nova revisão e autorização explícita.
+- id: GR-043
+  name: Estrutura do workbook imutável
+  severity_on_violation: REPROVADO
+  rule: Ordem de abas, dimensões de planilha, freeze panes, mesclagens, larguras e alturas-base devem seguir o fingerprint estrutural mestre.
+- id: GR-044
+  name: Fingerprint visual aprovado
+  severity_on_violation: REPROVADO
+  rule: O template de imagem deve apontar para o fingerprint SHA-256 da referência aprovada do painel no Data Center privado.
+- id: GR-045
+  name: Prompt mestre obrigatório
+  severity_on_violation: REPROVADO
+  rule: Toda elaboração automática de LI, layout, código ou imagem deve carregar PROMPT-MASTER-AUT-PANEL-V2 sem reescrever suas regras imutáveis.
+- id: GR-046
+  name: Bootstrap de conversa obrigatório
+  severity_on_violation: REPROVADO
+  rule: Toda nova conversa deve carregar e validar Prompt Mestre, Golden Rules, pipeline, Data Center, Data Sheet, template e memória operacional antes de executar tarefa técnica.
+- id: GR-047
+  name: Memória operacional compartilhada
+  severity_on_violation: REPROVADO
+  rule: As conversas usam context/AUT_PANEL_CONVERSATION_MEMORY.yaml como memória operacional comum; immutable_contract é bloqueado e mutable_state é sincronizado após marcos definidos.
+- id: GR-048
+  name: Contrato dos comandos /explaincode e /refactor
+  severity_on_violation: REPROVADO
+  rule: /explaincode é somente leitura; /refactor deve preservar comportamento, executar regressão/QA e não alterar contratos bloqueados sem autorização explícita.
+- id: GR-049
+  name: Precedência canônica entre conversa e arquivos
+  severity_on_violation: REPROVADO
+  rule: Conversa ou memória informal nunca sobrescrevem Data Center, Data Sheet, LI ou Golden Rules; conflitos são resolvidos pela precedência canônica e qualquer lacuna crítica vira HOLD.
+- id: GR-050
+  name: Revisões históricas da LI são imutáveis
+  severity_on_violation: REPROVADO
+  rule: Toda coluna de revisão já emitida permanece exatamente como estava. Nunca corrigir REV. 0, REV. A ou outra revisão histórica em lugar da nova revisão.
+- id: GR-051
+  name: Nova revisão ocupa a coluna imediatamente à direita
+  severity_on_violation: REPROVADO
+  rule: A nova revisão deve ser criada na coluna imediatamente à direita da última revisão existente, preservando REV. 0 e todas as demais revisões anteriores.
+- id: GR-052
+  name: Quantitativo da nova revisão exige evidência rastreável
+  severity_on_violation: REPROVADO
+  rule: Valores da nova revisão só podem ser preenchidos por desenho oficial, desenho de painel aprovado, workbook de referência aprovado, Data Center/Data Sheet, documentação oficial do fabricante ou cálculo determinístico derivado dessas fontes.
+- id: GR-053
+  name: A LEVANTAR somente quando o quantitativo não puder ser determinado
+  severity_on_violation: HOLD
+  rule: A LEVANTAR exige justificativa e lacuna de fonte. Se a quantidade puder ser contada ou calculada a partir das fontes autorizadas, deve ser preenchida na nova revisão.
+- id: GR-054
+  name: Capa e formato da LI permanecem preservados
+  severity_on_violation: REPROVADO
+  rule: Revisão de conteúdo não autoriza alterar capa, ordem/nome das folhas, mesclagens, larguras estruturais, área de impressão, cabeçalhos, rodapés ou configuração de página sem autorização explícita.
+- id: GR-055
+  name: QA de revisão exige diff estrutural e histórico
+  severity_on_violation: REPROVADO
+  rule: Toda atualização de LI deve comparar baseline x nova versão e provar que revisões históricas e estrutura protegida não mudaram.
+- id: GR-056
+  name: Memória de controle da LI é obrigatória
+  severity_on_violation: HOLD
+  rule: Cada revisão deve registrar evento, fontes, folhas alteradas, coluna anterior, nova coluna, itens modificados, pendências, QA e testes de regressão em memory/LI_MATERIAL_CONTROL_MEMORY.yaml.
+- id: GR-057
+  name: Divergência entre fontes não corrige revisão antiga
+  severity_on_violation: HOLD
+  rule: Em conflito de fontes, a revisão histórica permanece intocada; a nova revisão fica HOLD até reconciliação e só então recebe o valor correto.
+- id: GR-058
+  name: QA open source em camadas
+  severity_on_violation: HOLD
+  rule: O pipeline deve usar o núcleo local de validação e registrar a cobertura de ferramentas open source opcionais; ausência de ferramenta opcional não pode ser mascarada como validação total.
+- id: GR-059
+  name: Isolamento de agentes e escopo de escrita
+  severity_on_violation: REPROVADO
+  rule: Cada agente deve operar apenas no seu escopo de leitura/escrita e namespace de Data Center/memória; promoção ao estado canônico exige gate.
+- id: GR-060
+  name: Machine learning é consultivo
+  severity_on_violation: REPROVADO
+  rule: Modelos de ML podem priorizar risco e sugerir melhoria, mas nunca criam fato de engenharia nem sobrepõem gate determinístico, fonte oficial ou HOLD.
+- id: GR-061
+  name: Autoevolução controlada por proposta
+  severity_on_violation: REPROVADO
+  rule: O sistema autoevolutivo somente pode gerar propostas, simulações e evidências; mudança de comportamento ou contrato bloqueado exige aprovação humana explícita antes da aplicação.
+- id: GR-062
+  name: Histórico de engenharia append-only
+  severity_on_violation: REPROVADO
+  rule: Revisões emitidas, decisões, evidências e eventos de memória devem permanecer reconstruíveis; registros liberados não podem ser sobrescritos silenciosamente.
+- id: GR-063
+  name: Proveniência de dados e modelos
+  severity_on_violation: HOLD
+  rule: Treinamento exige exemplos revisados por humano, fingerprint do dataset, schema de features, versão do modelo, métricas e data de treinamento.
+- id: GR-064
+  name: Ativação controlada de open source
+  severity_on_violation: HOLD
+  rule: Repositório ou plugin descoberto só pode entrar no pipeline após pin de versão/commit, revisão de licença, revisão de segurança e teste de integração.
+- id: GR-065
+  name: Isolamento de estado por painel
+  severity_on_violation: REPROVADO
+  rule: Estado específico de um painel não pode contaminar outro; componentes compartilhados podem referenciar catálogo comum, mas LI, I/O, carga, layout, QA e memória são panel-scoped.
+- id: GR-066
+  name: Desenho determinístico é autoridade visual
+  severity_on_violation: REPROVADO
+  rule: Desenho vetorial derivado de BOM/layout validado é a autoridade visual de engenharia; imagem generativa é apenas referência suplementar.
+- id: GR-067
+  name: Instância física única por item da LI
+  severity_on_violation: REPROVADO
+  rule: Cada componente físico deve aparecer no layout/render exatamente na quantidade definida na LI/BOM. Representações de frente e traseira do mesmo componente não criam nova instância física.
+- id: GR-068
+  name: IHM única e exclusiva na porta
+  severity_on_violation: REPROVADO
+  rule: A IHM local é uma única instância física montada exclusivamente na porta frontal; é proibida uma segunda IHM na placa interna. Na vista de porta aberta, somente a traseira da mesma IHM pode aparecer, sem nova contagem.
+- id: GR-069
+  name: Fechamento dimensional antes do render
+  severity_on_violation: HOLD
+  rule: Nenhum render pode ser tratado como dimensional ou liberado para fabricação enquanto houver componente desenhável sem largura, altura, profundidade, montagem e folgas oficiais do fabricante.
+- id: GR-070
+  name: Escala física comum em milímetros
+  severity_on_violation: REPROVADO
+  rule: Gabinete, placa, trilhos, canaletas e componentes devem compartilhar a mesma escala física em milímetros; redimensionamento individual para caber é proibido.
+- id: GR-071
+  name: Superfície de montagem rastreada
+  severity_on_violation: REPROVADO
+  rule: Cada componente deve declarar sua superfície de montagem real, como porta, placa, trilho DIN ou fundo. Item montado na porta não pode ocupar simultaneamente área da placa interna.
+- id: GR-072
+  name: Saída de cabos e raio de curvatura validados
+  severity_on_violation: HOLD
+  rule: Antes do render final, a zona inferior de cabos, prensa-cabos, acesso e raio mínimo de curvatura devem ser validados. Falta de espaço resulta em HOLD_LAYOUT_CAPACITY.
+- id: GR-073
+  name: Memória de erro e regressão obrigatórias
+  severity_on_violation: HOLD
+  rule: Todo erro de engenharia ou visual confirmado deve gerar evento de memória, regra preventiva e teste automatizado de regressão antes de encerrar a correção.
+- id: GR-074
+  name: Vista lateral aberta e corte em profundidade preservam proporção real
+  severity_on_violation: REPROVADO
+  rule: Toda vista lateral aberta, corte lateral ou distribuição em profundidade deve usar a mesma escala global em milímetros das demais vistas. Para cada painel, a razão gráfica largura/altura deve ser igual a profundidade_externa/altura_externa; no PN-AUT-01 isso corresponde a 300/800 = 0,375. É proibido alargar, achatar ou comprimir a vista para preencher o canvas.
+- id: GR-075
+  name: Imagem 6 é corte dimensional verificável
+  severity_on_violation: REPROVADO
+  rule: O bloco visual identificado como Imagem 6 ou distribuição em profundidade deve exibir profundidade externa, profundidade útil, componentes na profundidade real, canaletas, folgas, raio de curvatura e prensa-cabos, todos derivados de dados dimensionais oficiais e da mesma escala global.
+- id: GR-076
+  name: Uma única montagem 3D governa todas as vistas
+  severity_on_violation: REPROVADO
+  rule: Vista interna, frontal externa, lateral e corte em profundidade devem ser projeções da mesma montagem geométrica em coordenadas reais. É proibido reconstruir ou redimensionar cada vista independentemente.
+- id: GR-077
+  name: CAD e catálogo são autoridade geométrica
+  severity_on_violation: HOLD
+  rule: A geometria de cada componente deve vir prioritariamente de STEP/IGES/DXF/CAD oficial do fabricante ou ser reconstruída deterministicamente a partir do desenho dimensional oficial. Geometria inferida de imagem generativa nunca é autoridade.
+- id: GR-078
+  name: Canvas cresce e blocos não encolhem
+  severity_on_violation: REPROVADO
+  rule: A composição visual deve ampliar o canvas até acomodar todas as vistas, tabelas e diagramas nas escalas definidas. É proibido reduzir componentes ou blocos dimensionais para fazê-los caber.
+- id: GR-079
+  name: Blocos 4 e 8 removidos do padrão V3
+  severity_on_violation: REPROVADO
+  rule: O padrão visual V3 não possui bloco dedicado 4 de vista interna da porta nem bloco dedicado 8 de vista inferior de cabos. A traseira da IHM integra a vista principal de porta aberta quando visível; a saída de cabos permanece dimensionada na vista interna principal e no corte em profundidade.
+- id: GR-080
+  name: Guardiões geométricos obrigatórios antes do render
+  severity_on_violation: REPROVADO
+  rule: CAD_GEOMETRY_GUARDIAN, SCALE_PROPORTION_GUARDIAN, BLENDER_RENDER_GUARDIAN e CANVAS_COMPOSITION_GUARDIAN devem aprovar toda imagem dimensional. REVIT_BIM_INTEROP_GUARDIAN é obrigatório quando houver Revit/IFC/BIM no fluxo.
+- id: GR-081
+  name: Blender é renderizador e não autoridade geométrica
+  severity_on_violation: REPROVADO
+  rule: Blender pode alterar somente materiais, iluminação, antialiasing e enquadramento. Geometria, coordenadas, escala, quantidades e bounding boxes ficam congelados antes da renderização.
+- id: GR-082
+  name: Revit preserva geometria na interoperabilidade BIM
+  severity_on_violation: HOLD
+  rule: Quando Revit for usado, unidades, IDs, coordenadas e bounding boxes devem permanecer consistentes com o modelo canônico. Não é permitido declarar validação Revit sem execução real em ambiente Autodesk autorizado.
+- id: GR-083
+  name: Nunca fazer caber
+  severity_on_violation: REPROVADO
+  rule: É proibido reduzir qualquer vista, componente, gabinete, placa, zona de cabos, tabela ou bloco dimensional para caber em um canvas fixo. O canvas deve crescer horizontal e/ou verticalmente até preservar integralmente escala, proporção e legibilidade.
+- id: GR-084
+  name: Inserção raster dimensional preserva escala 1:1
+  severity_on_violation: REPROVADO
+  rule: Imagens dimensionais derivadas do modelo 3D não podem ser redimensionadas para caber em molduras. Na composição raster, scale_x e scale_y devem permanecer iguais a 1,0; se a moldura for menor que a imagem, a moldura/canvas deve crescer. Letterbox/pillarbox só pode adicionar espaço vazio, nunca reduzir a geometria.
+
+
+- id: GR-085
+  name: MODEL 001 define composição, não dimensão física
+  severity_on_violation: REPROVADO
+  rule: PN-IMAGE-MODEL-001 é o padrão obrigatório de composição, linguagem gráfica e organização documental para novos painéis PN, mas suas dimensões de exemplo nunca podem ser herdadas como dimensões físicas de outro painel.
+- id: GR-086
+  name: Dimensão do gabinete é saída do projeto
+  severity_on_violation: REPROVADO
+  rule: Altura, largura e profundidade de cada novo painel PN devem ser determinadas a partir da LI/BOM do painel-alvo, dimensões e folgas oficiais dos componentes, canaletas, bornes, cabos, raio de curvatura, porta, UPS/baterias, climatização, manutenção e reserva física congelada. É proibido escolher o tamanho do gabinete copiando outro PN e depois forçar os componentes a caber.
+- id: GR-087
+  name: Selecionar gabinete após prova de capacidade
+  severity_on_violation: HOLD
+  rule: Para novo painel PN, o gabinete real de fabricante só pode ser congelado no Data Sheet após o layout dimensional provar capacidade e margem. Uma vez congelado para aquela revisão, mudança de gabinete invalida layout, render, QA e artefatos dependentes e exige revisão controlada.
+- id: GR-088
+  name: Prompt MODEL 001 obrigatório
+  severity_on_violation: REPROVADO
+  rule: Toda elaboração de imagem de painel PN deve carregar prompts/PROMPT_PN_IMAGE_MODEL_001.md e datacenter/images/PN_MODEL_001.json antes do dimensionamento visual e do render.
+
+- id: GR-089
+  name: Workbook Step 4 possui somente duas abas por painel
+  severity_on_violation: REPROVADO
+  rule: A LI emitida no Passo 4 deve possuir exatamente duas abas por PANEL_ID, <PANEL_ID>_MATERIAIS e <PANEL_ID>_CARGA. Para N painéis devem existir exatamente 2N abas; capa, QA, referências, arquitetura, controle e abas ocultas são proibidas no workbook emitido.
+- id: GR-090
+  name: Todo material físico entra na LI
+  severity_on_violation: REPROVADO
+  rule: Todo item fisicamente consumido na montagem do painel deve existir na LI, incluindo acessórios de fabricante, trilhos, canaletas, bornes e acessórios, fiação interna, PE, conectores, terminação, marcação, prensa-cabos, climatização e fixadores.
+- id: GR-091
+  name: Metragem interna é derivada de conexão e geometria
+  severity_on_violation: HOLD
+  rule: Fiação interna e materiais lineares só podem ter quantidade em metros quando derivados de grafo de conexões, rota física em layout real e allowances explicitamente parametrizados. Estimativa visual ou metragem por regra de bolso é proibida.
+- id: GR-092
+  name: Carga é separada por painel
+  severity_on_violation: REPROVADO
+  rule: Cada PANEL_ID deve possuir sua própria aba de carga. Itens energizados da LI devem estar rastreados na carga daquele mesmo painel ou possuir justificativa documentada.
+- id: GR-093
+  name: Links e evidência acompanham a linha da LI
+  severity_on_violation: HOLD
+  rule: Cada item da LI deve possuir REF_ID, identificação exata do modelo e links oficiais de produto/documentação; quando disponível, incluir fornecedor ou distribuidor autorizado.
+- id: GR-094
+  name: Vídeo de montagem é evidência secundária
+  severity_on_violation: REPROVADO
+  rule: Vídeos podem apoiar método de montagem e treinamento, mas não podem definir corrente, seção de cabo, Icu, grau IP, capacidade, requisito normativo ou substituir documentação oficial.
+
+- id: GR-095
+  name: Porta e tampa são a mesma geometria em todas as vistas
+  severity_on_violation: REPROVADO
+  rule: Para cada PANEL_ID/revisão, porta/tampa, recortes, IHM, dobradiças, espessura e dimensões locais devem ser uma única geometria canônica. Entre vistas só podem mudar a câmera e a transformação rígida de abertura no eixo de dobradiça congelado.
+- id: GR-096
+  name: Hash de montagem único em todas as vistas
+  severity_on_violation: REPROVADO
+  rule: Frontal, interna, lateral, 3/4 e corte devem apontar para o mesmo ASSEMBLY_HASH e o mesmo conjunto de instâncias físicas. Reconstrução independente por vista é proibida.
+- id: GR-097
+  name: Escala de objeto invariável entre vistas
+  severity_on_violation: REPROVADO
+  rule: Todos os objetos do modelo canônico devem permanecer com scale_x=scale_y=scale_z=1 no espaço de engenharia. Nenhuma câmera ou render pode alterar escala, bounding box ou coordenadas físicas.
+- id: GR-098
+  name: Passo 5 gera somente imagem física do PN
+  severity_on_violation: REPROVADO
+  rule: O Passo 5 gera o conjunto de imagens físicas limpas e separadas de um único PN. Legenda, dados, arquiteturas, comando e bloco de dimensionamento pertencem ao Passo 6.
+- id: GR-099
+  name: Passo 6 não altera a geometria congelada
+  severity_on_violation: REPROVADO
+  rule: O documento visual do Passo 6 deve reutilizar a imagem/fingerprint aprovado no Passo 5. Erro físico obriga retorno ao Passo 5; correção cosmética/raster da geometria é proibida.
+- id: GR-100
+  name: Cotas vêm de valores controlados e não do raster
+  severity_on_violation: REPROVADO
+  rule: H, W e D exibidos no documento devem vir do Data Sheet/geometria controlada. É proibido medir pixels ou perspectiva para determinar cota.
+- id: GR-101
+  name: Documento cresce e engenharia mantém tamanho nativo
+  severity_on_violation: REPROVADO
+  rule: No Passo 6, vistas dimensionais permanecem scale_x=scale_y=1.0. O canvas/documento deve crescer para receber imagem, legenda, dados, arquiteturas, comando e dimensionamento; nenhum bloco de engenharia pode ser reduzido para caber.
+- id: GR-102
+  name: Um PN por documento visual de engenharia
+  severity_on_violation: REPROVADO
+  rule: Cada PANEL_ID gera seu próprio conjunto de imagem física no Passo 5 e seu próprio documento visual de engenharia no Passo 6. Combinação de múltiplos painéis só pode ocorrer em artefato posterior explicitamente definido.
+
+- id: GR-103
+  name: Passo 7 é verificação e não correção
+  severity_on_violation: REPROVADO
+  rule: O Passo 7 não pode alterar geometria, enquadramento, cotas ou composição para obter aprovação. Deve apenas medir, comparar, reprovar/aprovar e retornar a falha ao Passo 4, 5 ou 6 conforme a causa.
+- id: GR-104
+  name: Proporção ortográfica deve concordar com H W D reais
+  severity_on_violation: REPROVADO
+  rule: Em vistas ortográficas, a razão em pixels da bbox do painel deve concordar com a razão física correspondente W/H ou D/H dentro da tolerância congelada do projeto.
+- id: GR-105
+  name: Escala px por mm comum nas vistas dimensionais
+  severity_on_violation: REPROVADO
+  rule: Todas as vistas ortográficas dimensionais devem preservar uma escala comum em pixels por milímetro nos dois eixos e entre vistas. Escala independente para enquadrar ou fazer caber é proibida.
+- id: GR-106
+  name: Vista 3/4 é validada por câmera e reprojeção
+  severity_on_violation: HOLD
+  rule: A fidelidade geométrica de vista 3/4 ou perspectiva deve ser verificada pela relação câmera-modelo, usando matriz de projeção e landmarks 3D/2D ou equivalente determinístico. Comprimento aparente em perspectiva não pode ser usado como medida.
+- id: GR-107
+  name: Enquadramento final sem clipping
+  severity_on_violation: REPROVADO
+  rule: Nenhum bloco obrigatório, vista, cota, legenda ou diagrama pode ultrapassar ou ser recortado pelo canvas final. Margens mínimas e regras de centralização declaradas devem ser verificadas matematicamente.
+- id: GR-108
+  name: Cotas finais são comparadas diretamente ao dado controlado
+  severity_on_violation: REPROVADO
+  rule: Textos de H, W e D da imagem final devem ser iguais aos valores controlados para a revisão. OCR ou medição do raster nunca substitui o manifest/Data Sheet como autoridade dimensional.
+- id: GR-109
+  name: Regressão visual é camada secundária
+  severity_on_violation: HOLD
+  rule: SSIM, perceptual hash, edge overlap e outras métricas de similaridade podem detectar anomalias, mas não podem aprovar uma imagem que falhou em geometria, escala, câmera, dimensões ou paridade de revisão.
+- id: GR-110
+  name: Tolerâncias de QA visual são versionadas
+  severity_on_violation: REPROVADO
+  rule: Tolerâncias de aspect ratio, px/mm, reprojeção, dimensão e enquadramento devem ser registradas por revisão. É proibido afrouxar uma tolerância congelada apenas para obter PASS.

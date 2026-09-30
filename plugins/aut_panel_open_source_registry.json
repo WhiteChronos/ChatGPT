@@ -1,0 +1,389 @@
+{
+  "registry_version": "1.5",
+  "registry_id": "AUT-PANEL-OPEN-SOURCE-REGISTRY-V1",
+  "discovered_at": "2026-09-30",
+  "policy": {
+    "activation_requires_version_or_commit_pin": true,
+    "license_review_required": true,
+    "security_review_required": true,
+    "no_auto_install_into_core_pipeline": true,
+    "archived_repository_cannot_be_new_core_dependency": true,
+    "generated_output_never_overrides_engineering_evidence": true,
+    "autonomous_discovery_allowed": true,
+    "autonomous_promotion_forbidden": true,
+    "human_gate_for_core_dependency": true,
+    "regression_test_required": true,
+    "system_may_propose_improvements": true
+  },
+  "repositories": [
+    {
+      "repository": "cdelker/schemdraw",
+      "role": [
+        "ELECTRICAL_SCHEMATIC_RENDERING",
+        "VECTOR_SYMBOLS"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "Kozea/CairoSVG",
+      "role": [
+        "SVG_RASTERIZATION",
+        "PNG_PDF_RENDER_SUPPORT"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "google/or-tools",
+      "role": [
+        "CONSTRAINT_LAYOUT_OPTIMIZATION",
+        "PLACEMENT_SEARCH"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "opencv/opencv",
+      "role": [
+        "VISUAL_REGRESSION",
+        "GEOMETRY_DETECTION",
+        "IMAGE_QA"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "networkx/networkx",
+      "role": [
+        "CONNECTION_GRAPH",
+        "IO_NETWORK_TOPOLOGY",
+        "DEPENDENCY_ANALYSIS"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "online-ml/river",
+      "role": [
+        "ONLINE_MACHINE_LEARNING",
+        "INCREMENTAL_QUALITY_MODEL"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "mlflow/mlflow",
+      "role": [
+        "MODEL_REGISTRY",
+        "EXPERIMENT_TRACKING",
+        "MODEL_METRICS"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "treeverse/dvc",
+      "source_alias": "iterative/dvc",
+      "role": [
+        "DATASET_VERSIONING",
+        "MODEL_ARTIFACT_VERSIONING"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "evidentlyai/evidently",
+      "role": [
+        "DATA_QUALITY_MONITORING",
+        "MODEL_DRIFT",
+        "ML_EVALUATION"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "optuna/optuna",
+      "role": [
+        "HYPERPARAMETER_SEARCH",
+        "LAYOUT_HEURISTIC_TUNING"
+      ],
+      "status": "DISCOVERED_EVALUATE_AND_PIN",
+      "archived": false
+    },
+    {
+      "repository": "PrefectHQ/prefect",
+      "role": [
+        "WORKFLOW_ORCHESTRATION",
+        "RETRIES",
+        "OBSERVABILITY"
+      ],
+      "status": "DISCOVERED_OPTIONAL",
+      "archived": false
+    },
+    {
+      "repository": "duckdb/duckdb",
+      "role": [
+        "LOCAL_ANALYTICS",
+        "QA_HISTORY_QUERY",
+        "TRAINING_DATA_ANALYSIS"
+      ],
+      "status": "DISCOVERED_OPTIONAL",
+      "archived": false
+    },
+    {
+      "repository": "sqlalchemy/sqlalchemy",
+      "role": [
+        "DATABASE_ABSTRACTION",
+        "POSTGRES_PORTABILITY"
+      ],
+      "status": "DISCOVERED_OPTIONAL",
+      "archived": false
+    },
+    {
+      "repository": "pydantic/pydantic",
+      "role": [
+        "RUNTIME_SCHEMA_VALIDATION",
+        "AGENT_MESSAGE_CONTRACTS"
+      ],
+      "status": "DISCOVERED_OPTIONAL",
+      "archived": false
+    },
+    {
+      "repository": "FreeCAD/FreeCAD",
+      "role": [
+        "PARAMETRIC_CAD",
+        "STEP_IGES_REVIEW",
+        "GEOMETRY_AUTHORING"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "Open-Cascade-SAS/OCCT",
+      "role": [
+        "B_REP_GEOMETRY_KERNEL",
+        "SOLID_MODELING"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "CadQuery/cadquery",
+      "role": [
+        "PYTHON_PARAMETRIC_CAD",
+        "STEP_EXPORT",
+        "DETERMINISTIC_GEOMETRY"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "gumyr/build123d",
+      "role": [
+        "PYTHON_PARAMETRIC_CAD",
+        "DETERMINISTIC_GEOMETRY"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "mikedh/trimesh",
+      "role": [
+        "MESH_QA",
+        "BOUNDING_BOX_QA",
+        "SCENE_VALIDATION"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "isl-org/Open3D",
+      "role": [
+        "3D_GEOMETRY_QA",
+        "POINT_CLOUD",
+        "SPATIAL_VALIDATION"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "IfcOpenShell/IfcOpenShell",
+      "role": [
+        "IFC_BIM_INTEROP",
+        "BIM_GEOMETRY"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "blender/blender",
+      "role": [
+        "PHOTOREAL_RENDERING",
+        "CAMERA_LIGHTING_MATERIALS"
+      ],
+      "status": "DISCOVERED_EVALUATE_PIN_LICENSE_SECURITY",
+      "archived": false
+    },
+    {
+      "repository": "pyrevitlabs/pyRevit",
+      "role": [
+        "REVIT_AUTOMATION_BRIDGE",
+        "BIM_INTEROP"
+      ],
+      "status": "DISCOVERED_OPTIONAL_AUTHORIZED_AUTODESK_REQUIRED",
+      "archived": false
+    },
+    {
+      "repository": "microsoft/autogen",
+      "role": [
+        "MULTI_AGENT_ARCHITECTURE_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY_DO_NOT_REPLACE_CANONICAL_AGENT_SYSTEM",
+      "archived": false
+    },
+    {
+      "repository": "langchain-ai/langgraph",
+      "role": [
+        "STATEFUL_WORKFLOW_GRAPH_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY_DO_NOT_REPLACE_CANONICAL_AGENT_SYSTEM",
+      "archived": false
+    },
+    {
+      "repository": "crewAIInc/crewAI",
+      "role": [
+        "MULTI_AGENT_WORKFLOW_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY_DO_NOT_REPLACE_CANONICAL_AGENT_SYSTEM",
+      "archived": false
+    },
+    {
+      "repository": "openai/openai-cookbook",
+      "role": [
+        "OPENAI_IMPLEMENTATION_PATTERNS",
+        "AGENT_REFERENCE"
+      ],
+      "status": "REFERENCE_ONLY",
+      "archived": false
+    },
+    {
+      "repository": "qelectrotech/qelectrotech-source-mirror",
+      "role": [
+        "ELECTRICAL_SCHEMATIC_AUTHORING",
+        "CONNECTION_DOCUMENTATION",
+        "PANEL_WIRING_SUPPORT"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false,
+      "license": "GPL-2.0-or-later"
+    },
+    {
+      "repository": "qelectrotech/qelectrotech-elements",
+      "role": [
+        "ELECTRICAL_SYMBOL_LIBRARY",
+        "COMPONENT_ELEMENT_LIBRARY"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false
+    },
+    {
+      "repository": "Kliurka/QetWireManager",
+      "role": [
+        "QET_WIRE_MANAGEMENT",
+        "WIRE_LIST_SUPPORT",
+        "CONNECTION_TRACE"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repository": "wireviz/WireViz",
+      "role": [
+        "WIRE_HARNESS_DESCRIPTION",
+        "WIRE_LIST",
+        "CONNECTION_VISUALIZATION"
+      ],
+      "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false,
+      "license": "GPL-3.0"
+    },
+    {
+      "repository": "JohannesBuchner/imagehash",
+      "role": [
+        "SUPPLEMENTARY_IMAGE_FINGERPRINT",
+        "VISUAL_REGRESSION"
+      ],
+      "status": "STEP5_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false
+    },
+    {
+      "repository": "mozman/ezdxf",
+      "role": [
+        "DXF_INTEROP",
+        "ENGINEERING_VECTOR_EXCHANGE"
+      ],
+      "status": "STEP5_STEP6_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false
+    },
+    {
+      "repository": "scikit-image/scikit-image",
+      "role": [
+        "SSIM",
+        "IMAGE_METRICS",
+        "VISUAL_QA"
+      ],
+      "status": "STEP7_CANDIDATE_PIN_LICENSE_SECURITY_SANDBOX",
+      "archived": false
+    },
+    {
+      "repository": "colmap/colmap",
+      "role": [
+        "CAMERA_GEOMETRY",
+        "REPROJECTION",
+        "MULTIVIEW_REFERENCE"
+      ],
+      "status": "STEP7_REFERENCE_CANDIDATE",
+      "archived": false
+    },
+    {
+      "repository": "openMVG/openMVG",
+      "role": [
+        "MULTIPLE_VIEW_GEOMETRY",
+        "CAMERA_REFERENCE"
+      ],
+      "status": "STEP7_REFERENCE_CANDIDATE",
+      "archived": false
+    },
+    {
+      "repository": "dfki-ric/pytransform3d",
+      "role": [
+        "RIGID_TRANSFORMS",
+        "ROTATION_QA"
+      ],
+      "status": "STEP7_CANDIDATE_PIN_LICENSE_SECURITY_SANDBOX",
+      "archived": false
+    },
+    {
+      "repository": "Visual-Regression-Tracker/Visual-Regression-Tracker",
+      "role": [
+        "VISUAL_REGRESSION_WORKFLOW"
+      ],
+      "status": "STEP7_REFERENCE_CANDIDATE",
+      "archived": false
+    }
+  ],
+  "excluded_from_new_core_dependency": [
+    {
+      "repository": "mozman/svgwrite",
+      "reason": "repository currently archived"
+    },
+    {
+      "repository": "graphviz/graphviz",
+      "reason": "repository returned as archived in discovery; re-evaluate before dependency use"
+    }
+  ],
+  "extended_toolchain_registry": "plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json",
+  "note": "Expanded for Step 7 with calibrated image geometry, SSIM, rigid-transform and visual-regression references. Mathematical/camera manifests remain authoritative; similarity metrics are secondary."
+}

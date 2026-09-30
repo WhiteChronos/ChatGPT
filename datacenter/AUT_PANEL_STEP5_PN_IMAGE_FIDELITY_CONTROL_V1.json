@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "control_id": "AUT-PANEL-STEP5-PN-IMAGE-FIDELITY-V1",
+  "status": "MANDATORY_CONTROLLED",
+  "step_number": 5,
+  "title": "Imagem física individual de cada PN com fidelidade multivista",
+  "depends_on": [
+    "STEP4_LI_LOAD_FROZEN"
+  ],
+  "purpose": "Gerar primeiro a imagem física separada de cada painel, a partir de uma única montagem 3D canônica em escala real, mantendo tampa/porta, gabinete, componentes e dimensões invariantes entre ângulos.",
+  "output_scope": "ONE_PANEL_PER_IMAGE_SET",
+  "canonical_geometry": {
+    "unit": "mm",
+    "one_assembly_per_panel_revision": true,
+    "same_assembly_hash_all_views": true,
+    "same_door_object_all_views": true,
+    "door_transform": "RIGID_ROTATION_ABOUT_FROZEN_HINGE_AXIS_ONLY",
+    "per_view_scaling_forbidden": true,
+    "view_independent_redrawing_forbidden": true
+  },
+  "camera_policy": {
+    "dimensional_views": "ORTHOGRAPHIC_OR_CALIBRATED_ENGINEERING_PROJECTION",
+    "three_quarter_view": "ORTHOGRAPHIC_ISOMETRIC_PREFERRED_CONTROLLED_PERSPECTIVE_ALLOWED_FOR_NON_DIMENSIONAL_REALISM",
+    "dimensions_never_inferred_from_perspective": true
+  },
+  "tools": {
+    "geometry": [
+      "manufacturer STEP/IGES/DXF",
+      "FreeCAD",
+      "CadQuery",
+      "build123d",
+      "OpenCascade"
+    ],
+    "geometry_qa": [
+      "trimesh",
+      "Open3D"
+    ],
+    "renderer": [
+      "Blender"
+    ],
+    "math": [
+      "Wolfram"
+    ],
+    "image_regression": [
+      "OpenCV",
+      "ImageHash"
+    ],
+    "local_bridge": [
+      "Remote Desktop Commander"
+    ],
+    "generative_support": [
+      "to3D",
+      "Adobe",
+      "ImageGen"
+    ]
+  },
+  "generative_authority": "PRESENTATION_ONLY",
+  "manufacturer_reference_registry": "datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json",
+  "skill": "skills/aut-panel-pn-image-fidelity/SKILL.md",
+  "prompt": "prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md",
+  "memory": "memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml",
+  "outputs": [
+    "CANONICAL_3D_ASSEMBLY_MANIFEST",
+    "MULTIVIEW_RENDER_MANIFEST",
+    "PN_PHYSICAL_IMAGE_SET",
+    "STEP5_MULTIVIEW_QA_REPORT"
+  ],
+  "pass_status": "STEP5_PN_IMAGE_FIDELITY_FROZEN",
+  "failure_statuses": [
+    "HOLD_DIMENSIONAL_DATA",
+    "HOLD_GEOMETRY_CONFLICT",
+    "HOLD_MULTIVIEW_INCONSISTENCY",
+    "HOLD_LAYOUT_CAPACITY"
+  ]
+}

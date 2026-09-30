@@ -1,0 +1,3 @@
+interface:
+  display_name: "AUT Panel Autonomous Improvement"
+  short_description: "Learn from project errors and propose governed improvements."

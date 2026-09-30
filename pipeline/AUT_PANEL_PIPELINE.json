@@ -1,0 +1,721 @@
+{
+  "schema_version": "1.7",
+  "pipeline_id": "AUT-PANEL-GITHUB-QUALITY-V1.6",
+  "standard_id": "AUT-PAINEL-COMPACT-V2.4",
+  "immutable_yaml_pipeline": "pipeline/pipeline.yaml",
+  "golden_rules_yaml": "governance/golden_rules.yaml",
+  "panel_template_yaml": "templates/panel_template.yaml",
+  "prompt_master": "prompts/PROMPT_MASTER_AUT_PANEL.md",
+  "li_material_prompt": "prompts/PROMPT_MASTER_LI_MATERIAL.md",
+  "li_material_pipesheets": "pipesheets/LI_MATERIAL_PIPE_SHEETS.yaml",
+  "li_material_control": "datacenter/LI_MATERIAL_CONTROL.json",
+  "li_material_datasheet": "datasheet/LI_MATERIAL_DATA_SHEET.json",
+  "li_material_script": "pipeline/li_material_control.py",
+  "li_material_memory": "memory/LI_MATERIAL_CONTROL_MEMORY.yaml",
+  "li_material_open_source_qa": "plugins/li_material_qa_registry.json",
+  "datacenter_yaml": "datacenter/datacenter.yaml",
+  "datasheet_yaml": "datasheet/datasheet.yaml",
+  "document_standard_registry": "datacenter/AUT_PANEL_DOCUMENT_STANDARDS.json",
+  "release_statuses": [
+    "APROVADO",
+    "CONDICIONADO",
+    "HOLD",
+    "REPROVADO"
+  ],
+  "golden_rules": {
+    "GR-034": {
+      "name": "LI/BOM antes da imagem",
+      "status": "MANDATORY",
+      "rule": "A LI quantitativa e a BOM canônica devem ser elaboradas e validadas antes do desenho."
+    },
+    "GR-035": {
+      "name": "Paridade quantitativa LI x desenho",
+      "status": "MANDATORY",
+      "rule": "Cada item desenhável deve aparecer no Data Sheet/layout e desenho exatamente na quantidade congelada na LI."
+    },
+    "GR-036": {
+      "name": "Mudança da LI invalida desenho",
+      "status": "MANDATORY",
+      "rule": "Qualquer alteração de quantidade, catalog_id ou revisão na LI invalida carga, BOM, layout, imagem e QA anteriores."
+    },
+    "GR-037": {
+      "name": "IHM na porta",
+      "status": "MANDATORY",
+      "rule": "IHM local deve permanecer na tampa/porta do quadro."
+    },
+    "GR-038": {
+      "name": "Sem distorção",
+      "status": "MANDATORY",
+      "rule": "Componentes não podem ser reduzidos ou distorcidos para caber; reorganizar ou ampliar gabinete."
+    },
+    "GR-039": {
+      "name": "Padrão único de Excel",
+      "status": "MANDATORY",
+      "rule": "PN-AUT-01 é o template mestre da planilha. PN-AUT-02 e futuros quadros devem manter a mesma estrutura visual/documental; somente dados técnicos específicos podem variar."
+    },
+    "GR-040": {
+      "name": "Padrão visual único da imagem",
+      "status": "MANDATORY",
+      "rule": "Cada painel deve usar sua imagem aprovada e a composição visual mestre do projeto, uma imagem por painel, sem recomposição não autorizada."
+    },
+    "GR-041": {
+      "name": "Padrão aprovado imutável sem autorização",
+      "status": "MANDATORY",
+      "rule": "Nenhuma alteração do template de Excel, padrão visual, dimensão mestre ou sequência pode ocorrer sem autorização explícita do responsável."
+    },
+    "GR-042": {
+      "name": "Baseline da LI imutável",
+      "status": "MANDATORY",
+      "rule": "A revisão de LI congelada é baseline do painel e só pode mudar mediante nova revisão autorizada."
+    },
+    "GR-043": {
+      "name": "Fingerprint estrutural do workbook",
+      "status": "MANDATORY",
+      "rule": "O workbook deve manter o fingerprint estrutural XLSX-PN-AUT-01-MASTER-R02."
+    },
+    "GR-044": {
+      "name": "Fingerprint da imagem aprovada",
+      "status": "MANDATORY",
+      "rule": "O desenho deve apontar para o ID e SHA-256 da referência visual aprovada do painel."
+    },
+    "GR-045": {
+      "name": "Prompt mestre obrigatório",
+      "status": "MANDATORY",
+      "rule": "O PROMPT-MASTER-AUT-PANEL-V2 deve ser carregado e não pode ser reescrito pelo agente."
+    },
+    "GR-050": {
+      "name": "Revisões históricas imutáveis",
+      "status": "MANDATORY",
+      "rule": "Colunas de revisões já emitidas permanecem intactas; correções entram somente na nova revisão."
+    },
+    "GR-051": {
+      "name": "Nova revisão na coluna adjacente",
+      "status": "MANDATORY",
+      "rule": "A nova revisão deve ficar imediatamente à direita da revisão anterior, preservando REV. 0 e demais revisões."
+    },
+    "GR-052": {
+      "name": "Quantidade nova com evidência",
+      "status": "MANDATORY",
+      "rule": "Cada valor novo deve ter fonte rastreável ou cálculo determinístico baseado em fonte autorizada."
+    },
+    "GR-053": {
+      "name": "A LEVANTAR controlado",
+      "status": "MANDATORY",
+      "rule": "A LEVANTAR só é permitido quando a quantidade não puder ser determinada e exige justificativa."
+    },
+    "GR-054": {
+      "name": "Capa e formato preservados",
+      "status": "MANDATORY",
+      "rule": "Revisão de conteúdo não autoriza reconstruir ou alterar o template da LI."
+    },
+    "GR-055": {
+      "name": "Diff estrutural e histórico",
+      "status": "MANDATORY",
+      "rule": "Toda revisão exige comparação baseline x nova versão para provar preservação histórica e estrutural."
+    },
+    "GR-056": {
+      "name": "Memória de controle da LI",
+      "status": "MANDATORY",
+      "rule": "Cada revisão deve registrar fontes, alterações, pendências, QA e regressões na memória de controle da LI."
+    },
+    "GR-057": {
+      "name": "Conflito de fonte vira HOLD",
+      "status": "MANDATORY",
+      "rule": "Conflitos não autorizam reescrever a revisão antiga; a nova revisão fica HOLD até reconciliação."
+    },
+    "GR-058": {
+      "name": "QA open source em camadas",
+      "status": "MANDATORY",
+      "rule": "A cobertura de QA open source deve ser registrada; ferramenta opcional ausente não equivale a PASS total."
+    },
+    "GR-059": {
+      "name": "Isolamento de agentes",
+      "status": "MANDATORY",
+      "rule": "Agentes operam em namespaces e escopos de escrita separados."
+    },
+    "GR-060": {
+      "name": "ML consultivo",
+      "status": "MANDATORY",
+      "rule": "ML não substitui gate determinístico nem fato de engenharia."
+    },
+    "GR-061": {
+      "name": "Autoevolução por proposta",
+      "status": "MANDATORY",
+      "rule": "Autoevolução não autoaplica mudança bloqueada ou de comportamento."
+    },
+    "GR-062": {
+      "name": "Histórico append-only",
+      "status": "MANDATORY",
+      "rule": "Estado emitido permanece reconstruível."
+    },
+    "GR-063": {
+      "name": "Proveniência de ML",
+      "status": "MANDATORY",
+      "rule": "Dataset/modelo precisam de fingerprint, versão e métricas."
+    },
+    "GR-064": {
+      "name": "Open source controlado",
+      "status": "MANDATORY",
+      "rule": "Ferramentas exigem pin, licença, segurança e integração."
+    },
+    "GR-065": {
+      "name": "Estado isolado por painel",
+      "status": "MANDATORY",
+      "rule": "Dados panel-specific não se misturam."
+    },
+    "GR-066": {
+      "name": "Desenho determinístico canônico",
+      "status": "MANDATORY",
+      "rule": "Imagem generativa não é autoridade de engenharia."
+    },
+    "GR-085": {
+      "name": "MODEL 001 composição, não dimensão",
+      "status": "MANDATORY",
+      "rule": "MODEL 001 governa a estrutura visual; dimensões físicas são específicas do painel-alvo."
+    },
+    "GR-086": {
+      "name": "Dimensão do gabinete é saída do projeto",
+      "status": "MANDATORY",
+      "rule": "Novo PN deve ter gabinete dimensionado pelo próprio conteúdo e restrições de engenharia."
+    },
+    "GR-087": {
+      "name": "Gabinete após prova de capacidade",
+      "status": "MANDATORY",
+      "rule": "Gabinete real é congelado no Data Sheet apenas após layout dimensional provar capacidade."
+    },
+    "GR-088": {
+      "name": "Prompt MODEL 001 obrigatório",
+      "status": "MANDATORY",
+      "rule": "Carregar manifest e prompt MODEL 001 antes de elaborar imagem PN."
+    }
+  },
+  "standard_sequence": [
+    "DATACENTER",
+    "DATASHEET",
+    "SELECT",
+    "LI_QUANTITY",
+    "LOAD_BALANCE",
+    "BOM",
+    "LAYOUT",
+    "RENDER_IMAGE",
+    "QA",
+    "RELEASE"
+  ],
+  "mandatory_panel_rules": {
+    "independent_panel_model": true,
+    "li_required_before_bom": true,
+    "li_is_quantity_source": true,
+    "li_historical_revisions_immutable": true,
+    "li_preserve_rev_0": true,
+    "li_new_revision_adjacent_right": true,
+    "li_quantity_evidence_required": true,
+    "li_a_levantar_requires_non_determinability": true,
+    "li_cover_and_format_preserved": true,
+    "li_revision_memory_required": true,
+    "li_open_source_qa_coverage_required": true,
+    "load_balance_required_before_layout": true,
+    "load_balance_voltages": [
+      "24VDC",
+      "127VAC",
+      "220VAC"
+    ],
+    "bom_quantity_must_equal_li": true,
+    "layout_quantity_must_equal_li": true,
+    "render_quantity_must_equal_li": true,
+    "li_change_invalidates_load_bom_layout_render": true,
+    "front_external_master_geometry": true,
+    "single_global_px_per_mm": true,
+    "aspect_equal": true,
+    "canvas_grow_only": true,
+    "lower_cable_zone_required": true,
+    "power_supply_required": true,
+    "dc_ups_required": true,
+    "battery_required": true,
+    "hmi_on_door_required": true,
+    "reference_model_required_for_every_li_line": true,
+    "hold_when_exact_model_or_evidence_is_missing": true,
+    "workbook_master_template_required": true,
+    "workbook_master_panel": "PN-AUT-01",
+    "workbook_template_id": "XLSX-PN-AUT-01-MASTER-R02",
+    "workbook_structural_fingerprint_sha256": "c568858ed6d80cc2ccd4a8859d0a21f88cafddccc10737eda8808555b94530fc",
+    "approved_image_visual_standard_required": true,
+    "image_visual_standard_id": "IMG-AUT-PANEL-MASTER-V1",
+    "one_panel_per_image": true,
+    "prompt_master_required": true,
+    "prompt_master_id": "PROMPT-MASTER-AUT-PANEL-V2",
+    "li_material_prompt_id": "PROMPT-MASTER-LI-MATERIAL-V1",
+    "standard_change_requires_explicit_authorization": true,
+    "agent_scope_isolation_required": true,
+    "ml_advisory_only": true,
+    "deterministic_gate_precedes_ml": true,
+    "autoevolution_proposal_only": true,
+    "locked_change_requires_human_gate": true,
+    "database_event_history_required": true,
+    "per_panel_state_isolation": true,
+    "deterministic_vector_render_is_canonical": true,
+    "normative_registry_required": true,
+    "normative_applicability_review_required": true,
+    "normative_reverification_before_release": true,
+    "electrical_sizing_fail_closed": true,
+    "panel_current_must_not_be_estimated": true,
+    "panel_a_do_quadro_requires_sizing_pass": true,
+    "site_short_circuit_current_required": true,
+    "ib_in_iz_coordination_required": true,
+    "breaker_icu_vs_ik_check_required": true,
+    "assembly_ina_required": true,
+    "assembly_icw_ipk_review_required": true,
+    "dc_load_exact_consumption_required": true,
+    "dc_power_supply_capacity_check_required": true,
+    "battery_autonomy_calculation_required": true,
+    "thermal_loss_inventory_required": true,
+    "temperature_rise_verification_required": true,
+    "manufacturer_selectivity_or_backup_evidence_required": true,
+    "li_technical_dossier_required": true,
+    "every_li_line_must_have_manufacturer": true,
+    "every_li_line_must_have_catalog_or_family_link": true,
+    "exact_model_must_have_exact_datasheet_or_technical_page": true,
+    "generic_family_document_cannot_release_exact_item": true,
+    "lifecycle_status_required_for_every_li_component": true,
+    "enriched_li_artifact_required_before_release": true,
+    "pn_image_model_001_required_for_render": true,
+    "new_panel_enclosure_is_project_output": true,
+    "reference_panel_dimensions_must_not_be_inherited": true,
+    "enclosure_selection_requires_capacity_proof": true,
+    "target_datasheet_dimensions_required_before_render": true,
+    "pn_image_elaboration_directive_required": true,
+    "pn_image_elaboration_memory_required": true
+  },
+  "panel_standards": {
+    "PN-AUT-01": {
+      "role": "MASTER_PLC_VRF",
+      "floor": "1",
+      "li_file": "li/PN-AUT-01_LI.json",
+      "quantity_registry_key": "PN-AUT-01",
+      "li_id": "LI-PN-AUT-01-R02",
+      "li_revision": "R02",
+      "workbook_template_id": "XLSX-PN-AUT-01-MASTER-R02",
+      "image_template_id": "IMG-PN-AUT-01-APPROVED-V1",
+      "approved_image_sha256": "d5e5e060b1a68eb2f4d11a3e62a05040f0d91514c32c61669c4de03890b79402",
+      "enclosure_external_mm": {
+        "width": 600,
+        "height": 800,
+        "depth": 300
+      },
+      "mounting_plate_mm": {
+        "width": 550,
+        "height": 750
+      },
+      "mandatory_categories": [
+        "power_supply",
+        "dc_ups",
+        "battery",
+        "plc_controller",
+        "hmi",
+        "industrial_switch",
+        "vrf_gateway",
+        "terminal",
+        "protective_device"
+      ]
+    },
+    "PN-AUT-02": {
+      "role": "REMOTE_RTU",
+      "floor": "2",
+      "li_file": "li/PN-AUT-02_LI.json",
+      "quantity_registry_key": "PN-AUT-02",
+      "li_id": "LI-PN-AUT-02-R02",
+      "li_revision": "R02",
+      "workbook_template_id": "XLSX-PN-AUT-01-MASTER-R02",
+      "image_template_id": "IMG-PN-AUT-02-APPROVED-V1",
+      "approved_image_sha256": "daf6981a2efad57f0c54eafd7a2d71e42895d47932a3d9ddf5cfdc8918a84d89",
+      "enclosure_external_mm": {
+        "width": 400,
+        "height": 500,
+        "depth": 250
+      },
+      "mounting_plate_mm": {
+        "width": 350,
+        "height": 450
+      },
+      "mandatory_categories": [
+        "power_supply",
+        "dc_ups",
+        "battery",
+        "rtu_controller",
+        "hmi",
+        "industrial_switch",
+        "terminal",
+        "protective_device"
+      ]
+    }
+  },
+  "github_quality": {
+    "workflow": ".github/workflows/aut-panel-quality.yml",
+    "pull_request_required": true,
+    "block_on_rejected": true,
+    "block_release_on_hold": true,
+    "artifact_manifest_required": true
+  },
+  "stages": [
+    {
+      "order": 10,
+      "id": "INIT",
+      "input": [
+        "project_request"
+      ],
+      "output": [
+        "project_structure"
+      ],
+      "gates": [
+        "project_id",
+        "revision",
+        "panel_id"
+      ]
+    },
+    {
+      "order": 20,
+      "id": "INGEST",
+      "input": [
+        "MD",
+        "ET",
+        "LI",
+        "PDF",
+        "XLSX",
+        "images"
+      ],
+      "output": [
+        "document_manifest"
+      ],
+      "gates": [
+        "sha256",
+        "source_registration"
+      ]
+    },
+    {
+      "order": 50,
+      "id": "DATACENTER",
+      "input": [
+        "confirmed_requirements",
+        "manufacturer_documents",
+        "official_normative_sources"
+      ],
+      "output": [
+        "verified_catalog",
+        "panel_quantity_registry",
+        "document_standard_registry",
+        "immutable_contracts",
+        "li_material_revision_contract",
+        "normative_registry"
+      ],
+      "gates": [
+        "manufacturer",
+        "reference_model",
+        "quantity_registry",
+        "golden_rules",
+        "document_standard",
+        "prompt_master",
+        "li_material_prompt",
+        "template_fingerprint",
+        "normative_registry_loaded",
+        "normative_source_authority"
+      ]
+    },
+    {
+      "order": 60,
+      "id": "DATASHEET",
+      "input": [
+        "confirmed_requirements",
+        "verified_catalog",
+        "document_standard_registry",
+        "normative_registry"
+      ],
+      "output": [
+        "canonical_project"
+      ],
+      "gates": [
+        "json_schema",
+        "li_contract",
+        "li_material_revision_contract",
+        "panel_independence",
+        "workbook_template_contract",
+        "image_template_contract",
+        "change_authorization_contract",
+        "normative_contract"
+      ]
+    },
+    {
+      "order": 90,
+      "id": "SELECT",
+      "input": [
+        "calculation_results",
+        "verified_catalog",
+        "applicable_norms"
+      ],
+      "output": [
+        "selected_components"
+      ],
+      "gates": [
+        "reference_model",
+        "lifecycle",
+        "normative_applicability"
+      ]
+    },
+    {
+      "order": 100,
+      "id": "LI_QUANTITY",
+      "input": [
+        "selected_components",
+        "panel_quantity_registry",
+        "li_material_revision_contract"
+      ],
+      "output": [
+        "validated_li"
+      ],
+      "gates": [
+        "quantity_positive",
+        "catalog_id_exists",
+        "registry_match",
+        "render_flag",
+        "workbook_master_template",
+        "li_revision_baseline",
+        "historical_revision_unchanged",
+        "rev_0_preserved",
+        "new_revision_adjacent",
+        "quantity_evidence",
+        "a_levantar_justified"
+      ]
+    },
+    {
+      "order": 105,
+      "id": "LOAD_BALANCE",
+      "input": [
+        "validated_li",
+        "verified_catalog",
+        "applicable_norms"
+      ],
+      "output": [
+        "equipment_loads",
+        "total_24vdc",
+        "equivalent_127vac",
+        "equivalent_220vac"
+      ],
+      "gates": [
+        "load_per_equipment",
+        "no_invented_consumption",
+        "traceability",
+        "HOLD_on_missing_load_data"
+      ]
+    },
+    {
+      "order": 110,
+      "id": "BOM",
+      "input": [
+        "validated_li",
+        "verified_catalog",
+        "equipment_loads",
+        "applicable_norms"
+      ],
+      "output": [
+        "AUT_PANEL_BOM.json",
+        "AUT_PANEL_BOM.csv"
+      ],
+      "gates": [
+        "bom_quantity_equals_li",
+        "reference_model_on_every_line"
+      ]
+    },
+    {
+      "order": 120,
+      "id": "LAYOUT",
+      "input": [
+        "validated_li",
+        "equipment_loads",
+        "AUT_PANEL_BOM.json",
+        "canonical_project",
+        "applicable_norms"
+      ],
+      "output": [
+        "physical_layout"
+      ],
+      "gates": [
+        "layout_quantity_equals_li",
+        "GR-018",
+        "GR-027",
+        "reserve"
+      ]
+    },
+    {
+      "order": 130,
+      "id": "RENDER_IMAGE",
+      "input": [
+        "physical_layout",
+        "validated_li",
+        "AUT_PANEL_BOM.json",
+        "document_standard_registry",
+        "immutable_contracts"
+      ],
+      "output": [
+        "AUT_PANEL_LAYOUT.svg"
+      ],
+      "gates": [
+        "render_quantity_equals_li",
+        "hmi_on_door",
+        "approved_image_template",
+        "approved_image_fingerprint",
+        "one_panel_per_image",
+        "no_unapproved_recomposition",
+        "GR-021",
+        "GR-022",
+        "GR-023",
+        "GR-024",
+        "GR-025",
+        "GR-026",
+        "GR-040",
+        "GR-041",
+        "GR-044",
+        "GR-045"
+      ]
+    },
+    {
+      "order": 140,
+      "id": "QA",
+      "input": [
+        "all_outputs"
+      ],
+      "output": [
+        "qa_report",
+        "artifact_manifest"
+      ],
+      "gates": [
+        "schema",
+        "unit_tests",
+        "hashes",
+        "cross_consistency",
+        "li_before_image",
+        "load_before_layout",
+        "quantity_parity",
+        "workbook_template_parity",
+        "image_template_parity",
+        "standard_change_authorization",
+        "li_historical_revision_diff",
+        "li_template_preservation",
+        "li_semantic_diff",
+        "li_open_source_qa_coverage",
+        "li_memory_sync",
+        "normative_applicability_reviewed",
+        "normative_source_status_checked"
+      ]
+    },
+    {
+      "order": 150,
+      "id": "RELEASE",
+      "input": [
+        "qa_report",
+        "artifact_manifest"
+      ],
+      "output": [
+        "release_package"
+      ],
+      "gates": [
+        "APROVADO",
+        "no_HOLD",
+        "pull_request_review",
+        "two_agent_source_validation",
+        "reverification_done",
+        "normative_reverification_done"
+      ]
+    }
+  ],
+  "agent_system": "agents/AUT_PANEL_AGENT_SYSTEM.yaml",
+  "agent_datacenters": "datacenter/agents/agent_datacenters.yaml",
+  "agent_memories": "memory/agents/agent_memories.yaml",
+  "database_schema": "database/aut_panel_schema.sql",
+  "database_script": "pipeline/aut_panel_db.py",
+  "learning_pipeline": "pipeline/learning_pipeline.yaml",
+  "learning_script": "pipeline/aut_panel_learning.py",
+  "evolution_script": "pipeline/evolution_engine.py",
+  "ml_model_registry": "ml/model_registry.yaml",
+  "open_source_registry": "plugins/aut_panel_open_source_registry.json",
+  "engineering_skill": "skills/aut-panel-engineering/SKILL.md",
+  "learning_extension": {
+    "pipeline": "pipeline/learning_pipeline.yaml",
+    "canonical_engineering_sequence_unchanged": true,
+    "minimum_human_reviewed_examples": 25,
+    "cold_start_status": "LEARNING_COLD_START",
+    "auto_merge": false,
+    "auto_apply_locked_changes": false
+  },
+  "layout_optimizer": {
+    "id": "LAYOUT-OPTIMIZER-V1",
+    "stage": "LAYOUT",
+    "canonical_sequence_unchanged": true,
+    "implementation": "pipeline/layout_optimizer/cli.py",
+    "config": "configs/layout_optimizer_v1.yaml",
+    "result_schema": "schemas/layout_optimizer_result_v1.schema.json",
+    "solver": "OR_TOOLS_CP_SAT",
+    "dependency_graph": "NetworkX",
+    "locked_enclosure_auto_change": false,
+    "split_auto_select": false,
+    "capacity_failure_status": "HOLD_LAYOUT_CAPACITY",
+    "decision_status": "USER_DECISION_REQUIRED",
+    "deterministic_render_bridge": "pipeline/render_panel_scaled.py"
+  },
+  "normative_registry": "datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml",
+  "normative_memory": "memory/AUT_PANEL_NORMATIVE_MEMORY.yaml",
+  "normative_control": {
+    "registry_id": "AUT-PANEL-NORMATIVE-REFERENCES-V1",
+    "memory_id": "AUT-PANEL-NORMATIVE-MEMORY-V1",
+    "default_jurisdiction": "BR",
+    "baseline_group": "panel_general",
+    "conditional_activation": true,
+    "reverify_before_release": true,
+    "unverified_applicable_edition_status": "HOLD",
+    "conflicting_requirements_status": "HOLD",
+    "ml_override_allowed": false,
+    "script": "pipeline/aut_panel_normative_control.py",
+    "output_artifact": "AUT_PANEL_NORMATIVE_APPLICABILITY.json"
+  },
+  "normative_script": "pipeline/aut_panel_normative_control.py",
+  "electrical_sizing_script": "pipeline/aut_panel_electrical_sizing.py",
+  "electrical_sizing_inputs": "datasheet/AUT_PANEL_ELECTRICAL_SIZING_INPUTS.json",
+  "electrical_sizing_schema": "schemas/aut_panel_electrical_sizing_v1.schema.json",
+  "electrical_sizing_reference_registry": "datacenter/AUT_PANEL_ELECTRICAL_SIZING_REFERENCES.json",
+  "li_technical_dossier": "datacenter/AUT_PANEL_LI_TECHNICAL_DOSSIER.json",
+  "li_technical_dossier_script": "pipeline/li_technical_dossier.py",
+  "pn_image_model_001": {
+    "model_id": "PN-IMAGE-MODEL-001",
+    "manifest": "datacenter/images/PN_MODEL_001.json",
+    "prompt": "prompts/PROMPT_PN_IMAGE_MODEL_001.md",
+    "role": "VISUAL_DOCUMENT_STRUCTURE_ONLY",
+    "dimension_policy": "VARIABLE_BY_TARGET_PROJECT",
+    "enclosure_selection_rule": "For a new PN, determine H/W/D from target LI/BOM, official geometry, clearances, wiring, thermal management, maintenance and physical reserve; freeze in target datasheet only after capacity proof.",
+    "inherit_reference_panel_dimensions": false,
+    "frozen_enclosure_change_invalidates": [
+      "LAYOUT",
+      "RENDER_IMAGE",
+      "QA",
+      "MEMORY_SYNC",
+      "RELEASE"
+    ]
+  },
+  "pn_image_elaboration_directive": {
+    "directive_id": "PN-IMAGE-ELABORATION-DIRECTIVE-V1",
+    "prompt": "prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md",
+    "registry": "datacenter/images/PN_IMAGE_ELABORATION_DIRECTIVE_V1.json",
+    "memory": "memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml",
+    "linked_model": "PN-IMAGE-MODEL-001",
+    "load_before_render": true,
+    "governs": [
+      "source_authority",
+      "target_enclosure_sizing",
+      "visual_sections",
+      "electrical_architecture",
+      "communication_architecture",
+      "command_diagram",
+      "dimensioning",
+      "branding",
+      "canvas",
+      "parity_QA",
+      "memory_sync"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-STEP7-FINAL-IMAGE-VERIFICATION-MEMORY-V1
+status: CONTROLLED_ACTIVE
+
+rules:
+  - "Passo 7 verifica; nao corrige."
+  - "Imagem final deve apontar para o mesmo ASSEMBLY_HASH do Passo 5 e fingerprint fisico usado no Passo 6."
+  - "Proporcao ortografica deve ser validada por relacao px/mm versus H/W/D controlados."
+  - "Vista 3/4 deve ser validada por camera/reprojecao, nunca por medida aparente."
+  - "Cotas impressas vem de dados controlados e nao de medicao raster."
+  - "OpenCV/SSIM/ImageHash sao QA secundaria e nao substituem manifests geometricos."
+  - "Tolerancias sao versionadas e nao podem ser afrouxadas silenciosamente."
+  - "Erro de geometria retorna ao Passo 5; erro de composicao retorna ao Passo 6; erro de quantidade retorna ao Passo 4."
+
+default_tolerances:
+  aspect_error_percent: 0.25
+  axis_scale_error_percent: 0.25
+  common_scale_error_percent: 0.50
+  reprojection_rmse_px: 1.5
+  cad_dimension_tolerance_mm: 0.10
+  centered_margin_imbalance_fraction: 0.05
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: STEP7_FINAL_IMAGE_VERIFICATION_CREATED

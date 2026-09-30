@@ -1,0 +1,39 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-NORMATIVE-ACADEMIC-MEMORY-V1
+status: CONTROLLED_ACTIVE
+purpose: "Memoria de aplicabilidade normativa, referencias academicas, bibliografia e evidencias arquivadas por projeto."
+
+rules:
+  - "Toda regra normativa usada deve apontar para REF_ID, edicao, secao/pagina e base de aplicabilidade."
+  - "Toda evidencia academica deve registrar DOI/ISBN/ISSN quando aplicavel, resultado relevante e limitacoes."
+  - "Norma relevante nao e automaticamente obrigatoria; registrar aplicabilidade."
+  - "Artigo academico nao vira requisito normativo."
+  - "Documento completo fica no Data Center quando a copia for permitida; memoria guarda ponteiro/hash/conclusoes."
+  - "Nao contornar paywall, DRM ou restricoes de licenca."
+  - "Conflitos permanecem rastreaveis; nunca sobrescrever silenciosamente."
+  - "Conhecimento reutilizavel deve manter escopo, edicao e data de reverificacao."
+
+source_scopes:
+  - REGULATION
+  - STANDARD
+  - MANUFACTURER
+  - JOURNAL
+  - CONFERENCE
+  - BOOK
+  - THESIS
+  - INSTITUTIONAL_REPOSITORY
+  - SECONDARY
+
+review_status:
+  - VERIFIED_APPLICABLE
+  - VERIFIED_INFORMATIVE
+  - EDITION_REVERIFY
+  - APPLICABILITY_UNCERTAIN
+  - CONFLICT
+  - SUPERSEDED
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: STEP3_NORMATIVE_ACADEMIC_MEMORY_CREATED
+    summary: "Criada memoria dedicada ao Passo 3 para normas, estudos academicos, bibliografia e copias controladas."

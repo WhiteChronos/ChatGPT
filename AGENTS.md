@@ -123,3 +123,170 @@ A datasheet may declare `PASS` only when all of the following are true:
 
 ## Pull request compatibility
 A pull request that changes compatibility-analysis logic, engineering schemas, Data Center manifests, datasheets, report-generation code or either compatibility validator MUST pass the Engineering Compatibility Visualize Gate and repository governance checks before merge.
+
+# AUT Panel Control extension
+
+## Scope
+This branch implements AUT - Paineis de Automacao e Controle.
+
+## Mandatory bootstrap
+Before changing engineering logic, data contracts, panel layout, LI/BOM, normative data, QA, ML or evolution behavior, read:
+1. prompts/PROMPT_MASTER_AUT_PANEL_GITHUB_CODEX_V1.md
+2. context/AUT_PANEL_CONTEXT_MANIFEST_V1.yaml
+3. datacenter/AUT_PANEL_NORMATIVE_REFERENCES.yaml
+4. datacenter/AUT_PANEL_NORMATIVE_SUPPLEMENT_2026.yaml
+5. datacenter/LI_MATERIAL_CONTROL.json
+6. configs/layout_optimizer_v1.yaml
+
+## Authority
+Repository canonical files and approved technical evidence override chat memory.
+Conflict or missing evidence => HOLD.
+
+## Locked behavior
+- Do not rewrite approved baselines in place.
+- Do not mutate historical LI revisions.
+- Do not alter frozen R02 quantities without explicit approved revision/evidence.
+- Do not auto-change an enclosure after that target panel/revision has frozen it; for a NEW PN, enclosure size is a project output and must be determined from the target LI/BOM, exact component geometry, clearances, wiring, thermal solution, maintenance access and physical reserve before the target datasheet freezes it.
+- Do not auto-select panel split.
+- Do not let ML override deterministic gates.
+- Do not auto-merge PR #23.
+
+## Codex execution contract
+Every substantive change must report:
+- files changed;
+- canonical inputs and SHAs;
+- tests run and results;
+- engineering HOLDs;
+- regressions/risks;
+- rollback path.
+
+CI green is not engineering approval.
+
+## Routing
+Known intent -> deterministic router.
+Ambiguous intent -> ML_ROUTE_HINT only.
+Conflict -> deterministic rules win.
+
+## Panel render integrity
+Before any AUT panel render is treated as dimensional or fabrication-relevant, agents SHALL:
+- prove official manufacturer dimensions and mounting clearances for every drawable component;
+- use one common millimetre scale;
+- reconcile physical instance counts against LI/BOM;
+- keep the HMI as one door-mounted physical instance only;
+- never duplicate a door-mounted component on the backplate;
+- validate door/backplate interference, cable-exit space, gland access and bend radius;
+- return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY instead of visually shrinking components;
+- record confirmed mistakes in project memory and add a regression test before closure.
+
+## Raster proportion guard
+For dimensional raster views, Codex SHALL use `pipeline/corrigir_proporcao_imagem.py` or equivalent validated gate before composition. A fixed frame may not force any resize of engineering geometry. Required invariants:
+- `scale_x = scale_y = 1.0`;
+- smaller target frame => grow canvas or REPROVADO;
+- aspect ratio must match the engineering width/height;
+- letterbox/pillarbox may add empty space only;
+- no raster utility may be used to hide an upstream CAD/3D geometry error.
+
+When this guard or its tests change, Codex SHALL run the AUT panel agent-system regression suite and report the result in PR #23.
+
+## Release
+RELEASE is allowed only after required deterministic gates, source validation, normative reverification, QA and human approval.
+
+## MODEL 001 visual baseline contract
+For any new PN image or new PN panel elaboration, Codex SHALL load:
+- `datacenter/images/PN_MODEL_001.json`
+- `prompts/PROMPT_PN_IMAGE_MODEL_001.md`
+- target-panel canonical premises, Data Center, Data Sheet and LI/BOM.
+
+MODEL 001 governs document composition, visual grammar, required engineering sections and dimensioning style. It does NOT govern the physical enclosure size of another panel.
+
+For a new PN, Codex SHALL:
+1. derive the required enclosure from the target project content;
+2. use official component dimensions and mounting clearances;
+3. include cable ducts, terminal space, bend radius, entry/gland access, door interference, UPS/batteries, thermal equipment, maintenance access and frozen physical reserve;
+4. select a real manufacturer enclosure only after dimensional capacity is proven;
+5. freeze H/W/D in the target Data Sheet before render;
+6. dimension the lateral 3/4 view with the target panel's real depth, on the real depth axis;
+7. return HOLD_DIMENSIONAL_DATA or HOLD_LAYOUT_CAPACITY rather than inheriting dimensions or shrinking geometry.
+
+Reference dimensions printed in MODEL 001 or PN-AUT-001 are example-instance data only.
+
+## PN image elaboration master directive
+Every PN image task SHALL load `prompts/PROMPT_DIRETRIZ_ELABORACAO_IMAGEM_PN_V1.md` together with MODEL 001.
+
+The directive governs the complete image workflow:
+canonical premises -> Data Center -> Data Sheet -> LI/BOM -> component selection -> load/I-O/thermal -> target enclosure sizing -> layout -> geometry -> MODEL 001 -> render -> QA -> memory sync.
+
+Codex SHALL NOT treat MODEL 001 as a source of target-panel physical dimensions and SHALL NOT treat a generated image as engineering authority.
+
+## Modular PN skill chain
+For full PN elaboration, apply the specialized skill chain in order:
+1. aut-panel-bootstrap
+2. aut-panel-source-research
+3. aut-panel-component-selection
+4. aut-panel-automation-io
+5. aut-panel-electrical-sizing
+6. aut-panel-layout
+7. aut-panel-image-document
+8. aut-panel-qa-release
+9. aut-panel-learning-memory
+
+The chain may loop backward whenever a later gate invalidates upstream assumptions. Gateway-capacity and enclosure-dimension conflicts are mandatory rollback triggers.
+
+## Open-source toolchain and autonomous improvement
+Load when tool discovery, methodology improvement, repeated failures, plugin changes, CAD/3D extensions, or workflow evolution are involved:
+- `skills/aut-panel-open-source-toolchain/SKILL.md`
+- `skills/aut-panel-autonomous-improvement/SKILL.md`
+- `datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json`
+- `improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json`
+- `plugins/aut_panel_open_source_registry.json`
+- `datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json`
+
+Autonomy is allowed for observation, comparison, scoring and proposal creation. Human approval is mandatory before changing locked engineering rules, frozen project state, core dependencies or release status.
+
+## Step 3 normative and academic review
+Before detailed panel engineering, load:
+- `datacenter/AUT_PANEL_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.json`
+- `prompts/PROMPT_STEP3_NORMATIVE_ACADEMIC_REVIEW_V1.md`
+- `memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml`
+- `datacenter/AUT_PANEL_BIBLIOGRAPHIC_ARCHIVE_POLICY_V1.json`
+- `skills/aut-panel-normative-academic-review/SKILL.md`
+
+The agent must distinguish normative applicability from technical relevance, archive permitted controlled copies in the Data Center, keep metadata/official links for restricted sources, and preserve only pointers/hashes/extracted knowledge in memory.
+
+## Step 4 LI and load quantification
+Before physical panel sizing/layout/render, load:
+- `datacenter/AUT_PANEL_STEP4_LI_LOAD_CONTROL_V1.json`
+- `prompts/PROMPT_STEP4_LI_LOAD_V1.md`
+- `memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml`
+- `skills/aut-panel-li-load-quantification/SKILL.md`
+
+The issued workbook must contain exactly two sheets per PANEL_ID: MATERIALS and LOAD. All internal wiring and linear-material quantities must be derived from a validated connection graph and real layout routes. No image may be used as quantity authority.
+
+## Step 5 physical PN image fidelity
+Before any engineering-document composition, load:
+- `datacenter/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_CONTROL_V1.json`
+- `prompts/PROMPT_STEP5_PN_IMAGE_FIDELITY_V1.md`
+- `memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml`
+- `datacenter/AUT_PANEL_STEP5_VISUAL_REFERENCE_REGISTRY_V1.json`
+- `skills/aut-panel-pn-image-fidelity/SKILL.md`
+
+Every view of one PN/revision must derive from one canonical real-scale assembly. The same door object, local bounding box, hinge axis, component instances and H/W/D must survive all camera views.
+
+## Step 6 engineering image document
+After `STEP5_PN_IMAGE_FIDELITY_FROZEN`, load:
+- `datacenter/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_CONTROL_V1.json`
+- `prompts/PROMPT_STEP6_ENGINEERING_IMAGE_DOCUMENT_V1.md`
+- `memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml`
+- `skills/aut-panel-image-document/SKILL.md`
+
+Step 6 composes the frozen physical image with legend, panel data, electrical architecture, communication architecture, command diagram and dimensions. Grow the canvas; never scale down dimensional content to fit.
+
+## Step 7 final image verification
+After `STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`, load:
+- `datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json`
+- `datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json`
+- `prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md`
+- `memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml`
+- `skills/aut-panel-final-image-verification/SKILL.md`
+
+Step 7 is read/verify only. It checks framing, clipping, orthographic physical ratios, px/mm consistency, controlled dimension labels, assembly/view identity and calibrated-view reprojection. Geometry failures return to Step 5; composition failures return to Step 6; quantity failures return to Step 4.

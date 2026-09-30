@@ -1,0 +1,28 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-STEP5-PN-IMAGE-FIDELITY-MEMORY-V1
+status: CONTROLLED_ACTIVE
+
+rules:
+  - "Cada PN/revisao possui uma unica montagem 3D canonica em mm."
+  - "A mesma tampa/porta deve aparecer em todos os angulos; somente camera e rotacao rigida no eixo da dobradica podem mudar."
+  - "H/W/D nunca mudam entre vistas."
+  - "Escala individual de objeto ou vista dimensional e proibida."
+  - "Blender renderiza; nao redefine geometria."
+  - "Ferramentas generativas nao possuem autoridade dimensional."
+  - "OpenCV/ImageHash sao QA secundario; bbox/transform/assembly hash governam consistencia."
+  - "Referencias de montagem real devem vir prioritariamente de fabricante e normas."
+
+learned_checks:
+  - assembly_hash_parity
+  - door_bbox_parity
+  - enclosure_bbox_parity
+  - hinge_axis_parity
+  - rigid_transform_check
+  - instance_count_parity
+  - camera_manifest_check
+  - object_scale_unit_check
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: STEP5_IMAGE_FIDELITY_METHOD_CREATED

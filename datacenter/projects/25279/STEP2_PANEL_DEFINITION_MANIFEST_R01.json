@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "manifest_id": "25279-PN-AUT-01-STEP2-R01",
+  "project_number": "25279",
+  "panel_id": "PN-AUT-01",
+  "revision": "R01-STEP2-REOPENED",
+  "status": "STEP2_REOPENED_SOURCE_RECONCILIATION_PENDING",
+  "reason": "User identified LI corrections/additions and explicitly requested returning to Step 2 before rebuilding LI and PN.",
+  "supersedes_assumptions_from": [
+    "li/PN-AUT-001_LI_R06_ENGINEERING.json communication switch architecture",
+    "li/PN-AUT-001_LI_R06_ENGINEERING.json frozen IRTrans gateway model/quantity as final selection",
+    "li/PN-AUT-001_LI_R06_ENGINEERING.json integrated AC-input DC UPS architecture"
+  ],
+  "frozen_or_confirmed": {
+    "project_identity": {
+      "project_number": "25279",
+      "panel_id": "PN-AUT-01",
+      "panel_count": 1
+    },
+    "controller_platform": {
+      "manufacturer": "Siemens",
+      "cpu": "SIMATIC S7-1500 CPU 1515-2 PN",
+      "order_number": "6ES7515-2AN03-0AB0",
+      "status": "KEEP_SELECTED_PLATFORM"
+    },
+    "io_basis": {
+      "canonical_document": "LI-3501.02-8210-800-RPJ-702 Rev.0",
+      "ai_used": 56,
+      "ai_reserve_required": 11,
+      "ai_required_installed_total": 67,
+      "di": 0,
+      "do": 0,
+      "ao": 0,
+      "signal_type": "2-wire 4-20 mA + HART",
+      "supply_vdc": 24,
+      "field_instruments_known": {
+        "temperature": 28,
+        "co2": 28
+      },
+      "hardware_basis": {
+        "module": "SIMATIC ET 200SP AI 4xI 2-wire HART High Feature",
+        "order_number": "6ES7134-6TD00-0CA1",
+        "module_quantity": 17,
+        "physical_channels": 68,
+        "note": "68 physical channels satisfy 67 required installed AI channels with one additional physical channel."
+      },
+      "de_crosscheck_status": "PENDING_SOURCE_DOCUMENT"
+    },
+    "hmi": {
+      "manufacturer": "Schneider Electric",
+      "model": "HMIST6500",
+      "quantity": 1,
+      "status": "KEEP_SINGLE_HMI",
+      "compatibility_basis": "EcoStruxure Operator Terminal Expert supports Siemens TIA Portal Ethernet driver and TIA project symbol linking for S7-1500 communication."
+    },
+    "relay_policy": {
+      "generic_relay_quantity": 0,
+      "rule": "Only include interposing relays for verified hardwired DO circuits that require them.",
+      "current_basis": "LI-702 reports DO=0. If DE drawings introduce hardwired DO, relay quantity follows those exact outputs."
+    }
+  },
+  "reopened_definitions": {
+    "hvac_gateway": {
+      "status": "FUNCTIONAL_PROVISIONAL_UNTIL_HVAC_EXECUTIVE",
+      "rule": "Do not freeze manufacturer/model or definitive quantity until HVAC executive documentation confirms the native integration topology.",
+      "current_design_envelope": "Previous 3-gateway IRTrans architecture may be retained only as a provisional spatial/communication envelope, not as final equipment selection."
+    },
+    "fiber_interface": {
+      "status": "FUNCTION_DEFINED_MODEL_FAMILY_SELECTED_SFP_PENDING",
+      "local_panel_device": {
+        "manufacturer": "Siemens",
+        "model": "SCALANCE XCM102",
+        "order_number": "6GK5102-1GS00-2AC2",
+        "quantity_in_panel": 1,
+        "role": "Compact media converter only: 1x RJ45 100/1000 Mbps to 1x SFP 100/1000 Mbps for point-to-point copper-to-fiber conversion.",
+        "supply": "24 V DC/AC, redundant input capability"
+      },
+      "sfp_selection": {
+        "quantity": 1,
+        "exact_model_status": "PENDING_DE_FIBER_TYPE",
+        "multimode_candidate": "SFP992-1+ 6GK5992-1AG00-8AA0, LC, multimode, up to 2 km",
+        "singlemode_candidate": "SFP992-1LD 6GK5992-1AM00-8AA0, LC, single-mode, up to 10 km"
+      },
+      "remote_end_rule": "The far-end optical interface is outside PN-AUT-01 material scope unless the project procurement scope explicitly assigns it to this panel package."
+    },
+    "power_architecture": {
+      "status": "ARCHITECTURE_FROZEN_CAPACITY_TO_RECALCULATE_IN_STEP4",
+      "topology": "220 Vac -> dedicated AC/DC 24 V power supply -> DC UPS module -> protected 24 Vdc distribution",
+      "preferred_family": {
+        "power_supply": "Siemens SITOP PSU6200/PSU8200",
+        "dc_ups": "Siemens SITOP UPS1600"
+      },
+      "design_note": "Previous 20 A protected-load calculation was already near the continuous limit; added optical interface and revised architecture require a fresh Step 4 load/charging/autonomy calculation before exact PSU/UPS current ratings and battery module are frozen."
+    }
+  },
+  "step2_gate": {
+    "ready_except_for": [
+      "DE source documents for instrument-count reconciliation and fiber physical-medium definition"
+    ],
+    "user_questions_required": 1,
+    "pass_status_after_resolution": "STEP2_PANEL_DEFINITION_FROZEN"
+  }
+}
