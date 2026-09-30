@@ -1,5 +1,5 @@
 {
-  "registry_version": "1.3",
+  "registry_version": "1.4",
   "registry_id": "AUT-PANEL-OPEN-SOURCE-REGISTRY-V1",
   "discovered_at": "2026-09-30",
   "policy": {
@@ -308,6 +308,24 @@
       "status": "STEP4_CANDIDATE_PIN_SANDBOX_REGRESSION",
       "archived": false,
       "license": "GPL-3.0"
+    },
+    {
+      "repository": "JohannesBuchner/imagehash",
+      "role": [
+        "SUPPLEMENTARY_IMAGE_FINGERPRINT",
+        "VISUAL_REGRESSION"
+      ],
+      "status": "STEP5_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false
+    },
+    {
+      "repository": "mozman/ezdxf",
+      "role": [
+        "DXF_INTEROP",
+        "ENGINEERING_VECTOR_EXCHANGE"
+      ],
+      "status": "STEP5_STEP6_CANDIDATE_PIN_SANDBOX_REGRESSION",
+      "archived": false
     }
   ],
   "excluded_from_new_core_dependency": [
@@ -321,5 +339,5 @@
     }
   ],
   "extended_toolchain_registry": "plugins/AUT_PANEL_GITHUB_TOOLCHAIN_V2.json",
-  "note": "Expanded for Step 4 with QElectroTech/QetWireManager/WireViz connection and wire-list tooling. Core production use still requires pin, security/license review, sandbox/regression and human gate."
+  "note": "Expanded for Step 5/6 with multiview fidelity and vector-document tooling. Geometry remains governed by manufacturer CAD/parametric reconstruction; visual fingerprints are secondary QA only."
 }
