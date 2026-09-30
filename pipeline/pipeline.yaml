@@ -40,6 +40,10 @@ contracts:
   project_elaboration_control: datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json
   plugin_capability_registry: datacenter/AUT_PANEL_PLUGIN_CAPABILITY_REGISTRY_V1.json
   method_evolution_memory: memory/AUT_PANEL_METHOD_EVOLUTION_MEMORY.yaml
+  autonomous_improvement_control: datacenter/AUT_PANEL_AUTONOMOUS_IMPROVEMENT_CONTROL_V1.json
+  autonomous_improvement_backlog: improvement/AUT_PANEL_IMPROVEMENT_BACKLOG_V1.json
+  open_source_toolchain_skill: skills/aut-panel-open-source-toolchain/SKILL.md
+  autonomous_improvement_skill: skills/aut-panel-autonomous-improvement/SKILL.md
   geometry_toolchain_registry: plugins/AUT_PANEL_3D_GEOMETRY_TOOLCHAIN_V1.json
   panel_render_gate: pipeline/panel_render_gate.py
   panel_3d_geometry_gate: pipeline/panel_3d_geometry_gate.py
