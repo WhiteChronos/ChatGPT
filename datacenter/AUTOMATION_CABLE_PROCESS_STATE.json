@@ -1,22 +1,29 @@
 {
-  "version": "0.3.0",
+  "version": "0.6.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
   "phase": "learning_user_method",
   "workflow": {
-    "current_step": 1,
-    "step_name": "insert_project_drawings",
+    "current_step": 6,
+    "step_name": "calculate_cable_tray_route_lengths",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
       "DE-3501.02-8210-800-RPJ-704 Rev.0"
+    ],
+    "rules": [
+      "automation_panel_is_route_origin",
+      "one_route_record_per_distinct_path",
+      "measure_actual_drawn_path",
+      "convert_by_drawing_scale",
+      "current_ground_floor_scale_1_50"
     ]
   },
-  "last_checkpoint_id": "ACP-20260930-STEP1-003",
-  "last_completed_action": "Registered project drawings as mandatory Step 1",
-  "next_action": "Capture user Step 2",
+  "last_checkpoint_id": "ACP-20260930-STEP6-006",
+  "last_completed_action": "Captured cable-tray route measurement method from automation panel using drawing scale",
+  "next_action": "Capture user Step 7",
   "source_of_truth": "github",
   "status": "active"
 }
