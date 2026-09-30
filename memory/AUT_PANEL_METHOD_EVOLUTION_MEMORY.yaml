@@ -37,6 +37,20 @@ known_error_patterns:
       - "Calcular materiais lineares pela geometria do layout."
       - "Incluir cadeia completa de acessórios e montagem."
       - "Bloquear workbook se houver quantidade sem trace ID ou REF_ID."
+  - id: ERR-MULTIVIEW-DOOR-001
+    pattern: "Porta/tampa ou gabinete muda de tamanho/proporcao entre frontal, aberta e 3/4."
+    prevention:
+      - "Usar uma unica montagem 3D canonica por PANEL_ID/revisao."
+      - "Usar o mesmo door_object_id, bbox local e eixo de dobradica em todas as vistas."
+      - "Permitir somente camera e transformacao rigida de abertura."
+      - "Executar validate_multiview_manifest antes do Step 5 freeze."
+  - id: ERR-DOCUMENT-DOWNSCALE-001
+    pattern: "Documento reduz painel/cotas/diagramas para caber em canvas fixo."
+    prevention:
+      - "Planejar bounding boxes em tamanho nativo."
+      - "Grow-only canvas."
+      - "scale_x=scale_y=1.0 para vistas dimensionais."
+      - "Cotas sempre de valores controlados, nunca de raster."
 learning_loop:
   stages:
     - OBSERVE
