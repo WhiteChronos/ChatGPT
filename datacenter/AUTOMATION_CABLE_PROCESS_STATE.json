@@ -1,13 +1,13 @@
 {
-  "version": "0.8.0",
+  "version": "0.13.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
   "phase": "learning_user_method",
   "workflow": {
-    "current_step": 8,
-    "step_name": "continue_route_to_next_floor",
+    "current_step": 13,
+    "step_name": "identify_hart_cable",
     "status": "captured",
     "registered_drawings": [
       "DE-3501.02-8210-800-RPJ-703 Rev.0",
@@ -41,11 +41,28 @@
         "from": "DE-3501.02-8210-800-RPJ-703 / Terreo",
         "to": "DE-3501.02-8210-800-RPJ-704 / 1 Pavimento"
       }
+    },
+    "hart_cable_rule": {
+      "notation": "Ø1\" - 4-20mA + HART",
+      "conduit_size": "1 inch",
+      "signal": "4-20mA + HART",
+      "destinations": [
+        "AT",
+        "TT"
+      ],
+      "pending": [
+        "cable_construction",
+        "pair_count",
+        "cross_section",
+        "shield",
+        "manufacturer",
+        "length_rule"
+      ]
     }
   },
-  "last_checkpoint_id": "ACP-20260930-STEP8-008",
-  "last_completed_action": "Captured vertical rise symbol as route continuation to next-floor drawing",
-  "next_action": "Capture user Step 9",
+  "last_checkpoint_id": "ACP-20260930-STEP13-013",
+  "last_completed_action": "Captured HART cable notation, conduit size, signal type and AT/TT destinations",
+  "next_action": "Capture next cable calculation rule",
   "source_of_truth": "github",
   "status": "active"
 }
