@@ -32,8 +32,8 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 31
-  last_sync_at: '2026-09-30T19:48:00-03:00'
+  sync_revision: 32
+  last_sync_at: '2026-09-30T23:22:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
@@ -761,3 +761,19 @@ history:
     Wolfram; plugins B&A Diagrams/tldraw/Miro ficam apenas como revisao visual e Remote Desktop Commander como
     ponte para ferramentas locais autorizadas. Pesquisa de plugins nao encontrou substituto dedicado de
     engenharia eletrica para QElectroTech/EPLAN/AutoCAD Electrical, portanto a metodologia usa stack governado.
+
+- revision: 32
+  at: '2026-09-30T23:22:00-03:00'
+  actor: user+assistant
+  event: STEP5_STEP6_VISUAL_PROCESS_CONSOLIDATED
+  summary: >-
+    Processo visual consolidado em duas etapas. Passo 5 gera primeiro a imagem fisica separada de cada PN
+    a partir de uma unica montagem 3D canonica em milimetros. Porta/tampa, recortes, IHM, dobradicas, H/W/D,
+    instancias e bounding boxes sao invariantes entre vistas; somente camera e rotacao rigida da porta no
+    eixo congelado podem mudar. Ferramentas: CAD oficial, FreeCAD/CadQuery/build123d/OpenCascade, trimesh,
+    Open3D, Blender, Wolfram, OpenCV e ImageHash suplementar. Passo 6 reutiliza exatamente o fingerprint
+    aprovado do Passo 5 e monta o documento MODEL 001 com legenda, dados, arquitetura eletrica, arquitetura
+    de comunicacao, diagrama de comando e dimensionamento. Canvas e grow-only; vistas dimensionais ficam
+    scale_x=scale_y=1.0 e cotas vem de H/W/D controlados, nunca de raster ou perspectiva. Criados controles,
+    prompts, memorias, registry de referencias, skill aut-panel-pn-image-fidelity e atualizada a skill
+    aut-panel-image-document. Golden Rules GR-095..GR-102 adicionadas.
