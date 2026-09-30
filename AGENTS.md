@@ -280,3 +280,13 @@ After `STEP5_PN_IMAGE_FIDELITY_FROZEN`, load:
 - `skills/aut-panel-image-document/SKILL.md`
 
 Step 6 composes the frozen physical image with legend, panel data, electrical architecture, communication architecture, command diagram and dimensions. Grow the canvas; never scale down dimensional content to fit.
+
+## Step 7 final image verification
+After `STEP6_ENGINEERING_IMAGE_DOCUMENT_FROZEN`, load:
+- `datacenter/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_CONTROL_V1.json`
+- `datacenter/AUT_PANEL_STEP7_IMAGE_VERIFICATION_TOOLCHAIN_V1.json`
+- `prompts/PROMPT_STEP7_FINAL_IMAGE_VERIFICATION_V1.md`
+- `memory/AUT_PANEL_STEP7_FINAL_IMAGE_VERIFICATION_MEMORY.yaml`
+- `skills/aut-panel-final-image-verification/SKILL.md`
+
+Step 7 is read/verify only. It checks framing, clipping, orthographic physical ratios, px/mm consistency, controlled dimension labels, assembly/view identity and calibrated-view reprojection. Geometry failures return to Step 5; composition failures return to Step 6; quantity failures return to Step 4.
