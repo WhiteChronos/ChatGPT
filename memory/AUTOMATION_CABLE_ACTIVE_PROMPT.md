@@ -17,6 +17,15 @@ Pull request: #35
 - GitHub history is the primary audit trail; external memory engines are secondary indexes.
 - Calculation plugins are independent verifiers, never engineering authorities.
 - PDF/image/CAD tooling must preserve document/drawing revision and provenance.
+- No calculation of cable, conduit or cable tray starts before applicable project drawings are inserted, identified and registered.
+
+## User-taught workflow
+### Step 1 — Insert project drawings
+Register all applicable drawings before calculations. Current registered drawings:
+- DE-3501.02-8210-800-RPJ-703 Rev.0 — Automação — Planta Baixa — Térreo.
+- DE-3501.02-8210-800-RPJ-704 Rev.0 — Automação — Planta Baixa — 1º Pavimento.
+
+The drawings contain routing, cable tray/conduit information, AT/TT instruments, 4-20 mA + HART, discrete signals, network points, PN-AUT-001 and routing/detail tables. These are the current graphical basis for the next taught steps.
 
 ## Tool routing
 - Calculation: deterministic rules + Wolfram verification when connected.
@@ -31,26 +40,20 @@ Engineering sources -> normalized datacenter records -> deterministic rule engin
 ## Current cable classes
 4-20 mA, 0-10 V, 24 Vdc DI/DO, low-power 24 Vdc field supply, RTD, thermocouple, pulse/encoder, RS-485/Modbus RTU, CAN/CANopen, Profibus, Industrial Ethernet and safety signals.
 
-## Memory architecture
-Primary: GitHub commits + action ledger + active prompt + process state.
-Secondary candidates: Mem0, Graphiti, Cognee, Hindsight, Letta, OpenMemory, memU.
-
 ## Last completed action
-Expanded the persistence skill with engineering tool routing for calculation, image analysis, PDF and DWG/DXF/CAD; registered open-source CAD/PDF/image references and plugin candidates.
+Captured user-taught workflow Step 1 and registered the two project automation drawings in the datacenter.
 
 ## Current objective
-Implement deterministic automation-cable calculators and continuously capture approved engineering decisions and evidence from PDFs/images/CAD drawings as structured records.
+Learn and codify the user's step-by-step method for calculating conduits, cable trays and automation cables from the project drawings.
 
 ## Unresolved
-- Connect Wolfram if desired for independent calculation verification.
-- Connect tldraw if desired for diagramming/annotation.
-- Implement deterministic calculation code and tests.
+- Await user's Step 2.
+- Later implement deterministic calculation code only after the taught engineering workflow is fully captured.
 - Define manufacturer/protocol source ingestion rules.
 - Define native DWG conversion/validation test fixtures.
-- Define minimum approved dataset threshold before first production ML model.
 
 ## Next action
-Implement the first deterministic calculator module for 24 Vdc and 4-20 mA, with unit tests, optional Wolfram verification hooks, and checkpoint integration.
+Wait for and capture the user's Step 2 of the conduit/cable-tray/cable calculation method.
 
 ## Checkpoint protocol
 After every substantive action: recover state -> execute -> validate -> append action checkpoint -> update this prompt -> update machine-readable process state -> confirm persistence.
