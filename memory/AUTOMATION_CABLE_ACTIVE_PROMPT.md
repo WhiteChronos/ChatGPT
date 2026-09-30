@@ -181,3 +181,17 @@ Taught rules:
 - Do not add slack, termination allowance, reserve percentage or procurement rounding until explicitly taught.
 
 Next action: capture Step 15 from the user.
+
+
+### Step 15 — Conduit rise for digital AC signal
+Correction: the shown rise belongs to the other signal route, not the HART route. The conduit continues to the next-floor drawing carrying the digital air-conditioning signal defined in Step 16.
+
+### Step 16 — Interpret Ø1" - 1P#1,0mm+SH
+Interpret the drawing callout exactly as taught:
+- containment: 1-inch conduit;
+- cable: 1,0 mm + SH;
+- service: digital signal for air-conditioning equipment;
+- when the associated rise symbol appears, continue this same digital-signal conduit/cable route on the next-floor drawing.
+
+Do not infer additional conductor/pair semantics, cable construction, spare cores or termination rules until explicitly taught.
+Next action: capture Step 17 from the user.
