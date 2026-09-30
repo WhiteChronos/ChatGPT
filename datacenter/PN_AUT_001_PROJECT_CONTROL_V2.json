@@ -1,7 +1,7 @@
 {
   "schema_version": "2.0",
   "panel_id": "PN-AUT-001",
-  "status": "ACTIVE_REVIEW",
+  "status": "SUPERSEDED_ACTIVE_SCOPE_MOVED_TO_PROJECT_25279_PN_AUT_01",
   "current_revision_basis": "R03 engineering LI + user corrections 2026-09-30",
   "canonical_enclosure": {
     "manufacturer": "Schneider Electric",
@@ -20,7 +20,7 @@
   },
   "gateway_review": "datacenter/PN_AUT_001_GATEWAY_REVIEW_V1.json",
   "methodology": "datacenter/AUT_PANEL_PROJECT_ELABORATION_CONTROL_V1.json",
-  "release_status": "ENGINEERING_CALCULATED_LAYOUT_AND_IP66_VALIDATION_PENDING",
+  "release_status": "HISTORICAL_REFERENCE_ONLY",
   "holds": [
     "VALIDATION-LAYOUT-REAL-SCALE",
     "HOLD-IP66-ASSEMBLY-PROOF"
@@ -52,5 +52,7 @@
     "ups_continuous_a": 20,
     "thermal_with_reserve_w": 140.28,
     "cooling_capacity_basis_w": 240
-  }
+  },
+  "superseded_by": "datacenter/projects/25279/PN_AUT_01_PROJECT_CONTROL_V1.json",
+  "supersession_note": "User explicitly corrected active identity to PROJECT_NUMBER 25279 / PANEL_ID PN-AUT-01 and reopened Step 2 before rebuilding LI and images. Preserve this file for history only."
 }
