@@ -8,6 +8,8 @@ policy:
   pn_image_elaboration_directive_memory: memory/PN_IMAGE_ELABORATION_DIRECTIVE_MEMORY.yaml
   normative_academic_memory: memory/AUT_PANEL_NORMATIVE_ACADEMIC_MEMORY.yaml
   step4_li_load_memory: memory/AUT_PANEL_STEP4_LI_LOAD_MEMORY.yaml
+  step5_pn_image_fidelity_memory: memory/AUT_PANEL_STEP5_PN_IMAGE_FIDELITY_MEMORY.yaml
+  step6_engineering_image_document_memory: memory/AUT_PANEL_STEP6_ENGINEERING_IMAGE_DOCUMENT_MEMORY.yaml
   parametric_project_memory: memory/AUT_PANEL_PARAMETRIC_PROJECT_MEMORY.yaml
   renderer_must_load_model_001: true
   renderer_must_load_image_elaboration_directive: true
