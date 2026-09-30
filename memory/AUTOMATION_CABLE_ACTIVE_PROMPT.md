@@ -74,3 +74,18 @@ Current taught rules:
 ## Current learning state
 Steps captured: 1 drawings, 2 automation panel, 3 routing types from legend, 4 instruments/signals/disciplines, 5 confirm symbols in legend, 6 cable-tray route measurement from the panel.
 Next action: capture Step 7 from the user.
+
+
+### Step 7 — Identify and calculate cable-tray reductions
+After route-length measurement, inspect each cable-tray path for transitions where the tray changes section/dimensions. Treat every such transition as a distinct route component to be identified and calculated separately.
+
+Current taught rules:
+- Reductions are evaluated after the route path has been established.
+- A reduction is tied to a specific route and location.
+- Preserve upstream and downstream tray dimensions.
+- Do not yet assign equivalent length, material code, quantity formula, fitting allowance or loss factor until explicitly taught.
+- Keep reductions separate from straight cable-tray length.
+
+Current interpretation from the project context: available tray sizes include 100x50 mm and 50x50 mm, so a transition between these sizes is a candidate reduction when actually shown in the route.
+
+Next action: capture the user's detailed reduction calculation rule or Step 8.
