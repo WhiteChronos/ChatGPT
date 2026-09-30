@@ -32,12 +32,16 @@ immutable_contract:
     chat_memory_cannot_override_canonical_files: true
     fail_closed: true
 mutable_state:
-  sync_revision: 23
-  last_sync_at: '2026-09-30T17:12:00-03:00'
+  sync_revision: 24
+  last_sync_at: '2026-09-30T17:20:00-03:00'
   repository:
     branch: feat/aut-panel-control-v1
     pull_request: 23
     head_sha: RESOLVE_CURRENT_BRANCH_HEAD_AT_BOOTSTRAP
+  engram_memory_policy:
+    registry: datacenter/ENGRAM_MEMORY_POLICY_V1.json
+    role: supplemental_long_term_memory
+    canonical_authority: github_datacenter_datasheet_li_bom_official_sources
   current_project_control_v2:
     panel_id: PN-AUT-001
     registry: datacenter/PN_AUT_001_PROJECT_CONTROL_V2.json
@@ -595,3 +599,12 @@ history:
     TCONTCCMHCM04A foi reaberta e downstream de comunicacao/BOM/carga/layout/imagem/QA ficou
     HOLD. Criado prompt mestre completo de elaboracao do projeto, registry de plugins,
     memoria de evolucao metodologica e cadeia de 9 skills especializadas.
+
+- revision: 24
+  at: '2026-09-30T17:20:00-03:00'
+  actor: user+assistant
+  event: ENGRAM_MEMORY_PLUGIN_REGISTERED
+  summary: >-
+    Engram foi registrado como memoria persistente suplementar da metodologia AUT Panel.
+    Toda informacao recuperada deve ser reconciliada com GitHub, Data Center, Data Sheet,
+    LI/BOM e fontes oficiais antes de uso em engenharia.
