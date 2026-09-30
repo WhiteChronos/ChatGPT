@@ -1,0 +1,48 @@
+schema_version: "1.0"
+memory_id: AUT-PANEL-PARAMETRIC-PROJECT-MEMORY-V1
+status: CONTROLLED_ACTIVE
+purpose: "Memoria parametrica evolutiva para reduzir perguntas repetidas sem perder origem, escopo, versao ou autoridade."
+
+scope_classes:
+  - GLOBAL_METHOD
+  - PROJECT
+  - PANEL
+  - MANUFACTURER_FAMILY
+  - EQUIPMENT_MODEL
+
+parameter_status:
+  - DOCUMENT_CONFIRMED
+  - MANUFACTURER_CONFIRMED
+  - USER_CONFIRMED
+  - CALCULATED_VALIDATED
+  - REUSED_VALIDATED
+  - PENDING
+  - CONFLICT
+  - SUPERSEDED
+
+rules:
+  - "Nao reutilizar parametro fora do seu escopo sem validar aplicabilidade."
+  - "PROJECT e PANEL nunca viram GLOBAL automaticamente."
+  - "Memoria nunca sobrescreve Data Center, Data Sheet, LI/BOM ou documento controlado."
+  - "Catalogos completos ficam no Data Center; memoria guarda ponteiros, hashes, parametros extraidos e decisoes."
+  - "Pergunta so deve chegar ao usuario depois de esgotar documentos, Data Center, memoria, catalogos, fabricante e normas."
+  - "Erro confirmado nao apaga historia; cria nova versao, marca antiga como SUPERSEDED e invalida downstream."
+  - "O numero de perguntas deve cair com o tempo por reutilizacao validada, nao por suposicao."
+
+question_metrics:
+  total_questions: 0
+  auto_resolved_from_documents: 0
+  auto_resolved_from_catalogs: 0
+  reused_validated_parameters: 0
+  user_questions: 0
+  conflicts_detected: 0
+  superseded_parameters: 0
+  new_catalogs_added: 0
+  new_reusable_parameters: 0
+  regression_rules_created: 0
+
+history:
+  - revision: 1
+    date: "2026-09-30"
+    event: PARAMETRIC_PROJECT_MEMORY_CREATED
+    summary: "Criada memoria parametrica evolutiva para o Passo 2 de definicao dos paineis."
