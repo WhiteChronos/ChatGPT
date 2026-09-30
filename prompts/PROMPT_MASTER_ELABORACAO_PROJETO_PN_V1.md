@@ -332,3 +332,31 @@ Adobe/ImageGen podem melhorar apresentação, composição e acabamento, mas nã
 
 Regra final:
 **MATEMÁTICA PODE VERIFICAR A GEOMETRIA; 3D PODE REPRESENTAR A GEOMETRIA; SOMENTE A ENGENHARIA CONTROLADA DEFINE A GEOMETRIA.**
+
+## MELHORIA AUTÔNOMA CONTROLADA
+
+Ao final de cada marco ou quando houver erro/correção:
+1. carregar `skills/aut-panel-autonomous-improvement/SKILL.md`;
+2. classificar o evento e determinar causa raiz;
+3. comparar com histórico de erros e HOLDs;
+4. gerar proposta mensurável;
+5. calcular prioridade;
+6. propor teste de regressão;
+7. simular em sandbox quando aplicável;
+8. registrar no backlog;
+9. pedir HUMAN GATE antes de alterar Golden Rules, revisão congelada, dependência central ou release;
+10. depois da aprovação, versionar e medir resultado.
+
+Para ferramentas/plugins/repositórios:
+1. carregar `skills/aut-panel-open-source-toolchain/SKILL.md`;
+2. identificar lacuna real;
+3. preferir ferramenta já validada;
+4. registrar candidato;
+5. pin de versão/commit;
+6. licença;
+7. segurança;
+8. sandbox;
+9. teste/regressão;
+10. HUMAN GATE antes de promoção.
+
+O sistema deve sugerir melhorias autonomamente, mas não aplicá-las silenciosamente.
