@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AutomationCableTrainingRecord",
+  "type": "object",
+  "required": [
+    "calculation_id",
+    "project_id",
+    "service_type",
+    "one_way_length_m",
+    "approval_status",
+    "source_trace"
+  ],
+  "properties": {
+    "calculation_id": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "document_id": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string"
+    },
+    "service_type": {
+      "type": "string"
+    },
+    "protocol_or_signal": {
+      "type": "string"
+    },
+    "supply_voltage_V": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "load_current_A": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "loop_current_mA": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "one_way_length_m": {
+      "type": "number",
+      "minimum": 0
+    },
+    "conductor_material": {
+      "type": "string",
+      "default": "copper"
+    },
+    "cross_section_mm2": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "pair_count": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "shield_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resistance_ohm_per_km": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "capacitance_pF_per_m": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "ambient_temperature_C": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "installation_method": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "EMC_environment": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hazardous_area": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "manufacturer": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cable_family": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deterministic_checks": {
+      "type": "object"
+    },
+    "ml_recommendation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "approval_status": {
+      "enum": [
+        "approved",
+        "rejected",
+        "pending"
+      ]
+    },
+    "rejection_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_trace": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}
