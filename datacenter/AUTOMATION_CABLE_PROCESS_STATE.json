@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "repository": "WhiteChronos/ChatGPT",
   "branch": "feature/automation-cable-ml",
   "pull_request": 35,
   "scope": "automation_and_instrumentation_cables",
-  "phase": "consolidated_internal_system",
+  "phase": "toolchain_integrated",
   "workflow": {
     "current_step": 18,
     "step_name": "conduit_crossing_below",
@@ -107,9 +107,9 @@
       "restarts": false
     }
   },
-  "last_checkpoint_id": "ACP-20260930-CONSOLIDATE-019",
-  "last_completed_action": "Consolidated 18-step method into skills, Codex agent and internal tooling",
-  "next_action": "Run consolidated workflow on project calculations or capture Step 19",
+  "last_checkpoint_id": "ACP-20260930-TOOLCHAIN-020",
+  "last_completed_action": "Integrated Wolfram and tldraw into the automation cable operating process",
+  "next_action": "Execute the integrated pipeline on project drawings",
   "source_of_truth": "github",
   "status": "active",
   "skills": {
@@ -141,5 +141,16 @@
     "tools/automation_cable/route_engine.py",
     "schemas/automation_routing.schema.json",
     "third_party/automation_engineering/registry.json"
+  ],
+  "connected_verifiers": [
+    "Wolfram",
+    "tldraw",
+    "Adobe Acrobat"
+  ],
+  "toolchain_rules": [
+    "deterministic_engine_primary",
+    "wolfram_secondary_math_and_units_verifier",
+    "tldraw_visual_topology_reviewer",
+    "drawing_and_legend_remain_primary_evidence"
   ]
 }
