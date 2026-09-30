@@ -1,0 +1,92 @@
+{
+  "version": "0.1.0",
+  "scope": "automation_and_instrumentation_cables_only",
+  "domains": [
+    "4-20mA analog signals",
+    "0-10V analog signals",
+    "24Vdc discrete I/O",
+    "24Vdc low-power supply",
+    "thermocouple",
+    "RTD",
+    "pulse/encoder",
+    "RS-485/Modbus RTU",
+    "CAN/CANopen",
+    "Profibus",
+    "Industrial Ethernet",
+    "safety signals"
+  ],
+  "engineering_rule": "deterministic_rules_are_authoritative; ML may recommend, classify risk, or flag anomalies only",
+  "inputs": [
+    "service_type",
+    "protocol_or_signal",
+    "supply_voltage_V",
+    "load_current_A",
+    "loop_current_mA",
+    "one_way_length_m",
+    "conductor_material",
+    "cross_section_mm2",
+    "pair_count",
+    "shield_type",
+    "twist_required",
+    "capacitance_pF_per_m",
+    "resistance_ohm_per_km",
+    "ambient_temperature_C",
+    "installation_method",
+    "route_separation_class",
+    "EMC_environment",
+    "hazardous_area",
+    "manufacturer",
+    "cable_family",
+    "approval_status"
+  ],
+  "checks": [
+    "dc_voltage_drop",
+    "loop_resistance",
+    "minimum_device_terminal_voltage",
+    "signal_integrity",
+    "shield_and_grounding_rule",
+    "pair_twist_rule",
+    "protocol_length_limit",
+    "termination_rule",
+    "EMC_segregation",
+    "environmental_rating",
+    "fire_performance",
+    "manufacturer_datasheet_compliance"
+  ],
+  "ml": {
+    "stage_1": "gradient_boosted_trees_or_random_forest_for_cable_family_recommendation",
+    "stage_2": "isolation_forest_or_autoencoder_for_anomaly_detection",
+    "stage_3": "optional_learning_to_rank_for_approved_alternatives",
+    "forbidden": [
+      "override_normative_rule",
+      "invent_missing_manufacturer_data",
+      "approve_noncompliant_design"
+    ],
+    "training_label": "engineer_approved_cable_selection",
+    "minimum_dataset_note": "Do not train production model until a representative set of approved calculations is available."
+  },
+  "outputs": [
+    "recommended_cable_family",
+    "recommended_cross_section_mm2",
+    "pair_count",
+    "shielding",
+    "predicted_voltage_drop_pct",
+    "compliance_flags",
+    "confidence",
+    "explanation",
+    "source_trace"
+  ],
+  "traceability": {
+    "required": true,
+    "fields": [
+      "project_id",
+      "document_id",
+      "revision",
+      "calculation_id",
+      "source_datasheet",
+      "standard_reference",
+      "reviewer_status",
+      "model_version"
+    ]
+  }
+}
