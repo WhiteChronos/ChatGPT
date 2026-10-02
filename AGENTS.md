@@ -123,3 +123,17 @@ A datasheet may declare `PASS` only when all of the following are true:
 
 ## Pull request compatibility
 A pull request that changes compatibility-analysis logic, engineering schemas, Data Center manifests, datasheets, report-generation code or either compatibility validator MUST pass the Engineering Compatibility Visualize Gate and repository governance checks before merge.
+
+
+## Global Arena review layer
+
+For every Codex task in this repository, agents SHALL read `plugins/github-arena/SKILL.md` and apply its Micro Arena before finalizing the result.
+
+Agents SHALL:
+
+- apply the four default lenses: evidence-first, constraint-first, edge-cases-first and built-to-last;
+- use Review Arena for code, architecture, CI/CD, repository governance, security-sensitive configuration, public API or other high-impact changes;
+- use Full Arena only when explicitly requested;
+- never claim that independent subagents were executed unless the runtime actually provided and executed them;
+- preserve the engineering governance rules in this `AGENTS.md`;
+- preserve upstream attribution and verify licensing before copying substantive third-party source.
