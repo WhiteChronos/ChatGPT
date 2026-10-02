@@ -1,0 +1,20 @@
+{
+  "name": "github-arena",
+  "version": "1.1.0",
+  "description": "Arena-inspired multi-strategy quality review tools for ChatGPT and Codex, with GitHub-specific safeguards.",
+  "author": {
+    "name": "WhiteChronos",
+    "url": "https://github.com/WhiteChronos"
+  },
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/github-arena",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "keywords": ["arena", "github", "codex", "review", "quality", "mcp"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "GitHub Arena",
+    "shortDescription": "Multi-strategy review tools for ChatGPT, Codex, and GitHub.",
+    "longDescription": "Adds deterministic Arena planning, strategy cards, review checklists, and scoring guidance. Use the existing GitHub connector for repository reads and writes; use GitHub Arena MCP tools for adversarial review and quality control."
+  }
+}
