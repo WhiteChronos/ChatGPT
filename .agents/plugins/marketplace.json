@@ -1,0 +1,20 @@
+{
+  "name": "whitechronos-repo",
+  "interface": {
+    "displayName": "WhiteChronos Repository Tools"
+  },
+  "plugins": [
+    {
+      "name": "github-arena",
+      "source": {
+        "source": "local",
+        "path": "./plugins/github-arena"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
