@@ -41,3 +41,17 @@ python plugins/github-arena/scripts/arena_review.py plan --agents 16
 python plugins/github-arena/scripts/arena_review.py cards --agents 4 --seed 7
 python plugins/github-arena/scripts/arena_review.py rubric
 ```
+
+
+## ChatGPT Web
+
+Para usar o GitHub Arena no ChatGPT Web sem expor o Windows na internet, use o OpenAI Secure MCP Tunnel:
+
+```powershell
+$env:CONTROL_PLANE_API_KEY = "sk-..."
+powershell -ExecutionPolicy Bypass -File .\plugins\github-arena\scripts\setup_openai_tunnel.ps1 -TunnelId "tunnel_..."
+```
+
+Depois mantenha `tunnel-client run --profile github-arena` ativo e registre o tunnel em ChatGPT Plugins no modo Developer.
+
+Veja `references/chatgpt-web-tunnel.md` para o fluxo completo.
