@@ -136,4 +136,7 @@ Agents SHALL:
 - use Full Arena only when explicitly requested;
 - never claim that independent subagents were executed unless the runtime actually provided and executed them;
 - preserve the engineering governance rules in this `AGENTS.md`;
-- preserve upstream attribution and verify licensing before copying substantive third-party source.
+- preserve upstream attribution and verify licensing before copying substantive third-party source;
+- when the `github_arena` MCP server is available, call `arena_review_checklist` for GitHub work before finalizing;
+- for high-impact GitHub or coding changes, call `arena_plan` and `arena_cards` before choosing the implementation approach;
+- use the GitHub connector for repository reads/writes and the Arena MCP only for review/planning; never duplicate GitHub credentials inside Arena.

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "github_arena": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./mcp-server/mcp_server.mjs"],
+      "cwd": "."
+    }
+  }
+}

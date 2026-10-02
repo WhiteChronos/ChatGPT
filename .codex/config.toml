@@ -1,0 +1,7 @@
+[plugins."github-arena@whitechronos-repo"]
+enabled = true
+
+[plugins."github-arena@whitechronos-repo".mcp_servers.github_arena]
+enabled = true
+default_tools_approval_mode = "approve"
+enabled_tools = ["arena_plan", "arena_cards", "arena_rubric", "arena_review_checklist"]
