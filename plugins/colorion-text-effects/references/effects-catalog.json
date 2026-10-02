@@ -1,0 +1,760 @@
+{
+  "source": "https://raw.githubusercontent.com/ckissi/colorion-text-effects/main/src/data/effects.ts",
+  "synced_at_utc": "2026-10-02T17:42:13+00:00",
+  "effect_count": 99,
+  "effects": [
+    {
+      "index": "01",
+      "name": "Borealis",
+      "type": "aurora",
+      "text": "AURORA",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "02",
+      "name": "Glitchcore",
+      "type": "glitch",
+      "text": "GLITCH",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "03",
+      "name": "Teletype",
+      "type": "typewriter",
+      "text": "TYPEWRITER",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "04",
+      "name": "Neon-Haus",
+      "type": "neon",
+      "text": "NEON",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "05",
+      "name": "Aqua-Fill",
+      "type": "liquid",
+      "text": "LIQUID",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "06",
+      "name": "Chromia",
+      "type": "chrome",
+      "text": "CHROME",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "07",
+      "name": "Lens-Drift",
+      "type": "focus",
+      "text": "FOCUS",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "08",
+      "name": "Tidal-Type",
+      "type": "wave",
+      "text": "WAVE",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "09",
+      "name": "Bisect",
+      "type": "sliced",
+      "text": "SLICED",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "10",
+      "name": "Cipher",
+      "type": "decoder",
+      "text": "DECODER",
+      "markup_mode": "special"
+    },
+    {
+      "index": "11",
+      "name": "Redactor",
+      "type": "scanner",
+      "text": "SCANNER",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "12",
+      "name": "Emberglow",
+      "type": "ember",
+      "text": "EMBER",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "13",
+      "name": "Echo-Verse",
+      "type": "echo",
+      "text": "ECHO",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "14",
+      "name": "Deep-Type",
+      "type": "extrude",
+      "text": "DEPTH",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "15",
+      "name": "Wireframe",
+      "type": "contour",
+      "text": "OUTLINE",
+      "markup_mode": "svg"
+    },
+    {
+      "index": "16",
+      "name": "Prisma",
+      "type": "spectrum",
+      "text": "SPECTRUM",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "17",
+      "name": "Jitterbug",
+      "type": "jitter",
+      "text": "JITTER",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "18",
+      "name": "Anaglyph-3D",
+      "type": "anaglyph",
+      "text": "DEPTH-3D",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "19",
+      "name": "Split-Flap",
+      "type": "flap",
+      "text": "DEPART",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "20",
+      "name": "Phosphor",
+      "type": "crt",
+      "text": "CRT_MODE",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "21",
+      "name": "Pop-Riot",
+      "type": "pop",
+      "text": "POP!",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "22",
+      "name": "Limelight",
+      "type": "spotlight",
+      "text": "SPOTLIGHT",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "23",
+      "name": "Rubber-Band",
+      "type": "elastic",
+      "text": "BOING",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "24",
+      "name": "Still-Water",
+      "type": "mirror",
+      "text": "MIRROR",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "25",
+      "name": "Ransom-Note",
+      "type": "ransom",
+      "text": "RANSOM",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "26",
+      "name": "Meltdown",
+      "type": "melt",
+      "text": "MELT",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "27",
+      "name": "Cardio",
+      "type": "heartbeat",
+      "text": "PULSE",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "28",
+      "name": "Hi-Liter",
+      "type": "marker",
+      "text": "MARKED",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "29",
+      "name": "Sundial",
+      "type": "sundial",
+      "text": "SHADOW",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "30",
+      "name": "Negativ",
+      "type": "negative",
+      "text": "INVERTED",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "31",
+      "name": "Holograph",
+      "type": "hologram",
+      "text": "HOLOGRAM",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "32",
+      "name": "Gold-Foil",
+      "type": "foil",
+      "text": "LUXE",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "33",
+      "name": "Pixel-Sort",
+      "type": "pixel",
+      "text": "PIXELS",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "34",
+      "name": "Starlight",
+      "type": "starlight",
+      "text": "STARDUST",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "35",
+      "name": "Blueprint",
+      "type": "blueprint",
+      "text": "DRAFT",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "36",
+      "name": "Vapor-Trail",
+      "type": "vapor",
+      "text": "VAPOR",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "37",
+      "name": "Kinetic-Type",
+      "type": "kinetic",
+      "text": "KINETIC",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "38",
+      "name": "Blackout",
+      "type": "blackout",
+      "text": "CLASSIFIED",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "39",
+      "name": "Magnetic",
+      "type": "magnetic",
+      "text": "MAGNET",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "40",
+      "name": "Luma-Mesh",
+      "type": "mesh",
+      "text": "MESH",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "41",
+      "name": "Iridescent",
+      "type": "iridescent",
+      "text": "IRIS",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "42",
+      "name": "Glass-Type",
+      "type": "glass",
+      "text": "GLASS",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "43",
+      "name": "Datastream",
+      "type": "datastream",
+      "text": "STREAM",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "44",
+      "name": "Orbitals",
+      "type": "orbit",
+      "text": "ORBIT",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "45",
+      "name": "Prism-Cut",
+      "type": "prismcut",
+      "text": "PRISM",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "46",
+      "name": "Soft-Blur",
+      "type": "softblur",
+      "text": "FOCUS",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "47",
+      "name": "Laser-Cut",
+      "type": "laser",
+      "text": "LASER",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "48",
+      "name": "Microchip",
+      "type": "microchip",
+      "text": "CIRCUIT",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "49",
+      "name": "Heatmap",
+      "type": "heatmap",
+      "text": "THERMAL",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "50",
+      "name": "Parallax",
+      "type": "parallax",
+      "text": "LAYERS",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "51",
+      "name": "Ink-Trap",
+      "type": "inktrap",
+      "text": "INK",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "52",
+      "name": "Topographic",
+      "type": "topographic",
+      "text": "TERRAIN",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "53",
+      "name": "Signal-Noise",
+      "type": "signal",
+      "text": "SIGNAL",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "54",
+      "name": "Portal",
+      "type": "portal",
+      "text": "PORTAL",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "55",
+      "name": "Tilt-Shift",
+      "type": "tiltshift",
+      "text": "SHIFT",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "56",
+      "name": "Duotone",
+      "type": "duotone",
+      "text": "DUO",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "57",
+      "name": "Glyph-Rain",
+      "type": "glyphrain",
+      "text": "GLYPHS",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "58",
+      "name": "Zoetrope",
+      "type": "zoetrope",
+      "text": "ROTATE",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "59",
+      "name": "Dot-Matrix",
+      "type": "dotmatrix",
+      "text": "PRINTOUT",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "60",
+      "name": "Pendulum",
+      "type": "pendulum",
+      "text": "SWING",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "61",
+      "name": "Smoke-Signal",
+      "type": "smoke",
+      "text": "SMOKE",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "62",
+      "name": "Eclipse",
+      "type": "eclipse",
+      "text": "ECLIPSE",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "63",
+      "name": "Barcode",
+      "type": "barcode",
+      "text": "BARCODE",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "64",
+      "name": "Frostbite",
+      "type": "frost",
+      "text": "FROZEN",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "65",
+      "name": "Moiré",
+      "type": "moire",
+      "text": "MOIRÉ",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "66",
+      "name": "Rubber-Stamp",
+      "type": "stamp",
+      "text": "APPROVED",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "67",
+      "name": "LED-Board",
+      "type": "led",
+      "text": "LIVE",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "68",
+      "name": "Light-Leak",
+      "type": "lightleak",
+      "text": "EXPOSE",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "69",
+      "name": "Kilovolt",
+      "type": "voltage",
+      "text": "CHARGE",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "70",
+      "name": "Carrara",
+      "type": "marble",
+      "text": "MARBLE",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "71",
+      "name": "Ripple",
+      "type": "ripple",
+      "text": "RIPPLE",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "72",
+      "name": "Shatter",
+      "type": "shatter",
+      "text": "BREAK",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "73",
+      "name": "Film-Grain",
+      "type": "grain",
+      "text": "NOIR",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "74",
+      "name": "Caustics",
+      "type": "caustic",
+      "text": "POOL",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "75",
+      "name": "Origami",
+      "type": "fold",
+      "text": "FOLD",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "76",
+      "name": "Domino",
+      "type": "domino",
+      "text": "TOPPLE",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "77",
+      "name": "Zip-Merge",
+      "type": "zipper",
+      "text": "ZIPPER",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "78",
+      "name": "Equalizer",
+      "type": "equalizer",
+      "text": "LEVELS",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "79",
+      "name": "Mercury",
+      "type": "gooey",
+      "text": "MERCURY",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "80",
+      "name": "Sonar",
+      "type": "sonar",
+      "text": "SONAR",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "81",
+      "name": "Hyperspace",
+      "type": "warp",
+      "text": "WARP",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "82",
+      "name": "Ghostwrite",
+      "type": "shimmer",
+      "text": "THINKING",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "83",
+      "name": "Tickertape",
+      "type": "ticker",
+      "text": "MARQUEE ✦ MARQUEE ✦ MARQUEE ✦ MARQUEE ✦ MARQUEE ✦ ",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "84",
+      "name": "Kaboom",
+      "type": "kaboom",
+      "text": "SLAM!",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "85",
+      "name": "Lyric-Fill",
+      "type": "karaoke",
+      "text": "CHORUS",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "86",
+      "name": "Lenti-Card",
+      "type": "lenticular",
+      "text": "SHINY",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "87",
+      "name": "Helium",
+      "type": "balloon",
+      "text": "PUFFY",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "88",
+      "name": "Liquid-Lens",
+      "type": "lens",
+      "text": "REFRACT",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "89",
+      "name": "Whiplash",
+      "type": "smear",
+      "text": "WHOOSH",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "90",
+      "name": "Keycap",
+      "type": "keycap",
+      "text": "PRESS",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "91",
+      "name": "Groovy",
+      "type": "groovy",
+      "text": "GROOVY",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "92",
+      "name": "Grunge",
+      "type": "grunge",
+      "text": "GRUNGE",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "93",
+      "name": "Pew-Pew",
+      "type": "pewpew",
+      "text": "PEW PEW",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "94",
+      "name": "Invisible-Ink",
+      "type": "invisible",
+      "text": "SECRET",
+      "markup_mode": "data-text"
+    },
+    {
+      "index": "95",
+      "name": "Loud",
+      "type": "loud",
+      "text": "HEY!",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "96",
+      "name": "Whisper",
+      "type": "gentle",
+      "text": "psst…",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "97",
+      "name": "Rotator",
+      "type": "rotator",
+      "text": "BOLD",
+      "markup_mode": "plain"
+    },
+    {
+      "index": "98",
+      "name": "Loader",
+      "type": "loader",
+      "text": "LOADING",
+      "markup_mode": "per-letter"
+    },
+    {
+      "index": "99",
+      "name": "Dissolve",
+      "type": "fade",
+      "text": "FADE AWAY",
+      "markup_mode": "per-letter"
+    }
+  ],
+  "per_letter_types": [
+    "balloon",
+    "domino",
+    "equalizer",
+    "fade",
+    "flap",
+    "focus",
+    "fold",
+    "glyphrain",
+    "gooey",
+    "groovy",
+    "karaoke",
+    "keycap",
+    "kinetic",
+    "loader",
+    "magnetic",
+    "melt",
+    "orbit",
+    "parallax",
+    "pendulum",
+    "pewpew",
+    "pop",
+    "ransom",
+    "shatter",
+    "smear",
+    "smoke",
+    "spectrum",
+    "voltage",
+    "warp",
+    "wave",
+    "zipper",
+    "zoetrope"
+  ],
+  "data_text_types": [
+    "blackout",
+    "duotone",
+    "echo",
+    "glass",
+    "glitch",
+    "grain",
+    "grunge",
+    "hologram",
+    "inktrap",
+    "invisible",
+    "laser",
+    "led",
+    "lens",
+    "lenticular",
+    "lightleak",
+    "pixel",
+    "portal",
+    "prismcut",
+    "ripple",
+    "signal",
+    "sliced",
+    "sonar",
+    "tiltshift",
+    "vapor"
+  ],
+  "source_mode": "verified-snapshot"
+}
