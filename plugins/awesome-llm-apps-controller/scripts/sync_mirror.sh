@@ -24,7 +24,7 @@ PYTHONPATH="$SCRIPT_DIR" python - "$UP" "$STAGE" "$REPO_ROOT" "$SHA" "$UPSTREAM_
 from pathlib import Path
 import json, shutil, sys
 from awesome_llm_apps_mirror import plan_mirror, copy_mirror
-from awesome_llm_apps_catalog import build_catalog, build_summary
+from awesome_llm_apps_catalog import build_catalog, build_summary, snapshot_statistics
 from awesome_llm_apps_skills import load_canonical_skills, project_skills
 from build_catalog import validate_supported
 up=Path(sys.argv[1]); stage=Path(sys.argv[2]); repo=Path(sys.argv[3]); sha=sys.argv[4]; ref=sys.argv[5]; scripts=Path(sys.argv[6])
@@ -64,6 +64,7 @@ lock={
   'ref':ref, 'commit':sha,'license':'Apache-2.0','schema_version':1,
   'canonical_skill_count':len(loaded['skills']),'canonical_skills':[x['name'] for x in loaded['skills']],
   'catalog_entry_count':len(catalog['entries']),'catalog_by_source_type':build_summary(catalog)['by_source_type'],
+  'snapshot_statistics':snapshot_statistics(up),
   'included_files':result['included_files'],'included_bytes':result['included_bytes'],
   'excluded_files':result['excluded_files'],'excluded_bytes':result['excluded_bytes'],
   'inconsistencies':loaded['inconsistencies'],'exclusion_policy_version':1,
