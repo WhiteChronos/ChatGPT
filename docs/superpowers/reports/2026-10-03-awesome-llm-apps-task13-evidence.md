@@ -66,7 +66,26 @@ Material findings from the post-merge review:
    - Fix: unknown canonical Skills remain discoverable as `REFERENCE_ONLY` and require explicit user invocation until reviewed.
    - GREEN workflow run: `37150217806` — full Awesome controller test suite plus sync regression succeeded.
 
+3. **Catalog schema contract was under-specified and shallowly validated**
+   - The approved design requires the complete catalog execution/provenance model, but the persistent schema required only five entry fields and the in-repo validator checked only field presence.
+   - RED workflow run `37151582362`: the complete-contract regression failed against the five-field schema.
+   - RED workflow run `37151613086`: after expanding the schema, the new validator regression still failed because invalid boolean/enum values were accepted.
+   - Fix: the schema now requires the full approved entry contract and declares types/enums; the dependency-free validator now enforces the supported JSON-Schema subset used by the repository.
+   - GREEN workflow run `37151637373`: catalog schema tests plus repository governance gates succeeded.
+   - The generated upstream snapshot, catalog counts, and commit `4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2` were not rewritten by this fix.
+
 These findings belong to the Native/Arena review path, not to the Subagent-driven path.
+
+### ChatGPT controller package
+
+The controller package was rebuilt from the exact `main` Skill source using the current Skill Creator packaging workflow.
+
+- artifact: `/mnt/data/awesome-llm-apps-controller-dist/skill.zip`
+- size: 3,900 bytes
+- SHA-256: `4f95e481be45571c5dcf7c42f9bd026e172472db626d4b5f68a5ddb487bb6036`
+- validated contents: `SKILL.md`, `agents/openai.yaml`, and the four approved reference files only
+- no vendor mirror, catalog bulk data, credentials, or executable upstream examples are packaged
+
 
 ### Native Codex multi-agent
 
