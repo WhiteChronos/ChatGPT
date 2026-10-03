@@ -82,3 +82,17 @@ def test_missing_mandatory_roots_detects_upstream_layout_drift(tmp_path):
     for name in MANDATORY_ROOTS - {'voice_ai_agents'}:
         (tmp_path / name).mkdir(parents=True)
     assert missing_mandatory_roots(tmp_path) == ['voice_ai_agents']
+
+
+def test_catalog_schema_requires_complete_execution_contract():
+    schema = json.loads((ROOT.parents[1] / 'registry' / 'awesome-llm-apps' / 'catalog.schema.json').read_text())
+    required = set(schema['properties']['entries']['items']['required'])
+    assert {
+        'id', 'source_type', 'upstream_path', 'external_url', 'license_status',
+        'category', 'subtype', 'title', 'readme_path', 'skill_paths',
+        'manifest_paths', 'env_example_paths', 'docker_paths',
+        'mcp_related_paths', 'languages', 'frameworks', 'providers',
+        'external_services', 'network_required', 'credentials_required',
+        'background_capable', 'self_modifying', 'high_stakes_domain',
+        'execution_class', 'upstream_commit'
+    } <= required
