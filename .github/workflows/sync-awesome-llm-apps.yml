@@ -1,0 +1,121 @@
+name: Sync Awesome LLM Apps
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sync-awesome-llm-apps.yml"
+      - "plugins/awesome-llm-apps-controller/**"
+      - "registry/awesome-llm-apps/catalog.schema.json"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-awesome-llm-apps
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Test synchronizer
+        run: |
+          python -m pytest -q plugins/awesome-llm-apps-controller/tests
+          bash plugins/awesome-llm-apps-controller/tests/test_sync_mirror.sh
+      - name: Capture previously managed Skill paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/awesome-old-skills.txt
+          import json
+          from pathlib import Path
+          p=Path('.agents/skills/.awesome-llm-apps-managed.json')
+          if p.exists():
+              data=json.loads(p.read_text())
+              for item in data.get('managed_skills',[]):
+                  name=item['name'] if isinstance(item,dict) else item
+                  print(name)
+          PY
+      - name: Synchronize upstream
+        id: sync
+        run: bash plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh
+      - name: Detect generated changes
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git status --porcelain --             vendor/shubhamsaboo-awesome-llm-apps/             registry/awesome-llm-apps/             .agents/skills/             plugins/awesome-llm-apps-controller/upstream.lock.json > /tmp/awesome-status.txt
+          if [[ -s /tmp/awesome-status.txt ]]; then echo "changed=true" >> "$GITHUB_OUTPUT"; else echo "changed=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Prepare managed Skill path union
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' > managed-skill-paths.txt
+          import json
+          from pathlib import Path
+          names=set(Path('/tmp/awesome-old-skills.txt').read_text().split())
+          p=Path('.agents/skills/.awesome-llm-apps-managed.json')
+          if p.exists():
+              data=json.loads(p.read_text())
+              for item in data.get('managed_skills',[]):
+                  names.add(item['name'] if isinstance(item,dict) else item)
+          for name in sorted(names): print(f'.agents/skills/{name}')
+          PY
+      - name: Commit and push review branch
+        if: steps.changes.outputs.changed == 'true'
+        id: branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA="$(python - <<'PY'
+          import json
+          print(json.load(open('plugins/awesome-llm-apps-controller/upstream.lock.json'))['commit'])
+          PY
+          )"
+          SHORT="${SHA:0:12}"
+          BRANCH="chore/sync-awesome-llm-apps-${SHORT}"
+          echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add -A -- vendor/shubhamsaboo-awesome-llm-apps/
+          git add -A -- registry/awesome-llm-apps/
+          git add -A -- .agents/skills/.awesome-llm-apps-managed.json
+          while IFS= read -r path; do [[ -n "$path" ]] && git add -A -- "$path"; done < managed-skill-paths.txt
+          git add -A -- plugins/awesome-llm-apps-controller/upstream.lock.json
+          git commit -m "chore: sync awesome-llm-apps ${SHORT}"
+          git push --force-with-lease origin "$BRANCH"
+      - name: Open or report pull request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.branch.outputs.name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          existing="$(gh pr list --head "$BRANCH" --base main --json url --jq '.[0].url // empty' || true)"
+          if [[ -n "$existing" ]]; then
+            echo "Existing PR: $existing" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if ! url="$(gh pr create --base main --head "$BRANCH" --title "chore: sync Awesome LLM Apps" --body "Automated reviewed sync of the Awesome LLM Apps functional mirror, catalog and canonical Skills." 2>/tmp/awesome-pr-error.txt)"; then
+            echo "::warning::PR creation was blocked after the sync branch was pushed."
+            echo "PR creation was blocked. Branch ready: $BRANCH" >> "$GITHUB_STEP_SUMMARY"
+            cat /tmp/awesome-pr-error.txt >> "$GITHUB_STEP_SUMMARY" || true
+            exit 0
+          fi
+          echo "PR: $url" >> "$GITHUB_STEP_SUMMARY"
