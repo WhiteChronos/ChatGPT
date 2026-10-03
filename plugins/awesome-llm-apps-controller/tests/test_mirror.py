@@ -14,7 +14,8 @@ def test_mirror_excludes_generated_and_large_media_and_unsafe_symlink(tmp_path):
     os.symlink(outside, src/'escape')
     plan=plan_mirror(src)
     reasons={x['path']:x['reason'] for x in plan if x['action']=='exclude'}
-    assert reasons['node_modules']=='generated_or_dependency_dir'
+    assert reasons['node_modules/x.js']=='generated_or_dependency_dir'
+    assert 'node_modules' not in reasons
     assert reasons['large.gif']=='large_demo_media'
     assert reasons['escape']=='unsafe_symlink'
     result=copy_mirror(src,dst,plan,'abc')
@@ -22,3 +23,6 @@ def test_mirror_excludes_generated_and_large_media_and_unsafe_symlink(tmp_path):
     assert (dst/'small.png').exists()
     assert not (dst/'large.gif').exists()
     assert any(x['path']=='escape' for x in result['excluded'])
+    assert any(x['path']=='node_modules/x.js' for x in result['excluded'])
+    assert result['included_files'] == 2
+    assert result['excluded_files'] == 3
