@@ -1,0 +1,3 @@
+interface:
+  display_name: "Superpowers Controller"
+  short_description: "Route development work through the official Superpowers plugin."

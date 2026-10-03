@@ -1,0 +1,24 @@
+{
+  "name": "superpowers-controller",
+  "version": "1.0.0",
+  "description": "WhiteChronos controller for the official Superpowers plugin, upstream provenance, and mirror synchronization.",
+  "author": {
+    "name": "WhiteChronos",
+    "url": "https://github.com/WhiteChronos"
+  },
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/superpowers-controller",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "keywords": ["superpowers", "codex", "skills", "tdd", "debugging", "planning", "workflow"],
+  "skills": "./skills/",
+  "hooks": {},
+  "interface": {
+    "displayName": "Superpowers Controller",
+    "shortDescription": "Route development work through the official Superpowers plugin.",
+    "longDescription": "Keeps the official Superpowers plugin as the runtime source of truth while adding WhiteChronos routing, provenance, version tracking, and a read-only synchronized upstream mirror.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read"],
+    "websiteURL": "https://github.com/obra/superpowers"
+  }
+}

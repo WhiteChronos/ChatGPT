@@ -140,3 +140,19 @@ Agents SHALL:
 - when the `github_arena` MCP server is available, call `arena_review_checklist` for GitHub work before finalizing;
 - for high-impact GitHub or coding changes, call `arena_plan` and `arena_cards` before choosing the implementation approach;
 - use the GitHub connector for repository reads/writes and the Arena MCP only for review/planning; never duplicate GitHub credentials inside Arena.
+
+## Official Superpowers workflow layer
+
+For every Codex software-development task in this repository, agents SHALL prefer the official `Superpowers` plugin from the OpenAI Codex marketplace and SHALL treat `plugins/superpowers-controller` as a routing/provenance layer, not as a fork of upstream behavior.
+
+Agents SHALL:
+
+- consult the official `using-superpowers` bootstrap before development work and invoke the relevant official Superpowers Skill before acting;
+- use `brainstorming` before implementing a new feature or architecture when that Skill applies;
+- preserve Superpowers planning, worktree, TDD, systematic-debugging, code-review, verification and finish-the-branch gates;
+- use real subagents only when the runtime actually provides them; otherwise follow the official fallback workflow rather than fabricating subagent execution;
+- never edit `vendor/obra-superpowers/` manually; that tree is a read-only byte mirror maintained by `.github/workflows/sync-superpowers-mirror.yml`;
+- use the mirror only for search, provenance, audit, recovery and upstream comparison;
+- record upstream/runtime version drift instead of modifying official Superpowers Skills to close the gap;
+- continue applying this repository's engineering-governance rules and GitHub Arena review layer alongside Superpowers.
+

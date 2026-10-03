@@ -1,0 +1,21 @@
+{
+  "upstream": {
+    "repository": "obra/superpowers",
+    "ref": "main",
+    "observed_sha": "8ca22dba9a94f28898bbce59f2537ff4d87c747d",
+    "observed_version": "6.4.2",
+    "license": "MIT"
+  },
+  "official_codex_marketplace": {
+    "repository": "openai/plugins",
+    "marketplace": "openai-curated",
+    "plugin": "superpowers",
+    "observed_version": "6.3.0",
+    "runtime_policy": "preferred"
+  },
+  "mirror": {
+    "path": "vendor/obra-superpowers",
+    "mode": "read-only",
+    "sync_workflow": ".github/workflows/sync-superpowers-mirror.yml"
+  }
+}
