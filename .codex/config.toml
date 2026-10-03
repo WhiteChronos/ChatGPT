@@ -40,3 +40,7 @@ enabled_tools = [
   "subagent_cancel",
   "subagent_cleanup"
 ]
+
+
+[plugins."awesome-llm-apps-controller@whitechronos-repo"]
+enabled = true

@@ -90,6 +90,21 @@
         ]
       },
       "category": "Developer Tools"
+    },
+    {
+      "name": "awesome-llm-apps-controller",
+      "source": {
+        "source": "local",
+        "path": "./plugins/awesome-llm-apps-controller"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL",
+        "products": [
+          "CODEX"
+        ]
+      },
+      "category": "Developer Tools"
     }
   ]
 }
