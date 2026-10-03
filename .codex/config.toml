@@ -1,3 +1,6 @@
+[features]
+multi_agent = true
+
 [plugins."github-arena@whitechronos-repo"]
 enabled = true
 
