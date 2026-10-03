@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "subagent_broker": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./mcp-server/mcp_server.mjs"],
+      "cwd": "."
+    }
+  }
+}
