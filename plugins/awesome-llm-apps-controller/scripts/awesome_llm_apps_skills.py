@@ -12,7 +12,18 @@ KNOWN_RISKS={
  'thinking-out-loud':{'execution_class':'REFERENCE_ONLY','network_required':False,'credentials_required':False,'broad_filesystem_access':False,'explicit_user_request_required':False},
 }
 
-def risk_for_skill(name:str): return dict(KNOWN_RISKS.get(name,{'execution_class':'LOCAL_READ_ONLY','network_required':False,'credentials_required':False,'broad_filesystem_access':False,'explicit_user_request_required':False}))
+SAFE_UNKNOWN_RISK={
+ 'execution_class':'REFERENCE_ONLY',
+ 'network_required':False,
+ 'credentials_required':False,
+ 'broad_filesystem_access':False,
+ 'explicit_user_request_required':True,
+}
+
+def risk_for_skill(name:str):
+    # New upstream Skills remain discoverable but cannot inherit permissive
+    # execution assumptions before WhiteChronos reviews their behavior.
+    return dict(KNOWN_RISKS.get(name, SAFE_UNKNOWN_RISK))
 
 def load_canonical_skills(root:Path):
     root=Path(root); reg=json.loads((root/'agent_skills'/'registry.json').read_text())
