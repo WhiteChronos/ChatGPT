@@ -466,7 +466,8 @@ Prove:
 - completion of one starts the next;
 - high priority moves ahead of queued normal work but never preempts running work;
 - queue 33 returns `RESOURCE_EXHAUSTED`;
-- `maxRunning > 8` is rejected.
+- `maxRunning > 8` is rejected;
+- `list({ state })` returns bounded public metadata and filters deterministically.
 
 - [ ] **Step 2: Write failing wait/timeout tests**
 
@@ -494,7 +495,16 @@ Prove:
 - incomplete result metadata cleanup refuses;
 - safe cleanup can remove terminal worktree/trace data while preserving compact metadata unless `purge_metadata=true`.
 
-- [ ] **Step 5: Run broker tests and confirm RED**
+- [ ] **Step 5: Write failing broker-restart tests**
+
+Prove:
+
+- `start()` rehydrates persisted `QUEUED` entries into the in-memory queue without launching above capacity;
+- attributable live RUNNING entries remain represented after StateStore reconciliation;
+- stale nonterminal entries already marked `ORPHANED` by reconciliation are never silently rerun;
+- terminal entries remain queryable but are not requeued.
+
+- [ ] **Step 6: Run broker tests and confirm RED**
 
 ```bash
 node --test plugins/subagent-broker/tests/broker.test.mjs
@@ -502,17 +512,17 @@ node --test plugins/subagent-broker/tests/broker.test.mjs
 
 Expected: FAIL because broker does not exist.
 
-- [ ] **Step 6: Implement SubagentBroker**
+- [ ] **Step 7: Implement SubagentBroker**
 
 Use event/promise waiters keyed by `agent_id`; do not poll with short intervals.
 
 Start queued work when capacity frees.
 
-- [ ] **Step 7: Run broker tests and confirm GREEN**
+- [ ] **Step 8: Run broker tests and confirm GREEN**
 
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add plugins/subagent-broker/mcp-server/broker.mjs   plugins/subagent-broker/tests/broker.test.mjs
