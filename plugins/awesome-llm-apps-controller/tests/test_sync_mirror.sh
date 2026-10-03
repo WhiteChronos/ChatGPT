@@ -6,6 +6,10 @@ trap 'rm -rf "$TMP"' EXIT
 UP="$TMP/upstream"
 PROJ="$TMP/project"
 mkdir -p "$UP/agent_skills/skill-a" "$UP/rag_tutorials/demo" "$PROJ/.agents/skills" "$PROJ/registry/awesome-llm-apps" "$PROJ/vendor"
+for root in starter_ai_agents advanced_ai_agents always_on_agents voice_ai_agents mcp_ai_agents generative_ui_agents rag_tutorials advanced_llm_apps ai_agent_framework_crash_course agent_skills; do
+  mkdir -p "$UP/$root"
+  echo tracked > "$UP/$root/.whitechronos-fixture"
+done
 cat > "$UP/LICENSE" <<'EOF'
 Apache License
 Version 2.0
@@ -71,8 +75,9 @@ p=Path('$PROJ')
 lock=json.loads((p/'plugins/awesome-llm-apps-controller/upstream.lock.json').read_text())
 assert lock['license']=='Apache-2.0'
 assert lock['ref']=='main'
+assert lock['upstream_url']=='$UP'
 assert lock['canonical_skill_count']==1
-assert lock['snapshot_statistics']['blobs']==8
+assert lock['snapshot_statistics']['blobs']==18
 assert lock['snapshot_statistics']['skill_md']==1
 assert lock['snapshot_statistics']['canonical_skills']==1
 assert lock['snapshot_statistics']['readmes']==2
@@ -80,7 +85,14 @@ assert lock['snapshot_statistics']['dependency_manifests']==1
 assert lock['snapshot_statistics']['dockerfiles']==0
 assert lock['snapshot_statistics']['compose_files']==0
 assert lock['snapshot_statistics']['code_files']==1
+meta=json.loads((p/'vendor/shubhamsaboo-awesome-llm-apps/.whitechronos-mirror.json').read_text())
+assert meta['upstream_repository']=='Shubhamsaboo/awesome-llm-apps'
+assert meta['upstream_url']=='$UP'
+assert meta['ref']=='main'
 exc=json.loads((p/'vendor/shubhamsaboo-awesome-llm-apps/.whitechronos-excluded.json').read_text())
+assert exc['upstream_repository']=='Shubhamsaboo/awesome-llm-apps'
+assert exc['upstream_url']=='$UP'
+assert exc['ref']=='main'
 assert any(x['path']=='large.gif' and x['reason']=='large_demo_media' for x in exc['excluded'])
 cat=json.loads((p/'registry/awesome-llm-apps/catalog.json').read_text())
 assert any(e['source_type']=='external_reference' for e in cat['entries'])
@@ -95,3 +107,13 @@ AWESOME_LLM_APPS_REPO_ROOT="$PROJ" AWESOME_LLM_APPS_UPSTREAM_URL="$UP" AWESOME_L
   bash "$ROOT/plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh"
 test ! -e "$PROJ/vendor/shubhamsaboo-awesome-llm-apps/rag_tutorials/demo/requirements.txt"
 echo 'SYNC PASS'
+
+# Mandatory upstream root removal must fail closed for human review.
+rm -rf "$UP/voice_ai_agents"
+git -C "$UP" add -A
+git -C "$UP" commit -qm remove-mandatory-root
+if AWESOME_LLM_APPS_REPO_ROOT="$PROJ" AWESOME_LLM_APPS_UPSTREAM_URL="$UP" AWESOME_LLM_APPS_UPSTREAM_REF=main \
+  bash "$ROOT/plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh"; then
+  echo "EXPECTED mandatory-root drift rejection" >&2
+  exit 1
+fi
