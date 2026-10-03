@@ -70,6 +70,7 @@ from pathlib import Path
 p=Path('$PROJ')
 lock=json.loads((p/'plugins/awesome-llm-apps-controller/upstream.lock.json').read_text())
 assert lock['license']=='Apache-2.0'
+assert lock['ref']=='main'
 assert lock['canonical_skill_count']==1
 exc=json.loads((p/'vendor/shubhamsaboo-awesome-llm-apps/.whitechronos-excluded.json').read_text())
 assert any(x['path']=='large.gif' and x['reason']=='large_demo_media' for x in exc['excluded'])
