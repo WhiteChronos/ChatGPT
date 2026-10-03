@@ -23,7 +23,23 @@ def plan_mirror(root:Path):
         for d in sorted(dirs):
             p=c/d; rel=p.relative_to(root).as_posix()
             if d in EXCLUDED_DIRS:
-                plan.append({'path':rel,'action':'exclude','reason':'generated_or_dependency_dir','size':0,'git_sha':_git_sha(root,rel)}); continue
+                # .git is clone metadata, not an upstream source blob, so prune it
+                # without polluting the source exclusion ledger. Other excluded
+                # directories are expanded to one ledger row per omitted file so
+                # included_files + excluded_files reconciles with tracked blobs.
+                if d != '.git':
+                    for subcur, subdirs, subfiles in os.walk(p, topdown=True, followlinks=False):
+                        subbase=Path(subcur)
+                        for sd in list(subdirs):
+                            sp=subbase/sd
+                            if sp.is_symlink():
+                                srel=sp.relative_to(root).as_posix()
+                                plan.append({'path':srel,'action':'exclude','reason':'generated_or_dependency_dir','size':sp.lstat().st_size,'git_sha':_git_sha(root,srel)})
+                                subdirs.remove(sd)
+                        for sf in sorted(subfiles):
+                            sp=subbase/sf; srel=sp.relative_to(root).as_posix()
+                            plan.append({'path':srel,'action':'exclude','reason':'generated_or_dependency_dir','size':sp.lstat().st_size,'git_sha':_git_sha(root,srel)})
+                continue
             if p.is_symlink():
                 try: target=p.resolve(strict=False); safe=(target==root or root in target.parents)
                 except OSError: safe=False
