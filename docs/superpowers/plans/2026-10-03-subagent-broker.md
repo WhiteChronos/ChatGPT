@@ -131,7 +131,7 @@
 - Produces: `AGENT_STATES: ReadonlySet<string>`
 - Produces: `TERMINAL_STATES: ReadonlySet<string>`
 - Produces: `canTransition(from: string, to: string) -> boolean`
-- Produces: `assertTransition(from: string, to: string) -> void`
+- Produces: `assertTransition(from: string, to: string, reason?: string) -> void`
 - Produces: `validateSpawnArgs(value: unknown) -> SpawnSpec`
 - Produces: `validateWaitArgs(value: unknown) -> { agent_id: string, timeout_ms: number }`
 - Produces: equivalent validators for result/status/followup/list/cancel/cleanup.
@@ -143,6 +143,16 @@
 - [ ] **Step 1: Write failing lifecycle and argument-validation tests**
 
 Pin all nine states, five terminal states, legal representative transitions, illegal transition rejection, role enum, workspace-mode enum, timeout defaults/bounds, priority enum, and rejection of unknown tool fields such as `command`, `env`, `model`, or `args`.
+
+A completed turn may reopen only through the explicit follow-up path:
+
+```js
+assert.equal(canTransition("COMPLETED", "SPAWNING"), false);
+assert.doesNotThrow(() => assertTransition("COMPLETED", "SPAWNING", "followup"));
+assert.throws(() => assertTransition("FAILED", "SPAWNING", "followup"));
+```
+
+v1 follow-up is therefore allowed only from `COMPLETED`, with a recorded session ID and confirmed resume capability.
 
 Example assertions:
 
@@ -275,6 +285,7 @@ git commit -m "feat: persist and recover subagent lifecycle state"
 
 **Interfaces:**
 - Consumes: repository root, `agent_id`, `base_ref`, and workspace mode.
+- Produces: `discoverRepoRoot(startCwd: string) -> Promise<string>` using `git rev-parse --show-toplevel` and verifying the resolved root contains the plugin path.
 - Produces: `resolveBase(repoRoot: string, baseRef?: string) -> Promise<string>` returning exact commit SHA.
 - Produces: `createWorkspace({ repoRoot, agentId, baseSha, mode }) -> Promise<WorkspaceRecord>`
 - Produces: `statusWorkspace(workspace: WorkspaceRecord) -> Promise<{ dirty: boolean, porcelain: string, commits: string[], diff_stat: string }>`
@@ -288,7 +299,8 @@ Create a temporary Git repo and prove:
 - read-only workspace is a detached worktree at exact `baseSha`;
 - parent branch may advance after workspace creation without changing the reviewer's checked-out commit;
 - no branch named `subagent/<agent_id>` is created for read-only mode;
-- paths outside `.worktrees/subagents/<agent_id>` are rejected.
+- paths outside `.worktrees/subagents/<agent_id>` are rejected;
+- starting discovery from `plugins/subagent-broker/` resolves the owning WhiteChronos repository root, while a cwd outside any Git repository fails closed.
 
 - [ ] **Step 2: Write failing write-worktree tests**
 
@@ -377,7 +389,8 @@ Assert:
 - `shell:false`;
 - task prompt is sent on stdin and absent from argv;
 - child runs in exact workspace cwd;
-- child has a distinct PID;
+- child has a distinct PID and recorded Linux process-start identity;
+- child prompt contains role + explicit task only and does not contain a supplied fake parent-transcript sentinel;
 - JSONL is appended incrementally;
 - session ID is extracted;
 - sensitive stderr is redacted before compact result exposure.
@@ -465,9 +478,11 @@ Prove:
 
 - [ ] **Step 3: Write failing result/follow-up tests**
 
-Prove result includes bounded redacted excerpts, exact worktree/branch, session ID if available, exit code, commit list/diff stat, and artifact paths.
+Prove `result(agentId)` returns `NOT_READY` for every nonterminal state rather than presenting partial data as a final result.
 
-Prove follow-up only starts from a resumable terminal state and transitions through SPAWNING/RUNNING to a new terminal turn while retaining the same agent identity, worktree, and session ID.
+For a terminal agent, prove result includes bounded redacted excerpts, exact worktree/branch, session ID if available, exit code, commit list/diff stat, and artifact paths.
+
+Prove follow-up starts only from `COMPLETED` with a recorded session ID and confirmed resume capability, transitions through SPAWNING/RUNNING to a new terminal turn, and retains the same agent identity, worktree, and session ID.
 
 - [ ] **Step 4: Write failing queued/running cancel and cleanup tests**
 
@@ -536,7 +551,8 @@ Launch the MCP server as a subprocess and assert:
 - schemas reject arbitrary `command`, `env`, `args`, and `model` fields;
 - malformed JSON returns parse error without server crash;
 - unknown tool returns structured error;
-- stateful calls reach the fake-backed broker.
+- stateful calls reach the fake-backed broker;
+- server startup discovers the repository root from the plugin cwd and does not accept an arbitrary repository-root path from MCP callers.
 
 - [ ] **Step 2: Pin MCP annotations**
 
