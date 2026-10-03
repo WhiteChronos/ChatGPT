@@ -22,7 +22,7 @@ jobs:
           python-version: "3.12"
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
-      - name: Run targeted persistence test
-        run: python -m pytest -q plugins/awesome-llm-apps-controller/tests/test_schema_persistence.py
+      - name: Run Awesome controller tests
+        run: python -m pytest -q plugins/awesome-llm-apps-controller/tests
       - name: Run synchronizer regression
         run: bash plugins/awesome-llm-apps-controller/tests/test_sync_mirror.sh
