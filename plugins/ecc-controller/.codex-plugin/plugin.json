@@ -1,0 +1,23 @@
+{
+  "name": "ecc-controller",
+  "version": "1.0.0",
+  "description": "WhiteChronos routing, provenance, and safety layer for the official affaan-m/ECC Codex plugin.",
+  "author": {
+    "name": "WhiteChronos",
+    "url": "https://github.com/WhiteChronos"
+  },
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/ecc-controller",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "keywords": ["ecc", "codex", "skills", "agents", "security", "tdd", "mcp", "automation"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ECC Controller",
+    "shortDescription": "Route specialized engineering work through the official ECC ecosystem.",
+    "longDescription": "Adds WhiteChronos routing, provenance, safety, update tracking, and fallback behavior around the upstream-native affaan-m/ECC Codex plugin without duplicating ECC hooks or MCP servers.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read"],
+    "websiteURL": "https://github.com/affaan-m/ECC"
+  }
+}
