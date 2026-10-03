@@ -156,3 +156,22 @@ Agents SHALL:
 - record upstream/runtime version drift instead of modifying official Superpowers Skills to close the gap;
 - continue applying this repository's engineering-governance rules and GitHub Arena review layer alongside Superpowers.
 
+
+
+## Matt Pocock complementary skills layer
+
+For Codex software-development and technical workflow tasks in this repository, agents SHALL treat the promoted stable skills from `mattpocock/skills` as a complementary specialized library. Superpowers remains the default development-process layer unless the user explicitly requests a Matt Pocock workflow or a more specific repository instruction selects it.
+
+Agents SHALL:
+
+- preserve the upstream Matt Pocock distinction between model-invoked and user-invoked skills;
+- never silently execute a Matt user-invoked skill; recommend the relevant explicit skill and wait for the user to invoke it;
+- prefer Superpowers for overlapping TDD, debugging and code-review process unless the user explicitly asks for the Matt Pocock variant;
+- use Matt model-invoked skills when their specialized discipline materially improves the task, including domain modeling, codebase design, cited engineering research, prototype evidence, PR framing, human-only setup wizards and writing for agents;
+- treat `.agents/skills/.matt-pocock-managed.json` as the ownership manifest for Matt-managed project skills;
+- never manually edit Matt-managed directories under `.agents/skills/`; they are synchronized byte-for-byte from upstream;
+- never edit `vendor/mattpocock-skills/` manually; it is a read-only full upstream mirror maintained by `.github/workflows/sync-matt-pocock-skills.yml`;
+- keep `skills/in-progress` and `skills/deprecated` mirror-only unless the user explicitly requests an experimental/deprecated skill;
+- refuse automatic synchronization when an upstream Matt skill name would overwrite an unmanaged project skill;
+- use the GitHub connector for repository evidence and mutations;
+- apply GitHub Arena after the applicable Superpowers/Matt workflow for high-impact GitHub or coding changes.
