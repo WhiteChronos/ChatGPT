@@ -72,6 +72,14 @@ lock=json.loads((p/'plugins/awesome-llm-apps-controller/upstream.lock.json').rea
 assert lock['license']=='Apache-2.0'
 assert lock['ref']=='main'
 assert lock['canonical_skill_count']==1
+assert lock['snapshot_statistics']['blobs']==8
+assert lock['snapshot_statistics']['skill_md']==1
+assert lock['snapshot_statistics']['canonical_skills']==1
+assert lock['snapshot_statistics']['readmes']==2
+assert lock['snapshot_statistics']['dependency_manifests']==1
+assert lock['snapshot_statistics']['dockerfiles']==0
+assert lock['snapshot_statistics']['compose_files']==0
+assert lock['snapshot_statistics']['code_files']==1
 exc=json.loads((p/'vendor/shubhamsaboo-awesome-llm-apps/.whitechronos-excluded.json').read_text())
 assert any(x['path']=='large.gif' and x['reason']=='large_demo_media' for x in exc['excluded'])
 cat=json.loads((p/'registry/awesome-llm-apps/catalog.json').read_text())
