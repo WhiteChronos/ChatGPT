@@ -71,7 +71,11 @@ jobs:
 
           EXISTING="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
           if [[ -z "$EXISTING" ]]; then
-            if PR_URL="$(gh pr create               --base main               --head "$BRANCH"               --title "chore: sync affaan-m/ECC ${VERSION} (${SHORT_SHA})"               --body "Automated read-only mirror refresh from https://github.com/affaan-m/ECC at commit \`${SHA}\`. Snapshot: ${SKILLS} Skills, ${AGENTS} agents, ${COMMANDS} command shims. Upstream code is copied but not executed during synchronization; runtime remains the official upstream-native ECC Codex plugin." 2>&1)"; then
+            if PR_URL="$(gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore: sync affaan-m/ECC ${VERSION} (${SHORT_SHA})" \
+              --body "Automated read-only mirror refresh from https://github.com/affaan-m/ECC at commit \`${SHA}\`. Snapshot: ${SKILLS} Skills, ${AGENTS} agents, ${COMMANDS} command shims. Upstream code is copied but not executed during synchronization; runtime remains the official upstream-native ECC Codex plugin." 2>&1)"; then
               echo "Created synchronization PR: $PR_URL"
             else
               echo "::warning::Synchronization branch was pushed, but repository policy blocked GitHub Actions from creating the PR."
