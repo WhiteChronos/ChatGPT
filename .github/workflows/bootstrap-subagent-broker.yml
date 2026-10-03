@@ -27,6 +27,9 @@ jobs:
           set -euo pipefail
           cat .bootstrap/subagent-broker/chunk-*.b64 | tr -d '\n\r ' | base64 --decode > /tmp/subagent-broker.tar.gz
           sha256sum /tmp/subagent-broker.tar.gz | tee /tmp/subagent-broker.sha256
+          echo "=== BUNDLE MEMBERS ==="
+          tar -tzf /tmp/subagent-broker.tar.gz | tee /tmp/subagent-broker.members
+          echo "=== END BUNDLE MEMBERS ==="
           python - <<'PY'
           import pathlib, tarfile
           archive = "/tmp/subagent-broker.tar.gz"
@@ -66,6 +69,24 @@ jobs:
                       continue
                   raise SystemExit(f"unexpected bundle path: {m.name}")
               tf.extractall(".", filter="data")
+          required = [
+              "plugins/subagent-broker/mcp-server/protocol.mjs",
+              "plugins/subagent-broker/mcp-server/redaction.mjs",
+              "plugins/subagent-broker/mcp-server/state_store.mjs",
+              "plugins/subagent-broker/mcp-server/process_identity.mjs",
+              "plugins/subagent-broker/mcp-server/worktree_manager.mjs",
+              "plugins/subagent-broker/mcp-server/codex_cli_backend.mjs",
+              "plugins/subagent-broker/mcp-server/broker.mjs",
+              "plugins/subagent-broker/mcp-server/mcp_server.mjs",
+              "plugins/subagent-broker/tests/protocol.test.mjs",
+              "plugins/subagent-broker/tests/broker.test.mjs",
+              ".codex/config.toml",
+              ".agents/plugins/marketplace.json",
+              "AGENTS.md",
+          ]
+          missing = [p for p in required if not pathlib.Path(p).exists()]
+          if missing:
+              raise SystemExit("bundle missing required paths: " + ", ".join(missing))
           PY
 
       - name: Verify extracted implementation
