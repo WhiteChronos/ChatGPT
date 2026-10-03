@@ -17,3 +17,9 @@ enabled = true
 
 [plugins."matt-pocock-controller@whitechronos-repo"]
 enabled = true
+
+[plugins."ecc@whitechronos-repo"]
+enabled = true
+
+[plugins."ecc-controller@whitechronos-repo"]
+enabled = true
