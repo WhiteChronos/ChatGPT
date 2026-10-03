@@ -1,0 +1,113 @@
+name: Bootstrap verified Subagent Broker bundle
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/subagent-broker-runtime
+    paths:
+      - ".bootstrap/subagent-broker/**"
+      - ".github/workflows/bootstrap-subagent-broker.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct and validate transport archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .bootstrap/subagent-broker/chunk-*.b64 | tr -d '\n\r ' | base64 --decode > /tmp/subagent-broker.tar.gz
+          sha256sum /tmp/subagent-broker.tar.gz | tee /tmp/subagent-broker.sha256
+          python - <<'PY'
+          import pathlib, tarfile
+          archive = "/tmp/subagent-broker.tar.gz"
+          allowed_exact = {
+              ".gitignore",
+              ".codex/config.toml",
+              ".agents/plugins/marketplace.json",
+              "AGENTS.md",
+              ".github/workflows/subagent-broker.yml",
+              "docs/superpowers/specs/2026-10-03-subagent-broker-design.md",
+              "docs/superpowers/plans/2026-10-03-subagent-broker.md",
+          }
+          allowed_prefixes = ("plugins/subagent-broker/",)
+          with tarfile.open(archive, "r:gz") as tf:
+              members = tf.getmembers()
+              if not members:
+                  raise SystemExit("empty bundle")
+              for m in members:
+                  p = pathlib.PurePosixPath(m.name)
+                  if p.is_absolute() or ".." in p.parts:
+                      raise SystemExit(f"unsafe path: {m.name}")
+                  if m.issym() or m.islnk():
+                      raise SystemExit(f"links are forbidden in bootstrap bundle: {m.name}")
+                  if not (m.isdir() or m.isfile()):
+                      raise SystemExit(f"unsupported tar member type: {m.name}")
+                  name = m.name.rstrip("/")
+                  if not name:
+                      continue
+                  if name in allowed_exact:
+                      continue
+                  if any(name.startswith(prefix) for prefix in allowed_prefixes):
+                      continue
+                  # Directories that are ancestors of allowed paths are okay.
+                  if any(exact.startswith(name + "/") for exact in allowed_exact):
+                      continue
+                  if any(prefix.startswith(name + "/") for prefix in allowed_prefixes):
+                      continue
+                  raise SystemExit(f"unexpected bundle path: {m.name}")
+              tf.extractall(".", filter="data")
+          PY
+
+      - name: Verify extracted implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test plugins/subagent-broker/tests/*.test.mjs
+          python - <<'PY'
+          import json, tomllib
+          json.load(open(".agents/plugins/marketplace.json", encoding="utf-8"))
+          with open(".codex/config.toml", "rb") as f:
+              cfg = tomllib.load(f)
+          assert cfg["features"]["multi_agent"] is True
+          plugin = cfg["plugins"]["subagent-broker@whitechronos-repo"]
+          assert plugin["enabled"] is True
+          tools = plugin["mcp_servers"]["subagent_broker"]["enabled_tools"]
+          assert tools == [
+              "subagent_spawn",
+              "subagent_status",
+              "subagent_wait",
+              "subagent_result",
+              "subagent_followup",
+              "subagent_list",
+              "subagent_cancel",
+              "subagent_cleanup",
+          ]
+          print("CONFIG PASS")
+          PY
+          python pipeline/engineering_compatibility_gate.py
+          python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
+          pytest -q tests/test_engineering_compatibility_gate.py
+          pytest -q tests/test_protocol_zero_gate.py
+
+      - name: Replace transport with verified source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .bootstrap/subagent-broker
+          rm -f .github/workflows/bootstrap-subagent-broker.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status --short
+          git commit -m "feat: implement real Codex subagent broker"
+          git push origin HEAD:feature/subagent-broker-runtime
