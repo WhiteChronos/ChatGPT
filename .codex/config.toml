@@ -5,3 +5,9 @@ enabled = true
 enabled = true
 default_tools_approval_mode = "approve"
 enabled_tools = ["arena_plan", "arena_cards", "arena_rubric", "arena_review_checklist"]
+
+[plugins."superpowers@openai-curated"]
+enabled = true
+
+[plugins."superpowers-controller@whitechronos-repo"]
+enabled = true
