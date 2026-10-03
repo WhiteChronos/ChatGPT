@@ -1,8 +1,48 @@
 {
-  "upstream_repository": "Shubhamsaboo/awesome-llm-apps",
-  "ref": "main",
-  "approved_snapshot": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+  "canonical_skill_count": 7,
+  "canonical_skills": [
+    "advisor-orchestrator-worker",
+    "commit-archaeologist",
+    "dependency-doctor",
+    "first-reader",
+    "project-graveyard",
+    "scope-creep-detector",
+    "thinking-out-loud"
+  ],
+  "catalog_by_source_type": {
+    "external_reference": 2,
+    "upstream_internal": 432
+  },
+  "catalog_entry_count": 434,
+  "commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+  "excluded_bytes": 50649024,
+  "excluded_files": 19,
+  "exclusion_policy_version": 1,
+  "included_bytes": 39430805,
+  "included_files": 1957,
+  "inconsistencies": [
+    {
+      "detail": "empty_or_missing",
+      "kind": "license_metadata",
+      "name": "first-reader"
+    }
+  ],
   "license": "Apache-2.0",
+  "ref": "main",
   "schema_version": 1,
-  "sync_status": "pending_initial_live_sync"
+  "snapshot_statistics": {
+    "blobs": 1976,
+    "canonical_skills": 7,
+    "code_files": 996,
+    "compose_files": 1,
+    "dependency_manifests": 194,
+    "dockerfiles": 8,
+    "env_examples": 65,
+    "mcp_related": 139,
+    "readmes": 223,
+    "skill_md": 10,
+    "tree_entries": 2531
+  },
+  "upstream_repository": "Shubhamsaboo/awesome-llm-apps",
+  "upstream_url": "https://github.com/Shubhamsaboo/awesome-llm-apps.git"
 }

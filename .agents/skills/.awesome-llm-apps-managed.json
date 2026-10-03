@@ -1,0 +1,76 @@
+{
+  "inconsistencies": [
+    {
+      "detail": "empty_or_missing",
+      "kind": "license_metadata",
+      "name": "first-reader"
+    }
+  ],
+  "managed_skills": [
+    {
+      "broad_filesystem_access": false,
+      "credentials_required": true,
+      "execution_class": "CREDENTIALLED",
+      "explicit_user_request_required": true,
+      "name": "advisor-orchestrator-worker",
+      "network_required": true,
+      "upstream_path": "agent_skills/advisor-orchestrator-worker"
+    },
+    {
+      "broad_filesystem_access": false,
+      "credentials_required": false,
+      "execution_class": "LOCAL_READ_ONLY",
+      "explicit_user_request_required": false,
+      "name": "commit-archaeologist",
+      "network_required": false,
+      "upstream_path": "agent_skills/commit-archaeologist"
+    },
+    {
+      "broad_filesystem_access": false,
+      "credentials_required": false,
+      "execution_class": "LOCAL_READ_ONLY",
+      "explicit_user_request_required": false,
+      "name": "dependency-doctor",
+      "network_required": false,
+      "upstream_path": "agent_skills/dependency-doctor"
+    },
+    {
+      "broad_filesystem_access": false,
+      "credentials_required": false,
+      "execution_class": "REFERENCE_ONLY",
+      "explicit_user_request_required": false,
+      "name": "first-reader",
+      "network_required": false,
+      "upstream_path": "agent_skills/first-reader"
+    },
+    {
+      "broad_filesystem_access": true,
+      "credentials_required": false,
+      "execution_class": "LOCAL_READ_ONLY",
+      "explicit_user_request_required": true,
+      "name": "project-graveyard",
+      "network_required": false,
+      "upstream_path": "agent_skills/project-graveyard"
+    },
+    {
+      "broad_filesystem_access": false,
+      "credentials_required": false,
+      "execution_class": "LOCAL_READ_ONLY",
+      "explicit_user_request_required": false,
+      "name": "scope-creep-detector",
+      "network_required": false,
+      "upstream_path": "agent_skills/scope-creep-detector"
+    },
+    {
+      "broad_filesystem_access": false,
+      "credentials_required": false,
+      "execution_class": "REFERENCE_ONLY",
+      "explicit_user_request_required": false,
+      "name": "thinking-out-loud",
+      "network_required": false,
+      "upstream_path": "agent_skills/thinking-out-loud"
+    }
+  ],
+  "source": "Shubhamsaboo/awesome-llm-apps",
+  "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+}
