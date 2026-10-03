@@ -128,6 +128,17 @@ def test_execution_flags_classify_background_credentials_and_high_stakes():
 
 Also assert the schema requires `id`, `source_type`, `category`, `execution_class`, and `upstream_commit`.
 
+Pin the exact execution-class precedence with tests:
+
+```python
+def test_execution_class_uses_most_restrictive_gate():
+    assert classify_execution({"self_modifying": True, "credentials_required": True})["execution_class"] == "SELF_MODIFYING"
+    assert classify_execution({"background_capable": True, "credentials_required": True})["execution_class"] == "BACKGROUND_AUTONOMOUS"
+    assert classify_execution({"mcp_related_paths": ["mcp.json"], "credentials_required": True})["execution_class"] == "MCP_OR_CONNECTOR"
+```
+
+`high_stakes_domain` remains an independent boolean flag, not a replacement for the primary execution class.
+
 - [ ] **Step 2: Run the focused tests and confirm RED**
 
 Run:
@@ -148,6 +159,21 @@ def classify_execution(entry: dict) -> dict: ...
 ```
 
 Use deterministic lower-case IDs; for external URLs, append a 12-hex SHA-256 suffix so two identical titles cannot collide.
+
+Define this primary execution-class precedence, from most restrictive to least:
+
+```text
+SELF_MODIFYING
+BACKGROUND_AUTONOMOUS
+MCP_OR_CONNECTOR
+CREDENTIALLED
+NETWORKED
+LOCAL_MUTATING
+LOCAL_READ_ONLY
+REFERENCE_ONLY
+```
+
+Keep orthogonal booleans such as `credentials_required`, `network_required`, `background_capable`, `self_modifying`, and `high_stakes_domain` even when a more restrictive primary class wins.
 
 Define schema version `1` and the exact spec-required entry fields, including `external_url`, `license_status`, execution booleans, and `execution_class`.
 
