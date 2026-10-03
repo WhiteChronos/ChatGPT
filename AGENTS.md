@@ -199,6 +199,24 @@ Agents SHALL:
 - use the GitHub connector for repository evidence and mutations;
 - apply GitHub Arena after the applicable Superpowers/Matt workflow for high-impact GitHub or coding changes.
 
+## Awesome LLM Apps controlled example layer
+
+For concrete RAG, MCP, voice, always-on, Generative UI, memory, multi-agent and LLM application examples, agents SHALL use the audited Awesome LLM Apps controller as a controlled example/library layer after Superpowers, ECC and Matt Pocock.
+
+Routing precedence is: Superpowers -> ECC -> Matt Pocock -> Awesome LLM Apps -> GitHub -> GitHub Arena.
+
+Agents SHALL:
+
+- treat `registry/awesome-llm-apps/catalog.json` as the generated discovery catalog and `plugins/awesome-llm-apps-controller/upstream.lock.json` as provenance;
+- treat `vendor/shubhamsaboo-awesome-llm-apps/` as a read-only generated mirror and never edit it manually;
+- treat `external_reference` entries as discovery-only until a separate provenance, license, dependency and security audit is complete;
+- preserve canonical Skill ownership in `.agents/skills/.awesome-llm-apps-managed.json` and never overwrite Matt-managed or unmanaged project Skills;
+- never auto-run `CREDENTIALLED`, `BACKGROUND_AUTONOMOUS`, `SELF_MODIFYING`, or `external_reference` entries;
+- never automatically install dependencies, register MCP servers/connectors, configure credentials, launch background services, deploy cloud resources, or execute self-modifying examples merely because they are discoverable;
+- require explicit user request before `project-graveyard` broad filesystem scanning or external `advisor-orchestrator-worker` dispatch;
+- never claim an Awesome LLM Apps example is a native Codex subagent, native ChatGPT agent, or verified background runtime without actual lifecycle/runtime evidence;
+- preserve the repository's GitHub Arena final review gate for high-impact GitHub and coding changes.
+
 ## Real Subagent runtime layer
 
 For workflows that require independent child agents, agents SHALL use the following runtime order:
