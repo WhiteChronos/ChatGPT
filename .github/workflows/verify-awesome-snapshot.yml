@@ -64,7 +64,8 @@ jobs:
             'advisor-orchestrator-worker','commit-archaeologist','dependency-doctor',
             'first-reader','project-graveyard','scope-creep-detector','thinking-out-loud'
           ])
-          assert any(x.get('name')=='first-reader' and 'license' in x.get('issue','').lower()
+          assert any(x.get('name')=='first-reader' and x.get('kind')=='license_metadata'
+                     and x.get('detail')=='empty_or_missing'
                      for x in lock.get('inconsistencies',[])), lock.get('inconsistencies')
 
           managed=json.loads((root/'.agents/skills/.awesome-llm-apps-managed.json').read_text())
