@@ -1,1 +1,0 @@
-This directory is populated automatically from https://github.com/obra/superpowers by .github/workflows/sync-superpowers-mirror.yml. Do not edit mirrored files manually.\n
