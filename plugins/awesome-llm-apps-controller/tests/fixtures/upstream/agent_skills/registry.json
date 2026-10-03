@@ -1,1 +1,10 @@
-{"skills": [{"name": "fixture-skill", "path": "agent_skills/fixture-skill"}]}
+{
+  "version": 1,
+  "skills": [
+    {
+      "name": "canonical-one",
+      "path": "agent_skills/canonical-one",
+      "license": "Apache-2.0"
+    }
+  ]
+}
