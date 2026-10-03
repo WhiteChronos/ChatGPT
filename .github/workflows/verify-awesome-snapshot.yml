@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           VERIFY_ROOT="$(mktemp -d)"
           mkdir -p "$VERIFY_ROOT/plugins/awesome-llm-apps-controller/scripts"                    "$VERIFY_ROOT/registry/awesome-llm-apps"                    "$VERIFY_ROOT/.agents/skills"
-          cp plugins/awesome-llm-apps-controller/scripts/* "$VERIFY_ROOT/plugins/awesome-llm-apps-controller/scripts/"
+          find plugins/awesome-llm-apps-controller/scripts -maxdepth 1 -type f -exec cp {} "$VERIFY_ROOT/plugins/awesome-llm-apps-controller/scripts/" \;
           cp registry/awesome-llm-apps/catalog.schema.json "$VERIFY_ROOT/registry/awesome-llm-apps/"
           AWESOME_LLM_APPS_REPO_ROOT="$VERIFY_ROOT"           AWESOME_LLM_APPS_UPSTREAM_URL="https://github.com/Shubhamsaboo/awesome-llm-apps.git"           AWESOME_LLM_APPS_UPSTREAM_REF="4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"             bash plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh
 
