@@ -33,6 +33,11 @@ schema_path=repo/'registry/awesome-llm-apps/catalog.schema.json'
 if not schema_path.exists():
     schema_path=scripts.parents[2]/'registry/awesome-llm-apps/catalog.schema.json'
 schema=json.loads(schema_path.read_text())
+reg=stage/'registry/awesome-llm-apps'
+reg.mkdir(parents=True,exist_ok=True)
+# catalog.schema.json is repository-owned source, not generated upstream output.
+# Preserve it in the staged registry so atomic replacement cannot delete it.
+shutil.copy2(schema_path, reg/'catalog.schema.json')
 
 missing=missing_mandatory_roots(up)
 if missing:
@@ -45,7 +50,6 @@ provenance={'upstream_repository':'Shubhamsaboo/awesome-llm-apps','upstream_url'
 (mirror/'.whitechronos-mirror.json').write_text(json.dumps({**provenance,**{k:v for k,v in result.items() if k!='excluded'}},indent=2,sort_keys=True)+'\n')
 
 catalog=build_catalog(up,sha); validate_supported(catalog,schema)
-reg=stage/'registry/awesome-llm-apps'; reg.mkdir(parents=True,exist_ok=True)
 (reg/'catalog.json').write_text(json.dumps(catalog,indent=2,sort_keys=True)+'\n')
 (reg/'catalog.summary.json').write_text(json.dumps(build_summary(catalog),indent=2,sort_keys=True)+'\n')
 
