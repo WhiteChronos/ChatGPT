@@ -52,6 +52,10 @@ def snapshot_statistics(root:Path)->dict:
         'code_files':sum(Path(x).suffix.lower() in CODE_EXT for x in blobs),
     }
 
+def missing_mandatory_roots(root:Path)->list[str]:
+    root=Path(root)
+    return sorted(name for name in MANDATORY_ROOTS if not (root/name).is_dir())
+
 def _slug(s:str)->str:
     s=s.strip().lower().replace('_','-').replace('/','-')
     s=re.sub(r'[^a-z0-9-]+','-',s)
