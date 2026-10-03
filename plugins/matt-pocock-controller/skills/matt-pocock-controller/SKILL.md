@@ -1,6 +1,18 @@
 ---
 name: matt-pocock-controller
-description: Route software-engineering and technical workflow tasks to the stable skills from mattpocock/skills as a complementary layer after the repository's primary Superpowers workflow. Use when the user explicitly asks for Matt Pocock, mattpocock/skills, grill-with-docs, domain modeling, codebase design, research, prototypes, TDD, diagnosing bugs, code review, PR shaping, setup wizards, specs, tickets, implementation, wayfinding, retrospectives, handoffs, teaching, questionnaires, or writing for agents. Preserve upstream invocation policy: model-invoked Matt skills may be selected automatically; user-invoked Matt skills require explicit user invocation. For overlapping TDD, debugging, and review workflows, prefer Superpowers unless the user explicitly requests the Matt Pocock variant or repository instructions say otherwise.
+description: >-
+  Route software-engineering and technical workflow tasks to the stable skills
+  from mattpocock/skills as a complementary layer after the repository's
+  primary Superpowers workflow. Use when the user explicitly asks for Matt
+  Pocock, mattpocock/skills, grill-with-docs, domain modeling, codebase design,
+  research, prototypes, TDD, diagnosing bugs, code review, PR shaping, setup
+  wizards, specs, tickets, implementation, wayfinding, retrospectives,
+  handoffs, teaching, questionnaires, or writing for agents. Preserve upstream
+  invocation policy: model-invoked Matt skills may be selected automatically;
+  user-invoked Matt skills require explicit user invocation. For overlapping
+  TDD, debugging, and review workflows, prefer Superpowers unless the user
+  explicitly requests the Matt Pocock variant or repository instructions say
+  otherwise.
 ---
 
 # Matt Pocock Controller
