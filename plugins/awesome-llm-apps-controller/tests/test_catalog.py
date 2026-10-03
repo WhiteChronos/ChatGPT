@@ -75,3 +75,10 @@ def test_snapshot_statistics_match_git_tree_inventory(tmp_path):
     assert stats['mcp_related'] == 2
     assert stats['code_files'] == 1
     assert stats['tree_entries'] > stats['blobs']
+
+
+def test_missing_mandatory_roots_detects_upstream_layout_drift(tmp_path):
+    from awesome_llm_apps_catalog import missing_mandatory_roots, MANDATORY_ROOTS
+    for name in MANDATORY_ROOTS - {'voice_ai_agents'}:
+        (tmp_path / name).mkdir(parents=True)
+    assert missing_mandatory_roots(tmp_path) == ['voice_ai_agents']
