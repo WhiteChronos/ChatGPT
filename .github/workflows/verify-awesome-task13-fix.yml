@@ -1,0 +1,28 @@
+name: Verify Awesome Task 13 schema fix
+
+on:
+  push:
+    branches:
+      - fix/awesome-task13-schema-preservation
+    paths:
+      - "plugins/awesome-llm-apps-controller/**"
+      - "registry/awesome-llm-apps/**"
+      - ".github/workflows/verify-awesome-task13-fix.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  red-green:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run targeted persistence test
+        run: python -m pytest -q plugins/awesome-llm-apps-controller/tests/test_schema_persistence.py
+      - name: Run synchronizer regression
+        run: bash plugins/awesome-llm-apps-controller/tests/test_sync_mirror.sh
