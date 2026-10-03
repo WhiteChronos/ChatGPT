@@ -1,0 +1,21 @@
+{
+  "upstream": {
+    "repository": "mattpocock/skills",
+    "ref": "main",
+    "observed_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+    "observed_version": "1.2.3",
+    "stable_skill_count": 27,
+    "license": "MIT"
+  },
+  "codex": {
+    "native_upstream_plugin": false,
+    "upstream_install_command": "npx skills@latest add mattpocock/skills",
+    "whitechronos_runtime_policy": "project-scoped stable skills under .agents/skills; do not run a second skills.sh install automatically"
+  },
+  "mirror": {
+    "path": "vendor/mattpocock-skills",
+    "mode": "read-only",
+    "project_skill_projection": ".agents/skills",
+    "sync_workflow": ".github/workflows/sync-matt-pocock-skills.yml"
+  }
+}
