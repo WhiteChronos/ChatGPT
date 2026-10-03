@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs/promises';import path from 'node:path';import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+test('controller is native-first and truthful',async()=>{const t=await fs.readFile(path.join(root,'skills','subagent-broker','SKILL.md'),'utf8');assert.match(t,/actual current tool list/i);assert.match(t,/native Codex multi-agent/i);assert.match(t,/Subagent Broker MCP/i);assert.match(t,/inline fallback/i);assert.match(t,/Never call a prompt persona/i);assert.match(t,/Never allow a child to write directly to `main`/i);});
