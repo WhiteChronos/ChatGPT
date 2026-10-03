@@ -1,6 +1,13 @@
 name: Awesome Schema Contract RED-GREEN
 
 on:
+  push:
+    branches: ["fix/awesome-schema-contract"]
+    paths:
+      - "registry/awesome-llm-apps/catalog.schema.json"
+      - "plugins/awesome-llm-apps-controller/scripts/build_catalog.py"
+      - "plugins/awesome-llm-apps-controller/tests/test_catalog.py"
+      - ".github/workflows/awesome-schema-contract-redgreen.yml"
   pull_request:
     branches: [main]
     paths:
