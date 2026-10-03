@@ -23,3 +23,20 @@ enabled = true
 
 [plugins."ecc-controller@whitechronos-repo"]
 enabled = true
+
+[plugins."subagent-broker@whitechronos-repo"]
+enabled = true
+
+[plugins."subagent-broker@whitechronos-repo".mcp_servers.subagent_broker]
+enabled = true
+default_tools_approval_mode = "approve"
+enabled_tools = [
+  "subagent_spawn",
+  "subagent_status",
+  "subagent_wait",
+  "subagent_result",
+  "subagent_followup",
+  "subagent_list",
+  "subagent_cancel",
+  "subagent_cleanup"
+]

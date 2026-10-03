@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises'; import os from 'node:os'; import path from 'node:path'; import {fileURLToPath} from 'node:url';
+import {StateStore} from '../mcp-server/state_store.mjs'; import {CodexCliBackend} from '../mcp-server/codex_cli_backend.mjs';
+const fake=fileURLToPath(new URL('./fake-codex.mjs',import.meta.url));
+test('probe spawn resume use structured independent process',async()=>{await fs.chmod(fake,0o755);const root=await fs.mkdtemp(path.join(os.tmpdir(),'subagent-backend-'));try{const store=new StateStore(root);await store.create({agent_id:'sa_backend',state:'RUNNING',transition_history:[]});const b=new CodexCliBackend({codexPath:fake,stateStore:store,parentEnv:{PATH:process.env.PATH,HOME:process.env.HOME}});const caps=await b.probe({refresh:true});assert.equal(caps.exec,true);assert.equal(caps.json,true);assert.equal(caps.resume,true);const h=await b.spawn({agent_id:'sa_backend',prompt:'hello',cwd:process.cwd(),workspace_mode:'read_only'});assert.ok(h.pid>0);const r=await h.completion;assert.equal(r.exit_code,0);assert.match(r.session_id,/^sess-/);const f=await b.followup({...h,session_id:r.session_id},'again');assert.equal((await f.completion).session_id,r.session_id);}finally{await fs.rm(root,{recursive:true,force:true});}});

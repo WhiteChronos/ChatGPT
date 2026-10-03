@@ -1,0 +1,61 @@
+name: Subagent Broker
+
+on:
+  pull_request:
+    paths:
+      - "plugins/subagent-broker/**"
+      - ".codex/config.toml"
+      - ".agents/plugins/marketplace.json"
+      - ".gitignore"
+      - "AGENTS.md"
+      - ".github/workflows/subagent-broker.yml"
+  push:
+    paths:
+      - "plugins/subagent-broker/**"
+      - ".codex/config.toml"
+      - ".agents/plugins/marketplace.json"
+      - ".gitignore"
+      - "AGENTS.md"
+      - ".github/workflows/subagent-broker.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install Python test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+      - name: Test Subagent Broker
+        run: node --test plugins/subagent-broker/tests/*.test.mjs
+      - name: Parse Codex configuration
+        run: |
+          python - <<'PY'
+          import json, tomllib
+          json.load(open(".agents/plugins/marketplace.json", encoding="utf-8"))
+          with open(".codex/config.toml", "rb") as f:
+              tomllib.load(f)
+          print("CONFIG PARSE PASS")
+          PY
+      - name: Engineering compatibility gate
+        run: python pipeline/engineering_compatibility_gate.py
+      - name: Protocol Zero gate
+        run: python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
+      - name: Engineering gate tests
+        run: python -m pytest -q tests/test_engineering_compatibility_gate.py
+      - name: Protocol Zero tests
+        run: python -m pytest -q tests/test_protocol_zero_gate.py
