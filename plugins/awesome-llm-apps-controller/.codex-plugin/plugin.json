@@ -1,0 +1,12 @@
+{
+  "name": "awesome-llm-apps-controller",
+  "version": "1.0.0",
+  "description": "Route audited Awesome LLM Apps examples and canonical Skills through WhiteChronos safety gates.",
+  "author": {"name": "WhiteChronos"},
+  "license": "Apache-2.0",
+  "skills": "./skills/",
+  "hooks": {},
+  "category": "Developer Tools",
+  "capabilities": ["Interactive", "Read"],
+  "website": "https://github.com/Shubhamsaboo/awesome-llm-apps"
+}

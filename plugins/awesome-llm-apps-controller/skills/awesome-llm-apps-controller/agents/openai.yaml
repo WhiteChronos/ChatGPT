@@ -1,0 +1,3 @@
+interface:
+  display_name: "Awesome LLM Apps Controller"
+  short_description: "Route audited LLM app and agent examples safely."
