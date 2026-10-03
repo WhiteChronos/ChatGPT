@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from collections import Counter
-import hashlib, json, re
+import hashlib, json, re, subprocess
 
 MANDATORY_ROOTS = {
     'starter_ai_agents','advanced_ai_agents','always_on_agents','voice_ai_agents',
@@ -13,6 +13,44 @@ ENV_NAMES={'.env.example','.env.sample','env.example','example.env'}
 DOCKER_NAMES={'Dockerfile','docker-compose.yml','docker-compose.yaml'}
 CODE_EXT={'.py','.js','.ts','.tsx','.jsx','.sh','.mjs','.cjs'}
 HIGH_STAKES=('medical','health','mental','therapy','insurance','legal','finance','financial','investment','trading','fraud')
+
+
+
+def snapshot_statistics(root:Path)->dict:
+    root=Path(root)
+    proc=subprocess.run(
+        ['git','ls-tree','-r','-t','HEAD'], cwd=root, check=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+    )
+    rows=[line for line in proc.stdout.splitlines() if line.strip()]
+    tree_entries=len(rows)
+    blobs=[]
+    for line in rows:
+        meta, _, rel=line.partition('\t')
+        parts=meta.split()
+        if len(parts)>=2 and parts[1]=='blob':
+            blobs.append(rel)
+    registry=root/'agent_skills'/'registry.json'
+    canonical=0
+    if registry.exists():
+        try:
+            canonical=len(json.loads(registry.read_text()).get('skills',[]))
+        except (OSError,json.JSONDecodeError):
+            canonical=0
+    def is_name(path,name): return Path(path).name.lower()==name.lower()
+    return {
+        'tree_entries':tree_entries,
+        'blobs':len(blobs),
+        'skill_md':sum(is_name(x,'SKILL.md') for x in blobs),
+        'canonical_skills':canonical,
+        'readmes':sum(is_name(x,'README.md') for x in blobs),
+        'dependency_manifests':sum(Path(x).name in MANIFEST_NAMES for x in blobs),
+        'env_examples':sum(Path(x).name in ENV_NAMES for x in blobs),
+        'dockerfiles':sum(is_name(x,'Dockerfile') for x in blobs),
+        'compose_files':sum(Path(x).name.lower() in {'docker-compose.yml','docker-compose.yaml'} for x in blobs),
+        'mcp_related':sum(('mcp' in x.lower()) and Path(x).suffix.lower() in {'.json','.yaml','.yml','.py','.ts','.js','.md'} for x in blobs),
+        'code_files':sum(Path(x).suffix.lower() in CODE_EXT for x in blobs),
+    }
 
 def _slug(s:str)->str:
     s=s.strip().lower().replace('_','-').replace('/','-')
