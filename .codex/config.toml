@@ -14,3 +14,6 @@ enabled = true
 
 [plugins."superpowers-controller@whitechronos-repo"]
 enabled = true
+
+[plugins."matt-pocock-controller@whitechronos-repo"]
+enabled = true
