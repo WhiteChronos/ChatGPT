@@ -3,10 +3,19 @@
   "title": "WhiteChronos Awesome LLM Apps catalog",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "upstream_commit", "entries"],
+  "required": [
+    "schema_version",
+    "upstream_commit",
+    "entries"
+  ],
   "properties": {
-    "schema_version": {"const": 1},
-    "upstream_commit": {"type": "string", "minLength": 1},
+    "schema_version": {
+      "const": 1
+    },
+    "upstream_commit": {
+      "type": "string",
+      "minLength": 1
+    },
     "entries": {
       "type": "array",
       "items": {
@@ -40,30 +49,125 @@
           "upstream_commit"
         ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "source_type": {"enum": ["upstream_internal", "external_reference"]},
-          "upstream_path": {"type": ["string", "null"]},
-          "external_url": {"type": ["string", "null"]},
-          "license_status": {"type": "string", "minLength": 1},
-          "license_path": {"type": ["string", "null"]},
-          "category": {"type": "string", "minLength": 1},
-          "subtype": {"type": "string", "minLength": 1},
-          "title": {"type": "string", "minLength": 1},
-          "readme_path": {"type": ["string", "null"]},
-          "skill_paths": {"type": "array", "items": {"type": "string"}},
-          "manifest_paths": {"type": "array", "items": {"type": "string"}},
-          "env_example_paths": {"type": "array", "items": {"type": "string"}},
-          "docker_paths": {"type": "array", "items": {"type": "string"}},
-          "mcp_related_paths": {"type": "array", "items": {"type": "string"}},
-          "languages": {"type": "array", "items": {"type": "string"}},
-          "frameworks": {"type": "array", "items": {"type": "string"}},
-          "providers": {"type": "array", "items": {"type": "string"}},
-          "external_services": {"type": "array", "items": {"type": "string"}},
-          "network_required": {"type": "boolean"},
-          "credentials_required": {"type": "boolean"},
-          "background_capable": {"type": "boolean"},
-          "self_modifying": {"type": "boolean"},
-          "high_stakes_domain": {"type": "boolean"},
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_type": {
+            "enum": [
+              "upstream_internal",
+              "external_reference"
+            ]
+          },
+          "upstream_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "license_status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "license_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subtype": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "readme_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "skill_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "manifest_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "env_example_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "docker_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mcp_related_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "frameworks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "external_services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "network_required": {
+            "type": "boolean"
+          },
+          "credentials_required": {
+            "type": "boolean"
+          },
+          "background_capable": {
+            "type": "boolean"
+          },
+          "self_modifying": {
+            "type": "boolean"
+          },
+          "high_stakes_domain": {
+            "type": "boolean"
+          },
           "execution_class": {
             "enum": [
               "SELF_MODIFYING",
@@ -76,9 +180,56 @@
               "REFERENCE_ONLY"
             ]
           },
-          "upstream_commit": {"type": "string", "minLength": 1},
-          "section": {"type": "string"}
-        }
+          "upstream_commit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "section": {
+            "type": "string"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "source_type": {
+                  "const": "external_reference"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "external_url": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "upstream_path": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "source_type": {
+                  "const": "upstream_internal"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "upstream_path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "external_url": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
       }
     }
   }

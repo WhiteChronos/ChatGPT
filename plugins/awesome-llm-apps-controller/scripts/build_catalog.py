@@ -24,6 +24,19 @@ def _matches_type(value, kind):
 
 
 def _validate_node(value, schema, path):
+    for child_schema in schema.get('allOf', []):
+        _validate_node(value, child_schema, path)
+
+    if 'if' in schema:
+        try:
+            _validate_node(value, schema['if'], path)
+        except ValueError:
+            branch = schema.get('else')
+        else:
+            branch = schema.get('then')
+        if branch is not None:
+            _validate_node(value, branch, path)
+
     if 'const' in schema and value != schema['const']:
         raise ValueError(f'{path} must equal {schema["const"]!r}')
     if 'enum' in schema and value not in schema['enum']:

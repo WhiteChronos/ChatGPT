@@ -119,3 +119,28 @@ def test_supported_schema_validator_rejects_invalid_execution_contract():
         assert 'execution_class' in str(exc)
     else:
         raise AssertionError('validator accepted invalid execution class')
+
+
+def test_supported_schema_validator_enforces_source_provenance_semantics():
+    from build_catalog import validate_supported
+    schema = json.loads((ROOT.parents[1] / 'registry' / 'awesome-llm-apps' / 'catalog.schema.json').read_text())
+    catalog = build_catalog(FIXTURE, 'deadbeef')
+
+    external = next(e for e in catalog['entries'] if e['source_type'] == 'external_reference')
+    external['external_url'] = None
+    try:
+        validate_supported(catalog, schema)
+    except ValueError as exc:
+        assert 'external_url' in str(exc)
+    else:
+        raise AssertionError('validator accepted external_reference without external_url')
+
+    catalog = build_catalog(FIXTURE, 'deadbeef')
+    internal = next(e for e in catalog['entries'] if e['source_type'] == 'upstream_internal')
+    internal['upstream_path'] = None
+    try:
+        validate_supported(catalog, schema)
+    except ValueError as exc:
+        assert 'upstream_path' in str(exc)
+    else:
+        raise AssertionError('validator accepted upstream_internal without upstream_path')
