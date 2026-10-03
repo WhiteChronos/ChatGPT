@@ -40,3 +40,38 @@ def test_summary_is_deterministic_and_counts_source_types():
     assert json.dumps(c1, sort_keys=True) == json.dumps(c2, sort_keys=True)
     summary = build_summary(c1)
     assert summary['by_source_type']['external_reference'] == 1
+
+
+def test_snapshot_statistics_match_git_tree_inventory(tmp_path):
+    import subprocess
+    repo = tmp_path / 'repo'
+    (repo / 'agent_skills' / 'skill-a').mkdir(parents=True)
+    (repo / 'rag_tutorials' / 'demo').mkdir(parents=True)
+    (repo / 'mcp_ai_agents' / 'router').mkdir(parents=True)
+    (repo / 'agent_skills' / 'registry.json').write_text('{"version":1,"skills":[{"name":"skill-a","path":"agent_skills/skill-a"}]}')
+    (repo / 'agent_skills' / 'skill-a' / 'SKILL.md').write_text('---\nname: skill-a\ndescription: test\n---\n')
+    (repo / 'rag_tutorials' / 'demo' / 'README.md').write_text('# Demo\n')
+    (repo / 'rag_tutorials' / 'demo' / 'requirements.txt').write_text('openai\n')
+    (repo / 'rag_tutorials' / 'demo' / '.env.example').write_text('KEY=\n')
+    (repo / 'rag_tutorials' / 'demo' / 'Dockerfile').write_text('FROM scratch\n')
+    (repo / 'rag_tutorials' / 'demo' / 'docker-compose.yml').write_text('services: {}\n')
+    (repo / 'mcp_ai_agents' / 'router' / 'agent.py').write_text('print(1)\n')
+    (repo / 'mcp_ai_agents' / 'router' / 'mcp.json').write_text('{}\n')
+    subprocess.run(['git','init','-q'], cwd=repo, check=True)
+    subprocess.run(['git','config','user.email','test@example.com'], cwd=repo, check=True)
+    subprocess.run(['git','config','user.name','test'], cwd=repo, check=True)
+    subprocess.run(['git','add','.'], cwd=repo, check=True)
+    subprocess.run(['git','commit','-qm','snapshot'], cwd=repo, check=True)
+    from awesome_llm_apps_catalog import snapshot_statistics
+    stats = snapshot_statistics(repo)
+    assert stats['blobs'] == 9
+    assert stats['skill_md'] == 1
+    assert stats['canonical_skills'] == 1
+    assert stats['readmes'] == 1
+    assert stats['dependency_manifests'] == 1
+    assert stats['env_examples'] == 1
+    assert stats['dockerfiles'] == 1
+    assert stats['compose_files'] == 1
+    assert stats['mcp_related'] == 2
+    assert stats['code_files'] == 1
+    assert stats['tree_entries'] > stats['blobs']
