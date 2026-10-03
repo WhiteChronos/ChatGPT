@@ -45,6 +45,36 @@
         ]
       },
       "category": "Developer Tools"
+    },
+    {
+      "name": "ecc",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/affaan-m/ECC.git"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL",
+        "products": [
+          "CODEX"
+        ]
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "ecc-controller",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ecc-controller"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL",
+        "products": [
+          "CODEX"
+        ]
+      },
+      "category": "Developer Tools"
     }
   ]
 }
