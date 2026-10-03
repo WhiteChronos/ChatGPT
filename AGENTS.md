@@ -222,3 +222,24 @@ Agents SHALL:
 - use GitHub Arena as review/quality control, never as a substitute for actual subagent execution.
 
 Default subagent routing is: native Codex multi-agent -> Subagent Broker -> Superpowers inline fallback.
+
+
+## Awesome LLM Apps full-system integration layer
+
+For AI-agent/application examples, RAG, MCP agents, voice agents, always-on agents, Generative UI, memory apps, agent-framework examples and canonical Skills sourced from `Shubhamsaboo/awesome-llm-apps`, agents SHALL use `plugins/awesome-llm-apps-controller` as the routing, provenance and activation-safety layer.
+
+Default routing order is: Superpowers -> ECC -> Matt Pocock -> Awesome LLM Apps -> GitHub -> GitHub Arena.
+
+Agents SHALL:
+
+- use `registry/awesome-llm-apps/catalog.json` as the discovery source and `plugins/awesome-llm-apps-controller/upstream.lock.json` as provenance;
+- treat `vendor/shubhamsaboo-awesome-llm-apps/` as a read-only synchronized source mirror;
+- never manually edit Awesome-managed Skills under `.agents/skills/`;
+- preserve project-internal Skills inside their containing examples rather than globally projecting them;
+- require a separate provenance/license/security audit before using any `external_reference` as executable source;
+- never auto-run `CREDENTIALLED`, `BACKGROUND_AUTONOMOUS`, `SELF_MODIFYING`, `MCP_OR_CONNECTOR`, or other gated examples merely because they are discoverable;
+- never create or persist credentials merely to execute an upstream example;
+- require an explicit user request before `project-graveyard` performs broad filesystem/project scanning;
+- require explicit orchestration intent and authorized credentials before `advisor-orchestrator-worker` dispatches external models/CLIs;
+- never claim an upstream sample app is a native Codex subagent, native ChatGPT agent, connector, or background automation without actual runtime evidence;
+- apply GitHub Arena after the applicable Superpowers/ECC/Matt/Awesome workflow for high-impact changes.
