@@ -20,7 +20,8 @@ Integrate the useful system surface of `Shubhamsaboo/awesome-llm-apps` into the 
 - advanced LLM applications;
 - agent-framework crash courses;
 - scripts, manifests, environment templates, Docker/config files, prompts, tests/evals, and other reusable system components;
-- project-internal Skills that belong to a particular example, without incorrectly promoting them to global Skills.
+- project-internal Skills that belong to a particular example, without incorrectly promoting them to global Skills;
+- external AI-agent/application projects explicitly linked from the upstream catalog/README, represented as linked references rather than silently mirrored or executed.
 
 The goal is **full discoverability and controlled usability**, not indiscriminate execution.
 
@@ -141,6 +142,24 @@ Initial snapshot signals by major root:
 
 These counts are snapshot evidence, not hard-coded future limits.
 
+### 5.1 External linked agents and applications
+
+The upstream README also contains selected AI-agent/application entries whose implementation lives in another repository or external project.
+
+To satisfy the requirement to **link all upstream-listed AI agents**, the generated catalog must capture those outbound entries when they appear in recognized agent/application sections.
+
+External entries are catalogued with:
+
+- `source_type = "external_reference"`;
+- upstream README section/category;
+- display title and description from the upstream listing;
+- destination URL;
+- host/repository identity when detectable;
+- license status = `UNVERIFIED` until separately audited;
+- execution status = `REFERENCE_ONLY` until separately audited.
+
+The synchronization process must **not** recursively clone, mirror, install, or execute external repositories merely because the upstream README links to them. Any later use of an external reference requires a fresh provenance, license, dependency, and security audit for that external project.
+
 ## 6. Design alternatives considered
 
 ### Alternative A — literal full byte mirror plus automatic activation
@@ -252,6 +271,21 @@ Rules:
 
 The project-internal Skills inside example applications are **not** projected globally.
 
+Every projected canonical Skill must also receive catalog/ownership metadata describing its execution risk and required gate. Projection means **discoverable**, not permission to perform network calls, scan broad filesystem locations, launch external model CLIs, or mutate user state.
+
+At minimum:
+
+- `advisor-orchestrator-worker`: external-model/network/credential capable; external CLI/API dispatch requires an explicit user request for that orchestration workflow and available authorized credentials;
+- `commit-archaeologist`: local repository read-only;
+- `dependency-doctor`: local read-only by default; upstream opt-in network checks remain opt-in;
+- `first-reader`: reasoning/text analysis only unless a specific input source requires another tool;
+- `project-graveyard`: broad local filesystem/repository inspection; requires an explicit user request before scanning;
+- `scope-creep-detector`: local repository read-only;
+- `thinking-out-loud`: conversational control-flow Skill; it does not authorize unrelated file or network actions.
+
+Repository `AGENTS.md` and the Awesome LLM Apps controller must enforce these gates even when the Skill itself is discoverable.
+
+
 ### 7.3 Full agent/app/component catalog
 
 A deterministic catalog generator creates:
@@ -261,14 +295,17 @@ registry/awesome-llm-apps/catalog.json
 registry/awesome-llm-apps/catalog.summary.json
 ```
 
-Every relevant upstream project/component is represented.
+Every relevant upstream project/component is represented. Upstream-listed external agent/application links are also represented as `external_reference` catalog entries.
 
 A catalog entry must include at least:
 
 ```json
 {
   "id": "stable-normalized-id",
+  "source_type": "upstream_internal",
   "upstream_path": "path/in/upstream",
+  "external_url": null,
+  "license_status": "VERIFIED_ROOT_LICENSE",
   "category": "agent_app",
   "subtype": "multi_agent",
   "title": "Human-readable title",
@@ -338,6 +375,7 @@ When the user asks to **use**, **adapt**, **run**, or **build from** a catalog e
 
 1. identify the exact catalog entry and upstream commit;
 2. inspect README, manifests, environment examples, Docker/MCP configs, scripts, and relevant source;
+   - for an `external_reference`, first perform a separate provenance/license/security audit of the destination and do not treat the upstream root Apache-2.0 license as applying to that external project;
 3. classify dependencies, network use, credentials, filesystem mutation, background behavior, and external services;
 4. choose one of:
    - reference-only use;
@@ -378,7 +416,15 @@ Within the required roots, a directory becomes an application/component catalog 
 
 Nested applications are allowed. The nearest qualifying ancestor owns associated manifests/configs unless a deeper directory independently qualifies.
 
-### 8.4 Component attachment
+### 8.4 External-reference discovery
+
+The catalog generator must parse recognized agent/application sections in the upstream README and detect list entries whose destination leaves `Shubhamsaboo/awesome-llm-apps`.
+
+Those entries become `external_reference` records. The generator must not treat sponsor, translation, social, badge, or general documentation links as agent/application entries.
+
+External entries are linked but not mirrored, installed, or executed by synchronization.
+
+### 8.5 Component attachment
 
 Files such as:
 
@@ -397,7 +443,7 @@ are attached to the nearest catalog entry and remain independently searchable by
 
 ## 9. Runtime classification and gates
 
-Every catalog entry receives an execution class.
+Every catalog entry receives an execution class. Canonical projected Skills receive the same risk metadata so discovery never implies execution authority.
 
 ### REFERENCE_ONLY
 
@@ -538,14 +584,15 @@ The synchronization job:
 3. validates root Apache-2.0 license presence;
 4. regenerates the functional source mirror;
 5. regenerates catalog and summary;
-6. validates canonical Skill registry vs actual `SKILL.md` files;
-7. projects canonical Skills with collision checks;
-8. records excluded binary/generated artifacts;
-9. updates a version/provenance lock;
-10. runs sync/catalog tests;
-11. pushes a review branch if anything changed;
-12. attempts to open a PR;
-13. if repository policy blocks Actions-created PRs, leaves the branch ready and completes with a warning instead of failing.
+6. validates canonical Skill registry vs actual `SKILL.md` files and derives their execution-risk metadata;
+7. projects canonical Skills with collision checks and writes their ownership/risk manifest;
+8. catalogs recognized external agent/application links without cloning them;
+9. records excluded binary/generated artifacts;
+10. updates a version/provenance lock;
+11. runs sync/catalog tests;
+12. pushes a review branch if anything changed;
+13. attempts to open a PR;
+14. if repository policy blocks Actions-created PRs, leaves the branch ready and completes with a warning instead of failing.
 
 No upstream installer is executed during synchronization.
 
@@ -559,7 +606,8 @@ Create a lock file containing:
 - license;
 - tree entry/blob counts;
 - canonical Skill names/count;
-- catalog entry counts by category;
+- catalog entry counts by category and source type;
+- external-reference count and unresolved-license count;
 - included mirror file count/bytes;
 - excluded file count/bytes;
 - exclusion policy version;
@@ -616,12 +664,14 @@ Required test classes:
 - large excluded binary is represented in catalog/provenance;
 - generated-artifact exclusion is deterministic;
 - symlinks are handled predictably;
-- upstream source is never executed by sync.
+- upstream source is never executed by sync;
+- external linked repositories are catalogued but never cloned or executed by sync.
 
 ### Skill projection tests
 
 - all canonical registry entries with valid `SKILL.md` are projected;
 - project-internal Skills are not globally projected;
+- every projected canonical Skill receives deterministic execution-risk metadata;
 - registry entry without `SKILL.md` is reported, not installed;
 - unmanaged collision fails safely;
 - Matt Pocock-managed collision fails safely;
@@ -634,6 +684,7 @@ Required test classes:
 - every qualifying project/component is indexed;
 - manifests and env examples attach to the correct entry;
 - internal Skills attach to their containing project;
+- recognized external agent/application links become external-reference entries while unrelated outbound links do not;
 - runtime class flags derive predictably;
 - catalog contains upstream commit/provenance;
 - schema validates.
@@ -798,7 +849,7 @@ The architecture is implemented successfully when:
 3. every qualifying upstream agent/app/component is represented in the generated catalog;
 4. the functional source mirror contains all required system source while excluded large/generated artifacts remain traceable;
 5. all major upstream families are routable from the controller;
-6. selected examples can be materialized and adapted without mutating the mirror;
+6. selected internal examples can be materialized and adapted without mutating the mirror, while external references require a separate audit before materialization;
 7. credentialled/background/MCP/self-modifying examples are gated;
 8. sync produces review branches/PRs and does not execute upstream code;
 9. existing Superpowers/ECC/Matt/Arena routing remains intact;
