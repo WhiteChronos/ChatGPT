@@ -64,6 +64,7 @@ test -f "$PROJ/vendor/shubhamsaboo-awesome-llm-apps/.whitechronos-mirror.json"
 test -f "$PROJ/vendor/shubhamsaboo-awesome-llm-apps/.whitechronos-excluded.json"
 test -f "$PROJ/registry/awesome-llm-apps/catalog.json"
 test -f "$PROJ/registry/awesome-llm-apps/catalog.summary.json"
+test -f "$PROJ/registry/awesome-llm-apps/catalog.schema.json"
 test -f "$PROJ/.agents/skills/skill-a/SKILL.md"
 test -f "$PROJ/.agents/skills/.awesome-llm-apps-managed.json"
 test -f "$PROJ/plugins/awesome-llm-apps-controller/upstream.lock.json"
@@ -106,6 +107,7 @@ git -C "$UP" commit -qm update
 AWESOME_LLM_APPS_REPO_ROOT="$PROJ" AWESOME_LLM_APPS_UPSTREAM_URL="$UP" AWESOME_LLM_APPS_UPSTREAM_REF=main \
   bash "$ROOT/plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh"
 test ! -e "$PROJ/vendor/shubhamsaboo-awesome-llm-apps/rag_tutorials/demo/requirements.txt"
+test -f "$PROJ/registry/awesome-llm-apps/catalog.schema.json"
 echo 'SYNC PASS'
 
 # Mandatory upstream root removal must fail closed for human review.

@@ -27,3 +27,11 @@ def test_collision_with_unmanaged_destination_fails(tmp_path):
 def test_known_skill_risk_metadata():
     assert risk_for_skill('project-graveyard')['explicit_user_request_required'] is True
     assert risk_for_skill('advisor-orchestrator-worker')['credentials_required'] is True
+
+
+def test_unknown_future_skill_defaults_to_reference_only_and_requires_explicit_use():
+    risk = risk_for_skill('future-unreviewed-skill')
+    assert risk['execution_class'] == 'REFERENCE_ONLY'
+    assert risk['explicit_user_request_required'] is True
+    assert risk['network_required'] is False
+    assert risk['credentials_required'] is False
