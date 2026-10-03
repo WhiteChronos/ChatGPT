@@ -1,0 +1,158 @@
+name: Sync Awesome LLM Apps
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "43 6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/sync-awesome-llm-apps.yml"
+      - "plugins/awesome-llm-apps-controller/**"
+      - "registry/awesome-llm-apps/catalog.schema.json"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-awesome-llm-apps
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WhiteChronos repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Test synchronization behavior
+        run: |
+          chmod +x plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh
+          chmod +x plugins/awesome-llm-apps-controller/tests/test_sync_mirror.sh
+          plugins/awesome-llm-apps-controller/tests/test_sync_mirror.sh
+          python -m pytest -q \
+            plugins/awesome-llm-apps-controller/tests/test_catalog.py \
+            plugins/awesome-llm-apps-controller/tests/test_mirror.py \
+            plugins/awesome-llm-apps-controller/tests/test_skills_projection.py
+
+      - name: Capture previously managed Awesome skills
+        shell: bash
+        run: |
+          python - <<'PY' > /tmp/awesome-managed-before.txt
+          import json
+          from pathlib import Path
+          path=Path('.agents/skills/.awesome-llm-apps-managed.json')
+          if path.exists():
+              data=json.loads(path.read_text(encoding='utf-8'))
+              for item in data.get('skills', []):
+                  name=item if isinstance(item,str) else item.get('name')
+                  if name:
+                      print(name)
+          PY
+
+      - name: Synchronize Awesome LLM Apps upstream
+        run: |
+          plugins/awesome-llm-apps-controller/scripts/sync_mirror.sh
+
+      - name: Derive generated skill ownership paths
+        shell: bash
+        run: |
+          python - <<'PY' > /tmp/awesome-managed-after.txt
+          import json
+          from pathlib import Path
+          path=Path('.agents/skills/.awesome-llm-apps-managed.json')
+          data=json.loads(path.read_text(encoding='utf-8'))
+          for item in data.get('skills', []):
+              name=item if isinstance(item,str) else item.get('name')
+              if name:
+                  print(name)
+          PY
+          cat /tmp/awesome-managed-before.txt /tmp/awesome-managed-after.txt | sort -u > /tmp/awesome-managed-skills.txt
+
+      - name: Detect synchronized changes
+        id: diff
+        shell: bash
+        run: |
+          mapfile -t MANAGED_SKILLS < /tmp/awesome-managed-skills.txt
+          SKILL_PATHS=()
+          for skill in "${MANAGED_SKILLS[@]}"; do
+            SKILL_PATHS+=(".agents/skills/$skill")
+          done
+          if [[ -z "$(git status --porcelain -- \
+            vendor/shubhamsaboo-awesome-llm-apps \
+            registry/awesome-llm-apps \
+            .agents/skills/.awesome-llm-apps-managed.json \
+            plugins/awesome-llm-apps-controller/upstream.lock.json \
+            "${SKILL_PATHS[@]}")" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push synchronization branch and open PR when permitted
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          SHA="$(python -c 'import json; print(json.load(open("plugins/awesome-llm-apps-controller/upstream.lock.json"))["upstream"]["commit"])')"
+          COUNT="$(python -c 'import json; print(json.load(open("plugins/awesome-llm-apps-controller/upstream.lock.json"))["counts"]["catalog_entries"])')"
+          SKILL_COUNT="$(python -c 'import json; print(json.load(open("plugins/awesome-llm-apps-controller/upstream.lock.json"))["counts"]["projected_skills"])')"
+          SHORT_SHA="${SHA:0:12}"
+          BRANCH="chore/sync-awesome-llm-apps-${SHORT_SHA}"
+          mapfile -t MANAGED_SKILLS < /tmp/awesome-managed-skills.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add vendor/shubhamsaboo-awesome-llm-apps registry/awesome-llm-apps plugins/awesome-llm-apps-controller/upstream.lock.json
+          git add .agents/skills/.awesome-llm-apps-managed.json
+          for skill in "${MANAGED_SKILLS[@]}"; do
+            git add -A -- ".agents/skills/$skill"
+          done
+          git commit -m "chore: sync Shubhamsaboo/awesome-llm-apps (${SHORT_SHA})"
+          git push --force origin "$BRANCH"
+
+          EXISTING="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [[ -z "$EXISTING" ]]; then
+            if PR_URL="$(gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore: sync Shubhamsaboo/awesome-llm-apps (${SHORT_SHA})" \
+              --body "Automated functional-source synchronization from https://github.com/Shubhamsaboo/awesome-llm-apps at commit \`${SHA}\`. Generated catalog: ${COUNT} entries; projected canonical Skills: ${SKILL_COUNT}. Synchronization copies/audits source without executing upstream installers, package managers, tests, daemons, or application code." 2>&1)"; then
+              echo "Created synchronization PR: $PR_URL"
+            else
+              echo "::warning::Synchronization branch was pushed, but repository policy blocked GitHub Actions from creating the PR."
+              {
+                echo "## Awesome LLM Apps sync branch ready"
+                echo
+                echo "GitHub Actions pushed \`$BRANCH\`, but repository policy prevented the workflow token from creating a pull request."
+                echo
+                echo "Open a PR manually (or through the connected GitHub app) from \`$BRANCH\` to \`main\`."
+                echo
+                echo "gh output:"
+                echo '~~~text'
+                echo "$PR_URL"
+                echo '~~~'
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "Synchronization PR #$EXISTING already exists."
+          fi
