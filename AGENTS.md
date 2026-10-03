@@ -198,3 +198,27 @@ Agents SHALL:
 - refuse automatic synchronization when an upstream Matt skill name would overwrite an unmanaged project skill;
 - use the GitHub connector for repository evidence and mutations;
 - apply GitHub Arena after the applicable Superpowers/Matt workflow for high-impact GitHub or coding changes.
+
+## Real Subagent runtime layer
+
+For workflows that require independent child agents, agents SHALL use the following runtime order:
+
+1. Prefer native Codex multi-agent spawn/follow-up/wait tools when those tools are actually exposed by the current harness.
+2. Otherwise use the `subagent-broker` MCP fallback when its tools are present and healthy.
+3. Otherwise use the official Superpowers inline fallback and explicitly state that independent subagents were unavailable.
+
+Agents SHALL:
+
+- never infer native subagent availability from `multi_agent = true` alone;
+- never call a prompt persona, same-context role play, or GitHub Arena strategy card an independent subagent;
+- require real lifecycle evidence (agent ID plus native/broker execution evidence) before claiming a child ran;
+- keep write-capable broker children on isolated `subagent/<agent_id>` branches and `.worktrees/subagents/<agent_id>/` worktrees;
+- never allow a child to write directly to `main` or the parent task branch;
+- use detached isolated snapshots for broker reviewers/read-only children;
+- preserve Superpowers task briefs, ledgers, report/review packages, TDD, fix rounds, and final review gates;
+- review child commits before integrating them into the parent branch;
+- never broaden filesystem, network, approval, credential, or sandbox permissions merely to make a child succeed;
+- treat `.superpowers/subagents/` traces as sensitive local runtime evidence and never commit them automatically;
+- use GitHub Arena as review/quality control, never as a substitute for actual subagent execution.
+
+Default subagent routing is: native Codex multi-agent -> Subagent Broker -> Superpowers inline fallback.
