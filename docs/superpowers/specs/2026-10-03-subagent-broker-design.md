@@ -696,10 +696,16 @@ limits.
 
 ### Read-only agents
 
-A read-only child receives a repository/worktree path that it may inspect
-under the active sandbox policy.
+A read-only child also receives an isolated Git snapshot. The broker creates
+a detached read-only worktree at the requested `base_ref` (or exact reviewed
+head) instead of pointing the child at the mutable parent checkout.
 
-It must not be granted write-mode by the broker.
+This prevents a concurrently changing parent branch from altering the
+reviewer's filesystem view mid-review.
+
+The child is launched under read-only sandbox policy and receives no
+write-mode from the broker. No branch is created for a purely read-only
+child unless the installed Git/Codex environment requires one.
 
 ### Write agents
 
@@ -806,11 +812,23 @@ parent transcript.
 
 `result.json` contains structured lifecycle/result metadata.
 
+`events.jsonl` is a **sensitive local trace** because model/tool events may
+contain repository content or other task data. It must be created with
+owner-only permissions where the platform supports them, must never be
+returned wholesale through MCP, must never be committed automatically, and
+is eligible for explicit purge during safe cleanup after compact result
+metadata has been preserved.
+
 The broker never commits these artifacts automatically.
 
 ## 20. Secret handling
 
 The broker must not log the full inherited environment.
+
+The broker constructs a minimal child environment instead of blindly
+copying every parent environment variable. It carries only operating-system
+variables needed for process execution plus explicitly supported Codex
+authentication/runtime variables.
 
 Before persisting stderr or a text event tail, redact:
 
@@ -1050,6 +1068,10 @@ Prove:
 - sensitive inherited env values are absent from persisted stderr/result
   excerpts;
 - path traversal in base/workspace references is rejected;
+- read-only agents use detached isolated worktrees/snapshots rather than the
+  mutable parent checkout;
+- sensitive raw trace files are not returned wholesale and use restrictive
+  local permissions where supported;
 - broad process-name cancellation is never used.
 
 ### Restart tests
