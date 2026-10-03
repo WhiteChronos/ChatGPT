@@ -1,0 +1,79 @@
+name: Sync Matt Pocock skills
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/sync-matt-pocock-skills.yml"
+      - "plugins/matt-pocock-controller/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-matt-pocock-skills
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WhiteChronos repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test synchronization behavior
+        run: |
+          chmod +x plugins/matt-pocock-controller/scripts/sync_mirror.sh
+          chmod +x plugins/matt-pocock-controller/tests/test_sync_mirror.sh
+          plugins/matt-pocock-controller/tests/test_sync_mirror.sh
+
+      - name: Mirror upstream bytes and project stable skills
+        run: |
+          plugins/matt-pocock-controller/scripts/sync_mirror.sh "$GITHUB_WORKSPACE"
+
+      - name: Detect synchronized changes
+        id: diff
+        shell: bash
+        run: |
+          if git diff --quiet -- vendor/mattpocock-skills .agents/skills plugins/matt-pocock-controller/upstream.lock.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or refresh synchronization pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          SHA="$(python -c 'import json; print(json.load(open("vendor/mattpocock-skills/.whitechronos-mirror.json"))["commit"])')"
+          VERSION="$(python -c 'import json; print(json.load(open("vendor/mattpocock-skills/.whitechronos-mirror.json"))["version"])')"
+          COUNT="$(python -c 'import json; print(json.load(open("vendor/mattpocock-skills/.whitechronos-mirror.json"))["stable_skill_count"])')"
+          SHORT_SHA="${SHA:0:12}"
+          BRANCH="chore/sync-matt-pocock-${SHORT_SHA}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add vendor/mattpocock-skills .agents/skills plugins/matt-pocock-controller/upstream.lock.json
+          git commit -m "chore: sync mattpocock/skills ${VERSION} (${SHORT_SHA})"
+          git push --force origin "$BRANCH"
+
+          EXISTING="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [[ -z "$EXISTING" ]]; then
+            gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore: sync mattpocock/skills ${VERSION} (${SHORT_SHA})" \
+              --body "Automated read-only mirror refresh from https://github.com/mattpocock/skills at commit \`${SHA}\`. The full upstream repository is mirrored under \`vendor/mattpocock-skills/\`; ${COUNT} promoted stable Engineering/Productivity skills are projected byte-for-byte into \`.agents/skills/\`. Upstream code is not executed during synchronization."
+          else
+            echo "Synchronization PR #$EXISTING already exists."
+          fi
