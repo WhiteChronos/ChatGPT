@@ -96,3 +96,26 @@ def test_catalog_schema_requires_complete_execution_contract():
         'background_capable', 'self_modifying', 'high_stakes_domain',
         'execution_class', 'upstream_commit'
     } <= required
+
+
+def test_supported_schema_validator_rejects_invalid_execution_contract():
+    from build_catalog import validate_supported
+    schema = json.loads((ROOT.parents[1] / 'registry' / 'awesome-llm-apps' / 'catalog.schema.json').read_text())
+    catalog = build_catalog(FIXTURE, 'deadbeef')
+    broken = json.loads(json.dumps(catalog))
+    broken['entries'][0]['credentials_required'] = 'yes'
+    try:
+        validate_supported(broken, schema)
+    except ValueError as exc:
+        assert 'credentials_required' in str(exc)
+    else:
+        raise AssertionError('validator accepted invalid boolean')
+
+    broken = json.loads(json.dumps(catalog))
+    broken['entries'][0]['execution_class'] = 'UNREVIEWED'
+    try:
+        validate_supported(broken, schema)
+    except ValueError as exc:
+        assert 'execution_class' in str(exc)
+    else:
+        raise AssertionError('validator accepted invalid execution class')
