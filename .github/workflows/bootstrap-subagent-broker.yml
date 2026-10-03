@@ -69,8 +69,11 @@ jobs:
           set -euo pipefail
           # state_store.mjs is the truncation boundary; do not keep a partial copy.
           rm -f plugins/subagent-broker/mcp-server/state_store.mjs
+          # Workflow mutation is intentionally excluded: Actions tokens in this
+          # repository cannot create/update workflow files. The GitHub connector
+          # installs the final workflow and removes this bootstrap afterward.
+          rm -f .github/workflows/subagent-broker.yml
           rm -rf .bootstrap/subagent-broker
-          rm -f .github/workflows/bootstrap-subagent-broker.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
