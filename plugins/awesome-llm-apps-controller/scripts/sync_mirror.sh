@@ -20,24 +20,29 @@ if [[ ! -f "$LICENSE" ]] || ! grep -q 'Apache License' "$LICENSE" || ! grep -q '
   echo "unrecognized or missing Apache-2.0 LICENSE" >&2; exit 2
 fi
 
-PYTHONPATH="$SCRIPT_DIR" python - "$UP" "$STAGE" "$REPO_ROOT" "$SHA" "$UPSTREAM_REF" "$SCRIPT_DIR" <<'PY'
+PYTHONPATH="$SCRIPT_DIR" python - "$UP" "$STAGE" "$REPO_ROOT" "$SHA" "$UPSTREAM_REF" "$UPSTREAM_URL" "$SCRIPT_DIR" <<'PY'
 from pathlib import Path
 import json, shutil, sys
 from awesome_llm_apps_mirror import plan_mirror, copy_mirror
-from awesome_llm_apps_catalog import build_catalog, build_summary, snapshot_statistics
+from awesome_llm_apps_catalog import build_catalog, build_summary, snapshot_statistics, missing_mandatory_roots
 from awesome_llm_apps_skills import load_canonical_skills, project_skills
 from build_catalog import validate_supported
-up=Path(sys.argv[1]); stage=Path(sys.argv[2]); repo=Path(sys.argv[3]); sha=sys.argv[4]; ref=sys.argv[5]; scripts=Path(sys.argv[6])
+up=Path(sys.argv[1]); stage=Path(sys.argv[2]); repo=Path(sys.argv[3]); sha=sys.argv[4]; ref=sys.argv[5]; upstream_url=sys.argv[6]; scripts=Path(sys.argv[7])
 
 schema_path=repo/'registry/awesome-llm-apps/catalog.schema.json'
 if not schema_path.exists():
     schema_path=scripts.parents[2]/'registry/awesome-llm-apps/catalog.schema.json'
 schema=json.loads(schema_path.read_text())
 
+missing=missing_mandatory_roots(up)
+if missing:
+    raise RuntimeError('mandatory upstream roots missing: '+', '.join(missing))
+
 mirror=stage/'vendor/shubhamsaboo-awesome-llm-apps'
 result=copy_mirror(up,mirror,plan_mirror(up),sha)
-(mirror/'.whitechronos-excluded.json').write_text(json.dumps({'upstream_commit':sha,'excluded':result['excluded']},indent=2,sort_keys=True)+'\n')
-(mirror/'.whitechronos-mirror.json').write_text(json.dumps({k:v for k,v in result.items() if k!='excluded'},indent=2,sort_keys=True)+'\n')
+provenance={'upstream_repository':'Shubhamsaboo/awesome-llm-apps','upstream_url':upstream_url,'ref':ref,'upstream_commit':sha}
+(mirror/'.whitechronos-excluded.json').write_text(json.dumps({**provenance,'excluded':result['excluded']},indent=2,sort_keys=True)+'\n')
+(mirror/'.whitechronos-mirror.json').write_text(json.dumps({**provenance,**{k:v for k,v in result.items() if k!='excluded'}},indent=2,sort_keys=True)+'\n')
 
 catalog=build_catalog(up,sha); validate_supported(catalog,schema)
 reg=stage/'registry/awesome-llm-apps'; reg.mkdir(parents=True,exist_ok=True)
@@ -60,7 +65,7 @@ manifest=project_skills(up,stage/'skills',None,None)
 (stage/'skills-manifest.json').write_text(json.dumps({**manifest,'upstream_commit':sha},indent=2,sort_keys=True)+'\n')
 
 lock={
-  'upstream_repository':'Shubhamsaboo/awesome-llm-apps','upstream_url':str(up),
+  'upstream_repository':'Shubhamsaboo/awesome-llm-apps','upstream_url':upstream_url,
   'ref':ref, 'commit':sha,'license':'Apache-2.0','schema_version':1,
   'canonical_skill_count':len(loaded['skills']),'canonical_skills':[x['name'] for x in loaded['skills']],
   'catalog_entry_count':len(catalog['entries']),'catalog_by_source_type':build_summary(catalog)['by_source_type'],
