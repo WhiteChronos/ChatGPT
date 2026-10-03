@@ -34,6 +34,7 @@
 - **External-link overcapture:** sponsor/social/translation/documentation URLs must not become AI-agent entries; Task 2 pins allow/deny examples.
 - **Skill collision across controllers:** an Awesome LLM Apps Skill name that matches a Matt-managed or unmanaged Skill must fail closed; Task 4 pins both cases.
 - **Upstream drift:** a future upstream change to license/registry/layout must produce an auditable sync failure or changed review branch, never silently weaken constraints; Tasks 5 and 9 pin the drift checks.
+- **Nested licensing:** an app-level LICENSE/NOTICE must override root-only metadata for that catalog entry without changing unrelated entries; Task 2 pins nearest-license attachment.
 
 ---
 
@@ -188,6 +189,8 @@ Cover:
 - a non-registry `SKILL.md` inside an example appears as `project_internal_skill`;
 - a bullet external app link under an agent/app heading becomes `external_reference`;
 - sponsor, translation, badge, social, and generic docs URLs are ignored;
+- a qualifying future top-level app/agent root not in the current mandatory-root list is discovered automatically unless denylisted;
+- the nearest app-level `LICENSE`, `LICENSE.*`, `NOTICE`, or `NOTICE.*` is attached to the entry while root Apache-2.0 remains the repository-level fallback;
 - catalog output order is deterministic;
 - summary counts by `category` and `source_type` match the catalog.
 
@@ -210,11 +213,13 @@ def build_summary(catalog: dict) -> dict: ...
 
 Rules:
 
-- scan only spec-approved roots plus relevant `docs/`;
+- treat the spec-approved roots as mandatory and fail/report if a mandatory root disappears unexpectedly;
+- additionally auto-discover future top-level roots that contain qualifying app/component entries, excluding repository-control/documentation-only roots such as `.git`, `.github`, `docs`, and root metadata files;
 - use nearest qualifying directory ownership for attached components;
 - parse Markdown list links using stdlib regex/state, with heading-aware external-reference filtering;
 - never follow or fetch external URLs;
-- attach `source_type="external_reference"`, `license_status="UNVERIFIED"`, and `execution_class="REFERENCE_ONLY"` to outbound entries.
+- attach `source_type="external_reference"`, `license_status="UNVERIFIED"`, and `execution_class="REFERENCE_ONLY"` to outbound entries;
+- attach nearest subdirectory license/notice metadata to internal entries when present; otherwise record the verified root Apache-2.0 fallback.
 
 - [ ] **Step 4: Run full catalog tests**
 
@@ -310,6 +315,7 @@ Cover:
 
 - valid registry entry + matching `SKILL.md` projects byte-for-byte;
 - registry entry without `SKILL.md` is reported under `inconsistencies` and not installed;
+- empty/missing/inconsistent registry license metadata is recorded as an inconsistency and never silently rewritten;
 - non-registry project-internal Skill is not projected;
 - existing unmanaged destination fails with a clear collision error;
 - destination listed in Matt manifest fails with a controller-specific collision error;
@@ -693,6 +699,7 @@ Assert:
 - 7 canonical Skill records;
 - project-internal Skills are not in global projection;
 - root license is Apache-2.0;
+- any nested license/notice discovered by the catalog is attached to the nearest owning entry without changing root-license provenance;
 - both known >10 MiB media blobs are excluded and traceable;
 - external-reference records have `UNVERIFIED` license status and are not mirrored recursively.
 
