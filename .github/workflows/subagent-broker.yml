@@ -29,6 +29,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install Python test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
       - name: Test Subagent Broker
         run: node --test plugins/subagent-broker/tests/*.test.mjs
       - name: Parse Codex configuration
@@ -45,6 +56,6 @@ jobs:
       - name: Protocol Zero gate
         run: python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
       - name: Engineering gate tests
-        run: pytest -q tests/test_engineering_compatibility_gate.py
+        run: python -m pytest -q tests/test_engineering_compatibility_gate.py
       - name: Protocol Zero tests
-        run: pytest -q tests/test_protocol_zero_gate.py
+        run: python -m pytest -q tests/test_protocol_zero_gate.py
