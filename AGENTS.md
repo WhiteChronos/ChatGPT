@@ -158,6 +158,29 @@ Agents SHALL:
 
 
 
+
+## Official ECC specialized engineering layer
+
+For Codex software-development and technical workflow tasks in this repository, agents SHALL use the official upstream-native `affaan-m/ECC` plugin as a specialized engineering library while keeping Superpowers as the default development-process layer.
+
+Agents SHALL:
+
+- treat `plugins/ecc-controller` as routing, provenance and safety policy, not as a behavioral fork of ECC;
+- prefer the official ECC plugin loaded from `https://github.com/affaan-m/ECC.git` for current ECC Skills, hooks, MCP declarations, agents and runtime behavior;
+- use ECC for specialized domain/framework/security/accessibility/agent-harness/verification/operations work when it contributes distinct evidence or capability;
+- avoid rerunning generic TDD, debugging, planning and code-review workflows across Superpowers, ECC and Matt Pocock by default; Superpowers owns the primary process gate unless the user or a more specific repository rule selects another workflow;
+- use ECC focused reviewers or security/verification Skills as additive specialist passes when justified by the change;
+- never duplicate ECC native hooks into separate global configuration; duplicate hook registration can execute the same automation twice;
+- preserve ECC's lean-MCP policy and never enable every optional MCP server automatically;
+- treat hooks, MCP servers, shell scripts, autonomous loops, installers and credentialed integrations as executable configuration requiring explicit task/environment authority before execution;
+- never execute code from `vendor/affaan-m-ecc/`; that tree is a read-only byte mirror maintained by `.github/workflows/sync-ecc-mirror.yml`;
+- use the ECC mirror only for provenance, audit, recovery, source inspection and upstream comparison;
+- only claim multi-agent/subagent execution when independent agents actually ran in the current runtime;
+- use the GitHub connector for repository evidence and mutations;
+- apply GitHub Arena after the applicable Superpowers/ECC/Matt workflow for high-impact GitHub or coding changes.
+
+Default routing order for overlapping development tasks is: repository/system/user constraints -> Superpowers process -> ECC specialist capability -> Matt Pocock specialist capability -> GitHub evidence/mutation -> GitHub Arena final review.
+
 ## Matt Pocock complementary skills layer
 
 For Codex software-development and technical workflow tasks in this repository, agents SHALL treat the promoted stable skills from `mattpocock/skills` as a complementary specialized library. Superpowers remains the default development-process layer unless the user explicitly requests a Matt Pocock workflow or a more specific repository instruction selects it.
