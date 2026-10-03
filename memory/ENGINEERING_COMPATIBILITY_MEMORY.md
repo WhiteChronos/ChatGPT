@@ -23,6 +23,8 @@ Durable, repository-visible memory for the engineering compatibility process.
 8. Public repository memory must never contain confidential project documents or project-specific secrets.
 9. Agents never self-waive findings and never merge automatically.
 10. Architecture changes require alternatives, viability and failure-mode review.
+11. External engineering sources follow a governed authority hierarchy: project-approved evidence for project facts, official standards/specifications for external requirements, and open-source repositories only for supporting implementation/testing.
+12. EXTERNAL_KNOWLEDGE claims must cite registered authoritative source IDs; public repositories never replace project evidence or normative standards.
 
 ## Maintenance
 Update this file only when the process contract changes. Project-specific facts belong in governed project datasheets, not here.

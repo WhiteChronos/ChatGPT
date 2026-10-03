@@ -15,7 +15,8 @@
     "release_gate",
     "visualization",
     "protocol_zero",
-    "analysis_profile"
+    "analysis_profile",
+    "reference_context"
   ],
   "properties": {
     "project": {
@@ -238,6 +239,9 @@
     },
     "analysis_profile": {
       "$ref": "#/$defs/analysis_profile"
+    },
+    "reference_context": {
+      "$ref": "#/$defs/reference_context"
     }
   },
   "$defs": {
@@ -354,6 +358,13 @@
         },
         "evidence_quality": {
           "$ref": "#/$defs/evidence_quality"
+        },
+        "reference_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
         }
       },
       "allOf": [
@@ -691,7 +702,8 @@
         "owner",
         "dependencies",
         "closure_criterion",
-        "confidence"
+        "confidence",
+        "protocol_question_id"
       ],
       "properties": {
         "id": {
@@ -807,6 +819,16 @@
         },
         "waiver": {
           "$ref": "#/$defs/waiver"
+        },
+        "protocol_question_id": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "external_reference_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
         }
       },
       "allOf": [
@@ -865,7 +887,8 @@
         "question",
         "answer",
         "status",
-        "promotes_to_finding"
+        "promotes_to_finding",
+        "finding_ids"
       ],
       "properties": {
         "id": {
@@ -885,6 +908,13 @@
         },
         "promotes_to_finding": {
           "type": "boolean"
+        },
+        "finding_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
         }
       },
       "additionalProperties": false
@@ -920,7 +950,8 @@
         "model",
         "automation_hyperfocus",
         "data_lineage_required",
-        "failure_mode_review_required"
+        "failure_mode_review_required",
+        "hyperfocus_checks"
       ],
       "properties": {
         "model": {
@@ -934,6 +965,89 @@
         },
         "failure_mode_review_required": {
           "const": true
+        },
+        "hyperfocus_checks": {
+          "type": "array",
+          "minItems": 12,
+          "items": {
+            "$ref": "#/$defs/hyperfocus_check"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "reference_context": {
+      "type": "object",
+      "required": [
+        "registry_id",
+        "authoritative_source_ids",
+        "open_source_repository_ids",
+        "profile_id"
+      ],
+      "properties": {
+        "registry_id": {
+          "const": "ENGINEERING_REFERENCE_REGISTRY_V1_0"
+        },
+        "authoritative_source_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
+        },
+        "open_source_repository_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
+        },
+        "profile_id": {
+          "$ref": "#/$defs/nonblank"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hyperfocus_check": {
+      "type": "object",
+      "required": [
+        "stage",
+        "status",
+        "evidence",
+        "reference_ids"
+      ],
+      "properties": {
+        "stage": {
+          "enum": [
+            "PROCESS_REQUIREMENT",
+            "EQUIPMENT_TAG",
+            "POWER",
+            "COMMAND_FEEDBACK",
+            "IO",
+            "PLC_RTU",
+            "CONTROL_LOGIC",
+            "NETWORK_PROTOCOL",
+            "DATA_QUALITY",
+            "HMI_SCADA",
+            "ALARM_HISTORY",
+            "FAT_SAT"
+          ]
+        },
+        "status": {
+          "enum": [
+            "VERIFIED",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/nonblank"
+        },
+        "reference_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonblank"
+          }
         }
       },
       "additionalProperties": false

@@ -7,20 +7,27 @@ on:
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
+      - 'governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md'
       - 'schemas/engineering_compatibility.schema.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
+      - 'datacenter/ENGINEERING_REFERENCE_REGISTRY.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
+      - 'pipeline/reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
+      - 'tests/test_reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
       - 'tests/test_engineering_compatibility_gate_codex_round7.py'
       - 'tests/test_engineering_compatibility_gate_codex_round8.py'
       - 'tests/test_engineering_compatibility_gate_codex_round9.py'
+      - 'memory/ENGINEERING_COMPATIBILITY_MEMORY.md'
+      - '.github/agents/automation-hyperfocus-reviewer.agent.md'
+      - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
       - '.github/workflows/engineering-compatibility-visualize.yml'
   push:
     branches: [main]
@@ -29,20 +36,27 @@ on:
       - 'governance/VISUALIZE_GOLDEN_RULE_v1_0.md'
       - 'governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md'
       - 'governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md'
+      - 'governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md'
       - 'schemas/engineering_compatibility.schema.json'
+      - 'datacenter/ENGINEERING_REFERENCE_REGISTRY.json'
       - 'datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json'
       - 'datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json'
       - 'datasheet/projects/**/*.json'
       - 'pipeline/engineering_compatibility*.py'
       - 'pipeline/protocol_zero_gate.py'
+      - 'pipeline/reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate.py'
       - 'tests/test_protocol_zero_gate.py'
+      - 'tests/test_reference_registry_gate.py'
       - 'tests/test_engineering_compatibility_gate_codex_round4.py'
       - 'tests/test_engineering_compatibility_gate_codex_round5.py'
       - 'tests/test_engineering_compatibility_gate_codex_round6.py'
       - 'tests/test_engineering_compatibility_gate_codex_round7.py'
       - 'tests/test_engineering_compatibility_gate_codex_round8.py'
       - 'tests/test_engineering_compatibility_gate_codex_round9.py'
+      - 'memory/ENGINEERING_COMPATIBILITY_MEMORY.md'
+      - '.github/agents/automation-hyperfocus-reviewer.agent.md'
+      - 'docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md'
       - '.github/workflows/engineering-compatibility-visualize.yml'
 
 jobs:
@@ -64,10 +78,12 @@ jobs:
           python -m py_compile pipeline/engineering_compatibility_gate_impl.py
           python -m py_compile pipeline/engineering_compatibility.py
           python -m py_compile pipeline/protocol_zero_gate.py
+          python -m py_compile pipeline/reference_registry_gate.py
 
       - name: Validate JSON syntax
         run: |
           python -m json.tool datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json >/dev/null
+          python -m json.tool datacenter/ENGINEERING_REFERENCE_REGISTRY.json >/dev/null
           python -m json.tool schemas/engineering_compatibility.schema.json >/dev/null
           python -m json.tool datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json >/dev/null
           python -m json.tool datasheet/projects/example-project.json >/dev/null
@@ -82,6 +98,9 @@ jobs:
           Draft202012Validator(schema, format_checker=FormatChecker()).validate(data)
           print('Template schema: PASS')
           PY
+
+      - name: Validate canonical engineering reference registry
+        run: python pipeline/reference_registry_gate.py
 
       - name: Exercise permanent positive semantic gate
         run: python pipeline/engineering_compatibility_gate.py
@@ -106,6 +125,7 @@ jobs:
         run: |
           pytest -q tests/test_engineering_compatibility_gate.py
           pytest -q tests/test_protocol_zero_gate.py
+          pytest -q tests/test_reference_registry_gate.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round4.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round5.py
           pytest -q tests/test_engineering_compatibility_gate_codex_round6.py
@@ -126,6 +146,7 @@ jobs:
           for file in "${files[@]}"; do
             echo "Validating $file"
             python pipeline/engineering_compatibility_gate.py "$file" || rc=1
+            python pipeline/protocol_zero_gate.py "$file" || rc=1
           done
           exit $rc
 
@@ -137,3 +158,5 @@ jobs:
           grep -q 'QUESTION_BEFORE_FINDING' governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md
           grep -q 'protocol_zero_gate.py' AGENTS.md
           grep -q 'ENGINEERING_COMPATIBILITY_VISUALIZE_V1_1' datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
+          grep -q 'ENGINEERING_REFERENCE_REGISTRY_V1_0' datacenter/ENGINEERING_REFERENCE_REGISTRY.json
+          grep -q 'ENGINEERING_SOURCE_GOVERNANCE_v1_0' AGENTS.md

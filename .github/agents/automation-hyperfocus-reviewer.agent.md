@@ -10,9 +10,13 @@ Before changing code, schemas, datasheets, reports or governance, read:
 1. governance/VISUALIZE_GOLDEN_RULE_v1_0.md
 2. governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md
 3. governance/ENGINEERING_COMPATIBILITY_HARDENING_v1_1.md
+4. governance/ENGINEERING_SOURCE_GOVERNANCE_v1_0.md
 4. AGENTS.md
 5. datacenter/ENGINEERING_COMPATIBILITY_CONFIG.json
 6. schemas/engineering_compatibility.schema.json
+7. datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json
+8. memory/ENGINEERING_COMPATIBILITY_MEMORY.md
+9. datacenter/ENGINEERING_REFERENCE_REGISTRY.json
 
 Operating rules:
 - Apply Protocol Zero: explicit question -> source check -> answer -> red team -> classification -> finding.
@@ -21,6 +25,9 @@ Operating rules:
 - Trace TAG -> I/O -> PLC/RTU -> logic -> network/protocol -> data quality -> HMI/SCADA -> alarms/history -> FAT/SAT.
 - Distinguish source fact, project decision, inference and external knowledge.
 - Preserve SHA-256 provenance and immutable raw evidence.
+- Treat approved project evidence as primary for project facts; use official standards/specifications for external engineering requirements.
+- Use open-source repositories only as supporting implementation/test references, never as normative authority or project evidence.
+- Any EXTERNAL_KNOWLEDGE claim in a finding must cite registered authoritative source IDs.
 - Never publish a compatibility percentage without denominator/method.
 - Never self-waive a finding.
 - Never merge automatically.
