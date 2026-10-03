@@ -1,0 +1,7 @@
+{
+  "source": "https://github.com/obra/superpowers",
+  "ref": "main",
+  "commit": "8ca22dba9a94f28898bbce59f2537ff4d87c747d",
+  "version": "6.4.2",
+  "policy": "read-only mirror; runtime uses the official Superpowers plugin"
+}
