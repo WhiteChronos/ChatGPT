@@ -69,11 +69,27 @@ jobs:
 
           EXISTING="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
           if [[ -z "$EXISTING" ]]; then
-            gh pr create \
+            if PR_URL="$(gh pr create \
               --base main \
               --head "$BRANCH" \
               --title "chore: sync mattpocock/skills ${VERSION} (${SHORT_SHA})" \
-              --body "Automated read-only mirror refresh from https://github.com/mattpocock/skills at commit \`${SHA}\`. The full upstream repository is mirrored under \`vendor/mattpocock-skills/\`; ${COUNT} promoted stable Engineering/Productivity skills are projected byte-for-byte into \`.agents/skills/\`. Upstream code is not executed during synchronization."
+              --body "Automated read-only mirror refresh from https://github.com/mattpocock/skills at commit \`${SHA}\`. The full upstream repository is mirrored under \`vendor/mattpocock-skills/\`; ${COUNT} promoted stable Engineering/Productivity skills are projected byte-for-byte into \`.agents/skills/\`. Upstream code is not executed during synchronization." 2>&1)"; then
+              echo "Created synchronization PR: $PR_URL"
+            else
+              echo "::warning::Synchronization branch was pushed, but repository policy blocked GitHub Actions from creating the PR."
+              {
+                echo "## Matt Pocock sync branch ready"
+                echo
+                echo "GitHub Actions pushed \`$BRANCH\`, but repository policy prevented the workflow token from creating a pull request."
+                echo
+                echo "Open a PR manually (or through the connected GitHub app) from \`$BRANCH\` to \`main\`."
+                echo
+                echo "gh output:"
+                echo '~~~text'
+                echo "$PR_URL"
+                echo '~~~'
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             echo "Synchronization PR #$EXISTING already exists."
           fi
