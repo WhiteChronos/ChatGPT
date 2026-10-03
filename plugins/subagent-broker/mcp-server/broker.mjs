@@ -79,6 +79,7 @@ export class SubagentBroker {
     this.handles = new Map();
     this.timers = new Map();
     this.waiters = new Map();
+    this.timeoutPending = new Set();
     this.rehydratedTimer = null;
     this.lock = Promise.resolve();
     this.shuttingDown = false;
@@ -255,24 +256,70 @@ export class SubagentBroker {
     await this.#withLock(async () => {
       const current = await this.stateStore.get(agentId);
       if (!current || current.state !== 'RUNNING') return;
-      const timed = await this.stateStore.update(agentId, { ended_at: now(), terminal_reason: 'execution timeout' }, 'TIMED_OUT');
-      handle = this.handles.get(agentId) ?? null;
-      this.#notify(agentId, publicRecord(timed));
+      this.timeoutPending.add(agentId);
+      handle = this.handles.get(agentId) ?? (current.pid ? {
+        agent_id: agentId,
+        pid: current.pid,
+        process_identity: current.process_identity ?? null,
+        cwd: current.worktree ?? null,
+        workspace_mode: current.workspace_mode,
+        session_id: current.session_id ?? null,
+        rehydrated: true,
+      } : null);
     });
-    if (handle) await this.backend.cancel(handle, { graceSeconds: this.cancelGraceSeconds }).catch(() => {});
-    await this.#withLock(async () => {
-      const current = await this.stateStore.get(agentId);
-      if (current?.state === 'TIMED_OUT') {
-        await this.stateStore.writeResult(agentId, this.#resultPayload(current, workspaceFromRecord(current), { stderr_tail: handle?.stderr_tail ?? '' }), '');
+
+    let containmentError = null;
+    if (handle) {
+      try {
+        await this.backend.cancel(handle, { graceSeconds: this.cancelGraceSeconds });
+      } catch (error) {
+        containmentError = error;
       }
+    } else {
+      containmentError = brokerError('CAPABILITY_UNAVAILABLE', `agent ${agentId} has no attributable process handle at timeout`);
+    }
+
+    await this.#withLock(async () => {
+      this.timeoutPending.delete(agentId);
+      let current = await this.stateStore.get(agentId);
+      if (!current) return;
+
+      // A normal completion may have won the race while containment was in progress.
+      if (TERMINAL_STATES.has(current.state)) {
+        this.active.delete(agentId);
+        this.rehydratedRunning.delete(agentId);
+        this.#clearTimeout(agentId);
+        await this.#drainUnlocked();
+        return;
+      }
+
+      if (current.state !== 'RUNNING') return;
+
+      const nextState = containmentError ? 'ORPHANED' : 'TIMED_OUT';
+      const reason = containmentError
+        ? `timeout containment failed: ${String(containmentError?.message ?? containmentError)}`
+        : 'execution timeout';
+      current = await this.stateStore.update(agentId, {
+        ended_at: now(),
+        terminal_reason: reason,
+      }, nextState);
+      await this.stateStore.writeResult(
+        agentId,
+        this.#resultPayload(current, workspaceFromRecord(current), {
+          stderr_tail: handle?.stderr_tail ?? reason,
+        }),
+        ''
+      );
       this.active.delete(agentId);
       this.rehydratedRunning.delete(agentId);
       this.#clearTimeout(agentId);
+      this.#notify(agentId, publicRecord(current));
       await this.#drainUnlocked();
     });
   }
 
   async #finalizeUnlocked(agentId, backendResult) {
+    if (this.timeoutPending.has(agentId)) return;
     this.#clearTimeout(agentId);
     const current = await this.stateStore.get(agentId);
     if (!current) return;
@@ -382,6 +429,7 @@ export class SubagentBroker {
       if (this.#runningCount() >= this.maxRunning) throw brokerError('RESOURCE_EXHAUSTED', `subagent running limit ${this.maxRunning} reached`);
       const caps = await this.backend.probe();
       if (!caps.resume) throw brokerError('CAPABILITY_UNAVAILABLE', 'codex resume is unavailable');
+
       record = await this.stateStore.update(agentId, { followup_started_at: now() }, 'SPAWNING', 'followup');
       const prior = this.handles.get(agentId) ?? {
         agent_id: agentId,
@@ -389,7 +437,33 @@ export class SubagentBroker {
         cwd: record.worktree,
         workspace_mode: record.workspace_mode,
       };
-      const handle = await this.backend.followup({ ...prior, session_id: record.session_id, cwd: record.worktree, workspace_mode: record.workspace_mode }, message);
+
+      let handle;
+      try {
+        handle = await this.backend.followup(
+          { ...prior, session_id: record.session_id, cwd: record.worktree, workspace_mode: record.workspace_mode },
+          message
+        );
+      } catch (error) {
+        const failed = await this.stateStore.update(agentId, {
+          ended_at: now(),
+          exit_code: 1,
+          terminal_reason: String(error?.message ?? error),
+        }, 'FAILED');
+        await this.stateStore.writeResult(
+          agentId,
+          this.#resultPayload(failed, workspaceFromRecord(failed), { stderr_tail: failed.terminal_reason }),
+          ''
+        );
+        this.#notify(agentId, publicRecord(failed));
+        await this.#drainUnlocked();
+        throw error;
+      }
+
+      // Attach a rejection observer immediately so an already-settled backend
+      // promise cannot become an unhandled rejection before RUNNING is persisted.
+      handle.completion.catch(() => {});
+
       this.handles.set(agentId, handle);
       this.active.add(agentId);
       record = await this.stateStore.update(agentId, {
@@ -403,7 +477,17 @@ export class SubagentBroker {
       }, 'RUNNING');
       this.#scheduleTimeout(record);
       this.#notify(agentId, publicRecord(record));
-      handle.completion.then(result => this.#withLock(() => this.#finalizeUnlocked(agentId, result))).catch(() => {});
+
+      handle.completion.then(
+        result => this.#withLock(() => this.#finalizeUnlocked(agentId, result)),
+        error => this.#withLock(() => this.#finalizeUnlocked(agentId, {
+          exit_code: 1,
+          signal: null,
+          session_id: record.session_id,
+          final_text: '',
+          stderr_tail: String(error?.message ?? error),
+        }))
+      ).catch(() => {});
       return publicRecord(record);
     });
   }
@@ -470,6 +554,7 @@ export class SubagentBroker {
       this.active.delete(agentId);
       this.rehydratedRunning.delete(agentId);
       this.#clearTimeout(agentId);
+      this.timeoutPending.delete(agentId);
       await this.#drainUnlocked();
     });
     return this.status(agentId);
@@ -512,6 +597,7 @@ export class SubagentBroker {
     this.rehydratedTimer = null;
     for (const timer of this.timers.values()) clearTimeout(timer);
     this.timers.clear();
+    this.timeoutPending.clear();
     for (const set of this.waiters.values()) for (const w of set) { clearTimeout(w.timer); w.resolve(await this.status(w.agent_id).catch(() => null)); }
     this.waiters.clear();
   }
