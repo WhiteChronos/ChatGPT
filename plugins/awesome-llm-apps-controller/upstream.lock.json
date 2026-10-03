@@ -1,0 +1,23 @@
+{
+  "upstream": {
+    "repository": "Shubhamsaboo/awesome-llm-apps",
+    "url": "https://github.com/Shubhamsaboo/awesome-llm-apps.git",
+    "ref": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+    "commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+    "license": "Apache-2.0"
+  },
+  "catalog": {"schema_version": 1},
+  "mirror": {"path": "vendor/shubhamsaboo-awesome-llm-apps", "exclusion_policy_version": 1},
+  "counts": {
+    "tree_entries": 2531,
+    "blobs": 1976,
+    "skill_md_total": 10,
+    "canonical_skills": 7,
+    "readmes": 223,
+    "dependency_manifests": 194,
+    "environment_examples": 65,
+    "dockerfiles": 8,
+    "mcp_related_files": 139,
+    "code_files": 996
+  }
+}
