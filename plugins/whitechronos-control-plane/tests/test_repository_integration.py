@@ -141,3 +141,9 @@ def test_runtime_foundation_workflow_runs_full_repository_regression():
     workflow = REPO / ".github/workflows/whitechronos-runtime-foundation.yml"
     lines = workflow.read_text().splitlines()
     assert any(line.strip() == "run: python -m pytest -q" for line in lines)
+
+
+def test_runtime_foundation_workflow_runs_doctor_in_clean_detached_worktree():
+    workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert 'git worktree add --detach /tmp/whitechronos-runtime-doctor-tree "$GITHUB_SHA"' in workflow
+    assert '--repo /tmp/whitechronos-runtime-doctor-tree' in workflow

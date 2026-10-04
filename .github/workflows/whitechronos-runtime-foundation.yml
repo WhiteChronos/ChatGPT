@@ -75,8 +75,9 @@ jobs:
           exec node "$GITHUB_WORKSPACE/plugins/subagent-broker/tests/fake-codex.mjs" "$@"
           SH
           chmod 700 /tmp/whitechronos-fake-codex
-          python plugins/whitechronos-control-plane/scripts/runtime_doctor.py \
-            --repo . \
+          git worktree add --detach /tmp/whitechronos-runtime-doctor-tree "$GITHUB_SHA"
+          python /tmp/whitechronos-runtime-doctor-tree/plugins/whitechronos-control-plane/scripts/runtime_doctor.py \
+            --repo /tmp/whitechronos-runtime-doctor-tree \
             --codex-path /tmp/whitechronos-fake-codex \
             --runtime-kind unknown \
             --json > /tmp/whitechronos-runtime-doctor.json
