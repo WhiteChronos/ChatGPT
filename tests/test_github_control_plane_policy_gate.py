@@ -253,3 +253,51 @@ def test_live_ruleset_missing_policy_check_is_failure():
 def test_policy_file_round_trips_as_json():
     data = json.loads(POLICY.read_text(encoding="utf-8"))
     assert data["schema_version"] == "whitechronos-github-control-plane/v1"
+
+
+
+def test_github_control_plane_workflow_contract():
+    workflow = REPO / ".github" / "workflows" / "github-control-plane-policy.yml"
+    text = workflow.read_text(encoding="utf-8")
+
+    assert "name: GitHub Control Plane Policy" in text
+    assert "github-control-plane-policy:" in text
+    assert "name: github-control-plane-policy" in text
+    assert "pull_request:" in text
+    assert "- main" in text
+    assert '- "spec/**"' in text
+    assert '- "release/**"' in text
+    assert "workflow_dispatch:" in text
+    assert "permissions:" in text
+    assert "contents: read" in text
+    assert 'python-version: "3.11"' in text
+    assert (
+        "python pipeline/github_control_plane_policy_gate.py "
+        "--policy governance/GITHUB_CONTROL_PLANE_POLICY.json"
+    ) in text
+    assert "python -m pytest -q tests/test_github_control_plane_policy_gate.py" in text
+    assert "python -m pytest -q tests/test_github_path_policy.py" in text
+    assert "python pipeline/github_path_policy.py" in text
+
+    assert "\n    paths:" not in text
+    for forbidden in (
+        "pull_request_target:",
+        "contents: write",
+        "actions: write",
+        "OPENAI_API_KEY",
+        "CODEX_ACCESS_TOKEN",
+        "git push",
+    ):
+        assert forbidden not in text
+
+
+def test_agents_requires_github_control_plane_validation_commands():
+    text = (REPO / "AGENTS.md").read_text(encoding="utf-8")
+    assert "## GitHub Control Plane merge gate" in text
+    assert (
+        "python pipeline/github_control_plane_policy_gate.py "
+        "--policy governance/GITHUB_CONTROL_PLANE_POLICY.json"
+    ) in text
+    assert "python -m pytest -q tests/test_github_control_plane_policy_gate.py" in text
+    assert "python -m pytest -q tests/test_github_path_policy.py" in text
+    assert "live ruleset verification" in text.lower()
