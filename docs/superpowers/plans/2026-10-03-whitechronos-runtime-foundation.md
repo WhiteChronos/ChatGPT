@@ -25,6 +25,7 @@
 - CI may prove repository/config/local MCP behavior but must never claim `HOST_DISCOVERED` or `LIVE_SMOKE_READY` without explicit host/runtime evidence.
 - All repository mutations occur on an isolated implementation branch/worktree at execution time; never write directly to `main`.
 - Existing repository governance and CI gates must remain green.
+- Because this slice creates a new Skill, implementation must invoke the installed `skill-creator`, initialize `codex-runtime-doctor` with its bundled `init_skill.py`, remove unused template artifacts, validate it, and package the finished Skill as exactly `skill.zip`. The ZIP is an execution artifact and must not be committed to the repository.
 
 ## File Structure
 
@@ -751,7 +752,23 @@ The CLI must:
   - verified local failure -> debugging/bugfix path;
   - `LIVE_SMOKE_READY=YES` -> existing smoke command may run.
 
-- [ ] **Step 5: Create the project plugin and Skill**
+- [ ] **Step 5: Initialize the Runtime Doctor Skill with Skill Creator**
+
+Invoke the installed `skill-creator` and run its bundled `init_skill.py` for:
+
+```text
+codex-runtime-doctor
+```
+
+with destination:
+
+```text
+plugins/whitechronos-control-plane/skills/
+```
+
+Then remove every generated example script/reference/asset that is not part of the approved design. Preserve only the required Skill files and the two planned references.
+
+- [ ] **Step 6: Create the project plugin and finish the Skill**
 
 Plugin name: `whitechronos-control-plane`.
 
@@ -776,7 +793,23 @@ The Skill must instruct agents to:
 5. run the existing `smoke_real_codex.mjs` only when readiness says YES;
 6. preserve the existing Broker smoke acceptance criteria.
 
-- [ ] **Step 6: Register the plugin without changing existing plugin settings**
+- [ ] **Step 7: Validate and package the new Skill**
+
+Use the active `skill-creator` bundled validation/packaging scripts on:
+
+```text
+plugins/whitechronos-control-plane/skills/codex-runtime-doctor
+```
+
+Requirements:
+
+- validation passes;
+- packaged filename is exactly `skill.zip`;
+- package contains the completed `SKILL.md`, `agents/openai.yaml`, and approved references only;
+- package is under the 25 MB Skill limit;
+- do not commit the ZIP; preserve it as a user-visible execution artifact.
+
+- [ ] **Step 8: Register the plugin without changing existing plugin settings**
 
 Append:
 
@@ -794,7 +827,7 @@ Register the local plugin in `.agents/plugins/marketplace.json` with:
 - product `CODEX`;
 - category `Developer Tools`.
 
-- [ ] **Step 7: Add the Runtime Doctor rule to AGENTS.md**
+- [ ] **Step 9: Add the Runtime Doctor rule to AGENTS.md**
 
 Add a focused section stating:
 
@@ -806,7 +839,7 @@ Add a focused section stating:
 
 Do not duplicate the full bootstrap design from later slices.
 
-- [ ] **Step 8: Run repository/CLI tests and verify GREEN**
+- [ ] **Step 10: Run repository/CLI tests and verify GREEN**
 
 Run:
 
@@ -816,7 +849,7 @@ python -m pytest -q plugins/whitechronos-control-plane/tests/test_repository_int
 
 Expected: PASS.
 
-- [ ] **Step 9: Commit Task 5**
+- [ ] **Step 11: Commit Task 5**
 
 ```bash
 git add plugins/whitechronos-control-plane .agents/plugins/marketplace.json .codex/config.toml AGENTS.md
