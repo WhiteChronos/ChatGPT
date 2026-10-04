@@ -1,6 +1,6 @@
 # GitHub Control Plane Hardening + Redundancy Design
 
-**Status:** Approved architecture captured for written review  
+**Status:** Conversational architecture approved; written spec pending user review  
 **Date:** 2026-10-04  
 **Repository:** `WhiteChronos/ChatGPT`  
 **Working branch:** `feat/cloud-runtime-foundation`  
@@ -40,7 +40,7 @@ The external mirror is **disaster-recovery only**. It is never an authority, nev
 The following state is verified from GitHub at the time of this design:
 
 - Pull request `#57` is open and draft, from `feat/cloud-runtime-foundation` to `spec/whitechronos-cloud-control-plane`.
-- The PR head is currently `82379a0c289fbe8acef625121db7266114bb9324`.
+- At the pre-spec inspection, the PR head was `82379a0c289fbe8acef625121db7266114bb9324`; documentation commits made by this design review advance the PR head afterward.
 - The repository ruleset `Chronos` exists but its enforcement is `disabled`.
 - `Chronos` currently contains rules for deletion, non-fast-forward updates, creation, update, required linear history, required signatures, and required deployments.
 - The current `Chronos` ref conditions have empty include/exclude lists.
@@ -135,6 +135,41 @@ The following are non-negotiable:
 14. **Secrets never enter Git, durable memory, Data Center records, runtime evidence, or backup manifests.**
 15. **A disabled ruleset is not a protection.**
 16. **CODEOWNERS without an enforced PR policy is documentation, not sufficient protection.**
+
+### 5.1 Canonical repository hierarchy
+
+GitHub is the single control plane, but WhiteChronos may use more than one canonical GitHub repository.
+
+The hierarchy is:
+
+```text
+WhiteChronos/ChatGPT
+  = root control-plane authority
+  = governance, memory, Data Center, registry, orchestration policy
+
+WhiteChronos/subagent-broker-runtime
+  = canonical Broker implementation repository
+  = independent runtime source with its own CI/release history
+
+future approved runtime repositories
+  = canonical only after registration and commit/version pinning
+```
+
+The root control-plane repository SHALL record the approved component repository identity and immutable commit/version pin before that component can participate in an authoritative runtime chain.
+
+A component repository may be canonical for its own source code without becoming a second control plane.
+
+Component promotion follows:
+
+```text
+component PR/CI
+-> component merge/release
+-> root control-plane pin/update PR
+-> root required checks
+-> runtime eligibility
+```
+
+Live evidence must bind both the root control-plane commit SHA and the exact component-runtime commit SHA.
 
 ## 6. Branch topology and integration model
 
@@ -496,6 +531,13 @@ The architecture is provider-neutral.
 
 The implementation must use a provider distinct from GitHub that supports a private Git destination and restricted credentials. The provider choice is operational configuration, not a second control plane.
 
+The cold-mirror set initially includes at least:
+
+- `WhiteChronos/ChatGPT`;
+- `WhiteChronos/subagent-broker-runtime`.
+
+Future canonical runtime repositories are added to the backup set only after registration in the root control plane.
+
 ### 15.3 Non-pruning replication
 
 Automatic backup SHALL NOT use destructive pruning semantics.
@@ -597,7 +639,7 @@ A real live smoke is permitted only when all are true:
 2. GitHub policy checks are green;
 3. critical path policy is green;
 4. security/governance checks are green;
-5. external cold-mirror freshness is within policy;
+5. external cold-mirror freshness covers the root repository and the exact runtime-component pins used by the operation;
 6. Codex Cloud preflight is ready;
 7. Runtime Doctor has run against the intended runtime;
 8. actual host discovery is proven;
@@ -701,11 +743,12 @@ The GitHub Control Plane Hardening + Redundancy architecture is complete when al
 14. Live smoke cannot run before the required GitHub and Runtime Doctor gates.
 15. `memory/`, `history/`, `datacenter/`, `datasheet/`, and `registry/` have explicit path policies.
 16. External cold mirror is one-way and cannot write back automatically.
-17. Backup replication does not automatically prune deleted source state.
-18. A recent backup freshness record exists before release/live-smoke promotion.
-19. A restore drill from the external mirror succeeds in a clean workspace.
-20. A destructive or unavailable mirror event cannot corrupt GitHub state.
-21. PR `#57` remains draft until the hardening implementation and administrative verification gates are satisfied.
+17. The initial mirror set covers both `WhiteChronos/ChatGPT` and `WhiteChronos/subagent-broker-runtime`, with runtime evidence bound to exact component pins.
+18. Backup replication does not automatically prune deleted source state.
+19. A recent backup freshness record exists before release/live-smoke promotion.
+20. A restore drill from the external mirror succeeds in a clean workspace.
+21. A destructive or unavailable mirror event cannot corrupt GitHub state.
+22. PR `#57` remains draft until the hardening implementation and administrative verification gates are satisfied.
 
 ## 23. Review Arena conclusions
 
@@ -774,7 +817,7 @@ Each slice receives its own tests, review, CI evidence, and rollback path.
 
 ## 25. Implementation boundary
 
-This document approves architecture only.
+This document records the architecture for written user review only.
 
 It does not itself authorize:
 
