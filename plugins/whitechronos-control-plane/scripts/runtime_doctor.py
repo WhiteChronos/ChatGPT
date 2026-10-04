@@ -6,6 +6,8 @@ import json
 import sys
 from pathlib import Path
 
+sys.dont_write_bytecode = True
+
 PLUGIN_ROOT = Path(__file__).resolve().parents[1]
 if str(PLUGIN_ROOT) not in sys.path:
     sys.path.insert(0, str(PLUGIN_ROOT))
@@ -22,6 +24,7 @@ def _parser() -> argparse.ArgumentParser:
     p.add_argument("--codex-path", default="codex")
     p.add_argument("--runtime-kind", choices=("unknown", "trusted_remote", "codex_cloud"), default="unknown")
     p.add_argument("--host-tool", action="append", default=[], help="Current host tool name; repeatable")
+    p.add_argument("--host-inventory-observed", action="store_true", help="Mark host inventory as explicitly observed even when it contains zero tools")
     p.add_argument("--require-live-smoke-ready", action="store_true")
     return p
 
@@ -45,6 +48,7 @@ def main(argv: list[str] | None = None) -> int:
                 codex_path=args.codex_path,
                 host_tools=frozenset(args.host_tool),
                 runtime_kind=args.runtime_kind,
+                host_inventory_observed=args.host_inventory_observed or bool(args.host_tool),
             )
         )
     except Exception as exc:

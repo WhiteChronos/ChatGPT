@@ -104,3 +104,25 @@ def test_registry_rejects_runtime_probe_outside_declared_plugin_root(tmp_path):
     repo = _write_temp_registry(tmp_path, [descriptor])
     with pytest.raises(ValueError, match=r"runtime_probe\.mcp_config.*plugin_root"):
         load_registry(repo)
+
+
+def test_schema_version_boolean_is_not_numeric_const(tmp_path):
+    descriptor = _valid_descriptor("bool-version")
+    descriptor["schema_version"] = True
+    repo = _write_temp_registry(tmp_path, [descriptor])
+    with pytest.raises(ValueError, match=r"schema_version.*const"):
+        load_registry(repo)
+
+
+def test_schema_validator_rejects_unsupported_keyword(tmp_path):
+    repo = tmp_path / "repo"
+    reg = repo / "registry/integrations"
+    reg.mkdir(parents=True)
+    schema = json.loads((REPO / "registry/integrations/schema.json").read_text())
+    schema["properties"]["id"]["pattern"] = "^[a-z]+$"
+    (reg / "schema.json").write_text(json.dumps(schema), encoding="utf-8")
+    descriptor = _valid_descriptor("sample")
+    (reg / "entry.json").write_text(json.dumps(descriptor), encoding="utf-8")
+    (reg / "index.json").write_text(json.dumps({"schema_version":1,"descriptors":["entry.json"]}), encoding="utf-8")
+    with pytest.raises(ValueError, match=r"unsupported schema keyword.*pattern"):
+        load_registry(repo)

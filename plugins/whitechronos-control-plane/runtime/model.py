@@ -76,6 +76,7 @@ class DoctorInput:
     codex_path: str
     host_tools: frozenset[str]
     runtime_kind: str
+    host_inventory_observed: bool = False
 
 
 @dataclass(frozen=True)

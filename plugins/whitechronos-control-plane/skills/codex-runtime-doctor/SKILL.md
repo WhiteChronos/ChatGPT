@@ -26,7 +26,7 @@ Never treat repository configuration as runtime proof.
    python plugins/whitechronos-control-plane/scripts/runtime_doctor.py --repo . --json
    ```
 
-2. When the current harness exposes its real tool inventory, pass each observed name with repeatable `--host-tool`. Never invent host tools from `.codex/config.toml`.
+2. When the current harness exposes its real tool inventory, pass each observed name with repeatable `--host-tool`. If the harness was explicitly inspected and the observed inventory is empty, add `--host-inventory-observed` so empty evidence is not confused with missing evidence. Never invent host tools from `.codex/config.toml`.
 3. Read local MCP and host-discovery checks separately.
 4. If the result is `HOST_RELOAD_REQUIRED`, instruct the user to start a fresh Codex environment/session and **do not change source** merely to repair a stale host.
 5. If a local/config check is a verified failure, use Superpowers systematic debugging and TDD on an isolated branch.

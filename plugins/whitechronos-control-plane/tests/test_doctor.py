@@ -131,3 +131,30 @@ def test_stale_host_never_recommends_source_mutation(tmp_path, monkeypatch):
     assert "fresh codex" in rendered
     assert "source change" not in rendered
     assert "bugfix" not in rendered
+
+
+def test_observed_empty_host_inventory_requires_reload(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    inputs = DoctorInput(repo, _head(repo), str(repo / "plugins/subagent-broker/tests/fake-codex.mjs"), frozenset(), "trusted_remote", host_inventory_observed=True)
+    report = doctor.run_doctor(inputs)
+    assert _status(report, "HOST_ARENA_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert _status(report, "HOST_BROKER_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.live_smoke_ready is False
+
+
+def test_untracked_source_file_blocks_strict_smoke_readiness(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    (repo / "surprise.py").write_text("print('untracked')\n", encoding="utf-8")
+    report = _run(repo, host_tools=BROKER_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    assert _status(report, "WORKTREE_STATE") is CheckStatus.FAIL
+    assert report.live_smoke_ready is False
+
+
+def test_untracked_python_cache_does_not_block_smoke_readiness(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    cache = repo / "plugins/example/__pycache__"
+    cache.mkdir(parents=True)
+    (cache / "module.cpython-312.pyc").write_bytes(b"cache")
+    report = _run(repo, host_tools=BROKER_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    assert _status(report, "WORKTREE_STATE") is CheckStatus.PASS
+    assert report.live_smoke_ready is True

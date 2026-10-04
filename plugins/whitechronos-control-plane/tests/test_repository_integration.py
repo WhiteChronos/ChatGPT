@@ -114,3 +114,24 @@ def test_cli_strict_readiness_returns_two_when_host_reload_is_required(tmp_path)
     ], text=True, capture_output=True)
     assert completed.returncode == 2, completed.stderr
     assert "fresh Codex" in completed.stdout
+
+
+def test_runtime_foundation_workflow_runs_local_suite_but_not_live_smoke():
+    workflow = REPO / ".github/workflows/whitechronos-runtime-foundation.yml"
+    text = workflow.read_text()
+    assert "python -m pytest -q plugins/whitechronos-control-plane/tests" in text
+    assert "SUBAGENT_BROKER_LIVE=1" not in text
+    assert "smoke_real_codex.mjs" not in text
+
+
+def test_cli_can_mark_an_observed_empty_host_inventory(tmp_path):
+    repo = _fixture_repo(tmp_path)
+    fake = repo / "plugins/subagent-broker/tests/fake-codex.mjs"
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+    completed = subprocess.run([
+        sys.executable, str(CLI), "--repo", str(repo), "--codex-path", str(fake),
+        "--runtime-kind", "trusted_remote", "--expected-commit", head,
+        "--host-inventory-observed", "--require-live-smoke-ready"
+    ], text=True, capture_output=True)
+    assert completed.returncode == 2, completed.stderr
+    assert "fresh Codex" in completed.stdout

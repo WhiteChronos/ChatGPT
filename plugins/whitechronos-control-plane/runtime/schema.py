@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 
+_SUPPORTED_SCHEMA_KEYS = {"$schema", "title", "description", "type", "enum", "const", "required", "properties", "additionalProperties", "items", "minLength"}
+
 _TYPE_CHECKS = {
     "object": lambda value: isinstance(value, dict),
     "array": lambda value: isinstance(value, list),
@@ -21,15 +23,24 @@ def _matches_type(value: object, expected: object) -> bool:
     return any(_TYPE_CHECKS[name](value) for name in names)
 
 
+def _json_equal(left: object, right: object) -> bool:
+    if isinstance(left, bool) or isinstance(right, bool):
+        return type(left) is type(right) and left == right
+    return left == right
+
+
 def validate_schema_subset(value: object, schema: dict[str, Any], path: str = "$") -> None:
     """Validate the JSON Schema subset used by Control Plane registries."""
+    unsupported = sorted(set(schema) - _SUPPORTED_SCHEMA_KEYS)
+    if unsupported:
+        raise ValueError(f"{path}: unsupported schema keyword {unsupported[0]!r}")
     if "type" in schema and not _matches_type(value, schema["type"]):
         raise ValueError(f"{path}: expected type {schema['type']!r}")
 
-    if "const" in schema and value != schema["const"]:
+    if "const" in schema and not _json_equal(value, schema["const"]):
         raise ValueError(f"{path}: expected const {schema['const']!r}")
 
-    if "enum" in schema and value not in schema["enum"]:
+    if "enum" in schema and not any(_json_equal(value, option) for option in schema["enum"]):
         raise ValueError(f"{path}: value {value!r} is not in enum {schema['enum']!r}")
 
     if "minLength" in schema and isinstance(value, str) and len(value) < int(schema["minLength"]):

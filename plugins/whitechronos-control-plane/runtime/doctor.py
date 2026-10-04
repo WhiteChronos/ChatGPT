@@ -13,6 +13,29 @@ from .registry import load_registry
 _ARENA_ID = "github-arena"
 _BROKER_ID = "subagent-broker"
 _TRUSTED_RUNTIME_KINDS = {"trusted_remote", "codex_cloud"}
+_TRANSIENT_UNTRACKED_PREFIXES = (".pytest_cache/", ".mypy_cache/", ".ruff_cache/", ".superpowers/", ".worktrees/")
+_TRANSIENT_UNTRACKED_FILES = {".coverage"}
+
+
+def _is_transient_untracked(path: str) -> bool:
+    normalized = path.replace("\\", "/")
+    return (
+        normalized in _TRANSIENT_UNTRACKED_FILES
+        or normalized.endswith(".pyc")
+        or "/__pycache__/" in f"/{normalized}"
+        or any(normalized.startswith(prefix) for prefix in _TRANSIENT_UNTRACKED_PREFIXES)
+    )
+
+
+def _worktree_changes(repo: Path) -> tuple[int, tuple[str, ...], str]:
+    code, stdout, stderr = _capture(["git", "status", "--porcelain=v1", "--untracked-files=all"], repo)
+    relevant: list[str] = []
+    for line in stdout.splitlines():
+        if line.startswith("?? ") and _is_transient_untracked(line[3:]):
+            continue
+        if line:
+            relevant.append(line)
+    return code, tuple(relevant), stderr
 
 
 def _check(name: str, status: CheckStatus, detail: str, **evidence: object) -> CheckResult:
@@ -111,8 +134,8 @@ def _local_probe_checks(inputs: DoctorInput, descriptor, codex_path: str) -> tup
     )
 
 
-def _host_check(name: str, expected: tuple[str, ...], host_tools: frozenset[str], local_status: CheckStatus) -> CheckResult:
-    if not host_tools:
+def _host_check(name: str, expected: tuple[str, ...], host_tools: frozenset[str], local_status: CheckStatus, *, inventory_observed: bool) -> CheckResult:
+    if not inventory_observed:
         return _check(name, CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied")
     if local_status is not CheckStatus.PASS:
         return _check(name, CheckStatus.FAIL, "local MCP health is not PASS; host discovery cannot be trusted")
@@ -136,9 +159,10 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
         head_detail = f"HEAD {head} does not match expected {inputs.expected_commit}"
     checks.append(_check("GIT_HEAD", CheckStatus.PASS if head_ok else CheckStatus.FAIL, head_detail, head=head, expected=inputs.expected_commit))
 
-    status_code, status_out, status_err = _capture(["git", "status", "--porcelain", "--untracked-files=no"], repo)
-    clean = status_code == 0 and status_out == ""
-    checks.append(_check("WORKTREE_STATE", CheckStatus.PASS if clean else CheckStatus.FAIL, "tracked worktree is clean" if clean else f"tracked worktree is dirty or unavailable: {status_out or status_err}", porcelain=status_out))
+    status_code, status_lines, status_err = _worktree_changes(repo)
+    clean = status_code == 0 and not status_lines
+    status_text = "\n".join(status_lines)
+    checks.append(_check("WORKTREE_STATE", CheckStatus.PASS if clean else CheckStatus.FAIL, "source-relevant worktree is clean" if clean else f"source-relevant worktree is dirty or unavailable: {status_text or status_err}", porcelain=status_text))
 
     config: dict[str, object] = {}
     try:
@@ -185,10 +209,11 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     multi = isinstance(features, dict) and features.get("multi_agent") is True
     checks.append(_check("NATIVE_MULTI_AGENT_CONFIG", CheckStatus.PASS if multi else CheckStatus.FAIL, "multi_agent=true is configured" if multi else "multi_agent=true is not configured"))
 
-    arena_host = _host_check("HOST_ARENA_DISCOVERY", arena.runtime_probe.expected_tools, inputs.host_tools, arena_tools.status)
-    broker_host = _host_check("HOST_BROKER_DISCOVERY", broker.runtime_probe.expected_tools, inputs.host_tools, broker_tools.status)
+    inventory_observed = inputs.host_inventory_observed or bool(inputs.host_tools)
+    arena_host = _host_check("HOST_ARENA_DISCOVERY", arena.runtime_probe.expected_tools, inputs.host_tools, arena_tools.status, inventory_observed=inventory_observed)
+    broker_host = _host_check("HOST_BROKER_DISCOVERY", broker.runtime_probe.expected_tools, inputs.host_tools, broker_tools.status, inventory_observed=inventory_observed)
     checks.extend((arena_host, broker_host))
-    if not inputs.host_tools:
+    if not inventory_observed:
         native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied")
     elif "spawn_agent" in inputs.host_tools:
         native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.PASS, "native spawn_agent is visible")

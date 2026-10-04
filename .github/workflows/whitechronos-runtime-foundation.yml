@@ -1,0 +1,91 @@
+name: WhiteChronos Runtime Foundation
+
+on:
+  pull_request:
+    paths:
+      - "plugins/whitechronos-control-plane/**"
+      - "registry/integrations/**"
+      - ".agents/plugins/marketplace.json"
+      - ".codex/config.toml"
+      - "AGENTS.md"
+      - ".github/workflows/whitechronos-runtime-foundation.yml"
+  push:
+    paths:
+      - "plugins/whitechronos-control-plane/**"
+      - "registry/integrations/**"
+      - ".agents/plugins/marketplace.json"
+      - ".codex/config.toml"
+      - "AGENTS.md"
+      - ".github/workflows/whitechronos-runtime-foundation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-foundation:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Run Runtime Foundation tests
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests
+
+      - name: Run Subagent Broker compatibility tests
+        run: node --test plugins/subagent-broker/tests/mcp-protocol.test.mjs plugins/subagent-broker/tests/repository-integration.test.mjs
+
+      - name: Run Awesome Codex integration regression
+        run: python -m pytest -q plugins/awesome-llm-apps-controller/tests/test_codex_integration.py
+
+      - name: Run repository governance gates
+        run: |
+          python pipeline/engineering_compatibility_gate.py
+          python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json
+          python -m pytest -q tests/test_engineering_compatibility_gate.py
+          python -m pytest -q tests/test_protocol_zero_gate.py
+
+      - name: Verify local runtime health without claiming host discovery
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/whitechronos-fake-codex <<'SH'
+          #!/bin/sh
+          exec node "$GITHUB_WORKSPACE/plugins/subagent-broker/tests/fake-codex.mjs" "$@"
+          SH
+          chmod 700 /tmp/whitechronos-fake-codex
+          python plugins/whitechronos-control-plane/scripts/runtime_doctor.py \
+            --repo . \
+            --codex-path /tmp/whitechronos-fake-codex \
+            --runtime-kind unknown \
+            --json > /tmp/whitechronos-runtime-doctor.json
+          cat /tmp/whitechronos-runtime-doctor.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/whitechronos-runtime-doctor.json').read_text())
+          status={item['name']:item['status'] for item in data['checks']}
+          assert status['ARENA_MCP_LOCAL_TOOLS']=='PASS', status
+          assert status['BROKER_MCP_LOCAL_TOOLS']=='PASS', status
+          assert status['HOST_ARENA_DISCOVERY']=='UNAVAILABLE', status
+          assert status['HOST_BROKER_DISCOVERY']=='UNAVAILABLE', status
+          assert data['live_smoke_ready'] is False, data
+          PY
