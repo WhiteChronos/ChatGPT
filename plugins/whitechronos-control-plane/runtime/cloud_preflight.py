@@ -63,7 +63,7 @@ def _python_version() -> tuple[int, int]:
     return sys.version_info.major, sys.version_info.minor
 
 
-def _normalize_github_remote(remote: str) -> str | None:
+def normalize_github_remote(remote: str) -> str | None:
     value = remote.strip()
     if value.startswith("git@github.com:"):
         value = value[len("git@github.com:") :]
@@ -127,7 +127,7 @@ def _repository_check(
             f"REPOSITORY:{full_name}",
         )
     code, remote, _ = _capture_repo(["git", "remote", "get-url", "origin"], resolved)
-    normalized = _normalize_github_remote(remote) if code == 0 else None
+    normalized = normalize_github_remote(remote) if code == 0 else None
     if code != 0 or normalized != full_name:
         observed = normalized or "unrecognized-remote"
         return (
