@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos Codex Cloud Environment v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "environment_name",
+    "runtime_kind",
+    "repositories",
+    "toolchain",
+    "network",
+    "required_secret_names"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "whitechronos-codex-cloud/v1"
+    },
+    "environment_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime_kind": {
+      "type": "string",
+      "const": "codex_cloud"
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["full_name", "role", "required"],
+        "properties": {
+          "full_name": {"type": "string", "minLength": 1},
+          "role": {"type": "string", "enum": ["consumer", "broker"]},
+          "required": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "required": [
+        "python_min",
+        "node_major",
+        "require_git",
+        "require_npm",
+        "require_codex_exec",
+        "require_codex_json",
+        "require_codex_resume"
+      ],
+      "properties": {
+        "python_min": {
+          "type": "array",
+          "items": {"type": "integer"}
+        },
+        "node_major": {"type": "integer", "const": 22},
+        "require_git": {"type": "boolean"},
+        "require_npm": {"type": "boolean"},
+        "require_codex_exec": {"type": "boolean"},
+        "require_codex_json": {"type": "boolean"},
+        "require_codex_resume": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "network": {
+      "type": "object",
+      "required": ["mode", "allowed_hosts"],
+      "properties": {
+        "mode": {"type": "string", "const": "explicit_allowlist"},
+        "allowed_hosts": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "required_secret_names": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
