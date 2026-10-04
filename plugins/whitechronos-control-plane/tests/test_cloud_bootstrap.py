@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
 
@@ -41,6 +42,22 @@ def _paths(tmp_path: Path) -> dict[str, Path]:
     broker = tmp_path / "broker"
     consumer.mkdir()
     broker.mkdir()
+    subprocess.run(["git", "init", "-q", str(consumer)], check=True)
+    subprocess.run(["git", "init", "-q", str(broker)], check=True)
+    subprocess.run(
+        [
+            "git", "-C", str(consumer), "remote", "add", "origin",
+            "https://github.com/WhiteChronos/ChatGPT.git",
+        ],
+        check=True,
+    )
+    subprocess.run(
+        [
+            "git", "-C", str(broker), "remote", "add", "origin",
+            "https://github.com/WhiteChronos/subagent-broker-runtime.git",
+        ],
+        check=True,
+    )
     (consumer / "requirements-dev.txt").write_text("pytest==8.4.1\n")
     (broker / "package-lock.json").write_text("{}\n")
     (broker / "package.json").write_text('{"name":"broker"}\n')
@@ -168,3 +185,18 @@ def test_apply_does_not_forward_arbitrary_secret_environment(
     assert "OPENAI_API_KEY" not in captured_env
     assert "CODEX_ACCESS_TOKEN" not in captured_env
     assert "PATH" in captured_env
+
+
+def test_bootstrap_rejects_wrong_repository_origin(tmp_path):
+    from runtime.cloud_bootstrap import build_bootstrap_plan
+
+    paths = _paths(tmp_path)
+    broker = paths["WhiteChronos/subagent-broker-runtime"]
+    subprocess.run(
+        ["git", "-C", str(broker), "remote", "set-url", "origin",
+         "https://github.com/WhiteChronos/not-the-broker.git"],
+        check=True,
+    )
+
+    with pytest.raises(ValueError, match="repository identity mismatch"):
+        build_bootstrap_plan(_profile(), paths)
