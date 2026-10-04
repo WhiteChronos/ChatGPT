@@ -152,3 +152,23 @@ def test_cli_output_contains_no_host_discovered_or_live_verified_claim(
     assert "HOST_DISCOVERED" not in output
     assert "LIVE_VERIFIED" not in output
     assert "LIVE_SMOKE_READY" not in output
+
+
+def test_codex_cloud_runbook_contract():
+    path = REPO / "docs" / "codex-cloud.md"
+    text = path.read_text(encoding="utf-8")
+    for term in (
+        "WhiteChronos/ChatGPT",
+        "WhiteChronos/subagent-broker-runtime",
+        "setup_codex_cloud.py",
+        "cloud_preflight.py",
+        "Runtime Doctor",
+        "HOST_RELOAD_REQUIRED",
+        "LIVE_SMOKE_READY",
+        "Desktop Commander",
+        "DigitalOcean",
+    ):
+        assert term in text
+    lower = text.lower()
+    assert "desktop commander is not required" in lower
+    assert "digitalocean is not required" in lower
