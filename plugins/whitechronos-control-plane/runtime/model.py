@@ -47,3 +47,14 @@ class McpProbeResult:
     missing_tools: tuple[str, ...]
     unexpected_tools: tuple[str, ...]
     stderr_tail: str
+
+
+@dataclass(frozen=True)
+class CodexCapabilities:
+    version: str
+    exec: bool
+    json: bool
+    resume: bool
+    sandbox_read_only: bool
+    sandbox_workspace_write: bool
+    approval_never: bool
