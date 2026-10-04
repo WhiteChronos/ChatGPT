@@ -1,6 +1,6 @@
 # WhiteChronos Control Plane Design
 
-**Status:** Proposed architecture for user review  
+**Status:** Approved architecture; implementation pending per-slice plan review  
 **Date:** 2026-10-03  
 **Repository:** `WhiteChronos/ChatGPT`  
 **Base:** `main` at `9603fd2522a5a6e24a1cd4aaf87d508c632dc8ab`
