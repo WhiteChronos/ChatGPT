@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 
 class CheckStatus(str, Enum):
@@ -58,3 +59,28 @@ class CodexCapabilities:
     sandbox_read_only: bool
     sandbox_workspace_write: bool
     approval_never: bool
+
+
+@dataclass(frozen=True)
+class CheckResult:
+    name: str
+    status: CheckStatus
+    detail: str
+    evidence: dict[str, object]
+
+
+@dataclass(frozen=True)
+class DoctorInput:
+    repo_root: Path
+    expected_commit: str | None
+    codex_path: str
+    host_tools: frozenset[str]
+    runtime_kind: str
+
+
+@dataclass(frozen=True)
+class DoctorReport:
+    checks: tuple[CheckResult, ...]
+    selected_subagent_path: str
+    live_smoke_ready: bool
+    blockers: tuple[str, ...]
