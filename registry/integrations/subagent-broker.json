@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "subagent-broker",
+  "display_name": "WhiteChronos Subagent Broker",
+  "source_type": "local",
+  "source": "plugins/subagent-broker",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "REGISTERED_PROJECT",
+  "controller_plugin": "subagent-broker",
+  "skill_paths": ["plugins/subagent-broker/skills/subagent-broker/SKILL.md"],
+  "mcp_servers": ["subagent_broker"],
+  "runtime_probe": {
+    "plugin_root": "plugins/subagent-broker",
+    "mcp_config": ".mcp.json",
+    "mcp_server": "subagent_broker",
+    "expected_tools": ["subagent_spawn", "subagent_status", "subagent_wait", "subagent_result", "subagent_followup", "subagent_list", "subagent_cancel", "subagent_cleanup"],
+    "required_for_broker_smoke": true
+  }
+}

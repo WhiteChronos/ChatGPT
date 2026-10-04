@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "github-arena",
+  "display_name": "GitHub Arena",
+  "source_type": "local",
+  "source": "plugins/github-arena",
+  "license_status": "MIT",
+  "execution_class": "MCP_OR_CONNECTOR",
+  "status": "REGISTERED_PROJECT",
+  "controller_plugin": "github-arena",
+  "skill_paths": ["plugins/github-arena/skills/github-arena/SKILL.md"],
+  "mcp_servers": ["github_arena"],
+  "runtime_probe": {
+    "plugin_root": "plugins/github-arena",
+    "mcp_config": ".mcp.json",
+    "mcp_server": "github_arena",
+    "expected_tools": ["arena_plan", "arena_cards", "arena_rubric", "arena_review_checklist"],
+    "required_for_broker_smoke": false
+  }
+}

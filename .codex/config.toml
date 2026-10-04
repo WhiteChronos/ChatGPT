@@ -44,3 +44,6 @@ enabled_tools = [
 
 [plugins."awesome-llm-apps-controller@whitechronos-repo"]
 enabled = true
+
+[plugins."whitechronos-control-plane@whitechronos-repo"]
+enabled = true
