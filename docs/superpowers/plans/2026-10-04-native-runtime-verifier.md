@@ -221,8 +221,10 @@ Additional rules:
 - `codex_cli` config/probe alone can reach `CONFIG_REQUESTED` / `MULTI_AGENT_ENABLED` but not runtime creation evidence.
 - `responses_api` parser can recognize hosted actions and subagent-related output, but it reaches `LIVE_VERIFIED` only if the observed payload contains a stable nonblank subagent identifier plus completion/lifecycle evidence satisfying the schema.
 - Agents API is the primary v0.1 live-verification path because `agent.session.subagent.created` explicitly exposes a subagent ID.
+- For Agents API, public documentation alone never satisfies `HOSTED_ACTIONS_AVAILABLE`; an observed `agent.session.subagent.created` or equivalent live coordination/lifecycle evidence may satisfy it because that proves hosted delegation actually executed in that session.
+- `agent.session.subagent.closed` alone is closure evidence, not successful completion evidence. `SUBAGENT_COMPLETED` requires a completed subagent turn or equivalent terminal-success record tied to the same `session_id` and `subagent_id`; a turn with `status=completed` and non-null `completed_at` is sufficient.
 - Missing authorization for an explicitly requested live Agents API run returns `USER_ACTION_REQUIRED`, never fake success and never auto-creates a key.
-- A malformed or contradictory live event stream returns `FAILED`; absence of a capability on a valid surface returns `CAPABILITY_UNAVAILABLE`.
+- Verdict mapping is deterministic: offline fixture/config-only diagnostics return `NOT_RUN`; a valid observed surface lacking the requested capability returns `CAPABILITY_UNAVAILABLE`; explicit live verification missing user authorization or required live setup returns `USER_ACTION_REQUIRED`; malformed, contradictory, or unsuccessful live evidence returns `FAILED`; only the complete live truth table returns `LIVE_VERIFIED`.
 
 ## Runtime Contract
 
@@ -448,7 +450,7 @@ Fixtures must cover:
 - session created;
 - multi-agent requested/enabled evidence where observable;
 - `agent.session.subagent.created` with a stable subagent ID;
-- subsequent subagent active/closed or other terminal/lifecycle evidence;
+- subsequent subagent lifecycle evidence plus a completed subagent turn tied to the same subagent ID; `subagent.closed` alone is not treated as successful completion;
 - config/session without delegation;
 - created subagent without completion;
 - malformed/unknown events.
@@ -463,7 +465,9 @@ Assert:
 - subagent ID extraction from `agent.session.subagent.created`;
 - unknown events ignored or normalized safely;
 - duplicated event IDs do not create duplicated evidence;
-- completion evidence is tied to the same subagent identity;
+- completion evidence is tied to the same session/subagent identity;
+- `subagent.closed` without a completed turn does not emit `SUBAGENT_COMPLETED`;
+- a subagent turn with `status=completed` and non-null `completed_at` emits `SUBAGENT_COMPLETED`;
 - parser alone does not set a final verdict.
 
 - [ ] **Step 3: Run RED**
@@ -674,7 +678,8 @@ Assert:
 - test task requests exactly one bounded delegation;
 - no environment/tool access is required for the default live probe;
 - streamed events are passed through the canonical parser/classifier;
-- event stream with one real subagent ID + completion can yield `LIVE_VERIFIED`;
+- event stream with one real subagent ID plus a completed subagent turn tied to that ID can yield `LIVE_VERIFIED`;
+- a `subagent.closed` event without successful turn completion cannot yield `LIVE_VERIFIED`;
 - missing created/completion evidence cannot yield `LIVE_VERIFIED`;
 - report is scoped to returned session ID;
 - API key never appears in stdout/stderr/report.
@@ -696,7 +701,7 @@ Prompt/instructions ask the coordinator to delegate one tiny text-only subtask a
 
 - [ ] **Step 4: Implement the opt-in live path using the official OpenAI Python SDK**
 
-Use `openai==3.24.0`.
+Use `openai==3.24.0`. After observing the created subagent ID, confirm successful completion from bounded subagent-turn readback when the event stream itself does not carry unambiguous completed-turn evidence. Accept only a turn tied to the same session/subagent with `status=completed`; failed/cancelled turns do not satisfy `SUBAGENT_COMPLETED`.
 
 No ordinary unit/CI command may pass `--live`.
 
