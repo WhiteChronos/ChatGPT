@@ -135,3 +135,9 @@ def test_cli_can_mark_an_observed_empty_host_inventory(tmp_path):
     ], text=True, capture_output=True)
     assert completed.returncode == 2, completed.stderr
     assert "fresh Codex" in completed.stdout
+
+
+def test_runtime_foundation_workflow_runs_full_repository_regression():
+    workflow = REPO / ".github/workflows/whitechronos-runtime-foundation.yml"
+    lines = workflow.read_text().splitlines()
+    assert any(line.strip() == "run: python -m pytest -q" for line in lines)

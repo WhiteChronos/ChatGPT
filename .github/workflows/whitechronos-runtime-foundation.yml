@@ -50,6 +50,9 @@ jobs:
       - name: Run Runtime Foundation tests
         run: python -m pytest -q plugins/whitechronos-control-plane/tests
 
+      - name: Run full repository regression suite
+        run: python -m pytest -q
+
       - name: Run Subagent Broker compatibility tests
         run: node --test plugins/subagent-broker/tests/mcp-protocol.test.mjs plugins/subagent-broker/tests/repository-integration.test.mjs
 
