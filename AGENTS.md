@@ -243,3 +243,12 @@ Agents SHALL:
 - require explicit orchestration intent and authorized credentials before `advisor-orchestrator-worker` dispatches external models/CLIs;
 - never claim an upstream sample app is a native Codex subagent, native ChatGPT agent, connector, or background automation without actual runtime evidence;
 - apply GitHub Arena after the applicable Superpowers/ECC/Matt/Awesome workflow for high-impact changes.
+
+
+## WhiteChronos Runtime Doctor
+
+For runtime claims about Codex, Arena MCP, Subagent Broker, or native multi-agent availability, agents SHALL use Runtime Doctor evidence when the Doctor is available. Repository config alone is never proof that the current host loaded a capability.
+
+- `HOST_RELOAD_REQUIRED` must not trigger code changes; start a fresh Codex environment/session instead.
+- Independent subagent claims still require real lifecycle evidence from the current runtime.
+- Preserve the existing routing order: repository constraints -> Superpowers -> specialized capability -> GitHub -> GitHub Arena.

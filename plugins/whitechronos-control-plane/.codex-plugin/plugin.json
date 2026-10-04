@@ -1,0 +1,15 @@
+{
+  "name": "whitechronos-control-plane",
+  "version": "0.1.0",
+  "description": "WhiteChronos runtime diagnosis and integration control surfaces for Codex.",
+  "author": {"name": "WhiteChronos", "url": "https://github.com/WhiteChronos"},
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/whitechronos-control-plane",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "keywords": ["codex", "runtime", "mcp", "diagnostics", "whitechronos"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WhiteChronos Control Plane",
+    "shortDescription": "Diagnose Codex runtime readiness without confusing config with live tools."
+  }
+}

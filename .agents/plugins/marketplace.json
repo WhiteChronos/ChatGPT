@@ -105,6 +105,21 @@
         ]
       },
       "category": "Developer Tools"
+    },
+    {
+      "name": "whitechronos-control-plane",
+      "source": {
+        "source": "local",
+        "path": "./plugins/whitechronos-control-plane"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL",
+        "products": [
+          "CODEX"
+        ]
+      },
+      "category": "Developer Tools"
     }
   ]
 }
