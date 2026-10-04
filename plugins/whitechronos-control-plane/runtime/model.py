@@ -1,6 +1,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
+
+
+class CheckStatus(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+    UNAVAILABLE = "UNAVAILABLE"
+    NOT_APPLICABLE = "NOT_APPLICABLE"
+    HOST_RELOAD_REQUIRED = "HOST_RELOAD_REQUIRED"
+    USER_ACTION_REQUIRED = "USER_ACTION_REQUIRED"
+    SECURITY_REVIEW_REQUIRED = "SECURITY_REVIEW_REQUIRED"
 
 
 @dataclass(frozen=True)
@@ -25,3 +36,14 @@ class IntegrationDescriptor:
     skill_paths: tuple[str, ...]
     mcp_servers: tuple[str, ...]
     runtime_probe: RuntimeProbeSpec | None
+
+
+@dataclass(frozen=True)
+class McpProbeResult:
+    server_name: str
+    status: CheckStatus
+    server_info: dict[str, object]
+    tools: tuple[str, ...]
+    missing_tools: tuple[str, ...]
+    unexpected_tools: tuple[str, ...]
+    stderr_tail: str
