@@ -252,3 +252,18 @@ For runtime claims about Codex, Arena MCP, Subagent Broker, or native multi-agen
 - `HOST_RELOAD_REQUIRED` must not trigger code changes; start a fresh Codex environment/session instead.
 - Independent subagent claims still require real lifecycle evidence from the current runtime.
 - Preserve the existing routing order: repository constraints -> Superpowers -> specialized capability -> GitHub -> GitHub Arena.
+
+## GitHub Control Plane merge gate
+
+Before proposing merge into a protected target, Codex SHALL run or ensure CI runs:
+
+```bash
+python pipeline/github_control_plane_policy_gate.py --policy governance/GITHUB_CONTROL_PLANE_POLICY.json
+python -m pytest -q tests/test_github_control_plane_policy_gate.py
+python -m pytest -q tests/test_github_path_policy.py
+```
+
+The source-controlled desired state is necessary but not sufficient. After the repository owner/admin activates or changes the `Chronos` ruleset, live ruleset verification against GitHub REST evidence is mandatory before claiming protected-target enforcement.
+
+Never configure a required status context before a real GitHub check run proves the context name exists on the target pull-request flow. The phase-1 required context is intended to be `github-control-plane-policy`, and any observed mismatch must be reconciled before ruleset enforcement.
+
