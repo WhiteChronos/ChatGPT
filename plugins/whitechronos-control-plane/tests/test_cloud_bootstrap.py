@@ -141,3 +141,30 @@ def test_output_is_bounded_and_does_not_include_environment_dump(tmp_path, monke
     assert len(result.stdout_tail) <= 4096
     assert len(result.stderr_tail) <= 4096
     assert not hasattr(result, "environment")
+
+
+def test_apply_does_not_forward_arbitrary_secret_environment(
+    tmp_path, monkeypatch
+):
+    import runtime.cloud_bootstrap as cb
+
+    steps = cb.build_bootstrap_plan(_profile(), _paths(tmp_path))[:1]
+    monkeypatch.setenv("OPENAI_API_KEY", "TOPSECRET")
+    monkeypatch.setenv("CODEX_ACCESS_TOKEN", "OTHERSECRET")
+    captured_env = {}
+
+    class R:
+        returncode = 0
+        stdout = "ok"
+        stderr = ""
+
+    def fake_run(argv, **kwargs):
+        captured_env.update(kwargs["env"])
+        return R()
+
+    monkeypatch.setattr(cb.subprocess, "run", fake_run)
+    cb.execute_bootstrap_plan(steps, apply=True)
+
+    assert "OPENAI_API_KEY" not in captured_env
+    assert "CODEX_ACCESS_TOKEN" not in captured_env
+    assert "PATH" in captured_env
