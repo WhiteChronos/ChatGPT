@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos integration descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "display_name",
+    "source_type",
+    "source",
+    "license_status",
+    "execution_class",
+    "status",
+    "controller_plugin",
+    "skill_paths",
+    "mcp_servers",
+    "runtime_probe"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "display_name": {"type": "string", "minLength": 1},
+    "source_type": {"enum": ["local", "upstream_git", "external_reference", "official_plugin"]},
+    "source": {"type": "string", "minLength": 1},
+    "license_status": {"type": "string", "minLength": 1},
+    "execution_class": {"enum": ["SELF_MODIFYING", "BACKGROUND_AUTONOMOUS", "MCP_OR_CONNECTOR", "CREDENTIALLED", "NETWORKED", "LOCAL_MUTATING", "LOCAL_READ_ONLY", "REFERENCE_ONLY"]},
+    "status": {"enum": ["SCAFFOLDED", "REGISTERED_PROJECT", "PACKAGED", "GLOBAL_INSTALL_ELIGIBLE", "ACTIVATION_GATED", "ACTIVE_RUNTIME_VERIFIED"]},
+    "controller_plugin": {"type": ["string", "null"]},
+    "skill_paths": {"type": "array", "items": {"type": "string"}},
+    "mcp_servers": {"type": "array", "items": {"type": "string"}},
+    "runtime_probe": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["plugin_root", "mcp_config", "mcp_server", "expected_tools", "required_for_broker_smoke"],
+      "properties": {
+        "plugin_root": {"type": "string", "minLength": 1},
+        "mcp_config": {"type": "string", "minLength": 1},
+        "mcp_server": {"type": "string", "minLength": 1},
+        "expected_tools": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "required_for_broker_smoke": {"type": "boolean"}
+      }
+    }
+  }
+}
