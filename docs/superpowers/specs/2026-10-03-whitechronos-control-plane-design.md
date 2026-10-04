@@ -347,6 +347,9 @@ Requirements:
 - backup before first mutation;
 - idempotent repeated execution;
 - uninstall/rollback support for the WhiteChronos-owned block/files;
+- maintain explicit WhiteChronos ownership/version metadata for globally installed files;
+- coexist with existing global installers such as GitHub Arena without duplicating or stealing ownership of their files;
+- prefer the official Superpowers plugin at runtime rather than copying or forking its official Skills;
 - no credential copying;
 - no automatic MCP credential setup.
 
@@ -465,11 +468,24 @@ assets/           optional
 
 Before release, every user-installable Skill must be validated and packaged as `skill.zip`.
 
-### 9.5 Automatic registration policy
+### 9.5 Automatic registration and installation policy
 
-The factory may automatically prepare registration changes, but activation follows risk.
+The factory may automatically prepare registration/install changes on an isolated branch, but it must never write them directly to `main` or bypass review. Activation follows risk.
 
-Low-risk, reviewed local integrations may be set to `INSTALLED_BY_DEFAULT`.
+Low-risk, reviewed local integrations may be set to `INSTALLED_BY_DEFAULT` so a fresh Codex session can load them after merge.
+
+Installation state is explicit:
+
+```text
+SCAFFOLDED
+REGISTERED_PROJECT
+PACKAGED
+GLOBAL_INSTALL_ELIGIBLE
+ACTIVATION_GATED
+ACTIVE_RUNTIME_VERIFIED
+```
+
+A generated Skill is not considered installed merely because its files exist in the repository. Project registration, user-installable packaging, optional global Codex installation, and observed runtime activation are separate facts.
 
 The following require explicit review/authority before execution:
 
@@ -989,21 +1005,25 @@ Architecture is successfully implemented when:
 
 ## 27. Initial implementation decomposition
 
-This architecture is intentionally broad. The implementation plan should decompose it into independently reviewable deliverables rather than one giant change.
+This architecture is intentionally broad and contains multiple independently valuable subsystems. It MUST NOT be implemented from one giant plan.
 
-Recommended delivery slices:
+After this umbrella architecture is approved, `writing-plans` must be used to create a **plan set**, with one independently reviewable plan per delivery slice. Each plan links back to this spec, receives its own review, and may be implemented/merged independently.
 
-1. integration registry + schemas + read-only inventory;
-2. Runtime Doctor;
-3. System History + resume capsules;
-4. WhiteChronos Bootstrap;
-5. Integration Factory + Skill templates;
-6. Continuous Improvement auditor;
-7. global Codex installer;
-8. migration of existing integrations into the registry;
-9. post-merge runtime validation and Subagent Broker smoke continuation.
+Recommended delivery order:
 
-Each slice must be independently testable and reviewable.
+1. **Runtime Foundation** — minimal integration registry/schema needed by the Runtime Doctor + Runtime Doctor itself;
+2. **Post-merge Runtime Validation** — use the Runtime Doctor to resume the already-approved Subagent Broker Task 12 smoke without rebuilding Broker code;
+3. **System History** — structured events, resume capsules, history index, and current-state derivation;
+4. **WhiteChronos Bootstrap** — repository startup routing and runtime/history-aware resume behavior;
+5. **Integration Factory** — integration descriptor generation, Skill/controller/plugin scaffolding, ownership manifests, and registration branch generation;
+6. **Continuous Improvement** — drift/staleness/risk audit and Arena-routed recommendations;
+7. **Global Codex Installer** — idempotent, reversible installation of WhiteChronos-owned global Skills/instructions;
+8. **Existing Integration Migration** — model Arena, Superpowers controller, ECC, Matt, Awesome, and Broker in the registry/history without rewriting their implementations;
+9. **Factory Adoption** — use the factory as the mandatory template for future incorporated systems.
+
+The Runtime Foundation is intentionally first so the current Broker smoke can be unblocked as early as possible.
+
+Each slice must be independently testable and reviewable. A later slice may depend on stable interfaces from an earlier slice, but approval of this umbrella spec does not implicitly approve implementation of every slice in one branch.
 
 ## 28. Review Arena conclusions incorporated
 
@@ -1028,11 +1048,13 @@ This document approves **architecture only**.
 
 It does not authorize implementation, dependency installation, global Codex mutation, MCP activation, external service setup, cloud provisioning, live smoke execution, PR merge, or migration by itself.
 
-After the user reviews and approves this committed spec, the next required Superpowers step is `writing-plans`.
+After the user reviews and approves this committed umbrella spec, the next required Superpowers step is `writing-plans` for the first delivery slice: **Runtime Foundation**.
 
-Implementation begins only after:
+Subsequent modules receive their own linked implementation plans rather than being collapsed into one oversized plan.
 
-1. this committed spec is approved;
-2. the implementation plan is written and reviewed;
-3. the execution method is selected.
+Implementation of a slice begins only after:
+
+1. this committed umbrella spec is approved;
+2. that slice's implementation plan is written and reviewed;
+3. the execution method for that slice is selected.
 
