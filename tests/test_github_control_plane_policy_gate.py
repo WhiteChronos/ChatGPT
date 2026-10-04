@@ -301,3 +301,36 @@ def test_agents_requires_github_control_plane_validation_commands():
     assert "python -m pytest -q tests/test_github_control_plane_policy_gate.py" in text
     assert "python -m pytest -q tests/test_github_path_policy.py" in text
     assert "live ruleset verification" in text.lower()
+
+
+
+def test_chronos_admin_runbook_contract():
+    path = REPO / "docs" / "github-control-plane-admin.md"
+    text = path.read_text(encoding="utf-8")
+
+    for required in (
+        "21770911",
+        "enforcement: disabled",
+        "~DEFAULT_BRANCH",
+        "refs/heads/spec/**",
+        "refs/heads/release/**",
+        "creation",
+        "update",
+        "required_signatures",
+        "required_deployments",
+        "required_approving_review_count: 0",
+        "require_code_owner_review: false",
+        "require_last_push_approval: false",
+        "required_review_thread_resolution: true",
+        "github-control-plane-policy",
+        "Rollback",
+        "rulesets/21770911",
+        "--require-live",
+        "PR #57",
+        "DRAFT",
+    ):
+        assert required in text
+
+    assert "do not add a broad bypass" in text.lower()
+    assert "feat/cloud-runtime-foundation" in text
+    assert "spec/whitechronos-cloud-control-plane" in text
