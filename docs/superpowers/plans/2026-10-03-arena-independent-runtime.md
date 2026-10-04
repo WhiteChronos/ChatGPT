@@ -52,7 +52,7 @@ visibility         public
 default branch     main
 issues             enabled
 wiki               disabled
-projects           disabled unless inherited policy requires them
+projects           disabled
 license            MIT
 description        Independent GitHub Arena MCP runtime for WhiteChronos ChatGPT and Codex integrations.
 ```
@@ -234,7 +234,7 @@ Create `package.json` with:
     "node": ">=22 <23"
   },
   "scripts": {
-    "test": "node --test tests/**/*.test.mjs"
+    "test": "node --test"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.0",
@@ -263,7 +263,7 @@ The test must assert:
 Run:
 
 ```bash
-npm test -- --test-name-pattern="repository contract"
+node --test --test-name-pattern="repository contract" tests/contract/repository-contract.test.mjs
 ```
 
 Expected: FAIL because runtime-contract/provenance are not complete yet.
