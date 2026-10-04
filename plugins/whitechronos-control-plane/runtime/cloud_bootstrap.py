@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -8,6 +9,21 @@ from pathlib import Path
 from .cloud_model import CloudEnvironmentProfile
 
 _OUTPUT_LIMIT = 4096
+_SAFE_ENV_KEYS = (
+    "PATH",
+    "HOME",
+    "USER",
+    "TMPDIR",
+    "TEMP",
+    "TMP",
+    "SYSTEMROOT",
+    "WINDIR",
+    "COMSPEC",
+    "PATHEXT",
+    "SSL_CERT_FILE",
+    "SSL_CERT_DIR",
+    "NODE_EXTRA_CA_CERTS",
+)
 
 
 @dataclass(frozen=True)
@@ -23,6 +39,13 @@ class BootstrapResult:
     returncode: int
     stdout_tail: str
     stderr_tail: str
+
+
+def _minimal_env() -> dict[str, str]:
+    env = {key: os.environ[key] for key in _SAFE_ENV_KEYS if key in os.environ}
+    env["PIP_CONFIG_FILE"] = os.devnull
+    env["NPM_CONFIG_USERCONFIG"] = os.devnull
+    return env
 
 
 def _require_file(path: Path, name: str) -> None:
@@ -87,6 +110,7 @@ def execute_bootstrap_plan(
                 list(step.argv),
                 cwd=step.cwd,
                 shell=False,
+                env=_minimal_env(),
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
