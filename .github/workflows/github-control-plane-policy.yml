@@ -6,6 +6,13 @@ on:
       - main
       - "spec/**"
       - "release/**"
+  push:
+    branches:
+      - "feat/**"
+      - "fix/**"
+      - "docs/**"
+      - "subagent/**"
+      - "chore/**"
   workflow_dispatch:
 
 permissions:
