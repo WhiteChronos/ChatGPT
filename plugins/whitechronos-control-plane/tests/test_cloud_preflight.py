@@ -191,3 +191,31 @@ def test_cloud_preflight_never_claims_host_or_live_verification(tmp_path, monkey
     assert "HOST_DISCOVERED" not in serialized
     assert "LIVE_VERIFIED" not in serialized
     assert "LIVE_SMOKE_READY=YES" not in serialized
+
+
+def test_repository_remote_credentials_are_redacted_and_identity_still_matches(
+    tmp_path, monkeypatch
+):
+    import runtime.cloud_preflight as cp
+
+    monkeypatch.setattr(cp, "_capture", _fake_capture_ok)
+    monkeypatch.setattr(cp, "probe_codex_cli", _caps)
+    inputs = _inputs(tmp_path)
+    credential_remote = _repo(
+        tmp_path / "credential-broker",
+        "https://x-access-token:TOPSECRET@github.com/WhiteChronos/subagent-broker-runtime.git",
+    )
+    mapping = dict(inputs.repo_paths)
+    mapping["WhiteChronos/subagent-broker-runtime"] = credential_remote
+
+    report = cp.run_cloud_preflight(
+        CloudPreflightInput(inputs.profile, mapping, "codex")
+    )
+    check = next(
+        item for item in report.checks
+        if item.name == "CLOUD_REPOSITORY_BROKER"
+    )
+    serialized = json.dumps(cp.cloud_report_to_json(report))
+
+    assert check.status is CheckStatus.PASS
+    assert "TOPSECRET" not in serialized
