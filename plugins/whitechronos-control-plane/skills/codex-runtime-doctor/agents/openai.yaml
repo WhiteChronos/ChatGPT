@@ -1,0 +1,3 @@
+interface:
+  display_name: "Codex Runtime Doctor"
+  short_description: "Verify WhiteChronos Codex runtime, MCP, and smoke readiness."
