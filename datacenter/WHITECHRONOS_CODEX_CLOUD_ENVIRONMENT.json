@@ -1,0 +1,35 @@
+{
+  "schema_version": "whitechronos-codex-cloud/v1",
+  "environment_name": "whitechronos-control-plane",
+  "runtime_kind": "codex_cloud",
+  "repositories": [
+    {
+      "full_name": "WhiteChronos/ChatGPT",
+      "role": "consumer",
+      "required": true
+    },
+    {
+      "full_name": "WhiteChronos/subagent-broker-runtime",
+      "role": "broker",
+      "required": true
+    }
+  ],
+  "toolchain": {
+    "python_min": [3, 11],
+    "node_major": 22,
+    "require_git": true,
+    "require_npm": true,
+    "require_codex_exec": true,
+    "require_codex_json": true,
+    "require_codex_resume": true
+  },
+  "network": {
+    "mode": "explicit_allowlist",
+    "allowed_hosts": [
+      "registry.npmjs.org",
+      "pypi.org",
+      "files.pythonhosted.org"
+    ]
+  },
+  "required_secret_names": []
+}
