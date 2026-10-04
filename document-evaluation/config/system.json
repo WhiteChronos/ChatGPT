@@ -1,0 +1,33 @@
+{
+  "model_id": "DOCUMENT_EVALUATION_V0_1",
+  "mode": "BLOCK_ON_FAILURE",
+  "agent_profile": "DOCUMENT_EVALUATION_ENGINEERING_AGENT_V0_1",
+  "reference_profile": "AUTOMATION_ENGINEERING_V1",
+  "protocols": {
+    "protocol_zero": true,
+    "source_governance": true,
+    "automation_hyperfocus": true,
+    "immutable_raw": true,
+    "sha256_provenance": true
+  },
+  "gates": [
+    "REFERENCE_REGISTRY",
+    "PROTOCOL_ZERO",
+    "ENGINEERING_COMPATIBILITY"
+  ],
+  "output": {
+    "complete_not_summary": true,
+    "machine_readable_datasheet": true,
+    "human_visual_report": true
+  },
+  "execution_model": "PARALLEL_WITH_MAIN",
+  "parent_integration": {
+    "branch": "main",
+    "compatibility_gate": "pipeline/engineering_compatibility_gate.py",
+    "required": true
+  },
+  "local_gates": {
+    "reference_registry": "document-evaluation/pipeline/reference_registry_gate.py",
+    "protocol_zero": "document-evaluation/pipeline/protocol_zero_gate.py"
+  }
+}
