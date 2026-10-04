@@ -172,3 +172,25 @@ def test_codex_cloud_runbook_contract():
     lower = text.lower()
     assert "desktop commander is not required" in lower
     assert "digitalocean is not required" in lower
+
+
+def test_cloud_runtime_workflow_contract():
+    path = REPO / ".github" / "workflows" / "whitechronos-cloud-runtime-foundation.yml"
+    text = path.read_text(encoding="utf-8")
+    for command in (
+        "python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_profile.py",
+        "python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_preflight.py",
+        "python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_bootstrap.py",
+        "python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_cli.py",
+        "python -m pytest -q plugins/whitechronos-control-plane/tests",
+    ):
+        assert command in text
+    assert 'python-version: "3.11"' in text
+    assert 'node-version: "22"' in text
+    for forbidden in (
+        "SUBAGENT_BROKER_LIVE=1",
+        "smoke_real_codex.mjs",
+        "OPENAI_API_KEY=",
+        "CODEX_ACCESS_TOKEN=",
+    ):
+        assert forbidden not in text
