@@ -94,6 +94,10 @@ def validate_policy(policy: dict[str, object]) -> list[str]:
         errors.append("require_code_owner_review must be false in solo mode")
     if pr.get("require_last_push_approval") is not False:
         errors.append("require_last_push_approval must be false in solo mode")
+    if pr.get("require_extra_approval_for_unattributed_changes") is not False:
+        errors.append(
+            "require_extra_approval_for_unattributed_changes must be false in solo mode"
+        )
     if pr.get("required_review_thread_resolution") is not True:
         errors.append("required_review_thread_resolution must be true")
     if pr.get("dismiss_stale_reviews_on_push") is not False:
