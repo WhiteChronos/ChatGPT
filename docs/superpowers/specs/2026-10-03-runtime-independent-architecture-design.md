@@ -1,6 +1,6 @@
 # WhiteChronos Runtime Independente — Design
 
-**Status:** Proposed written architecture for user review  
+**Status:** Approved architecture; implementation pending per-slice plan review  
 **Date:** 2026-10-03  
 **Repository:** WhiteChronos/ChatGPT  
 **Base:** main at ef3b5fd77ab96dc3c0950725cd6f5c57b49a8988
