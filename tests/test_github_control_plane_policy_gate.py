@@ -42,6 +42,7 @@ def _desired_policy() -> dict:
             "required_approving_review_count": 0,
             "require_code_owner_review": False,
             "require_last_push_approval": False,
+            "require_extra_approval_for_unattributed_changes": False,
             "required_review_thread_resolution": True,
             "dismiss_stale_reviews_on_push": False,
             "allowed_merge_methods": ["squash", "rebase"],
@@ -112,6 +113,10 @@ def test_policy_pins_phase1_chronos_state():
         "refs/heads/release/**",
     ]
     assert policy["review_mode"] == "solo"
+    assert (
+        policy["pull_request"]["require_extra_approval_for_unattributed_changes"]
+        is False
+    )
 
 
 def test_policy_forbids_lockout_rules_in_phase1():
@@ -177,6 +182,12 @@ def test_policy_requires_only_existing_slice_check():
                 require_last_push_approval=True
             ),
             "require_last_push_approval",
+        ),
+        (
+            lambda p: p["pull_request"].update(
+                require_extra_approval_for_unattributed_changes=True
+            ),
+            "require_extra_approval_for_unattributed_changes",
         ),
         (
             lambda p: p["pull_request"]["allowed_merge_methods"].append("merge"),
@@ -321,6 +332,7 @@ def test_chronos_admin_runbook_contract():
         "required_approving_review_count: 0",
         "require_code_owner_review: false",
         "require_last_push_approval: false",
+        "require_extra_approval_for_unattributed_changes: false",
         "required_review_thread_resolution: true",
         "github-control-plane-policy",
         "Rollback",
