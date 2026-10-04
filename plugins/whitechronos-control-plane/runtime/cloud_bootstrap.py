@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .cloud_model import CloudEnvironmentProfile
+from .cloud_preflight import normalize_github_remote
 
 _OUTPUT_LIMIT = 4096
 _SAFE_ENV_KEYS = (
@@ -54,6 +55,33 @@ def _require_file(path: Path, name: str) -> None:
         raise ValueError(f"required bootstrap file missing: {required}")
 
 
+def _verify_repository_identity(path: Path, full_name: str) -> None:
+    try:
+        completed = subprocess.run(
+            ["git", "remote", "get-url", "origin"],
+            cwd=path,
+            shell=False,
+            env=_minimal_env(),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=5.0,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise ValueError(
+            f"repository identity mismatch for {full_name}"
+        ) from exc
+    normalized = (
+        normalize_github_remote(completed.stdout.strip())
+        if completed.returncode == 0
+        else None
+    )
+    if normalized != full_name:
+        raise ValueError(f"repository identity mismatch for {full_name}")
+
+
 def build_bootstrap_plan(
     profile: CloudEnvironmentProfile,
     repo_paths: dict[str, Path],
@@ -68,6 +96,7 @@ def build_bootstrap_plan(
         path = Path(raw_path).resolve()
         if not path.is_dir():
             raise ValueError(f"repository path does not exist: {path}")
+        _verify_repository_identity(path, repository.full_name)
         if repository.role == "consumer":
             _require_file(path, "requirements-dev.txt")
             argv = (
