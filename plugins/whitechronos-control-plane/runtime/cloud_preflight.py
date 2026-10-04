@@ -4,6 +4,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from .cloud_model import CloudPreflightInput, CloudPreflightReport
 from .codex_probe import probe_codex_cli
@@ -64,20 +65,16 @@ def _python_version() -> tuple[int, int]:
 
 def _normalize_github_remote(remote: str) -> str | None:
     value = remote.strip()
-    prefixes = (
-        "https://github.com/",
-        "http://github.com/",
-        "ssh://git@github.com/",
-    )
-    for prefix in prefixes:
-        if value.startswith(prefix):
-            value = value[len(prefix) :]
-            break
-    else:
-        if value.startswith("git@github.com:"):
-            value = value[len("git@github.com:") :]
-        else:
+    if value.startswith("git@github.com:"):
+        value = value[len("git@github.com:") :]
+    elif value.startswith(("https://", "http://", "ssh://")):
+        parsed = urlsplit(value)
+        if parsed.hostname != "github.com":
             return None
+        value = parsed.path.lstrip("/")
+    else:
+        return None
+
     if value.endswith(".git"):
         value = value[:-4]
     value = value.strip("/")
@@ -132,7 +129,7 @@ def _repository_check(
     code, remote, _ = _capture_repo(["git", "remote", "get-url", "origin"], resolved)
     normalized = _normalize_github_remote(remote) if code == 0 else None
     if code != 0 or normalized != full_name:
-        observed = normalized or remote or "unavailable"
+        observed = normalized or "unrecognized-remote"
         return (
             _check(
                 name,
