@@ -7,9 +7,10 @@ import * as defaultWorktrees from './worktree_manager.mjs';
 function now() { return new Date().toISOString(); }
 function newAgentId() { return `sa_${crypto.randomUUID().replace(/-/g,'').slice(0,20)}`; }
 
-function workspaceFromRecord(record) {
+function workspaceFromRecord(record, expectedAgentId = record?.agent_id) {
   if (!record?.worktree) return null;
   return {
+    agent_id: expectedAgentId,
     repo_root: record.repo_root,
     path: record.worktree,
     mode: record.workspace_mode,
@@ -568,7 +569,7 @@ export class SubagentBroker {
       if (!TERMINAL_STATES.has(record.state)) throw brokerError('NOT_READY', 'cleanup requires terminal agent');
       const result = await this.stateStore.readResult(agentId);
       if (!result) throw brokerError('RESULT_INCOMPLETE', 'cleanup requires result metadata');
-      const ws = workspaceFromRecord(record);
+      const ws = workspaceFromRecord(record, agentId);
       if (ws) {
         const status = await this.workspaceManager.statusWorkspace(ws);
         if (status.dirty) throw new Error(`refusing cleanup of dirty worktree: ${status.porcelain}`);
