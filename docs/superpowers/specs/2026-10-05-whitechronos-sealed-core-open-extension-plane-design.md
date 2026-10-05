@@ -453,11 +453,13 @@ This preserves:
 
 ## 21. Extension admission states
 
-An extension lifecycle SHOULD distinguish at minimum:
+Before Registry admission, a candidate MAY be tracked as PROPOSED in planning/review metadata. PROPOSED is not a Registry v2 lifecycle state and SHALL NOT be added merely to duplicate pre-admission workflow state.
+
+Once represented in Registry v2, the Extension Plane SHOULD reuse its existing lifecycle states:
 
 ~~~text
-PROPOSED
 DISCOVERED
+QUARANTINED
 VALIDATING
 COMPATIBLE
 PROMOTABLE
@@ -471,9 +473,9 @@ DEPRECATED
 REVOKED
 ~~~
 
-State names may reuse the existing Registry v2 lifecycle when applicable.
+A separate competing lifecycle model SHALL NOT be introduced without a new design decision.
 
-No state name shall erase the distinction between technical state and authorization state.
+No lifecycle state shall erase the distinction between technical state and authorization state.
 
 ## 22. Revocation and rollback
 
