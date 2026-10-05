@@ -5,6 +5,7 @@ on:
     paths:
       - "plugins/whitechronos-control-plane/**"
       - "registry/integrations/**"
+      - "registry/capabilities/**"
       - ".agents/plugins/marketplace.json"
       - ".codex/config.toml"
       - "AGENTS.md"
@@ -13,6 +14,7 @@ on:
     paths:
       - "plugins/whitechronos-control-plane/**"
       - "registry/integrations/**"
+      - "registry/capabilities/**"
       - ".agents/plugins/marketplace.json"
       - ".codex/config.toml"
       - "AGENTS.md"
@@ -30,6 +32,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce append-only capability registry
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ] && [ -n "${PR_BASE_SHA:-}" ]; then
+            BASE_SHA="$PR_BASE_SHA"
+          elif [ "$EVENT_NAME" = "push" ] && [ -n "${PUSH_BEFORE_SHA:-}" ] && [ "$PUSH_BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="$PUSH_BEFORE_SHA"
+          else
+            BASE_SHA="$(git rev-parse "$GITHUB_SHA^")"
+          fi
+          python pipeline/capability_registry_policy.py --base "$BASE_SHA" --head "$GITHUB_SHA"
 
       - name: Set up Python
         uses: actions/setup-python@v5
