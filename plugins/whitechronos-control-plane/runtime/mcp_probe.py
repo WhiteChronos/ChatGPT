@@ -90,6 +90,8 @@ def resolve_mcp_launch(
     if script.suffix != ".mjs":
         raise McpProbeSecurityError("MCP Node entrypoint must be an .mjs file")
     env = _minimal_env(codex_path=codex_path if descriptor.id == "subagent-broker" else None)
+    if descriptor.id == "subagent-broker":
+        env["SUBAGENT_BROKER_REPO_ROOT"] = str(repo_root)
     return McpLaunchSpec(command="node", args=(str(script),), cwd=cwd, env=env)
 
 
