@@ -1,6 +1,6 @@
 # WhiteChronos Global Conversation Bootstrap Design
 
-**Status:** APPROVED ARCHITECTURE — DESIGN FREEZE v1.0  
+**Status:** APPROVED ARCHITECTURE & GOVERNANCE — BASELINE FREEZE v1.0  
 **Date:** 2026-10-05  
 **Repository:** WhiteChronos/ChatGPT  
 **Working branch:** spec-whitechronos-global-conversation-bootstrap-v1  
@@ -8,7 +8,7 @@
 **Base commit:** ef3b5fd77ab96dc3c0950725cd6f5c57b49a8988  
 **Related architecture:** docs/superpowers/specs/2026-10-03-whitechronos-control-plane-design.md  
 **Repository integration note:** PR #57 remains DRAFT and unmerged unless separately authorized.  
-**Approval record:** Sections 1–9 approved as one architectural design on 2026-10-05; this formalization records that frozen baseline without reopening it.
+**Approval record:** Sections 1–9 approved as one architectural design on 2026-10-05. On 2026-10-05 the user separately authorized the governance freeze recorded in Section 26, including the execution/authorization separation and closure of WhiteChronos v1.0 as the frozen architecture-and-governance baseline. Tasks 1–12 remain implementation-authorized but runtime-gated.
 
 ## 1. Decision summary
 
@@ -1369,33 +1369,122 @@ This spec fixes architecture and invariants but intentionally does not lock Whit
 
 Any future selection must satisfy the contracts and invariants in this document.
 
-## 26. Approval boundary and next process gate
+## 26. Baseline freeze, governance, and execution boundary
 
-This document is the formal **WhiteChronos Global Conversation Bootstrap Architecture v1.0** baseline.
+This document is the formal **WhiteChronos Global Conversation Bootstrap Architecture & Governance v1.0** baseline.
 
-The architectural decisions represented by the approved conversational Sections 1–9 are frozen at this revision. This formalization may clarify terminology, structure, traceability, and acceptance criteria, but it SHALL NOT silently change the approved architecture. Any future architectural change requires a new revision with explicit review and approval.
+The architectural decisions represented by the approved conversational Sections 1–9 remain frozen. The governance rules in this section were separately and explicitly authorized on 2026-10-05. Clarifications may improve terminology, traceability, and evidence, but future architectural redesign or governance changes require a new revision with explicit review and authorization.
 
-This approval authorizes:
+### 26.1 Official governance chain
 
-- versioning this specification in GitHub;
-- repository review of this specification;
-- preparation of the implementation plan required by the approved architecture.
+WhiteChronos v1.0 SHALL use the following operational chain:
 
-It does **not** authorize:
+~~~text
+Superpowers executes
+ -> Arena challenges
+ -> Verification validates
+ -> Authorization Gate authorizes
+ -> Executor acts
+ -> Post-Verification confirms
+~~~
 
-- implementation of the global bootstrap;
-- mutating capability execution;
-- R2/R3 execution;
-- creation or use of broad credentials;
-- external provider activation;
-- production promotion;
+The layers have distinct responsibilities:
+
+- **Superpowers** owns the disciplined development/execution workflow, including planning, isolation, TDD, debugging, review, and completion gates.
+- **Arena** is an adversarial quality layer. It challenges correctness, completeness, robustness, specificity, edge cases, and constraint adherence. Arena review does not itself create execution authority.
+- **Verification** proves whether the relevant technical acceptance conditions are satisfied. A verification PASS is evidence, not operational permission.
+- **Authorization Gate** evaluates whether a valid human authorization exists for the exact action, scope, target, artifact/version, environment, and applicable conditions.
+- **Executor** performs only the action authorized by that gate and may not broaden scope.
+- **Post-Verification** independently checks the resulting state and prevents an attempted action from being equated with successful completion.
+
+### 26.2 Mandatory state-separation invariants
+
+The following distinctions are permanent governance invariants:
+
+~~~text
+VERIFIED != AUTHORIZED
+AUTHORIZED != EXECUTED
+EXECUTED != SUCCESSFUL
+~~~
+
+Equivalent human-readable form:
+
+- technical readiness does not grant operational authority;
+- operational authority does not prove that an action occurred;
+- an attempted or completed action does not prove the intended result.
+
+WhiteChronos SHALL preserve those states separately in policy decisions, runtime evidence, ledger events, release decisions, and user-facing status.
+
+### 26.3 Authority domains remain independent
+
+Authority SHALL be capability- and action-scoped. In particular:
+
+~~~text
+merge_authority      != deploy_authority
+deploy_authority     != canary_authority
+canary_authority     != stable_authority
+~~~
+
+Authorization for one domain SHALL NOT be interpreted as authorization for another.
+
+Where conditional authorization is used, the Authorization Gate SHALL re-check the named conditions immediately before execution, including the exact target and immutable identity where applicable. Any scope mismatch, stale evidence, changed target, changed artifact digest/SHA, expired authority, revocation, quarantine, or UNKNOWN state fails closed.
+
+### 26.4 WhiteChronos v1.0 closure state
+
+WhiteChronos v1.0 is **closed as an architecture-and-governance baseline**.
+
+Closure means:
+
+- architecture is frozen at v1.0;
+- governance is frozen at v1.0;
+- the official execution/quality/authorization chain is fixed by Sections 26.1–26.3;
+- deferred implementation work does not reopen the architecture or governance baseline;
+- future systems may depend on this baseline without waiting for every WhiteChronos implementation increment to be complete.
+
+Closure does **not** mean that the first implementation slice has already been implemented, merged, deployed, promoted, or live-verified.
+
+The implementation state is explicitly:
+
+~~~text
+architecture       = FROZEN
+governance         = FROZEN
+tasks_1_12         = AUTHORIZED
+implementation     = WAITING_FOR_COMPATIBLE_RUNTIME
+merge_main         = NOT_AUTHORIZED
+deploy             = NOT_AUTHORIZED
+promotion          = NOT_AUTHORIZED
+live_smoke         = NOT_AUTHORIZED
+r2_r3              = NOT_AUTHORIZED
+redesign           = NOT_AUTHORIZED
+~~~
+
+### 26.5 Tasks 1–12 execution authorization
+
+The user separately authorized implementation of Tasks 1–12 from PR #61 under the Design Freeze v1.0 and the reviewed PR #59 interfaces.
+
+That authorization remains valid and does not require the architecture or plan to be re-approved.
+
+Execution remains gated by the selected **real Subagent-driven** method:
+
+1. prefer native Codex multi-agent tools when the current host actually exposes them;
+2. otherwise use the Subagent Broker only when its approved lifecycle tools are actually host-discovered and healthy, with explicit repository binding and isolation evidence;
+3. if neither independent-agent runtime is available, stop at the runtime gate rather than representing Arena cards, personas, or inline turns as independent subagents.
+
+Configuration such as `multi_agent=true` or an enabled plugin remains only `CONFIGURED` evidence. Task 1 begins only after compatible independent-agent capability is genuinely `HOST_DISCOVERED`.
+
+The implementation authorization does **not** authorize:
+
+- merge or integration into `main`;
+- deploy;
+- candidate/canary/stable promotion;
 - live smoke;
-- GitHub ruleset/environment/security changes;
-- PR #57 ready-for-review transition;
-- PR #57 merge;
-- PR #59 ready-for-review transition;
-- PR #59 merge.
+- R2/R3 execution;
+- broad credential creation;
+- governance changes beyond this authorized v1.0 freeze;
+- architectural redesign.
 
-The next mandatory Superpowers process gate for product/runtime implementation is `writing-plans`.
+### 26.6 Subsequent evolution
 
-Implementation SHALL begin only after the resulting plan is reviewed and an execution method is explicitly selected.
+With this baseline frozen, future WhiteChronos implementation increments and other systems may proceed independently under their own plans and authorization gates.
+
+A later implementation, release, merge, deploy, promotion, or redesign SHALL reference this baseline and obtain only the additional authority required for that specific action. The existence of a future implementation or release plan SHALL NOT silently amend this frozen baseline.
