@@ -14,6 +14,7 @@ from .capability_model import (
     RiskProfile,
 )
 from .schema import validate_schema_subset
+from .capability_lifecycle import derive_lifecycle_view
 
 
 def _read_object(path: Path) -> dict[str, object]:
@@ -183,9 +184,11 @@ def load_capability_registry(repo_root: Path) -> CapabilityRegistry:
             )
         events.append(event)
 
+    event_tuple = tuple(events)
+    lifecycle = derive_lifecycle_view(providers, event_tuple)
     return CapabilityRegistry(
         contracts=contracts,
         providers=providers,
-        events=tuple(events),
-        lifecycle={},
+        events=event_tuple,
+        lifecycle=lifecycle,
     )
