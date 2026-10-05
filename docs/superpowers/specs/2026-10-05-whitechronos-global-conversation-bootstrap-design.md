@@ -481,6 +481,10 @@ UNKNOWN -> BLOCKED
 
 Risk is contextual, not inferred solely from the capability name. Relevant inputs include capability, operation, provider, resource, destination, reversibility, blast radius, data class, credential requirements, and current system state.
 
+For `R2` and `R3`, explicit confirmation SHALL identify the action, target/destination, and material effect clearly enough that the user knows what authority is being granted.
+
+User confirmation and operational permission are separate. A user may approve an action that the host, workspace, credential, or provider still does not permit; execution requires both the policy/user authorization and the host/provider permission to be valid.
+
 ### 9.3 Policy precedence
 
 The intended policy hierarchy is:
@@ -537,6 +541,18 @@ Rules:
 - a global kill switch invalidates execution regardless of lease state;
 - delegated sub-capabilities receive an equal or narrower scope;
 - pre-execution validation is mandatory immediately before the provider call.
+
+The minimal lease lifecycle is:
+
+~~~text
+REQUESTED
+ -> ISSUED
+ -> ACTIVE
+    +-> CONSUMED
+    +-> EXPIRED
+    +-> REVOKED
+    +-> OUTCOME_UNKNOWN
+~~~
 
 The pre-execution gate checks:
 
@@ -737,6 +753,8 @@ Fallback SHALL never silently change side-effect semantics.
 
 Failure does not imply global shutdown when unrelated capabilities remain safe.
 
+The conversation itself SHOULD continue whenever the host remains usable. Material degradation SHALL be disclosed when it affects the requested task, and only capabilities that depend on the unavailable or untrusted component are blocked.
+
 Examples:
 
 ~~~text
@@ -913,6 +931,10 @@ no blocking quarantine
 
 Conversation content is not automatically used as promotion material.
 
+Canary cohort selection SHALL be deterministic or explicitly assigned. A conversation/session SHALL NOT randomly switch between `stable` and `canary` mid-work; ordinary channel selection remains pinned for the session, subject to immediate security revocation/quarantine.
+
+The normal rule is that every stable release passes through `candidate` and `canary`. Any emergency break-glass bypass must be separately governed, explicitly authorized, fully audited, and may never bypass artifact integrity, trusted-publisher requirements, or revocation.
+
 ### 17.6 Atomic promotion and rollback
 
 Channels SHOULD be represented by trusted pointers to immutable releases.
@@ -920,6 +942,8 @@ Channels SHOULD be represented by trusted pointers to immutable releases.
 Pointer changes are atomic.
 
 Rollback restores a previously trusted immutable artifact; it does not create a new build.
+
+Policy-defined critical canary or stable regressions SHOULD be able to trigger automatic rollback to the last trusted stable artifact. Automatic rollback SHALL emit evidence and SHALL be verified after restoration rather than assuming that a pointer change alone succeeded.
 
 At least the current stable and previous trusted stable SHOULD be retained for recovery.
 
@@ -1033,6 +1057,10 @@ It does not mean:
 
 A Skill/Plugin/App may be installed and eligible yet still require explicit activation, authentication, workspace approval, or a compatible surface.
 
+`MANUAL_ACTIVATION_REQUIRED` is not automatically a health failure; a component may be healthy while still requiring user activation on that surface.
+
+A Skill is also not proof that an executable provider capability exists. Workflow guidance and actual host-exposed execution authority SHALL remain distinct.
+
 The ChatGPT Host Adapter SHALL report those distinctions rather than collapsing them into `AVAILABLE` or `UNAVAILABLE`.
 
 ### 18.5 Host Adapter boundary
@@ -1074,6 +1102,8 @@ schema / contract tests
 ~~~
 
 Passing unit tests alone does not imply live readiness.
+
+A live smoke test may run only when Runtime Doctor or an equivalent authoritative probe proves `LIVE_SMOKE_READY = true` (or an equivalent ready state). WhiteChronos SHALL NOT broaden credentials, permissions, or network access merely to force a live-smoke PASS.
 
 ### 19.2 Required invariant tests
 
