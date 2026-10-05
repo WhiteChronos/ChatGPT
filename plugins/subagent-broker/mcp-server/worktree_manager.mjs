@@ -2,9 +2,17 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
+function sanitizedGitEnv() {
+  const env = { ...process.env };
+  for (const key of Object.keys(env)) {
+    if (key.startsWith('GIT_')) delete env[key];
+  }
+  return env;
+}
+
 function execFile(command, args, { cwd, allowFailure = false } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, shell: false, stdio: ['ignore','pipe','pipe'] });
+    const child = spawn(command, args, { cwd, env: sanitizedGitEnv(), shell: false, stdio: ['ignore','pipe','pipe'] });
     let stdout = '';
     let stderr = '';
     child.stdout.on('data', d => stdout += d);
