@@ -40,3 +40,19 @@ test('cleanup refuses tampered branch metadata before removing workspace',async(
     await fs.rm(root,{recursive:true,force:true});
   }
 });
+
+
+test('cleanup refuses workspace metadata that targets another agent worktree',async()=>{
+  const root=await repo();
+  try{
+    const base=await resolveBase(root,'HEAD');
+    const a={...(await createWorkspace({repoRoot:root,agentId:'sa_agent_a',baseSha:base,mode:'worktree_write'})),agent_id:'sa_agent_a'};
+    const b={...(await createWorkspace({repoRoot:root,agentId:'sa_agent_b',baseSha:base,mode:'worktree_write'})),agent_id:'sa_agent_b'};
+    const forged={...a,path:b.path,branch:b.branch};
+    await assert.rejects(()=>cleanupWorkspace(forged,{purgeBranch:true}),/agent.*identity|workspace.*ownership|worktree.*identity/i);
+    const stat=await fs.stat(b.path);
+    assert.equal(stat.isDirectory(),true);
+  }finally{
+    await fs.rm(root,{recursive:true,force:true});
+  }
+});
