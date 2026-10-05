@@ -56,3 +56,23 @@ test('cleanup refuses workspace metadata that targets another agent worktree',as
     await fs.rm(root,{recursive:true,force:true});
   }
 });
+
+
+test('repository binding ignores inherited Git repository-selection variables',async()=>{
+  const realRepo=await repo();
+  const fakeRoot=await fs.mkdtemp(path.join(os.tmpdir(),'subagent-fake-root-'));
+  const previous={GIT_DIR:process.env.GIT_DIR,GIT_WORK_TREE:process.env.GIT_WORK_TREE};
+  try{
+    process.env.GIT_DIR=path.join(realRepo,'.git');
+    process.env.GIT_WORK_TREE=fakeRoot;
+    await assert.rejects(
+      ()=>worktrees.resolveConfiguredRepoRoot({SUBAGENT_BROKER_REPO_ROOT:fakeRoot}),
+      /git repository/i
+    );
+  }finally{
+    if(previous.GIT_DIR===undefined) delete process.env.GIT_DIR; else process.env.GIT_DIR=previous.GIT_DIR;
+    if(previous.GIT_WORK_TREE===undefined) delete process.env.GIT_WORK_TREE; else process.env.GIT_WORK_TREE=previous.GIT_WORK_TREE;
+    await fs.rm(realRepo,{recursive:true,force:true});
+    await fs.rm(fakeRoot,{recursive:true,force:true});
+  }
+});
