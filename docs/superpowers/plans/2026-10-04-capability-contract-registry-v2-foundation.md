@@ -41,6 +41,8 @@
 - `plugins/whitechronos-control-plane/tests/test_capability_contracts.py` — schema/model/identity/version/risk tests.
 - `plugins/whitechronos-control-plane/tests/test_capability_registry_v2.py` — deterministic loader, duplicates, cross-references, and v1 coexistence.
 - `plugins/whitechronos-control-plane/tests/test_capability_lifecycle.py` — lifecycle chain and projection tests.
+- `pipeline/capability_registry_policy.py` — Git-diff gate enforcing immutable/append-only accepted v2 registry records.
+- `tests/test_capability_registry_policy.py` — policy-gate unit tests for add/modify/delete/rename behavior.
 
 ### Modify
 
@@ -137,6 +139,7 @@ class CapabilityManifest:
 class LifecycleEvent:
     event_id: str
     provider_id: str
+    implementation_version: str
     state: LifecycleState
     occurred_at: str
     actor_type: str
@@ -149,6 +152,7 @@ class LifecycleEvent:
 @dataclass(frozen=True)
 class ProviderLifecycleView:
     provider_id: str
+    implementation_version: str
     current_state: LifecycleState
     last_event_id: str
     event_count: int
@@ -157,9 +161,9 @@ class ProviderLifecycleView:
 @dataclass(frozen=True)
 class CapabilityRegistry:
     contracts: dict[tuple[str, str], CapabilityContract]
-    providers: dict[str, CapabilityManifest]
+    providers: dict[tuple[str, str], CapabilityManifest]
     events: tuple[LifecycleEvent, ...]
-    lifecycle: dict[str, ProviderLifecycleView]
+    lifecycle: dict[tuple[str, str], ProviderLifecycleView]
 ```
 
 Required helpers:
@@ -174,7 +178,9 @@ Identity rules for this slice:
 
 - `contract_id` must begin with `capability://`, contain at least one namespace/name separator after the scheme, contain no whitespace, backslash, `..`, query, or fragment component.
 - `provider_id` must be a non-empty lowercase slug made only of ASCII letters, digits, `.`, `_`, and `-`; it must not contain `..`.
+- A provider implementation is uniquely identified by `(provider_id, implementation_version)` so multiple immutable versions of the same provider family may coexist.
 - Contract and implementation versions are full SemVer strings `MAJOR.MINOR.PATCH` with optional SemVer prerelease/build suffixes.
+- Manifest `digest` is normalized as `sha256:<64 lowercase hexadecimal characters>` in this slice.
 - Requirement `version_range` is stored as a non-empty declarative string in this slice; range resolution is deferred to the Resolver plan.
 
 ### `runtime/capability_registry.py`
@@ -201,9 +207,9 @@ The three schema files themselves are outside those data subdirectories and must
 
 ```python
 def derive_lifecycle_view(
-    providers: dict[str, CapabilityManifest],
+    providers: dict[tuple[str, str], CapabilityManifest],
     events: tuple[LifecycleEvent, ...],
-) -> dict[str, ProviderLifecycleView]: ...
+) -> dict[tuple[str, str], ProviderLifecycleView]: ...
 ```
 
 The first slice validates event-chain integrity, not full promotion-policy transition semantics. State-transition policy belongs to the later promotion/governance plan.
@@ -212,9 +218,9 @@ The first slice validates event-chain integrity, not full promotion-policy trans
 
 1. **Registry v1 coexistence** — adding Registry v2 must not change the two current v1 descriptors or Runtime Doctor loading behavior. Owning test: Task 4.
 2. **Unknown or malformed risk/identity data** — v2 must reject undeclared risk keys, unsafe IDs, malformed SemVer, and arbitrary top-level fields except namespaced `extensions`. Owning tests: Task 1.
-3. **Missing/duplicate contract references** — two source files may not define the same `(contract_id, version)`, provider IDs must be unique, and every exact contract listed in `provides` must exist. Owning tests: Task 2.
-4. **Ambiguous/corrupt lifecycle history** — missing predecessors, cross-provider predecessor links, duplicate event IDs, multiple roots, branches, and cycles must fail rather than choosing an arbitrary current state. Owning tests: Task 3.
-5. **CI blind spot** — changes under `registry/capabilities/**` must trigger the Runtime Foundation workflow and remain classified as `DURABLE_STATE`. Owning tests: Task 4.
+3. **Missing/duplicate contract references** — two source files may not define the same `(contract_id, version)` or `(provider_id, implementation_version)`, and every exact contract listed in `provides` must exist. Owning tests: Task 2.
+4. **Ambiguous/corrupt lifecycle history** — missing predecessors, cross-provider-version predecessor links, duplicate event IDs, multiple roots, branches, and cycles must fail rather than choosing an arbitrary current state. Owning tests: Task 3.
+5. **Immutability or CI blind spot** — accepted contract/provider/event records may only be added, never modified/deleted/renamed in place; `registry/capabilities/**` must trigger Runtime Foundation CI and remain `DURABLE_STATE`. Owning tests: Task 4.
 
 ---
 
@@ -372,7 +378,11 @@ official_plugin
 component_repository
 ```
 
-`risk_profile` must have `additionalProperties: false` and exactly the nine fields defined by `RiskProfile`.
+`provides` items are objects with exactly `contract_id` and exact `version`.
+
+`requires` items are objects with exactly `contract_id`, non-empty `version_range`, and `role`; allowed roles are `REQUIRED`, `OPTIONAL`, and `ENHANCEMENT`.
+
+`risk_profile` must have `additionalProperties: false` and exactly the nine fields defined by `RiskProfile`. Allowed `filesystem` values are `NONE`, `READ`, and `WRITE`. Allowed `mutation_scope` values are `NONE`, `WORKSPACE`, `EXTERNAL`, and `CONTROL_PLANE`.
 
 `lifecycle-event.schema.json` required fields:
 
@@ -381,6 +391,7 @@ schema_version = 2
 record_type = capability_lifecycle_event
 event_id
 provider_id
+implementation_version
 state
 occurred_at
 actor_type
@@ -411,7 +422,7 @@ The model layer validates semantics that the existing schema subset cannot expre
 - SemVer shape;
 - non-empty requirement range;
 - allowed requirement roles;
-- digest non-blank;
+- digest exactly `sha256:<64 lowercase hex>`;
 - ISO-8601 timestamp parseability for lifecycle events.
 
 Do not implement version-range comparison in this task.
@@ -491,7 +502,7 @@ def test_registry_loads_contract_and_provider_independent_of_filename_order():
 def test_registry_rejects_duplicate_contract_identity():
     ...
 
-def test_registry_rejects_duplicate_provider_id():
+def test_registry_rejects_duplicate_provider_version():
     ...
 
 def test_registry_rejects_provider_that_claims_missing_provided_contract():
@@ -555,10 +566,10 @@ It must not require or create an `index.json`.
 It must reject:
 
 - duplicate `(contract_id, version)`;
-- duplicate `provider_id`;
+- duplicate `(provider_id, implementation_version)`;
 - duplicate `event_id`;
 - an exact `provides` contract reference absent from loaded contracts;
-- lifecycle events whose `provider_id` is absent from loaded providers.
+- lifecycle events whose `(provider_id, implementation_version)` is absent from loaded providers.
 
 `requires.version_range` is not resolved yet; preserve it for the Resolver phase.
 
@@ -621,9 +632,10 @@ Assert:
 
 ```python
 view = derive_lifecycle_view(providers, events)
-assert view["test-echo-provider"].current_state is LifecycleState.COMPATIBLE
-assert view["test-echo-provider"].last_event_id == "evt-004"
-assert view["test-echo-provider"].event_count == 4
+key = ("test-echo-provider", "1.0.0")
+assert view[key].current_state is LifecycleState.COMPATIBLE
+assert view[key].last_event_id == "evt-004"
+assert view[key].event_count == 4
 ```
 
 - [ ] **Step 2: Write failing corrupt-history tests**
@@ -664,7 +676,7 @@ Expected: FAIL because `capability_lifecycle.py` does not exist.
 
 - [ ] **Step 4: Implement chain-integrity validation**
 
-For each provider:
+For each exact provider implementation `(provider_id, implementation_version)`:
 
 1. gather its events;
 2. require at most one root event with `predecessor_event_id is None`;
@@ -708,18 +720,88 @@ git commit -m "feat: derive capability lifecycle from append-only events"
 
 ---
 
-### Task 4: Wire Registry v2 into Repository Governance Without Runtime Activation
+### Task 4: Enforce Append-Only Registry Records and Wire CI Governance
 
 **Files:**
+- Create: `pipeline/capability_registry_policy.py`
+- Create: `tests/test_capability_registry_policy.py`
 - Modify: `.github/workflows/whitechronos-runtime-foundation.yml`
 - Modify: `plugins/whitechronos-control-plane/tests/test_repository_integration.py`
 - Modify: `tests/test_github_path_policy.py`
 
 **Interfaces:**
-- Consumes: existing GitHub path policy and Runtime Foundation workflow.
-- Produces: CI coverage for Registry v2 source changes; no runtime activation or routing changes.
+- Consumes: Git name-status diff records for `registry/capabilities/v2/{contracts,providers,events}/**/*.json`.
+- Produces: `validate_registry_changes(changes: tuple[RegistryChange, ...]) -> tuple[str, ...]` plus a CLI that returns non-zero when accepted v2 source records are modified, deleted, or renamed in place.
 
-- [ ] **Step 1: Write the failing workflow-trigger test**
+- [ ] **Step 1: Write failing append-only policy tests**
+
+Create `tests/test_capability_registry_policy.py` with exact behaviors:
+
+```python
+def test_new_contract_provider_and_event_files_are_allowed():
+    ...
+
+def test_modifying_existing_contract_is_rejected():
+    ...
+
+def test_modifying_existing_provider_version_is_rejected():
+    ...
+
+def test_modifying_existing_event_is_rejected():
+    ...
+
+def test_deleting_or_renaming_accepted_record_is_rejected():
+    ...
+
+def test_schema_and_readme_changes_are_not_treated_as_append_only_records():
+    ...
+```
+
+Use synthetic Git name-status inputs such as `A\tpath`, `M\tpath`, `D\tpath`, and `R100\told\tnew`. The policy must reject any non-add status for JSON records below `contracts/`, `providers/`, or `events/`.
+
+- [ ] **Step 2: Run append-only policy tests and verify RED**
+
+Run:
+
+```bash
+python -m pytest -q tests/test_capability_registry_policy.py
+```
+
+Expected: FAIL because `pipeline/capability_registry_policy.py` does not exist.
+
+- [ ] **Step 3: Implement the pure policy interface and CLI**
+
+Define:
+
+```python
+@dataclass(frozen=True)
+class RegistryChange:
+    status: str
+    old_path: str | None
+    new_path: str | None
+
+def parse_name_status(lines: list[str]) -> tuple[RegistryChange, ...]: ...
+def validate_registry_changes(changes: tuple[RegistryChange, ...]) -> tuple[str, ...]: ...
+```
+
+CLI:
+
+```text
+python pipeline/capability_registry_policy.py --base <sha> --head <sha>
+```
+
+The CLI may invoke `git diff --name-status --find-renames <base>...<head> -- registry/capabilities` with `shell=False`, parse the result, print deterministic violations, and exit `1` on any immutable-record violation.
+
+Rules:
+
+- new record file under `contracts/`, `providers/`, or `events/`: `A` allowed;
+- `M`, `D`, `R*`, or `C*` touching an already accepted record path: reject;
+- schema files and `registry/capabilities/README.md`: not subject to append-only record rule, but remain ordinary reviewed source;
+- paths must be normalized and must remain under `registry/capabilities/v2`.
+
+This gate enforces source-control immutability; it does not decide lifecycle transitions.
+
+- [ ] **Step 4: Write the workflow-trigger and path-policy regressions**
 
 Add to `test_repository_integration.py`:
 
@@ -727,34 +809,34 @@ Add to `test_repository_integration.py`:
 def test_runtime_foundation_workflow_triggers_on_capability_registry_v2():
     text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
     assert '"registry/capabilities/**"' in text
+    assert "capability_registry_policy.py" in text
 ```
-
-- [ ] **Step 2: Write the path-policy regression**
 
 Add this parameter to `tests/test_github_path_policy.py`:
 
 ```python
-("registry/capabilities/v2/providers/sample.json", "DURABLE_STATE")
+("registry/capabilities/v2/providers/test-echo-provider/1.0.0.json", "DURABLE_STATE")
 ```
 
-Do not modify `pipeline/github_path_policy.py`; the existing `registry/` rule should already satisfy it.
+Do not modify `pipeline/github_path_policy.py`; the existing `registry/` rule should already satisfy the classification.
 
-- [ ] **Step 3: Run the two governance tests and verify RED only where expected**
+- [ ] **Step 5: Run Task 4 tests and verify RED only where expected**
 
 Run:
 
 ```bash
-python -m pytest -q   plugins/whitechronos-control-plane/tests/test_repository_integration.py::test_runtime_foundation_workflow_triggers_on_capability_registry_v2   tests/test_github_path_policy.py
+python -m pytest -q   tests/test_capability_registry_policy.py   plugins/whitechronos-control-plane/tests/test_repository_integration.py::test_runtime_foundation_workflow_triggers_on_capability_registry_v2   tests/test_github_path_policy.py
 ```
 
-Expected:
+Expected before workflow edit:
 
-- new workflow-trigger test: FAIL because the path is absent;
-- path-policy suite: PASS, proving Registry v2 already inherits `DURABLE_STATE`.
+- append-only policy tests: PASS after Step 3;
+- new workflow-trigger test: FAIL because the workflow is not wired yet;
+- path-policy suite: PASS.
 
 If path-policy fails, stop and investigate; do not broaden classifications casually.
 
-- [ ] **Step 4: Extend Runtime Foundation workflow path triggers**
+- [ ] **Step 6: Extend Runtime Foundation workflow**
 
 Add exactly:
 
@@ -764,25 +846,35 @@ Add exactly:
 
 to both `pull_request.paths` and `push.paths`.
 
-Do not change workflow permissions, test commands, live-smoke behavior, or host-discovery claims.
+Add a policy step that calculates a base SHA appropriate to the GitHub event and runs:
 
-- [ ] **Step 5: Run governance tests and verify GREEN**
+```bash
+python pipeline/capability_registry_policy.py --base "$BASE_SHA" --head "$GITHUB_SHA"
+```
+
+Preserve:
+
+- `permissions: contents: read`;
+- existing Runtime Foundation test commands;
+- current Runtime Doctor non-live CI behavior;
+- no live smoke.
+
+- [ ] **Step 7: Run Task 4 tests and verify GREEN**
 
 Run:
 
 ```bash
-python -m pytest -q   plugins/whitechronos-control-plane/tests/test_repository_integration.py   tests/test_github_path_policy.py
+python -m pytest -q   tests/test_capability_registry_policy.py   plugins/whitechronos-control-plane/tests/test_repository_integration.py   tests/test_github_path_policy.py
 ```
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit Task 4**
+- [ ] **Step 8: Commit Task 4**
 
 ```bash
-git add .github/workflows/whitechronos-runtime-foundation.yml plugins/whitechronos-control-plane/tests/test_repository_integration.py tests/test_github_path_policy.py
-git commit -m "ci: govern WhiteChronos capability registry v2"
+git add pipeline/capability_registry_policy.py tests/test_capability_registry_policy.py .github/workflows/whitechronos-runtime-foundation.yml plugins/whitechronos-control-plane/tests/test_repository_integration.py tests/test_github_path_policy.py
+git commit -m "ci: enforce append-only capability registry records"
 ```
-
 ---
 
 ### Task 5: Full Verification, Compatibility Regression, and Review Arena
@@ -843,6 +935,7 @@ Run:
 python pipeline/github_control_plane_policy_gate.py --policy governance/GITHUB_CONTROL_PLANE_POLICY.json
 python -m pytest -q tests/test_github_control_plane_policy_gate.py
 python -m pytest -q tests/test_github_path_policy.py
+python -m pytest -q tests/test_capability_registry_policy.py
 ```
 
 Expected: PASS.
@@ -906,17 +999,18 @@ Phase 1 is complete only when all are verified:
 2. Registry v2 exists beside v1 with separate schemas and runtime modules.
 3. An empty Registry v2 is valid and causes no runtime activation.
 4. A test provider implementing `capability://test/echo@1.0.0` can be loaded without any Kernel/provider-specific code change.
-5. Duplicate contract/provider/event identities fail closed.
+5. Duplicate contract/provider-version/event identities fail closed.
 6. Unsafe IDs, malformed SemVer, unknown risk fields, and path/symlink escape fail closed.
 7. A provider cannot claim an exact `provides` contract that is absent.
-8. Lifecycle current state is derived from an append-only linear event chain.
+8. Lifecycle current state is derived independently for each `(provider_id, implementation_version)` from an append-only linear event chain.
 9. Missing predecessors, cross-provider links, multiple roots, branches, and cycles fail closed.
 10. No manually maintained v2 index is introduced.
 11. `registry/capabilities/**` is classified as `DURABLE_STATE`.
-12. Registry v2 changes trigger the existing Runtime Foundation workflow.
-13. Control Plane, repository, Broker, GitHub policy, and engineering governance regressions are green.
-14. No Resolver, provider activation, Knowledge/Evolution Ledger, Zero-Trust runtime enforcement, or live verification is claimed by this slice.
-15. PR #57 remains DRAFT.
+12. Accepted contract/provider/event files cannot be modified, deleted, copied, or renamed in place without the append-only policy gate failing.
+13. Registry v2 changes trigger the existing Runtime Foundation workflow.
+14. Control Plane, repository, Broker, GitHub policy, and engineering governance regressions are green.
+15. No Resolver, provider activation, Knowledge/Evolution Ledger, Zero-Trust runtime enforcement, or live verification is claimed by this slice.
+16. PR #57 remains DRAFT.
 
 ## Subsequent Implementation Plans
 
