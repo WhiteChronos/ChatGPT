@@ -56,11 +56,8 @@ export async function resolveConfiguredRepoRoot(env = process.env) {
     throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
   }
   let gitRoot;
-  try {
-    gitRoot = await fs.realpath(result.stdout);
-  } catch {
-    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
-  }
+  try { gitRoot = await fs.realpath(result.stdout); }
+  catch { throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root'); }
   if (gitRoot !== root) {
     throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify the git repository root exactly');
   }
