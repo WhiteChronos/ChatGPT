@@ -1,6 +1,6 @@
 # WhiteChronos Global Conversation Bootstrap — Read-Only Vertical Slice Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (\`- [ ]\`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` with real independent subagents to implement this plan task-by-task. Do not degrade to inline execution unless the user separately authorizes that fallback. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement the first approved WhiteChronos Global Conversation Bootstrap vertical slice so a compatible ChatGPT/Codex conversation can identify its host, load a trusted control snapshot, isolate session state, classify and authorize only R0/R1 work, resolve an eligible read-only capability, report evidence-qualified runtime state, and emit privacy-safe technical ledger metadata without granting mutation authority.
 
@@ -10,13 +10,30 @@
 
 **Spec:** \`docs/superpowers/specs/2026-10-05-whitechronos-global-conversation-bootstrap-design.md\`
 
+**Execution status:** `AUTHORIZED / WAITING_FOR_COMPATIBLE_RUNTIME`
+
+## Authorization and Runtime Gate
+
+The user explicitly authorized implementation of Tasks 1–12 in real Subagent-driven mode. The architecture and governance baseline is frozen at WhiteChronos v1.0; neither the plan nor implementation reopens that baseline.
+
+Execution MAY begin without another architecture/plan approval when one of these independent-agent paths is genuinely host-discovered:
+
+1. native Codex multi-agent tools with real spawn/lifecycle evidence; or
+2. the approved Subagent Broker lifecycle surface, healthy and host-discovered, with explicit repository binding and isolated worktree/branch evidence.
+
+Configuration alone is insufficient. `multi_agent=true`, plugin manifests, or MCP configuration are only `CONFIGURED` evidence until the current host exposes the real lifecycle tools.
+
+If neither independent-agent path is available, stop at the runtime gate. Arena cards, prompt personas, and same-context inline turns do not satisfy the selected execution method.
+
+This execution authorization does not authorize merge or integration into `main`, deploy, candidate/canary/stable promotion, live smoke, R2/R3 execution, broad credentials, governance changes, or architectural redesign.
+
 ## Execution Baseline and Dependencies
 
 This plan is documentation-only and does not authorize merging predecessor pull requests.
 
 Implementation MUST start from a repository state that contains all of the following:
 
-1. the approved Design Freeze v1.0 spec from PR #60 / commit \`18ba35dee95bd58cb48444405f0498fb40abbeb8\`;
+1. the approved Architecture & Governance Baseline Freeze v1.0 spec from PR #60 / commit `2f6fd7a785999ef7827e74f35167a452c98d7920`;
 2. the Cloud Runtime Foundation currently carried by PR #57;
 3. Capability Registry v2 plus the structural Capability Resolver / Adapter boundary currently carried by PR #59 at \`09f6f3d59931e69a4c101817a687356b8dc7fcb0\`, or a later reviewed descendant with equivalent interfaces.
 
@@ -1087,8 +1104,8 @@ This plan fixes interfaces, test names, execution order, constraints, and verifi
 
 ## Execution Handoff
 
-This plan should be implemented only after the spec/plan branch is reviewed and the dependency baseline is available.
+The spec/plan is approved for implementation. Tasks 1–12 are authorized, but execution remains blocked until the dependency baseline is available and a compatible independent-agent runtime is genuinely `HOST_DISCOVERED`.
 
-**Recommended execution method: Subagent-driven development**, because the 12 tasks have clear interfaces and independent RED/GREEN/reviewer gates, while mistakes in trust, isolation, risk, or privacy boundaries would be costly to discover only at the end.
+**Required execution method under the current authorization: Subagent-driven development**, because the 12 tasks have clear interfaces and independent RED/GREEN/reviewer gates, while mistakes in trust, isolation, risk, or privacy boundaries would be costly to discover only at the end.
 
-If real independent subagents are unavailable in the execution runtime, use \`superpowers:executing-plans\` rather than simulating subagents.
+If real independent subagents are unavailable in the execution runtime, stop at the runtime gate and report the evidence. Do not simulate subagents and do not silently fall back to `superpowers:executing-plans`. Inline execution requires separate explicit authorization.
