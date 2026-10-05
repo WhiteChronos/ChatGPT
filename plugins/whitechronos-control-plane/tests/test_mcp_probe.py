@@ -34,6 +34,7 @@ def test_broker_local_probe_lists_exact_expected_tools_with_fake_codex():
     assert result.status is CheckStatus.PASS
     assert result.tools == descriptor.runtime_probe.expected_tools
     assert launch.env["SUBAGENT_BROKER_CODEX_PATH"] == str(fake_codex)
+    assert launch.env["SUBAGENT_BROKER_REPO_ROOT"] == str(REPO.resolve())
 
 
 def test_probe_rejects_shell_or_unknown_command_without_execution(tmp_path):
