@@ -14,6 +14,8 @@ from .capability_model import (
     RiskProfile,
 )
 from .schema import validate_schema_subset
+from .capability_adapter import CapabilityAdapter, ErrorMapping
+from .capability_versioning import VersionRange
 from .capability_lifecycle import derive_lifecycle_view
 
 
@@ -110,6 +112,35 @@ def load_manifest(path: Path, schema_path: Path) -> CapabilityManifest:
     )
 
 
+def load_adapter(path: Path, schema_path: Path) -> CapabilityAdapter:
+    data = _load_validated(Path(path), Path(schema_path))
+    mapping_data = data["error_mapping"]
+    assert isinstance(mapping_data, list)
+    extensions = data["extensions"]
+    assert isinstance(extensions, dict)
+    return CapabilityAdapter(
+        adapter_id=str(data["adapter_id"]),
+        version=str(data["version"]),
+        implementation_provider_id=str(data["implementation_provider_id"]),
+        implementation_version=str(data["implementation_version"]),
+        source_contract_id=str(data["source_contract_id"]),
+        source_version=str(data["source_version"]),
+        target_contract_id=str(data["target_contract_id"]),
+        target_version=str(data["target_version"]),
+        transformation=str(data["transformation"]),
+        lossiness=str(data["lossiness"]),
+        information_loss=tuple(str(item) for item in data["information_loss"]),
+        unsupported_cases=tuple(str(item) for item in data["unsupported_cases"]),
+        error_mapping=tuple(
+            ErrorMapping(str(item["source_error"]), str(item["target_error"]))
+            for item in mapping_data
+            if isinstance(item, dict)
+        ),
+        conformance_tests=tuple(str(item) for item in data["conformance_tests"]),
+        extensions=dict(extensions),
+    )
+
+
 def load_lifecycle_event(path: Path, schema_path: Path) -> LifecycleEvent:
     data = _load_validated(Path(path), Path(schema_path))
     return LifecycleEvent(
@@ -143,6 +174,7 @@ def load_capability_registry(repo_root: Path) -> CapabilityRegistry:
     contract_schema = root / "contract.schema.json"
     manifest_schema = root / "manifest.schema.json"
     event_schema = root / "lifecycle-event.schema.json"
+    adapter_schema = root / "adapter.schema.json"
 
     contracts: dict[tuple[str, str], CapabilityContract] = {}
     for path in _record_paths(root / "contracts"):
@@ -168,6 +200,49 @@ def load_capability_registry(repo_root: Path) -> CapabilityRegistry:
                     f"provided contract is missing: {provided.contract_id}@{provided.version} "
                     f"for {provider.provider_id}@{provider.implementation_version}"
                 )
+        for requirement in provider.requires:
+            try:
+                version_range = VersionRange.parse(requirement.version_range)
+            except ValueError as exc:
+                raise ValueError(
+                    f"invalid version range for requirement {requirement.contract_id}: "
+                    f"{requirement.version_range!r}: {exc}"
+                ) from exc
+            matching_versions = [
+                version
+                for (contract_id, version) in contracts
+                if contract_id == requirement.contract_id and version_range.matches(version)
+            ]
+            if not matching_versions:
+                raise ValueError(
+                    f"requirement has no matching contract version: {requirement.contract_id} "
+                    f"{requirement.version_range!r} for "
+                    f"{provider.provider_id}@{provider.implementation_version}"
+                )
+
+    adapters: dict[tuple[str, str], CapabilityAdapter] = {}
+    for path in _record_paths(root / "adapters"):
+        adapter = load_adapter(path, adapter_schema)
+        key = (adapter.adapter_id, adapter.version)
+        if key in adapters:
+            raise ValueError(f"duplicate adapter identity: {adapter.adapter_id}@{adapter.version}")
+        source_key = (adapter.source_contract_id, adapter.source_version)
+        if source_key not in contracts:
+            raise ValueError(
+                f"adapter source contract is missing: {adapter.source_contract_id}@{adapter.source_version}"
+            )
+        target_key = (adapter.target_contract_id, adapter.target_version)
+        if target_key not in contracts:
+            raise ValueError(
+                f"adapter target contract is missing: {adapter.target_contract_id}@{adapter.target_version}"
+            )
+        provider_key = (adapter.implementation_provider_id, adapter.implementation_version)
+        if provider_key not in providers:
+            raise ValueError(
+                f"adapter implementation provider is missing: "
+                f"{adapter.implementation_provider_id}@{adapter.implementation_version}"
+            )
+        adapters[key] = adapter
 
     events: list[LifecycleEvent] = []
     event_ids: set[str] = set()
@@ -191,4 +266,5 @@ def load_capability_registry(repo_root: Path) -> CapabilityRegistry:
         providers=providers,
         events=event_tuple,
         lifecycle=lifecycle,
+        adapters=adapters,
     )
