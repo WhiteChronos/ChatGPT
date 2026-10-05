@@ -153,3 +153,9 @@ def test_runtime_foundation_workflow_triggers_on_capability_registry_v2():
     text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
     assert '"registry/capabilities/**"' in text
     assert "capability_registry_policy.py" in text
+
+
+def test_runtime_foundation_workflow_triggers_on_capability_registry_policy_changes():
+    text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert '"pipeline/capability_registry_policy.py"' in text
+    assert '"tests/test_capability_registry_policy.py"' in text
