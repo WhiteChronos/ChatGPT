@@ -614,12 +614,12 @@ git commit -m "feat: load WhiteChronos capability registry v2"
 - Test: `plugins/whitechronos-control-plane/tests/test_capability_lifecycle.py`
 
 **Interfaces:**
-- Consumes: `dict[str, CapabilityManifest]` and `tuple[LifecycleEvent, ...]`.
-- Produces: `derive_lifecycle_view(...)->dict[str, ProviderLifecycleView]`; `load_capability_registry()` returns the derived `lifecycle` map.
+- Consumes: `dict[tuple[str, str], CapabilityManifest]` and `tuple[LifecycleEvent, ...]`.
+- Produces: `derive_lifecycle_view(...)->dict[tuple[str, str], ProviderLifecycleView]`; `load_capability_registry()` returns the derived `lifecycle` map.
 
 - [ ] **Step 1: Write failing happy-path lifecycle test**
 
-Use one provider and this exact event chain:
+Use one provider implementation `(provider_id="test-echo-provider", implementation_version="1.0.0")` and this exact event chain:
 
 ```text
 evt-001  DISCOVERED    predecessor = null
