@@ -65,6 +65,38 @@ def _provider(
     }
 
 
+
+def _adapter(
+    adapter_id: str = "test-echo-v1-v2",
+    version: str = "1.0.0",
+    implementation_provider_id: str = "test-adapter-provider",
+    implementation_version: str = "1.0.0",
+    source_contract: str = "capability://test/echo",
+    source_version: str = "1.0.0",
+    target_contract: str = "capability://test/echo",
+    target_version: str = "2.0.0",
+) -> dict[str, object]:
+    return {
+        "schema_version": 2,
+        "record_type": "capability_adapter",
+        "adapter_id": adapter_id,
+        "version": version,
+        "implementation_provider_id": implementation_provider_id,
+        "implementation_version": implementation_version,
+        "source_contract_id": source_contract,
+        "source_version": source_version,
+        "target_contract_id": target_contract,
+        "target_version": target_version,
+        "transformation": "Translate test echo v1 to v2",
+        "lossiness": "LOSSLESS",
+        "information_loss": [],
+        "unsupported_cases": [],
+        "error_mapping": [],
+        "conformance_tests": ["tests/contracts/test_echo_v1_v2.py"],
+        "extensions": {},
+    }
+
+
 def _event(event_id: str = "evt-001", provider_id: str = "test-echo-provider", version: str = "1.0.0") -> dict[str, object]:
     return {
         "schema_version": 2,
@@ -93,9 +125,9 @@ def _write_temp_registry(tmp_path: Path) -> Path:
     shutil.copytree(REPO / "registry/integrations", repo / "registry/integrations")
     root = repo / "registry/capabilities/v2"
     root.mkdir(parents=True)
-    for name in ("contract.schema.json", "manifest.schema.json", "lifecycle-event.schema.json"):
+    for name in ("contract.schema.json", "manifest.schema.json", "lifecycle-event.schema.json", "adapter.schema.json"):
         shutil.copy2(REPO / "registry/capabilities/v2" / name, root / name)
-    for name in ("contracts", "providers", "events"):
+    for name in ("contracts", "providers", "events", "adapters"):
         (root / name).mkdir()
     return repo
 
@@ -195,3 +227,72 @@ def test_repository_v2_source_records_are_valid_and_unindexed():
     assert isinstance(registry.providers, dict)
     assert isinstance(registry.lifecycle, dict)
     assert not (REPO / "registry/capabilities/v2/index.json").exists()
+
+def test_registry_loads_adapter_references_independent_of_filename_order(tmp_path):
+    repo = _write_temp_registry(tmp_path)
+    root = repo / "registry/capabilities/v2"
+    _write(root / "contracts/z-v1.json", _contract(version="1.0.0"))
+    _write(root / "contracts/a-v2.json", _contract(version="2.0.0"))
+    _write(root / "providers/z-target.json", _provider(provider_id="test-target-provider", provided_contract="capability://test/echo", contract_version="2.0.0"))
+    _write(root / "providers/a-adapter.json", _provider(provider_id="test-adapter-provider", provided_contract="capability://test/echo", contract_version="1.0.0"))
+    _write(root / "adapters/m-adapter.json", _adapter())
+    registry = load_capability_registry(repo)
+    assert list(registry.adapters) == [("test-echo-v1-v2", "1.0.0")]
+    adapter = registry.adapters[("test-echo-v1-v2", "1.0.0")]
+    assert adapter.implementation_provider_id == "test-adapter-provider"
+    assert adapter.source_version == "1.0.0"
+    assert adapter.target_version == "2.0.0"
+
+
+def test_registry_rejects_duplicate_adapter_identity(tmp_path):
+    repo = _write_temp_registry(tmp_path)
+    root = repo / "registry/capabilities/v2"
+    _write(root / "contracts/v1.json", _contract(version="1.0.0"))
+    _write(root / "contracts/v2.json", _contract(version="2.0.0"))
+    _write(root / "providers/adapter-provider.json", _provider(provider_id="test-adapter-provider"))
+    _write(root / "adapters/a.json", _adapter())
+    _write(root / "adapters/b.json", _adapter())
+    with pytest.raises(ValueError, match="duplicate adapter"):
+        load_capability_registry(repo)
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    [
+        ({"source_contract": "capability://missing/source"}, "source contract"),
+        ({"target_contract": "capability://missing/target"}, "target contract"),
+        ({"implementation_provider_id": "missing-provider"}, "implementation provider"),
+    ],
+)
+def test_registry_rejects_adapter_missing_exact_reference(tmp_path, overrides, message):
+    repo = _write_temp_registry(tmp_path)
+    root = repo / "registry/capabilities/v2"
+    _write(root / "contracts/v1.json", _contract(version="1.0.0"))
+    _write(root / "contracts/v2.json", _contract(version="2.0.0"))
+    _write(root / "providers/adapter-provider.json", _provider(provider_id="test-adapter-provider"))
+    _write(root / "adapters/adapter.json", _adapter(**overrides))
+    with pytest.raises(ValueError, match=message):
+        load_capability_registry(repo)
+
+
+def test_registry_rejects_malformed_requirement_range(tmp_path):
+    repo = _write_temp_registry(tmp_path)
+    root = repo / "registry/capabilities/v2"
+    _write(root / "contracts/v1.json", _contract(version="1.0.0"))
+    provider = _provider()
+    provider["requires"] = [{"contract_id": "capability://test/echo", "version_range": "^1.0.0", "role": "REQUIRED"}]
+    _write(root / "providers/provider.json", provider)
+    with pytest.raises(ValueError, match="version range|unsupported"):
+        load_capability_registry(repo)
+
+
+def test_registry_rejects_requirement_without_matching_contract_version(tmp_path):
+    repo = _write_temp_registry(tmp_path)
+    root = repo / "registry/capabilities/v2"
+    _write(root / "contracts/v1.json", _contract(version="1.0.0"))
+    provider = _provider()
+    provider["requires"] = [{"contract_id": "capability://test/echo", "version_range": ">=2 <3", "role": "REQUIRED"}]
+    _write(root / "providers/provider.json", provider)
+    with pytest.raises(ValueError, match="requirement.*matching contract"):
+        load_capability_registry(repo)
+

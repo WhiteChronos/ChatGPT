@@ -159,3 +159,14 @@ def test_runtime_foundation_workflow_triggers_on_capability_registry_policy_chan
     text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
     assert '"pipeline/capability_registry_policy.py"' in text
     assert '"tests/test_capability_registry_policy.py"' in text
+
+def test_runtime_foundation_workflow_triggers_on_capability_dependency_policy_changes():
+    text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert '"pipeline/capability_dependency_policy.py"' in text
+    assert '"tests/test_capability_dependency_policy.py"' in text
+
+
+def test_runtime_foundation_workflow_enforces_capability_dependency_boundaries():
+    text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert "python pipeline/capability_dependency_policy.py --repo ." in text
+

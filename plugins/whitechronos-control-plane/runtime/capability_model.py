@@ -1,19 +1,17 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from typing import TYPE_CHECKING
 import re
 
+from .capability_versioning import SemVer
 
-_SEMVER_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\."
-    r"(0|[1-9][0-9]*)\."
-    r"(0|[1-9][0-9]*)"
-    r"(?:-((?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
-    r"(?:\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?"
-    r"(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
-)
+if TYPE_CHECKING:
+    from .capability_adapter import CapabilityAdapter
+
+
 _PROVIDER_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
 _DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 
@@ -55,8 +53,10 @@ def validate_provider_id(value: str) -> str:
 
 
 def validate_semver(value: str, *, label: str) -> str:
-    if not isinstance(value, str) or not _SEMVER_RE.fullmatch(value):
-        raise ValueError(f"{label} must be a full SemVer value: {value!r}")
+    try:
+        SemVer.parse(value)
+    except ValueError as exc:
+        raise ValueError(f"{label} must be a full SemVer value: {value!r}") from exc
     return value
 
 
@@ -213,3 +213,4 @@ class CapabilityRegistry:
     providers: dict[tuple[str, str], CapabilityManifest]
     events: tuple[LifecycleEvent, ...]
     lifecycle: dict[tuple[str, str], ProviderLifecycleView]
+    adapters: dict[tuple[str, str], "CapabilityAdapter"] = field(default_factory=dict)

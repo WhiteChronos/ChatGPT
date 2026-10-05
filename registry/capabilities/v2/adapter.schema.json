@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos Capability Adapter v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "adapter_id", "version",
+    "implementation_provider_id", "implementation_version",
+    "source_contract_id", "source_version", "target_contract_id", "target_version",
+    "transformation", "lossiness", "information_loss", "unsupported_cases",
+    "error_mapping", "conformance_tests", "extensions"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "record_type": {"const": "capability_adapter"},
+    "adapter_id": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "minLength": 1},
+    "implementation_provider_id": {"type": "string", "minLength": 1},
+    "implementation_version": {"type": "string", "minLength": 1},
+    "source_contract_id": {"type": "string", "minLength": 1},
+    "source_version": {"type": "string", "minLength": 1},
+    "target_contract_id": {"type": "string", "minLength": 1},
+    "target_version": {"type": "string", "minLength": 1},
+    "transformation": {"type": "string", "minLength": 1},
+    "lossiness": {"enum": ["LOSSLESS", "LOSSY"]},
+    "information_loss": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "unsupported_cases": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "error_mapping": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_error", "target_error"],
+        "properties": {
+          "source_error": {"type": "string", "minLength": 1},
+          "target_error": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "conformance_tests": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "extensions": {"type": "object"}
+  }
+}

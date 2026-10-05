@@ -36,6 +36,7 @@ def test_new_contract_provider_and_event_files_are_allowed():
         "registry/capabilities/v2/contracts/test/1.0.0.json",
         "registry/capabilities/v2/providers/test-provider/1.0.0.json",
         "registry/capabilities/v2/events/test-provider/evt-001.json",
+        "registry/capabilities/v2/adapters/test-adapter/1.0.0.json",
     ],
 )
 def test_modifying_existing_records_is_rejected(path):
@@ -124,3 +125,20 @@ def test_cli_rejects_copy_of_accepted_record_from_unchanged_source(tmp_path):
     )
     assert completed.returncode == 1
     assert "append-only registry violation" in completed.stdout
+
+def test_modifying_existing_adapter_is_rejected():
+    module = _load_module()
+    changes = module.parse_name_status([
+        "M\tregistry/capabilities/v2/adapters/test-adapter/1.0.0.json"
+    ])
+    assert module.validate_registry_changes(changes)
+
+
+def test_deleting_or_copying_existing_adapter_is_rejected():
+    module = _load_module()
+    changes = module.parse_name_status([
+        "D\tregistry/capabilities/v2/adapters/test-adapter/1.0.0.json",
+        "C100\tregistry/capabilities/v2/adapters/test-adapter/1.0.0.json\tregistry/capabilities/v2/adapters/test-adapter/1.0.1.json",
+    ])
+    assert len(module.validate_registry_changes(changes)) == 2
+
