@@ -37,6 +37,36 @@ function assertInsideWorktreeNamespace(repoRoot, candidate) {
   return resolved;
 }
 
+export async function resolveConfiguredRepoRoot(env = process.env) {
+  const configured = env?.SUBAGENT_BROKER_REPO_ROOT;
+  if (typeof configured !== 'string' || !configured.trim()) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT is required');
+  }
+  if (!path.isAbsolute(configured)) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must be an absolute path');
+  }
+  let root;
+  try {
+    root = await fs.realpath(configured);
+  } catch {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
+  }
+  const result = await execFile('git', ['rev-parse', '--show-toplevel'], { cwd: root, allowFailure: true });
+  if (result.code !== 0 || !result.stdout) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
+  }
+  let gitRoot;
+  try {
+    gitRoot = await fs.realpath(result.stdout);
+  } catch {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
+  }
+  if (gitRoot !== root) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify the git repository root exactly');
+  }
+  return root;
+}
+
 export async function discoverRepoRoot(startCwd) {
   const result = await execFile('git', ['rev-parse', '--show-toplevel'], { cwd: startCwd, allowFailure: true });
   if (result.code !== 0 || !result.stdout) throw new Error('repository root could not be discovered');
@@ -95,6 +125,18 @@ export async function statusWorkspace(workspace) {
 export async function cleanupWorkspace(workspace, { purgeBranch = false } = {}) {
   const root = path.resolve(workspace.repo_root);
   const workspacePath = assertInsideWorktreeNamespace(root, workspace.path);
+  if (purgeBranch && workspace.branch) {
+    const agentId = path.basename(workspacePath);
+    assertSafeAgentId(agentId);
+    const expectedBranch = `subagent/${agentId}`;
+    if (workspace.branch !== expectedBranch) {
+      throw new Error(`branch identity mismatch for workspace: expected ${expectedBranch}, observed ${workspace.branch}`);
+    }
+    const current = await execFile('git', ['branch', '--show-current'], { cwd: workspacePath, allowFailure: true });
+    if (current.code !== 0 || current.stdout !== expectedBranch) {
+      throw new Error(`workspace ownership mismatch: expected branch ${expectedBranch}`);
+    }
+  }
   const status = await statusWorkspace(workspace);
   if (status.dirty) throw new Error(`refusing cleanup of dirty worktree: ${status.porcelain}`);
   await execFile('git', ['worktree', 'remove', workspacePath], { cwd: root });
