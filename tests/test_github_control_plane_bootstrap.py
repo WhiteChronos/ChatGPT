@@ -41,6 +41,10 @@ def test_required_check_workflow_is_always_present_for_protected_prs():
     assert "pull_request_target:" not in text
     assert "contents: write" not in text
     assert "git push" not in text
+    assert "actions/checkout@v4" not in text
+    assert "actions/setup-python@v5" not in text
+    assert "actions/checkout@11d5960a326750d5838078e36cf38b85af677262" in text
+    assert "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065" in text
 
 
 def test_path_classifier_covers_control_and_runtime_surfaces():
