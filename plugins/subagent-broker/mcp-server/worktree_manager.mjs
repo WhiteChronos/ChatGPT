@@ -103,7 +103,7 @@ export async function createWorkspace({ repoRoot, agentId, baseSha, mode }) {
     branch = `subagent/${agentId}`;
     await execFile('git', ['worktree', 'add', '-b', branch, workspacePath, baseSha], { cwd: root });
   }
-  return { repo_root: root, path: workspacePath, mode, base_sha: String(baseSha).toLowerCase(), branch };
+  return { agent_id: agentId, repo_root: root, path: workspacePath, mode, base_sha: String(baseSha).toLowerCase(), branch };
 }
 
 export async function statusWorkspace(workspace) {
@@ -122,9 +122,13 @@ export async function statusWorkspace(workspace) {
 export async function cleanupWorkspace(workspace, { purgeBranch = false } = {}) {
   const root = path.resolve(workspace.repo_root);
   const workspacePath = assertInsideWorktreeNamespace(root, workspace.path);
+  const agentId = workspace.agent_id;
+  assertSafeAgentId(agentId);
+  const expectedPath = path.join(allowedWorktreeRoot(root), agentId);
+  if (workspacePath !== expectedPath) {
+    throw new Error(`worktree identity mismatch for agent ${agentId}`);
+  }
   if (purgeBranch && workspace.branch) {
-    const agentId = path.basename(workspacePath);
-    assertSafeAgentId(agentId);
     const expectedBranch = `subagent/${agentId}`;
     if (workspace.branch !== expectedBranch) {
       throw new Error(`branch identity mismatch for workspace: expected ${expectedBranch}, observed ${workspace.branch}`);
