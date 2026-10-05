@@ -13,6 +13,7 @@ _RECORD_PREFIXES = (
     "registry/capabilities/v2/contracts/",
     "registry/capabilities/v2/providers/",
     "registry/capabilities/v2/events/",
+    "registry/capabilities/v2/adapters/",
 )
 
 
