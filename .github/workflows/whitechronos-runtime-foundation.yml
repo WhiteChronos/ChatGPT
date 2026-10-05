@@ -8,6 +8,8 @@ on:
       - "registry/capabilities/**"
       - "pipeline/capability_registry_policy.py"
       - "tests/test_capability_registry_policy.py"
+      - "pipeline/capability_dependency_policy.py"
+      - "tests/test_capability_dependency_policy.py"
       - ".agents/plugins/marketplace.json"
       - ".codex/config.toml"
       - "AGENTS.md"
@@ -19,6 +21,8 @@ on:
       - "registry/capabilities/**"
       - "pipeline/capability_registry_policy.py"
       - "tests/test_capability_registry_policy.py"
+      - "pipeline/capability_dependency_policy.py"
+      - "tests/test_capability_dependency_policy.py"
       - ".agents/plugins/marketplace.json"
       - ".codex/config.toml"
       - "AGENTS.md"
@@ -55,6 +59,9 @@ jobs:
             BASE_SHA="$(git rev-parse "$GITHUB_SHA^")"
           fi
           python pipeline/capability_registry_policy.py --base "$BASE_SHA" --head "$GITHUB_SHA"
+
+      - name: Enforce capability dependency boundaries
+        run: python pipeline/capability_dependency_policy.py --repo .
 
       - name: Set up Python
         uses: actions/setup-python@v5
