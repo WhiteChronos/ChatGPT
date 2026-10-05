@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos Capability Contract v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "contract_id", "version", "stability",
+    "input_schema_ref", "output_schema_ref", "error_codes",
+    "side_effect_class", "invariants", "extensions"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "record_type": {"const": "capability_contract"},
+    "contract_id": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "minLength": 1},
+    "stability": {"enum": ["EXPERIMENTAL", "STABLE", "DEPRECATED"]},
+    "input_schema_ref": {"type": ["string", "null"], "minLength": 1},
+    "output_schema_ref": {"type": ["string", "null"], "minLength": 1},
+    "error_codes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "side_effect_class": {"enum": ["PURE", "READ_ONLY", "LOCAL_MUTATING", "EXTERNAL_MUTATING", "CONTROL_PLANE"]},
+    "invariants": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "extensions": {"type": "object"}
+  }
+}
