@@ -187,3 +187,11 @@ def test_v1_registry_remains_unchanged_when_v2_exists():
     assert tuple(legacy) == ("github-arena", "subagent-broker")
     assert legacy["github-arena"].execution_class == "MCP_OR_CONNECTOR"
     assert legacy["subagent-broker"].execution_class == "LOCAL_MUTATING"
+
+
+def test_repository_v2_source_records_are_valid_and_unindexed():
+    registry = load_capability_registry(REPO)
+    assert isinstance(registry.contracts, dict)
+    assert isinstance(registry.providers, dict)
+    assert isinstance(registry.lifecycle, dict)
+    assert not (REPO / "registry/capabilities/v2/index.json").exists()
