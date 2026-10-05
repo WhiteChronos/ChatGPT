@@ -1,4 +1,4 @@
-const SAFE_ENV = new Set(['PATH','HOME','LANG','LC_ALL','LC_CTYPE','TMPDIR','TMP','TEMP','USER','LOGNAME','SHELL','TERM','CODEX_HOME','CODEX_ACCESS_TOKEN']);
+const SAFE_ENV = new Set(['PATH','HOME','LANG','LC_ALL','LC_CTYPE','TMPDIR','TMP','TEMP','USER','LOGNAME','SHELL','TERM','CODEX_HOME']);
 const SENSITIVE_NAME = /(TOKEN|SECRET|PASSWORD|API_KEY|ACCESS_KEY|PRIVATE_KEY)/i;
 
 export function buildChildEnv(parentEnv = process.env) {
