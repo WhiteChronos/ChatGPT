@@ -102,7 +102,7 @@ def main(argv: list[str] | None = None) -> int:
     repo_root = Path(__file__).resolve().parents[1]
     completed = subprocess.run(
         [
-            "git", "diff", "--name-status", "--find-renames",
+            "git", "diff", "--name-status", "--find-renames", "--find-copies-harder",
             f"{args.base}...{args.head}", "--", "registry/capabilities",
         ],
         cwd=repo_root,
