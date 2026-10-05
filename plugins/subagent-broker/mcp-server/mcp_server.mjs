@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 import readline from 'node:readline';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
 import {StateStore} from './state_store.mjs';
 import {CodexCliBackend} from './codex_cli_backend.mjs';
 import {SubagentBroker} from './broker.mjs';
-import {discoverRepoRoot} from './worktree_manager.mjs';
+import {resolveConfiguredRepoRoot} from './worktree_manager.mjs';
 import {validateSpawnArgs,validateStatusArgs,validateWaitArgs,validateResultArgs,validateFollowupArgs,validateListArgs,validateCancelArgs,validateCleanupArgs} from './protocol.mjs';
 
 const TOOLS=[
@@ -25,8 +24,7 @@ function response(id,result){process.stdout.write(JSON.stringify({jsonrpc:'2.0',
 function errorResponse(id,code,message,data){process.stdout.write(JSON.stringify({jsonrpc:'2.0',id,error:{code,message,data}})+'\n');}
 function toolResult(value,isError=false){return{content:[{type:'text',text:JSON.stringify(value)}],structuredContent:value,...(isError?{isError:true}:{})};}
 
-const pluginDir=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const repoRoot=await discoverRepoRoot(pluginDir);
+const repoRoot=await resolveConfiguredRepoRoot(process.env);
 const store=new StateStore(path.join(repoRoot,'.superpowers','subagents'));
 const backend=new CodexCliBackend({codexPath:process.env.SUBAGENT_BROKER_CODEX_PATH||'codex',stateStore:store,parentEnv:process.env});
 const broker=new SubagentBroker({repoRoot,stateStore:store,backend});await broker.start();
