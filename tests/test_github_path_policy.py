@@ -38,6 +38,7 @@ def _load_module():
         ("memory/state.md", "DURABLE_STATE"),
         ("history/runtime/event.json", "DURABLE_STATE"),
         ("registry/integrations/x.json", "DURABLE_STATE"),
+        ("registry/capabilities/v2/providers/test-echo-provider/1.0.0.json", "DURABLE_STATE"),
         ("datacenter/x.json", "DURABLE_STATE"),
         ("datasheet/x.json", "DURABLE_STATE"),
         ("docs/guide.md", "DOCUMENTATION"),

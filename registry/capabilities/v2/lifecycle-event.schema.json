@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos Capability Lifecycle Event v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "event_id", "provider_id",
+    "implementation_version", "state", "occurred_at", "actor_type",
+    "actor_id", "reason", "evidence_refs", "predecessor_event_id", "extensions"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "record_type": {"const": "capability_lifecycle_event"},
+    "event_id": {"type": "string", "minLength": 1},
+    "provider_id": {"type": "string", "minLength": 1},
+    "implementation_version": {"type": "string", "minLength": 1},
+    "state": {"enum": ["DISCOVERED", "QUARANTINED", "VALIDATING", "COMPATIBLE", "PROMOTABLE", "CANARY", "ACTIVE", "DEGRADED", "REVALIDATION_REQUIRED", "REGRESSED", "ROLLED_BACK", "DEPRECATED", "REVOKED"]},
+    "occurred_at": {"type": "string", "minLength": 1},
+    "actor_type": {"enum": ["HUMAN", "SYSTEM", "WORKFLOW"]},
+    "actor_id": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 1},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "predecessor_event_id": {"type": ["string", "null"], "minLength": 1},
+    "extensions": {"type": "object"}
+  }
+}
