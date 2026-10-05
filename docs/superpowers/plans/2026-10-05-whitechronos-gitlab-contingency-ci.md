@@ -29,6 +29,8 @@
 - GitLab-native pull mirroring / external-repository CI is feature-gated by GitLab tier/instance configuration. Execution SHALL probe availability; if unavailable, use the neutral-worker transport defined in this plan rather than weakening the architecture.
 - The neutral-worker transport SHALL NOT run inside GitHub Actions as its sole execution environment.
 - Existing GitHub required checks remain required. GitLab evidence does not satisfy or replace them in this version.
+- Mirror evidence freshness window is exactly **3600 seconds**.
+- Accepted evidence clock skew is at most **300 seconds** into the future.
 - Existing PRs #64, #65, and #66 are separate authority domains. If any are integrated before this plan executes, preserve their resulting security controls and re-run the preflight diff before Task 1.
 - No merge of this plan or its future implementation is implied by plan approval.
 
@@ -50,6 +52,7 @@
 ### Runtime / pipeline logic
 
 - Create `pipeline/gitlab_contingency_policy.py` — load/validate policy and classify refs.
+- Create `pipeline/git_mirror_observation.py` — read-only remote-ref observation via `git ls-remote`; no provider mutation and no inline credentials.
 - Create `pipeline/git_mirror_parity.py` — pure parity classifier for source SHA, mirror SHA, CI subject SHA, receipt freshness, and provider identity.
 - Create `pipeline/ci_provider_evidence.py` — normalize and validate GitHub/GitLab/local evidence without inferring authority.
 - Create `pipeline/contingency_ci_gate.py` — provider-neutral aggregate gate that invokes canonical repository validators and emits deterministic result metadata.
@@ -64,6 +67,7 @@
 ### Tests
 
 - Create `tests/test_gitlab_contingency_policy.py`.
+- Create `tests/test_git_mirror_observation.py`.
 - Create `tests/test_git_mirror_parity.py`.
 - Create `tests/test_ci_provider_evidence.py`.
 - Create `tests/test_contingency_ci_gate.py`.
@@ -109,6 +113,10 @@ assert policy["gitlab_merge_authority"] is False
 assert policy["gitlab_deploy_authority"] is False
 assert policy["source_repository"] == "WhiteChronos/ChatGPT"
 assert policy["evidence_requires_exact_sha"] is True
+assert policy["mirror_freshness_seconds"] == 3600
+assert policy["max_clock_skew_seconds"] == 300
+assert policy["gitlab_project_id"] is None
+assert policy["gitlab_project_path"] is None
 assert policy["mirror_divergence_behavior"] == "FAIL_CLOSED"
 assert policy["provider_disagreement_behavior"] == "BLOCK_FOR_INVESTIGATION"
 ```
@@ -134,6 +142,9 @@ Schema requirements:
 - `active_failover`, `gitlab_merge_authority`, and `gitlab_deploy_authority` constrained to `false`;
 - mirror direction constrained to `github_to_gitlab`;
 - source repository constrained to `WhiteChronos/ChatGPT`;
+- nullable non-secret `gitlab_project_id` and `gitlab_project_path` fields that start as `null` and become mandatory after provisioning;
+- `mirror_freshness_seconds` constrained to `3600`;
+- `max_clock_skew_seconds` constrained to `300`;
 - no fields named `token`, `password`, `secret`, or `credential`.
 
 Policy shall define a bounded infrastructure retry limit of **2** attempts for only:
@@ -249,19 +260,23 @@ git commit -m "feat: enforce GitLab mirror ref policy"
 
 ---
 
-### Task 3: Build the mirror-parity gate
+### Task 3: Build remote-ref observation and the mirror-parity gate
 
 **Files:**
+- Create: `pipeline/git_mirror_observation.py`
 - Create: `pipeline/git_mirror_parity.py`
+- Create: `tests/test_git_mirror_observation.py`
 - Create: `tests/test_git_mirror_parity.py`
 
 **Interfaces:**
-- Consumes: provider identities, exact SHAs, sync receipt timestamp, and policy.
-- Produces: `MirrorParityResult(status, evidence_eligible, reason)` where status is one of `HEALTHY`, `STALE`, `DIVERGED`, `UNAVAILABLE`.
+- Consumes: a public/noncredentialed remote URL, eligible ref, provider identities, exact SHAs, sync receipt timestamp, and policy.
+- Produces: `RemoteRefObservation(remote_url, ref_name, sha, observed_at, available)` and `MirrorParityResult(status, evidence_eligible, reason)` where status is one of `HEALTHY`, `STALE`, `DIVERGED`, `UNAVAILABLE`.
 
-- [ ] **Step 1: Write failing parity tests**
+- [ ] **Step 1: Write failing remote-observation and parity tests**
 
-Define tests for:
+For remote observation, use temporary local bare repositories to assert exact SHA lookup, missing ref -> unavailable, malformed output -> failure, and rejection of HTTPS URLs containing inline credentials.
+
+For parity, define tests for:
 
 ```python
 HEALTHY: github_sha == gitlab_sha == ci_subject_sha and identities match
@@ -282,14 +297,25 @@ assert result.evidence_eligible is False
 - [ ] **Step 2: Run and verify RED**
 
 ```bash
-python -m pytest -q tests/test_git_mirror_parity.py
+python -m pytest -q tests/test_git_mirror_observation.py tests/test_git_mirror_parity.py
 ```
 
 Expected: FAIL because module does not exist.
 
-- [ ] **Step 3: Implement the pure parity classifier**
+- [ ] **Step 3: Implement read-only remote observation and the pure parity classifier**
 
-Create:
+Create in `pipeline/git_mirror_observation.py`:
+
+```python
+@dataclass(frozen=True)
+class RemoteRefObservation: ...
+
+def observe_remote_ref(remote_url: str, ref_name: str) -> RemoteRefObservation: ...
+```
+
+Use `subprocess.run(["git", "ls-remote", "--exit-code", remote_url, full_ref], ...)`; never use `shell=True`, never mutate a provider, and reject inline HTTPS credentials before invoking Git.
+
+Create in `pipeline/git_mirror_parity.py`:
 
 ```python
 class MirrorParityStatus(StrEnum):
@@ -311,7 +337,13 @@ No network access and no provider mutation in this module.
 
 - [ ] **Step 4: Add deterministic JSON CLI**
 
-CLI:
+Observation CLI:
+
+```bash
+python pipeline/git_mirror_observation.py --remote-url https://github.com/WhiteChronos/ChatGPT.git --ref main --json
+```
+
+Parity CLI:
 
 ```bash
 python pipeline/git_mirror_parity.py --input evidence.json --json
@@ -330,7 +362,7 @@ Exit semantics:
 - [ ] **Step 5: Verify GREEN**
 
 ```bash
-python -m pytest -q tests/test_git_mirror_parity.py
+python -m pytest -q tests/test_git_mirror_observation.py tests/test_git_mirror_parity.py
 ```
 
 Expected: PASS.
@@ -338,7 +370,7 @@ Expected: PASS.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add pipeline/git_mirror_parity.py tests/test_git_mirror_parity.py
+git add pipeline/git_mirror_observation.py pipeline/git_mirror_parity.py tests/test_git_mirror_observation.py tests/test_git_mirror_parity.py
 git commit -m "feat: add Git mirror parity gate"
 ```
 
@@ -414,7 +446,7 @@ def validate_evidence(record: CIProviderEvidence) -> None: ...
 def compare_provider_evidence(github: CIProviderEvidence | None, gitlab: CIProviderEvidence | None) -> EvidenceComparison: ...
 ```
 
-Reject unknown provider names, malformed SHAs, future timestamps beyond bounded clock skew, parity-ineligible GitLab records, and mismatched subjects.
+Reject unknown provider names, malformed SHAs, timestamps more than **300 seconds** into the future, parity-ineligible GitLab records, and mismatched subjects.
 
 - [ ] **Step 4: Add JSON schema validation tests**
 
@@ -626,10 +658,11 @@ Assert `.gitlab-ci.yml`:
 - contains no `environment:` deployment target;
 - contains no merge command;
 - contains no force push;
+- calls `pipeline/git_mirror_observation.py` to observe the authoritative GitHub ref;
 - calls `pipeline/git_mirror_parity.py`;
 - calls `pipeline/contingency_ci_gate.py`;
 - emits `ci-provider-evidence.json`;
-- uses protected CI variables only by name, never literal secret values;
+- references only approved CI variable names and never literal secret values; protected/masked configuration is verified operationally in Task 8;
 - pins every container image by digest using `@sha256:`.
 
 - [ ] **Step 2: Run and verify RED**
@@ -663,7 +696,9 @@ validate
 evidence
 ```
 
-`python-governance` and `broker` require successful `mirror-parity`.
+`mirror-parity` first observes `https://github.com/WhiteChronos/ChatGPT.git` for the current mirrored ref, then compares that observed SHA with `$CI_COMMIT_SHA` and the configured project identity. If GitHub itself is unavailable, observation returns `UNAVAILABLE`; validation jobs may still run for diagnostic value but resulting GitLab evidence is ineligible for normal cross-provider corroboration.
+
+`python-governance` and `broker` require successful `mirror-parity` for eligible contingency evidence. A separate diagnostic-only path may run after `UNAVAILABLE` but must serialize `CONTINGENCY_EVIDENCE_ONLY` / ineligible status rather than `CORROBORATED`.
 
 `contingency-evidence` runs after validation and serializes provider-scoped evidence. A failed parity job prevents evidence eligibility.
 
@@ -717,7 +752,10 @@ native pull-mirror feature available? yes/no
 external-repository CI feature available? yes/no
 GitHub source repository reachable
 no existing WhiteChronos mirror with conflicting identity
+current connector/runtime has a project-creation action? yes/no
 ```
+
+If no project-creation action exists in the connected GitLab tooling, provisioning is an explicit human/operator GitLab UI/CLI/API step under the same separate execution authorization; do not fabricate a connector mutation.
 
 - [ ] **Step 2: Define exact project security posture**
 
@@ -980,6 +1018,7 @@ No spec requirement is intentionally omitted.
 ### Type consistency
 
 - `GitLabContingencyPolicy` originates in Task 1 and is consumed by Tasks 2, 3, 9.
+- `RemoteRefObservation` originates in Task 3 and is consumed by the GitLab parity job in Task 7.
 - `RefDecision` originates in Task 2 and is consumed by Task 5.
 - `MirrorParityResult` originates in Task 3 and is consumed by Tasks 4 and 7.
 - `CIProviderEvidence` / `EvidenceComparison` originate in Task 4 and are extended in Task 9.
