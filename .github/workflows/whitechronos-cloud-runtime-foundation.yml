@@ -1,0 +1,93 @@
+name: WhiteChronos Cloud Runtime Foundation
+
+on:
+  pull_request:
+    paths:
+      - "schemas/whitechronos_codex_cloud_environment_v1.schema.json"
+      - "datacenter/WHITECHRONOS_CODEX_CLOUD_ENVIRONMENT.json"
+      - "plugins/whitechronos-control-plane/runtime/cloud_*.py"
+      - "plugins/whitechronos-control-plane/scripts/cloud_*.py"
+      - "plugins/whitechronos-control-plane/scripts/setup_codex_cloud.py"
+      - "plugins/whitechronos-control-plane/tests/test_cloud_*.py"
+      - "docs/codex-cloud.md"
+      - "plugins/whitechronos-control-plane/README.md"
+      - "docs/index.md"
+      - ".github/workflows/whitechronos-cloud-runtime-foundation.yml"
+  push:
+    paths:
+      - "schemas/whitechronos_codex_cloud_environment_v1.schema.json"
+      - "datacenter/WHITECHRONOS_CODEX_CLOUD_ENVIRONMENT.json"
+      - "plugins/whitechronos-control-plane/runtime/cloud_*.py"
+      - "plugins/whitechronos-control-plane/scripts/cloud_*.py"
+      - "plugins/whitechronos-control-plane/scripts/setup_codex_cloud.py"
+      - "plugins/whitechronos-control-plane/tests/test_cloud_*.py"
+      - "docs/codex-cloud.md"
+      - "plugins/whitechronos-control-plane/README.md"
+      - "docs/index.md"
+      - ".github/workflows/whitechronos-cloud-runtime-foundation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cloud-runtime-foundation:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Cloud profile tests
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_profile.py
+
+      - name: Cloud preflight tests
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_preflight.py
+
+      - name: Cloud bootstrap tests
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_bootstrap.py
+
+      - name: Cloud CLI and runbook tests
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests/test_cloud_cli.py
+
+      - name: Full Control Plane tests
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests
+
+      - name: Runtime Doctor remains non-live in CI
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/whitechronos-fake-codex <<'SH'
+          #!/bin/sh
+          exec node "$GITHUB_WORKSPACE/plugins/subagent-broker/tests/fake-codex.mjs" "$@"
+          SH
+          chmod 700 /tmp/whitechronos-fake-codex
+          git worktree add --detach /tmp/whitechronos-cloud-doctor-tree "$GITHUB_SHA"
+          python /tmp/whitechronos-cloud-doctor-tree/plugins/whitechronos-control-plane/scripts/runtime_doctor.py             --repo /tmp/whitechronos-cloud-doctor-tree             --codex-path /tmp/whitechronos-fake-codex             --runtime-kind unknown             --json > /tmp/whitechronos-cloud-doctor.json
+          cat /tmp/whitechronos-cloud-doctor.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('/tmp/whitechronos-cloud-doctor.json').read_text())
+          status = {item['name']: item['status'] for item in data['checks']}
+          assert status['HOST_ARENA_DISCOVERY'] == 'UNAVAILABLE', status
+          assert status['HOST_BROKER_DISCOVERY'] == 'UNAVAILABLE', status
+          assert data['live_smoke_ready'] is False, data
+          PY

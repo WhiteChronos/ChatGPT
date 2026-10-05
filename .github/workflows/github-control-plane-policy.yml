@@ -1,0 +1,64 @@
+name: GitHub Control Plane Policy
+
+on:
+  pull_request:
+    branches:
+      - main
+      - "spec/**"
+      - "release/**"
+  push:
+    branches:
+      - "feat/**"
+      - "fix/**"
+      - "docs/**"
+      - "subagent/**"
+      - "chore/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  github-control-plane-policy:
+    name: github-control-plane-policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Validate GitHub control-plane policy
+        run: |
+          python -m pytest -q tests/test_github_control_plane_policy_gate.py
+          python -m pytest -q tests/test_github_path_policy.py
+          python pipeline/github_control_plane_policy_gate.py --policy governance/GITHUB_CONTROL_PLANE_POLICY.json
+
+      - name: Classify changed paths
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ] && [ -n "${BASE_SHA:-}" ]; then
+            git diff --name-only "$BASE_SHA" "$GITHUB_SHA" > /tmp/changed-paths.txt
+          else
+            git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" > /tmp/changed-paths.txt
+          fi
+          python pipeline/github_path_policy.py --paths-file /tmp/changed-paths.txt > /tmp/github-path-policy.json
+          cat /tmp/github-path-policy.json

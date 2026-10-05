@@ -8,3 +8,12 @@
 /.github/workflows/ @WhiteChronos
 /mkdocs.yml @WhiteChronos
 /docs/ @WhiteChronos
+/memory/ @WhiteChronos
+/history/ @WhiteChronos
+/registry/ @WhiteChronos
+/plugins/whitechronos-control-plane/ @WhiteChronos
+/plugins/subagent-broker/ @WhiteChronos
+/.codex/ @WhiteChronos
+/.agents/ @WhiteChronos
+/AGENTS.md @WhiteChronos
+/.github/CODEOWNERS @WhiteChronos

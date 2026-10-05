@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos Capability Manifest v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "provider_id", "display_name",
+    "implementation_version", "source_type", "source", "revision", "digest",
+    "license_status", "provides", "requires", "risk_profile", "extensions"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "record_type": {"const": "capability_manifest"},
+    "provider_id": {"type": "string", "minLength": 1},
+    "display_name": {"type": "string", "minLength": 1},
+    "implementation_version": {"type": "string", "minLength": 1},
+    "source_type": {"enum": ["local", "upstream_git", "external_reference", "official_plugin", "component_repository"]},
+    "source": {"type": "string", "minLength": 1},
+    "revision": {"type": "string", "minLength": 1},
+    "digest": {"type": "string", "minLength": 1},
+    "license_status": {"type": "string", "minLength": 1},
+    "provides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract_id", "version"],
+        "properties": {
+          "contract_id": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract_id", "version_range", "role"],
+        "properties": {
+          "contract_id": {"type": "string", "minLength": 1},
+          "version_range": {"type": "string", "minLength": 1},
+          "role": {"enum": ["REQUIRED", "OPTIONAL", "ENHANCEMENT"]}
+        }
+      }
+    },
+    "risk_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filesystem", "network", "credentials", "subprocess",
+        "background_execution", "mutation_scope", "external_side_effects",
+        "sensitive_data", "control_plane_impact"
+      ],
+      "properties": {
+        "filesystem": {"enum": ["NONE", "READ", "WRITE"]},
+        "network": {"type": "boolean"},
+        "credentials": {"type": "boolean"},
+        "subprocess": {"type": "boolean"},
+        "background_execution": {"type": "boolean"},
+        "mutation_scope": {"enum": ["NONE", "WORKSPACE", "EXTERNAL", "CONTROL_PLANE"]},
+        "external_side_effects": {"type": "boolean"},
+        "sensitive_data": {"type": "boolean"},
+        "control_plane_impact": {"type": "boolean"}
+      }
+    },
+    "extensions": {"type": "object"}
+  }
+}

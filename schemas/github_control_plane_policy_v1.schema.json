@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos GitHub Control Plane Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ruleset",
+    "protected_refs",
+    "excluded_refs",
+    "bypass_actors",
+    "review_mode",
+    "pull_request",
+    "required_status_checks",
+    "desired_rules",
+    "forbidden_rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "whitechronos-github-control-plane/v1"
+    },
+    "ruleset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "target", "enforcement"],
+      "properties": {
+        "id": {"type": "integer"},
+        "name": {"type": "string"},
+        "target": {"const": "branch"},
+        "enforcement": {"const": "active"}
+      }
+    },
+    "protected_refs": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "excluded_refs": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "bypass_actors": {
+      "type": "array"
+    },
+    "review_mode": {
+      "const": "solo"
+    },
+    "pull_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_approving_review_count",
+        "require_code_owner_review",
+        "require_last_push_approval",
+        "require_extra_approval_for_unattributed_changes",
+        "required_review_thread_resolution",
+        "dismiss_stale_reviews_on_push",
+        "allowed_merge_methods"
+      ],
+      "properties": {
+        "required_approving_review_count": {"const": 0},
+        "require_code_owner_review": {"const": false},
+        "require_last_push_approval": {"const": false},
+        "require_extra_approval_for_unattributed_changes": {"const": false},
+        "required_review_thread_resolution": {"const": true},
+        "dismiss_stale_reviews_on_push": {"const": false},
+        "allowed_merge_methods": {
+          "type": "array",
+          "items": {"enum": ["squash", "rebase"]},
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "required_status_checks": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "desired_rules": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "forbidden_rules": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

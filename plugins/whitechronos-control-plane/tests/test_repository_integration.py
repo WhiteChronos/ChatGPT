@@ -147,3 +147,15 @@ def test_runtime_foundation_workflow_runs_doctor_in_clean_detached_worktree():
     workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
     assert 'git worktree add --detach /tmp/whitechronos-runtime-doctor-tree "$GITHUB_SHA"' in workflow
     assert '--repo /tmp/whitechronos-runtime-doctor-tree' in workflow
+
+
+def test_runtime_foundation_workflow_triggers_on_capability_registry_v2():
+    text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert '"registry/capabilities/**"' in text
+    assert "capability_registry_policy.py" in text
+
+
+def test_runtime_foundation_workflow_triggers_on_capability_registry_policy_changes():
+    text = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert '"pipeline/capability_registry_policy.py"' in text
+    assert '"tests/test_capability_registry_policy.py"' in text

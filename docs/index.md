@@ -42,3 +42,10 @@ flowchart LR
 ## Estado de maturidade
 
 A versão atual entrega a fundação do sistema: datacenter, validação, geração automática, busca, filtros, mapa de relações, rastreabilidade de fontes e build reprodutível no GitHub Actions.
+
+
+## Codex Cloud Control Plane
+
+The cloud-first runtime setup is documented in [Codex Cloud Runbook](codex-cloud.md).
+
+The runbook covers the repository-backed environment contract, bounded bootstrap, preflight, fresh-task handoff to Runtime Doctor, and the gate before Subagent Broker live smoke.
