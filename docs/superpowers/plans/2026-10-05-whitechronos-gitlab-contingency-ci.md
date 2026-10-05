@@ -115,8 +115,10 @@ assert policy["source_repository"] == "WhiteChronos/ChatGPT"
 assert policy["evidence_requires_exact_sha"] is True
 assert policy["mirror_freshness_seconds"] == 3600
 assert policy["max_clock_skew_seconds"] == 300
+assert policy["provisioning_state"] == "UNPROVISIONED"
 assert policy["gitlab_project_id"] is None
 assert policy["gitlab_project_path"] is None
+assert policy["mirror_transport"] is None
 assert policy["mirror_divergence_behavior"] == "FAIL_CLOSED"
 assert policy["provider_disagreement_behavior"] == "BLOCK_FOR_INVESTIGATION"
 ```
@@ -142,7 +144,9 @@ Schema requirements:
 - `active_failover`, `gitlab_merge_authority`, and `gitlab_deploy_authority` constrained to `false`;
 - mirror direction constrained to `github_to_gitlab`;
 - source repository constrained to `WhiteChronos/ChatGPT`;
-- nullable non-secret `gitlab_project_id` and `gitlab_project_path` fields that start as `null` and become mandatory after provisioning;
+- `provisioning_state` constrained to `UNPROVISIONED | PROVISIONED`;
+- nullable non-secret `gitlab_project_id`, `gitlab_project_path`, and `mirror_transport` fields;
+- schema conditional: `UNPROVISIONED` requires those fields to be `null`; `PROVISIONED` requires non-empty project identity and `mirror_transport` in `gitlab_native_pull | neutral_worker`;
 - `mirror_freshness_seconds` constrained to `3600`;
 - `max_clock_skew_seconds` constrained to `300`;
 - no fields named `token`, `password`, `secret`, or `credential`.
@@ -698,9 +702,9 @@ evidence
 
 `mirror-parity` first observes `https://github.com/WhiteChronos/ChatGPT.git` for the current mirrored ref, then compares that observed SHA with `$CI_COMMIT_SHA` and the configured project identity. If GitHub itself is unavailable, observation returns `UNAVAILABLE`; validation jobs may still run for diagnostic value but resulting GitLab evidence is ineligible for normal cross-provider corroboration.
 
-`python-governance` and `broker` require successful `mirror-parity` for eligible contingency evidence. A separate diagnostic-only path may run after `UNAVAILABLE` but must serialize `CONTINGENCY_EVIDENCE_ONLY` / ineligible status rather than `CORROBORATED`.
+`python-governance` and `broker` SHALL run after the `mirror-parity` job completes, including when parity is `UNAVAILABLE`, so the mirrored SHA can still receive diagnostic validation during a complete GitHub outage. Configure downstream jobs with `needs` plus `when: always` (or the GitLab equivalent that preserves this behavior); they SHALL NOT infer evidence eligibility from job scheduling.
 
-`contingency-evidence` runs after validation and serializes provider-scoped evidence. A failed parity job prevents evidence eligibility.
+`contingency-evidence` is the eligibility decision point. It serializes provider-scoped evidence and marks it eligible only when `mirror_parity_status == HEALTHY` and the validation result is PASS. `STALE`, `DIVERGED`, and `UNAVAILABLE` may retain diagnostic test results but MUST serialize ineligible / `CONTINGENCY_EVIDENCE_ONLY` state rather than `CORROBORATED`.
 
 - [ ] **Step 5: Add artifact retention without secrets**
 
@@ -791,7 +795,7 @@ For `neutral_worker`, use Task 5 script from an independent host; GitHub Actions
 
 - [ ] **Step 4: Record provider identity after provisioning**
 
-After separate execution authority creates the project, update only non-secret policy identity fields with the exact returned GitLab project path/ID and selected transport.
+After separate execution authority creates the project, set `provisioning_state = PROVISIONED` and update only non-secret policy identity fields with the exact returned GitLab project path/ID and selected transport. The schema conditional must reject `PROVISIONED` with missing identity/transport and reject `UNPROVISIONED` with populated identity/transport.
 
 Run:
 
@@ -1017,7 +1021,7 @@ No spec requirement is intentionally omitted.
 
 ### Type consistency
 
-- `GitLabContingencyPolicy` originates in Task 1 and is consumed by Tasks 2, 3, 9.
+- `GitLabContingencyPolicy` originates in Task 1, including `provisioning_state` and `mirror_transport`, and is consumed by Tasks 2, 3, 8, 9.
 - `RemoteRefObservation` originates in Task 3 and is consumed by the GitLab parity job in Task 7.
 - `RefDecision` originates in Task 2 and is consumed by Task 5.
 - `MirrorParityResult` originates in Task 3 and is consumed by Tasks 4 and 7.
