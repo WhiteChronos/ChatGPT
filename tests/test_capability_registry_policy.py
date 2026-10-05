@@ -88,3 +88,39 @@ def test_schema_and_readme_changes_are_not_treated_as_append_only_records():
         "M\tregistry/capabilities/README.md",
     ])
     assert module.validate_registry_changes(changes) == ()
+
+
+def test_cli_rejects_copy_of_accepted_record_from_unchanged_source(tmp_path):
+    import shutil
+    import subprocess
+    import sys
+
+    repo = tmp_path / "repo"
+    source = repo / "registry/capabilities/v2/events/test-provider/evt-001.json"
+    source.parent.mkdir(parents=True)
+    source.write_text('{"event_id":"evt-001"}\n', encoding="utf-8")
+    subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.email", "policy@test"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.name", "Policy Test"], cwd=repo, check=True)
+    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "base"], cwd=repo, check=True)
+    base = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+    target = source.with_name("evt-002.json")
+    shutil.copy2(source, target)
+    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "copy"], cwd=repo, check=True)
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+    policy = repo / "pipeline/capability_registry_policy.py"
+    policy.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(MODULE, policy)
+
+    completed = subprocess.run(
+        [sys.executable, str(policy), "--base", base, "--head", head],
+        cwd=repo,
+        text=True,
+        capture_output=True,
+    )
+    assert completed.returncode == 1
+    assert "append-only registry violation" in completed.stdout
