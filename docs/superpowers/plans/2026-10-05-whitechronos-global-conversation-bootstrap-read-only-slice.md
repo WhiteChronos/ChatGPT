@@ -38,7 +38,10 @@ Expected: all existing tests/gates pass before the first RED test for this slice
 
 ## Global Constraints
 
-- Preserve the frozen architecture; do not reopen Sections 1–9 while implementing this slice.
+- Preserve the frozen architecture and governance baseline; do not reopen Sections 1–9 or Section 26 while implementing this slice.
+- Preserve the official governance chain: `Superpowers executes -> Arena challenges -> Verification validates -> Authorization Gate authorizes -> Executor acts -> Post-Verification confirms`.
+- Preserve the state-separation invariants: `VERIFIED != AUTHORIZED`, `AUTHORIZED != EXECUTED`, and `EXECUTED != SUCCESSFUL`.
+- Preserve independent authority domains: merge authority does not imply deploy authority; deploy authority does not imply canary authority; canary authority does not imply stable authority.
 - GitHub/source-controlled repository state remains authoritative; a cache is last-known-trusted continuity only, never an independent control plane.
 - First-slice runtime authority is limited to \`R0\` and \`R1\`; \`R2\`, \`R3\`, and \`UNKNOWN\` are blocked.
 - Do not implement general-purpose mutating Execution Leases in this slice.
