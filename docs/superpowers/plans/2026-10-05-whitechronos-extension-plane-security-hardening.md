@@ -323,14 +323,50 @@
 
 ---
 
-### Task 12: Full Security Regression, Arena, and Handoff
+### Task 12: Define the New-System Dependency Declaration Contract
+
+**Files:**
+- Create: `schemas/whitechronos_consumer_dependency_v1.schema.json`
+- Create: `pipeline/whitechronos_consumer_dependency_gate.py`
+- Create: `tests/test_whitechronos_consumer_dependency_gate.py`
+- Create: `docs/whitechronos-extension-consumer-contract.md`
+- Modify: `AGENTS.md`
+
+**Interfaces:**
+- Produces: `load_consumer_dependency(path: Path) -> dict[str, object]`
+- Produces: `validate_consumer_dependency(document: dict[str, object]) -> tuple[str, ...]`
+- CLI: `python pipeline/whitechronos_consumer_dependency_gate.py <consumer-dependency.json>`
+
+Required declaration fields:
+
+~~~text
+consumer_id
+consumer_version
+whitechronos_core_baseline
+consumed_contracts
+required_runtime_capabilities
+implementation_test_plan_ref
+authorization_gate_refs
+safe_degraded_behavior
+~~~
+
+- [ ] **Step 1: Write failing tests** for missing Core baseline, unknown contract, undeclared runtime dependency, missing own test-plan reference, missing Authorization Gate references, empty degraded behavior, and a valid consumer declaration.
+- [ ] **Step 2: Run RED** with `python -m pytest -q tests/test_whitechronos_consumer_dependency_gate.py`.
+- [ ] **Step 3: Add the bounded schema and validator**; require the frozen v1 baseline or a separately accepted later major baseline, exact capability IDs/version ranges, and nonblank safe-degraded behavior.
+- [ ] **Step 4: Write the consumer contract guide** explaining that a system may evolve without waiting for unrelated Tasks 1-12, but must declare any concrete runtime dependency that does require them.
+- [ ] **Step 5: Add AGENTS routing rule** requiring the declaration for new WhiteChronos-dependent systems when they are integrated with the shared capability fabric.
+- [ ] **Step 6: Run GREEN** and commit `docs: define WhiteChronos consumer dependency contract`.
+
+---
+
+### Task 13: Full Security Regression, Arena, and Handoff
 
 **Files:**
 - Modify: `.github/workflows/whitechronos-runtime-foundation.yml` only for verified focused gates.
 - Modify: security review disposition if findings close during implementation.
 
 - [ ] **Step 1: Run focused security tests**:
-  `python -m pytest -q plugins/whitechronos-control-plane/tests/test_extension_admission.py plugins/whitechronos-control-plane/tests/test_capability_authority.py plugins/whitechronos-control-plane/tests/test_extension_router.py plugins/whitechronos-control-plane/tests/test_provenance.py tests/test_whitechronos_core_lock_gate.py tests/test_capability_admission_policy.py`.
+  `python -m pytest -q plugins/whitechronos-control-plane/tests/test_extension_admission.py plugins/whitechronos-control-plane/tests/test_capability_authority.py plugins/whitechronos-control-plane/tests/test_extension_router.py plugins/whitechronos-control-plane/tests/test_provenance.py tests/test_whitechronos_core_lock_gate.py tests/test_capability_admission_policy.py tests/test_whitechronos_consumer_dependency_gate.py`.
 - [ ] **Step 2: Run Registry/Resolver regressions**:
   `python -m pytest -q plugins/whitechronos-control-plane/tests/test_capability_registry_v2.py plugins/whitechronos-control-plane/tests/test_capability_resolver.py tests/test_capability_registry_policy.py tests/test_capability_dependency_policy.py`.
 - [ ] **Step 3: Run complete Control Plane and repository regressions**:
@@ -341,10 +377,10 @@
   `python pipeline/engineering_compatibility_gate.py`;
   `python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json`;
   their focused pytest tests.
-- [ ] **Step 6: Run deterministic Core/admission CLIs** against the candidate diff; require fail-closed success with exact frozen baseline.
-- [ ] **Step 7: Run Full Arena security review** over BASE..HEAD with at least the same classes as this review: lifecycle bypass, self-approval, namespace squatting, provenance substitution, adapter escalation, graph DoS, trust/pin bias, and privacy leakage.
+- [ ] **Step 6: Run deterministic Core/admission/consumer CLIs** against the candidate diff; require fail-closed success with exact frozen baseline.
+- [ ] **Step 7: Run Full Arena security review** over BASE..HEAD with at least the same classes as this review: lifecycle bypass, self-approval, namespace squatting, provenance substitution, adapter escalation, graph DoS, trust/pin bias, privacy leakage, and undeclared consumer dependency.
 - [ ] **Step 8: Verify repository GitHub state separately**: do not mark integration-ready while protected PRs lack the required `github-control-plane-policy` check.
-- [ ] **Step 9: Record remaining external blockers**: Broker repo-binding drift, Action SHA pinning, Runtime Tasks 1–12, production four-layer health.
+- [ ] **Step 9: Record remaining external blockers**: Broker repo-binding drift, Action SHA pinning, Runtime Tasks 1-12, production four-layer health.
 - [ ] **Step 10: Commit only verified documentation/status updates**; do not merge, deploy, promote, run live smoke, or claim PRODUCTION COMPLETE.
 
 ## Parallel Blocking Remediation Tracks
@@ -375,7 +411,7 @@ Requires Tasks 1–12 and compatible runtime. Before PRODUCTION COMPLETE, requir
 
 ## Self-Review Results
 
-- **Spec coverage:** all twelve implementation controls from spec #62 Section 25 map to Tasks 1–12 above.
+- **Spec coverage:** all twelve implementation controls from spec #62 Section 25 map to Tasks 1–13 above, including a dedicated consumer-dependency declaration task.
 - **Security-review coverage:** every Extension Plane finding WC-SEC-001/002/004-008/012-013/015-023/025 has an owning task or an explicit parallel track.
 - **Step scan:** each task has RED/GREEN verification and a commit boundary; no implementation body is pre-written.
 - **Type consistency:** admission, authority, provenance, and safe-router interfaces are defined once and consumed downstream by name.
@@ -384,7 +420,7 @@ Requires Tasks 1–12 and compatible runtime. Before PRODUCTION COMPLETE, requir
 
 ## Execution Handoff
 
-Recommended execution method: **Subagent-driven**, because this change touches trust, admission, lifecycle, provenance, resolver behavior, CI policy, and security invariants where an independent implementer/reviewer loop materially reduces false confidence.
+Recommended execution method: **Subagent-driven**, because this change touches trust, admission, lifecycle, provenance, resolver behavior, CI policy, and security invariants where an independent implementer/reviewer loop materially reduces false confidence across thirteen independently reviewable tasks.
 
 The current ChatGPT runtime exposes no native or Broker subagent lifecycle tools. Therefore this plan must not be described as started in Subagent-driven mode from this session.
 
