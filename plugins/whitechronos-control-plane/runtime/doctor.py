@@ -334,17 +334,19 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.append(_check("CODEX_RESUME", CheckStatus.PASS if caps.resume else CheckStatus.UNAVAILABLE, "codex exec resume available" if caps.resume else "codex exec resume unavailable"))
 
     agents = config.get("agents") if isinstance(config, dict) else None
-    native_enabled = isinstance(agents, dict) and agents.get("enabled") is True
+    native_enabled = True if not isinstance(agents, dict) else agents.get("enabled", True) is True
     features = config.get("features") if isinstance(config, dict) else None
     multi_agent_v1_enabled = _feature_enabled(features, "multi_agent", default=True)
     multi_agent_v2_enabled = _feature_enabled(features, "multi_agent_v2", default=False)
-    native_config_ok = native_enabled and (multi_agent_v1_enabled or multi_agent_v2_enabled)
+    multi_agent_v1_effective = native_enabled and multi_agent_v1_enabled
+    multi_agent_v2_effective = multi_agent_v2_enabled
+    native_config_ok = multi_agent_v2_effective or multi_agent_v1_effective
     if native_config_ok:
         enabled_versions = [
             version
             for version, enabled in (
-                ("v1", multi_agent_v1_enabled),
-                ("v2", multi_agent_v2_enabled),
+                ("v1", multi_agent_v1_effective),
+                ("v2", multi_agent_v2_effective),
             )
             if enabled
         ]
@@ -352,9 +354,11 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
             "NATIVE_MULTI_AGENT_CONFIG",
             CheckStatus.PASS,
             f"native Codex multi-agent configuration is eligible via {', '.join(enabled_versions)}",
-            agents_enabled=True,
+            agents_enabled=native_enabled,
             multi_agent_v1_enabled=multi_agent_v1_enabled,
             multi_agent_v2_enabled=multi_agent_v2_enabled,
+            multi_agent_v1_effective=multi_agent_v1_effective,
+            multi_agent_v2_effective=multi_agent_v2_effective,
         )
     else:
         native_config = _check(
@@ -364,6 +368,8 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
             agents_enabled=native_enabled,
             multi_agent_v1_enabled=multi_agent_v1_enabled,
             multi_agent_v2_enabled=multi_agent_v2_enabled,
+            multi_agent_v1_effective=multi_agent_v1_effective,
+            multi_agent_v2_effective=multi_agent_v2_effective,
         )
     checks.append(native_config)
 
