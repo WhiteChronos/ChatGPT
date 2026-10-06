@@ -31,19 +31,17 @@ Do not use a stale planning branch as an implementation baseline.
 
 ## 2. Verify current Codex native-agent configuration
 
-The project configuration must contain:
+WhiteChronos keeps the current stable Codex V1 feature explicit while leaving the host free to select V2 through model metadata or an explicit V2 feature:
 
 ```toml
 [agents]
 enabled = true
-```
 
-The legacy setting below is forbidden and is treated as configuration drift:
-
-```toml
 [features]
 multi_agent = true
 ```
+
+In current upstream Codex, `features.multi_agent` is the canonical **Stable** V1 collaboration feature and defaults to enabled. `agents.enabled` is also enabled by default and can disable native agents when set to false. The stable `features.multi_agent_v2` selector, when explicitly enabled (or when selected by model/runtime metadata), takes precedence and exposes the V2 lifecycle.
 
 Repository configuration is eligibility evidence only. It does not prove that the current host loaded native subagent tools.
 
@@ -70,7 +68,19 @@ Local-marketplace plugin installation materializes a plugin into Codex local plu
 
 ## 4. Native route: preferred
 
-A native route is host-discovered only when all six lifecycle actions are visible:
+A native route is host-discovered only when one complete upstream Codex lifecycle is visible. A partial or mixed lifecycle is not sufficient.
+
+**V1** (stable `features.multi_agent`, namespace `multi_agent_v1` in Codex internals):
+
+```text
+spawn_agent
+send_input
+wait_agent
+resume_agent
+close_agent
+```
+
+**V2** (stable `features.multi_agent_v2`, default namespace `collaboration`):
 
 ```text
 spawn_agent
@@ -81,9 +91,7 @@ interrupt_agent
 list_agents
 ```
 
-A partial set is not sufficient.
-
-When all six are present:
+When either complete lifecycle is observed:
 
 ```text
 HOST_NATIVE_SUBAGENT_DISCOVERY = PASS
@@ -91,7 +99,7 @@ HOST_SUBAGENT_DISCOVERY = PASS
 selected_subagent_path = native_codex_multi_agent
 ```
 
-The Broker fallback may remain absent without blocking this selected native route.
+Runtime Doctor accepts the plain action names and the known upstream namespaced forms (for example, `multi_agent_v1__spawn_agent` or `collaboration__spawn_agent`). The Broker fallback may remain absent without blocking a complete native route.
 
 ## 5. Broker fallback: explicit repository binding
 
@@ -138,7 +146,7 @@ python plugins/whitechronos-control-plane/scripts/runtime_doctor.py \
   --json
 ```
 
-The example above represents a host where the complete native lifecycle was actually observed. Pass only tool names that are visible in the current harness. If the harness was explicitly inspected and contains zero relevant tools, use `--host-inventory-observed` without inventing `--host-tool` values.
+The example above represents a host where the complete native **V2** lifecycle was actually observed. For a V1 host, pass `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, and `close_agent` instead. Pass only tool names that are visible in the current harness. If the harness was explicitly inspected and contains zero relevant tools, use `--host-inventory-observed` without inventing `--host-tool` values.
 
 For the Broker route, `SUBAGENT_BROKER_REPO_ROOT` must resolve to this exact repository, `codex exec resume` must be available, and all eight Broker lifecycle tools must be visible before host discovery can PASS.
 
