@@ -2,14 +2,11 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { StateStore } from '../mcp-server/state_store.mjs';
 import { CodexCliBackend } from '../mcp-server/codex_cli_backend.mjs';
 import { SubagentBroker } from '../mcp-server/broker.mjs';
-import { discoverRepoRoot } from '../mcp-server/worktree_manager.mjs';
-
-const here=path.dirname(fileURLToPath(import.meta.url));
-const pluginRoot=path.resolve(here,'..');
+import { resolveConfiguredRepoRoot } from '../mcp-server/worktree_manager.mjs';
 
 export async function probeRealCodex({codexPath='codex'}={}){
   const tmp=await fs.mkdtemp(path.join(os.tmpdir(),'subagent-broker-probe-'));
@@ -24,7 +21,7 @@ function safeTimestamp(){return new Date().toISOString().replace(/[:.]/g,'-');}
 
 export async function runLiveSmoke({env=process.env}={}){
   if(env.SUBAGENT_BROKER_LIVE!=='1') return {skipped:true,reason:'Set SUBAGENT_BROKER_LIVE=1 to run real Codex smoke.'};
-  const repoRoot=await discoverRepoRoot(pluginRoot);
+  const repoRoot=await resolveConfiguredRepoRoot(env);
   const stateRoot=path.join(repoRoot,'.superpowers','subagents');
   const store=new StateStore(stateRoot);
   const backend=new CodexCliBackend({codexPath:env.SUBAGENT_BROKER_CODEX_PATH||'codex',stateStore:store,parentEnv:env});
