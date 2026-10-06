@@ -18,6 +18,12 @@ BROKER_TOOLS = frozenset((
 ))
 
 
+
+NATIVE_AGENT_TOOLS = frozenset((
+    "spawn_agent", "send_message", "followup_task",
+    "wait_agent", "interrupt_agent", "list_agents",
+))
+
 def _copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
@@ -191,4 +197,19 @@ def test_mixed_current_and_legacy_native_agent_config_fails_closed(tmp_path, mon
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
     detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
     assert "legacy" in detail.lower()
+
+def test_partial_native_tool_set_is_not_host_discovered(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(repo, host_tools={"spawn_agent"}, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.selected_subagent_path != "native_codex_multi_agent"
+
+
+def test_complete_native_tool_set_is_ready_without_broker_host_tools(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(repo, host_tools=NATIVE_AGENT_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    assert _status(report, "HOST_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    assert report.selected_subagent_path == "native_codex_multi_agent"
+    assert "HOST_RELOAD_REQUIRED" not in report.blockers
 
