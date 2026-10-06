@@ -30,7 +30,7 @@ Read `references/routing.md` for tool selection and `references/superpowers-sdd.
 
 Before saying a child ran, require broker/native **state evidence before claim**: a successful spawn record with agent ID and real independent lifecycle evidence. For broker children, use status/result evidence including PID and workspace/session data when available.
 
-Never infer child execution from `multi_agent = true` alone.
+Never infer child execution from `agents.enabled = true` alone. Configuration enables eligibility; only the actual host tool inventory proves discovery.
 
 ## Repository isolation
 
