@@ -222,6 +222,27 @@ def test_explicit_v2_keeps_config_ready_when_v1_is_disabled(tmp_path, monkeypatc
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
 
 
+def test_agents_enabled_defaults_true_when_agents_table_is_absent(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
+
+
+def test_explicit_v2_takes_precedence_over_agents_disabled(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    replacement = "[agents]\nenabled = false\n\n[features]\nmulti_agent = false\nmulti_agent_v2 = true\n\n"
+    _replace_codex_config(repo, current.replace(agents, replacement))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
+
+
 def test_partial_native_tool_set_is_not_host_discovered(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     report = _run(repo, host_tools={"spawn_agent"}, runtime_kind="trusted_remote", expected_commit=_head(repo))
