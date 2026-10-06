@@ -8,7 +8,8 @@
       ],
       "cwd": ".",
       "env_vars": [
-        "SUBAGENT_BROKER_REPO_ROOT"
+        "SUBAGENT_BROKER_REPO_ROOT",
+        "SUBAGENT_BROKER_CODEX_PATH"
       ]
     }
   }
