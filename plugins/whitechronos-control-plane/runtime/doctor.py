@@ -208,6 +208,17 @@ def _feature_enabled(features: object, key: str, *, default: bool) -> bool:
     return False
 
 
+def _configured_v2_namespaces(features: object) -> tuple[str, ...]:
+    namespaces = list(_NATIVE_V2_NAMESPACES)
+    if isinstance(features, dict):
+        raw = features.get("multi_agent_v2")
+        if isinstance(raw, dict):
+            namespace = raw.get("tool_namespace")
+            if isinstance(namespace, str) and namespace and namespace not in namespaces:
+                namespaces.append(namespace)
+    return tuple(namespaces)
+
+
 def _native_tool_visible(
     host_tools: frozenset[str],
     tool: str,
@@ -234,7 +245,12 @@ def _native_missing(
     )
 
 
-def _native_host_check(host_tools: frozenset[str], *, inventory_observed: bool) -> CheckResult:
+def _native_host_check(
+    host_tools: frozenset[str],
+    *,
+    inventory_observed: bool,
+    v2_namespaces: tuple[str, ...],
+) -> CheckResult:
     if not inventory_observed:
         return _check(
             "HOST_NATIVE_SUBAGENT_DISCOVERY",
@@ -242,7 +258,7 @@ def _native_host_check(host_tools: frozenset[str], *, inventory_observed: bool) 
             "current host tool inventory was not supplied",
         )
 
-    v2_missing = _native_missing(host_tools, _NATIVE_V2_TOOLS, _NATIVE_V2_NAMESPACES)
+    v2_missing = _native_missing(host_tools, _NATIVE_V2_TOOLS, v2_namespaces)
     if not v2_missing:
         return _check(
             "HOST_NATIVE_SUBAGENT_DISCOVERY",
@@ -391,7 +407,11 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
             codex_resume=False,
         )
     checks.extend((arena_host, broker_host))
-    native_host = _native_host_check(inputs.host_tools, inventory_observed=inventory_observed)
+    native_host = _native_host_check(
+        inputs.host_tools,
+        inventory_observed=inventory_observed,
+        v2_namespaces=_configured_v2_namespaces(features),
+    )
     checks.append(native_host)
 
     if native_host.status is CheckStatus.PASS:
