@@ -20,8 +20,7 @@ BROKER_TOOLS = frozenset((
 
 
 NATIVE_AGENT_TOOLS = frozenset((
-    "spawn_agent", "send_message", "followup_task",
-    "wait_agent", "interrupt_agent", "list_agents",
+    "spawn_agent", "followup_task", "wait_agent", "list_agents",
 ))
 
 def _copy_file(src: Path, dst: Path) -> None:
