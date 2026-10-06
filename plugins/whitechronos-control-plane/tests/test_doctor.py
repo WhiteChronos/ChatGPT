@@ -19,12 +19,17 @@ BROKER_TOOLS = frozenset((
 
 
 
-NATIVE_AGENT_TOOLS = frozenset((
+NATIVE_V1_TOOLS = frozenset((
+    "spawn_agent", "send_input", "wait_agent", "resume_agent", "close_agent",
+))
+NATIVE_V2_TOOLS = frozenset((
     "spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents",
 ))
-NATIVE_AGENT_TOOLS_WITHOUT_MESSAGE_INTERRUPT = frozenset((
+NATIVE_V2_TOOLS_WITHOUT_MESSAGE_INTERRUPT = frozenset((
     "spawn_agent", "followup_task", "wait_agent", "list_agents",
 ))
+NATIVE_V1_NAMESPACED_TOOLS = frozenset(f"multi_agent_v1__{name}" for name in NATIVE_V1_TOOLS)
+NATIVE_V2_NAMESPACED_TOOLS = frozenset(f"collaboration__{name}" for name in NATIVE_V2_TOOLS)
 
 def _copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -179,28 +184,43 @@ def test_current_agents_enabled_config_is_native_multi_agent_configured(tmp_path
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
 
 
-def test_legacy_multi_agent_feature_does_not_count_as_current_native_config(tmp_path, monkeypatch):
-    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
-    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
-    agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
-    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
-    report = _run(repo)
-    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
-    detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
-    assert "legacy" in detail.lower()
-    assert "agents.enabled" in detail
-
-def test_mixed_current_and_legacy_native_agent_config_fails_closed(tmp_path, monkeypatch):
+def test_current_multi_agent_feature_is_valid_native_config(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
     agents = "[agents]\nenabled = true\n\n"
     assert agents in current
     _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = true\n\n"))
     report = _run(repo)
-    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
     detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
-    assert "legacy" in detail.lower()
+    assert "legacy" not in detail.lower()
+
+
+def test_disabling_v1_without_enabling_v2_is_config_drift(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = false\n\n"))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+
+
+def test_explicit_v2_keeps_config_ready_when_v1_is_disabled(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(
+        repo,
+        current.replace(
+            agents,
+            agents + "[features]\nmulti_agent = false\nmulti_agent_v2 = true\n\n",
+        ),
+    )
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
+
 
 def test_partial_native_tool_set_is_not_host_discovered(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
@@ -211,7 +231,7 @@ def test_partial_native_tool_set_is_not_host_discovered(tmp_path, monkeypatch):
 
 def test_complete_native_tool_set_is_ready_without_broker_host_tools(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
-    report = _run(repo, host_tools=NATIVE_AGENT_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    report = _run(repo, host_tools=NATIVE_V2_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
     assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
     assert _status(report, "HOST_SUBAGENT_DISCOVERY") is CheckStatus.PASS
     assert report.selected_subagent_path == "native_codex_multi_agent"
@@ -223,7 +243,7 @@ def test_native_route_requires_all_six_lifecycle_tools(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     report = _run(
         repo,
-        host_tools=NATIVE_AGENT_TOOLS_WITHOUT_MESSAGE_INTERRUPT,
+        host_tools=NATIVE_V2_TOOLS_WITHOUT_MESSAGE_INTERRUPT,
         runtime_kind="trusted_remote",
         expected_commit=_head(repo),
     )
@@ -236,10 +256,10 @@ def test_native_host_discovery_uses_observed_inventory_even_when_repo_config_is_
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
     agents = "[agents]\nenabled = true\n\n"
     assert agents in current
-    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
+    _replace_codex_config(repo, current.replace(agents, "[agents]\nenabled = false\n\n[features]\nmulti_agent = false\n\n"))
     report = _run(
         repo,
-        host_tools=NATIVE_AGENT_TOOLS,
+        host_tools=NATIVE_V2_TOOLS,
         runtime_kind="trusted_remote",
         expected_commit=_head(repo),
     )
@@ -249,14 +269,44 @@ def test_native_host_discovery_uses_observed_inventory_even_when_repo_config_is_
     assert report.selected_subagent_path == "native_codex_multi_agent"
 
 
-def test_legacy_multi_agent_key_is_rejected_even_when_false(tmp_path, monkeypatch):
+def test_complete_native_v1_tool_set_is_ready(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
-    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
-    agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
-    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = false\n\n"))
-    report = _run(repo)
-    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+    report = _run(
+        repo,
+        host_tools=NATIVE_V1_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    evidence = next(item.evidence for item in report.checks if item.name == "HOST_NATIVE_SUBAGENT_DISCOVERY")
+    assert evidence["version"] == "v1"
+    assert report.selected_subagent_path == "native_codex_multi_agent"
+
+
+def test_namespaced_native_v1_tool_set_is_ready(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(
+        repo,
+        host_tools=NATIVE_V1_NAMESPACED_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    evidence = next(item.evidence for item in report.checks if item.name == "HOST_NATIVE_SUBAGENT_DISCOVERY")
+    assert evidence["version"] == "v1"
+
+
+def test_namespaced_native_v2_tool_set_is_ready(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(
+        repo,
+        host_tools=NATIVE_V2_NAMESPACED_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    evidence = next(item.evidence for item in report.checks if item.name == "HOST_NATIVE_SUBAGENT_DISCOVERY")
+    assert evidence["version"] == "v2"
 
 
 def test_broker_route_requires_codex_resume_support(tmp_path, monkeypatch):
