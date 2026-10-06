@@ -15,6 +15,17 @@ The broker starts independent `codex exec --json` processes, creates isolated Gi
 v1 targets trusted Linux Codex remote/network workspaces. It does not create API keys, enable hosted-agent billing, or claim Windows-native process-tree verification.
 
 
+## Native Codex configuration
+
+WhiteChronos uses the current Codex native-agent configuration:
+
+```toml
+[agents]
+enabled = true
+```
+
+This is configuration evidence only. Native subagents are usable only when the current host actually exposes its native lifecycle tools. A fresh supported Codex session may be required after configuration or plugin changes.
+
 ## Repository binding
 
 The independent Broker requires `SUBAGENT_BROKER_REPO_ROOT` to be set to the **absolute canonical root** of the consumer Git repository before the MCP server starts.
@@ -30,3 +41,5 @@ export SUBAGENT_BROKER_REPO_ROOT=/absolute/path/to/consumer-repository
 Authentication for child Codex processes should rely on host-native/Codex-home state where available. The Broker does not forward `CODEX_ACCESS_TOKEN` into the child environment.
 
 The opt-in live-smoke runner uses the same explicit `SUBAGENT_BROKER_REPO_ROOT` binding and fails closed before probing Codex when the binding is missing or invalid. Broker-managed Git subprocesses also discard inherited `GIT_*` variables so host repository-selection variables cannot override the configured consumer repository.
+
+The bundled stdio MCP manifest allowlists `SUBAGENT_BROKER_REPO_ROOT` via `env_vars`. The execution environment must therefore provide that variable before the plugin process starts. This keeps repository identity explicit while allowing the plugin host to pass the binding through safely.
