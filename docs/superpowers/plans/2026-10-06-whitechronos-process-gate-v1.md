@@ -196,7 +196,7 @@ git commit -m "feat: define agent process policy and evidence schema"
     - `minimum_arena_mode: str`
     - `superpowers_routing_required: bool`
     - `tdd_required: bool`
-    - `independent_review_required: bool`
+    - `review_required: bool`
     - `high_impact: bool`
   - `derive_requirements(paths: list[str], policy: dict[str, object]) -> ProcessRequirements`
   - `arena_mode_rank(mode: str) -> int`.
@@ -246,7 +246,7 @@ Rules:
 - baseline Arena = `micro`;
 - any non-empty `CONTROL_PLANE_CRITICAL` or `RUNTIME_CONTROL` class upgrades minimum Arena to `review`;
 - `tdd_required=True` when a changed path is under one of the configured TDD roots, has one of the configured code extensions, and is not under an excluded prefix;
-- `independent_review_required=True` for high-impact changes;
+- `review_required=True` for high-impact changes; this requires a recorded review result, but does not by itself assert that the reviewer was an independent runtime agent;
 - no path class may lower a stronger requirement already derived.
 
 - [ ] **Step 4: Add edge-case tests**
@@ -352,7 +352,7 @@ Use finding strings in the form:
 <CODE>: <human-readable detail>
 ```
 
-- [ ] **Step 4: Write failing TDD and independent-review tests**
+- [ ] **Step 4: Write failing TDD and required-review tests**
 
 Add:
 
@@ -384,7 +384,9 @@ When `requirements.tdd_required` is true, require:
 - nonblank regression command;
 - regression status `PASS`.
 
-When `requirements.independent_review_required` is true, require review status `PASS` and a nonblank reviewer source.
+When `requirements.review_required` is true, require review status `PASS` and a nonblank reviewer source. A recorded review may be an Arena/Superpowers/self-review surface unless the evidence explicitly claims `review.independent=true`.
+
+If `review.independent=true`, the runtime-truthfulness rules in the next step also apply to that reviewer claim.
 
 Do not claim that CI proves historical RED.
 
@@ -418,7 +420,7 @@ def test_real_runtime_path_with_agent_ids_can_satisfy_claim():
 
 - [ ] **Step 7: Implement runtime-claim semantics**
 
-If `independent_agents_claimed=true`, require:
+If `arena.independent_agents_claimed=true` OR `review.independent=true`, require:
 
 - `runtime.status == "PASS"`;
 - `runtime.path` in `native_codex_multi_agent|subagent_broker`;
@@ -616,7 +618,9 @@ assert "contents: write" not in text
 assert "issues: write" not in text
 ```
 
-Also assert that the process-gate step is conditional on `github.event_name == 'pull_request'`.
+Also assert that:
+- the process-gate step is conditional on `github.event_name == 'pull_request'`;
+- the `pull_request` trigger includes `opened`, `synchronize`, `reopened`, and `edited` activity types so a refreshed evidence block is revalidated.
 
 - [ ] **Step 2: Run bootstrap test to verify RED**
 
@@ -634,7 +638,7 @@ Create `.github/pull_request_template.md` with:
 
 - a short human checklist;
 - one machine block using the exact markers from Task 4;
-- placeholder `subject_sha` that must be replaced by the exact PR head;
+- a 40-zero placeholder `subject_sha` that is schema-valid but intentionally fails the SHA check until replaced by the exact PR head;
 - baseline `superpowers.bootstrap = "using-superpowers"`;
 - explicit `arena.performed_mode`;
 - `full_arena_triggered`;
@@ -642,7 +646,7 @@ Create `.github/pull_request_template.md` with:
 - `human_authority.merge_authorized = false` by default;
 - no credentials or runtime traces.
 
-The template must state that changing the PR head makes existing evidence stale until `subject_sha` is refreshed.
+The template must state that changing the PR head makes existing evidence stale until `subject_sha` is refreshed. The workflow must listen for PR `edited` events so refreshing the evidence block can trigger a new validation run without another code push.
 
 - [ ] **Step 4: Integrate the CLI into the workflow**
 
@@ -651,8 +655,6 @@ After `Classify changed paths`, add a step equivalent to:
 ```yaml
 - name: Validate agent process evidence
   if: github.event_name == 'pull_request'
-  env:
-    GITHUB_EVENT_PATH: ${{ github.event_path }}
   run: |
     python pipeline/agent_process_gate.py \
       --policy governance/AGENT_PROCESS_POLICY.json \
@@ -660,6 +662,17 @@ After `Classify changed paths`, add a step equivalent to:
       --github-event-json "$GITHUB_EVENT_PATH" \
       --changed-paths-file /tmp/changed-paths.txt
 ```
+
+GitHub Actions already supplies `GITHUB_EVENT_PATH`; do not synthesize a second event path.
+
+Update the workflow trigger to include:
+
+```yaml
+pull_request:
+  types: [opened, synchronize, reopened, edited]
+```
+
+while preserving the existing protected base-branch list.
 
 Preserve:
 
