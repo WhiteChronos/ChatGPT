@@ -28,3 +28,5 @@ export SUBAGENT_BROKER_REPO_ROOT=/absolute/path/to/consumer-repository
 ```
 
 Authentication for child Codex processes should rely on host-native/Codex-home state where available. The Broker does not forward `CODEX_ACCESS_TOKEN` into the child environment.
+
+The opt-in live-smoke runner uses the same explicit `SUBAGENT_BROKER_REPO_ROOT` binding and fails closed before probing Codex when the binding is missing or invalid. Broker-managed Git subprocesses also discard inherited `GIT_*` variables so host repository-selection variables cannot override the configured consumer repository.
