@@ -11,7 +11,8 @@ def test_marketplace_registers_controller():
 
 def test_codex_config_enables_controller_and_preserves_existing_plugins():
     with open(REPO/'.codex/config.toml','rb') as f: cfg=tomllib.load(f)
-    assert cfg['features']['multi_agent'] is True
+    assert cfg['agents']['enabled'] is True
+    assert 'multi_agent' not in cfg.get('features', {})
     for name in ['github-arena@whitechronos-repo','superpowers@openai-curated','superpowers-controller@whitechronos-repo','matt-pocock-controller@whitechronos-repo','ecc@whitechronos-repo','ecc-controller@whitechronos-repo','subagent-broker@whitechronos-repo','awesome-llm-apps-controller@whitechronos-repo']:
         assert cfg['plugins'][name]['enabled'] is True
 
