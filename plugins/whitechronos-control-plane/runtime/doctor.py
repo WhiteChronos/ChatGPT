@@ -209,21 +209,21 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     native_enabled = isinstance(agents, dict) and agents.get("enabled") is True
     features = config.get("features") if isinstance(config, dict) else None
     legacy_multi_agent = isinstance(features, dict) and features.get("multi_agent") is True
-    if native_enabled:
+    if legacy_multi_agent:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.FAIL,
+            "legacy features.multi_agent=true detected; remove it and use only agents.enabled=true",
+            agents_enabled=native_enabled,
+            legacy_multi_agent=True,
+        )
+    elif native_enabled:
         native_config = _check(
             "NATIVE_MULTI_AGENT_CONFIG",
             CheckStatus.PASS,
             "agents.enabled=true is configured",
             agents_enabled=True,
-            legacy_multi_agent=legacy_multi_agent,
-        )
-    elif legacy_multi_agent:
-        native_config = _check(
-            "NATIVE_MULTI_AGENT_CONFIG",
-            CheckStatus.FAIL,
-            "legacy features.multi_agent=true detected; current Codex configuration requires agents.enabled=true",
-            agents_enabled=False,
-            legacy_multi_agent=True,
+            legacy_multi_agent=False,
         )
     else:
         native_config = _check(
