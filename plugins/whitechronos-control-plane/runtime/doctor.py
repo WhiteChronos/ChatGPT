@@ -19,7 +19,7 @@ _TRANSIENT_UNTRACKED_FILES = {".coverage"}
 _NATIVE_V1_TOOLS = ("spawn_agent", "send_input", "wait_agent", "resume_agent", "close_agent")
 _NATIVE_V2_TOOLS = ("spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents")
 _NATIVE_V1_NAMESPACES = ("multi_agent_v1",)
-_NATIVE_V2_NAMESPACES = ("collaboration", "multi_agent_v2")
+_NATIVE_V2_NAMESPACES = ("collaboration",)
 
 
 def _is_transient_untracked(path: str) -> bool:
