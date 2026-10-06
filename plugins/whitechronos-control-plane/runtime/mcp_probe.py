@@ -88,8 +88,11 @@ def resolve_mcp_launch(
     raw_env_vars = server.get("env_vars", [])
     if not isinstance(raw_env_vars, list) or not all(isinstance(item, str) for item in raw_env_vars):
         raise McpProbeSecurityError("MCP env_vars must be an array of environment variable names")
-    if descriptor.id == "subagent-broker" and "SUBAGENT_BROKER_REPO_ROOT" not in raw_env_vars:
-        raise McpProbeSecurityError("Subagent Broker MCP must allow SUBAGENT_BROKER_REPO_ROOT passthrough")
+    if descriptor.id == "subagent-broker":
+        if "SUBAGENT_BROKER_REPO_ROOT" not in raw_env_vars:
+            raise McpProbeSecurityError("Subagent Broker MCP must allow SUBAGENT_BROKER_REPO_ROOT passthrough")
+        if "SUBAGENT_BROKER_CODEX_PATH" not in raw_env_vars:
+            raise McpProbeSecurityError("Subagent Broker MCP must allow SUBAGENT_BROKER_CODEX_PATH passthrough")
     cwd = _contained(plugin_root, plugin_root / raw_cwd, "MCP cwd")
     script = _contained(plugin_root, cwd / raw_args[0], "MCP script")
     if script.suffix != ".mjs":
