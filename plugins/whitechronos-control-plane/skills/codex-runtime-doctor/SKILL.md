@@ -41,7 +41,7 @@ Never treat repository configuration as runtime proof.
 ## Truthfulness rules
 
 - Do not call Arena strategy cards independent agents.
-- Do not infer native multi-agent availability from `multi_agent = true`.
+- Do not infer native multi-agent availability from `agents.enabled = true`; configuration is not host discovery.
 - Do not infer Broker availability from its plugin manifest or MCP config.
 - Do not let CI claim host discovery or live smoke readiness without real host/runtime evidence.
 
