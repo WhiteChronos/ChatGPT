@@ -15,7 +15,7 @@ _BROKER_ID = "subagent-broker"
 _TRUSTED_RUNTIME_KINDS = {"trusted_remote", "codex_cloud"}
 _TRANSIENT_UNTRACKED_PREFIXES = (".pytest_cache/", ".mypy_cache/", ".ruff_cache/", ".superpowers/", ".worktrees/")
 _TRANSIENT_UNTRACKED_FILES = {".coverage"}
-_NATIVE_AGENT_TOOLS = ("spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents")
+_NATIVE_AGENT_TOOLS = ("spawn_agent", "followup_task", "wait_agent", "list_agents")
 
 
 def _is_transient_untracked(path: str) -> bool:
