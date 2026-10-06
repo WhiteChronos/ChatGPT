@@ -333,6 +333,19 @@ def test_namespaced_native_v2_tool_set_is_ready(tmp_path, monkeypatch):
     assert evidence["version"] == "v2"
 
 
+def test_unconfigured_multi_agent_v2_namespace_is_not_accepted(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    host_tools = frozenset(f"multi_agent_v2__{name}" for name in NATIVE_V2_TOOLS)
+    report = _run(
+        repo,
+        host_tools=host_tools,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.selected_subagent_path != "native_codex_multi_agent"
+
+
 def test_configured_custom_v2_namespace_is_ready(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
