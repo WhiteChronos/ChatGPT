@@ -57,6 +57,8 @@ def test_codex_config_enables_control_plane_without_changing_existing_layers():
     with (REPO / ".codex/config.toml").open("rb") as f:
         cfg = tomllib.load(f)
     assert EXISTING_PLUGINS <= set(cfg["plugins"])
+    assert cfg["agents"]["enabled"] is True
+    assert cfg["features"]["multi_agent"] is True
     assert cfg["plugins"]["whitechronos-control-plane@whitechronos-repo"]["enabled"] is True
 
 
@@ -168,3 +170,19 @@ def test_runbook_runtime_doctor_example_supplies_observed_native_host_tools():
         "list_agents",
     ):
         assert f"--host-tool {tool}" in text
+
+
+def test_runbook_documents_current_v1_and_v2_native_contracts():
+    text = RUNBOOK.read_text()
+    assert "features.multi_agent" in text
+    assert "Stable" in text
+    assert "V1" in text
+    assert "send_input" in text
+    assert "resume_agent" in text
+    assert "close_agent" in text
+    assert "V2" in text
+    assert "send_message" in text
+    assert "followup_task" in text
+    assert "interrupt_agent" in text
+    assert "list_agents" in text
+    assert "legacy setting below is forbidden" not in text

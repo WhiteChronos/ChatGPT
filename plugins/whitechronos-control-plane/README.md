@@ -16,14 +16,17 @@ The Doctor never runs the model-backed smoke itself and never mutates repository
 
 ## Current Codex subagent configuration
 
-Native multi-agent eligibility is requested with:
+WhiteChronos keeps the stable V1 route explicit:
 
 ```toml
 [agents]
 enabled = true
+
+[features]
+multi_agent = true
 ```
 
-The legacy `[features] multi_agent = true` setting is treated as configuration drift and fails the Runtime Doctor check. Neither setting is runtime proof: host discovery still requires the actual lifecycle tools to be visible.
+Current upstream Codex treats `multi_agent` as the Stable V1 collaboration feature (default enabled). Stable `multi_agent_v2` can select the V2 lifecycle and may also be selected by model/runtime metadata. Runtime Doctor therefore accepts a complete observed V1 or V2 lifecycle. No configuration setting is runtime proof: host discovery still requires the actual lifecycle tools to be visible.
 
 For fresh-session bootstrap, plugin refresh, Broker fallback binding, and the safe handoff into the approved GitLab contingency plan, follow `docs/runbooks/codex-subagent-runtime.md`.
 

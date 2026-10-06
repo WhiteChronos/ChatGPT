@@ -17,14 +17,17 @@ v1 targets trusted Linux Codex remote/network workspaces. It does not create API
 
 ## Native Codex configuration
 
-WhiteChronos uses the current Codex native-agent configuration:
+WhiteChronos keeps the stable Codex V1 route explicit:
 
 ```toml
 [agents]
 enabled = true
+
+[features]
+multi_agent = true
 ```
 
-This is configuration evidence only. Native subagents are usable only when the current host actually exposes its native lifecycle tools. A fresh supported Codex session may be required after configuration or plugin changes.
+Current Codex can expose V1 or V2 native lifecycles. Stable `features.multi_agent_v2` takes precedence when explicitly enabled, and model/runtime metadata can also select V2. This is configuration evidence only. Native subagents are usable only when the current host actually exposes one complete lifecycle. A fresh supported Codex session may be required after configuration or plugin changes.
 
 ## Repository binding
 

@@ -16,7 +16,10 @@ _BROKER_ID = "subagent-broker"
 _TRUSTED_RUNTIME_KINDS = {"trusted_remote", "codex_cloud"}
 _TRANSIENT_UNTRACKED_PREFIXES = (".pytest_cache/", ".mypy_cache/", ".ruff_cache/", ".superpowers/", ".worktrees/")
 _TRANSIENT_UNTRACKED_FILES = {".coverage"}
-_NATIVE_AGENT_TOOLS = ("spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents")
+_NATIVE_V1_TOOLS = ("spawn_agent", "send_input", "wait_agent", "resume_agent", "close_agent")
+_NATIVE_V2_TOOLS = ("spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents")
+_NATIVE_V1_NAMESPACES = ("multi_agent_v1",)
+_NATIVE_V2_NAMESPACES = ("collaboration",)
 
 
 def _is_transient_untracked(path: str) -> bool:
@@ -193,6 +196,96 @@ def _host_check(name: str, expected: tuple[str, ...], host_tools: frozenset[str]
     return _check(name, CheckStatus.HOST_RELOAD_REQUIRED, f"local MCP is healthy but host is missing: {', '.join(missing)}", missing=list(missing))
 
 
+def _feature_enabled(features: object, key: str, *, default: bool) -> bool:
+    if not isinstance(features, dict) or key not in features:
+        return default
+    raw = features[key]
+    if isinstance(raw, bool):
+        return raw
+    if isinstance(raw, dict):
+        enabled = raw.get("enabled")
+        return default if enabled is None else enabled is True
+    return False
+
+
+def _configured_v2_namespaces(features: object) -> tuple[str, ...]:
+    namespaces = list(_NATIVE_V2_NAMESPACES)
+    if isinstance(features, dict):
+        raw = features.get("multi_agent_v2")
+        if isinstance(raw, dict):
+            namespace = raw.get("tool_namespace")
+            if isinstance(namespace, str) and namespace and namespace not in namespaces:
+                namespaces.append(namespace)
+    return tuple(namespaces)
+
+
+def _native_tool_visible(
+    host_tools: frozenset[str],
+    tool: str,
+    namespaces: tuple[str, ...],
+) -> bool:
+    if tool in host_tools:
+        return True
+    for namespace in namespaces:
+        if f"{namespace}__{tool}" in host_tools:
+            return True
+    return False
+
+
+def _native_missing(
+    host_tools: frozenset[str],
+    expected: tuple[str, ...],
+    namespaces: tuple[str, ...],
+) -> tuple[str, ...]:
+    return tuple(
+        tool
+        for tool in expected
+        if not _native_tool_visible(host_tools, tool, namespaces)
+    )
+
+
+def _native_host_check(
+    host_tools: frozenset[str],
+    *,
+    inventory_observed: bool,
+    v2_namespaces: tuple[str, ...],
+) -> CheckResult:
+    if not inventory_observed:
+        return _check(
+            "HOST_NATIVE_SUBAGENT_DISCOVERY",
+            CheckStatus.UNAVAILABLE,
+            "current host tool inventory was not supplied",
+        )
+
+    v2_missing = _native_missing(host_tools, _NATIVE_V2_TOOLS, v2_namespaces)
+    if not v2_missing:
+        return _check(
+            "HOST_NATIVE_SUBAGENT_DISCOVERY",
+            CheckStatus.PASS,
+            "complete native Codex V2 subagent lifecycle is visible",
+            version="v2",
+            tools=list(_NATIVE_V2_TOOLS),
+        )
+
+    v1_missing = _native_missing(host_tools, _NATIVE_V1_TOOLS, _NATIVE_V1_NAMESPACES)
+    if not v1_missing:
+        return _check(
+            "HOST_NATIVE_SUBAGENT_DISCOVERY",
+            CheckStatus.PASS,
+            "complete native Codex V1 subagent lifecycle is visible",
+            version="v1",
+            tools=list(_NATIVE_V1_TOOLS),
+        )
+
+    return _check(
+        "HOST_NATIVE_SUBAGENT_DISCOVERY",
+        CheckStatus.HOST_RELOAD_REQUIRED,
+        "no complete native Codex V1 or V2 lifecycle is visible in the current host",
+        v1_missing=list(v1_missing),
+        v2_missing=list(v2_missing),
+    )
+
+
 def run_doctor(inputs: DoctorInput) -> DoctorReport:
     repo = Path(inputs.repo_root).resolve()
     checks: list[CheckResult] = []
@@ -256,34 +349,42 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.append(_check("CODEX_RESUME", CheckStatus.PASS if caps.resume else CheckStatus.UNAVAILABLE, "codex exec resume available" if caps.resume else "codex exec resume unavailable"))
 
     agents = config.get("agents") if isinstance(config, dict) else None
-    native_enabled = isinstance(agents, dict) and agents.get("enabled") is True
+    native_enabled = True if not isinstance(agents, dict) else agents.get("enabled", True) is True
     features = config.get("features") if isinstance(config, dict) else None
-    legacy_multi_agent_present = isinstance(features, dict) and "multi_agent" in features
-    legacy_multi_agent_value = features.get("multi_agent") if legacy_multi_agent_present else None
-    if legacy_multi_agent_present:
-        native_config = _check(
-            "NATIVE_MULTI_AGENT_CONFIG",
-            CheckStatus.FAIL,
-            "legacy features.multi_agent key detected; remove it and use only agents.enabled=true",
-            agents_enabled=native_enabled,
-            legacy_multi_agent_present=True,
-            legacy_multi_agent_value=legacy_multi_agent_value,
-        )
-    elif native_enabled:
+    multi_agent_v1_enabled = _feature_enabled(features, "multi_agent", default=True)
+    multi_agent_v2_enabled = _feature_enabled(features, "multi_agent_v2", default=False)
+    multi_agent_v1_effective = native_enabled and multi_agent_v1_enabled
+    multi_agent_v2_effective = multi_agent_v2_enabled
+    native_config_ok = multi_agent_v2_effective or multi_agent_v1_effective
+    if native_config_ok:
+        enabled_versions = [
+            version
+            for version, enabled in (
+                ("v1", multi_agent_v1_effective),
+                ("v2", multi_agent_v2_effective),
+            )
+            if enabled
+        ]
         native_config = _check(
             "NATIVE_MULTI_AGENT_CONFIG",
             CheckStatus.PASS,
-            "agents.enabled=true is configured",
-            agents_enabled=True,
-            legacy_multi_agent_present=False,
+            f"native Codex multi-agent configuration is eligible via {', '.join(enabled_versions)}",
+            agents_enabled=native_enabled,
+            multi_agent_v1_enabled=multi_agent_v1_enabled,
+            multi_agent_v2_enabled=multi_agent_v2_enabled,
+            multi_agent_v1_effective=multi_agent_v1_effective,
+            multi_agent_v2_effective=multi_agent_v2_effective,
         )
     else:
         native_config = _check(
             "NATIVE_MULTI_AGENT_CONFIG",
             CheckStatus.FAIL,
-            "agents.enabled=true is not configured",
-            agents_enabled=False,
-            legacy_multi_agent_present=False,
+            "repository configuration does not guarantee an enabled native Codex multi-agent route",
+            agents_enabled=native_enabled,
+            multi_agent_v1_enabled=multi_agent_v1_enabled,
+            multi_agent_v2_enabled=multi_agent_v2_enabled,
+            multi_agent_v1_effective=multi_agent_v1_effective,
+            multi_agent_v2_effective=multi_agent_v2_effective,
         )
     checks.append(native_config)
 
@@ -305,24 +406,11 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
             codex_resume=False,
         )
     checks.extend((arena_host, broker_host))
-    if not inventory_observed:
-        native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied")
-    else:
-        native_missing = tuple(tool for tool in _NATIVE_AGENT_TOOLS if tool not in inputs.host_tools)
-        if not native_missing:
-            native_host = _check(
-                "HOST_NATIVE_SUBAGENT_DISCOVERY",
-                CheckStatus.PASS,
-                "all native subagent lifecycle tools are visible",
-                tools=list(_NATIVE_AGENT_TOOLS),
-            )
-        else:
-            native_host = _check(
-                "HOST_NATIVE_SUBAGENT_DISCOVERY",
-                CheckStatus.HOST_RELOAD_REQUIRED,
-                f"native subagent lifecycle is incomplete; host is missing: {', '.join(native_missing)}",
-                missing=list(native_missing),
-            )
+    native_host = _native_host_check(
+        inputs.host_tools,
+        inventory_observed=inventory_observed,
+        v2_namespaces=_configured_v2_namespaces(features),
+    )
     checks.append(native_host)
 
     if native_host.status is CheckStatus.PASS:
