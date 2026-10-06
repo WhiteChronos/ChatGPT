@@ -181,3 +181,14 @@ def test_legacy_multi_agent_feature_does_not_count_as_current_native_config(tmp_
     assert "legacy" in detail.lower()
     assert "agents.enabled" in detail
 
+def test_mixed_current_and_legacy_native_agent_config_fails_closed(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = true\n\n"))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+    detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
+    assert "legacy" in detail.lower()
+
