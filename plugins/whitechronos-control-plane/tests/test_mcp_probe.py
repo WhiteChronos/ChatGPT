@@ -72,3 +72,88 @@ def test_probe_times_out_and_terminates_child(tmp_path):
     assert result.status is CheckStatus.FAIL
     assert time.monotonic() - started < 2.0
     assert marker.exists()
+
+def test_broker_launch_rejects_manifest_without_repo_root_env_passthrough(tmp_path):
+    repo = tmp_path / "repo"
+    plugin = repo / "plugins" / "subagent-broker"
+    server = plugin / "mcp-server" / "mcp_server.mjs"
+    server.parent.mkdir(parents=True)
+    server.write_text("process.exit(0);\n", encoding="utf-8")
+    (plugin / ".mcp.json").write_text(
+        json.dumps({
+            "mcpServers": {
+                "subagent_broker": {
+                    "type": "stdio",
+                    "command": "node",
+                    "args": ["./mcp-server/mcp_server.mjs"],
+                    "cwd": "."
+                }
+            }
+        }),
+        encoding="utf-8",
+    )
+    descriptor = IntegrationDescriptor(
+        id="subagent-broker",
+        display_name="Subagent Broker",
+        source_type="local",
+        source="plugins/subagent-broker",
+        license_status="MIT",
+        execution_class="LOCAL_MUTATING",
+        status="REGISTERED_PROJECT",
+        controller_plugin="subagent-broker",
+        skill_paths=(),
+        mcp_servers=("subagent_broker",),
+        runtime_probe=RuntimeProbeSpec(
+            "plugins/subagent-broker",
+            ".mcp.json",
+            "subagent_broker",
+            ("subagent_spawn",),
+            True,
+        ),
+    )
+    with pytest.raises(McpProbeSecurityError, match="SUBAGENT_BROKER_REPO_ROOT"):
+        resolve_mcp_launch(repo, descriptor)
+
+
+
+def test_broker_launch_rejects_manifest_without_codex_path_env_passthrough(tmp_path):
+    repo = tmp_path / "repo"
+    plugin = repo / "plugins" / "subagent-broker"
+    server = plugin / "mcp-server" / "mcp_server.mjs"
+    server.parent.mkdir(parents=True)
+    server.write_text("process.exit(0);\n", encoding="utf-8")
+    (plugin / ".mcp.json").write_text(
+        json.dumps({
+            "mcpServers": {
+                "subagent_broker": {
+                    "type": "stdio",
+                    "command": "node",
+                    "args": ["./mcp-server/mcp_server.mjs"],
+                    "cwd": ".",
+                    "env_vars": ["SUBAGENT_BROKER_REPO_ROOT"],
+                }
+            }
+        }),
+        encoding="utf-8",
+    )
+    descriptor = IntegrationDescriptor(
+        id="subagent-broker",
+        display_name="Subagent Broker",
+        source_type="local",
+        source="plugins/subagent-broker",
+        license_status="MIT",
+        execution_class="LOCAL_MUTATING",
+        status="REGISTERED_PROJECT",
+        controller_plugin="subagent-broker",
+        skill_paths=(),
+        mcp_servers=("subagent_broker",),
+        runtime_probe=RuntimeProbeSpec(
+            "plugins/subagent-broker",
+            ".mcp.json",
+            "subagent_broker",
+            ("subagent_spawn",),
+            True,
+        ),
+    )
+    with pytest.raises(McpProbeSecurityError, match="SUBAGENT_BROKER_CODEX_PATH"):
+        resolve_mcp_launch(repo, descriptor, codex_path="/opt/codex")

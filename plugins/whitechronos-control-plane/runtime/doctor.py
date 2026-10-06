@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import tomllib
 from pathlib import Path
@@ -15,6 +16,7 @@ _BROKER_ID = "subagent-broker"
 _TRUSTED_RUNTIME_KINDS = {"trusted_remote", "codex_cloud"}
 _TRANSIENT_UNTRACKED_PREFIXES = (".pytest_cache/", ".mypy_cache/", ".ruff_cache/", ".superpowers/", ".worktrees/")
 _TRANSIENT_UNTRACKED_FILES = {".coverage"}
+_NATIVE_AGENT_TOOLS = ("spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents")
 
 
 def _is_transient_untracked(path: str) -> bool:
@@ -107,6 +109,52 @@ def _config_mcp_check(config: dict[str, object], integration_id: str, mcp_server
     return _check(name, CheckStatus.PASS if ok else CheckStatus.FAIL, f"{plugin_key}/{mcp_server} {'enabled with expected tools' if ok else 'is missing, disabled, or drifted'}", plugin=plugin_key, mcp_server=mcp_server)
 
 
+def _broker_repo_binding_check(repo: Path) -> CheckResult:
+    raw = os.environ.get("SUBAGENT_BROKER_REPO_ROOT")
+    if not raw:
+        return _check(
+            "BROKER_REPO_BINDING",
+            CheckStatus.USER_ACTION_REQUIRED,
+            "SUBAGENT_BROKER_REPO_ROOT is not set in the current host environment",
+            expected=str(repo),
+            actual=None,
+        )
+    candidate = Path(raw)
+    if not candidate.is_absolute():
+        return _check(
+            "BROKER_REPO_BINDING",
+            CheckStatus.USER_ACTION_REQUIRED,
+            "SUBAGENT_BROKER_REPO_ROOT must be an absolute path to the consumer repository",
+            expected=str(repo),
+            actual=raw,
+        )
+    try:
+        resolved = candidate.resolve()
+    except OSError as exc:
+        return _check(
+            "BROKER_REPO_BINDING",
+            CheckStatus.USER_ACTION_REQUIRED,
+            f"cannot resolve SUBAGENT_BROKER_REPO_ROOT: {exc}",
+            expected=str(repo),
+            actual=raw,
+        )
+    if resolved != repo:
+        return _check(
+            "BROKER_REPO_BINDING",
+            CheckStatus.USER_ACTION_REQUIRED,
+            "SUBAGENT_BROKER_REPO_ROOT does not match the diagnosed consumer repository",
+            expected=str(repo),
+            actual=str(resolved),
+        )
+    return _check(
+        "BROKER_REPO_BINDING",
+        CheckStatus.PASS,
+        "SUBAGENT_BROKER_REPO_ROOT matches the diagnosed consumer repository",
+        expected=str(repo),
+        actual=str(resolved),
+    )
+
+
 def _local_probe_checks(inputs: DoctorInput, descriptor, codex_path: str) -> tuple[CheckResult, CheckResult, McpProbeResult | None]:
     prefix = "ARENA" if descriptor.id == _ARENA_ID else "BROKER"
     init_name = f"{prefix}_MCP_LOCAL_INITIALIZE"
@@ -193,6 +241,8 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.append(_config_mcp_check(config, _BROKER_ID, broker.runtime_probe.mcp_server, broker.runtime_probe.expected_tools))
     broker_init, broker_tools, _ = _local_probe_checks(inputs, broker, inputs.codex_path)
     checks.extend((broker_init, broker_tools))
+    broker_binding = _broker_repo_binding_check(repo)
+    checks.append(broker_binding)
 
     node_code, node_out, _ = _capture(["node", "--version"], repo)
     checks.append(_check("NODE_VERSION", CheckStatus.PASS if node_code == 0 else CheckStatus.UNAVAILABLE, node_out or "node unavailable", version=node_out))
@@ -205,28 +255,95 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.append(_check("CODEX_EXEC_JSON", CheckStatus.PASS if caps.json else (CheckStatus.UNAVAILABLE if not caps.exec else CheckStatus.FAIL), "codex exec --json available" if caps.json else "codex exec --json unavailable"))
     checks.append(_check("CODEX_RESUME", CheckStatus.PASS if caps.resume else CheckStatus.UNAVAILABLE, "codex exec resume available" if caps.resume else "codex exec resume unavailable"))
 
+    agents = config.get("agents") if isinstance(config, dict) else None
+    native_enabled = isinstance(agents, dict) and agents.get("enabled") is True
     features = config.get("features") if isinstance(config, dict) else None
-    multi = isinstance(features, dict) and features.get("multi_agent") is True
-    checks.append(_check("NATIVE_MULTI_AGENT_CONFIG", CheckStatus.PASS if multi else CheckStatus.FAIL, "multi_agent=true is configured" if multi else "multi_agent=true is not configured"))
+    legacy_multi_agent_present = isinstance(features, dict) and "multi_agent" in features
+    legacy_multi_agent_value = features.get("multi_agent") if legacy_multi_agent_present else None
+    if legacy_multi_agent_present:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.FAIL,
+            "legacy features.multi_agent key detected; remove it and use only agents.enabled=true",
+            agents_enabled=native_enabled,
+            legacy_multi_agent_present=True,
+            legacy_multi_agent_value=legacy_multi_agent_value,
+        )
+    elif native_enabled:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.PASS,
+            "agents.enabled=true is configured",
+            agents_enabled=True,
+            legacy_multi_agent_present=False,
+        )
+    else:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.FAIL,
+            "agents.enabled=true is not configured",
+            agents_enabled=False,
+            legacy_multi_agent_present=False,
+        )
+    checks.append(native_config)
 
     inventory_observed = inputs.host_inventory_observed or bool(inputs.host_tools)
     arena_host = _host_check("HOST_ARENA_DISCOVERY", arena.runtime_probe.expected_tools, inputs.host_tools, arena_tools.status, inventory_observed=inventory_observed)
     broker_host = _host_check("HOST_BROKER_DISCOVERY", broker.runtime_probe.expected_tools, inputs.host_tools, broker_tools.status, inventory_observed=inventory_observed)
+    if broker_host.status is CheckStatus.PASS and broker_binding.status is not CheckStatus.PASS:
+        broker_host = _check(
+            "HOST_BROKER_DISCOVERY",
+            broker_binding.status,
+            "Broker lifecycle is host-visible but the consumer repository binding is not valid",
+            binding_status=broker_binding.status.value,
+        )
+    elif broker_host.status is CheckStatus.PASS and not caps.resume:
+        broker_host = _check(
+            "HOST_BROKER_DISCOVERY",
+            CheckStatus.FAIL,
+            "Broker lifecycle is host-visible but codex exec resume is unavailable",
+            codex_resume=False,
+        )
     checks.extend((arena_host, broker_host))
     if not inventory_observed:
         native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied")
-    elif "spawn_agent" in inputs.host_tools:
-        native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.PASS, "native spawn_agent is visible")
     else:
-        native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "native spawn_agent is not visible")
+        native_missing = tuple(tool for tool in _NATIVE_AGENT_TOOLS if tool not in inputs.host_tools)
+        if not native_missing:
+            native_host = _check(
+                "HOST_NATIVE_SUBAGENT_DISCOVERY",
+                CheckStatus.PASS,
+                "all native subagent lifecycle tools are visible",
+                tools=list(_NATIVE_AGENT_TOOLS),
+            )
+        else:
+            native_host = _check(
+                "HOST_NATIVE_SUBAGENT_DISCOVERY",
+                CheckStatus.HOST_RELOAD_REQUIRED,
+                f"native subagent lifecycle is incomplete; host is missing: {', '.join(native_missing)}",
+                missing=list(native_missing),
+            )
     checks.append(native_host)
 
-    if "spawn_agent" in inputs.host_tools:
+    if native_host.status is CheckStatus.PASS:
         selected = "native_codex_multi_agent"
-    elif all(tool in inputs.host_tools for tool in broker.runtime_probe.expected_tools):
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.PASS, "native Codex multi-agent route is available", route=selected)
+    elif broker_host.status is CheckStatus.PASS:
         selected = "subagent_broker"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.PASS, "Subagent Broker route is available", route=selected)
+    elif not inventory_observed:
+        selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied", route=selected)
+    elif native_host.status is CheckStatus.HOST_RELOAD_REQUIRED or broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+        selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.HOST_RELOAD_REQUIRED, "no complete independent-subagent lifecycle is visible in the current host", route=selected)
+    elif native_host.status is CheckStatus.USER_ACTION_REQUIRED or broker_host.status is CheckStatus.USER_ACTION_REQUIRED:
+        selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.USER_ACTION_REQUIRED, "independent-subagent lifecycle needs host environment action before it is usable", route=selected)
     else:
         selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.FAIL, "no healthy independent-subagent route is available", route=selected)
+    checks.append(subagent_host)
 
     required_ok = (
         repo_ok
@@ -236,17 +353,25 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
         and next(item for item in checks if item.name == "BROKER_MCP_CONFIG").status is CheckStatus.PASS
         and caps.exec
         and caps.json
+        and caps.resume
+        and broker_binding.status is CheckStatus.PASS
         and inputs.runtime_kind in _TRUSTED_RUNTIME_KINDS
         and broker_host.status is CheckStatus.PASS
     )
 
     blockers: list[str] = []
-    if arena_host.status is CheckStatus.HOST_RELOAD_REQUIRED or broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+    if arena_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+        blockers.append("ARENA_HOST_RELOAD_REQUIRED")
+    if broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+        blockers.append("BROKER_HOST_RELOAD_REQUIRED")
+    if subagent_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
         blockers.append("HOST_RELOAD_REQUIRED")
+    if broker_host.status is CheckStatus.USER_ACTION_REQUIRED or subagent_host.status is CheckStatus.USER_ACTION_REQUIRED:
+        blockers.append("USER_ACTION_REQUIRED")
     if inputs.runtime_kind not in _TRUSTED_RUNTIME_KINDS:
         blockers.append("USER_ACTION_REQUIRED")
     for item in checks:
-        if item.name in {"GIT_HEAD", "WORKTREE_STATE", "BROKER_MCP_CONFIG", "BROKER_MCP_LOCAL_TOOLS", "CODEX_EXEC", "CODEX_EXEC_JSON"} and item.status not in {CheckStatus.PASS, CheckStatus.NOT_APPLICABLE}:
+        if item.name in {"GIT_HEAD", "WORKTREE_STATE", "BROKER_MCP_CONFIG", "BROKER_MCP_LOCAL_TOOLS", "BROKER_REPO_BINDING", "CODEX_EXEC", "CODEX_EXEC_JSON", "CODEX_RESUME"} and item.status not in {CheckStatus.PASS, CheckStatus.NOT_APPLICABLE}:
             blockers.append(item.name)
     blockers = list(dict.fromkeys(blockers))
 
@@ -256,6 +381,9 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     elif broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
         live_status = CheckStatus.HOST_RELOAD_REQUIRED
         live_detail = "local Broker MCP is healthy but the current host must reload it in a fresh Codex environment/session"
+    elif broker_host.status is CheckStatus.USER_ACTION_REQUIRED or broker_binding.status is CheckStatus.USER_ACTION_REQUIRED:
+        live_status = CheckStatus.USER_ACTION_REQUIRED
+        live_detail = "the Broker consumer repository binding must be set to the diagnosed repository"
     elif inputs.runtime_kind not in _TRUSTED_RUNTIME_KINDS:
         live_status = CheckStatus.USER_ACTION_REQUIRED
         live_detail = "a fresh trusted remote/network Codex runtime is required"
@@ -286,4 +414,6 @@ def render_report(report: DoctorReport) -> str:
     lines.append(f"LIVE_SMOKE_READY\t{'YES' if report.live_smoke_ready else 'NO'}")
     if "HOST_RELOAD_REQUIRED" in report.blockers:
         lines.append("NEXT_ACTION\tStart a fresh Codex environment/session and reload project plugins; do not change source for a stale-host diagnosis.")
+    elif "BROKER_REPO_BINDING" in report.blockers:
+        lines.append("NEXT_ACTION\tSet SUBAGENT_BROKER_REPO_ROOT to the canonical consumer repository root before using the Broker route.")
     return "\n".join(lines) + "\n"

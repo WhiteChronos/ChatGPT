@@ -209,7 +209,7 @@ For workflows that require independent child agents, agents SHALL use the follow
 
 Agents SHALL:
 
-- never infer native subagent availability from `multi_agent = true` alone;
+- never infer native subagent availability from `agents.enabled = true` alone; repository configuration is not host-discovery evidence;
 - never call a prompt persona, same-context role play, or GitHub Arena strategy card an independent subagent;
 - require real lifecycle evidence (agent ID plus native/broker execution evidence) before claiming a child ran;
 - keep write-capable broker children on isolated `subagent/<agent_id>` branches and `.worktrees/subagents/<agent_id>/` worktrees;

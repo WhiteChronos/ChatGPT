@@ -11,6 +11,7 @@ REPO = Path(__file__).resolve().parents[3]
 PLUGIN = REPO / "plugins" / "whitechronos-control-plane"
 CLI = PLUGIN / "scripts" / "runtime_doctor.py"
 SKILL = PLUGIN / "skills" / "codex-runtime-doctor" / "SKILL.md"
+RUNBOOK = REPO / "docs" / "runbooks" / "codex-subagent-runtime.md"
 
 EXISTING_PLUGINS = {
     "github-arena@whitechronos-repo",
@@ -147,3 +148,23 @@ def test_runtime_foundation_workflow_runs_doctor_in_clean_detached_worktree():
     workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
     assert 'git worktree add --detach /tmp/whitechronos-runtime-doctor-tree "$GITHUB_SHA"' in workflow
     assert '--repo /tmp/whitechronos-runtime-doctor-tree' in workflow
+
+
+def test_runbook_uses_supported_local_plugin_reinstall_flow():
+    text = RUNBOOK.read_text()
+    assert "codex plugin marketplace upgrade whitechronos-repo" not in text
+    assert "codex plugin remove subagent-broker@whitechronos-repo" in text
+    assert "codex plugin add subagent-broker@whitechronos-repo" in text
+
+
+def test_runbook_runtime_doctor_example_supplies_observed_native_host_tools():
+    text = RUNBOOK.read_text()
+    for tool in (
+        "spawn_agent",
+        "send_message",
+        "followup_task",
+        "wait_agent",
+        "interrupt_agent",
+        "list_agents",
+    ):
+        assert f"--host-tool {tool}" in text

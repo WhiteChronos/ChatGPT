@@ -18,6 +18,14 @@ BROKER_TOOLS = frozenset((
 ))
 
 
+
+NATIVE_AGENT_TOOLS = frozenset((
+    "spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents",
+))
+NATIVE_AGENT_TOOLS_WITHOUT_MESSAGE_INTERRUPT = frozenset((
+    "spawn_agent", "followup_task", "wait_agent", "list_agents",
+))
+
 def _copy_file(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
@@ -117,6 +125,7 @@ def test_dirty_worktree_blocks_strict_smoke_readiness(tmp_path, monkeypatch):
 
 def test_trusted_remote_with_complete_broker_tools_is_live_smoke_ready(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    monkeypatch.setenv("SUBAGENT_BROKER_REPO_ROOT", str(repo.resolve()))
     report = _run(repo, host_tools=BROKER_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
     assert _status(report, "HOST_BROKER_DISCOVERY") is CheckStatus.PASS
     assert report.selected_subagent_path == "subagent_broker"
@@ -152,9 +161,160 @@ def test_untracked_source_file_blocks_strict_smoke_readiness(tmp_path, monkeypat
 
 def test_untracked_python_cache_does_not_block_smoke_readiness(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    monkeypatch.setenv("SUBAGENT_BROKER_REPO_ROOT", str(repo.resolve()))
     cache = repo / "plugins/example/__pycache__"
     cache.mkdir(parents=True)
     (cache / "module.cpython-312.pyc").write_bytes(b"cache")
     report = _run(repo, host_tools=BROKER_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
     assert _status(report, "WORKTREE_STATE") is CheckStatus.PASS
     assert report.live_smoke_ready is True
+
+def _replace_codex_config(repo: Path, text: str) -> None:
+    (repo / ".codex" / "config.toml").write_text(text, encoding="utf-8")
+
+
+def test_current_agents_enabled_config_is_native_multi_agent_configured(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
+
+
+def test_legacy_multi_agent_feature_does_not_count_as_current_native_config(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+    detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
+    assert "legacy" in detail.lower()
+    assert "agents.enabled" in detail
+
+def test_mixed_current_and_legacy_native_agent_config_fails_closed(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = true\n\n"))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+    detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
+    assert "legacy" in detail.lower()
+
+def test_partial_native_tool_set_is_not_host_discovered(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(repo, host_tools={"spawn_agent"}, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.selected_subagent_path != "native_codex_multi_agent"
+
+
+def test_complete_native_tool_set_is_ready_without_broker_host_tools(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(repo, host_tools=NATIVE_AGENT_TOOLS, runtime_kind="trusted_remote", expected_commit=_head(repo))
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    assert _status(report, "HOST_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    assert report.selected_subagent_path == "native_codex_multi_agent"
+    assert "HOST_RELOAD_REQUIRED" not in report.blockers
+
+
+
+def test_native_route_requires_all_six_lifecycle_tools(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    report = _run(
+        repo,
+        host_tools=NATIVE_AGENT_TOOLS_WITHOUT_MESSAGE_INTERRUPT,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.selected_subagent_path != "native_codex_multi_agent"
+
+
+def test_native_host_discovery_uses_observed_inventory_even_when_repo_config_is_drifted(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
+    report = _run(
+        repo,
+        host_tools=NATIVE_AGENT_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    assert _status(report, "HOST_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    assert report.selected_subagent_path == "native_codex_multi_agent"
+
+
+def test_legacy_multi_agent_key_is_rejected_even_when_false(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = false\n\n"))
+    report = _run(repo)
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+
+
+def test_broker_route_requires_codex_resume_support(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    monkeypatch.setenv("SUBAGENT_BROKER_REPO_ROOT", str(repo.resolve()))
+    monkeypatch.setattr(
+        doctor,
+        "probe_codex_cli",
+        lambda path, timeout_seconds=5.0: CodexCapabilities(
+            "codex-cli no-resume", True, True, False, True, True, True
+        ),
+    )
+    report = _run(
+        repo,
+        host_tools=BROKER_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "CODEX_RESUME") is CheckStatus.UNAVAILABLE
+    assert _status(report, "HOST_BROKER_DISCOVERY") is not CheckStatus.PASS
+    assert _status(report, "HOST_SUBAGENT_DISCOVERY") is not CheckStatus.PASS
+    assert report.selected_subagent_path != "subagent_broker"
+    assert report.live_smoke_ready is False
+
+
+def test_broker_host_discovery_requires_actual_matching_repo_binding(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    monkeypatch.delenv("SUBAGENT_BROKER_REPO_ROOT", raising=False)
+    report = _run(
+        repo,
+        host_tools=BROKER_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    names = {item.name for item in report.checks}
+    assert "BROKER_REPO_BINDING" in names
+    assert _status(report, "BROKER_REPO_BINDING") is CheckStatus.USER_ACTION_REQUIRED
+    assert _status(report, "HOST_BROKER_DISCOVERY") is CheckStatus.USER_ACTION_REQUIRED
+    assert report.live_smoke_ready is False
+
+    other = tmp_path / "other-repo"
+    other.mkdir()
+    monkeypatch.setenv("SUBAGENT_BROKER_REPO_ROOT", str(other))
+    mismatched = _run(
+        repo,
+        host_tools=BROKER_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(mismatched, "BROKER_REPO_BINDING") is CheckStatus.USER_ACTION_REQUIRED
+    assert _status(mismatched, "HOST_BROKER_DISCOVERY") is CheckStatus.USER_ACTION_REQUIRED
+
+    monkeypatch.setenv("SUBAGENT_BROKER_REPO_ROOT", str(repo.resolve()))
+    matched = _run(
+        repo,
+        host_tools=BROKER_TOOLS,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(matched, "BROKER_REPO_BINDING") is CheckStatus.PASS
+    assert _status(matched, "HOST_BROKER_DISCOVERY") is CheckStatus.PASS

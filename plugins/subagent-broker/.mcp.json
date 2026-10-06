@@ -3,8 +3,14 @@
     "subagent_broker": {
       "type": "stdio",
       "command": "node",
-      "args": ["./mcp-server/mcp_server.mjs"],
-      "cwd": "."
+      "args": [
+        "./mcp-server/mcp_server.mjs"
+      ],
+      "cwd": ".",
+      "env_vars": [
+        "SUBAGENT_BROKER_REPO_ROOT",
+        "SUBAGENT_BROKER_CODEX_PATH"
+      ]
     }
   }
 }
