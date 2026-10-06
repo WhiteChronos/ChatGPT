@@ -139,7 +139,7 @@ The schema MUST require:
 - `subject.repository`, `subject.pull_request`, and 40-hex `subject.subject_sha`;
 - `task.kind` in `non_development|development`;
 - `superpowers.routing_checked`, `superpowers.bootstrap`, `superpowers.workflows`, `superpowers.status`;
-- `arena.performed_mode` in `micro|review|full`, `arena.status`, `arena.full_arena_triggered`, `arena.independent_agents_claimed`;
+- `arena.performed_mode` in `micro|review|full`, `arena.status`, `arena.full_arena_triggered`, `arena.strategy_count`, `arena.independent_agents_claimed`;
 - optional `tdd`, `review`, and `runtime` objects with typed statuses;
 - `verification.status`;
 - `human_authority.merge_authorized`;
@@ -342,14 +342,41 @@ Implement checks in deterministic order:
 2. exact SHA;
 3. Superpowers routing + bootstrap `using-superpowers`;
 4. Arena performed mode at or above required mode;
-5. Full Arena trigger: if `arena.full_arena_triggered=true`, require `performed_mode=full`;
-6. required verification status;
-7. open blocker scan.
+5. Arena strategy count: `review` requires at least 4 recorded strategies and `full` requires at least the policy `default_strategy_count` (16 in v1); these are strategy/review passes, not proof of independent agents;
+6. Full Arena trigger: if `arena.full_arena_triggered=true`, require `performed_mode=full`;
+7. required verification status;
+8. open blocker scan.
 
 Use finding strings in the form:
 
 ```text
 <CODE>: <human-readable detail>
+```
+
+Add these tests in the same RED batch:
+
+```python
+def test_review_arena_requires_four_strategies():
+    evidence = valid_evidence(arena_mode="review", strategy_count=3)
+    errors = evaluate(evidence, control_plane_requirements)
+    assert "ARENA_EVIDENCE_INVALID" in error_codes(errors)
+
+def test_full_arena_trigger_requires_full_mode_and_sixteen_strategies():
+    evidence = valid_evidence(arena_mode="review", strategy_count=4)
+    evidence["arena"]["full_arena_triggered"] = True
+    errors = evaluate(evidence, docs_requirements)
+    assert "ARENA_MODE_TOO_WEAK" in error_codes(errors)
+
+    evidence["arena"]["performed_mode"] = "full"
+    evidence["arena"]["strategy_count"] = 15
+    errors = evaluate(evidence, docs_requirements)
+    assert "ARENA_EVIDENCE_INVALID" in error_codes(errors)
+
+def test_verification_status_must_pass():
+    evidence = valid_evidence()
+    evidence["verification"]["status"] = "FAIL"
+    errors = evaluate(evidence, docs_requirements)
+    assert "VERIFICATION_EVIDENCE_MISSING" in error_codes(errors)
 ```
 
 - [ ] **Step 4: Write failing TDD and required-review tests**
@@ -641,6 +668,7 @@ Create `.github/pull_request_template.md` with:
 - a 40-zero placeholder `subject_sha` that is schema-valid but intentionally fails the SHA check until replaced by the exact PR head;
 - baseline `superpowers.bootstrap = "using-superpowers"`;
 - explicit `arena.performed_mode`;
+- `arena.strategy_count` (`0` for Micro, at least `4` for Review, at least `16` for Full in v1);
 - `full_arena_triggered`;
 - typed TDD/review/runtime sections;
 - `human_authority.merge_authorized = false` by default;
