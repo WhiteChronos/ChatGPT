@@ -2,9 +2,10 @@
 
 | Finding | Action |
 | --- | --- |
-| Current `[agents] enabled=true` config missing or legacy `features.multi_agent` present | Treat as repository config drift; use debugging/TDD in an isolated branch. |
+| `[agents] enabled=true` is absent/false and no deterministic native route is configured, or V1 is explicitly disabled without V2 | Treat as repository config drift; use debugging/TDD in an isolated branch. |
+| `features.multi_agent=true` present | Current Stable V1 configuration; do not classify it as legacy drift. |
+| Complete V1 or V2 native lifecycle visible | `HOST_SUBAGENT_DISCOVERY=PASS`; record the observed version and use the native route. |
 | Local MCP probe fails | Treat as verified local defect; debug the failing server/probe boundary. |
-| Native lifecycle complete | `HOST_SUBAGENT_DISCOVERY=PASS`; use the native route even if the Broker fallback is not host-loaded. |
 | Native lifecycle incomplete + Broker lifecycle complete + exact repository binding + `codex exec resume` | `HOST_SUBAGENT_DISCOVERY=PASS`; use the Broker route. |
 | No complete native or Broker lifecycle, while local config/runtime is healthy | `HOST_RELOAD_REQUIRED`; start a fresh supported Codex environment/session and do not mutate source merely to repair a stale host. |
 | Broker stdio manifest omits `SUBAGENT_BROKER_REPO_ROOT` or `SUBAGENT_BROKER_CODEX_PATH` passthrough | Treat as repository defect; the fallback cannot safely reproduce the diagnosed Broker environment. |
