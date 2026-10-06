@@ -333,6 +333,33 @@ def test_namespaced_native_v2_tool_set_is_ready(tmp_path, monkeypatch):
     assert evidence["version"] == "v2"
 
 
+def test_configured_custom_v2_namespace_is_ready(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    feature = "[features]\nmulti_agent = true\n\n"
+    assert feature in current
+    configured = """[features]
+multi_agent = false
+
+[features.multi_agent_v2]
+enabled = true
+tool_namespace = "agents"
+
+"""
+    _replace_codex_config(repo, current.replace(feature, configured))
+    host_tools = frozenset(f"agents__{name}" for name in NATIVE_V2_TOOLS)
+    report = _run(
+        repo,
+        host_tools=host_tools,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.PASS
+    evidence = next(item.evidence for item in report.checks if item.name == "HOST_NATIVE_SUBAGENT_DISCOVERY")
+    assert evidence["version"] == "v2"
+
+
 def test_broker_route_requires_codex_resume_support(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     monkeypatch.setenv("SUBAGENT_BROKER_REPO_ROOT", str(repo.resolve()))
