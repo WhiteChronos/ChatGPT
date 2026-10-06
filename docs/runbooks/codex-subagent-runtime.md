@@ -55,15 +55,18 @@ Inspect the marketplaces visible to Codex:
 codex plugin marketplace list
 ```
 
-Refresh the WhiteChronos marketplace snapshot:
+The repository marketplace `whitechronos-repo` is local, so do not use `codex plugin marketplace upgrade`; that command refreshes configured Git marketplaces. Reinstall the affected local plugins to refresh their materialized plugin cache:
 
 ```bash
-codex plugin marketplace upgrade whitechronos-repo
+codex plugin remove subagent-broker@whitechronos-repo
+codex plugin add subagent-broker@whitechronos-repo
+codex plugin remove whitechronos-control-plane@whitechronos-repo
+codex plugin add whitechronos-control-plane@whitechronos-repo
 ```
 
 The repository marketplace is `.agents/plugins/marketplace.json`. Project `.codex/config.toml` is loaded only for a trusted project.
 
-Local-marketplace plugins are installed into the Codex plugin cache rather than executed directly from the repository source. After marketplace/plugin changes, restart the supported local client and start a new session; an already-open session does not gain newly loaded tools.
+Local-marketplace plugin installation materializes a plugin into Codex local plugin state. After repository plugin or MCP manifest changes, reinstall the affected local plugin, restart the supported local client, and start a new session; an already-open session does not gain newly loaded tools.
 
 ## 4. Native route: preferred
 
@@ -126,11 +129,18 @@ python plugins/whitechronos-control-plane/scripts/runtime_doctor.py \
   --repo . \
   --expected-commit "$(git rev-parse HEAD)" \
   --runtime-kind trusted_remote \
-  --host-inventory-observed \
+  --host-tool spawn_agent \
+  --host-tool send_message \
+  --host-tool followup_task \
+  --host-tool wait_agent \
+  --host-tool interrupt_agent \
+  --host-tool list_agents \
   --json
 ```
 
-When the harness exposes lifecycle names, pass each observed name with repeated `--host-tool <name>`.
+The example above represents a host where the complete native lifecycle was actually observed. Pass only tool names that are visible in the current harness. If the harness was explicitly inspected and contains zero relevant tools, use `--host-inventory-observed` without inventing `--host-tool` values.
+
+For the Broker route, `SUBAGENT_BROKER_REPO_ROOT` must resolve to this exact repository, `codex exec resume` must be available, and all eight Broker lifecycle tools must be visible before host discovery can PASS.
 
 Interpret the result literally:
 
