@@ -205,9 +205,35 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.append(_check("CODEX_EXEC_JSON", CheckStatus.PASS if caps.json else (CheckStatus.UNAVAILABLE if not caps.exec else CheckStatus.FAIL), "codex exec --json available" if caps.json else "codex exec --json unavailable"))
     checks.append(_check("CODEX_RESUME", CheckStatus.PASS if caps.resume else CheckStatus.UNAVAILABLE, "codex exec resume available" if caps.resume else "codex exec resume unavailable"))
 
+    agents = config.get("agents") if isinstance(config, dict) else None
+    native_enabled = isinstance(agents, dict) and agents.get("enabled") is True
     features = config.get("features") if isinstance(config, dict) else None
-    multi = isinstance(features, dict) and features.get("multi_agent") is True
-    checks.append(_check("NATIVE_MULTI_AGENT_CONFIG", CheckStatus.PASS if multi else CheckStatus.FAIL, "multi_agent=true is configured" if multi else "multi_agent=true is not configured"))
+    legacy_multi_agent = isinstance(features, dict) and features.get("multi_agent") is True
+    if native_enabled:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.PASS,
+            "agents.enabled=true is configured",
+            agents_enabled=True,
+            legacy_multi_agent=legacy_multi_agent,
+        )
+    elif legacy_multi_agent:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.FAIL,
+            "legacy features.multi_agent=true detected; current Codex configuration requires agents.enabled=true",
+            agents_enabled=False,
+            legacy_multi_agent=True,
+        )
+    else:
+        native_config = _check(
+            "NATIVE_MULTI_AGENT_CONFIG",
+            CheckStatus.FAIL,
+            "agents.enabled=true is not configured",
+            agents_enabled=False,
+            legacy_multi_agent=False,
+        )
+    checks.append(native_config)
 
     inventory_observed = inputs.host_inventory_observed or bool(inputs.host_tools)
     arena_host = _host_check("HOST_ARENA_DISCOVERY", arena.runtime_probe.expected_tools, inputs.host_tools, arena_tools.status, inventory_observed=inventory_observed)
