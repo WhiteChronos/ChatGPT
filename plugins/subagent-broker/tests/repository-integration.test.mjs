@@ -9,6 +9,7 @@ test('broker MCP manifest passes explicit repo binding environment',async()=>{
   assert.ok(server,'subagent_broker MCP server missing');
   assert.ok(Array.isArray(server.env_vars),'stdio env_vars allowlist missing');
   assert.ok(server.env_vars.includes('SUBAGENT_BROKER_REPO_ROOT'),'repo root env passthrough missing');
+  assert.ok(server.env_vars.includes('SUBAGENT_BROKER_CODEX_PATH'),'Codex path env passthrough missing');
 });
 
 test('broker MCP binds only to explicit consumer repository root',async()=>{
