@@ -227,9 +227,8 @@ def _native_tool_visible(
     if tool in host_tools:
         return True
     for namespace in namespaces:
-        for separator in (".", "__", "/"):
-            if f"{namespace}{separator}{tool}" in host_tools:
-                return True
+        if f"{namespace}__{tool}" in host_tools:
+            return True
     return False
 
 
