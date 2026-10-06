@@ -165,16 +165,16 @@ def _replace_codex_config(repo: Path, text: str) -> None:
 
 def test_current_agents_enabled_config_is_native_multi_agent_configured(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
-    original = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
-    legacy = "[features]\nmulti_agent = true\n\n"
-    assert legacy in original
-    _replace_codex_config(repo, original.replace(legacy, "[agents]\nenabled = true\n\n"))
     report = _run(repo)
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
 
 
 def test_legacy_multi_agent_feature_does_not_count_as_current_native_config(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    agents = "[agents]\nenabled = true\n\n"
+    assert agents in current
+    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
     report = _run(repo)
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
     detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
