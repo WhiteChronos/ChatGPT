@@ -15,6 +15,7 @@ _BROKER_ID = "subagent-broker"
 _TRUSTED_RUNTIME_KINDS = {"trusted_remote", "codex_cloud"}
 _TRANSIENT_UNTRACKED_PREFIXES = (".pytest_cache/", ".mypy_cache/", ".ruff_cache/", ".superpowers/", ".worktrees/")
 _TRANSIENT_UNTRACKED_FILES = {".coverage"}
+_NATIVE_AGENT_TOOLS = ("spawn_agent", "send_message", "followup_task", "wait_agent", "interrupt_agent", "list_agents")
 
 
 def _is_transient_untracked(path: str) -> bool:
@@ -241,18 +242,42 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.extend((arena_host, broker_host))
     if not inventory_observed:
         native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied")
-    elif "spawn_agent" in inputs.host_tools:
-        native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.PASS, "native spawn_agent is visible")
+    elif native_config.status is not CheckStatus.PASS:
+        native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.FAIL, "native subagent configuration is not PASS")
     else:
-        native_host = _check("HOST_NATIVE_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "native spawn_agent is not visible")
+        native_missing = tuple(tool for tool in _NATIVE_AGENT_TOOLS if tool not in inputs.host_tools)
+        if not native_missing:
+            native_host = _check(
+                "HOST_NATIVE_SUBAGENT_DISCOVERY",
+                CheckStatus.PASS,
+                "all native subagent lifecycle tools are visible",
+                tools=list(_NATIVE_AGENT_TOOLS),
+            )
+        else:
+            native_host = _check(
+                "HOST_NATIVE_SUBAGENT_DISCOVERY",
+                CheckStatus.HOST_RELOAD_REQUIRED,
+                f"native subagent lifecycle is incomplete; host is missing: {', '.join(native_missing)}",
+                missing=list(native_missing),
+            )
     checks.append(native_host)
 
-    if "spawn_agent" in inputs.host_tools:
+    if native_host.status is CheckStatus.PASS:
         selected = "native_codex_multi_agent"
-    elif all(tool in inputs.host_tools for tool in broker.runtime_probe.expected_tools):
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.PASS, "native Codex multi-agent route is available", route=selected)
+    elif broker_host.status is CheckStatus.PASS:
         selected = "subagent_broker"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.PASS, "Subagent Broker route is available", route=selected)
+    elif not inventory_observed:
+        selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.UNAVAILABLE, "current host tool inventory was not supplied", route=selected)
+    elif native_host.status is CheckStatus.HOST_RELOAD_REQUIRED or broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+        selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.HOST_RELOAD_REQUIRED, "no complete independent-subagent lifecycle is visible in the current host", route=selected)
     else:
         selected = "superpowers_inline"
+        subagent_host = _check("HOST_SUBAGENT_DISCOVERY", CheckStatus.FAIL, "no healthy independent-subagent route is available", route=selected)
+    checks.append(subagent_host)
 
     required_ok = (
         repo_ok
@@ -267,7 +292,11 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     )
 
     blockers: list[str] = []
-    if arena_host.status is CheckStatus.HOST_RELOAD_REQUIRED or broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+    if arena_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+        blockers.append("ARENA_HOST_RELOAD_REQUIRED")
+    if broker_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
+        blockers.append("BROKER_HOST_RELOAD_REQUIRED")
+    if subagent_host.status is CheckStatus.HOST_RELOAD_REQUIRED:
         blockers.append("HOST_RELOAD_REQUIRED")
     if inputs.runtime_kind not in _TRUSTED_RUNTIME_KINDS:
         blockers.append("USER_ACTION_REQUIRED")
