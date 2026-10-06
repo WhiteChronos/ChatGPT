@@ -187,9 +187,7 @@ def test_current_agents_enabled_config_is_native_multi_agent_configured(tmp_path
 def test_current_multi_agent_feature_is_valid_native_config(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
-    agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
-    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = true\n\n"))
+    assert "[features]\nmulti_agent = true\n" in current
     report = _run(repo)
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
     detail = next(item.detail for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
@@ -199,9 +197,9 @@ def test_current_multi_agent_feature_is_valid_native_config(tmp_path, monkeypatc
 def test_disabling_v1_without_enabling_v2_is_config_drift(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
-    agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
-    _replace_codex_config(repo, current.replace(agents, agents + "[features]\nmulti_agent = false\n\n"))
+    feature = "[features]\nmulti_agent = true\n\n"
+    assert feature in current
+    _replace_codex_config(repo, current.replace(feature, "[features]\nmulti_agent = false\n\n"))
     report = _run(repo)
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
 
@@ -209,13 +207,13 @@ def test_disabling_v1_without_enabling_v2_is_config_drift(tmp_path, monkeypatch)
 def test_explicit_v2_keeps_config_ready_when_v1_is_disabled(tmp_path, monkeypatch):
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
-    agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
+    feature = "[features]\nmulti_agent = true\n\n"
+    assert feature in current
     _replace_codex_config(
         repo,
         current.replace(
-            agents,
-            agents + "[features]\nmulti_agent = false\nmulti_agent_v2 = true\n\n",
+            feature,
+            "[features]\nmulti_agent = false\nmulti_agent_v2 = true\n\n",
         ),
     )
     report = _run(repo)
@@ -227,7 +225,7 @@ def test_agents_enabled_defaults_true_when_agents_table_is_absent(tmp_path, monk
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
     agents = "[agents]\nenabled = true\n\n"
     assert agents in current
-    _replace_codex_config(repo, current.replace(agents, "[features]\nmulti_agent = true\n\n"))
+    _replace_codex_config(repo, current.replace(agents, ""))
     report = _run(repo)
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
 
@@ -236,9 +234,11 @@ def test_explicit_v2_takes_precedence_over_agents_disabled(tmp_path, monkeypatch
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
     agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
-    replacement = "[agents]\nenabled = false\n\n[features]\nmulti_agent = false\nmulti_agent_v2 = true\n\n"
-    _replace_codex_config(repo, current.replace(agents, replacement))
+    feature = "[features]\nmulti_agent = true\n\n"
+    assert agents in current and feature in current
+    current = current.replace(agents, "[agents]\nenabled = false\n\n")
+    current = current.replace(feature, "[features]\nmulti_agent = false\nmulti_agent_v2 = true\n\n")
+    _replace_codex_config(repo, current)
     report = _run(repo)
     assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.PASS
 
@@ -276,8 +276,11 @@ def test_native_host_discovery_uses_observed_inventory_even_when_repo_config_is_
     repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
     current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
     agents = "[agents]\nenabled = true\n\n"
-    assert agents in current
-    _replace_codex_config(repo, current.replace(agents, "[agents]\nenabled = false\n\n[features]\nmulti_agent = false\n\n"))
+    feature = "[features]\nmulti_agent = true\n\n"
+    assert agents in current and feature in current
+    current = current.replace(agents, "[agents]\nenabled = false\n\n")
+    current = current.replace(feature, "[features]\nmulti_agent = false\n\n")
+    _replace_codex_config(repo, current)
     report = _run(
         repo,
         host_tools=NATIVE_V2_TOOLS,
