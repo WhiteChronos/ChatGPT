@@ -234,3 +234,49 @@ def test_safe_git_environment_disables_global_and_system_config(monkeypatch):
     assert env['GIT_CONFIG_NOSYSTEM'] == '1'
     assert env['GIT_CONFIG_GLOBAL'] == m.os.devnull
     assert 'GIT_CONFIG_COUNT' not in env
+
+def test_network_target_requires_explicit_credential_helper(tmp_path, monkeypatch):
+    m = load_module()
+
+    def fail_git(*args, **kwargs):
+        raise AssertionError('git must not run before credential-helper validation')
+
+    monkeypatch.setattr(m, '_run_git', fail_git)
+    with pytest.raises(ValueError, match='target credential helper'):
+        m.sync_ref(
+            ROOT,
+            'https://github.com/WhiteChronos/ChatGPT.git',
+            'https://gitlab.com/chronoswhite-group/ChronosWhite-project.git',
+            'main',
+            tmp_path / 'r.json',
+        )
+
+
+def test_explicit_credential_helper_is_scoped_to_git_command(tmp_path):
+    m = load_module()
+    helper = tmp_path / 'git-credential-whitechronos'
+    helper.write_text('#!/bin/sh\\nexit 0\\n', encoding='utf-8')
+    helper.chmod(0o700)
+
+    normalized = m._normalize_credential_helper(str(helper))
+    argv = m._git_argv(['ls-remote', 'https://gitlab.com/example/repo.git'], normalized)
+
+    assert argv[:7] == [
+        'git',
+        '-c', 'credential.helper=',
+        '-c', f'credential.helper={helper.resolve()}',
+        '-c', 'credential.interactive=false',
+    ]
+    assert argv[7:] == ['ls-remote', 'https://gitlab.com/example/repo.git']
+
+
+@pytest.mark.parametrize('value', [
+    'manager-core',
+    '!touch /tmp/marker',
+    '/tmp/helper;touch-marker',
+    '/tmp/helper with space',
+])
+def test_credential_helper_rejects_ambiguous_or_shell_control_value(value):
+    m = load_module()
+    with pytest.raises(ValueError, match='credential helper'):
+        m._normalize_credential_helper(value)
