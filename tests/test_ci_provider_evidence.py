@@ -1,4 +1,5 @@
 from dataclasses import asdict
+import hashlib
 from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
@@ -20,6 +21,22 @@ OTHER = 'b' * 40
 NOW = datetime.now(timezone.utc)
 
 
+def provenance_sha256(data):
+    payload = {
+        key: data[key]
+        for key in (
+            'provider',
+            'repository_identity',
+            'subject_sha',
+            'pipeline_or_run_id',
+            'gate_name',
+            'ci_config_revision',
+        )
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode('utf-8')
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def ev(provider='github', result='PASS', sha=SHA, parity='NOT_APPLICABLE', **changes):
     data = dict(
         provider=provider,
@@ -34,6 +51,7 @@ def ev(provider='github', result='PASS', sha=SHA, parity='NOT_APPLICABLE', **cha
         attempt=1,
     )
     data.update(changes)
+    data['provenance_sha256'] = provenance_sha256(data)
     return CIProviderEvidence(**data)
 
 
@@ -106,3 +124,32 @@ POLICY = ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json'
 def test_retry_classification(failure, attempt, expected):
     policy = load_policy(POLICY)
     assert classify_retry(failure, attempt, policy) is expected
+
+def test_schema_requires_provenance_sha256():
+    schema = json.loads(SCHEMA.read_text(encoding='utf-8'))
+    data = asdict(ev('gitlab', parity='HEALTHY'))
+    data['timestamp'] = NOW.isoformat()
+    data.pop('provenance_sha256')
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(data, schema)
+
+
+def test_validate_rejects_tampered_provenance_sha256():
+    record = ev(provenance_sha256='0' * 64)
+    with pytest.raises(ValueError, match='provenance'):
+        validate_evidence(record, now=NOW)
+
+
+@pytest.mark.parametrize(
+    ('github_changes', 'gitlab_changes'),
+    [
+        ({'repository_identity': 'Wrong/Repo'}, {}),
+        ({}, {'repository_identity': 'wrong/group-project'}),
+        ({'gate_name': 'other-gate'}, {}),
+        ({}, {'ci_config_revision': OTHER}),
+    ],
+)
+def test_comparison_rejects_context_identity_mismatch(github_changes, gitlab_changes):
+    github = ev('github', **github_changes)
+    gitlab = ev('gitlab', parity='HEALTHY', **gitlab_changes)
+    assert compare_provider_evidence(github, gitlab).disposition is EvidenceDisposition.DISCREPANCY_BLOCKED
