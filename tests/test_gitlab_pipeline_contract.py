@@ -13,14 +13,22 @@ def text():
     return PIPELINE.read_text(encoding='utf-8')
 
 
+def pipeline_data():
+    merged = {}
+    for document in yaml.safe_load_all(text()):
+        if isinstance(document, dict):
+            merged.update(document)
+    return merged
+
+
 def test_pipeline_exists_and_parses():
     assert PIPELINE.exists()
-    data = yaml.safe_load(text())
+    data = pipeline_data()
     assert isinstance(data, dict)
 
 
 def test_required_jobs_and_stages_present():
-    data = yaml.safe_load(text())
+    data = pipeline_data()
     assert data['stages'] == ['parity', 'validate', 'evidence']
     for job in ('mirror-parity', 'python-governance', 'broker', 'contingency-evidence'):
         assert job in data
@@ -158,7 +166,7 @@ def test_gitlab_ref_probe_uses_remote_name_not_credential_bearing_url():
     assert '["git", "ls-remote", "--exit-code", origin_url, full_ref]' not in mirror_block
 
 def test_pipeline_uses_bounded_infrastructure_retry_policy():
-    data = yaml.safe_load(text())
+    data = pipeline_data()
     retry = data['default']['retry']
     assert retry['max'] == 1
     assert set(retry['when']) == {'api_failure', 'runner_system_failure', 'scheduler_failure'}
@@ -190,9 +198,30 @@ def test_pipeline_requires_neutral_worker_receipt_contract():
     assert 'mirror receipt digest mismatch' in mirror_block
 
 def test_pipeline_only_accepts_neutral_worker_push_trigger():
-    data = yaml.safe_load(text())
+    data = pipeline_data()
     rules = data['workflow']['rules']
     assert rules == [
         {'if': '$CI_PIPELINE_SOURCE == "push"'},
         {'when': 'never'},
     ]
+
+def test_pipeline_declares_typed_mirror_receipt_inputs():
+    data = pipeline_data()
+    inputs = data['spec']['inputs']
+    assert set(inputs) == {
+        'mirror_transport',
+        'mirror_source_repository',
+        'mirror_target_project',
+        'mirror_ref',
+        'mirror_source_sha',
+        'mirror_target_sha',
+        'mirror_timestamp',
+        'mirror_receipt_sha256',
+    }
+    assert inputs['mirror_transport']['options'] == ['neutral_worker']
+    assert inputs['mirror_source_sha']['regex'] == '^[0-9a-fA-F]{40}$'
+    assert inputs['mirror_target_sha']['regex'] == '^[0-9a-fA-F]{40}$'
+    assert inputs['mirror_receipt_sha256']['regex'] == '^[0-9a-fA-F]{64}$'
+    body = text()
+    assert '$[[ inputs.mirror_transport ]]' in body
+    assert '$[[ inputs.mirror_receipt_sha256 ]]' in body
