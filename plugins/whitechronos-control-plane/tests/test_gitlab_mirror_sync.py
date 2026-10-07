@@ -151,10 +151,10 @@ def test_source_is_reobserved_after_push_before_success_receipt(tmp_path, monkey
     _, source, target = init_world(tmp_path)
     original_remote_sha = m._remote_sha
 
-    def moving_source(url, full_ref):
+    def moving_source(url, full_ref, **kwargs):
         if url == str(source):
             return 'b' * 40
-        return original_remote_sha(url, full_ref)
+        return original_remote_sha(url, full_ref, **kwargs)
 
     monkeypatch.setattr(m, '_remote_sha', moving_source)
     with pytest.raises(RuntimeError, match='authoritative source'):
