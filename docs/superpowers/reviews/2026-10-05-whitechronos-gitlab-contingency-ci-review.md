@@ -253,6 +253,49 @@ The seven workflow results cited above are bound to
 | 37552196099 | Glossary Engine | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196099 |
 | 37552196221 | WhiteChronos Runtime Foundation | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196221 |
 
+
+### Final hardening verification head
+
+After the Codex review and subsequent Full Arena rounds, the final source-code
+hardening head was:
+
+```text
+source_hardening_head = 3f748a1f086ff3285015ae4d864dd3165551b04d
+branch                = feat/gitlab-contingency-ci-v1
+```
+
+Fresh GitHub Actions verification on that exact SHA produced:
+
+```text
+Runtime Foundation tests       = 73 passed
+full repository regression     = 248 passed
+Subagent Broker compatibility  = 5 passed
+Awesome Codex integration      = 3 passed
+Engineering Compatibility      = 39 passed
+Protocol Zero                  = 4 passed
+repository governance commands = PASS
+local runtime health           = PASS
+```
+
+All five pull-request workflows for that source head completed successfully:
+
+| Run ID | Workflow | Conclusion | Canonical run |
+| ---: | --- | --- | --- |
+| 37558725942 | WhiteChronos Runtime Foundation | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37558725942 |
+| 37558726024 | Engineering Governance | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37558726024 |
+| 37558726120 | Document Governance v4.7 | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37558726120 |
+| 37558726023 | Glossary Engine | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37558726023 |
+| 37558726128 | GitHub Control Plane Policy | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37558726128 |
+
+The final Full Arena used 16 sequential strategy cards, four elimination rounds
+(`16 -> 8 -> 4 -> 2 -> 1`) and the repository rubric. No isolated subagents
+were available or claimed. The final Arena review left no standing Critical or
+Important finding after A-01 through A-05 were closed with RED -> GREEN
+regressions.
+
+This document commit records evidence only; it does not modify source behavior
+or grant merge/release authority.
+
 ## 8. Final gate
 
 The source implementation is fully verified for the repository scope. The live
