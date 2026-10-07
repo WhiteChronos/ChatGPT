@@ -223,3 +223,13 @@ def test_network_mirror_receipt_push_options_bind_transport_and_sha():
     assert f'WHITECHRONOS_MIRROR_SOURCE_SHA={source_sha}' in joined
     assert f'WHITECHRONOS_MIRROR_TARGET_SHA={source_sha}' in joined
     assert 'WHITECHRONOS_MIRROR_RECEIPT_SHA256=' in joined
+
+def test_safe_git_environment_disables_global_and_system_config(monkeypatch):
+    m = load_module()
+    monkeypatch.setenv('HOME', '/tmp/host-home')
+    monkeypatch.setenv('GIT_CONFIG_GLOBAL', '/tmp/evil.gitconfig')
+    monkeypatch.setenv('GIT_CONFIG_COUNT', '1')
+    env = m._safe_git_environment()
+    assert env['GIT_CONFIG_NOSYSTEM'] == '1'
+    assert env['GIT_CONFIG_GLOBAL'] == m.os.devnull
+    assert 'GIT_CONFIG_COUNT' not in env
