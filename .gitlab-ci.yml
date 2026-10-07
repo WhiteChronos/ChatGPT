@@ -14,10 +14,6 @@ workflow:
 variables:
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
   PYTHONDONTWRITEBYTECODE: "1"
-  WHITECHRONOS_GITHUB_REMOTE: "https://github.com/WhiteChronos/ChatGPT.git"
-  WHITECHRONOS_SOURCE_REPOSITORY: "WhiteChronos/ChatGPT"
-  WHITECHRONOS_GITLAB_PROJECT_ID: "86465539"
-  WHITECHRONOS_GITLAB_PROJECT_PATH: "chronoswhite-group/ChronosWhite-project"
 
 mirror-parity:
   stage: parity
@@ -29,10 +25,11 @@ mirror-parity:
     - python -m pip install -r requirements-dev.txt
     - python -m pip check
   script:
-    - python pipeline/git_mirror_observation.py --remote-url "$WHITECHRONOS_GITHUB_REMOTE" --ref "$CI_COMMIT_REF_NAME" --json > github-observation.json || true
+    - python pipeline/git_mirror_observation.py --remote-url "https://github.com/WhiteChronos/ChatGPT.git" --ref "$CI_COMMIT_REF_NAME" --json > github-observation.json || true
     - |
       python - <<'PY'
       import json
+      import os
       from datetime import datetime, timezone
       from pathlib import Path
 
@@ -42,20 +39,19 @@ mirror-parity:
           observation = {"available": False, "sha": None}
       payload = {
           "github_repository": "WhiteChronos/ChatGPT",
-          "gitlab_project_id": "86465539",
-          "gitlab_project_path": "chronoswhite-group/ChronosWhite-project",
-          "ref_name": __import__("os").environ["CI_COMMIT_REF_NAME"],
+          "gitlab_project_id": int(os.environ["CI_PROJECT_ID"]),
+          "gitlab_project_path": os.environ["CI_PROJECT_PATH"],
+          "ref_name": os.environ["CI_COMMIT_REF_NAME"],
           "github_sha": observation.get("sha"),
-          "gitlab_sha": __import__("os").environ["CI_COMMIT_SHA"],
-          "ci_subject_sha": __import__("os").environ["CI_COMMIT_SHA"],
+          "gitlab_sha": os.environ["CI_COMMIT_SHA"],
+          "ci_subject_sha": os.environ["CI_COMMIT_SHA"],
           "github_available": bool(observation.get("available")),
           "gitlab_available": True,
           "receipt_timestamp": (
-              __import__("os").environ.get("CI_PIPELINE_CREATED_AT", datetime.now(timezone.utc).isoformat())
-              if __import__("os").environ.get("CI_PIPELINE_SOURCE") == "push"
+              os.environ.get("CI_PIPELINE_CREATED_AT", datetime.now(timezone.utc).isoformat())
+              if os.environ.get("CI_PIPELINE_SOURCE") == "push"
               else "1970-01-01T00:00:00+00:00"
           ),
-          "evaluated_at": datetime.now(timezone.utc).isoformat(),
       }
       Path("mirror-input.json").write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
       PY
@@ -77,12 +73,18 @@ python-governance:
       artifacts: true
   when: always
   before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends git
     - python -m pip install --upgrade pip
     - python -m pip install -r requirements-dev.txt
     - python -m pip check
   script:
-    - if python pipeline/contingency_ci_gate.py --profile python-governance --json > contingency-python.json; then true; else true; fi
-    - cat contingency-python.json
+    - |
+      set +e
+      python pipeline/contingency_ci_gate.py --profile python-governance --json > contingency-python.json
+      status=$?
+      cat contingency-python.json
+      exit "$status"
   artifacts:
     when: always
     expire_in: 7 days
@@ -101,13 +103,17 @@ broker:
     - apt-get install -y --no-install-recommends git
   script:
     - |
-      if node --test plugins/subagent-broker/tests/*.test.mjs > broker-test.txt 2>&1; then
+      set +e
+      node --test plugins/subagent-broker/tests/*.test.mjs > broker-test.txt 2>&1
+      status=$?
+      if [ "$status" -eq 0 ]; then
         printf '%s\n' '{"profile":"broker","passed":true}' > contingency-broker.json
       else
         printf '%s\n' '{"profile":"broker","passed":false}' > contingency-broker.json
       fi
-    - cat broker-test.txt
-    - cat contingency-broker.json
+      cat broker-test.txt
+      cat contingency-broker.json
+      exit "$status"
   artifacts:
     when: always
     expire_in: 7 days
@@ -129,6 +135,7 @@ contingency-evidence:
   script:
     - |
       python - <<'PY'
+      import hashlib
       import json
       import os
       from datetime import datetime, timezone
@@ -149,7 +156,7 @@ contingency-evidence:
       Path("contingency-gate.json").write_text(json.dumps(gate, sort_keys=True), encoding="utf-8")
       evidence = {
           "provider": "gitlab",
-          "repository_identity": "chronoswhite-group/ChronosWhite-project",
+          "repository_identity": os.environ["CI_PROJECT_PATH"],
           "subject_sha": os.environ["CI_COMMIT_SHA"],
           "pipeline_or_run_id": os.environ["CI_PIPELINE_ID"],
           "gate_name": "full-contingency",
@@ -159,10 +166,34 @@ contingency-evidence:
           "mirror_parity_status": parity_status,
           "attempt": 1,
       }
+      provenance_payload = {
+          key: evidence[key]
+          for key in (
+              "provider",
+              "repository_identity",
+              "subject_sha",
+              "pipeline_or_run_id",
+              "gate_name",
+              "ci_config_revision",
+          )
+      }
+      encoded = json.dumps(provenance_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+      evidence["provenance_sha256"] = hashlib.sha256(encoded).hexdigest()
       Path("ci-provider-evidence.json").write_text(json.dumps(evidence, sort_keys=True), encoding="utf-8")
       PY
     - cat contingency-gate.json
     - cat ci-provider-evidence.json
+    - |
+      if python - <<'PY'
+      import json
+      from pathlib import Path
+      raise SystemExit(0 if json.loads(Path("contingency-gate.json").read_text())["passed"] else 1)
+      PY
+      then
+        true
+      else
+        exit 1
+      fi
   artifacts:
     when: always
     expire_in: 7 days

@@ -33,6 +33,10 @@ class GateResult:
 
 _PYTHON_GOVERNANCE = (
     GateCommand("pytest", ("python", "-m", "pytest", "-q")),
+    GateCommand(
+        "mirror-worker-tests",
+        ("python", "-m", "pytest", "-q", "plugins/whitechronos-control-plane/tests/test_gitlab_mirror_sync.py"),
+    ),
     GateCommand("engineering-compatibility", ("python", "pipeline/engineering_compatibility_gate.py")),
     GateCommand(
         "protocol-zero",

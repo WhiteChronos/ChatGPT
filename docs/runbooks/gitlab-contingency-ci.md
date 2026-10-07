@@ -38,7 +38,10 @@ The GitLab project is a **private, non-authoritative mirror**. Operational rules
 
 1. Mirror direction is one-way: GitHub -> GitLab.
 2. Direct development against mirrored refs is prohibited by policy.
-3. The default branch must remain protected against ordinary direct writes.
+3. Every mirrored ref class must be protected against ordinary direct writes:
+   `main`, `spec/*`, `plan/*`, `feat/*`, `fix/*`, and `release/*`.
+   Configure transport-only write permission for the neutral mirror credential;
+   human Developer/Maintainer workflows must not push directly to mirrored refs.
 4. Do not configure a GitLab -> GitHub mirror.
 5. Never store a GitHub branch-write credential in GitLab.
 6. The source side requires only read access to `WhiteChronos/ChatGPT` when
