@@ -280,3 +280,16 @@ def test_credential_helper_rejects_ambiguous_or_shell_control_value(value):
     m = load_module()
     with pytest.raises(ValueError, match='credential helper'):
         m._normalize_credential_helper(value)
+
+
+def test_gcm_manager_selector_is_allowed():
+    m = load_module()
+    assert m._normalize_credential_helper('manager') == 'manager'
+    argv = m._git_argv(['ls-remote', 'https://gitlab.com/example/repo.git'], 'manager')
+    assert argv[:7] == [
+        'git',
+        '-c', 'credential.helper=',
+        '-c', 'credential.helper=manager',
+        '-c', 'credential.interactive=false',
+    ]
+
