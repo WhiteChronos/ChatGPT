@@ -46,7 +46,7 @@ def test_pipeline_contains_no_authority_or_deployment_actions():
 
 def test_pipeline_uses_parity_and_contingency_modules_and_artifacts():
     body = text()
-    assert 'pipeline/git_mirror_observation.py' in body
+    assert 'from pipeline.git_mirror_observation import observe_remote_ref' in body
     assert 'pipeline/git_mirror_parity.py' in body
     assert 'pipeline/contingency_ci_gate.py' in body
     for artifact in ('mirror-parity.json', 'contingency-gate.json', 'ci-provider-evidence.json'):
@@ -80,9 +80,10 @@ def test_broker_job_installs_git_for_repository_tests():
 
 def test_non_push_pipeline_cannot_fabricate_fresh_mirror_receipt():
     body = PIPELINE.read_text(encoding='utf-8')
-    assert 'job_source == "push"' in body
-    assert '1970-01-01T00:00:00+00:00' in body
-    assert 'CI_PIPELINE_SOURCE' not in body
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    assert 'job_source == "push"' in mirror_block
+    assert '1970-01-01T00:00:00+00:00' in mirror_block
+    assert 'os.environ.get("CI_PIPELINE_SOURCE")' not in mirror_block
 
 def test_python_governance_job_installs_git_for_root_regression():
     body = text()
@@ -94,7 +95,8 @@ def test_pipeline_binds_observed_gitlab_project_identity():
     body = text()
     assert 'git remote get-url origin' in body
     assert 'urlsplit' in body
-    assert 'chronoswhite-group/ChronosWhite-project' in body
+    assert 'governance/GITLAB_CONTINGENCY_CI_POLICY.json' in body
+    assert 'observed_project_path != expected_project_path' in body
     assert '"gitlab_project_path": observed_project_path' in body
     assert '"repository_identity": runtime_identity["gitlab_project_path"]' in body
     assert 'os.environ["CI_PROJECT_PATH"]' not in body
@@ -103,7 +105,8 @@ def test_pipeline_binds_observed_gitlab_project_identity():
 
 def test_pipeline_canonical_github_remote_is_not_user_overridable():
     body = text()
-    assert '--remote-url "https://github.com/WhiteChronos/ChatGPT.git"' in body
+    assert 'observe_remote_ref(' in body
+    assert '"https://github.com/WhiteChronos/ChatGPT.git"' in body
     assert '$WHITECHRONOS_GITHUB_REMOTE' not in body
 
 
