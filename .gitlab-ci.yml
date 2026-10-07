@@ -34,6 +34,7 @@ default:
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
     - when: never
 
 variables:
@@ -133,8 +134,8 @@ mirror-parity:
       pipeline_id = str(pipeline.get("id", "")).strip()
       if not pipeline_id:
           raise SystemExit("job-token response did not provide a pipeline ID")
-      if job_source != "push":
-          raise SystemExit("eligible mirror evidence requires a trusted push pipeline from the neutral worker")
+      if job_source not in {"push", "pipeline"}:
+          raise SystemExit("eligible mirror evidence requires a trusted mirror push or controller pipeline")
 
       receipt = {
           "schema_version": 1,
