@@ -84,8 +84,9 @@ def test_freshness_requires_live_dual_provider_ref_observation():
     assert 'observe_remote_ref(' in mirror_block
     assert 'gitlab_remote_sha' in mirror_block
     assert '"gitlab_sha": gitlab_remote_sha' in mirror_block
-    assert '"receipt_timestamp": observed_at' in mirror_block
-    assert 'job_source == "push"' not in mirror_block
+    assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
+    assert '"observed_at": observed_at' in mirror_block
+    assert 'job_source != "push"' in mirror_block
     assert '1970-01-01T00:00:00+00:00' not in mirror_block
 
 def test_python_governance_job_installs_git_for_root_regression():
