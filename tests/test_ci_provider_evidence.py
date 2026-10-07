@@ -1,4 +1,4 @@
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 from datetime import datetime, timedelta, timezone
 import json
@@ -153,3 +153,18 @@ def test_comparison_rejects_context_identity_mismatch(github_changes, gitlab_cha
     github = ev('github', **github_changes)
     gitlab = ev('gitlab', parity='HEALTHY', **gitlab_changes)
     assert compare_provider_evidence(github, gitlab).disposition is EvidenceDisposition.DISCREPANCY_BLOCKED
+
+def test_validate_rejects_result_tamper_after_provenance_binding():
+    record = ev('gitlab', parity='HEALTHY')
+    tampered = replace(record, result='FAIL')
+    with pytest.raises(ValueError, match='provenance'):
+        validate_evidence(tampered, now=NOW)
+
+
+def test_schema_rejects_non_sha_ci_config_revision():
+    schema = json.loads(SCHEMA.read_text(encoding='utf-8'))
+    data = asdict(ev('gitlab', parity='HEALTHY'))
+    data['timestamp'] = NOW.isoformat()
+    data['ci_config_revision'] = 'not-a-git-sha'
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(data, schema)

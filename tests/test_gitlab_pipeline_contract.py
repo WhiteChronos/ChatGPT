@@ -91,11 +91,13 @@ def test_python_governance_job_installs_git_for_root_regression():
 
 def test_pipeline_binds_observed_gitlab_project_identity():
     body = text()
-    assert 'CI_PROJECT_ID' in body
-    assert 'CI_PROJECT_PATH' in body
-    assert '"gitlab_project_id": int(os.environ["CI_PROJECT_ID"])' in body
-    assert '"gitlab_project_path": os.environ["CI_PROJECT_PATH"]' in body
-    assert '"repository_identity": os.environ["CI_PROJECT_PATH"]' in body
+    assert 'git remote get-url origin' in body
+    assert 'urlsplit' in body
+    assert 'chronoswhite-group/ChronosWhite-project' in body
+    assert '"gitlab_project_path": observed_project_path' in body
+    assert '"repository_identity": observed_project_path' in body
+    assert 'os.environ["CI_PROJECT_PATH"]' not in body
+    assert 'os.environ["CI_PROJECT_ID"]' not in body
 
 
 def test_pipeline_canonical_github_remote_is_not_user_overridable():
