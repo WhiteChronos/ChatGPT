@@ -140,10 +140,16 @@ therefore:
    `CI_JOB_TOKEN`;
 3. requires the token-bound job's project ID, commit SHA, ref and pipeline ID to
    match the checkout and provisioned policy; and
-4. treats freshness as push-derived only when the token-bound job reports
-   `source = push`.
+4. observes the authoritative GitHub branch tip and the actual GitLab `origin`
+   branch tip live during the job; and
+5. requires GitHub tip = GitLab tip = checkout HEAD before parity can be
+   `HEALTHY`.
 
-Any mismatch fails closed before provider evidence is eligible.
+Freshness is therefore the timestamp of this live dual-provider observation,
+not the job creation time or pipeline trigger type. Retrying or manually
+starting a pipeline cannot manufacture freshness: it must re-observe both
+providers and prove the exact same current SHA again. Any mismatch fails closed
+before provider evidence is eligible.
 
 ## Failure handling
 
