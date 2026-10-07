@@ -176,3 +176,14 @@ def test_schema_rejects_non_sha_ci_config_revision():
     data['ci_config_revision'] = 'not-a-git-sha'
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(data, schema)
+
+def test_comparison_rejects_wrong_provider_in_github_slot():
+    github_slot = ev('local', repository_identity='WhiteChronos/ChatGPT')
+    gitlab = ev('gitlab', parity='HEALTHY')
+    assert compare_provider_evidence(github_slot, gitlab).disposition is EvidenceDisposition.DISCREPANCY_BLOCKED
+
+
+def test_comparison_rejects_wrong_provider_in_gitlab_slot():
+    github = ev('github')
+    gitlab_slot = ev('github', parity='HEALTHY', repository_identity='chronoswhite-group/ChronosWhite-project')
+    assert compare_provider_evidence(github, gitlab_slot).disposition is EvidenceDisposition.DISCREPANCY_BLOCKED

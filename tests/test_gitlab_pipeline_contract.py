@@ -155,3 +155,35 @@ def test_gitlab_ref_probe_uses_remote_name_not_credential_bearing_url():
     mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
     assert '["git", "ls-remote", "--exit-code", "origin", full_ref]' in mirror_block
     assert '["git", "ls-remote", "--exit-code", origin_url, full_ref]' not in mirror_block
+
+def test_pipeline_uses_bounded_infrastructure_retry_policy():
+    data = yaml.safe_load(text())
+    retry = data['default']['retry']
+    assert retry['max'] == 1
+    assert set(retry['when']) == {'api_failure', 'runner_system_failure', 'scheduler_failure'}
+
+
+def test_broker_clears_node_control_environment():
+    body = text()
+    broker_block = body.split('\nbroker:\n', 1)[1].split('\ncontingency-evidence:\n', 1)[0]
+    assert 'unset NODE_OPTIONS' in broker_block
+    assert 'unset NODE_PATH' in broker_block
+
+
+def test_pipeline_requires_neutral_worker_receipt_contract():
+    body = text()
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    for name in (
+        'WHITECHRONOS_MIRROR_TRANSPORT',
+        'WHITECHRONOS_MIRROR_SOURCE_REPOSITORY',
+        'WHITECHRONOS_MIRROR_TARGET_PROJECT',
+        'WHITECHRONOS_MIRROR_REF',
+        'WHITECHRONOS_MIRROR_SOURCE_SHA',
+        'WHITECHRONOS_MIRROR_TARGET_SHA',
+        'WHITECHRONOS_MIRROR_TIMESTAMP',
+        'WHITECHRONOS_MIRROR_RECEIPT_SHA256',
+    ):
+        assert name in mirror_block
+    assert 'job_source != "push"' in mirror_block
+    assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
+    assert 'mirror receipt digest mismatch' in mirror_block
