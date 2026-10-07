@@ -115,12 +115,12 @@ python plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py \
   --repo-root . \
   --source-url https://github.com/WhiteChronos/ChatGPT.git \
   --target-url https://gitlab.com/chronoswhite-group/ChronosWhite-project.git \
-  --target-credential-helper /absolute/path/to/git-credential-whitechronos \
+  --target-credential-helper manager \
   --ref main \
   --receipt mirror-receipt.json
 ```
 
-The network GitLab target requires an explicit executable credential-helper path.
+The network GitLab target requires an explicit credential helper. The standard Git for Windows / GCM selector `manager` is explicitly allowed; alternatively, an absolute executable helper path may be supplied.
 The worker clears inherited Git/SSH controls and applies the helper only through
 per-command `git -c credential.helper=...` settings after first clearing the
 helper list. Relative helper names, shell snippets, whitespace-bearing values,
