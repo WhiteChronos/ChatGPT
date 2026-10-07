@@ -125,19 +125,19 @@ def _mirror_receipt_digest(receipt: dict[str, object]) -> str:
 
 def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
     digest = _mirror_receipt_digest(receipt)
-    variables = {
-        "WHITECHRONOS_MIRROR_TRANSPORT": receipt["transport"],
-        "WHITECHRONOS_MIRROR_SOURCE_REPOSITORY": receipt["source_repository"],
-        "WHITECHRONOS_MIRROR_TARGET_PROJECT": receipt["target_project_path"],
-        "WHITECHRONOS_MIRROR_REF": receipt["ref"],
-        "WHITECHRONOS_MIRROR_SOURCE_SHA": receipt["source_sha"],
-        "WHITECHRONOS_MIRROR_TARGET_SHA": receipt["target_sha"],
-        "WHITECHRONOS_MIRROR_TIMESTAMP": receipt["timestamp"],
-        "WHITECHRONOS_MIRROR_RECEIPT_SHA256": digest,
+    inputs = {
+        "mirror_transport": receipt["transport"],
+        "mirror_source_repository": receipt["source_repository"],
+        "mirror_target_project": receipt["target_project_path"],
+        "mirror_ref": receipt["ref"],
+        "mirror_source_sha": receipt["source_sha"],
+        "mirror_target_sha": receipt["target_sha"],
+        "mirror_timestamp": receipt["timestamp"],
+        "mirror_receipt_sha256": digest,
     }
     options: list[str] = []
-    for key, value in variables.items():
-        options.extend(["-o", f"ci.variable={key}={value}"])
+    for key, value in inputs.items():
+        options.extend(["-o", f"ci.input={key}={value}"])
     return options
 
 
