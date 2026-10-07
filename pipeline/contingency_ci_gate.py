@@ -4,6 +4,7 @@ import argparse
 from dataclasses import asdict, dataclass
 import glob
 import json
+import os
 from pathlib import Path
 import subprocess
 
@@ -58,6 +59,28 @@ def commands_for_profile(profile: str) -> tuple[GateCommand, ...]:
     raise ValueError(f"unknown contingency profile: {profile}")
 
 
+def _safe_command_environment() -> dict[str, str]:
+    env = dict(os.environ)
+    blocked_exact = {
+        "PYTHONPATH",
+        "PYTHONHOME",
+        "PYTHONSTARTUP",
+        "PYTHONINSPECT",
+        "NODE_OPTIONS",
+        "NODE_PATH",
+    }
+    for key in tuple(env):
+        if (
+            key in blocked_exact
+            or key.startswith("PYTEST_")
+            or key.startswith("GIT_")
+            or key.startswith("SSH_")
+        ):
+            env.pop(key, None)
+    env["PYTHONNOUSERSITE"] = "1"
+    return env
+
+
 def _expanded_argv(repo_root: Path, argv: tuple[str, ...]) -> list[str]:
     expanded: list[str] = []
     for value in argv:
@@ -72,9 +95,18 @@ def _expanded_argv(repo_root: Path, argv: tuple[str, ...]) -> list[str]:
 def run_profile(repo_root: Path, profile: str) -> GateResult:
     repo_root = Path(repo_root).resolve()
     results: list[GateCommandResult] = []
+    first_failure: int | None = None
+    safe_env = _safe_command_environment()
     for index, command in enumerate(commands_for_profile(profile)):
         argv = _expanded_argv(repo_root, command.argv)
-        proc = subprocess.run(argv, cwd=repo_root, check=False, text=True, capture_output=True)
+        proc = subprocess.run(
+            argv,
+            cwd=repo_root,
+            check=False,
+            text=True,
+            capture_output=True,
+            env=safe_env,
+        )
         results.append(
             GateCommandResult(
                 name=command.name,
@@ -84,9 +116,9 @@ def run_profile(repo_root: Path, profile: str) -> GateResult:
                 stderr=proc.stderr,
             )
         )
-        if proc.returncode != 0:
-            return GateResult(profile, False, index, tuple(results))
-    return GateResult(profile, True, None, tuple(results))
+        if proc.returncode != 0 and first_failure is None:
+            first_failure = index
+    return GateResult(profile, first_failure is None, first_failure, tuple(results))
 
 
 def _dry_run_payload(profile: str) -> dict[str, object]:

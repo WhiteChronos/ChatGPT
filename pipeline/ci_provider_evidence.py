@@ -114,6 +114,16 @@ def compare_provider_evidence(
     github: CIProviderEvidence | None,
     gitlab: CIProviderEvidence | None,
 ) -> EvidenceComparison:
+    if github is not None and github.provider != "github":
+        return EvidenceComparison(
+            EvidenceDisposition.DISCREPANCY_BLOCKED,
+            'GitHub evidence slot requires provider="github"',
+        )
+    if gitlab is not None and gitlab.provider != "gitlab":
+        return EvidenceComparison(
+            EvidenceDisposition.DISCREPANCY_BLOCKED,
+            'GitLab evidence slot requires provider="gitlab"',
+        )
     if gitlab is not None and gitlab.mirror_parity_status != "HEALTHY":
         return EvidenceComparison(
             EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE,

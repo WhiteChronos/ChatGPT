@@ -113,6 +113,8 @@ must not contain an embedded username/token/password.
 Success requires all of the following:
 
 - the ref is policy-eligible;
+- for a network GitLab target, the worker attaches a non-secret mirror receipt
+  contract to the push through GitLab `ci.variable` push options;
 - any pre-existing target ref is an ancestor of the source ref;
 - the push completes without force;
 - post-sync target SHA exactly equals source SHA;
@@ -153,11 +155,13 @@ therefore:
 6. probes the GitLab ref through the local remote name `origin`, so a
    credential-bearing URL is not copied into the process arguments.
 
-Freshness is therefore the timestamp of this live dual-provider observation,
-not the job creation time or pipeline trigger type. Retrying or manually
-starting a pipeline cannot manufacture freshness: it must re-observe both
-providers and prove the exact same current SHA again. Any mismatch fails closed
-before provider evidence is eligible.
+Freshness is bound to the neutral worker receipt timestamp carried by the
+worker's push options. The parity job accepts it only when the job-token API
+proves the job source is `push`, the receipt digest matches, its source/target
+identities and ref match policy, and receipt source/target SHAs equal the live
+GitHub tip, live GitLab tip and checkout HEAD. Manual, API and scheduled
+pipelines remain diagnostic only because they cannot satisfy the trusted
+push-source plus receipt contract.
 
 ## Failure handling
 

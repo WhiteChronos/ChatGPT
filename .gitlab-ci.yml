@@ -3,6 +3,14 @@ stages:
   - validate
   - evidence
 
+default:
+  retry:
+    max: 1
+    when:
+      - api_failure
+      - runner_system_failure
+      - scheduler_failure
+
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
@@ -100,6 +108,43 @@ mirror-parity:
       pipeline_id = str(pipeline.get("id", "")).strip()
       if not pipeline_id:
           raise SystemExit("job-token response did not provide a pipeline ID")
+      if job_source != "push":
+          raise SystemExit("eligible mirror evidence requires a trusted push pipeline from the neutral worker")
+
+      receipt = {
+          "schema_version": 1,
+          "transport": os.environ.get("WHITECHRONOS_MIRROR_TRANSPORT", ""),
+          "source_repository": os.environ.get("WHITECHRONOS_MIRROR_SOURCE_REPOSITORY", ""),
+          "target_project_path": os.environ.get("WHITECHRONOS_MIRROR_TARGET_PROJECT", ""),
+          "ref": os.environ.get("WHITECHRONOS_MIRROR_REF", ""),
+          "source_sha": os.environ.get("WHITECHRONOS_MIRROR_SOURCE_SHA", "").lower(),
+          "target_sha": os.environ.get("WHITECHRONOS_MIRROR_TARGET_SHA", "").lower(),
+          "timestamp": os.environ.get("WHITECHRONOS_MIRROR_TIMESTAMP", ""),
+      }
+      receipt_digest = os.environ.get("WHITECHRONOS_MIRROR_RECEIPT_SHA256", "").lower()
+      if not receipt_digest:
+          raise SystemExit("neutral worker mirror receipt digest is required")
+      import hashlib
+      import hmac
+      expected_receipt_digest = hashlib.sha256(
+          json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode("utf-8")
+      ).hexdigest()
+      if not hmac.compare_digest(receipt_digest, expected_receipt_digest):
+          raise SystemExit("mirror receipt digest mismatch")
+      if receipt["transport"] != "neutral_worker":
+          raise SystemExit("mirror receipt transport mismatch")
+      if receipt["source_repository"] != policy["source_repository"]:
+          raise SystemExit("mirror receipt source repository mismatch")
+      if receipt["target_project_path"] != expected_project_path:
+          raise SystemExit("mirror receipt target project mismatch")
+      if receipt["ref"] != trusted_ref:
+          raise SystemExit("mirror receipt ref mismatch")
+      if receipt["source_sha"] != head_sha or receipt["target_sha"] != head_sha:
+          raise SystemExit("mirror receipt SHA mismatch")
+      try:
+          datetime.fromisoformat(str(receipt["timestamp"]).replace("Z", "+00:00"))
+      except ValueError as exc:
+          raise SystemExit("mirror receipt timestamp is invalid") from exc
 
       observation = observe_remote_ref(
           "https://github.com/WhiteChronos/ChatGPT.git",
@@ -167,7 +212,7 @@ mirror-parity:
           "ci_subject_sha": head_sha,
           "github_available": observation.available,
           "gitlab_available": gitlab_available,
-          "receipt_timestamp": observed_at,
+          "receipt_timestamp": receipt["timestamp"],
       }
       Path("mirror-input.json").write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
       PY
@@ -219,6 +264,8 @@ broker:
     - apt-get install -y --no-install-recommends git
   script:
     - |
+      unset NODE_OPTIONS
+      unset NODE_PATH
       set +e
       node --test plugins/subagent-broker/tests/*.test.mjs > broker-test.txt 2>&1
       status=$?

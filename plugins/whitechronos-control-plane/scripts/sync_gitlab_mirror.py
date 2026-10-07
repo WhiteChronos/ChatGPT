@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -102,6 +103,44 @@ def _validate_mirror_direction(source_url: str, target_url: str, policy) -> None
         raise ValueError("mirror direction must be canonical GitHub source -> GitLab target")
 
 
+def _mirror_receipt_claim(*, policy, ref: str, source_sha: str, timestamp: str) -> dict[str, object]:
+    if not policy.gitlab_project_path:
+        raise ValueError("mirror receipt requires a provisioned GitLab project")
+    return {
+        "schema_version": 1,
+        "transport": "neutral_worker",
+        "source_repository": policy.source_repository,
+        "target_project_path": policy.gitlab_project_path,
+        "ref": ref,
+        "source_sha": source_sha.lower(),
+        "target_sha": source_sha.lower(),
+        "timestamp": timestamp,
+    }
+
+
+def _mirror_receipt_digest(receipt: dict[str, object]) -> str:
+    encoded = json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
+    digest = _mirror_receipt_digest(receipt)
+    variables = {
+        "WHITECHRONOS_MIRROR_TRANSPORT": receipt["transport"],
+        "WHITECHRONOS_MIRROR_SOURCE_REPOSITORY": receipt["source_repository"],
+        "WHITECHRONOS_MIRROR_TARGET_PROJECT": receipt["target_project_path"],
+        "WHITECHRONOS_MIRROR_REF": receipt["ref"],
+        "WHITECHRONOS_MIRROR_SOURCE_SHA": receipt["source_sha"],
+        "WHITECHRONOS_MIRROR_TARGET_SHA": receipt["target_sha"],
+        "WHITECHRONOS_MIRROR_TIMESTAMP": receipt["timestamp"],
+        "WHITECHRONOS_MIRROR_RECEIPT_SHA256": digest,
+    }
+    options: list[str] = []
+    for key, value in variables.items():
+        options.extend(["-o", f"ci.variable={key}={value}"])
+    return options
+
+
 def _remote_sha(url: str, full_ref: str) -> str | None:
     result = _run_git(["ls-remote", "--exit-code", url, full_ref], check=False)
     if result.returncode == 2:
@@ -143,6 +182,13 @@ def sync_ref(
         source_sha = _run_git(["rev-parse", source_local_ref], cwd=bare).stdout.strip().lower()
         if not _SHA_RE.fullmatch(source_sha):
             raise RuntimeError("source ref did not resolve to a valid commit SHA")
+        receipt_timestamp = datetime.now(timezone.utc).isoformat()
+        receipt_claim = _mirror_receipt_claim(
+            policy=policy,
+            ref=ref,
+            source_sha=source_sha,
+            timestamp=receipt_timestamp,
+        )
 
         target_before = _remote_sha(target_url, full_ref)
         if target_before:
@@ -155,7 +201,11 @@ def sync_ref(
         if dry_run:
             target_after = target_before
         else:
-            _run_git(["push", target_url, f"{source_local_ref}:{full_ref}"], cwd=bare)
+            push_args = ["push"]
+            if _is_network_remote(target_url):
+                push_args.extend(_mirror_push_options(receipt_claim))
+            push_args.extend([target_url, f"{source_local_ref}:{full_ref}"])
+            _run_git(push_args, cwd=bare)
             target_after = _remote_sha(target_url, full_ref)
             if target_after != source_sha:
                 raise RuntimeError("target mirror SHA does not match authoritative source after sync")
@@ -165,15 +215,12 @@ def sync_ref(
             raise RuntimeError("authoritative source ref changed during sync; success receipt refused")
 
     receipt = {
-        "schema_version": 1,
-        "transport": "neutral_worker",
+        **receipt_claim,
+        "receipt_sha256": _mirror_receipt_digest(receipt_claim),
         "source_identity": _identity(source_url),
         "target_identity": _identity(target_url),
-        "ref": ref,
-        "source_sha": source_sha,
         "target_sha": target_after,
         "target_sha_before": target_before,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
         "dry_run": bool(dry_run),
     }
     receipt_path = Path(receipt_path)
