@@ -103,6 +103,20 @@ current GitLab `origin` branch ref with sanitized Git execution and requires
 GitHub tip = GitLab tip = checkout HEAD. The dual-observation time is the
 freshness timestamp; a retry must therefore re-prove current exact-SHA parity.
 
+**Important A-04 — Git transport environment remained partially injectable.**  
+The initial hardening removed known configuration variables but still allowed
+other executable Git/SSH controls such as `GIT_ASKPASS` and `SSH_ASKPASS`.
+The neutral worker now strips every inherited `GIT_*` and `SSH_*` variable,
+sets its own non-interactive Git controls, and rejects option-like/control-
+character remote arguments before any Git subprocess runs.
+
+**Important A-05 — GitLab origin URL could contain credentials in subprocess argv.**  
+The runner's configured `origin` URL can contain ephemeral authentication.
+The parity job still uses the origin URL only inside the Python process to
+validate host/path identity, but Git probes now execute `git ls-remote origin`
+rather than passing that URL in argv. This keeps remote authentication in Git's
+local remote configuration instead of process arguments.
+
 No standing Critical or Important Arena finding remains in the local
 implementation review.
 
