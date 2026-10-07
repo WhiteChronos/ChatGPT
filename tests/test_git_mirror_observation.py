@@ -44,3 +44,33 @@ def test_observe_missing_ref_is_unavailable(tmp_path):
 def test_observe_rejects_inline_https_credentials():
     with pytest.raises(ValueError):
         observe_remote_ref('https://user:secret@example.com/repo.git', 'main')
+
+def test_observe_rejects_option_like_remote_before_git():
+    with pytest.raises(ValueError, match='remote'):
+        observe_remote_ref('--upload-pack=touch /tmp/marker', 'main')
+
+
+def test_observe_scrubs_git_control_environment(monkeypatch):
+    captured = {}
+
+    def fake_run(argv, **kwargs):
+        captured['env'] = kwargs.get('env')
+        return subprocess.CompletedProcess(argv, 2, '', '')
+
+    monkeypatch.setenv('GIT_CONFIG_COUNT', '1')
+    monkeypatch.setenv('GIT_CONFIG_KEY_0', 'url.file:///tmp/evil.insteadOf')
+    monkeypatch.setenv('GIT_CONFIG_VALUE_0', 'https://github.com/')
+    monkeypatch.setenv('GIT_SSH_COMMAND', 'touch /tmp/marker')
+    monkeypatch.setenv('GIT_PROXY_COMMAND', 'touch /tmp/proxy-marker')
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+
+    obs = observe_remote_ref('https://github.com/WhiteChronos/ChatGPT.git', 'main')
+
+    assert obs.available is False
+    env = captured['env']
+    assert env is not None
+    assert 'GIT_CONFIG_COUNT' not in env
+    assert not any(key.startswith('GIT_CONFIG_KEY_') for key in env)
+    assert not any(key.startswith('GIT_CONFIG_VALUE_') for key in env)
+    assert 'GIT_SSH_COMMAND' not in env
+    assert 'GIT_PROXY_COMMAND' not in env

@@ -2,6 +2,7 @@ from importlib.util import module_from_spec, spec_from_file_location
 import json
 from pathlib import Path
 import subprocess
+import sys
 
 import pytest
 
@@ -115,3 +116,46 @@ def test_source_ref_is_never_mutated(tmp_path):
 
 def test_script_contains_no_force_push():
     assert 'git push --force' not in SCRIPT.read_text(encoding='utf-8')
+
+def test_reversed_network_endpoints_are_rejected_before_git(tmp_path, monkeypatch):
+    m = load_module()
+
+    def fail_git(*args, **kwargs):
+        raise AssertionError('git must not run before direction validation')
+
+    monkeypatch.setattr(m, '_run_git', fail_git)
+    with pytest.raises(ValueError, match='direction'):
+        m.sync_ref(
+            ROOT,
+            'https://gitlab.com/chronoswhite-group/ChronosWhite-project.git',
+            'https://github.com/WhiteChronos/ChatGPT.git',
+            'main',
+            tmp_path / 'r.json',
+        )
+
+
+def test_documented_entrypoint_runs_from_repository_root():
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), '--help'],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert 'ModuleNotFoundError' not in result.stderr
+
+
+def test_source_is_reobserved_after_push_before_success_receipt(tmp_path, monkeypatch):
+    m = load_module()
+    _, source, target = init_world(tmp_path)
+    original_remote_sha = m._remote_sha
+
+    def moving_source(url, full_ref):
+        if url == str(source):
+            return 'b' * 40
+        return original_remote_sha(url, full_ref)
+
+    monkeypatch.setattr(m, '_remote_sha', moving_source)
+    with pytest.raises(RuntimeError, match='authoritative source'):
+        m.sync_ref(ROOT, str(source), str(target), 'main', tmp_path / 'r.json')

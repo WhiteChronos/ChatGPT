@@ -5,6 +5,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 PIPELINE = ROOT / '.gitlab-ci.yml'
+RUNBOOK = ROOT / 'docs' / 'runbooks' / 'gitlab-contingency-ci.md'
+REVIEW = ROOT / 'docs' / 'superpowers' / 'reviews' / '2026-10-05-whitechronos-gitlab-contingency-ci-review.md'
 
 
 def text():
@@ -80,3 +82,47 @@ def test_non_push_pipeline_cannot_fabricate_fresh_mirror_receipt():
     body = PIPELINE.read_text(encoding='utf-8')
     assert 'CI_PIPELINE_SOURCE' in body
     assert '1970-01-01T00:00:00+00:00' in body
+
+def test_python_governance_job_installs_git_for_root_regression():
+    body = text()
+    block = body.split('\npython-governance:\n', 1)[1].split('\nbroker:\n', 1)[0]
+    assert 'apt-get install -y --no-install-recommends git' in block
+
+
+def test_pipeline_binds_observed_gitlab_project_identity():
+    body = text()
+    assert 'CI_PROJECT_ID' in body
+    assert 'CI_PROJECT_PATH' in body
+    assert '"gitlab_project_id": int(os.environ["CI_PROJECT_ID"])' in body
+    assert '"gitlab_project_path": os.environ["CI_PROJECT_PATH"]' in body
+    assert '"repository_identity": os.environ["CI_PROJECT_PATH"]' in body
+
+
+def test_pipeline_canonical_github_remote_is_not_user_overridable():
+    body = text()
+    assert '--remote-url "https://github.com/WhiteChronos/ChatGPT.git"' in body
+    assert '$WHITECHRONOS_GITHUB_REMOTE' not in body
+
+
+def test_gate_failures_propagate_to_pipeline_status():
+    body = text()
+    assert 'then true; else true' not in body
+    assert body.count('exit "$status"') >= 2
+    assert 'exit 1' in body
+
+
+def test_pipeline_emits_provenance_sha256():
+    assert 'provenance_sha256' in text()
+
+
+def test_runbook_protects_every_mirror_ref_class():
+    body = RUNBOOK.read_text(encoding='utf-8')
+    for pattern in ('main', 'spec/*', 'plan/*', 'feat/*', 'fix/*', 'release/*'):
+        assert pattern in body
+    assert 'transport-only write' in body.lower()
+
+
+def test_review_records_external_workflow_run_provenance():
+    body = REVIEW.read_text(encoding='utf-8')
+    assert '| Run ID |' in body
+    assert 'https://github.com/WhiteChronos/ChatGPT/actions/runs/' in body

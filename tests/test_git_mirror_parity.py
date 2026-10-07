@@ -1,6 +1,9 @@
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import json
+import subprocess
+import sys
 
 import pytest
 
@@ -75,3 +78,46 @@ def test_unavailable_provider_is_ineligible():
     r = evaluate_mirror_parity(value(github_available=False, github_sha=None), policy())
     assert r.status is MirrorParityStatus.UNAVAILABLE
     assert r.evidence_eligible is False
+
+def test_ineligible_ref_never_becomes_healthy():
+    r = evaluate_mirror_parity(value(ref_name='subagent/temp'), policy())
+    assert r.status is MirrorParityStatus.DIVERGED
+    assert r.evidence_eligible is False
+
+
+def test_cli_uses_current_clock_instead_of_replayed_evaluated_at(tmp_path):
+    old = '2000-01-01T00:00:00+00:00'
+    payload = {
+        'github_repository': 'WhiteChronos/ChatGPT',
+        'gitlab_project_id': 86465539,
+        'gitlab_project_path': 'chronoswhite-group/ChronosWhite-project',
+        'ref_name': 'main',
+        'github_sha': SHA,
+        'gitlab_sha': SHA,
+        'ci_subject_sha': SHA,
+        'github_available': True,
+        'gitlab_available': True,
+        'receipt_timestamp': old,
+        'evaluated_at': old,
+    }
+    evidence = tmp_path / 'mirror-input.json'
+    evidence.write_text(json.dumps(payload), encoding='utf-8')
+    result = subprocess.run(
+        [
+            sys.executable,
+            'pipeline/git_mirror_parity.py',
+            '--input',
+            str(evidence),
+            '--policy',
+            str(POLICY),
+            '--json',
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    data = json.loads(result.stdout)
+    assert result.returncode == 2
+    assert data['status'] == 'STALE'
+    assert data['evidence_eligible'] is False
