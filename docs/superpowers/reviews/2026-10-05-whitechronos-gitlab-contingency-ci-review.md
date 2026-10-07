@@ -348,6 +348,79 @@ mirror binding remains an external credential/host gate.
 This document commit records evidence only; it does not modify source behavior
 or grant merge/release authority.
 
+### Credential-helper transport hardening head
+
+A final Full Arena transport pass identified one additional fail-closed
+requirement: once inherited Git configuration is disabled, the network GitLab
+target must not silently fall back to an ambient credential mechanism. TDD added
+an explicit credential-helper contract before implementation.
+
+RED head:
+
+```text
+credential_helper_red = 350874143c0e78c98a221a8439f0a39c606296a5
+Runtime Foundation    = 6 failed, 75 passed
+```
+
+GREEN source head:
+
+```text
+credential_helper_green = 5bcd01af92ec0bb9be70f058dfe165a485c2a226
+Runtime Foundation       = 81 passed
+full repository regression = 257 passed
+Subagent Broker compatibility = 5 passed
+Awesome Codex integration = 3 passed
+Engineering Compatibility = 39 passed
+Protocol Zero = 4 passed
+```
+
+All five GitHub PR workflows for the GREEN source head concluded `success`:
+
+| Run ID | Workflow | Conclusion | Canonical run |
+| ---: | --- | --- | --- |
+| 37566226279 | WhiteChronos Runtime Foundation | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37566226279 |
+| 37566226237 | Engineering Governance | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37566226237 |
+| 37566226230 | Document Governance v4.7 | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37566226230 |
+| 37566226267 | Glossary Engine | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37566226267 |
+| 37566226254 | GitHub Control Plane Policy | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37566226254 |
+
+The worker now requires an explicit absolute executable credential-helper path
+for a network GitLab target, clears any inherited helper chain, scopes the
+selected helper to each Git command, disables interactive credential prompting,
+and rejects relative names, shell snippets, whitespace-bearing values and
+non-executable paths before Git network operations.
+
+The final Full Arena was the repository ChatGPT adaptation: 16 sequential
+strategy cards, 4 elimination rounds, bracket `16 -> 8 -> 4 -> 2 -> 1`.
+No independent subagents were available or claimed. The upstream-equivalent
+91-call estimate is planning metadata only, not a statement of calls executed.
+
+The winning architecture remains:
+
+```text
+GitHub authority
+  -> independent neutral Git worker
+  -> exact Git object/ref push
+  -> typed GitLab CI inputs carrying receipt metadata
+  -> GitLab job-token runtime identity + live ref observation
+  -> parity / validation / evidence only
+```
+
+Rejected alternatives remain GitHub-Actions-only mirroring (couples the
+contingency plane to the primary CI), repository-API reconstruction (changes
+commit identity), one-time import (no ongoing parity), and tier-gated native
+pull mirroring as a required dependency.
+
+A final automated Codex re-review was requested after this hardening, but the
+Codex review service reported its review-usage limit and did not execute a new
+review. This is recorded as a tooling limitation, not as approval. All 25
+existing PR review threads are resolved.
+
+The live environment remains intentionally distinct from source verification:
+the connected GitLab project is still empty and no external credential-helper
+binding/independent worker host has been installed by this ChatGPT runtime.
+Therefore no live-mirror or production claim is made.
+
 ## 8. Final gate
 
 The source implementation is fully verified for the repository scope. The live
