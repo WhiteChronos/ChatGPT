@@ -29,7 +29,9 @@ mirror-parity:
       python - <<'PY'
       import json
       import os
+      import re
       import subprocess
+      from datetime import datetime, timezone
       from pathlib import Path
       from urllib.parse import urlsplit
       from urllib.request import Request, urlopen
@@ -103,6 +105,33 @@ mirror-parity:
           "https://github.com/WhiteChronos/ChatGPT.git",
           trusted_ref,
       )
+      full_ref = f"refs/heads/{trusted_ref}"
+      gitlab_probe = subprocess.run(
+          ["git", "ls-remote", "--exit-code", origin_url, full_ref],
+          check=False,
+          text=True,
+          capture_output=True,
+          env=safe_env,
+      )
+      gitlab_remote_sha = None
+      gitlab_available = False
+      if gitlab_probe.returncode == 0:
+          lines = [line.strip() for line in gitlab_probe.stdout.splitlines() if line.strip()]
+          if len(lines) != 1:
+              raise SystemExit("GitLab remote observation returned malformed output")
+          parts = lines[0].split()
+          if (
+              len(parts) != 2
+              or parts[1] != full_ref
+              or not re.fullmatch(r"[0-9a-fA-F]{40}", parts[0])
+          ):
+              raise SystemExit("GitLab remote observation returned malformed output")
+          gitlab_remote_sha = parts[0].lower()
+          gitlab_available = True
+      elif gitlab_probe.returncode != 2:
+          gitlab_available = False
+
+      observed_at = datetime.now(timezone.utc).isoformat()
       Path("github-observation.json").write_text(
           json.dumps({
               "remote_url": observation.remote_url,
@@ -121,6 +150,8 @@ mirror-parity:
           "ref_name": trusted_ref,
           "source": job_source,
           "sha": head_sha,
+          "gitlab_remote_sha": gitlab_remote_sha,
+          "observed_at": observed_at,
       }
       Path("gitlab-runtime-identity.json").write_text(
           json.dumps(runtime_identity, sort_keys=True),
@@ -132,15 +163,11 @@ mirror-parity:
           "gitlab_project_path": observed_project_path,
           "ref_name": trusted_ref,
           "github_sha": observation.sha,
-          "gitlab_sha": head_sha,
+          "gitlab_sha": gitlab_remote_sha,
           "ci_subject_sha": head_sha,
           "github_available": observation.available,
-          "gitlab_available": True,
-          "receipt_timestamp": (
-              str(job.get("created_at"))
-              if job_source == "push" and job.get("created_at")
-              else "1970-01-01T00:00:00+00:00"
-          ),
+          "gitlab_available": gitlab_available,
+          "receipt_timestamp": observed_at,
       }
       Path("mirror-input.json").write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
       PY

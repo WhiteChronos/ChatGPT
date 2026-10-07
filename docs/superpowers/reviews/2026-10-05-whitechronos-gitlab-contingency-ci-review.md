@@ -94,6 +94,15 @@ changed so only `push` pipelines use the pipeline creation time. Non-push source
 use an epoch receipt timestamp and therefore become `STALE`/ineligible while
 remaining useful for diagnostics. GREEN: pipeline contract suite.
 
+**Important A-03 — trigger-derived freshness was replayable on job retry.**  
+A retried job from an old push pipeline can have a new job creation timestamp,
+so using job creation time as mirror freshness could renew stale evidence without
+a new synchronization. The final design no longer trusts trigger timestamps for
+freshness. The parity job live-observes the current GitHub branch ref and the
+current GitLab `origin` branch ref with sanitized Git execution and requires
+GitHub tip = GitLab tip = checkout HEAD. The dual-observation time is the
+freshness timestamp; a retry must therefore re-prove current exact-SHA parity.
+
 No standing Critical or Important Arena finding remains in the local
 implementation review.
 
