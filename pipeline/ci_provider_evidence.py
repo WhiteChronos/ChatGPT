@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import StrEnum
+import hashlib
+import json
 import re
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
@@ -22,6 +24,23 @@ class CIProviderEvidence:
     ci_config_revision: str
     mirror_parity_status: str
     attempt: int
+    provenance_sha256: str
+
+
+def _provenance_sha256(record: CIProviderEvidence) -> str:
+    payload = {
+        key: getattr(record, key)
+        for key in (
+            "provider",
+            "repository_identity",
+            "subject_sha",
+            "pipeline_or_run_id",
+            "gate_name",
+            "ci_config_revision",
+        )
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 class EvidenceDisposition(StrEnum):
@@ -42,6 +61,10 @@ class EvidenceComparison:
 def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None) -> None:
     if record.provider not in _PROVIDERS:
         raise ValueError(f"unknown CI provider: {record.provider}")
+    if not re.fullmatch(r"[0-9a-fA-F]{64}", record.provenance_sha256):
+        raise ValueError("provenance_sha256 must be a 64-character hexadecimal SHA-256")
+    if record.provenance_sha256.lower() != _provenance_sha256(record):
+        raise ValueError("provenance_sha256 does not match evidence identity fields")
     if not record.repository_identity.strip() or not record.pipeline_or_run_id.strip() or not record.gate_name.strip():
         raise ValueError("evidence identity fields must be nonblank")
     if not _SHA_RE.fullmatch(record.subject_sha):
@@ -76,6 +99,27 @@ def compare_provider_evidence(
             EvidenceDisposition.SUBJECT_MISMATCH_BLOCKED,
             "provider evidence subjects are different commit SHAs",
         )
+    if github is not None and github.repository_identity != "WhiteChronos/ChatGPT":
+        return EvidenceComparison(
+            EvidenceDisposition.DISCREPANCY_BLOCKED,
+            "GitHub evidence repository identity is not authoritative",
+        )
+    if gitlab is not None and gitlab.repository_identity != "chronoswhite-group/ChronosWhite-project":
+        return EvidenceComparison(
+            EvidenceDisposition.DISCREPANCY_BLOCKED,
+            "GitLab evidence repository identity is not the provisioned mirror",
+        )
+    if github is not None and gitlab is not None:
+        if github.gate_name != gitlab.gate_name:
+            return EvidenceComparison(
+                EvidenceDisposition.DISCREPANCY_BLOCKED,
+                "provider evidence gate names do not match",
+            )
+        if github.ci_config_revision.lower() != gitlab.ci_config_revision.lower():
+            return EvidenceComparison(
+                EvidenceDisposition.DISCREPANCY_BLOCKED,
+                "provider CI configuration revisions do not match",
+            )
     if github is not None:
         validate_evidence(github)
     if gitlab is not None:

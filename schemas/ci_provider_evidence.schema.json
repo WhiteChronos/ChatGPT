@@ -6,7 +6,7 @@
   "required": [
     "provider", "repository_identity", "subject_sha", "pipeline_or_run_id",
     "gate_name", "result", "timestamp", "ci_config_revision",
-    "mirror_parity_status", "attempt"
+    "mirror_parity_status", "attempt", "provenance_sha256"
   ],
   "properties": {
     "provider": {"enum": ["github", "gitlab", "local"]},
@@ -18,6 +18,7 @@
     "timestamp": {"type": "string", "format": "date-time"},
     "ci_config_revision": {"type": "string", "minLength": 1},
     "mirror_parity_status": {"enum": ["HEALTHY", "STALE", "DIVERGED", "UNAVAILABLE", "NOT_APPLICABLE"]},
-    "attempt": {"type": "integer", "minimum": 1}
+    "attempt": {"type": "integer", "minimum": 1},
+    "provenance_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
   }
 }
