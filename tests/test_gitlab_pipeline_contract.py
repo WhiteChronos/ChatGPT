@@ -94,7 +94,7 @@ def test_freshness_requires_live_dual_provider_ref_observation():
     assert '"gitlab_sha": gitlab_remote_sha' in mirror_block
     assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
     assert '"observed_at": observed_at' in mirror_block
-    assert 'job_source != "push"' in mirror_block
+    assert 'job_source not in {"push", "pipeline"}' in mirror_block
     assert '1970-01-01T00:00:00+00:00' not in mirror_block
 
 def test_python_governance_job_installs_git_for_root_regression():
@@ -197,11 +197,12 @@ def test_pipeline_requires_neutral_worker_receipt_contract():
     assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
     assert 'mirror receipt digest mismatch' in mirror_block
 
-def test_pipeline_only_accepts_neutral_worker_push_trigger():
+def test_pipeline_accepts_push_and_controller_pipeline_only():
     data = pipeline_data()
     rules = data['workflow']['rules']
     assert rules == [
         {'if': '$CI_PIPELINE_SOURCE == "push"'},
+        {'if': '$CI_PIPELINE_SOURCE == "pipeline"'},
         {'when': 'never'},
     ]
 
