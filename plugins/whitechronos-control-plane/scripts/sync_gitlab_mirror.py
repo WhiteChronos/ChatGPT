@@ -49,13 +49,15 @@ def _normalize_credential_helper(value: str | None) -> str | None:
     if value is None:
         return None
     raw = value.strip()
+    if raw == "manager":
+        return raw
     if not raw or raw != value:
-        raise ValueError("credential helper must be an explicit absolute executable path")
+        raise ValueError("credential helper must be the GCM 'manager' selector or an explicit absolute executable path")
     if any(ch.isspace() for ch in raw) or any(ch in raw for ch in (";", "&", "|", "!", "$", "`", "<", ">", "\n", "\r", "\x00")):
         raise ValueError("credential helper contains unsafe shell-control characters")
     path = Path(raw)
     if not path.is_absolute():
-        raise ValueError("credential helper must be an explicit absolute executable path")
+        raise ValueError("credential helper must be the GCM 'manager' selector or an explicit absolute executable path")
     try:
         resolved = path.resolve(strict=True)
     except OSError as exc:
