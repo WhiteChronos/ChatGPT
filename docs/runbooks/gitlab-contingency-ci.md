@@ -110,6 +110,8 @@ Success requires all of the following:
 - any pre-existing target ref is an ancestor of the source ref;
 - the push completes without force;
 - post-sync target SHA exactly equals source SHA;
+- the authoritative GitHub ref is re-observed after the push and still resolves
+  to that exact source SHA before a success receipt is written;
 - the receipt records `transport = neutral_worker` and contains no secret.
 
 ## GitLab CI evidence
@@ -125,6 +127,23 @@ mirrored GitLab commit and CI subject SHA, runs the canonical repository gates,
 and writes provider-scoped evidence. A green GitLab pipeline is not an authority
 grant. GitLab evidence is eligible for corroboration only while parity is
 `HEALTHY`.
+
+### Trusted GitLab runtime identity
+
+Do not trust `CI_PROJECT_ID`, `CI_PROJECT_PATH`, `CI_COMMIT_SHA`, or
+`CI_PIPELINE_SOURCE` as standalone security evidence because GitLab pipeline
+variables have higher precedence than most predefined variables. The parity job
+therefore:
+
+1. derives the project path and commit SHA from the actual Git checkout;
+2. authenticates `GET https://gitlab.com/api/v4/job` with the current
+   `CI_JOB_TOKEN`;
+3. requires the token-bound job's project ID, commit SHA, ref and pipeline ID to
+   match the checkout and provisioned policy; and
+4. treats freshness as push-derived only when the token-bound job reports
+   `source = push`.
+
+Any mismatch fails closed before provider evidence is eligible.
 
 ## Failure handling
 

@@ -25,31 +25,120 @@ mirror-parity:
     - python -m pip install -r requirements-dev.txt
     - python -m pip check
   script:
-    - python pipeline/git_mirror_observation.py --remote-url "https://github.com/WhiteChronos/ChatGPT.git" --ref "$CI_COMMIT_REF_NAME" --json > github-observation.json || true
     - |
       python - <<'PY'
       import json
       import os
-      from datetime import datetime, timezone
+      import subprocess
       from pathlib import Path
+      from urllib.parse import urlsplit
+      from urllib.request import Request, urlopen
 
-      try:
-          observation = json.loads(Path("github-observation.json").read_text(encoding="utf-8"))
-      except Exception:
-          observation = {"available": False, "sha": None}
+      from pipeline.git_mirror_observation import observe_remote_ref
+
+      policy = json.loads(Path("governance/GITLAB_CONTINGENCY_CI_POLICY.json").read_text(encoding="utf-8"))
+      expected_project_id = int(policy["gitlab_project_id"])
+      expected_project_path = policy["gitlab_project_path"]
+      if not expected_project_path:
+          raise SystemExit("GitLab project path is not provisioned")
+
+      safe_env = {
+          key: value
+          for key in ("PATH", "HOME", "LANG", "LC_ALL", "SYSTEMROOT", "WINDIR", "TMP", "TEMP", "TMPDIR")
+          if (value := os.environ.get(key))
+      }
+      safe_env["GIT_CONFIG_NOSYSTEM"] = "1"
+      safe_env["GIT_CONFIG_GLOBAL"] = os.devnull
+      safe_env["GIT_TERMINAL_PROMPT"] = "0"
+
+      # trusted checkout identity source: git remote get-url origin
+      def git(*args):
+          return subprocess.run(
+              ["git", *args],
+              check=True,
+              text=True,
+              capture_output=True,
+              env=safe_env,
+          ).stdout.strip()
+
+      head_sha = git("rev-parse", "HEAD").lower()
+      origin_url = git("remote", "get-url", "origin")
+      if origin_url.startswith("git@gitlab.com:"):
+          observed_project_path = origin_url.split(":", 1)[1]
+      else:
+          parsed = urlsplit(origin_url)
+          if parsed.scheme != "https" or (parsed.hostname or "").lower() != "gitlab.com":
+              raise SystemExit("checkout origin is not GitLab.com")
+          observed_project_path = parsed.path.lstrip("/")
+      if observed_project_path.endswith(".git"):
+          observed_project_path = observed_project_path[:-4]
+      if observed_project_path != expected_project_path:
+          raise SystemExit("checkout project path does not match provisioned mirror policy")
+
+      token = os.environ.get("CI_JOB_TOKEN")
+      if not token:
+          raise SystemExit("CI_JOB_TOKEN is required for trusted GitLab job identity")
+      request = Request(
+          "https://gitlab.com/api/v4/job",
+          headers={"JOB-TOKEN": token, "Accept": "application/json"},
+      )
+      with urlopen(request, timeout=20) as response:
+          job = json.load(response)
+
+      pipeline = job.get("pipeline") or {}
+      commit = job.get("commit") or {}
+      if int(pipeline.get("project_id", 0)) != expected_project_id:
+          raise SystemExit("job-token project ID does not match provisioned mirror policy")
+      if str(pipeline.get("sha", "")).lower() != head_sha or str(commit.get("id", "")).lower() != head_sha:
+          raise SystemExit("job-token commit identity does not match checkout HEAD")
+      trusted_ref = str(job.get("ref", "")).strip()
+      if not trusted_ref:
+          raise SystemExit("job-token response did not provide a ref")
+      job_source = str(job.get("source", "")).strip()
+      pipeline_id = str(pipeline.get("id", "")).strip()
+      if not pipeline_id:
+          raise SystemExit("job-token response did not provide a pipeline ID")
+
+      observation = observe_remote_ref(
+          "https://github.com/WhiteChronos/ChatGPT.git",
+          trusted_ref,
+      )
+      Path("github-observation.json").write_text(
+          json.dumps({
+              "remote_url": observation.remote_url,
+              "ref_name": observation.ref_name,
+              "sha": observation.sha,
+              "observed_at": observation.observed_at,
+              "available": observation.available,
+              "reason": observation.reason,
+          }, sort_keys=True),
+          encoding="utf-8",
+      )
+      runtime_identity = {
+          "gitlab_project_id": expected_project_id,
+          "gitlab_project_path": observed_project_path,
+          "pipeline_id": pipeline_id,
+          "ref_name": trusted_ref,
+          "source": job_source,
+          "sha": head_sha,
+      }
+      Path("gitlab-runtime-identity.json").write_text(
+          json.dumps(runtime_identity, sort_keys=True),
+          encoding="utf-8",
+      )
       payload = {
           "github_repository": "WhiteChronos/ChatGPT",
-          "gitlab_project_id": int(os.environ["CI_PROJECT_ID"]),
-          "gitlab_project_path": os.environ["CI_PROJECT_PATH"],
-          "ref_name": os.environ["CI_COMMIT_REF_NAME"],
-          "github_sha": observation.get("sha"),
-          "gitlab_sha": os.environ["CI_COMMIT_SHA"],
-          "ci_subject_sha": os.environ["CI_COMMIT_SHA"],
-          "github_available": bool(observation.get("available")),
+          "gitlab_project_id": expected_project_id,
+          "gitlab_project_path": observed_project_path,
+          "ref_name": trusted_ref,
+          "github_sha": observation.sha,
+          "gitlab_sha": head_sha,
+          "ci_subject_sha": head_sha,
+          "github_available": observation.available,
           "gitlab_available": True,
           "receipt_timestamp": (
-              os.environ.get("CI_PIPELINE_CREATED_AT", datetime.now(timezone.utc).isoformat())
-              if os.environ.get("CI_PIPELINE_SOURCE") == "push"
+              str(job.get("created_at"))
+              if job_source == "push" and job.get("created_at")
               else "1970-01-01T00:00:00+00:00"
           ),
       }
@@ -62,9 +151,9 @@ mirror-parity:
     expire_in: 7 days
     paths:
       - github-observation.json
+      - gitlab-runtime-identity.json
       - mirror-input.json
       - mirror-parity.json
-
 python-governance:
   stage: validate
   image: python:3.12.13-slim@sha256:2f17fc044b579bab302c2e8054d3a686e2cb9a83de48e70534b94cd8ebbe06a9 # python:3.12.13-slim
@@ -135,13 +224,14 @@ contingency-evidence:
   script:
     - |
       python - <<'PY'
-      import hashlib
       import json
-      import os
       from datetime import datetime, timezone
       from pathlib import Path
 
+      from pipeline.ci_provider_evidence import compute_provenance_sha256
+
       parity = json.loads(Path("mirror-parity.json").read_text(encoding="utf-8"))
+      runtime_identity = json.loads(Path("gitlab-runtime-identity.json").read_text(encoding="utf-8"))
       python_gate = json.loads(Path("contingency-python.json").read_text(encoding="utf-8"))
       broker_gate = json.loads(Path("contingency-broker.json").read_text(encoding="utf-8"))
       validation_passed = bool(python_gate.get("passed")) and bool(broker_gate.get("passed"))
@@ -156,29 +246,17 @@ contingency-evidence:
       Path("contingency-gate.json").write_text(json.dumps(gate, sort_keys=True), encoding="utf-8")
       evidence = {
           "provider": "gitlab",
-          "repository_identity": os.environ["CI_PROJECT_PATH"],
-          "subject_sha": os.environ["CI_COMMIT_SHA"],
-          "pipeline_or_run_id": os.environ["CI_PIPELINE_ID"],
+          "repository_identity": runtime_identity["gitlab_project_path"],
+          "subject_sha": runtime_identity["sha"],
+          "pipeline_or_run_id": runtime_identity["pipeline_id"],
           "gate_name": "full-contingency",
           "result": "PASS" if validation_passed else "FAIL",
           "timestamp": datetime.now(timezone.utc).isoformat(),
-          "ci_config_revision": os.environ["CI_COMMIT_SHA"],
+          "ci_config_revision": runtime_identity["sha"],
           "mirror_parity_status": parity_status,
           "attempt": 1,
       }
-      provenance_payload = {
-          key: evidence[key]
-          for key in (
-              "provider",
-              "repository_identity",
-              "subject_sha",
-              "pipeline_or_run_id",
-              "gate_name",
-              "ci_config_revision",
-          )
-      }
-      encoded = json.dumps(provenance_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
-      evidence["provenance_sha256"] = hashlib.sha256(encoded).hexdigest()
+      evidence["provenance_sha256"] = compute_provenance_sha256(evidence)
       Path("ci-provider-evidence.json").write_text(json.dumps(evidence, sort_keys=True), encoding="utf-8")
       PY
     - cat contingency-gate.json

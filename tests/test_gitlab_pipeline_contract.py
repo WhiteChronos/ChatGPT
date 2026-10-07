@@ -80,8 +80,9 @@ def test_broker_job_installs_git_for_repository_tests():
 
 def test_non_push_pipeline_cannot_fabricate_fresh_mirror_receipt():
     body = PIPELINE.read_text(encoding='utf-8')
-    assert 'CI_PIPELINE_SOURCE' in body
+    assert 'job_source == "push"' in body
     assert '1970-01-01T00:00:00+00:00' in body
+    assert 'CI_PIPELINE_SOURCE' not in body
 
 def test_python_governance_job_installs_git_for_root_regression():
     body = text()
@@ -95,7 +96,7 @@ def test_pipeline_binds_observed_gitlab_project_identity():
     assert 'urlsplit' in body
     assert 'chronoswhite-group/ChronosWhite-project' in body
     assert '"gitlab_project_path": observed_project_path' in body
-    assert '"repository_identity": observed_project_path' in body
+    assert '"repository_identity": runtime_identity["gitlab_project_path"]' in body
     assert 'os.environ["CI_PROJECT_PATH"]' not in body
     assert 'os.environ["CI_PROJECT_ID"]' not in body
 
@@ -134,3 +135,11 @@ def test_ineligible_evidence_fails_final_job():
     evidence_block = body.split('\ncontingency-evidence:\n', 1)[1]
     assert 'evidence_eligible' in evidence_block
     assert 'not gate.get("evidence_eligible")' in evidence_block
+
+def test_pipeline_uses_job_token_identity_endpoint():
+    body = text()
+    assert 'https://gitlab.com/api/v4/job' in body
+    assert 'JOB-TOKEN' in body
+    assert 'pipeline.get("project_id"' in body
+    assert 'commit.get("id"' in body
+    assert 'gitlab-runtime-identity.json' in body
