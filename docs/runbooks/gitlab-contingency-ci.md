@@ -53,6 +53,12 @@ The GitLab project is a **private, non-authoritative mirror**. Operational rules
    approved secret store. Never pass tokens on the worker command line and never
    commit them to either repository.
 10. Mirror divergence fails closed; normal operation never force-pushes.
+11. Git subprocess environment is fail-closed: user-controlled `GIT_*` and
+    `SSH_*` variables are removed before Git execution, then only the required
+    non-interactive Git controls are set by the worker.
+12. Remote arguments are validated before Git execution; option-like values,
+    control characters, inline credentials, reversed providers, and mixed
+    local/network endpoint pairs are rejected.
 
 ## Transport selection
 
@@ -143,7 +149,9 @@ therefore:
 4. observes the authoritative GitHub branch tip and the actual GitLab `origin`
    branch tip live during the job; and
 5. requires GitHub tip = GitLab tip = checkout HEAD before parity can be
-   `HEALTHY`.
+   `HEALTHY`; and
+6. probes the GitLab ref through the local remote name `origin`, so a
+   credential-bearing URL is not copied into the process arguments.
 
 Freshness is therefore the timestamp of this live dual-provider observation,
 not the job creation time or pipeline trigger type. Retrying or manually

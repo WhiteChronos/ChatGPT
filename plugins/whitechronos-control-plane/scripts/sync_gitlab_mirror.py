@@ -32,10 +32,13 @@ _BLOCKED_GIT_ENV_PREFIXES = ("GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_")
 
 
 def _safe_git_environment() -> dict[str, str]:
-    env = dict(os.environ)
-    for key in tuple(env):
-        if key in _BLOCKED_GIT_ENV_EXACT or key.startswith(_BLOCKED_GIT_ENV_PREFIXES):
-            env.pop(key, None)
+    env = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.startswith(("GIT_", "SSH_"))
+    }
+    env["GIT_CONFIG_NOSYSTEM"] = "1"
+    env["GIT_TERMINAL_PROMPT"] = "0"
     return env
 
 
@@ -59,6 +62,16 @@ def _reject_inline_credentials(url: str) -> None:
         parsed = urlsplit(url)
         if parsed.username is not None or parsed.password is not None:
             raise ValueError("inline HTTPS credentials are not allowed; use a credential helper")
+
+
+def _validate_remote_argument(url: str) -> None:
+    if not url or url != url.strip():
+        raise ValueError("remote must be nonblank and free of surrounding whitespace")
+    if url.startswith("-"):
+        raise ValueError("remote must not be option-like")
+    if any(ch in url for ch in ("\x00", "\n", "\r")):
+        raise ValueError("remote contains invalid control characters")
+    _reject_inline_credentials(url)
 
 
 def _identity(url: str) -> str:
@@ -112,8 +125,8 @@ def sync_ref(
     receipt_path: Path,
     dry_run: bool = False,
 ) -> dict[str, object]:
-    _reject_inline_credentials(source_url)
-    _reject_inline_credentials(target_url)
+    _validate_remote_argument(source_url)
+    _validate_remote_argument(target_url)
     policy = load_policy(Path(repo_root) / "governance" / "GITLAB_CONTINGENCY_CI_POLICY.json")
     _validate_mirror_direction(source_url, target_url, policy)
     decision = classify_ref(ref_name, policy)
