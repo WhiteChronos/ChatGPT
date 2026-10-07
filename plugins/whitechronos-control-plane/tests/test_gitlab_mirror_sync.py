@@ -202,3 +202,24 @@ def test_option_like_remote_is_rejected_before_git(tmp_path, monkeypatch):
             'main',
             tmp_path / 'r.json',
         )
+
+def test_network_mirror_receipt_push_options_bind_transport_and_sha():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    source_sha = 'a' * 40
+    receipt = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha=source_sha,
+        timestamp='2026-10-07T01:00:00+00:00',
+    )
+    options = m._mirror_push_options(receipt)
+
+    joined = ' '.join(options)
+    assert 'WHITECHRONOS_MIRROR_TRANSPORT=neutral_worker' in joined
+    assert 'WHITECHRONOS_MIRROR_SOURCE_REPOSITORY=WhiteChronos/ChatGPT' in joined
+    assert 'WHITECHRONOS_MIRROR_TARGET_PROJECT=chronoswhite-group/ChronosWhite-project' in joined
+    assert 'WHITECHRONOS_MIRROR_REF=main' in joined
+    assert f'WHITECHRONOS_MIRROR_SOURCE_SHA={source_sha}' in joined
+    assert f'WHITECHRONOS_MIRROR_TARGET_SHA={source_sha}' in joined
+    assert 'WHITECHRONOS_MIRROR_RECEIPT_SHA256=' in joined

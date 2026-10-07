@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-from pipeline.contingency_ci_gate import commands_for_profile
+from pipeline.contingency_ci_gate import commands_for_profile, run_profile
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -55,3 +55,44 @@ def test_dry_run_cli_returns_deterministic_catalog():
     assert data['profile'] == 'full-contingency'
     assert data['dry_run'] is True
     assert len(data['commands']) == 5
+
+def test_run_profile_scrubs_test_runner_control_environment(tmp_path, monkeypatch):
+    seen = []
+
+    def fake_run(argv, **kwargs):
+        seen.append(kwargs.get('env'))
+        return subprocess.CompletedProcess(argv, 0, '', '')
+
+    monkeypatch.setenv('PYTEST_ADDOPTS', '--collect-only')
+    monkeypatch.setenv('PYTEST_PLUGINS', 'evil_plugin')
+    monkeypatch.setenv('PYTHONPATH', '/tmp/evil')
+    monkeypatch.setenv('NODE_OPTIONS', '--import=data:text/javascript,console.log(1)')
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+
+    result = run_profile(ROOT, 'full-contingency')
+
+    assert result.passed is True
+    assert seen
+    for env in seen:
+        assert env is not None
+        assert 'PYTEST_ADDOPTS' not in env
+        assert 'PYTEST_PLUGINS' not in env
+        assert 'PYTHONPATH' not in env
+        assert 'NODE_OPTIONS' not in env
+
+
+def test_run_profile_executes_every_validator_after_failure(monkeypatch):
+    calls = []
+    outcomes = iter([1, 0, 0, 0])
+
+    def fake_run(argv, **kwargs):
+        calls.append(tuple(argv))
+        return subprocess.CompletedProcess(argv, next(outcomes), '', '')
+
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+    result = run_profile(ROOT, 'python-governance')
+
+    assert result.passed is False
+    assert result.failed_command_index == 0
+    assert len(result.results) == 4
+    assert len(calls) == 4
