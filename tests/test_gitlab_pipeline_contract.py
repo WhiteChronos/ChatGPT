@@ -188,3 +188,11 @@ def test_pipeline_requires_neutral_worker_receipt_contract():
     assert 'job_source != "push"' in mirror_block
     assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
     assert 'mirror receipt digest mismatch' in mirror_block
+
+def test_pipeline_only_accepts_neutral_worker_push_trigger():
+    data = yaml.safe_load(text())
+    rules = data['workflow']['rules']
+    assert rules == [
+        {'if': '$CI_PIPELINE_SOURCE == "push"'},
+        {'when': 'never'},
+    ]
