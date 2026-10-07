@@ -187,7 +187,10 @@ contingency-evidence:
       if python - <<'PY'
       import json
       from pathlib import Path
-      raise SystemExit(0 if json.loads(Path("contingency-gate.json").read_text())["passed"] else 1)
+      gate = json.loads(Path("contingency-gate.json").read_text())
+      if not gate.get("passed") or not gate.get("evidence_eligible"):
+          raise SystemExit(1)
+      raise SystemExit(0)
       PY
       then
         true

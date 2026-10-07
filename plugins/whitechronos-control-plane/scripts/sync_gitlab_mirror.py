@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -17,10 +18,37 @@ if str(_REPO_ROOT) not in sys.path:
 from pipeline.gitlab_contingency_policy import classify_ref, load_policy
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
+_BLOCKED_GIT_ENV_EXACT = {
+    "GIT_CONFIG_COUNT",
+    "GIT_CONFIG_PARAMETERS",
+    "GIT_CONFIG_GLOBAL",
+    "GIT_CONFIG_SYSTEM",
+    "GIT_EXEC_PATH",
+    "GIT_SSH",
+    "GIT_SSH_COMMAND",
+    "GIT_PROXY_COMMAND",
+}
+_BLOCKED_GIT_ENV_PREFIXES = ("GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_")
+
+
+def _safe_git_environment() -> dict[str, str]:
+    env = dict(os.environ)
+    for key in tuple(env):
+        if key in _BLOCKED_GIT_ENV_EXACT or key.startswith(_BLOCKED_GIT_ENV_PREFIXES):
+            env.pop(key, None)
+    return env
+
 
 
 def _run_git(args: list[str], *, cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(["git", *args], cwd=cwd, check=False, text=True, capture_output=True)
+    result = subprocess.run(
+        ["git", *args],
+        cwd=cwd,
+        check=False,
+        text=True,
+        capture_output=True,
+        env=_safe_git_environment(),
+    )
     if check and result.returncode != 0:
         raise RuntimeError("git operation failed without credential disclosure")
     return result
