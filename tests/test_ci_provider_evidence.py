@@ -22,17 +22,25 @@ NOW = datetime.now(timezone.utc)
 
 
 def provenance_sha256(data):
-    payload = {
-        key: data[key]
-        for key in (
-            'provider',
-            'repository_identity',
-            'subject_sha',
-            'pipeline_or_run_id',
-            'gate_name',
-            'ci_config_revision',
-        )
-    }
+    payload = {}
+    for key in (
+        'provider',
+        'repository_identity',
+        'subject_sha',
+        'pipeline_or_run_id',
+        'gate_name',
+        'result',
+        'timestamp',
+        'ci_config_revision',
+        'mirror_parity_status',
+        'attempt',
+    ):
+        value = data[key]
+        if key == 'timestamp' and isinstance(value, datetime):
+            value = value.isoformat()
+        if key in {'subject_sha', 'ci_config_revision'}:
+            value = str(value).lower()
+        payload[key] = value
     encoded = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode('utf-8')
     return hashlib.sha256(encoded).hexdigest()
 
