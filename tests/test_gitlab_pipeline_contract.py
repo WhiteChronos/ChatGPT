@@ -78,12 +78,15 @@ def test_broker_job_installs_git_for_repository_tests():
     assert 'apt-get install -y --no-install-recommends git' in broker_block
 
 
-def test_non_push_pipeline_cannot_fabricate_fresh_mirror_receipt():
+def test_freshness_requires_live_dual_provider_ref_observation():
     body = PIPELINE.read_text(encoding='utf-8')
     mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
-    assert 'job_source == "push"' in mirror_block
-    assert '1970-01-01T00:00:00+00:00' in mirror_block
-    assert 'os.environ.get("CI_PIPELINE_SOURCE")' not in mirror_block
+    assert 'observe_remote_ref(' in mirror_block
+    assert 'gitlab_remote_sha' in mirror_block
+    assert '"gitlab_sha": gitlab_remote_sha' in mirror_block
+    assert '"receipt_timestamp": observed_at' in mirror_block
+    assert 'job_source == "push"' not in mirror_block
+    assert '1970-01-01T00:00:00+00:00' not in mirror_block
 
 def test_python_governance_job_installs_git_for_root_regression():
     body = text()
