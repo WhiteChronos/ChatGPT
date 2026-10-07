@@ -193,7 +193,7 @@ def test_pipeline_requires_neutral_worker_receipt_contract():
         'WHITECHRONOS_MIRROR_RECEIPT_SHA256',
     ):
         assert name in mirror_block
-    assert 'job_source != "push"' in mirror_block
+    assert 'job_source not in {"push", "pipeline"}' in mirror_block
     assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
     assert 'mirror receipt digest mismatch' in mirror_block
 
