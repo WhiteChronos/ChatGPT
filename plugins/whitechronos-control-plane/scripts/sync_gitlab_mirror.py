@@ -39,6 +39,7 @@ def _safe_git_environment() -> dict[str, str]:
         if not key.startswith(("GIT_", "SSH_"))
     }
     env["GIT_CONFIG_NOSYSTEM"] = "1"
+    env["GIT_CONFIG_GLOBAL"] = os.devnull
     env["GIT_TERMINAL_PROMPT"] = "0"
     return env
 
