@@ -6,8 +6,13 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 from urllib.parse import urlsplit
+
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 from pipeline.gitlab_contingency_policy import classify_ref, load_policy
 
@@ -37,6 +42,25 @@ def _identity(url: str) -> str:
     return Path(url).name or "local-repository"
 
 
+def _is_network_remote(url: str) -> bool:
+    return url.startswith(("https://", "http://", "ssh://")) or (
+        "@" in url and ":" in url and not Path(url).exists()
+    )
+
+
+def _validate_mirror_direction(source_url: str, target_url: str, policy) -> None:
+    source_network = _is_network_remote(source_url)
+    target_network = _is_network_remote(target_url)
+    if not source_network and not target_network:
+        return
+    expected_source = f"https://github.com/{policy.source_repository}.git"
+    if not policy.gitlab_project_path:
+        raise ValueError("mirror direction requires a provisioned GitLab project")
+    expected_target = f"https://gitlab.com/{policy.gitlab_project_path}.git"
+    if source_url != expected_source or target_url != expected_target:
+        raise ValueError("mirror direction must be canonical GitHub source -> GitLab target")
+
+
 def _remote_sha(url: str, full_ref: str) -> str | None:
     result = _run_git(["ls-remote", "--exit-code", url, full_ref], check=False)
     if result.returncode == 2:
@@ -63,6 +87,7 @@ def sync_ref(
     _reject_inline_credentials(source_url)
     _reject_inline_credentials(target_url)
     policy = load_policy(Path(repo_root) / "governance" / "GITLAB_CONTINGENCY_CI_POLICY.json")
+    _validate_mirror_direction(source_url, target_url, policy)
     decision = classify_ref(ref_name, policy)
     if not decision.eligible:
         raise ValueError("ref is not mirror eligible")
@@ -93,6 +118,10 @@ def sync_ref(
             target_after = _remote_sha(target_url, full_ref)
             if target_after != source_sha:
                 raise RuntimeError("target mirror SHA does not match authoritative source after sync")
+
+        source_after = _remote_sha(source_url, full_ref)
+        if source_after != source_sha:
+            raise RuntimeError("authoritative source ref changed during sync; success receipt refused")
 
     receipt = {
         "schema_version": 1,
