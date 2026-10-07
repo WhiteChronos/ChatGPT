@@ -45,9 +45,50 @@ def _safe_git_environment() -> dict[str, str]:
 
 
 
-def _run_git(args: list[str], *, cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
+def _normalize_credential_helper(value: str | None) -> str | None:
+    if value is None:
+        return None
+    raw = value.strip()
+    if not raw or raw != value:
+        raise ValueError("credential helper must be an explicit absolute executable path")
+    if any(ch.isspace() for ch in raw) or any(ch in raw for ch in (";", "&", "|", "!", "$", "`", "<", ">", "\n", "\r", "\x00")):
+        raise ValueError("credential helper contains unsafe shell-control characters")
+    path = Path(raw)
+    if not path.is_absolute():
+        raise ValueError("credential helper must be an explicit absolute executable path")
+    try:
+        resolved = path.resolve(strict=True)
+    except OSError as exc:
+        raise ValueError("credential helper path does not exist") from exc
+    if not resolved.is_file() or not os.access(resolved, os.X_OK):
+        raise ValueError("credential helper must reference an executable file")
+    return str(resolved)
+
+
+def _git_argv(args: list[str], credential_helper: str | None = None) -> list[str]:
+    if credential_helper is None:
+        return ["git", *args]
+    return [
+        "git",
+        "-c",
+        "credential.helper=",
+        "-c",
+        f"credential.helper={credential_helper}",
+        "-c",
+        "credential.interactive=false",
+        *args,
+    ]
+
+
+def _run_git(
+    args: list[str],
+    *,
+    cwd: Path | None = None,
+    check: bool = True,
+    credential_helper: str | None = None,
+) -> subprocess.CompletedProcess[str]:
     result = subprocess.run(
-        ["git", *args],
+        _git_argv(args, credential_helper),
         cwd=cwd,
         check=False,
         text=True,
@@ -142,8 +183,17 @@ def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
     return options
 
 
-def _remote_sha(url: str, full_ref: str) -> str | None:
-    result = _run_git(["ls-remote", "--exit-code", url, full_ref], check=False)
+def _remote_sha(
+    url: str,
+    full_ref: str,
+    *,
+    credential_helper: str | None = None,
+) -> str | None:
+    result = _run_git(
+        ["ls-remote", "--exit-code", url, full_ref],
+        check=False,
+        credential_helper=credential_helper,
+    )
     if result.returncode == 2:
         return None
     if result.returncode != 0:
@@ -164,11 +214,15 @@ def sync_ref(
     ref_name: str,
     receipt_path: Path,
     dry_run: bool = False,
+    target_credential_helper: str | None = None,
 ) -> dict[str, object]:
     _validate_remote_argument(source_url)
     _validate_remote_argument(target_url)
     policy = load_policy(Path(repo_root) / "governance" / "GITLAB_CONTINGENCY_CI_POLICY.json")
     _validate_mirror_direction(source_url, target_url, policy)
+    normalized_target_helper = _normalize_credential_helper(target_credential_helper)
+    if _is_network_remote(target_url) and normalized_target_helper is None:
+        raise ValueError("target credential helper is required for a network GitLab target")
     decision = classify_ref(ref_name, policy)
     if not decision.eligible:
         raise ValueError("ref is not mirror eligible")
@@ -191,10 +245,18 @@ def sync_ref(
             timestamp=receipt_timestamp,
         )
 
-        target_before = _remote_sha(target_url, full_ref)
+        target_before = _remote_sha(
+            target_url,
+            full_ref,
+            credential_helper=normalized_target_helper,
+        )
         if target_before:
             target_local_ref = f"refs/whitechronos/target/{ref}"
-            _run_git(["fetch", "--no-tags", target_url, f"{full_ref}:{target_local_ref}"], cwd=bare)
+            _run_git(
+                ["fetch", "--no-tags", target_url, f"{full_ref}:{target_local_ref}"],
+                cwd=bare,
+                credential_helper=normalized_target_helper,
+            )
             ancestry = _run_git(["merge-base", "--is-ancestor", target_before, source_sha], cwd=bare, check=False)
             if ancestry.returncode != 0:
                 raise RuntimeError("target mirror has diverged from the authoritative source")
@@ -206,8 +268,16 @@ def sync_ref(
             if _is_network_remote(target_url):
                 push_args.extend(_mirror_push_options(receipt_claim))
             push_args.extend([target_url, f"{source_local_ref}:{full_ref}"])
-            _run_git(push_args, cwd=bare)
-            target_after = _remote_sha(target_url, full_ref)
+            _run_git(
+                push_args,
+                cwd=bare,
+                credential_helper=normalized_target_helper,
+            )
+            target_after = _remote_sha(
+                target_url,
+                full_ref,
+                credential_helper=normalized_target_helper,
+            )
             if target_after != source_sha:
                 raise RuntimeError("target mirror SHA does not match authoritative source after sync")
 
@@ -237,6 +307,7 @@ def main() -> int:
     parser.add_argument("--target-url", required=True)
     parser.add_argument("--ref", required=True)
     parser.add_argument("--receipt", required=True)
+    parser.add_argument("--target-credential-helper")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     try:
@@ -247,6 +318,7 @@ def main() -> int:
             args.ref,
             Path(args.receipt),
             args.dry_run,
+            args.target_credential_helper,
         )
     except Exception as exc:
         print(f"ERROR: {exc}")
