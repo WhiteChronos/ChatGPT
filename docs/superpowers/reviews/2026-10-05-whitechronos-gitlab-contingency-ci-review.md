@@ -117,6 +117,19 @@ validate host/path identity, but Git probes now execute `git ls-remote origin`
 rather than passing that URL in argv. This keeps remote authentication in Git's
 local remote configuration instead of process arguments.
 
+**Important A-06 — neutral worker still inherited global Git configuration.**  
+A RED regression proved the worker could still consult the host user's global
+Git configuration after environment-variable scrubbing. The worker now sets
+`GIT_CONFIG_GLOBAL` to the platform null device and `GIT_CONFIG_NOSYSTEM=1`
+for all Git subprocesses. Runtime Foundation later verified the regression GREEN.
+
+**Important A-07 — contingency trigger surface exceeded the transport contract.**  
+Web/API/scheduled starts added unnecessary caller-controlled pipeline surface.
+The final workflow accepts only `push`, and the neutral worker supplies a
+cryptographically bound non-secret receipt through GitLab typed pipeline inputs
+(`ci.input`). This preserves the live GitLab project's existing
+`ci_pipeline_variables_minimum_override_role = no_one_allowed` setting.
+
 No standing Critical or Important Arena finding remains in the local
 implementation review.
 
@@ -292,6 +305,45 @@ The final Full Arena used 16 sequential strategy cards, four elimination rounds
 were available or claimed. The final Arena review left no standing Critical or
 Important finding after A-01 through A-05 were closed with RED -> GREEN
 regressions.
+
+### Final post-review source head
+
+A second Codex-review/TDD round plus the final 16-strategy Arena hardening moved
+the source implementation to:
+
+```text
+source_post_review_head = f246907ef41d0e506d84181370e33c9a95aa9739
+branch                  = feat/gitlab-contingency-ci-v1
+```
+
+Fresh verification on that exact source SHA:
+
+```text
+Runtime Foundation tests       = 75 passed
+full repository regression     = 257 passed
+Subagent Broker compatibility  = 5 passed
+Awesome Codex integration      = 3 passed
+Engineering Compatibility      = 39 passed
+Protocol Zero                  = 4 passed
+repository governance commands = PASS
+local runtime health           = PASS
+```
+
+All five GitHub PR workflows concluded `success`:
+
+| Run ID | Workflow | Conclusion | Canonical run |
+| ---: | --- | --- | --- |
+| 37561177543 | WhiteChronos Runtime Foundation | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37561177543 |
+| 37561177468 | Engineering Governance | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37561177468 |
+| 37561177477 | Document Governance v4.7 | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37561177477 |
+| 37561177436 | Glossary Engine | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37561177436 |
+| 37561177509 | GitHub Control Plane Policy | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37561177509 |
+
+The connected GitLab project preflight at the same review stage reported project
+`86465539` as private and still empty (zero commits/branches/pipelines), with
+user-defined pipeline variables restricted and the minimum override role set to
+`no_one_allowed`. Therefore the source implementation is verified while live
+mirror binding remains an external credential/host gate.
 
 This document commit records evidence only; it does not modify source behavior
 or grant merge/release authority.

@@ -32,6 +32,18 @@ At execution planning time the connected environment reported:
 
 Re-run these checks before changing transport or credentials.
 
+Latest connected-project preflight (project `86465539`) also verified:
+
+- repository remains empty before live mirror binding: no commits, branches, or pipelines;
+- `restrict_user_defined_variables = true`;
+- `ci_pipeline_variables_minimum_override_role = no_one_allowed`;
+- `ci_push_repository_for_job_token_allowed = false`;
+- shared/group runners remain enabled.
+
+The contingency path deliberately preserves that variable lockdown. The neutral
+worker passes only non-secret receipt metadata through typed/validated GitLab
+pipeline inputs (`ci.input`); it does not relax pipeline-variable permissions.
+
 ## Security posture
 
 The GitLab project is a **private, non-authoritative mirror**. Operational rules:
@@ -114,7 +126,7 @@ Success requires all of the following:
 
 - the ref is policy-eligible;
 - for a network GitLab target, the worker attaches a non-secret mirror receipt
-  contract to the push through GitLab `ci.variable` push options;
+  contract to the push through GitLab `ci.input` push options;
 - any pre-existing target ref is an ancestor of the source ref;
 - the push completes without force;
 - post-sync target SHA exactly equals source SHA;
@@ -130,9 +142,10 @@ Success requires all of the following:
 parity -> validate -> evidence
 ```
 
-The pipeline observes the authoritative GitHub ref, compares it with the
-mirrored GitLab commit and CI subject SHA, runs the canonical repository gates,
-and writes provider-scoped evidence. A green GitLab pipeline is not an authority
+Only a branch pipeline created by the neutral worker's Git push is accepted by
+workflow rules. Web, API and scheduled starts are rejected. The pipeline observes
+the authoritative GitHub ref, compares it with the mirrored GitLab commit and CI
+subject SHA, runs the canonical repository gates, and writes provider-scoped evidence. A green GitLab pipeline is not an authority
 grant. GitLab evidence is eligible for corroboration only while parity is
 `HEALTHY`.
 
@@ -159,9 +172,10 @@ Freshness is bound to the neutral worker receipt timestamp carried by the
 worker's push options. The parity job accepts it only when the job-token API
 proves the job source is `push`, the receipt digest matches, its source/target
 identities and ref match policy, and receipt source/target SHAs equal the live
-GitHub tip, live GitLab tip and checkout HEAD. Manual, API and scheduled
-pipelines remain diagnostic only because they cannot satisfy the trusted
-push-source plus receipt contract.
+GitHub tip, live GitLab tip and checkout HEAD. The receipt is delivered as mandatory `spec:inputs` values and validated before
+pipeline creation. Web, API and scheduled pipeline sources are rejected by
+workflow rules; a direct push without the required receipt inputs fails input
+validation rather than becoming eligible evidence.
 
 ## Failure handling
 
