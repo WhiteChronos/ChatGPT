@@ -1,0 +1,152 @@
+# GitLab Contingency CI Runbook
+
+## Status and authority
+
+This runbook operates the WhiteChronos non-authoritative GitLab mirror.
+GitHub repository `WhiteChronos/ChatGPT` remains the sole source-controlled
+authority. GitLab project `chronoswhite-group/ChronosWhite-project` (project
+ID `86465539`) may hold replicated Git objects and provider-scoped CI evidence,
+but it does not gain merge, release, or production authority.
+
+The selected transport is `neutral_worker` because the connected GitLab project
+is available on the current account while native pull mirroring and GitHub
+external-repository CI are plan/feature-gated. The neutral worker preserves the
+same Git commit object and therefore the same immutable SHA.
+
+## Verified preflight facts
+
+At execution planning time the connected environment reported:
+
+- GitLab authentication: available as `WhiteChronos`.
+- Project creation permission: available.
+- Existing mirror destination: private project
+  `chronoswhite-group/ChronosWhite-project`, ID `86465539`.
+- Destination repository state before activation: empty.
+- Shared runners: enabled for the project/group.
+- GitLab CI/CD jobs: enabled.
+- GitLab-to-repository job-token push: disabled.
+- GitHub source repository: `WhiteChronos/ChatGPT`.
+- Connector project-creation action: unavailable; no duplicate project is needed.
+- Native GitLab pull-mirror configuration action: unavailable in the connected tool surface.
+- GitLab CI-variable/token administration action: unavailable in the connected tool surface.
+
+Re-run these checks before changing transport or credentials.
+
+## Security posture
+
+The GitLab project is a **private, non-authoritative mirror**. Operational rules:
+
+1. Mirror direction is one-way: GitHub -> GitLab.
+2. Direct development against mirrored refs is prohibited by policy.
+3. The default branch must remain protected against ordinary direct writes.
+4. Do not configure a GitLab -> GitHub mirror.
+5. Never store a GitHub branch-write credential in GitLab.
+6. The source side requires only read access to `WhiteChronos/ChatGPT` when
+   anonymous/public fetch is insufficient.
+7. The target credential is restricted to writing repository objects only to
+   `chronoswhite-group/ChronosWhite-project`, with expiration and rotation.
+8. No release or production credential belongs in this mirror path.
+9. Credential material is supplied through an external credential helper or
+   approved secret store. Never pass tokens on the worker command line and never
+   commit them to either repository.
+10. Mirror divergence fails closed; normal operation never force-pushes.
+
+## Transport selection
+
+The v1 transport decision is deterministic:
+
+```text
+native pull mirror available and explicitly configured -> gitlab_native_pull
+otherwise                                          -> neutral_worker
+```
+
+For the current environment the recorded transport is:
+
+```text
+mirror_transport = neutral_worker
+```
+
+The neutral worker is `plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py`.
+It must run outside GitHub Actions as the sole execution environment. Suitable
+hosts include an approved workstation, self-hosted runner, VM, NAS, or other
+independent automation host with Git and Python 3.12+.
+
+## Minimal host requirements
+
+The independent worker host requires only:
+
+- Git 2.x;
+- Python 3.12+;
+- network reachability to GitHub and GitLab;
+- this repository checkout containing the reviewed worker script and policy;
+- source read authentication only if public fetch is unavailable;
+- target repository write authentication limited to project `86465539`.
+
+A local GitLab server, Kubernetes, Docker, Jenkins, or a second source-control
+platform is not required by this design.
+
+## One-way synchronization
+
+For an eligible ref, invoke the worker from the authoritative checkout:
+
+```bash
+python plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py \
+  --repo-root . \
+  --source-url https://github.com/WhiteChronos/ChatGPT.git \
+  --target-url https://gitlab.com/chronoswhite-group/ChronosWhite-project.git \
+  --ref main \
+  --receipt mirror-receipt.json
+```
+
+Authentication must be resolved by the host's credential mechanism. The command
+must not contain an embedded username/token/password.
+
+Success requires all of the following:
+
+- the ref is policy-eligible;
+- any pre-existing target ref is an ancestor of the source ref;
+- the push completes without force;
+- post-sync target SHA exactly equals source SHA;
+- the receipt records `transport = neutral_worker` and contains no secret.
+
+## GitLab CI evidence
+
+`.gitlab-ci.yml` executes only validation/evidence stages:
+
+```text
+parity -> validate -> evidence
+```
+
+The pipeline observes the authoritative GitHub ref, compares it with the
+mirrored GitLab commit and CI subject SHA, runs the canonical repository gates,
+and writes provider-scoped evidence. A green GitLab pipeline is not an authority
+grant. GitLab evidence is eligible for corroboration only while parity is
+`HEALTHY`.
+
+## Failure handling
+
+- `DIVERGED`: stop mirroring and investigate; do not force overwrite.
+- `STALE`: evidence is ineligible until a fresh exact-SHA receipt exists.
+- `UNAVAILABLE`: GitLab validation may remain diagnostic only.
+- GitHub/GitLab result disagreement: block for investigation.
+- Code/policy/mirror failures: no automatic retry.
+- Provider infrastructure or runner-assignment failure: retry only within the
+  bounded policy limit.
+
+## Credential bootstrap boundary
+
+The current ChatGPT GitLab connector can inspect the project and run pipelines,
+but it cannot create project access tokens, CI variables, repository mirrors, or
+pipeline schedules. Therefore the first live neutral-worker credential binding
+must occur on an authorized external host or through GitLab's own credential UI/API.
+This is an environment-binding step, not a source-code change. Do not claim the
+live mirror is active until the worker returns an exact-SHA receipt and GitLab
+shows that same commit.
+
+## Rotation and recovery
+
+- Rotate target write credentials on expiry or suspected exposure.
+- After rotation, execute one dry run, then one normal synchronization.
+- Verify source SHA == target SHA == CI subject SHA before accepting evidence.
+- If a target ref diverges, preserve it for investigation; never erase divergence
+  automatically.

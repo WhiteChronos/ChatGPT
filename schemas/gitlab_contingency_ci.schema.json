@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos GitLab Contingency CI Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "authority_provider", "mirror_provider", "mirror_direction",
+    "active_failover", "gitlab_merge_authority", "gitlab_deploy_authority",
+    "source_repository", "evidence_requires_exact_sha", "mirror_freshness_seconds",
+    "max_clock_skew_seconds", "provisioning_state", "gitlab_project_id",
+    "gitlab_project_path", "mirror_transport", "mirror_divergence_behavior",
+    "provider_disagreement_behavior", "allowed_evidence_providers",
+    "allowed_mirror_ref_classes", "infrastructure_retry"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "authority_provider": {"const": "github"},
+    "mirror_provider": {"const": "gitlab"},
+    "mirror_direction": {"const": "github_to_gitlab"},
+    "active_failover": {"const": false},
+    "gitlab_merge_authority": {"const": false},
+    "gitlab_deploy_authority": {"const": false},
+    "source_repository": {"const": "WhiteChronos/ChatGPT"},
+    "evidence_requires_exact_sha": {"const": true},
+    "mirror_freshness_seconds": {"const": 3600},
+    "max_clock_skew_seconds": {"const": 300},
+    "provisioning_state": {"enum": ["UNPROVISIONED", "PROVISIONED"]},
+    "gitlab_project_id": {"type": ["integer", "null"], "minimum": 1},
+    "gitlab_project_path": {"type": ["string", "null"], "minLength": 1},
+    "mirror_transport": {"enum": [null, "gitlab_native_pull", "neutral_worker"]},
+    "mirror_divergence_behavior": {"const": "FAIL_CLOSED"},
+    "provider_disagreement_behavior": {"const": "BLOCK_FOR_INVESTIGATION"},
+    "allowed_evidence_providers": {
+      "const": ["github", "gitlab", "local"]
+    },
+    "allowed_mirror_ref_classes": {
+      "const": ["main", "spec/*", "plan/*", "feat/*", "fix/*", "release/*"]
+    },
+    "infrastructure_retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["limit", "eligible_failures"],
+      "properties": {
+        "limit": {"const": 2},
+        "eligible_failures": {
+          "const": ["PROVIDER_INFRA_FAILURE", "RUNNER_ASSIGNMENT_FAILURE"]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"provisioning_state": {"const": "UNPROVISIONED"}}},
+      "then": {
+        "properties": {
+          "gitlab_project_id": {"type": "null"},
+          "gitlab_project_path": {"type": "null"},
+          "mirror_transport": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"provisioning_state": {"const": "PROVISIONED"}}},
+      "then": {
+        "properties": {
+          "gitlab_project_id": {"type": "integer", "minimum": 1},
+          "gitlab_project_path": {"type": "string", "minLength": 1},
+          "mirror_transport": {"enum": ["gitlab_native_pull", "neutral_worker"]}
+        }
+      }
+    }
+  ]
+}
