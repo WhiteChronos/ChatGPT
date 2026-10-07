@@ -149,3 +149,9 @@ def test_pipeline_uses_job_token_identity_endpoint():
     assert 'pipeline.get("project_id"' in body
     assert 'commit.get("id"' in body
     assert 'gitlab-runtime-identity.json' in body
+
+def test_gitlab_ref_probe_uses_remote_name_not_credential_bearing_url():
+    body = text()
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    assert '["git", "ls-remote", "--exit-code", "origin", full_ref]' in mirror_block
+    assert '["git", "ls-remote", "--exit-code", origin_url, full_ref]' not in mirror_block
