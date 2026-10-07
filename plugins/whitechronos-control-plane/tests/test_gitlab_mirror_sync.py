@@ -159,3 +159,26 @@ def test_source_is_reobserved_after_push_before_success_receipt(tmp_path, monkey
     monkeypatch.setattr(m, '_remote_sha', moving_source)
     with pytest.raises(RuntimeError, match='authoritative source'):
         m.sync_ref(ROOT, str(source), str(target), 'main', tmp_path / 'r.json')
+
+def test_worker_scrubs_git_control_environment(monkeypatch):
+    m = load_module()
+    captured = {}
+
+    def fake_run(argv, **kwargs):
+        captured['env'] = kwargs.get('env')
+        return subprocess.CompletedProcess(argv, 0, '', '')
+
+    monkeypatch.setenv('GIT_CONFIG_COUNT', '1')
+    monkeypatch.setenv('GIT_CONFIG_KEY_0', 'url.file:///tmp/evil.insteadOf')
+    monkeypatch.setenv('GIT_CONFIG_VALUE_0', 'https://github.com/')
+    monkeypatch.setenv('GIT_SSH_COMMAND', 'touch /tmp/marker')
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+
+    m._run_git(['version'])
+
+    env = captured['env']
+    assert env is not None
+    assert 'GIT_CONFIG_COUNT' not in env
+    assert not any(key.startswith('GIT_CONFIG_KEY_') for key in env)
+    assert not any(key.startswith('GIT_CONFIG_VALUE_') for key in env)
+    assert 'GIT_SSH_COMMAND' not in env

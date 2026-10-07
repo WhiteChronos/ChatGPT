@@ -126,3 +126,9 @@ def test_review_records_external_workflow_run_provenance():
     body = REVIEW.read_text(encoding='utf-8')
     assert '| Run ID |' in body
     assert 'https://github.com/WhiteChronos/ChatGPT/actions/runs/' in body
+
+def test_ineligible_evidence_fails_final_job():
+    body = text()
+    evidence_block = body.split('\ncontingency-evidence:\n', 1)[1]
+    assert 'evidence_eligible' in evidence_block
+    assert 'not gate.get("evidence_eligible")' in evidence_block
