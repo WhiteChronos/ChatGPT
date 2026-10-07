@@ -172,6 +172,8 @@ def test_worker_scrubs_git_control_environment(monkeypatch):
     monkeypatch.setenv('GIT_CONFIG_KEY_0', 'url.file:///tmp/evil.insteadOf')
     monkeypatch.setenv('GIT_CONFIG_VALUE_0', 'https://github.com/')
     monkeypatch.setenv('GIT_SSH_COMMAND', 'touch /tmp/marker')
+    monkeypatch.setenv('GIT_ASKPASS', 'touch /tmp/askpass-marker')
+    monkeypatch.setenv('SSH_ASKPASS', 'touch /tmp/ssh-askpass-marker')
     monkeypatch.setattr(subprocess, 'run', fake_run)
 
     m._run_git(['version'])
@@ -182,3 +184,21 @@ def test_worker_scrubs_git_control_environment(monkeypatch):
     assert not any(key.startswith('GIT_CONFIG_KEY_') for key in env)
     assert not any(key.startswith('GIT_CONFIG_VALUE_') for key in env)
     assert 'GIT_SSH_COMMAND' not in env
+    assert 'GIT_ASKPASS' not in env
+    assert 'SSH_ASKPASS' not in env
+
+def test_option_like_remote_is_rejected_before_git(tmp_path, monkeypatch):
+    m = load_module()
+
+    def fail_git(*args, **kwargs):
+        raise AssertionError('git must not run for an option-like remote')
+
+    monkeypatch.setattr(m, '_run_git', fail_git)
+    with pytest.raises(ValueError, match='remote'):
+        m.sync_ref(
+            ROOT,
+            '--upload-pack=touch /tmp/marker',
+            str(tmp_path / 'target.git'),
+            'main',
+            tmp_path / 'r.json',
+        )
