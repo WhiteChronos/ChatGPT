@@ -216,13 +216,14 @@ def test_network_mirror_receipt_push_options_bind_transport_and_sha():
     options = m._mirror_push_options(receipt)
 
     joined = ' '.join(options)
-    assert 'WHITECHRONOS_MIRROR_TRANSPORT=neutral_worker' in joined
-    assert 'WHITECHRONOS_MIRROR_SOURCE_REPOSITORY=WhiteChronos/ChatGPT' in joined
-    assert 'WHITECHRONOS_MIRROR_TARGET_PROJECT=chronoswhite-group/ChronosWhite-project' in joined
-    assert 'WHITECHRONOS_MIRROR_REF=main' in joined
-    assert f'WHITECHRONOS_MIRROR_SOURCE_SHA={source_sha}' in joined
-    assert f'WHITECHRONOS_MIRROR_TARGET_SHA={source_sha}' in joined
-    assert 'WHITECHRONOS_MIRROR_RECEIPT_SHA256=' in joined
+    assert 'ci.input=mirror_transport=neutral_worker' in joined
+    assert 'ci.input=mirror_source_repository=WhiteChronos/ChatGPT' in joined
+    assert 'ci.input=mirror_target_project=chronoswhite-group/ChronosWhite-project' in joined
+    assert 'ci.input=mirror_ref=main' in joined
+    assert f'ci.input=mirror_source_sha={source_sha}' in joined
+    assert f'ci.input=mirror_target_sha={source_sha}' in joined
+    assert 'ci.input=mirror_receipt_sha256=' in joined
+    assert 'ci.variable=' not in joined
 
 def test_safe_git_environment_disables_global_and_system_config(monkeypatch):
     m = load_module()
