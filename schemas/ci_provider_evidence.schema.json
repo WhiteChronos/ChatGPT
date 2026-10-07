@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WhiteChronos CI Provider Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "provider", "repository_identity", "subject_sha", "pipeline_or_run_id",
+    "gate_name", "result", "timestamp", "ci_config_revision",
+    "mirror_parity_status", "attempt"
+  ],
+  "properties": {
+    "provider": {"enum": ["github", "gitlab", "local"]},
+    "repository_identity": {"type": "string", "minLength": 1},
+    "subject_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"},
+    "pipeline_or_run_id": {"type": "string", "minLength": 1},
+    "gate_name": {"type": "string", "minLength": 1},
+    "result": {"enum": ["PASS", "FAIL", "UNAVAILABLE"]},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "ci_config_revision": {"type": "string", "minLength": 1},
+    "mirror_parity_status": {"enum": ["HEALTHY", "STALE", "DIVERGED", "UNAVAILABLE", "NOT_APPLICABLE"]},
+    "attempt": {"type": "integer", "minimum": 1}
+  }
+}

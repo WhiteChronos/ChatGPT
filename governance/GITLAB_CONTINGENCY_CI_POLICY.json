@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "authority_provider": "github",
+  "mirror_provider": "gitlab",
+  "mirror_direction": "github_to_gitlab",
+  "active_failover": false,
+  "gitlab_merge_authority": false,
+  "gitlab_deploy_authority": false,
+  "source_repository": "WhiteChronos/ChatGPT",
+  "evidence_requires_exact_sha": true,
+  "mirror_freshness_seconds": 3600,
+  "max_clock_skew_seconds": 300,
+  "provisioning_state": "PROVISIONED",
+  "gitlab_project_id": 86465539,
+  "gitlab_project_path": "chronoswhite-group/ChronosWhite-project",
+  "mirror_transport": "neutral_worker",
+  "mirror_divergence_behavior": "FAIL_CLOSED",
+  "provider_disagreement_behavior": "BLOCK_FOR_INVESTIGATION",
+  "allowed_evidence_providers": [
+    "github",
+    "gitlab",
+    "local"
+  ],
+  "allowed_mirror_ref_classes": [
+    "main",
+    "spec/*",
+    "plan/*",
+    "feat/*",
+    "fix/*",
+    "release/*"
+  ],
+  "infrastructure_retry": {
+    "limit": 2,
+    "eligible_failures": [
+      "PROVIDER_INFRA_FAILURE",
+      "RUNNER_ASSIGNMENT_FAILURE"
+    ]
+  }
+}
