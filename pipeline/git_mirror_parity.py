@@ -7,8 +7,13 @@ from enum import StrEnum
 import json
 from pathlib import Path
 import re
+import sys
 
-from pipeline.gitlab_contingency_policy import GitLabContingencyPolicy, load_policy
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from pipeline.gitlab_contingency_policy import GitLabContingencyPolicy, classify_ref, load_policy
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 
@@ -53,6 +58,9 @@ def _aware(value: datetime) -> datetime:
 
 
 def evaluate_mirror_parity(value: MirrorParityInput, policy: GitLabContingencyPolicy) -> MirrorParityResult:
+    ref_decision = classify_ref(value.ref_name, policy)
+    if not ref_decision.eligible:
+        return MirrorParityResult(MirrorParityStatus.DIVERGED, False, "mirror ref is not eligible under policy")
     if not value.github_available or not value.gitlab_available:
         return MirrorParityResult(MirrorParityStatus.UNAVAILABLE, False, "required provider observation unavailable")
     if policy.provisioning_state != "PROVISIONED" or not policy.gitlab_project_id or not policy.gitlab_project_path:
@@ -96,7 +104,7 @@ def main() -> int:
             github_available=bool(raw["github_available"]),
             gitlab_available=bool(raw["gitlab_available"]),
             receipt_timestamp=_parse_dt(raw["receipt_timestamp"]),
-            evaluated_at=_parse_dt(raw.get("evaluated_at") or datetime.now(timezone.utc).isoformat()),
+            evaluated_at=datetime.now(timezone.utc),
         )
         result = evaluate_mirror_parity(value, load_policy(Path(args.policy)))
     except Exception as exc:

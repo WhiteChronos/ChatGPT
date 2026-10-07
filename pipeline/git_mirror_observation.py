@@ -4,11 +4,14 @@ import argparse
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 import json
+import os
 import re
 import subprocess
 from urllib.parse import urlsplit
+from pathlib import Path
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
+_CANONICAL_GITHUB_REMOTE = "https://github.com/WhiteChronos/ChatGPT.git"
 
 
 @dataclass(frozen=True)
@@ -28,6 +31,30 @@ def _reject_inline_credentials(remote_url: str) -> None:
             raise ValueError("inline HTTPS credentials are not allowed")
 
 
+def _validate_remote(remote_url: str) -> None:
+    value = remote_url.strip()
+    if not value or value.startswith("-"):
+        raise ValueError("remote must be a repository URL or local repository path")
+    _reject_inline_credentials(value)
+    if value.startswith(("http://", "https://", "ssh://")) or (
+        "@" in value and ":" in value and not Path(value).exists()
+    ):
+        if value != _CANONICAL_GITHUB_REMOTE:
+            raise ValueError("network remote is not the configured authoritative GitHub repository")
+
+
+def _safe_git_env() -> dict[str, str]:
+    allowed: dict[str, str] = {}
+    for key in ("PATH", "HOME", "LANG", "LC_ALL", "SYSTEMROOT", "WINDIR", "TMP", "TEMP", "TMPDIR"):
+        value = os.environ.get(key)
+        if value:
+            allowed[key] = value
+    allowed["GIT_CONFIG_NOSYSTEM"] = "1"
+    allowed["GIT_CONFIG_GLOBAL"] = os.devnull
+    allowed["GIT_TERMINAL_PROMPT"] = "0"
+    return allowed
+
+
 def _normalize_ref(ref_name: str) -> tuple[str, str]:
     value = ref_name.strip()
     if value.startswith("refs/heads/"):
@@ -38,7 +65,7 @@ def _normalize_ref(ref_name: str) -> tuple[str, str]:
 
 
 def observe_remote_ref(remote_url: str, ref_name: str) -> RemoteRefObservation:
-    _reject_inline_credentials(remote_url)
+    _validate_remote(remote_url)
     normalized, full_ref = _normalize_ref(ref_name)
     observed_at = datetime.now(timezone.utc).isoformat()
     result = subprocess.run(
@@ -46,6 +73,7 @@ def observe_remote_ref(remote_url: str, ref_name: str) -> RemoteRefObservation:
         check=False,
         text=True,
         capture_output=True,
+        env=_safe_git_env(),
     )
     if result.returncode == 2:
         return RemoteRefObservation(remote_url, normalized, None, observed_at, False, "ref not found")

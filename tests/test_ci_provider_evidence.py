@@ -51,7 +51,7 @@ def ev(provider='github', result='PASS', sha=SHA, parity='NOT_APPLICABLE', **cha
         attempt=1,
     )
     data.update(changes)
-    data['provenance_sha256'] = provenance_sha256(data)
+    data.setdefault('provenance_sha256', provenance_sha256(data))
     return CIProviderEvidence(**data)
 
 

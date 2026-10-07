@@ -214,6 +214,22 @@ workflow runs for the implementation HEAD concluded `success`. No deploy,
 canary, stable, live-smoke, R2/R3, or production workflow was part of this
 verification path.
 
+
+### Immutable workflow-run provenance for implementation HEAD
+
+The seven workflow results cited above are bound to
+`cfb196c5643b9ebe00b68227d1ae54a2446f8837` by their GitHub Actions run IDs:
+
+| Run ID | Workflow | Event | Created (UTC) | Conclusion | URL |
+| ---: | --- | --- | --- | --- | --- |
+| 37552159196 | GitHub Control Plane Policy | push | 2026-10-07T00:28:38Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552159196 |
+| 37552159288 | WhiteChronos Runtime Foundation | push | 2026-10-07T00:28:38Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552159288 |
+| 37552196087 | GitHub Control Plane Policy | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196087 |
+| 37552196153 | Document Governance v4.7 | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196153 |
+| 37552196098 | Engineering Governance | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196098 |
+| 37552196099 | Glossary Engine | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196099 |
+| 37552196221 | WhiteChronos Runtime Foundation | pull_request | 2026-10-07T00:29:06Z | success | https://github.com/WhiteChronos/ChatGPT/actions/runs/37552196221 |
+
 ## 8. Final gate
 
 The source implementation is fully verified for the repository scope. The live
