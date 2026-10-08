@@ -163,7 +163,7 @@ def test_pipeline_prefers_nested_pipeline_source_with_top_level_fallback():
     body = text()
     mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
     assert 'pipeline.get("source") or job.get("source", "")' in mirror_block
-    assert 'job.get("source", "")).strip()' not in mirror_block
+    assert 'job_source = str(job.get("source", "")).strip()' not in mirror_block
 
 
 def test_gitlab_ref_probe_uses_remote_name_not_credential_bearing_url():
