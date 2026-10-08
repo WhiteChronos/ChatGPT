@@ -1,9 +1,9 @@
 # WhiteChronos Connection Controller + TinyFish Controller Design
 
-**Status:** Approved written specification; implementation planning in progress  
-**Date:** 2026-10-08  
-**Repository:** `WhiteChronos/ChatGPT`  
-**Base:** `main` at `8a3f175b92e6355dabd8ab11f19ba93a457de059`  
+**Status:** Approved written specification; implementation planning in progress
+**Date:** 2026-10-08
+**Repository:** `WhiteChronos/ChatGPT`
+**Base:** `main` at `8a3f175b92e6355dabd8ab11f19ba93a457de059`
 **Review method:** Superpowers architectural workflow + GitHub Arena structured 16-strategy review. The Arena pass in this ChatGPT runtime is sequential; no independent subagents are claimed.
 
 ## 1. Purpose
@@ -622,7 +622,7 @@ The following remain independent and are not implied by this design approval:
 
 ### Alternative A — separate Connection Controller plugin + separate TinyFish Controller
 
-**Advantages:** very explicit component ownership.  
+**Advantages:** very explicit component ownership.
 **Disadvantages:** duplicates the existing WhiteChronos Control Plane's registry/runtime responsibilities, increases marketplace/config surface and creates two competing runtime authorities.
 
 **Decision:** rejected as a separate top-level plugin. Preserve Connection Controller as a module/Skill inside the existing control plane.
