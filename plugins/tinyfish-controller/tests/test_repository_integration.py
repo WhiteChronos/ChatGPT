@@ -51,3 +51,20 @@ def test_agents_md_defines_tinyfish_routing_without_replacing_native_connectors(
     assert "native GitHub/GitLab" in text
     assert "GitHub Arena" in text
     assert "Superpowers" in text
+
+
+
+def test_runtime_foundation_directly_covers_tinyfish_controller():
+    workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert workflow.count('"plugins/tinyfish-controller/**"') >= 2
+    assert "python -m pytest -q plugins/tinyfish-controller/tests" in workflow
+
+
+def test_connection_runbook_keeps_tinyfish_profile_failure_degraded():
+    runbook = REPO / "docs" / "runbooks" / "whitechronos-connections.md"
+    assert runbook.exists(), "connection runbook missing"
+    text = runbook.read_text()
+    assert "TinyFish" in text
+    assert "list_profiles" in text
+    assert "DEGRADED" in text
+    assert "HOST_POLICY_BLOCKED" in text

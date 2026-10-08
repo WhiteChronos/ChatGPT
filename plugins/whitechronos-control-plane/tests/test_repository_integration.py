@@ -14,6 +14,7 @@ CONNECTION_CLI = PLUGIN / "scripts" / "connection_preflight.py"
 SKILL = PLUGIN / "skills" / "codex-runtime-doctor" / "SKILL.md"
 CONNECTION_SKILL = PLUGIN / "skills" / "whitechronos-connection-controller" / "SKILL.md"
 RUNBOOK = REPO / "docs" / "runbooks" / "codex-subagent-runtime.md"
+CONNECTION_RUNBOOK = REPO / "docs" / "runbooks" / "whitechronos-connections.md"
 
 EXISTING_PLUGINS = {
     "github-arena@whitechronos-repo",
@@ -214,3 +215,59 @@ def test_connection_skill_requires_fresh_provider_and_process_evidence():
 
 def test_connection_cli_exists():
     assert CONNECTION_CLI.exists(), "connection_preflight.py CLI missing"
+
+
+
+def test_connection_runbook_documents_state_boundaries_and_recovery():
+    assert CONNECTION_RUNBOOK.exists(), "whitechronos-connections runbook missing"
+    text = CONNECTION_RUNBOOK.read_text()
+    for required in (
+        "CONFIGURED != HOST_VISIBLE",
+        "HOST_VISIBLE != AUTHENTICATED",
+        "AUTHENTICATED != TARGET_ACCESSIBLE",
+        "MIRROR_PARITY",
+        "DEGRADED",
+        "HOST_POLICY_BLOCKED",
+        "USER_ACTION_REQUIRED",
+        "github.get_profile",
+        "github.get_repo",
+        "gitlab.get_current_user",
+        "gitlab.get_project",
+        "tinyfish.get_wallet",
+        "list_profiles",
+    ):
+        assert required in text
+    assert "cannot force unrelated ChatGPT conversations" in text
+    assert "new session" in text.lower()
+
+
+def test_runtime_foundation_observes_tinyfish_controller_and_runs_its_tests():
+    workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    assert workflow.count('"plugins/tinyfish-controller/**"') >= 2
+    assert "python -m pytest -q plugins/tinyfish-controller/tests" in workflow
+
+
+def test_runtime_foundation_remains_offline_for_provider_authentication():
+    workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    for forbidden in (
+        "run_web_automation",
+        "create_monitor",
+        "get_wallet",
+        "list_profiles",
+        "TINYFISH_API_KEY",
+        "GITHUB_TOKEN:",
+        "GITLAB_TOKEN",
+    ):
+        assert forbidden not in workflow
+
+
+def test_runtime_foundation_preserves_existing_regression_and_governance_steps():
+    workflow = (REPO / ".github/workflows/whitechronos-runtime-foundation.yml").read_text()
+    for required in (
+        "python -m pytest -q",
+        "plugins/subagent-broker/tests/mcp-protocol.test.mjs",
+        "python pipeline/engineering_compatibility_gate.py",
+        "python pipeline/protocol_zero_gate.py datasheet/projects/example-project.json",
+        "runtime_doctor.py",
+    ):
+        assert required in workflow
