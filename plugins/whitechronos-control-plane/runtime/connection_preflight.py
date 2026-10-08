@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .connection_models import (
@@ -19,7 +19,9 @@ from .registry import load_registry
 class ConnectionRequirement:
     integration_id: str
     target_required: bool
+    target: str | None
     live_verification_required: bool
+    live_operation: str | None
 
 
 @dataclass(frozen=True)
@@ -42,8 +44,11 @@ _BLOCKING_STATUSES = {
     ConnectionStatus.HOST_POLICY_BLOCKED,
     ConnectionStatus.SECURITY_REVIEW_REQUIRED,
 }
-_PROCESS_LAYER_NAMES = {"SUPERPOWERS", "ARENA", "RUNTIME_DOCTOR"}
+_PROCESS_LAYER_NAMES = {"SUPERPOWERS", "ARENA", "RUNTIME_DOCTOR", "MIRROR_PARITY"}
 _PROCESS_LAYER_STATUSES = {status.value for status in ConnectionStatus}
+_MIRROR_PARITY_STATUSES = {"HEALTHY", "FAIL", "DIVERGED", "STALE", "UNAVAILABLE", "NOT_APPLICABLE"}
+_EVIDENCE_MAX_AGE = timedelta(minutes=15)
+_EVIDENCE_FUTURE_SKEW = timedelta(minutes=5)
 _SECRET_PATTERNS = (
     re.compile(r"\bauthorization\s*[:=]\s*bearer\s+\S+", re.IGNORECASE),
     re.compile(
@@ -51,6 +56,7 @@ _SECRET_PATTERNS = (
         re.IGNORECASE,
     ),
     re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"),
+    re.compile(r"\bgithub_pat_[A-Za-z0-9_]{20,}\b"),
     re.compile(r"\bglpat-[A-Za-z0-9_-]{20,}\b"),
 )
 
@@ -111,7 +117,7 @@ def _string_tuple(value: object, label: str) -> tuple[str, ...]:
     return tuple(result)
 
 
-def _timestamp(value: object, label: str) -> str:
+def _timestamp(value: object, label: str) -> tuple[str, datetime]:
     text = _nonempty_string(value, label)
     normalized = text[:-1] + "+00:00" if text.endswith("Z") else text
     try:
@@ -120,7 +126,14 @@ def _timestamp(value: object, label: str) -> str:
         raise ValueError(f"{label} must be an ISO-8601 timestamp with timezone") from exc
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ValueError(f"{label} must include timezone")
-    return text
+    return text, parsed.astimezone(timezone.utc)
+
+
+def _require_fresh_timestamp(observed_at: datetime, label: str, now: datetime) -> None:
+    if observed_at < now - _EVIDENCE_MAX_AGE:
+        raise ValueError(f"{label}: evidence is stale")
+    if observed_at > now + _EVIDENCE_FUTURE_SKEW:
+        raise ValueError(f"{label}: evidence timestamp is implausibly future-dated")
 
 
 def _reject_secret_like(value: str | None, label: str) -> None:
@@ -130,7 +143,12 @@ def _reject_secret_like(value: str | None, label: str) -> None:
         raise ValueError(f"{label}: evidence contains secret-like content")
 
 
-def _evidence_tuple(value: object, label: str) -> tuple[ConnectionEvidence, ...]:
+def _evidence_tuple(
+    value: object,
+    label: str,
+    *,
+    now: datetime,
+) -> tuple[ConnectionEvidence, ...]:
     if value is None:
         return ()
     if not isinstance(value, list):
@@ -142,7 +160,8 @@ def _evidence_tuple(value: object, label: str) -> tuple[ConnectionEvidence, ...]
         item_label = f"{label}[{index}]"
         source = _nonempty_string(item.get("source"), f"{item_label}.source")
         operation = _nonempty_string(item.get("operation"), f"{item_label}.operation")
-        observed_at = _timestamp(item.get("observed_at"), f"{item_label}.observed_at")
+        observed_at, observed_dt = _timestamp(item.get("observed_at"), f"{item_label}.observed_at")
+        _require_fresh_timestamp(observed_dt, f"{item_label}.observed_at", now)
         target = item.get("target")
         if target is not None and not isinstance(target, str):
             raise ValueError(f"{item_label}.target must be a string or null")
@@ -182,17 +201,38 @@ def _requirements(payload: dict[str, object]) -> tuple[ConnectionRequirement, ..
         if integration_id in seen:
             raise ValueError(f"duplicate integration requirement: {integration_id}")
         seen.add(integration_id)
+        target_required = _required_bool(
+            item.get("target_required"),
+            f"requirements[{index}].target_required",
+        )
+        target = item.get("target")
+        if target is not None:
+            target = _nonempty_string(target, f"requirements[{index}].target")
+        if target_required and target is None:
+            raise ValueError(f"requirements[{index}].target is required when target_required is true")
+
+        live_verification_required = _required_bool(
+            item.get("live_verification_required"),
+            f"requirements[{index}].live_verification_required",
+        )
+        live_operation = item.get("live_operation")
+        if live_operation is not None:
+            live_operation = _nonempty_string(
+                live_operation,
+                f"requirements[{index}].live_operation",
+            )
+        if live_verification_required and live_operation is None:
+            raise ValueError(
+                f"requirements[{index}].live_operation is required when live_verification_required is true"
+            )
+
         result.append(
             ConnectionRequirement(
                 integration_id=integration_id,
-                target_required=_required_bool(
-                    item.get("target_required"),
-                    f"requirements[{index}].target_required",
-                ),
-                live_verification_required=_required_bool(
-                    item.get("live_verification_required"),
-                    f"requirements[{index}].live_verification_required",
-                ),
+                target_required=target_required,
+                target=target,
+                live_verification_required=live_verification_required,
+                live_operation=live_operation,
             )
         )
     return tuple(result)
@@ -202,9 +242,20 @@ def _require_probe_evidence(
     evidence: tuple[ConnectionEvidence, ...],
     probe: str,
     label: str,
+    *,
+    expected_target: str | None = None,
 ) -> None:
-    if not any(item.operation == probe for item in evidence):
+    if any(
+        item.operation == probe
+        and (expected_target is None or item.target == expected_target)
+        for item in evidence
+    ):
+        return
+    if expected_target is None:
         raise ValueError(f"{label} requires evidence for registered probe {probe}")
+    raise ValueError(
+        f"{label} requires evidence for registered probe {probe} on target {expected_target}"
+    )
 
 
 def build_connection_report(
@@ -216,6 +267,8 @@ def build_connection_report(
 
     registry = load_registry(Path(repo_root))
     requirements = _requirements(payload)
+    process_layers = _process_layers_to_json(payload.get("process_layers"))
+    now = datetime.now(timezone.utc)
     integrations = payload.get("integrations", {})
     if not isinstance(integrations, dict):
         raise ValueError("integrations must be an object")
@@ -242,7 +295,11 @@ def build_connection_report(
             raw_signal.get("target_accessible"),
             f"{label}.target_accessible",
         )
-        evidence = _evidence_tuple(raw_signal.get("evidence"), f"{label}.evidence")
+        evidence = _evidence_tuple(
+            raw_signal.get("evidence"),
+            f"{label}.evidence",
+            now=now,
+        )
 
         if connection is not None and connection.auth_required and authenticated is not None:
             _require_probe_evidence(
@@ -261,7 +318,20 @@ def build_connection_report(
                     evidence,
                     connection.target_probe,
                     f"{label}.target_probe",
+                    expected_target=requirement.target,
                 )
+
+        live_verified = _bool_or_none(
+            raw_signal.get("live_verified"),
+            f"{label}.live_verified",
+        )
+        if requirement.live_verification_required and live_verified is True:
+            _require_probe_evidence(
+                evidence,
+                requirement.live_operation or "",
+                f"{label}.live_verification",
+                expected_target=requirement.target,
+            )
 
         signals = ConnectionSignals(
             configured=connection is not None,
@@ -271,10 +341,7 @@ def build_connection_report(
             ),
             authenticated=authenticated,
             target_accessible=target_accessible,
-            live_verified=_bool_or_none(
-                raw_signal.get("live_verified"),
-                f"{label}.live_verified",
-            ),
+            live_verified=live_verified,
             authentication_required=bool(connection and connection.auth_required),
             target_required=requirement.target_required,
             live_verification_required=requirement.live_verification_required,
@@ -301,6 +368,17 @@ def build_connection_report(
         if observation.status not in _NON_BLOCKING:
             blockers.append(f"{observation.integration_id}:{observation.status.value}")
 
+    for name, status in process_layers.items():
+        if name == "MIRROR_PARITY":
+            if status not in {"HEALTHY", "NOT_APPLICABLE"}:
+                blockers.append(f"{name}:{status}")
+        elif status not in {
+            ConnectionStatus.PASS.value,
+            ConnectionStatus.DEGRADED.value,
+            ConnectionStatus.NOT_APPLICABLE.value,
+        }:
+            blockers.append(f"{name}:{status}")
+
     return ConnectionReport(
         observations=tuple(observations),
         required_task_connections_pass=not blockers,
@@ -313,12 +391,16 @@ def _process_layers_to_json(process_layers: object) -> dict[str, str]:
         return {}
     if not isinstance(process_layers, dict):
         raise ValueError("process_layers must be an object")
+    unknown = sorted(set(process_layers) - _PROCESS_LAYER_NAMES)
+    if unknown:
+        raise ValueError(f"unknown process layer: {unknown[0]}")
     result: dict[str, str] = {}
     for name in sorted(_PROCESS_LAYER_NAMES):
         if name not in process_layers:
             continue
         raw = process_layers[name]
-        if not isinstance(raw, str) or raw not in _PROCESS_LAYER_STATUSES:
+        allowed = _MIRROR_PARITY_STATUSES if name == "MIRROR_PARITY" else _PROCESS_LAYER_STATUSES
+        if not isinstance(raw, str) or raw not in allowed:
             raise ValueError(f"process_layers.{name} has unknown status")
         result[name] = raw
     return result

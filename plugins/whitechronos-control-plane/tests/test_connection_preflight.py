@@ -275,6 +275,7 @@ def test_positive_target_requires_registered_target_probe_evidence():
             {
                 "integration_id": "github-connector",
                 "target_required": True,
+                "target": "WhiteChronos/ChatGPT",
                 "live_verification_required": False,
             }
         ],
@@ -295,6 +296,7 @@ def test_target_requirement_rejected_when_descriptor_has_no_target_probe():
             {
                 "integration_id": "tinyfish",
                 "target_required": True,
+                "target": "unused-target",
                 "live_verification_required": False,
             }
         ],
@@ -337,6 +339,7 @@ def test_evidence_requires_timezone_aware_timestamp():
             {
                 "integration_id": "github-connector",
                 "target_required": True,
+                "target": "WhiteChronos/ChatGPT",
                 "live_verification_required": False,
             }
         ],

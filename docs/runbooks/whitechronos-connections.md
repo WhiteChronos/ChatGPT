@@ -13,7 +13,7 @@ AUTHENTICATED != TARGET_ACCESSIBLE
 MIRROR_PARITY is separate from connector authentication
 ```
 
-A historical PASS is evidence for that historical observation only. Re-probe the capability required by the current task before relying on it for a sensitive or mutating action.
+A historical PASS is evidence for that historical observation only. Provider evidence accepted by the local preflight must be no older than 15 minutes and no more than 5 minutes ahead of the evaluator clock (clock-skew allowance). Re-probe the capability required by the current task immediately before a sensitive or mutating action.
 
 ## Safe preflight sequence
 
@@ -22,7 +22,8 @@ A historical PASS is evidence for that historical observation only. Re-probe the
 1. Confirm the GitHub connector/tool surface is visible in the current conversation.
 2. Run the safe identity probe `github.get_profile`.
 3. When repository access matters, run the target probe `github.get_repo` for the required repository.
-4. Verify the permission required by the planned action immediately before a write.
+4. Bind repository evidence to the exact required target (for example, `WhiteChronos/ChatGPT`); evidence for another repository cannot satisfy the task.
+5. Verify the permission required by the planned action immediately before a write.
 
 Do not infer GitHub authentication from `.codex/config.toml`, marketplace registration, a previous conversation, or GitLab identity metadata.
 
@@ -31,7 +32,8 @@ Do not infer GitHub authentication from `.codex/config.toml`, marketplace regist
 1. Confirm the GitLab connector/tool surface is visible.
 2. Run `gitlab.get_current_user`.
 3. When project access matters, run `gitlab.get_project` for the required project.
-4. Read task-specific pipeline/MR/project evidence only when needed.
+4. Bind project evidence to the exact required project; evidence for another project cannot satisfy the task.
+5. Read task-specific pipeline/MR/project evidence only when needed.
 
 A GitLab account linked to a GitHub identity is identity evidence only. It is not mirror parity.
 
@@ -106,7 +108,9 @@ For mirror-sensitive work, use the existing canonical WhiteChronos mirror/parity
 4. exact GitLab commit SHA;
 5. an evidence-eligible result whose exact SHAs match.
 
-Do not reuse `HEALTHY` evidence from a different SHA.
+Do not reuse `HEALTHY` evidence from a different SHA. When `MIRROR_PARITY` is supplied as a required process layer, any value other than `HEALTHY` (or explicit `NOT_APPLICABLE` for a non-mirror task) blocks the aggregate preflight. Unknown process-layer names are rejected rather than silently discarded.
+
+When task-specific live verification is required, declare the expected live operation in the requirement and provide fresh evidence for that exact operation and target. A bare `live_verified=true` flag is not sufficient.
 
 ## Codex plugin refresh
 
