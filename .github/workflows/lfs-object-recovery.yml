@@ -1,0 +1,116 @@
+name: LFS Object Recovery
+
+on:
+  push:
+    branches:
+      - repair/lfs-object-recovery
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  recover-lfs:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_REPO: CopilotKit/CopilotKit
+      SOURCE_REF: main
+      PATHS: examples/showcases/deep-agents/public/og-image.png,examples/showcases/open-mcp-client/apps/mcp-use-server/public/fruits/*.png,examples/showcases/open-mcp-client/apps/web/app/image.png,examples/integrations/mcp-apps/threejs-server/*.png
+      OIDS: >-
+        0ec9c61cac923697b1c3e9452458d24d4a75cbdcdef05194d94a35eb68f3d59a:215406
+        13d5103b3b2c52cec405f8d926e883a75959eb66a570b392706848cd240700b3:39443
+        1a6edd40baf8b1f169016084c5f80e48eb09c1df1c6afe9e63de1553109acb14:35870
+        2b826f2ebf250150bfad3dffe1211ddcb45f464d381a18681118c3e901166d27:23786
+        2ed02404581c11c7d4a20a404fab4107050566af5800f9110c88f961dbcafcf4:37766
+        48c3aff0b8abad6d788c636eaa6aee3311ffa3c4edf131a70ea0ae5d3ea47bd6:20964
+        4f1a42b36c73001e30001bfa2486b9b8ef6f976442c88ac2c4d26c2ca517275a:22674
+        4f3988438ee1892802f510cb61a264c8493267f4aa62ee31265aa13d22e2e8b7:3780
+        500dddc566a99a471e12916fda8824b2fe73bbd8715194055969366542f08445:17948
+        57e514c1bd39cf01091aeb7b56e4c960a7e2fdcacf2bad7ccb23545a0c2fd0f4:23330
+        598d89732f0ab48d20261263734abaa465c0d2f719890b5d4a986b0bd1f1d8de:36315
+        72e84832632576e4c82e607b46dd0cf13a27b506e826117262705a54ccd1abf8:40830
+        73122a851a5d140d164388167affba2267883178c75155e49deb413bd2e96661:31043
+        751db54001e46ccf37d9cb26a4d59c079d076740c98a164436fe1d349e58600a:5647
+        8244ba548dfbfb8f1313d5eae000476926f23149a301b78b4e0dc8420b934b88:22350
+        9068f44bf72e5b5c69d61cf86d5f7f0e00c38689acd151960a2269444ea6bfe3:4857
+        984a9d1c2c987d5a432520f21dba9d467f042ecd899b7e005d7a2391fd41fb46:50035
+        bf33a9117647529078a97bb929469bd9ddbca60ac8603f26696ebf3d9bee2895:38147
+        d307e2691b4433d17be43452fad37e7273e9824d08f1aeca2eb729c1832f67b8:34936
+        ffe66f5ac8806e7ab25d6b30bcefc5ff075d5f1698a19d6b9f6af5407f43c43d:26905
+
+    steps:
+      - name: Checkout recovery branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: true
+
+      - name: Prepare Git LFS
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs version
+          git lfs install --local
+
+      - name: Recover exact objects from CopilotKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          export GIT_LFS_SKIP_SMUDGE=1
+          rm -rf /tmp/copilotkit
+          git clone --no-checkout "https://github.com/${SOURCE_REPO}.git" /tmp/copilotkit
+          git -C /tmp/copilotkit lfs install --local --skip-smudge
+          git -C /tmp/copilotkit lfs fetch -I "$PATHS" origin "$SOURCE_REF"
+
+          recovered=0
+          for item in $OIDS; do
+            oid="${item%%:*}"
+            size="${item##*:}"
+            a="${oid:0:2}"
+            b="${oid:2:2}"
+            src="/tmp/copilotkit/.git/lfs/objects/$a/$b/$oid"
+            dst=".git/lfs/objects/$a/$b/$oid"
+
+            test -f "$src"
+            test "$(wc -c < "$src" | tr -d ' ')" = "$size"
+            test "$(sha256sum "$src" | awk '{print $1}')" = "$oid"
+
+            mkdir -p "$(dirname "$dst")"
+            cp "$src" "$dst"
+            recovered=$((recovered+1))
+          done
+
+          test "$recovered" = "20"
+          echo "RECOVERED_SOURCE_OBJECTS=$recovered"
+
+      - name: Push recovered objects to WhiteChronos LFS
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs push --all origin repair/lfs-object-recovery
+
+      - name: Verify objects from WhiteChronos LFS
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .git/lfs/objects
+          mkdir -p .git/lfs/objects
+          git lfs fetch --all origin
+
+          verified=0
+          for item in $OIDS; do
+            oid="${item%%:*}"
+            size="${item##*:}"
+            a="${oid:0:2}"
+            b="${oid:2:2}"
+            obj=".git/lfs/objects/$a/$b/$oid"
+
+            test -f "$obj"
+            test "$(wc -c < "$obj" | tr -d ' ')" = "$size"
+            test "$(sha256sum "$obj" | awk '{print $1}')" = "$oid"
+            verified=$((verified+1))
+          done
+
+          test "$verified" = "20"
+          echo "WHITECHRONOS_LFS_VERIFIED=$verified"
