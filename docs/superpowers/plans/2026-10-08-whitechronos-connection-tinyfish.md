@@ -229,6 +229,7 @@ def test_required_tinyfish_browser_policy_block_fails_required_connections(): ..
 def test_unknown_integration_id_fails_closed(): ...
 def test_preflight_output_does_not_echo_secret_fields(): ...
 def test_cli_emits_deterministic_json(): ...
+def test_acceptance_matrix_can_combine_connections_with_process_layer_evidence(): ...
 ~~~
 
 For the secret test include token, password, cookie and authorization-like keys and assert they do not appear in serialized output.
@@ -269,7 +270,9 @@ The Skill directs a host agent to:
 5. classify TinyFish service and Browser Profile health separately;
 6. never infer host visibility/authentication from .codex/config.toml;
 7. never request or persist credentials;
-8. pass only non-secret evidence to the local preflight normalizer when available.
+8. pass only non-secret evidence to the local preflight normalizer when available;
+9. verify Superpowers availability/configuration before software execution and preserve it as the process owner;
+10. verify Arena availability/configuration before high-impact final review, and delegate Codex/Arena/Broker/native runtime claims to Runtime Doctor rather than inferring them from config.
 
 - [ ] **Step 5: Update plugin metadata and repository-integration tests**
 
@@ -281,7 +284,7 @@ Change the manifest test to assert exactly:
 ["codex-runtime-doctor", "whitechronos-connection-controller"]
 ~~~
 
-Add assertions that README documents both CLIs and the new Skill states repository config is not authentication proof.
+Add assertions that README documents both CLIs, the new Skill states repository config is not authentication proof, and the Skill explicitly checks Superpowers/Arena while routing runtime-capability claims to Runtime Doctor.
 
 - [ ] **Step 6: Run focused tests and verify GREEN**
 
