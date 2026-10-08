@@ -57,6 +57,9 @@ jobs:
       - name: Run TinyFish controller tests
         run: python -m pytest -q plugins/tinyfish-controller/tests
 
+      - name: Verify combined repository integration modules collect cleanly
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests/test_repository_integration.py plugins/tinyfish-controller/tests/test_repository_integration.py
+
       - name: Run full repository regression suite
         run: python -m pytest -q
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import json
+from datetime import datetime, timezone
 import subprocess
 import sys
 from pathlib import Path
@@ -30,10 +31,11 @@ def _provider_signal(
     required_blocker: str | None = None,
     optional_degradations: list[str] | None = None,
     operations: list[tuple[str, str | None]] | None = None,
-    observed_at: str = "2026-10-08T21:00:00Z",
+    observed_at: str | None = None,
     summary: str = "non-secret provider evidence",
 ) -> dict[str, object]:
     operations = operations or [("safe_probe", "test-target")]
+    observed_at = observed_at or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     return {
         "host_visible": host_visible,
         "authenticated": authenticated,
@@ -61,11 +63,13 @@ def _payload() -> dict[str, object]:
             {
                 "integration_id": "github-connector",
                 "target_required": True,
+                "target": "WhiteChronos/ChatGPT",
                 "live_verification_required": False,
             },
             {
                 "integration_id": "gitlab-connector",
                 "target_required": True,
+                "target": "chronoswhite-group/ChronosWhite-project",
                 "live_verification_required": False,
             },
         ],
@@ -347,4 +351,88 @@ def test_evidence_requires_timezone_aware_timestamp():
         },
     }
     with pytest.raises(ValueError, match=r"observed_at.*timezone"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_stale_provider_evidence_is_rejected():
+    api = _api()
+    payload = _payload()
+    for signal in payload["integrations"].values():
+        for item in signal["evidence"]:
+            item["observed_at"] = "2000-01-01T00:00:00Z"
+    with pytest.raises(ValueError, match=r"evidence.*stale"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_implausible_future_provider_evidence_is_rejected():
+    api = _api()
+    payload = _payload()
+    for signal in payload["integrations"].values():
+        for item in signal["evidence"]:
+            item["observed_at"] = "2999-01-01T00:00:00Z"
+    with pytest.raises(ValueError, match=r"evidence.*future"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_target_probe_must_match_required_target():
+    api = _api()
+    payload = _payload()
+    github = payload["integrations"]["github-connector"]
+    github["evidence"] = [
+        {
+            "source": "test-harness",
+            "operation": "github.get_profile",
+            "observed_at": datetime.now(timezone.utc).isoformat(),
+            "target": None,
+            "summary": "profile ok",
+        },
+        {
+            "source": "test-harness",
+            "operation": "github.get_repo",
+            "observed_at": datetime.now(timezone.utc).isoformat(),
+            "target": "someone/else",
+            "summary": "wrong repository",
+        },
+    ]
+    with pytest.raises(ValueError, match=r"target.*WhiteChronos/ChatGPT"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_live_verification_true_requires_task_specific_operation_evidence():
+    api = _api()
+    payload = _payload()
+    requirement = payload["requirements"][0]
+    requirement["live_verification_required"] = True
+    requirement["live_operation"] = "github.live_write_probe"
+    payload["integrations"]["github-connector"]["live_verified"] = True
+    with pytest.raises(ValueError, match=r"live.*github\.live_write_probe"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_fine_grained_github_token_is_rejected_from_evidence():
+    api = _api()
+    payload = _payload()
+    payload["integrations"]["github-connector"]["evidence"][0]["summary"] = (
+        "github_pat_11AAABBBCCCDDDEEEFFF_abcdefghijklmnopqrstuvwxyz0123456789"
+    )
+    with pytest.raises(ValueError, match=r"evidence.*secret"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_mirror_parity_failure_is_preserved_and_blocks_required_task():
+    api = _api()
+    payload = _payload()
+    payload["process_layers"]["MIRROR_PARITY"] = "FAIL"
+    report = api.build_connection_report(REPO, payload)
+    data = api.report_to_json(report, process_layers=payload["process_layers"])
+    assert data["process_layers"]["MIRROR_PARITY"] == "FAIL"
+    assert report.required_task_connections_pass is False
+    assert "MIRROR_PARITY:FAIL" in report.blockers
+
+
+def test_unknown_process_layer_is_rejected_instead_of_silently_dropped():
+    api = _api()
+    payload = _payload()
+    payload["process_layers"]["UNKNOWN_LAYER"] = "PASS"
+    with pytest.raises(ValueError, match=r"unknown process layer"):
         api.build_connection_report(REPO, payload)
