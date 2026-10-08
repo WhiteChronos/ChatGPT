@@ -50,3 +50,6 @@ enabled = true
 
 [plugins."whitechronos-control-plane@whitechronos-repo"]
 enabled = true
+
+[plugins."tinyfish-controller@whitechronos-repo"]
+enabled = true

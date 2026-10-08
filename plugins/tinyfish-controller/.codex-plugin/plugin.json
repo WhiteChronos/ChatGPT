@@ -1,0 +1,15 @@
+{
+  "name": "tinyfish-controller",
+  "version": "1.0.0",
+  "description": "Route TinyFish search, fetch, browser automation, profiles, monitors, and cost-sensitive actions safely.",
+  "author": {"name": "WhiteChronos", "url": "https://github.com/WhiteChronos"},
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/tinyfish-controller",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "keywords": ["tinyfish", "browser", "profiles", "monitoring", "connections"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "TinyFish Controller",
+    "shortDescription": "Route TinyFish browser, profile, monitor, and cost-sensitive actions safely."
+  }
+}
