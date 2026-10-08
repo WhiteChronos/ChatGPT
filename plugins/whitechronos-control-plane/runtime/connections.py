@@ -8,6 +8,20 @@ from .connection_models import (
 )
 
 
+_BLOCKING_STATUSES = {
+    ConnectionStatus.FAIL,
+    ConnectionStatus.UNAVAILABLE,
+    ConnectionStatus.HOST_RELOAD_REQUIRED,
+    ConnectionStatus.USER_ACTION_REQUIRED,
+    ConnectionStatus.HOST_POLICY_BLOCKED,
+    ConnectionStatus.SECURITY_REVIEW_REQUIRED,
+}
+_HOST_ABSENCE_STATUSES = {
+    ConnectionStatus.UNAVAILABLE,
+    ConnectionStatus.HOST_RELOAD_REQUIRED,
+}
+
+
 def evaluate_connection(
     integration_id: str,
     signals: ConnectionSignals,
@@ -27,6 +41,8 @@ def evaluate_connection(
         )
 
     if signals.required_blocker is not None:
+        if signals.required_blocker not in _BLOCKING_STATUSES:
+            raise ValueError("required_blocker must be a blocking status")
         return result(signals.required_blocker, "required capability is blocked")
 
     if not signals.configured:
@@ -36,6 +52,10 @@ def evaluate_connection(
         return result(ConnectionStatus.UNAVAILABLE, "host visibility has not been observed")
 
     if signals.host_visible is False:
+        if signals.host_absence_status not in _HOST_ABSENCE_STATUSES:
+            raise ValueError(
+                "host_absence_status must be UNAVAILABLE or HOST_RELOAD_REQUIRED"
+            )
         return result(signals.host_absence_status, "integration is not visible in the current host")
 
     if signals.authentication_required:
