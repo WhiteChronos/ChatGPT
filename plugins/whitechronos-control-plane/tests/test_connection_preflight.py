@@ -29,7 +29,11 @@ def _provider_signal(
     host_absence_status: str = "UNAVAILABLE",
     required_blocker: str | None = None,
     optional_degradations: list[str] | None = None,
+    operations: list[tuple[str, str | None]] | None = None,
+    observed_at: str = "2026-10-08T21:00:00Z",
+    summary: str = "non-secret provider evidence",
 ) -> dict[str, object]:
+    operations = operations or [("safe_probe", "test-target")]
     return {
         "host_visible": host_visible,
         "authenticated": authenticated,
@@ -41,11 +45,12 @@ def _provider_signal(
         "evidence": [
             {
                 "source": "test-harness",
-                "operation": "safe_probe",
-                "observed_at": "2026-10-08T21:00:00Z",
-                "target": "test-target",
-                "summary": "non-secret provider evidence",
+                "operation": operation,
+                "observed_at": observed_at,
+                "target": target,
+                "summary": summary,
             }
+            for operation, target in operations
         ],
     }
 
@@ -65,8 +70,18 @@ def _payload() -> dict[str, object]:
             },
         ],
         "integrations": {
-            "github-connector": _provider_signal(),
-            "gitlab-connector": _provider_signal(),
+            "github-connector": _provider_signal(
+                operations=[
+                    ("github.get_profile", None),
+                    ("github.get_repo", "WhiteChronos/ChatGPT"),
+                ]
+            ),
+            "gitlab-connector": _provider_signal(
+                operations=[
+                    ("gitlab.get_current_user", None),
+                    ("gitlab.get_project", "chronoswhite-group/ChronosWhite-project"),
+                ]
+            ),
         },
         "process_layers": {
             "SUPERPOWERS": "PASS",
@@ -101,6 +116,7 @@ def test_optional_tinyfish_profile_degradation_does_not_fail_required_connection
     payload["integrations"]["tinyfish"] = _provider_signal(
         target_accessible=None,
         optional_degradations=["profile_api_error"],
+        operations=[("tinyfish.get_wallet", None)],
     )
     report = api.build_connection_report(REPO, payload)
     tinyfish = report.observations[-1]
@@ -124,6 +140,7 @@ def test_required_tinyfish_browser_policy_block_fails_required_connections():
                 target_accessible=None,
                 required_blocker="HOST_POLICY_BLOCKED",
                 optional_degradations=["profile_api_error"],
+                operations=[("tinyfish.get_wallet", None)],
             )
         },
     }
@@ -202,3 +219,132 @@ def test_acceptance_matrix_can_combine_connections_with_process_layer_evidence()
         "SUPERPOWERS": "PASS",
     }
     assert data["required_task_connections_pass"] is True
+
+
+
+@pytest.mark.parametrize("status", ["PASS", "DEGRADED", "NOT_APPLICABLE"])
+def test_required_blocker_rejects_non_blocking_status(status):
+    api = _api()
+    payload = {
+        "requirements": [
+            {
+                "integration_id": "github-connector",
+                "target_required": False,
+                "live_verification_required": False,
+            }
+        ],
+        "integrations": {
+            "github-connector": _provider_signal(
+                required_blocker=status,
+                operations=[("github.get_profile", None)],
+            )
+        },
+    }
+    with pytest.raises(ValueError, match=r"required_blocker.*blocking"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_positive_auth_requires_registered_safe_probe_evidence():
+    api = _api()
+    payload = {
+        "requirements": [
+            {
+                "integration_id": "github-connector",
+                "target_required": False,
+                "live_verification_required": False,
+            }
+        ],
+        "integrations": {
+            "github-connector": _provider_signal(
+                operations=[("unrelated.probe", None)],
+            )
+        },
+    }
+    with pytest.raises(ValueError, match=r"safe_probe.*github\.get_profile"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_positive_target_requires_registered_target_probe_evidence():
+    api = _api()
+    payload = {
+        "requirements": [
+            {
+                "integration_id": "github-connector",
+                "target_required": True,
+                "live_verification_required": False,
+            }
+        ],
+        "integrations": {
+            "github-connector": _provider_signal(
+                operations=[("github.get_profile", None)],
+            )
+        },
+    }
+    with pytest.raises(ValueError, match=r"target_probe.*github\.get_repo"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_target_requirement_rejected_when_descriptor_has_no_target_probe():
+    api = _api()
+    payload = {
+        "requirements": [
+            {
+                "integration_id": "tinyfish",
+                "target_required": True,
+                "live_verification_required": False,
+            }
+        ],
+        "integrations": {
+            "tinyfish": _provider_signal(
+                operations=[("tinyfish.get_wallet", None)],
+            )
+        },
+    }
+    with pytest.raises(ValueError, match=r"target_required.*no target_probe"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_evidence_rejects_secret_in_allowed_summary():
+    api = _api()
+    payload = {
+        "requirements": [
+            {
+                "integration_id": "tinyfish",
+                "target_required": False,
+                "live_verification_required": False,
+            }
+        ],
+        "integrations": {
+            "tinyfish": _provider_signal(
+                target_accessible=None,
+                operations=[("tinyfish.get_wallet", None)],
+                summary="Authorization: Bearer secret-provider-token-value",
+            )
+        },
+    }
+    with pytest.raises(ValueError, match=r"evidence.*secret"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_evidence_requires_timezone_aware_timestamp():
+    api = _api()
+    payload = {
+        "requirements": [
+            {
+                "integration_id": "github-connector",
+                "target_required": True,
+                "live_verification_required": False,
+            }
+        ],
+        "integrations": {
+            "github-connector": _provider_signal(
+                operations=[
+                    ("github.get_profile", None),
+                    ("github.get_repo", "WhiteChronos/ChatGPT"),
+                ],
+                observed_at="2026-10-08T21:00:00",
+            )
+        },
+    }
+    with pytest.raises(ValueError, match=r"observed_at.*timezone"):
+        api.build_connection_report(REPO, payload)
