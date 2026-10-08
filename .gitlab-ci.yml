@@ -130,7 +130,7 @@ mirror-parity:
       trusted_ref = str(job.get("ref", "")).strip()
       if not trusted_ref:
           raise SystemExit("job-token response did not provide a ref")
-      job_source = str(job.get("source", "")).strip()
+      job_source = str(pipeline.get("source") or job.get("source", "")).strip()
       pipeline_id = str(pipeline.get("id", "")).strip()
       if not pipeline_id:
           raise SystemExit("job-token response did not provide a pipeline ID")
