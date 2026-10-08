@@ -46,8 +46,8 @@ class IntegrationDescriptor:
     controller_plugin: str | None
     skill_paths: tuple[str, ...]
     mcp_servers: tuple[str, ...]
-    connection: ConnectionSpec | None
     runtime_probe: RuntimeProbeSpec | None
+    connection: ConnectionSpec | None = None
 
 
 @dataclass(frozen=True)
