@@ -5,6 +5,8 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[3]
 PLUGIN_ROOT = REPO / "plugins" / "whitechronos-control-plane"
 sys.path.insert(0, str(PLUGIN_ROOT))
@@ -130,3 +132,31 @@ def test_live_verification_is_required_only_when_requested():
     )
     assert optional.status is models.ConnectionStatus.PASS
     assert required.status is models.ConnectionStatus.FAIL
+
+
+
+@pytest.mark.parametrize("status", ["PASS", "DEGRADED", "NOT_APPLICABLE"])
+def test_evaluator_rejects_non_blocking_required_blocker(status):
+    models, connections = _api()
+    with pytest.raises(ValueError, match=r"required_blocker.*blocking"):
+        connections.evaluate_connection(
+            "github",
+            _signals(models, required_blocker=models.ConnectionStatus(status)),
+        )
+
+
+@pytest.mark.parametrize(
+    "status",
+    ["PASS", "DEGRADED", "FAIL", "USER_ACTION_REQUIRED", "NOT_APPLICABLE"],
+)
+def test_evaluator_rejects_invalid_host_absence_status(status):
+    models, connections = _api()
+    with pytest.raises(ValueError, match=r"host_absence_status.*UNAVAILABLE.*HOST_RELOAD_REQUIRED"):
+        connections.evaluate_connection(
+            "github",
+            _signals(
+                models,
+                host_visible=False,
+                host_absence_status=models.ConnectionStatus(status),
+            ),
+        )
