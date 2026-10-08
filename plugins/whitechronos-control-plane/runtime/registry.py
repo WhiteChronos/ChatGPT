@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .model import IntegrationDescriptor, RuntimeProbeSpec
+from .model import ConnectionSpec, IntegrationDescriptor, RuntimeProbeSpec
 from .schema import validate_schema_subset
 
 
@@ -40,6 +40,18 @@ def _descriptor_from_data(repo_root: Path, data: dict[str, object]) -> Integrati
             expected_tools=tuple(str(item) for item in probe_data["expected_tools"]),
             required_for_broker_smoke=bool(probe_data["required_for_broker_smoke"]),
         )
+    connection_data = data.get("connection")
+    connection = None
+    if isinstance(connection_data, dict):
+        target_probe = connection_data.get("target_probe")
+        connection = ConnectionSpec(
+            surfaces=tuple(str(item) for item in connection_data["surfaces"]),
+            auth_required=bool(connection_data["auth_required"]),
+            safe_probe=str(connection_data["safe_probe"]),
+            target_probe=None if target_probe is None else str(target_probe),
+            paid_probe_forbidden=bool(connection_data["paid_probe_forbidden"]),
+            credential_storage=str(connection_data["credential_storage"]),
+        )
     controller = data.get("controller_plugin")
     return IntegrationDescriptor(
         id=str(data["id"]),
@@ -52,6 +64,7 @@ def _descriptor_from_data(repo_root: Path, data: dict[str, object]) -> Integrati
         controller_plugin=None if controller is None else str(controller),
         skill_paths=tuple(str(item) for item in data["skill_paths"]),
         mcp_servers=tuple(str(item) for item in data["mcp_servers"]),
+        connection=connection,
         runtime_probe=probe,
     )
 

@@ -2,6 +2,9 @@
   "schema_version": 1,
   "descriptors": [
     "github-arena.json",
-    "subagent-broker.json"
+    "subagent-broker.json",
+    "github-connector.json",
+    "gitlab-connector.json",
+    "tinyfish.json"
   ]
 }

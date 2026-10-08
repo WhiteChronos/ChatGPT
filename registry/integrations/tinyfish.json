@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "tinyfish",
+  "display_name": "TinyFish",
+  "source_type": "official_plugin",
+  "source": "ChatGPT TinyFish app",
+  "license_status": "provider_managed",
+  "execution_class": "MCP_OR_CONNECTOR",
+  "status": "REGISTERED_PROJECT",
+  "controller_plugin": "tinyfish-controller",
+  "skill_paths": [],
+  "mcp_servers": [],
+  "connection": {
+    "surfaces": ["chatgpt_plugin"],
+    "auth_required": true,
+    "safe_probe": "tinyfish.get_wallet",
+    "target_probe": null,
+    "paid_probe_forbidden": true,
+    "credential_storage": "provider_managed"
+  },
+  "runtime_probe": null
+}

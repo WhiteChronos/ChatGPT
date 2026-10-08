@@ -29,6 +29,19 @@
     "controller_plugin": {"type": ["string", "null"]},
     "skill_paths": {"type": "array", "items": {"type": "string"}},
     "mcp_servers": {"type": "array", "items": {"type": "string"}},
+    "connection": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["surfaces", "auth_required", "safe_probe", "target_probe", "paid_probe_forbidden", "credential_storage"],
+      "properties": {
+        "surfaces": {"type": "array", "items": {"enum": ["chatgpt_plugin", "connector", "codex_plugin"]}},
+        "auth_required": {"type": "boolean"},
+        "safe_probe": {"type": "string", "minLength": 1},
+        "target_probe": {"type": ["string", "null"], "minLength": 1},
+        "paid_probe_forbidden": {"type": "boolean"},
+        "credential_storage": {"enum": ["provider_managed"]}
+      }
+    },
     "runtime_probe": {
       "type": ["object", "null"],
       "additionalProperties": false,
