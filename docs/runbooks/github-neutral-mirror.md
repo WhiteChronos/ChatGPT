@@ -79,9 +79,7 @@ A GitLab **deploy token** is not the solution for this write path: its
 repository capability is normally `read_repository`, not the required
 Git-over-HTTPS repository push capability.
 
-A GitLab **CI_JOB_TOKEN** is also not the final transport credential. Git pushes
-authenticated with `CI_JOB_TOKEN` do not trigger the new pipeline required by
-the push-only evidence contract. GitLab may still use `CI_JOB_TOKEN`
+A GitLab **CI_JOB_TOKEN** is also not the final transport credential. `CI_JOB_TOKEN` does not trigger the new pipeline required by the push-only evidence contract when used for the repository push. GitLab may still use `CI_JOB_TOKEN`
 internally to authenticate the running job identity.
 
 If a project access token is unavailable on the current GitLab tier, use an
@@ -271,3 +269,17 @@ PRODUCTION_COMPLETE=NO
 
 A separate explicit authorization is required for every later merge/deploy
 gate.
+
+
+## Reviewed GitHub Action pins
+
+The secret-bearing worker uses only reviewed immutable Action commit SHAs:
+
+```text
+actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+```
+
+A **separate review before updating** any of these SHAs is mandatory. Do not
+replace them with mutable major/minor tags in the secret-bearing workflow.

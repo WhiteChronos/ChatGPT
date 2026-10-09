@@ -310,7 +310,7 @@ def test_github_neutral_mirror_runbook_documents_rotation_recovery_and_no_shortc
 def test_gitlab_contingency_runbook_routes_final_transport_through_trusted_github_worker():
     text = GITLAB_CONTINGENCY_RUNBOOK.read_text(encoding="utf-8")
     assert "GitHub Actions Neutral Mirror" in text
-    assert "github-neutral-mirror.yml" in text
+    assert "gitlab-neutral-mirror.yml" in text
     assert "mirror_worker_revision" in text
     assert "source=push" in text
     assert "CI_JOB_TOKEN" in text
