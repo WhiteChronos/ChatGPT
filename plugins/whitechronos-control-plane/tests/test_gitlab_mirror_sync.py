@@ -314,9 +314,14 @@ def test_refresh_ref_is_unique_and_bound_to_receipt_claim():
     changed = dict(claim)
     changed['timestamp'] = '2026-10-08T22:01:00+00:00'
     second = m._refresh_ref(changed)
+    source_changed = dict(claim)
+    source_changed['source_sha'] = 'b' * 40
+    third = m._refresh_ref(source_changed)
     assert first.startswith('refs/heads/whitechronos-refresh/')
     assert second.startswith('refs/heads/whitechronos-refresh/')
+    assert third.startswith('refs/heads/whitechronos-refresh/')
     assert first != second
+    assert first != third
 
 
 def test_source_credential_helper_is_supported_separately_from_target(tmp_path, monkeypatch):
