@@ -306,18 +306,21 @@ def sync_ref(
             pipeline_ref=pipeline_ref,
         )
 
+        push_args = ["push"]
+        if dry_run:
+            push_args.append("--dry-run")
+        if _is_network_remote(target_url):
+            push_args.extend(_mirror_push_options(receipt_claim))
+        push_args.extend([target_url, f"{source_local_ref}:{pipeline_full_ref}"])
+        _run_git(
+            push_args,
+            cwd=bare,
+            credential_helper=normalized_target_helper,
+        )
+
         if dry_run:
             target_after = target_before
         else:
-            push_args = ["push"]
-            if _is_network_remote(target_url):
-                push_args.extend(_mirror_push_options(receipt_claim))
-            push_args.extend([target_url, f"{source_local_ref}:{pipeline_full_ref}"])
-            _run_git(
-                push_args,
-                cwd=bare,
-                credential_helper=normalized_target_helper,
-            )
             target_after = _remote_sha(
                 target_url,
                 full_ref,
