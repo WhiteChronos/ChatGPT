@@ -96,7 +96,7 @@ implementation.
 
 The secret-bearing workflow is valid only after its definition is installed on
 the protected trusted GitHub ref and the GitHub Environment
-`gitlab-neutral-mirror` restricts deployment to that trusted ref. The subject
+`gitlab-neutral-mirror-<reviewed-worker-sha>` restricts deployment to that trusted ref. The subject
 branch and `subject_sha` are data; they never control the executable worker
 revision that receives the GitLab credential.
 
@@ -269,7 +269,7 @@ authenticated with `CI_JOB_TOKEN` does not trigger the required new pipeline.
 
 The GitHub worker uses a separately provisioned least-privilege GitLab
 repository-write credential stored only as `GITLAB_MIRROR_TOKEN` in the
-protected GitHub Environment `gitlab-neutral-mirror`. Prefer project-scoped
+protected GitHub Environment `gitlab-neutral-mirror-<reviewed-worker-sha>`. Prefer project-scoped
 `write_repository` access where the GitLab tier supports it. Do not broaden
 the credential to the `api` scope just for convenience.
 
@@ -300,3 +300,15 @@ MIRROR_PARITY=HEALTHY
 
 No successful mirror authorizes GitHub merge, deploy, canary, stable promotion,
 live smoke, R2/R3, or PRODUCTION COMPLETE.
+
+## Pre-bootstrap signing and external CI gate
+
+The GitHub Actions worker uses a revision-specific Environment
+`gitlab-neutral-mirror-<reviewed-worker-sha>`. The `GITLAB_MIRROR_TOKEN`
+is distinct from `GITLAB_MIRROR_SIGNING_KEY`. Both remain unavailable at this
+PR review gate. On separate authorization only, the HMAC signing key must be
+shared solely with the trusted external GitLab evidence verifier, never with
+a subject-controlled pipeline. The project CI/CD configuration path must be
+changed from the current default to a protected external CI configuration and
+independently confirmed before provisioning either secret. Do not treat
+`source=api` pipelines or an ordinary subject `.gitlab-ci.yml` as evidence.
