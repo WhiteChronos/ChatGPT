@@ -17,7 +17,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from pipeline.gitlab_contingency_policy import classify_ref, load_policy
+from pipeline.neutral_mirror_policy import classify_ref, load_policy
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 _SCP_REMOTE_RE = re.compile(r"^(?:[^/@:\s]+@)?[^/:\s]+:.+$")
