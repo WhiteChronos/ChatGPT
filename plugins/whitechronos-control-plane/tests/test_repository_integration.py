@@ -210,11 +210,12 @@ def test_neutral_mirror_workflow_is_read_only_and_environment_gated():
     text = _neutral_workflow_text()
     assert "permissions:" in text
     assert "contents: read" in text
-    assert "environment: gitlab-neutral-mirror" in text
+    assert "environment: gitlab-neutral-mirror-${{ github.sha }}" in text
     assert "github.ref == 'refs/heads/main'" in text
     assert "refs/heads/main" in text
     assert "group: gitlab-neutral-mirror-${{ inputs.subject_ref }}" in text
     assert "cancel-in-progress: false" in text
+    assert "pip install" not in text
 
 
 def test_neutral_mirror_workflow_pins_all_external_actions():
