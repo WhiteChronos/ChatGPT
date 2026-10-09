@@ -186,3 +186,61 @@ def test_runbook_documents_current_v1_and_v2_native_contracts():
     assert "interrupt_agent" in text
     assert "list_agents" in text
     assert "legacy setting below is forbidden" not in text
+
+
+NEUTRAL_WORKFLOW = REPO / ".github" / "workflows" / "gitlab-neutral-mirror.yml"
+
+
+def _neutral_workflow_text() -> str:
+    assert NEUTRAL_WORKFLOW.is_file(), "trusted neutral mirror workflow missing"
+    return NEUTRAL_WORKFLOW.read_text(encoding="utf-8")
+
+
+def test_neutral_mirror_workflow_is_manual_only_with_required_subject_inputs():
+    text = _neutral_workflow_text()
+    assert "workflow_dispatch:" in text
+    assert "subject_ref:" in text and "subject_sha:" in text
+    assert text.count("required: true") >= 2
+    assert "pull_request:" not in text
+    assert "\n  push:" not in text
+    assert "workflow_run:" not in text
+
+
+def test_neutral_mirror_workflow_is_read_only_and_environment_gated():
+    text = _neutral_workflow_text()
+    assert "permissions:" in text
+    assert "contents: read" in text
+    assert "environment: gitlab-neutral-mirror" in text
+    assert "github.ref == 'refs/heads/main'" in text
+    assert "refs/heads/main" in text
+
+
+def test_neutral_mirror_workflow_pins_all_external_actions():
+    text = _neutral_workflow_text()
+    assert "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" in text
+    assert "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97" in text
+    assert "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9" in text
+    for line in text.splitlines():
+        if "uses: actions/" in line:
+            assert "@v" not in line
+
+
+def test_neutral_mirror_workflow_treats_subject_sha_as_data_not_checkout_code():
+    text = _neutral_workflow_text()
+    assert "ref: ${{ github.sha }}" in text
+    assert "ref: ${{ inputs.subject_sha }}" not in text
+    assert "ref: ${{ inputs.subject_ref }}" not in text
+    assert "--subject-sha \"$SUBJECT_SHA\"" in text
+    assert "--worker-revision \"$GITHUB_SHA\"" in text
+
+
+def test_neutral_mirror_secret_is_step_scoped_and_never_passed_as_argument():
+    text = _neutral_workflow_text()
+    assert text.count("secrets.GITLAB_MIRROR_TOKEN") == 1
+    assert "GITLAB_MIRROR_TOKEN: ${{ secrets.GITLAB_MIRROR_TOKEN }}" in text
+    assert "--token" not in text
+    assert "--password" not in text
+    assert "github_neutral_mirror.py" in text
+    assert "git push --force" not in text
+    assert "gh pr merge" not in text
+    assert "deploy" not in text.lower()
