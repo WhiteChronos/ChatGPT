@@ -241,3 +241,26 @@ def test_cli_entrypoint_is_present_and_sanitizes_validation_errors(tmp_path):
     )
     assert result.returncode == 1
     assert "invalid input" in result.stderr.lower()
+
+
+def test_subject_sha_mismatch_fails_before_sync(tmp_path, monkeypatch):
+    module = load_module()
+    called = {"sync": False}
+
+    def fake_sync(*args, **kwargs):
+        called["sync"] = True
+        raise AssertionError("sync must not run when subject SHA moved")
+
+    monkeypatch.setattr(module, "_sync_ref", fake_sync)
+    monkeypatch.setattr(module, "_observe_source_sha", lambda *args, **kwargs: "c" * 40)
+    monkeypatch.setenv("GITLAB_MIRROR_TOKEN", TOKEN)
+
+    with pytest.raises(RuntimeError, match="subject SHA"):
+        module.run_neutral_mirror(
+            ROOT,
+            request(module, tmp_path),
+            workflow_ref="refs/heads/main",
+            workflow_sha=WORKER_SHA,
+            trusted_ref="refs/heads/main",
+        )
+    assert called["sync"] is False
