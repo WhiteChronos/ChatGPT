@@ -375,3 +375,37 @@ network pushes. If it is not securely provisioned, recovery must STOP.
 
 A runtime with missing preinstalled dependencies must STOP, not install
 unreviewed packages on the secret-bearing worker.
+
+## P1: trusted *code*, not only trusted YAML
+
+An external GitLab CI/CD configuration file is necessary but **not
+sufficient**. GitLab normally checks out the mirrored subject repository
+before jobs execute. A malicious mirrored commit can edit not only
+`.gitlab-ci.yml` but also the Python verifier modules under `pipeline/`,
+the test scripts and locally imported packages.
+
+The separately protected GitLab CI job MUST:
+
+1. disable executing/loading code from the mirrored subject checkout
+   (for example, trusted verifier jobs use `GIT_STRATEGY: none`);
+2. fetch verifier code and policy from an **independent protected CI source
+   at an exact reviewed commit SHA**, not from the subject commit, dynamic
+   `include:local`, or any unpinned external ref;
+3. treat mirrored subject SHA, source/ref and push receipt only as
+   **untrusted data** until HMAC authentication, issuer identity, freshness,
+   push origin and GitHub/GitLab original-ref parity are independently verified;
+4. keep `GITLAB_MIRROR_SIGNING_KEY`, `CI_JOB_TOKEN` and other protected
+   CI credentials inaccessible to contributor-controlled scripts,
+   package lifecycle hooks and untrusted artifacts;
+5. record the trusted verifier configuration/code SHA and observed GitLab
+   project `ci_config_path` as independent provenance.
+
+The current in-repository `.gitlab-ci.yml` and `pipeline/` files are a
+**template under review**, not sufficient evidence of the above external
+isolation. Until a protected verifier is deployed and its effective code
+origin checked, set `TRUSTED_GITLAB_VERIFIER=NO`,
+`RECEIPT_AUTHENTICATED=NO` and `MIRROR_PARITY=NOT_VERIFIED`; STOP.
+
+This project update does not configure any GitLab settings or install
+credentials. Implementing and verifying that protected external execution
+requires a separate, explicitly authorized gate.
