@@ -314,3 +314,23 @@ checks are defense in depth, not a substitute for external revocation.
 Do not provision an Environment, secret or GitLab CI setting during PR #78
 review. Missing or unverifiable configuration means **STOP**, not a
 silent best-effort mirror.
+
+## Detached receipt authentication
+
+A public `receipt_sha256` cannot establish trusted worker identity. The
+secret-bearing worker derives a SHA-256 HMAC over the canonical receipt digest,
+and passes **only** the detached `mirror_receipt_signature` (hexadecimal) in
+the typed Git push inputs. The verifier computes the HMAC independently in a
+protected external GitLab CI configuration, compares it in constant time, and
+rejects missing or mismatched signatures.
+
+The signing key `GITLAB_MIRROR_SIGNING_KEY` is distinct from the repository
+push token. On a separately authorized bootstrap, generate at least 256 bits of
+CSPRNG entropy, provide it only to the exact-SHA trusted GitHub Environment and
+the protected external GitLab evidence verifier, and prevent it from reaching
+the mirrored subject checkout. Rotate/revoke it when retiring the worker.
+Never put the signing key in git arguments, YAML files, receipts, or logs.
+A signature on its own grants neither live mirror authority nor merge rights.
+
+Before both the external GitLab CI source and key distribution are verified,
+`RECEIPT_AUTHENTICATED=NO` and `MIRROR_PARITY=NOT_VERIFIED`. **STOP.**
