@@ -131,6 +131,7 @@ python plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py \
   --target-credential-helper manager \
   --source-credential-helper manager \
   --ref main \
+  --worker-revision "$(git rev-parse --verify HEAD)" \
   --receipt mirror-receipt.json
 ```
 
