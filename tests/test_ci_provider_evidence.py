@@ -221,3 +221,20 @@ def test_persisted_json_loader_parses_timestamp_before_validation(tmp_path):
     assert isinstance(loaded.timestamp, datetime)
     assert loaded.timestamp.tzinfo is not None
     validate_evidence(loaded, now=NOW)
+
+
+def test_schema_requires_worker_revision():
+    schema = json.loads(SCHEMA.read_text(encoding='utf-8'))
+    assert 'worker_revision' in schema['required']
+    assert schema['properties']['worker_revision']['pattern'] == '^[0-9a-fA-F]{40}$'
+
+
+def test_provider_provenance_changes_when_worker_revision_changes():
+    base = asdict(ev('gitlab', parity='HEALTHY'))
+    base['worker_revision'] = 'c' * 40
+    changed = dict(base)
+    changed['worker_revision'] = 'd' * 40
+
+    from pipeline.ci_provider_evidence import compute_provenance_sha256
+
+    assert compute_provenance_sha256(base) != compute_provenance_sha256(changed)

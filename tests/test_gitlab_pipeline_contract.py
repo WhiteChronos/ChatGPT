@@ -286,3 +286,39 @@ def test_runbook_declares_minimal_mirror_runtime_dependency_install():
     body = RUNBOOK.read_text(encoding='utf-8')
     assert 'requirements-mirror.txt' in body
     assert 'python -m pip install -r requirements-mirror.txt' in body
+
+
+def test_pipeline_requires_trusted_worker_revision_input():
+    data = pipeline_data()
+    inputs = data['spec']['inputs']
+    assert 'mirror_worker_revision' in inputs
+    assert inputs['mirror_worker_revision']['regex'] == '\\A[0-9a-fA-F]{40}\\z'
+    body = text()
+    assert 'WHITECHRONOS_MIRROR_WORKER_REVISION' in body
+    assert '$[[ inputs.mirror_worker_revision ]]' in body
+
+
+def test_receipt_digest_reconstruction_includes_worker_revision():
+    body = text()
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    assert '"worker_revision": os.environ.get("WHITECHRONOS_MIRROR_WORKER_REVISION", "").lower()' in mirror_block
+    assert 'mirror receipt worker revision mismatch' in mirror_block
+
+
+def test_runtime_identity_records_worker_revision():
+    body = text()
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    assert '"worker_revision": receipt["worker_revision"]' in mirror_block
+
+
+def test_final_provider_evidence_binds_worker_revision():
+    evidence_block = text().split('\ncontingency-evidence:\n', 1)[1]
+    assert '"worker_revision": runtime_identity["worker_revision"]' in evidence_block
+
+
+def test_refresh_pipeline_keeps_original_mirror_ref_with_worker_revision():
+    body = text()
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    assert 'receipt["pipeline_ref"] != receipt["ref"]' in mirror_block
+    assert 'receipt["worker_revision"]' in mirror_block
+    assert '"ref_name": receipt["ref"]' in mirror_block
