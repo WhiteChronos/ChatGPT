@@ -145,7 +145,12 @@ def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None
 def compare_provider_evidence(
     github: CIProviderEvidence | None,
     gitlab: CIProviderEvidence | None,
+    *,
+    gitlab_live_verified: bool = False,
+    now: datetime | None = None,
 ) -> EvidenceComparison:
+    if type(gitlab_live_verified) is not bool:
+        raise ValueError("gitlab_live_verified must be a boolean")
     if github is not None and github.provider != "github":
         return EvidenceComparison(
             EvidenceDisposition.DISCREPANCY_BLOCKED,
@@ -188,18 +193,28 @@ def compare_provider_evidence(
                 "provider CI configuration revisions do not match",
             )
     if github is not None:
-        validate_evidence(github)
+        validate_evidence(github, now=now)
     if gitlab is not None:
-        validate_evidence(gitlab)
+        validate_evidence(gitlab, now=now)
     if github is not None and gitlab is not None and github.result != gitlab.result:
         return EvidenceComparison(
             EvidenceDisposition.DISCREPANCY_BLOCKED,
             "providers disagree for the same commit SHA",
         )
-    if gitlab is not None:
+    if gitlab is not None and not gitlab_live_verified:
         return EvidenceComparison(
             EvidenceDisposition.GITLAB_LIVE_VERIFICATION_REQUIRED,
             "persisted GitLab evidence requires independent authenticated live provider verification",
+        )
+    if github is None and gitlab is not None:
+        return EvidenceComparison(
+            EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY,
+            "GitLab evidence was live-verified in an authenticated provider runtime; it has no merge authority",
+        )
+    if github is not None and gitlab is not None:
+        return EvidenceComparison(
+            EvidenceDisposition.CORROBORATED,
+            "providers agree for the same commit SHA after authenticated live GitLab verification",
         )
     if github is not None:
         return EvidenceComparison(
