@@ -152,7 +152,10 @@ def run_neutral_mirror(
         trusted_ref=trusted_ref,
     )
 
-    # Guard against stale worker revisions before reading the token.
+    # Remove both secrets before imports, remote observations or Git subprocesses.
+    # Even a read-only source probe must not inherit credential material.
+
+    # Guard against stale worker revisions after secrets have left the environment.
     # Per-SHA GitHub Environment revocation is the actual secret-release gate.
     if os.environ.get("GITHUB_ACTIONS") == "true":
         observed_main_sha = _observe_source_sha(Path(repo_root), "main")
