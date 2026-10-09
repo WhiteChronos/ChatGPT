@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "WhiteChronos CI Provider Evidence v1",
+  "title": "WhiteChronos CI Provider Evidence (legacy v1 / worker-bound v2)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,7 +15,6 @@
     "mirror_parity_status",
     "attempt",
     "input_artifacts_sha256",
-    "worker_revision",
     "provenance_sha256"
   ],
   "properties": {
@@ -84,6 +83,39 @@
     "worker_revision": {
       "type": "string",
       "pattern": "^[0-9a-fA-F]{40}$"
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 2
     }
-  }
+  },
+  "oneOf": [
+    {
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "schema_version"
+            ]
+          },
+          {
+            "required": [
+              "worker_revision"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "required": [
+        "schema_version",
+        "worker_revision"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 2
+        }
+      }
+    }
+  ]
 }
