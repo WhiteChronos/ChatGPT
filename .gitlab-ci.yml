@@ -21,6 +21,8 @@ spec:
       regex: '\A[0-9a-fA-F]{64}\z'
     mirror_worker_revision:
       regex: '\A[0-9a-fA-F]{40}\z'
+    mirror_receipt_signature:
+      regex: '\A[0-9a-fA-F]{64}\z'
 ---
 stages:
   - parity
@@ -54,6 +56,7 @@ variables:
   WHITECHRONOS_MIRROR_TIMESTAMP: "$[[ inputs.mirror_timestamp ]]"
   WHITECHRONOS_MIRROR_RECEIPT_SHA256: "$[[ inputs.mirror_receipt_sha256 ]]"
   WHITECHRONOS_MIRROR_WORKER_REVISION: "$[[ inputs.mirror_worker_revision ]]"
+  WHITECHRONOS_MIRROR_RECEIPT_SIGNATURE: "$[[ inputs.mirror_receipt_signature ]]"
 
 mirror-parity:
   stage: parity
@@ -167,6 +170,13 @@ mirror-parity:
       ).hexdigest()
       if not hmac.compare_digest(receipt_digest, expected_receipt_digest):
           raise SystemExit("mirror receipt digest mismatch")
+      # Must execute only from independently protected GitLab CI configuration.
+      # Public digests do not authenticate a trusted GitHub worker.
+      from pipeline.mirror_receipt_auth import verify_receipt_digest_signature
+      mirror_receipt_signature = os.environ.get("WHITECHRONOS_MIRROR_RECEIPT_SIGNATURE", "")
+      signing_key = os.environ.get("GITLAB_MIRROR_SIGNING_KEY", "")
+      if not verify_receipt_digest_signature(receipt_digest, mirror_receipt_signature, signing_key):
+          raise SystemExit("mirror receipt signature authentication failed")
       if receipt["transport"] != "neutral_worker":
           raise SystemExit("mirror receipt transport mismatch")
       if receipt["source_repository"] != policy["source_repository"]:
