@@ -31,7 +31,6 @@ _PROVENANCE_FIELDS = (
     "mirror_parity_status",
     "attempt",
     "input_artifacts_sha256",
-    "worker_revision",
 )
 
 
@@ -48,16 +47,23 @@ class CIProviderEvidence:
     mirror_parity_status: str
     attempt: int
     input_artifacts_sha256: dict[str, str]
-    worker_revision: str
     provenance_sha256: str
+    worker_revision: str | None = None
+    schema_version: int = 2
 
 
 def compute_provenance_sha256(record: CIProviderEvidence | Mapping[str, object]) -> str:
-    def read(key: str):
+    """Retain historical v1 digests; bind worker revision and version in v2."""
+    def read(key: str, default: object = None):
         if isinstance(record, Mapping):
-            return record[key]
-        return getattr(record, key)
+            return record.get(key, default)
+        return getattr(record, key, default)
 
+    version = read("schema_version")
+    if version is None:
+        version = 2 if read("worker_revision") is not None else 1
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("unsupported evidence schema version")
     payload: dict[str, object] = {}
     for key in _PROVENANCE_FIELDS:
         value = read(key)
@@ -66,6 +72,12 @@ def compute_provenance_sha256(record: CIProviderEvidence | Mapping[str, object])
         if key in {"subject_sha", "ci_config_revision"}:
             value = str(value).lower()
         payload[key] = value
+    if version == 2:
+        revision = read("worker_revision")
+        if not isinstance(revision, str) or not _SHA_RE.fullmatch(revision):
+            raise ValueError("v2 evidence requires a valid worker revision")
+        payload["worker_revision"] = revision.lower()
+        payload["schema_version"] = 2
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
@@ -75,6 +87,7 @@ def load_evidence_json(path: Path) -> CIProviderEvidence:
     timestamp = raw.get("timestamp")
     if isinstance(timestamp, str):
         raw["timestamp"] = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+    raw.setdefault("schema_version", 2 if "worker_revision" in raw else 1)
     return CIProviderEvidence(**raw)
 
 
@@ -106,8 +119,13 @@ def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None
         raise ValueError("subject_sha must be a 40-character hexadecimal Git SHA")
     if not _SHA_RE.fullmatch(record.ci_config_revision):
         raise ValueError("ci_config_revision must be a 40-character hexadecimal Git SHA")
-    if not _SHA_RE.fullmatch(record.worker_revision):
-        raise ValueError("worker_revision must be a 40-character hexadecimal Git SHA")
+    if type(record.schema_version) is not int or record.schema_version not in (1, 2):
+        raise ValueError("unsupported evidence schema version")
+    if record.schema_version == 1:
+        if record.worker_revision is not None:
+            raise ValueError("legacy v1 evidence must not declare worker revision")
+    elif not isinstance(record.worker_revision, str) or not _SHA_RE.fullmatch(record.worker_revision):
+        raise ValueError("v2 worker_revision must be a 40-character hexadecimal Git SHA")
     if not _SHA256_RE.fullmatch(record.provenance_sha256):
         raise ValueError("provenance_sha256 must be a 64-character hexadecimal SHA-256 digest")
     if record.provenance_sha256.lower() != compute_provenance_sha256(record):
