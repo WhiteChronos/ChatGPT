@@ -245,6 +245,7 @@ def sync_ref(
     dry_run: bool = False,
     target_credential_helper: str | None = None,
     source_credential_helper: str | None = None,
+    expected_source_sha: str | None = None,
 ) -> dict[str, object]:
     _validate_remote_argument(source_url)
     _validate_remote_argument(target_url)
@@ -272,6 +273,11 @@ def sync_ref(
         source_sha = _run_git(["rev-parse", source_local_ref], cwd=bare).stdout.strip().lower()
         if not _SHA_RE.fullmatch(source_sha):
             raise RuntimeError("source ref did not resolve to a valid commit SHA")
+        if expected_source_sha is not None:
+            if not _SHA_RE.fullmatch(expected_source_sha):
+                raise ValueError("expected source SHA must be an exact 40-character Git commit SHA")
+            if source_sha != expected_source_sha.lower():
+                raise RuntimeError("authoritative source SHA does not match requested subject before push")
         receipt_timestamp = datetime.now(timezone.utc).isoformat()
         receipt_base = _mirror_receipt_claim(
             policy=policy,
@@ -368,6 +374,7 @@ def main() -> int:
     parser.add_argument("--worker-revision", required=True)
     parser.add_argument("--target-credential-helper")
     parser.add_argument("--source-credential-helper")
+    parser.add_argument("--expected-source-sha")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     try:
@@ -381,6 +388,7 @@ def main() -> int:
             args.dry_run,
             args.target_credential_helper,
             args.source_credential_helper,
+            args.expected_source_sha,
         )
     except Exception as exc:
         print(f"ERROR: {exc}")

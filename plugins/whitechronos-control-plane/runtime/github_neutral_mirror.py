@@ -169,6 +169,7 @@ def run_neutral_mirror(
             worker_revision=request.worker_revision,
             target_credential_helper=str(helper),
             source_credential_helper=None,
+            expected_source_sha=expected_subject_sha,
         )
 
     source_sha = _require_sha(str(receipt.get("source_sha", "")), "receipt source SHA")
