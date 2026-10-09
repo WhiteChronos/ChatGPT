@@ -283,3 +283,34 @@ actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
 
 A **separate review before updating** any of these SHAs is mandatory. Do not
 replace them with mutable major/minor tags in the secret-bearing workflow.
+
+## P1 release-blockers: independent protected GitLab CI
+
+A mirrored feature branch may contain adversarial `.gitlab-ci.yml`. The
+GitLab project's **CI/CD configuration file** must be set to a separately
+protected and reviewed external configuration at an immutable revision. The
+effective `ci_config_path` must be independently read back and checked by
+an operator before any credentialed push. A subject-owned `include:` is not
+a trust boundary; the contributor can remove or override it.
+
+At this review the GitLab project `86465539` reported an empty
+`ci_config_path`. Hence P1 remains **BLOCKED / fail closed** until a
+separate authorized GitLab configuration step. GitLab pipeline jobs and
+artifacts derived from mirrored subject YAML cannot be accepted as trusted
+evidence or proof of worker execution.
+
+## P1 release-blockers: revision-bound secret release
+
+The secret-bearing GitHub Environment is
+`gitlab-neutral-mirror-<trusted GitHub worker commit SHA>`, not one
+permanent environment shared across all worker revisions. Only provision
+the credential after independent approval and verified deployment-branch
+policy for the exact SHA; never use a repository-level fallback secret.
+Retire/revoke every older environment credential when advancing the worker.
+This prevents old workflow reruns from receiving current credentials once
+the old environment has been revoked. In-code rerun and current-main SHA
+checks are defense in depth, not a substitute for external revocation.
+
+Do not provision an Environment, secret or GitLab CI setting during PR #78
+review. Missing or unverifiable configuration means **STOP**, not a
+silent best-effort mirror.
