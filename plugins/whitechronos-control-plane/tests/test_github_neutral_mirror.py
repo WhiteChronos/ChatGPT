@@ -21,6 +21,13 @@ TOKEN = "glpat-synthetic-secret-value-for-tests"
 TARGET_URL = "https://gitlab.com/chronoswhite-group/ChronosWhite-project.git"
 
 
+@pytest.fixture(autouse=True)
+def isolate_git_host_runtime_for_unit_tests(monkeypatch):
+    # CI runs tests on GitHub Actions; simulated workers are not actual dispatches.
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+
+
+
 def load_module():
     assert RUNTIME_PATH.is_file(), "github_neutral_mirror runtime module missing"
     spec = importlib.util.spec_from_file_location("github_neutral_mirror", RUNTIME_PATH)
