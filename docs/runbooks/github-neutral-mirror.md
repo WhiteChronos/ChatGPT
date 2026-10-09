@@ -27,7 +27,7 @@ The trusted workflow is:
 and the protected GitHub Environment is:
 
 ```text
-gitlab-neutral-mirror
+gitlab-neutral-mirror-<exact-trusted-worker-sha>
 ```
 
 Before any secret is provisioned, verify all of the following:
@@ -64,7 +64,7 @@ Preferred capability when the GitLab tier supports project access tokens:
 write_repository
 ```
 
-Store only the token as the GitHub Actions environment secret:
+After separate bootstrap approval, store only the mirror-write token and a distinct detached-receipt signing key as step-scoped GitHub Environment secrets (never repository-level secrets):
 
 ```text
 GITLAB_MIRROR_TOKEN
@@ -334,3 +334,44 @@ A signature on its own grants neither live mirror authority nor merge rights.
 
 Before both the external GitLab CI source and key distribution are verified,
 `RECEIPT_AUTHENTICATED=NO` and `MIRROR_PARITY=NOT_VERIFIED`. **STOP.**
+
+## Operator preflight and future signing-key lifecycle (NOT EXECUTED)
+
+This PR authorizes **documentation and tests only**, not creating secrets,
+projects, environments or live jobs. The following is a separately authorized
+future bootstrap checklist, not an instruction to execute automatically:
+
+1. Create or select a **separate protected GitLab CI configuration project**.
+   Place the reviewed pipeline verifier there and restrict write access to
+   approved CI maintainers. Set project 86465539's **CI/CD configuration file**
+   setting to that external project path and independently read back the
+   effective \`ci_config_path\`. Do **not** use a subject-owned include.
+2. Record the reviewed trusted GitHub \`main\` SHA. Create and protect only its
+   \`gitlab-neutral-mirror-<40-hex-SHA>\` Environment with \`main\`-only
+   deployment-branch restriction and required review. Verify there is **no**
+   repository/org secret fallback for either key.
+3. On an authorized secure operator host, produce a cryptographically random
+   256-bit key via a locally approved CSPRNG (for example, OpenSSL
+   \`openssl rand -hex 32\`); keep the generated value out of chat, logs, Git,
+   shell history, artifacts and runbooks. Do not generate it in this PR.
+4. Store that key in the exact-SHA GitHub Environment secret
+   \`GITLAB_MIRROR_SIGNING_KEY\` **and** in the trusted external GitLab CI
+   verifier's protected secret under the same name. The verifier must not
+   execute from mirrored subject YAML or expose the key to a contributor job.
+5. Store the narrowly scoped GitLab repository-write token as
+   \`GITLAB_MIRROR_TOKEN\` **only** in that exact-SHA GitHub Environment.
+   Confirm the external configuration and both secret bindings before any
+   permitted dispatch; missing keys or unmatched HMAC must fail closed.
+6. On worker replacement, explicitly revoke/remove the **old** Environment's
+   secrets and rotate the signing key as well as the GitLab credential.
+   Revalidate read-back, policy and trusted-worker SHA before a new dispatch.
+   A historical rerun must never recover current secrets.
+
+For external-workstation recovery, the operator supplies the signing key only
+through the approved protected host environment
+\`GITLAB_MIRROR_SIGNING_KEY\` (never as a CLI argument); the sync CLI pops it
+before any Git subprocess, signs the typed receipt, and refuses unsigned
+network pushes. If it is not securely provisioned, recovery must STOP.
+
+A runtime with missing preinstalled dependencies must STOP, not install
+unreviewed packages on the secret-bearing worker.
