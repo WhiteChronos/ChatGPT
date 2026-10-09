@@ -110,6 +110,8 @@ def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None
         raise ValueError("provenance_sha256 does not match the complete evidence record")
     if record.result not in _RESULTS:
         raise ValueError(f"invalid CI result: {record.result}")
+    if type(record.attempt) is not int:
+        raise ValueError("attempt must be an integer")
     if record.attempt < 1:
         raise ValueError("attempt must be >= 1")
     for name, digest in record.input_artifacts_sha256.items():
