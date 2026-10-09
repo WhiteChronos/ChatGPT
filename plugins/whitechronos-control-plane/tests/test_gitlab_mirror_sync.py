@@ -391,6 +391,7 @@ def test_refresh_push_options_bind_reserved_pipeline_ref():
     refresh = m._refresh_ref(base)[len('refs/heads/'):]
     assert refresh.startswith('whitechronos-refresh/')
     assert len(refresh.removeprefix('whitechronos-refresh/')) == 64
+    int(refresh.removeprefix('whitechronos-refresh/'), 16)
     claim = m._mirror_receipt_claim(
         policy=policy,
         ref='main',
