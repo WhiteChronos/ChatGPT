@@ -230,7 +230,9 @@ def test_persisted_json_loader_parses_timestamp_before_validation(tmp_path):
 def test_schema_requires_worker_revision():
     schema = json.loads(SCHEMA.read_text(encoding='utf-8'))
     assert 'worker_revision' not in schema['required']
-    assert schema['properties']['worker_revision']['pattern'] == '^[0-9a-fA-F]{40}
+    assert schema['properties']['worker_revision']['pattern'] == '^[0-9a-fA-F]{40}$'
+    assert schema['properties']['schema_version']['const'] == 2
+    assert schema['oneOf']
 
 
 def test_provider_provenance_changes_when_worker_revision_changes():
