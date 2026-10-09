@@ -683,3 +683,38 @@ After this plan is approved:
 7. execute Tasks 1-7 through TDD/review;
 8. STOP at the trusted-worker bootstrap gate;
 9. execute Task 8 only after the separate trusted-worker installation and credential-provisioning gates are satisfied.
+
+
+## PR #78 post-review security addendum — 2026-10-09
+
+The seven Codex review findings (five P1 and two P2) amend the pre-bootstrap
+release contract without authorizing deployment or provisioning:
+
+- **Trusted GitLab CI:** the subject commit's own `.gitlab-ci.yml` MUST NOT
+  control evidence jobs. GitLab project `86465539` must independently read
+  from a protected external CI configuration (configured in the provider's
+  CI/CD configuration file setting). The connected project currently returns
+  an empty `ci_config_path`, so the gate is **BLOCKED**.
+- **No mutable secret-runner installs:** no live `pip install` on the
+  secret-bearing worker. If the reviewed dependency is absent, fail closed;
+  a separately reviewed hermetic runner bootstrap is needed for activation.
+- **Authenticated receipt:** canonical receipt SHA-256 alone is unauthenticated.
+  Use detached HMAC-SHA256 with an independent 256-bit signing key, passed as
+  `mirror_receipt_signature` (never the key itself) and verified in the
+  protected external GitLab evidence job before accepting worker-revision claims.
+  Neither the key nor the mirror token is provisioned by PR #78.
+- **Reruns and retirement:** the trusted GitHub Environment name must include
+  the exact trusted worker SHA; no repository-level fallback secret is allowed.
+  Retire prior SHA-specific secrets on worker replacement. The code also
+  rejects rerun attempts and obsolete main revisions; it cannot revoke a
+  credential already provisioned to an old workflow, so external revocation
+  is mandatory.
+- **Evidence history:** keep unmodified v1 provenance hashes verifiable while
+  new worker-bound records use a versioned v2 format. Canonicalize SHA fields
+  case-insensitively before hashing.
+- **Recovery:** every externally invoked sync CLI supplies the exact
+  reviewed `--worker-revision` from its checkout.
+
+GitHub remains authoritative. GitLab remains evidence-only. TinyFish is
+read-only research. STOP before merge, secret installation, live mirror, or
+deploy until separate gates and authorizations.
