@@ -224,11 +224,11 @@ def test_pipeline_declares_typed_mirror_receipt_inputs():
     }
     assert inputs['mirror_transport']['options'] == ['neutral_worker']
     assert inputs['mirror_pipeline_ref']['regex']
-    assert inputs['mirror_source_sha']['regex'] == '\A[0-9a-fA-F]{40}\z'
-    assert inputs['mirror_target_sha']['regex'] == '\A[0-9a-fA-F]{40}\z'
-    assert inputs['mirror_receipt_sha256']['regex'] == '\A[0-9a-fA-F]{64}\z'
-    assert inputs['mirror_worker_revision']['regex'] == '\A[0-9a-fA-F]{40}\z'
-    assert inputs['mirror_receipt_signature']['regex'] == '\A[0-9a-fA-F]{64}\z'
+    assert inputs['mirror_source_sha']['regex'] == r'\A[0-9a-fA-F]{40}\z'
+    assert inputs['mirror_target_sha']['regex'] == r'\A[0-9a-fA-F]{40}\z'
+    assert inputs['mirror_receipt_sha256']['regex'] == r'\A[0-9a-fA-F]{64}\z'
+    assert inputs['mirror_worker_revision']['regex'] == r'\A[0-9a-fA-F]{40}\z'
+    assert inputs['mirror_receipt_signature']['regex'] == r'\A[0-9a-fA-F]{64}\z'
     body = text()
     assert '$[[ inputs.mirror_transport ]]' in body
     assert '$[[ inputs.mirror_pipeline_ref ]]' in body
@@ -297,7 +297,7 @@ def test_pipeline_requires_trusted_worker_revision_input():
     data = pipeline_data()
     inputs = data['spec']['inputs']
     assert 'mirror_worker_revision' in inputs
-    assert inputs['mirror_worker_revision']['regex'] == '\\A[0-9a-fA-F]{40}\\z'
+    assert inputs['mirror_worker_revision']['regex'] == r'\\A[0-9a-fA-F]{40}\\z'
     body = text()
     assert 'WHITECHRONOS_MIRROR_WORKER_REVISION' in body
     assert '$[[ inputs.mirror_worker_revision ]]' in body
