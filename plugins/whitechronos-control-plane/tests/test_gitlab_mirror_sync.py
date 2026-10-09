@@ -13,7 +13,7 @@ WORKER_SHA = 'f' * 40
 
 def sync(m, *args, **kwargs):
     kwargs.setdefault('worker_revision', WORKER_SHA)
-    return sync(m, *args, **kwargs)
+    return m.sync_ref(*args, **kwargs)
 
 
 
@@ -219,6 +219,7 @@ def test_network_mirror_receipt_push_options_bind_transport_and_sha():
         ref='main',
         source_sha=source_sha,
         timestamp='2026-10-07T01:00:00+00:00',
+        worker_revision=WORKER_SHA,
     )
     options = m._mirror_push_options(receipt)
 
@@ -316,6 +317,7 @@ def test_refresh_ref_is_unique_and_bound_to_receipt_claim():
         ref='main',
         source_sha='a' * 40,
         timestamp='2026-10-08T22:00:00+00:00',
+        worker_revision=WORKER_SHA,
     )
     first = m._refresh_ref(claim)
     changed = dict(claim)
@@ -394,6 +396,7 @@ def test_refresh_push_options_bind_reserved_pipeline_ref():
         ref='main',
         source_sha='a' * 40,
         timestamp='2026-10-08T22:00:00+00:00',
+        worker_revision=WORKER_SHA,
     )
     refresh = m._refresh_ref(base)[len('refs/heads/'):]
     assert refresh.startswith('whitechronos-refresh/')
@@ -404,6 +407,7 @@ def test_refresh_push_options_bind_reserved_pipeline_ref():
         ref='main',
         source_sha='a' * 40,
         timestamp='2026-10-08T22:00:00+00:00',
+        worker_revision=WORKER_SHA,
         pipeline_ref=refresh,
     )
     joined = ' '.join(m._mirror_push_options(claim))
