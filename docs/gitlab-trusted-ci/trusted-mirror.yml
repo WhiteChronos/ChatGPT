@@ -1,0 +1,40 @@
+# STAGING TEMPLATE ONLY. Install in a different, protected GitLab CI project.
+# No deployment, secrets, mirror or live attestation is authorized in this gate.
+stages:
+  - verify
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - when: never
+
+trusted-mirror-attestation:
+  stage: verify
+  image: python:3.12.13-slim@sha256:2f17fc044b579bab302c2e8054d3a686e2cb9a83de48e70534b94cd8ebbe06a9
+  variables:
+    GIT_STRATEGY: "none"
+    PYTHONDONTWRITEBYTECODE: "1"
+  script:
+    - |
+      set -eu
+      # This must be deployed ONLY in a separately protected verifier project.
+      # Never clone or import code from the mirrored subject commit here.
+      python - <<'PY'
+      import os, sys
+      # CI_CONFIG_PATH and the protected verifier revision must be independently
+      # attested, not provided through contributor-controlled job variables.
+      expected_source = "push"
+      expected_project = "chronoswhite-group/ChronosWhite-project"
+      if os.environ.get("CI_PIPELINE_SOURCE") != expected_source:
+          sys.exit("BLOCKED: non-push pipeline")
+      if os.environ.get("CI_PROJECT_PATH") != expected_project:
+          sys.exit("BLOCKED: incorrect mirror project")
+      if not os.environ.get("CI_JOB_TOKEN"):
+          sys.exit("BLOCKED: missing authenticated provider identity")
+      if not os.environ.get("VERIFIER_SHA256"):
+          sys.exit("BLOCKED: trusted verifier blob SHA256 is not pinned")
+      # NO eligibility assertion until a protected exact-SHA verifier is loaded
+      # from the independent project with a verified digest and signed receipt.
+      sys.exit("BLOCKED: verifier bootstrap and signing key not provisioned")
+      PY
+  allow_failure: false
