@@ -1,0 +1,32 @@
+name: Trusted GitLab CI Preflight (No Secrets)
+on:
+  push:
+    branches:
+      - feat/gitlab-trusted-ci-verifier-gate
+  pull_request:
+    paths:
+      - pipeline/trusted_gitlab_ci_gate.py
+      - tests/test_trusted_gitlab_ci_gate.py
+      - docs/gitlab-trusted-ci/**
+      - .github/workflows/trusted-gitlab-ci-preflight.yml
+permissions:
+  contents: read
+jobs:
+  readonly-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact feature SHA
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install only pytest for isolated tests
+        run: python -m pip install pytest==8.4.1
+      - name: Isolated trusted verifier tests
+        run: python -m pytest -q tests/test_trusted_gitlab_ci_gate.py
+      - name: Bytecode syntax verification
+        run: python -m py_compile pipeline/trusted_gitlab_ci_gate.py
