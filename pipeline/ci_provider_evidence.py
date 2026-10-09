@@ -6,6 +6,7 @@ from enum import StrEnum
 import hashlib
 import json
 import re
+from pathlib import Path
 from typing import Mapping
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")

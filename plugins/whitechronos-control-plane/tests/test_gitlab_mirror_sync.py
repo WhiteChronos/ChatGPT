@@ -420,3 +420,15 @@ def test_userless_scp_noncanonical_target_is_rejected_before_git(tmp_path, monke
             tmp_path / 'r.json',
             target_credential_helper='manager',
         )
+
+
+def test_documented_entrypoint_exposes_source_credential_helper():
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), '--help'],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert '--source-credential-helper' in result.stdout
