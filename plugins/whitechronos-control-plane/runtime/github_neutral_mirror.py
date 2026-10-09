@@ -159,6 +159,15 @@ def run_neutral_mirror(
         if observed_main_sha != _require_sha(request.worker_revision, "worker revision"):
             raise ValueError("retired trusted worker revision is not current main")
 
+    signing_key = os.environ.pop("GITLAB_MIRROR_SIGNING_KEY", None)
+    if os.environ.get("GITHUB_ACTIONS") == "true" and not signing_key:
+        raise RuntimeError("authenticated mirror receipt signer is unavailable")
+    if signing_key is not None:
+        from pipeline.mirror_receipt_auth import sign_receipt_digest
+        receipt_signer = lambda digest: sign_receipt_digest(digest, signing_key)
+    else:
+        receipt_signer = None
+
     token = os.environ.pop(TOKEN_ENV, None)
     if not token:
         raise RuntimeError("GITLAB_MIRROR_TOKEN is required")
@@ -179,6 +188,7 @@ def run_neutral_mirror(
             target_credential_helper=str(helper),
             source_credential_helper=None,
             expected_source_sha=expected_subject_sha,
+            receipt_signer=receipt_signer,
         )
 
     source_sha = _require_sha(str(receipt.get("source_sha", "")), "receipt source SHA")
