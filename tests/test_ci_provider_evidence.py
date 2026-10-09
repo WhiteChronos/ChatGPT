@@ -221,3 +221,75 @@ def test_persisted_json_loader_parses_timestamp_before_validation(tmp_path):
     assert isinstance(loaded.timestamp, datetime)
     assert loaded.timestamp.tzinfo is not None
     validate_evidence(loaded, now=NOW)
+
+
+import pipeline.ci_provider_evidence as evidence_module
+
+
+def _live_gitlab_attestation(**changes):
+    cls = getattr(evidence_module, "GitLabPipelineAttestation", None)
+    assert cls is not None, "GitLabPipelineAttestation missing"
+    data = dict(
+        repository_identity="chronoswhite-group/ChronosWhite-project",
+        pipeline_or_run_id="123",
+        subject_sha=SHA,
+        source="push",
+        status="success",
+        observed_at=NOW,
+    )
+    data.update(changes)
+    return cls(**data)
+
+
+def test_unattested_gitlab_evidence_cannot_mint_eligibility():
+    record = ev("gitlab", parity="HEALTHY")
+    comparison = compare_provider_evidence(None, record)
+    assert comparison.disposition.value == "GITLAB_ATTESTATION_REQUIRED"
+
+
+def test_matching_live_gitlab_attestation_allows_contingency_evidence():
+    record = ev("gitlab", parity="HEALTHY")
+    comparison = compare_provider_evidence(
+        None,
+        record,
+        gitlab_attestation=_live_gitlab_attestation(),
+        now=NOW,
+    )
+    assert comparison.disposition is EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"pipeline_or_run_id": "999"},
+        {"subject_sha": OTHER},
+        {"source": "web"},
+        {"status": "failed"},
+    ],
+)
+def test_gitlab_attestation_must_match_authenticated_push(changes):
+    record = ev("gitlab", parity="HEALTHY")
+    comparison = compare_provider_evidence(
+        None,
+        record,
+        gitlab_attestation=_live_gitlab_attestation(**changes),
+        now=NOW,
+    )
+    assert comparison.disposition is EvidenceDisposition.DISCREPANCY_BLOCKED
+
+
+def test_validate_rejects_expired_evidence():
+    record = ev("gitlab", parity="HEALTHY", timestamp=NOW - timedelta(seconds=3601))
+    with pytest.raises(ValueError, match="expired"):
+        validate_evidence(record, now=NOW)
+
+
+def test_gitlab_attestation_rejects_expired_observation():
+    record = ev("gitlab", parity="HEALTHY")
+    comparison = compare_provider_evidence(
+        None,
+        record,
+        gitlab_attestation=_live_gitlab_attestation(observed_at=NOW - timedelta(seconds=3601)),
+        now=NOW,
+    )
+    assert comparison.disposition is EvidenceDisposition.DISCREPANCY_BLOCKED
