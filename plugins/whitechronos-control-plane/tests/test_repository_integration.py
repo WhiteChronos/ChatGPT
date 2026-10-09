@@ -261,3 +261,56 @@ def test_provider_evidence_schema_binds_trusted_worker_revision():
     assert schema["properties"]["worker_revision"]["pattern"] == "^[0-9a-fA-F]{40}$"
     evidence_module = (REPO / "pipeline" / "ci_provider_evidence.py").read_text()
     assert '"worker_revision"' in evidence_module
+
+
+GITHUB_NEUTRAL_MIRROR_RUNBOOK = REPO / "docs" / "runbooks" / "github-neutral-mirror.md"
+GITLAB_CONTINGENCY_RUNBOOK = REPO / "docs" / "runbooks" / "gitlab-contingency-ci.md"
+
+
+def test_github_neutral_mirror_runbook_documents_trust_bootstrap_and_credential_scope():
+    assert GITHUB_NEUTRAL_MIRROR_RUNBOOK.is_file(), "GitHub neutral mirror runbook missing"
+    text = GITHUB_NEUTRAL_MIRROR_RUNBOOK.read_text(encoding="utf-8")
+    for required in (
+        "gitlab-neutral-mirror",
+        "GITLAB_MIRROR_TOKEN",
+        "write_repository",
+        "protected trusted ref",
+        "deployment branch",
+        "subject_ref",
+        "subject_sha",
+        "workflow_dispatch",
+    ):
+        assert required in text
+
+
+def test_github_neutral_mirror_runbook_rejects_broad_or_non_triggering_credentials():
+    text = GITHUB_NEUTRAL_MIRROR_RUNBOOK.read_text(encoding="utf-8")
+    assert "CI_JOB_TOKEN" in text
+    assert "does not trigger" in text
+    assert "deploy token" in text.lower()
+    assert "read_repository" in text
+    assert "do not broaden" in text.lower()
+    assert " api " in text.lower() or "`api`" in text.lower()
+
+
+def test_github_neutral_mirror_runbook_documents_rotation_recovery_and_no_shortcuts():
+    text = GITHUB_NEUTRAL_MIRROR_RUNBOOK.read_text(encoding="utf-8").lower()
+    for required in (
+        "rotate",
+        "revoke",
+        "same-sha",
+        "whitechronos-refresh/",
+        "force-push",
+        "api commit",
+        "mirror_parity=healthy",
+    ):
+        assert required in text
+
+
+def test_gitlab_contingency_runbook_routes_final_transport_through_trusted_github_worker():
+    text = GITLAB_CONTINGENCY_RUNBOOK.read_text(encoding="utf-8")
+    assert "GitHub Actions Neutral Mirror" in text
+    assert "github-neutral-mirror.yml" in text
+    assert "mirror_worker_revision" in text
+    assert "source=push" in text
+    assert "CI_JOB_TOKEN" in text
