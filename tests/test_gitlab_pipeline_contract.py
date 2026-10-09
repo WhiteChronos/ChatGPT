@@ -199,6 +199,7 @@ def test_pipeline_requires_neutral_worker_receipt_contract():
         'WHITECHRONOS_MIRROR_TARGET_SHA',
         'WHITECHRONOS_MIRROR_TIMESTAMP',
         'WHITECHRONOS_MIRROR_RECEIPT_SHA256',
+        'WHITECHRONOS_MIRROR_WORKER_REVISION',
     ):
         assert name in mirror_block
     assert 'job_source != "push"' in mirror_block
@@ -218,12 +219,14 @@ def test_pipeline_declares_typed_mirror_receipt_inputs():
         'mirror_target_sha',
         'mirror_timestamp',
         'mirror_receipt_sha256',
+        'mirror_worker_revision',
     }
     assert inputs['mirror_transport']['options'] == ['neutral_worker']
     assert inputs['mirror_pipeline_ref']['regex']
     assert inputs['mirror_source_sha']['regex'] == '\A[0-9a-fA-F]{40}\z'
     assert inputs['mirror_target_sha']['regex'] == '\A[0-9a-fA-F]{40}\z'
     assert inputs['mirror_receipt_sha256']['regex'] == '\A[0-9a-fA-F]{64}\z'
+    assert inputs['mirror_worker_revision']['regex'] == '\A[0-9a-fA-F]{40}\z'
     body = text()
     assert '$[[ inputs.mirror_transport ]]' in body
     assert '$[[ inputs.mirror_pipeline_ref ]]' in body

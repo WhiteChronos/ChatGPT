@@ -35,6 +35,7 @@ def provenance_sha256(data):
         'mirror_parity_status',
         'attempt',
         'input_artifacts_sha256',
+        'worker_revision',
     ):
         value = data[key]
         if key == 'timestamp' and isinstance(value, datetime):
@@ -58,6 +59,7 @@ def ev(provider='github', result='PASS', sha=SHA, parity='NOT_APPLICABLE', **cha
         ci_config_revision=SHA,
         mirror_parity_status=parity,
         attempt=1,
+        worker_revision='c' * 40,
         input_artifacts_sha256=(
             {
                 'mirror-input.json': '1' * 64,

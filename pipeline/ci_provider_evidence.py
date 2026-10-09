@@ -29,6 +29,7 @@ _PROVENANCE_FIELDS = (
     "mirror_parity_status",
     "attempt",
     "input_artifacts_sha256",
+    "worker_revision",
 )
 
 
@@ -45,6 +46,7 @@ class CIProviderEvidence:
     mirror_parity_status: str
     attempt: int
     input_artifacts_sha256: dict[str, str]
+    worker_revision: str
     provenance_sha256: str
 
 
@@ -101,6 +103,8 @@ def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None
         raise ValueError("subject_sha must be a 40-character hexadecimal Git SHA")
     if not _SHA_RE.fullmatch(record.ci_config_revision):
         raise ValueError("ci_config_revision must be a 40-character hexadecimal Git SHA")
+    if not _SHA_RE.fullmatch(record.worker_revision):
+        raise ValueError("worker_revision must be a 40-character hexadecimal Git SHA")
     if not _SHA256_RE.fullmatch(record.provenance_sha256):
         raise ValueError("provenance_sha256 must be a 64-character hexadecimal SHA-256 digest")
     if record.provenance_sha256.lower() != compute_provenance_sha256(record):

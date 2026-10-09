@@ -15,6 +15,7 @@
     "mirror_parity_status",
     "attempt",
     "input_artifacts_sha256",
+    "worker_revision",
     "provenance_sha256"
   ],
   "properties": {
@@ -79,6 +80,10 @@
         "type": "string",
         "pattern": "^[0-9a-fA-F]{64}$"
       }
+    },
+    "worker_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{40}$"
     }
   }
 }
