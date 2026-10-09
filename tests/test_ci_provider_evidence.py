@@ -241,3 +241,13 @@ def test_validate_rejects_non_integer_attempt_values(attempt):
     record = ev("gitlab", parity="HEALTHY", attempt=attempt)
     with pytest.raises(ValueError, match="attempt must be an integer"):
         validate_evidence(record, now=NOW)
+
+
+def test_live_verified_gitlab_evidence_can_be_classified_for_runtime_drill():
+    comparison = compare_provider_evidence(
+        None,
+        ev("gitlab", parity="HEALTHY"),
+        gitlab_live_verified=True,
+        now=NOW,
+    )
+    assert comparison.disposition is EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY
