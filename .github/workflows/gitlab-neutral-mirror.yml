@@ -46,6 +46,7 @@ jobs:
         shell: bash
         env:
           GITLAB_MIRROR_TOKEN: ${{ secrets.GITLAB_MIRROR_TOKEN }}
+          GITLAB_MIRROR_SIGNING_KEY: ${{ secrets.GITLAB_MIRROR_SIGNING_KEY }}
           SUBJECT_REF: ${{ inputs.subject_ref }}
           SUBJECT_SHA: ${{ inputs.subject_sha }}
           TARGET_URL: https://gitlab.com/chronoswhite-group/ChronosWhite-project.git
