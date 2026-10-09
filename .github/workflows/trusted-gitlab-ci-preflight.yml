@@ -7,6 +7,13 @@ on:
     paths:
       - pipeline/trusted_gitlab_ci_gate.py
       - tests/test_trusted_gitlab_ci_gate.py
+      - tests/test_ci_regression_preflight_contract.py
+      - tests/test_ci_provider_evidence.py
+      - tests/test_gitlab_pipeline_contract.py
+      - tests/test_git_mirror_parity.py
+      - pipeline/ci_provider_evidence.py
+      - pipeline/git_mirror_parity.py
+      - .gitlab-ci.yml
       - docs/gitlab-trusted-ci/**
       - .github/workflows/trusted-gitlab-ci-preflight.yml
 permissions:
@@ -24,9 +31,19 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
-      - name: Install only pytest for isolated tests
-        run: python -m pip install pytest==8.4.1
-      - name: Isolated trusted verifier tests
-        run: python -m pytest -q tests/test_trusted_gitlab_ci_gate.py
+      - name: Install pinned offline-test dependencies (no secrets)
+        run: python -m pip install pytest==8.4.1 jsonschema==4.25.1 PyYAML==6.0.2
+      - name: Trusted CI and emergency parser/evidence/parity regressions
+        run: |
+          python -m pytest -q \
+            tests/test_git_mirror_parity.py \
+            tests/test_ci_provider_evidence.py \
+            tests/test_gitlab_pipeline_contract.py \
+            tests/test_trusted_gitlab_ci_gate.py \
+            tests/test_ci_regression_preflight_contract.py
       - name: Bytecode syntax verification
-        run: python -m py_compile pipeline/trusted_gitlab_ci_gate.py
+        run: |
+          python -m py_compile \
+            pipeline/git_mirror_parity.py \
+            pipeline/ci_provider_evidence.py \
+            pipeline/trusted_gitlab_ci_gate.py
