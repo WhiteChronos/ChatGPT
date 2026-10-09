@@ -19,6 +19,8 @@ if str(_REPO_ROOT) not in sys.path:
 from pipeline.gitlab_contingency_policy import classify_ref, load_policy
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
+_SCP_REMOTE_RE = re.compile(r"^(?:[^/@:\\s]+@)?[^/:\\s]+:.+$")
+_WINDOWS_DRIVE_RE = re.compile(r"^[A-Za-z]:[\\\\/]")
 _BLOCKED_GIT_ENV_EXACT = {
     "GIT_CONFIG_COUNT",
     "GIT_CONFIG_PARAMETERS",
@@ -129,9 +131,11 @@ def _identity(url: str) -> str:
 
 
 def _is_network_remote(url: str) -> bool:
-    return url.startswith(("https://", "http://", "ssh://")) or (
-        "@" in url and ":" in url and not Path(url).exists()
-    )
+    if url.startswith(("https://", "http://", "ssh://")):
+        return True
+    if _WINDOWS_DRIVE_RE.match(url):
+        return False
+    return bool(_SCP_REMOTE_RE.match(url) and not Path(url).exists())
 
 
 def _validate_mirror_direction(source_url: str, target_url: str, policy) -> None:
@@ -147,7 +151,14 @@ def _validate_mirror_direction(source_url: str, target_url: str, policy) -> None
         raise ValueError("mirror direction must be canonical GitHub source -> GitLab target")
 
 
-def _mirror_receipt_claim(*, policy, ref: str, source_sha: str, timestamp: str) -> dict[str, object]:
+def _mirror_receipt_claim(
+    *,
+    policy,
+    ref: str,
+    source_sha: str,
+    timestamp: str,
+    pipeline_ref: str | None = None,
+) -> dict[str, object]:
     if not policy.gitlab_project_path:
         raise ValueError("mirror receipt requires a provisioned GitLab project")
     return {
@@ -156,6 +167,7 @@ def _mirror_receipt_claim(*, policy, ref: str, source_sha: str, timestamp: str) 
         "source_repository": policy.source_repository,
         "target_project_path": policy.gitlab_project_path,
         "ref": ref,
+        "pipeline_ref": pipeline_ref or ref,
         "source_sha": source_sha.lower(),
         "target_sha": source_sha.lower(),
         "timestamp": timestamp,
@@ -167,6 +179,14 @@ def _mirror_receipt_digest(receipt: dict[str, object]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _refresh_ref(receipt: dict[str, object]) -> str:
+    raw = "\0".join(
+        str(receipt[key])
+        for key in ("ref", "source_sha", "timestamp")
+    ).encode("utf-8")
+    return f"refs/heads/whitechronos-refresh/{hashlib.sha256(raw).hexdigest()}"
+
+
 def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
     digest = _mirror_receipt_digest(receipt)
     inputs = {
@@ -174,6 +194,7 @@ def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
         "mirror_source_repository": receipt["source_repository"],
         "mirror_target_project": receipt["target_project_path"],
         "mirror_ref": receipt["ref"],
+        "mirror_pipeline_ref": receipt["pipeline_ref"],
         "mirror_source_sha": receipt["source_sha"],
         "mirror_target_sha": receipt["target_sha"],
         "mirror_timestamp": receipt["timestamp"],
@@ -217,12 +238,14 @@ def sync_ref(
     receipt_path: Path,
     dry_run: bool = False,
     target_credential_helper: str | None = None,
+    source_credential_helper: str | None = None,
 ) -> dict[str, object]:
     _validate_remote_argument(source_url)
     _validate_remote_argument(target_url)
     policy = load_policy(Path(repo_root) / "governance" / "GITLAB_CONTINGENCY_CI_POLICY.json")
     _validate_mirror_direction(source_url, target_url, policy)
     normalized_target_helper = _normalize_credential_helper(target_credential_helper)
+    normalized_source_helper = _normalize_credential_helper(source_credential_helper)
     if _is_network_remote(target_url) and normalized_target_helper is None:
         raise ValueError("target credential helper is required for a network GitLab target")
     decision = classify_ref(ref_name, policy)
@@ -235,12 +258,16 @@ def sync_ref(
         bare = Path(td) / "mirror.git"
         _run_git(["init", "--bare", str(bare)])
         source_local_ref = f"refs/whitechronos/source/{ref}"
-        _run_git(["fetch", "--no-tags", source_url, f"{full_ref}:{source_local_ref}"], cwd=bare)
+        _run_git(
+            ["fetch", "--no-tags", source_url, f"{full_ref}:{source_local_ref}"],
+            cwd=bare,
+            credential_helper=normalized_source_helper,
+        )
         source_sha = _run_git(["rev-parse", source_local_ref], cwd=bare).stdout.strip().lower()
         if not _SHA_RE.fullmatch(source_sha):
             raise RuntimeError("source ref did not resolve to a valid commit SHA")
         receipt_timestamp = datetime.now(timezone.utc).isoformat()
-        receipt_claim = _mirror_receipt_claim(
+        receipt_base = _mirror_receipt_claim(
             policy=policy,
             ref=ref,
             source_sha=source_sha,
@@ -263,13 +290,29 @@ def sync_ref(
             if ancestry.returncode != 0:
                 raise RuntimeError("target mirror has diverged from the authoritative source")
 
+        pipeline_full_ref = full_ref
+        if (
+            not dry_run
+            and _is_network_remote(target_url)
+            and target_before == source_sha
+        ):
+            pipeline_full_ref = _refresh_ref(receipt_base)
+        pipeline_ref = pipeline_full_ref[len("refs/heads/"):]
+        receipt_claim = _mirror_receipt_claim(
+            policy=policy,
+            ref=ref,
+            source_sha=source_sha,
+            timestamp=receipt_timestamp,
+            pipeline_ref=pipeline_ref,
+        )
+
         if dry_run:
             target_after = target_before
         else:
             push_args = ["push"]
             if _is_network_remote(target_url):
                 push_args.extend(_mirror_push_options(receipt_claim))
-            push_args.extend([target_url, f"{source_local_ref}:{full_ref}"])
+            push_args.extend([target_url, f"{source_local_ref}:{pipeline_full_ref}"])
             _run_git(
                 push_args,
                 cwd=bare,
@@ -283,7 +326,11 @@ def sync_ref(
             if target_after != source_sha:
                 raise RuntimeError("target mirror SHA does not match authoritative source after sync")
 
-        source_after = _remote_sha(source_url, full_ref)
+        source_after = _remote_sha(
+            source_url,
+            full_ref,
+            credential_helper=normalized_source_helper,
+        )
         if source_after != source_sha:
             raise RuntimeError("authoritative source ref changed during sync; success receipt refused")
 
@@ -296,6 +343,7 @@ def sync_ref(
         "target_sha_before": target_before,
         "dry_run": bool(dry_run),
     }
+    receipt["record_sha256"] = _mirror_receipt_digest(receipt)
     receipt_path = Path(receipt_path)
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -310,6 +358,7 @@ def main() -> int:
     parser.add_argument("--ref", required=True)
     parser.add_argument("--receipt", required=True)
     parser.add_argument("--target-credential-helper")
+    parser.add_argument("--source-credential-helper")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     try:
@@ -321,6 +370,7 @@ def main() -> int:
             Path(args.receipt),
             args.dry_run,
             args.target_credential_helper,
+            args.source_credential_helper,
         )
     except Exception as exc:
         print(f"ERROR: {exc}")

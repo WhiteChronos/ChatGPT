@@ -27,6 +27,7 @@ _PROVENANCE_FIELDS = (
     "ci_config_revision",
     "mirror_parity_status",
     "attempt",
+    "input_artifacts_sha256",
 )
 
 
@@ -42,6 +43,7 @@ class CIProviderEvidence:
     ci_config_revision: str
     mirror_parity_status: str
     attempt: int
+    input_artifacts_sha256: dict[str, str]
     provenance_sha256: str
 
 
@@ -61,6 +63,14 @@ def compute_provenance_sha256(record: CIProviderEvidence | Mapping[str, object])
         payload[key] = value
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def load_evidence_json(path: Path) -> CIProviderEvidence:
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    timestamp = raw.get("timestamp")
+    if isinstance(timestamp, str):
+        raw["timestamp"] = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+    return CIProviderEvidence(**raw)
 
 
 class EvidenceDisposition(StrEnum):
@@ -98,6 +108,20 @@ def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None
         raise ValueError(f"invalid CI result: {record.result}")
     if record.attempt < 1:
         raise ValueError("attempt must be >= 1")
+    for name, digest in record.input_artifacts_sha256.items():
+        if not str(name).strip() or not _SHA256_RE.fullmatch(str(digest)):
+            raise ValueError("input artifact digests must be named SHA-256 values")
+    if record.provider == "gitlab":
+        required_inputs = {
+            "mirror-input.json",
+            "mirror-parity.json",
+            "gitlab-runtime-identity.json",
+            "contingency-python.json",
+            "contingency-broker.json",
+            "mirror-parity-final.json",
+        }
+        if set(record.input_artifacts_sha256) != required_inputs:
+            raise ValueError("GitLab evidence must bind every required input artifact")
     if record.timestamp.tzinfo is None:
         raise ValueError("timestamp must be timezone-aware")
     current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
