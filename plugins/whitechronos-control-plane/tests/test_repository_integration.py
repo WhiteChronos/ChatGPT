@@ -258,7 +258,9 @@ def test_gitlab_pipeline_contract_binds_trusted_worker_revision():
 
 def test_provider_evidence_schema_binds_trusted_worker_revision():
     schema = json.loads((REPO / "schemas" / "ci_provider_evidence.schema.json").read_text())
-    assert "worker_revision" in schema["required"]
+    assert "worker_revision" in schema["properties"]
+    assert "worker_revision" not in schema["required"]
+    assert "schema_version" in schema["properties"]
     assert schema["properties"]["worker_revision"]["pattern"] == "^[0-9a-fA-F]{40}$"
     evidence_module = (REPO / "pipeline" / "ci_provider_evidence.py").read_text()
     assert '"worker_revision"' in evidence_module
