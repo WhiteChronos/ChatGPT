@@ -432,3 +432,78 @@ def test_documented_entrypoint_exposes_source_credential_helper():
     )
     assert result.returncode == 0, result.stderr
     assert '--source-credential-helper' in result.stdout
+
+
+WORKER_SHA = 'f' * 40
+
+
+def test_receipt_claim_requires_40_hex_worker_revision():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    with pytest.raises(ValueError, match='worker revision'):
+        m._mirror_receipt_claim(
+            policy=policy,
+            ref='main',
+            source_sha='a' * 40,
+            timestamp='2026-10-09T10:30:00+00:00',
+            worker_revision='not-a-sha',
+        )
+
+
+def test_push_options_bind_worker_revision():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    claim = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-09T10:30:00+00:00',
+        worker_revision=WORKER_SHA,
+    )
+    joined = ' '.join(m._mirror_push_options(claim))
+    assert claim['worker_revision'] == WORKER_SHA
+    assert f'ci.input=mirror_worker_revision={WORKER_SHA}' in joined
+
+
+def test_worker_revision_changes_receipt_claim_digest():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    first = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-09T10:30:00+00:00',
+        worker_revision='a' * 40,
+    )
+    second = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-09T10:30:00+00:00',
+        worker_revision='b' * 40,
+    )
+    assert m._mirror_receipt_digest(first) != m._mirror_receipt_digest(second)
+
+
+def test_same_sha_refresh_keeps_original_parity_ref_and_worker_revision():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    base = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-09T10:30:00+00:00',
+        worker_revision=WORKER_SHA,
+    )
+    refresh = m._refresh_ref(base)[len('refs/heads/'):]
+    claim = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-09T10:30:00+00:00',
+        worker_revision=WORKER_SHA,
+        pipeline_ref=refresh,
+    )
+    assert claim['ref'] == 'main'
+    assert claim['pipeline_ref'] == refresh
+    assert claim['worker_revision'] == WORKER_SHA
