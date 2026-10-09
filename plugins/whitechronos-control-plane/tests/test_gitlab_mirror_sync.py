@@ -432,3 +432,16 @@ def test_documented_entrypoint_exposes_source_credential_helper():
     )
     assert result.returncode == 0, result.stderr
     assert '--source-credential-helper' in result.stdout
+
+
+@pytest.mark.parametrize(
+    "remote",
+    [
+        "source.example:/repo.git",
+        "ssh-host:/group/repo.git",
+        "user@source.example:/repo.git",
+    ],
+)
+def test_scp_remote_with_letter_s_is_classified_as_network(remote):
+    m = load_module()
+    assert m._is_network_remote(remote) is True

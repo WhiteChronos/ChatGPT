@@ -286,3 +286,35 @@ def test_runbook_declares_minimal_mirror_runtime_dependency_install():
     body = RUNBOOK.read_text(encoding='utf-8')
     assert 'requirements-mirror.txt' in body
     assert 'python -m pip install -r requirements-mirror.txt' in body
+
+
+def test_permanent_evidence_bundle_retains_every_provenance_bound_input():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    artifacts_block = evidence_block.rsplit("\n  artifacts:\n", 1)[1]
+    for name in (
+        "mirror-input.json",
+        "mirror-parity.json",
+        "gitlab-runtime-identity.json",
+        "contingency-python.json",
+        "contingency-broker.json",
+        "mirror-parity-final.json",
+        "contingency-gate.json",
+        "ci-provider-evidence.json",
+    ):
+        assert f"- {name}" in artifacts_block
+
+
+def test_refresh_branch_cleanup_is_strict_and_mandatory():
+    body = text()
+    assert "\ncleanup-refresh:\n" in body
+    cleanup = body.split("\ncleanup-refresh:\n", 1)[1]
+    assert "whitechronos-refresh/[0-9a-f]{64}" in cleanup
+    assert "git push origin --delete" in cleanup
+    assert "when: always" in cleanup
+    assert "allow_failure: false" in cleanup
+
+
+def test_final_evidence_reobserves_github_after_gitlab_probe():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    assert evidence_block.count("observe_remote_ref(") >= 2
+    assert "authoritative GitHub ref changed during final evidence observation" in evidence_block
