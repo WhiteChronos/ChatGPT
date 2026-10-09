@@ -72,7 +72,7 @@ GITLAB_MIRROR_TOKEN
 
 The non-secret Git username for access-token authentication is `oauth2`.
 
-Do **not broaden** the token to the `api` scope merely for convenience.
+Do not broaden the token to the `api` scope merely for convenience.
 Do not reuse a personal password or a human day-to-day token.
 
 A GitLab **deploy token** is not the solution for this write path: its
