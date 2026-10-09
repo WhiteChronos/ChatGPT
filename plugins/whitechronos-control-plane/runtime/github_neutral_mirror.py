@@ -152,28 +152,25 @@ def run_neutral_mirror(
         trusted_ref=trusted_ref,
     )
 
-    # Remove both secrets before imports, remote observations or Git subprocesses.
-    # Even a read-only source probe must not inherit credential material.
+    # Remove credentials before ANY import, remote observation, or Git child.
+    token = os.environ.pop(TOKEN_ENV, None)
+    signing_key = os.environ.pop("GITLAB_MIRROR_SIGNING_KEY", None)
+    if not token:
+        raise RuntimeError("GITLAB_MIRROR_TOKEN is required")
+    if os.environ.get("GITHUB_ACTIONS") == "true" and not signing_key:
+        raise RuntimeError("authenticated mirror receipt signer is unavailable")
 
-    # Guard against stale worker revisions after secrets have left the environment.
-    # Per-SHA GitHub Environment revocation is the actual secret-release gate.
+    # Per-SHA Environment retirement is the trust root, not this local guard.
     if os.environ.get("GITHUB_ACTIONS") == "true":
         observed_main_sha = _observe_source_sha(Path(repo_root), "main")
         if observed_main_sha != _require_sha(request.worker_revision, "worker revision"):
             raise ValueError("retired trusted worker revision is not current main")
 
-    signing_key = os.environ.pop("GITLAB_MIRROR_SIGNING_KEY", None)
-    if os.environ.get("GITHUB_ACTIONS") == "true" and not signing_key:
-        raise RuntimeError("authenticated mirror receipt signer is unavailable")
     if signing_key is not None:
         from pipeline.mirror_receipt_auth import sign_receipt_digest
         receipt_signer = lambda digest: sign_receipt_digest(digest, signing_key)
     else:
         receipt_signer = None
-
-    token = os.environ.pop(TOKEN_ENV, None)
-    if not token:
-        raise RuntimeError("GITLAB_MIRROR_TOKEN is required")
 
     observed_source_sha = _observe_source_sha(Path(repo_root), request.subject_ref)
     expected_subject_sha = _require_sha(request.subject_sha, "subject SHA")
