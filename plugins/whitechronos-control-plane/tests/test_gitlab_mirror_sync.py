@@ -8,6 +8,13 @@ import pytest
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'sync_gitlab_mirror.py'
 ROOT = Path(__file__).resolve().parents[3]
+WORKER_SHA = 'f' * 40
+
+
+def sync(m, *args, **kwargs):
+    kwargs.setdefault('worker_revision', WORKER_SHA)
+    return sync(m, *args, **kwargs)
+
 
 
 def load_module():
@@ -49,12 +56,12 @@ def test_fast_forward_sync_preserves_exact_sha(tmp_path):
     m = load_module()
     work, source, target = init_world(tmp_path)
     receipt = tmp_path / 'receipt.json'
-    first = m.sync_ref(ROOT, str(source), str(target), 'main', receipt)
+    first = sync(m, ROOT, str(source), str(target), 'main', receipt)
     assert first['source_sha'] == first['target_sha'] == sha(source)
     (work / 'a.txt').write_text('two', encoding='utf-8')
     git('commit', '-am', 'two', cwd=work)
     git('push', 'origin', 'main', cwd=work)
-    second = m.sync_ref(ROOT, str(source), str(target), 'main', receipt)
+    second = sync(m, ROOT, str(source), str(target), 'main', receipt)
     assert second['source_sha'] == second['target_sha'] == sha(source)
     assert sha(target) == sha(source)
     assert second['transport'] == 'neutral_worker'
@@ -64,7 +71,7 @@ def test_target_divergence_is_rejected(tmp_path):
     m = load_module()
     work, source, target = init_world(tmp_path)
     receipt = tmp_path / 'receipt.json'
-    m.sync_ref(ROOT, str(source), str(target), 'main', receipt)
+    sync(m, ROOT, str(source), str(target), 'main', receipt)
 
     target_work = tmp_path / 'target-work'
     git('clone', '-b', 'main', str(target), str(target_work))
@@ -81,20 +88,20 @@ def test_target_divergence_is_rejected(tmp_path):
     git('push', 'origin', 'main', cwd=work)
 
     with pytest.raises(RuntimeError, match='diverg'):
-        m.sync_ref(ROOT, str(source), str(target), 'main', receipt)
+        sync(m, ROOT, str(source), str(target), 'main', receipt)
 
 
 def test_ineligible_ref_is_rejected(tmp_path):
     m = load_module()
     _, source, target = init_world(tmp_path)
     with pytest.raises(ValueError, match='eligible'):
-        m.sync_ref(ROOT, str(source), str(target), 'subagent/temp', tmp_path / 'r.json')
+        sync(m, ROOT, str(source), str(target), 'subagent/temp', tmp_path / 'r.json')
 
 
 def test_inline_credentials_are_rejected_without_leaking_secret(tmp_path):
     m = load_module()
     with pytest.raises(ValueError) as exc:
-        m.sync_ref(
+        sync(m, 
             ROOT,
             'https://user:source-secret@example.com/repo.git',
             'https://user:target-secret@example.com/repo.git',
@@ -110,7 +117,7 @@ def test_source_ref_is_never_mutated(tmp_path):
     m = load_module()
     _, source, target = init_world(tmp_path)
     before = sha(source)
-    m.sync_ref(ROOT, str(source), str(target), 'main', tmp_path / 'r.json')
+    sync(m, ROOT, str(source), str(target), 'main', tmp_path / 'r.json')
     assert sha(source) == before
 
 
@@ -125,7 +132,7 @@ def test_reversed_network_endpoints_are_rejected_before_git(tmp_path, monkeypatc
 
     monkeypatch.setattr(m, '_run_git', fail_git)
     with pytest.raises(ValueError, match='direction'):
-        m.sync_ref(
+        sync(m, 
             ROOT,
             'https://gitlab.com/chronoswhite-group/ChronosWhite-project.git',
             'https://github.com/WhiteChronos/ChatGPT.git',
@@ -158,7 +165,7 @@ def test_source_is_reobserved_after_push_before_success_receipt(tmp_path, monkey
 
     monkeypatch.setattr(m, '_remote_sha', moving_source)
     with pytest.raises(RuntimeError, match='authoritative source'):
-        m.sync_ref(ROOT, str(source), str(target), 'main', tmp_path / 'r.json')
+        sync(m, ROOT, str(source), str(target), 'main', tmp_path / 'r.json')
 
 def test_worker_scrubs_git_control_environment(monkeypatch):
     m = load_module()
@@ -195,7 +202,7 @@ def test_option_like_remote_is_rejected_before_git(tmp_path, monkeypatch):
 
     monkeypatch.setattr(m, '_run_git', fail_git)
     with pytest.raises(ValueError, match='remote'):
-        m.sync_ref(
+        sync(m, 
             ROOT,
             '--upload-pack=touch /tmp/marker',
             str(tmp_path / 'target.git'),
@@ -244,7 +251,7 @@ def test_network_target_requires_explicit_credential_helper(tmp_path, monkeypatc
 
     monkeypatch.setattr(m, '_run_git', fail_git)
     with pytest.raises(ValueError, match='target credential helper'):
-        m.sync_ref(
+        sync(m, 
             ROOT,
             'https://github.com/WhiteChronos/ChatGPT.git',
             'https://gitlab.com/chronoswhite-group/ChronosWhite-project.git',
@@ -351,7 +358,7 @@ def test_source_credential_helper_is_supported_separately_from_target(tmp_path, 
     monkeypatch.setattr(m, '_is_network_remote', lambda url: True)
     monkeypatch.setattr(m, '_validate_mirror_direction', lambda *args, **kwargs: None)
 
-    m.sync_ref(
+    sync(m, 
         ROOT,
         'https://github.com/WhiteChronos/ChatGPT.git',
         'https://gitlab.com/chronoswhite-group/ChronosWhite-project.git',
@@ -369,7 +376,7 @@ def test_persisted_receipt_hash_binds_complete_record(tmp_path):
     m = load_module()
     _, source, target = init_world(tmp_path)
     receipt_path = tmp_path / 'receipt.json'
-    receipt = m.sync_ref(ROOT, str(source), str(target), 'main', receipt_path)
+    receipt = sync(m, ROOT, str(source), str(target), 'main', receipt_path)
     assert 'record_sha256' in receipt
     semantic = dict(receipt)
     digest = semantic.pop('record_sha256')
@@ -412,7 +419,7 @@ def test_userless_scp_noncanonical_target_is_rejected_before_git(tmp_path, monke
 
     monkeypatch.setattr(m, '_run_git', fail_git)
     with pytest.raises(ValueError, match='direction'):
-        m.sync_ref(
+        sync(m, 
             ROOT,
             'https://github.com/WhiteChronos/ChatGPT.git',
             'gitlab.com:other-group/other-project.git',
@@ -433,8 +440,6 @@ def test_documented_entrypoint_exposes_source_credential_helper():
     assert result.returncode == 0, result.stderr
     assert '--source-credential-helper' in result.stdout
 
-
-WORKER_SHA = 'f' * 40
 
 
 def test_receipt_claim_requires_40_hex_worker_revision():

@@ -157,10 +157,13 @@ def _mirror_receipt_claim(
     ref: str,
     source_sha: str,
     timestamp: str,
+    worker_revision: str,
     pipeline_ref: str | None = None,
 ) -> dict[str, object]:
     if not policy.gitlab_project_path:
         raise ValueError("mirror receipt requires a provisioned GitLab project")
+    if not _SHA_RE.fullmatch(worker_revision):
+        raise ValueError("worker revision must be an exact 40-character Git commit SHA")
     return {
         "schema_version": 1,
         "transport": "neutral_worker",
@@ -171,6 +174,7 @@ def _mirror_receipt_claim(
         "source_sha": source_sha.lower(),
         "target_sha": source_sha.lower(),
         "timestamp": timestamp,
+        "worker_revision": worker_revision.lower(),
     }
 
 
@@ -198,6 +202,7 @@ def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
         "mirror_source_sha": receipt["source_sha"],
         "mirror_target_sha": receipt["target_sha"],
         "mirror_timestamp": receipt["timestamp"],
+        "mirror_worker_revision": receipt["worker_revision"],
         "mirror_receipt_sha256": digest,
     }
     options: list[str] = []
@@ -236,6 +241,7 @@ def sync_ref(
     target_url: str,
     ref_name: str,
     receipt_path: Path,
+    worker_revision: str,
     dry_run: bool = False,
     target_credential_helper: str | None = None,
     source_credential_helper: str | None = None,
@@ -272,6 +278,7 @@ def sync_ref(
             ref=ref,
             source_sha=source_sha,
             timestamp=receipt_timestamp,
+            worker_revision=worker_revision,
         )
 
         target_before = _remote_sha(
@@ -303,6 +310,7 @@ def sync_ref(
             ref=ref,
             source_sha=source_sha,
             timestamp=receipt_timestamp,
+            worker_revision=worker_revision,
             pipeline_ref=pipeline_ref,
         )
 
@@ -357,6 +365,7 @@ def main() -> int:
     parser.add_argument("--target-url", required=True)
     parser.add_argument("--ref", required=True)
     parser.add_argument("--receipt", required=True)
+    parser.add_argument("--worker-revision", required=True)
     parser.add_argument("--target-credential-helper")
     parser.add_argument("--source-credential-helper")
     parser.add_argument("--dry-run", action="store_true")
@@ -368,6 +377,7 @@ def main() -> int:
             args.target_url,
             args.ref,
             Path(args.receipt),
+            args.worker_revision,
             args.dry_run,
             args.target_credential_helper,
             args.source_credential_helper,
