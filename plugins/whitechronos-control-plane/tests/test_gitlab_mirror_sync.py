@@ -293,3 +293,81 @@ def test_gcm_manager_selector_is_allowed():
         '-c', 'credential.interactive=false',
     ]
 
+
+
+def test_userless_scp_remote_is_classified_as_network():
+    m = load_module()
+    assert m._is_network_remote('gitlab.com:chronoswhite-group/ChronosWhite-project.git') is True
+
+
+def test_refresh_ref_is_unique_and_bound_to_receipt_claim():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    claim = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-08T22:00:00+00:00',
+    )
+    first = m._refresh_ref(claim)
+    changed = dict(claim)
+    changed['timestamp'] = '2026-10-08T22:01:00+00:00'
+    second = m._refresh_ref(changed)
+    assert first.startswith('refs/heads/whitechronos-refresh/')
+    assert second.startswith('refs/heads/whitechronos-refresh/')
+    assert first != second
+
+
+def test_source_credential_helper_is_supported_separately_from_target(tmp_path, monkeypatch):
+    m = load_module()
+    source_helper = tmp_path / 'git-credential-source'
+    target_helper = tmp_path / 'git-credential-target'
+    for helper in (source_helper, target_helper):
+        helper.write_text('#!/bin/sh\nexit 0\n', encoding='utf-8')
+        helper.chmod(0o700)
+
+    calls = []
+    def fake_run_git(args, **kwargs):
+        calls.append((tuple(args), kwargs.get('credential_helper')))
+        if args[:2] == ['rev-parse', 'refs/whitechronos/source/main']:
+            return subprocess.CompletedProcess(args, 0, 'a' * 40 + '\n', '')
+        if args[:2] == ['merge-base', '--is-ancestor']:
+            return subprocess.CompletedProcess(args, 0, '', '')
+        return subprocess.CompletedProcess(args, 0, '', '')
+
+    remote_values = iter([None, 'a' * 40])
+    def fake_remote_sha(url, full_ref, **kwargs):
+        calls.append((('remote-sha', url, full_ref), kwargs.get('credential_helper')))
+        return next(remote_values)
+
+    monkeypatch.setattr(m, '_run_git', fake_run_git)
+    monkeypatch.setattr(m, '_remote_sha', fake_remote_sha)
+    monkeypatch.setattr(m, '_is_network_remote', lambda url: True)
+    monkeypatch.setattr(m, '_validate_mirror_direction', lambda *args, **kwargs: None)
+
+    m.sync_ref(
+        ROOT,
+        'https://github.com/WhiteChronos/ChatGPT.git',
+        'https://gitlab.com/chronoswhite-group/ChronosWhite-project.git',
+        'main',
+        tmp_path / 'receipt.json',
+        source_credential_helper=str(source_helper),
+        target_credential_helper=str(target_helper),
+    )
+
+    assert any(helper == str(source_helper.resolve()) for argv, helper in calls if argv and argv[0] in {'fetch', 'remote-sha'})
+    assert any(helper == str(target_helper.resolve()) for argv, helper in calls if argv and argv[0] in {'push', 'remote-sha'})
+
+
+def test_persisted_receipt_hash_binds_complete_record(tmp_path):
+    m = load_module()
+    _, source, target = init_world(tmp_path)
+    receipt_path = tmp_path / 'receipt.json'
+    receipt = m.sync_ref(ROOT, str(source), str(target), 'main', receipt_path)
+    assert 'record_sha256' in receipt
+    semantic = dict(receipt)
+    digest = semantic.pop('record_sha256')
+    assert digest == m._mirror_receipt_digest(semantic)
+    tampered = dict(semantic)
+    tampered['dry_run'] = not bool(tampered['dry_run'])
+    assert m._mirror_receipt_digest(tampered) != digest

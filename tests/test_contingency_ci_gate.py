@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-from pipeline.contingency_ci_gate import commands_for_profile, run_profile
+from pipeline.contingency_ci_gate import _expanded_argv, commands_for_profile, run_profile
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -96,3 +96,8 @@ def test_run_profile_executes_every_validator_after_failure(monkeypatch):
     assert result.failed_command_index == 0
     assert len(result.results) == 4
     assert len(calls) == 4
+
+
+def test_mandatory_glob_without_matches_fails_closed(tmp_path):
+    with pytest.raises(FileNotFoundError, match='mandatory test glob'):
+        _expanded_argv(tmp_path, ('node', '--test', 'plugins/subagent-broker/tests/*.test.mjs'))
