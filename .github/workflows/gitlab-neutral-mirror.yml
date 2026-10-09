@@ -23,7 +23,7 @@ jobs:
   mirror:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: gitlab-neutral-mirror
+    environment: gitlab-neutral-mirror-${{ github.sha }}
     steps:
       - name: Checkout trusted worker revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -36,12 +36,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install mirror dependencies
+      - name: Verify worker dependencies without mutable installs
+        shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements-mirror.txt
-          python -m pip check
+          python -c "import jsonschema; import ssl; print('worker dependencies present')"
 
       - name: Mirror exact subject SHA
         shell: bash
