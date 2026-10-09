@@ -29,8 +29,8 @@ def test_pipeline_exists_and_parses():
 
 def test_required_jobs_and_stages_present():
     data = pipeline_data()
-    assert data['stages'] == ['parity', 'validate', 'evidence']
-    for job in ('mirror-parity', 'python-governance', 'broker', 'contingency-evidence'):
+    assert data['stages'] == ['parity', 'validate', 'evidence', 'cleanup']
+    for job in ('mirror-parity', 'python-governance', 'broker', 'contingency-evidence', 'cleanup-refresh'):
         assert job in data
 
 

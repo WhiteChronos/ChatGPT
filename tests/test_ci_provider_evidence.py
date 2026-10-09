@@ -95,10 +95,10 @@ def test_schema_rejects_authority_fields():
 @pytest.mark.parametrize(
     ('github', 'gitlab', 'expected'),
     [
-        (ev('github', 'PASS'), ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.CORROBORATED),
+        (ev('github', 'PASS'), ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.GITLAB_LIVE_VERIFICATION_REQUIRED),
         (ev('github', 'PASS'), ev('gitlab', 'FAIL', parity='HEALTHY'), EvidenceDisposition.DISCREPANCY_BLOCKED),
         (ev('github', 'FAIL'), ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.DISCREPANCY_BLOCKED),
-        (None, ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY),
+        (None, ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.GITLAB_LIVE_VERIFICATION_REQUIRED),
         (ev('github', 'PASS'), ev('gitlab', 'PASS', parity='DIVERGED'), EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE),
         (ev('github', 'PASS'), ev('gitlab', 'PASS', sha=OTHER, parity='HEALTHY'), EvidenceDisposition.SUBJECT_MISMATCH_BLOCKED),
     ],
