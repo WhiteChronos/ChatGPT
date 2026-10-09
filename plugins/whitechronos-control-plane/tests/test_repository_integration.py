@@ -314,3 +314,14 @@ def test_gitlab_contingency_runbook_routes_final_transport_through_trusted_githu
     assert "mirror_worker_revision" in text
     assert "source=push" in text
     assert "CI_JOB_TOKEN" in text
+
+
+def test_github_neutral_mirror_runbook_records_reviewed_action_pins():
+    text = GITHUB_NEUTRAL_MIRROR_RUNBOOK.read_text(encoding="utf-8")
+    for sha in (
+        "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "5fda3b95a4ea91299a34e894583c3862153e4b97",
+        "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+    ):
+        assert sha in text
+    assert "separate review before updating" in text
