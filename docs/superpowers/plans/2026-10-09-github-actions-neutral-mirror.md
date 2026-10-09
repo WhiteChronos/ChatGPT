@@ -22,6 +22,8 @@
 - Do not use `CI_JOB_TOKEN` as the final mirror credential because job-token pushes do not trigger the required GitLab pipeline.
 - Never place a GitLab token in a remote URL, command argument, receipt, artifact, log, summary, Git config, or repository file.
 - The subject feature branch must never control executable workflow code that receives the GitLab write secret.
+- The GitHub Environment holding `GITLAB_MIRROR_TOKEN` must restrict deployment to the protected trusted worker ref; an in-YAML branch check alone is not a trust boundary.
+- Third-party GitHub Actions used by the secret-bearing worker must be pinned to immutable full commit SHAs, not mutable tags.
 - The trusted worker must record the trusted workflow/worker revision used for the mirror.
 - Normal mirroring is non-force. Same-SHA freshness uses only `whitechronos-refresh/<digest>`.
 - TinyFish may research/observe provider behavior but may not hold the mirror credential, push the authoritative mirror, or mint parity evidence.
@@ -46,11 +48,11 @@
 
 ## Review Focus
 
-1. **Untrusted subject code:** a feature branch must be mirrorable as data without any step executing code or workflow YAML from that branch while the GitLab secret is available; Task 3 pins this.
+1. **Untrusted subject code:** a feature branch must be mirrorable as data without any step executing code or workflow YAML from that branch while the GitLab secret is available; GitHub Environment deployment-branch policy must independently enforce the trusted ref; Tasks 3 and 8 pin this.
 2. **Secret leakage through Git plumbing:** the token must not enter argv, URLs, receipts, artifacts, summaries or persisted config, including failure paths; Task 2 pins this.
 3. **Trusted worker replay/substitution:** GitLab evidence must bind the exact trusted workflow/worker revision used for the push, not merely the subject SHA; Tasks 1 and 4 pin this.
 4. **Same-SHA refresh confusion:** the reserved refresh ref may trigger the pipeline but must never become the parity subject or change the authoritative target branch; Tasks 1 and 4 pin this.
-5. **Bootstrap circularity:** the live secret must not be provisioned to a worker that exists only on the feature branch; Task 8 makes trusted-ref installation an explicit precondition and STOP gate.
+5. **Bootstrap/supply-chain circularity:** the live secret must not be provisioned to a worker that exists only on the feature branch, nor to a worker that loads mutable third-party action tags; Tasks 3 and 8 make trusted-ref installation, environment branch policy and immutable action pinning explicit gates.
 
 ---
 
@@ -130,7 +132,7 @@ git commit -m "feat: bind trusted worker revision to mirror receipt"
 **Interfaces:**
 - Produces `NeutralMirrorRequest(subject_ref: str, subject_sha: str, worker_revision: str, target_url: str, receipt_path: Path)`.
 - Produces `validate_trusted_worker_context(request: NeutralMirrorRequest, *, workflow_ref: str, workflow_sha: str, trusted_ref: str) -> None`.
-- Produces `temporary_gitlab_credential_helper(token_env: str = "GITLAB_MIRROR_TOKEN", username: str = "oauth2") -> ContextManager[Path]`.
+- Produces `temporary_gitlab_credential_helper(token: str, username: str = "oauth2") -> ContextManager[Path]` that creates a mode-0600 credential material file plus a mode-0700 helper executable and yields only the helper path.
 - Produces `run_neutral_mirror(repo_root: Path, request: NeutralMirrorRequest, *, workflow_ref: str, workflow_sha: str, trusted_ref: str) -> dict[str, object]`.
 - CLI consumes `--subject-ref`, `--subject-sha`, `--worker-revision`, `--target-url`, `--receipt`, `--trusted-ref`; token comes only from `GITLAB_MIRROR_TOKEN`.
 
@@ -144,9 +146,11 @@ def test_worker_sha_must_equal_workflow_sha(): ...
 def test_subject_sha_is_data_not_executable_worker_revision(): ...
 def test_missing_gitlab_token_fails_before_git(): ...
 def test_credential_helper_contains_no_token_literal(): ...
+def test_credential_material_mode_is_0600(): ...
 def test_credential_helper_mode_is_0700(): ...
-def test_credential_helper_is_removed_on_success(): ...
-def test_credential_helper_is_removed_on_sync_failure(): ...
+def test_token_is_removed_from_child_environment_before_git(): ...
+def test_credential_helper_and_material_are_removed_on_success(): ...
+def test_credential_helper_and_material_are_removed_on_sync_failure(): ...
 def test_token_never_appears_in_sync_ref_arguments_or_receipt(): ...
 ```
 
@@ -166,12 +170,12 @@ Rules:
 
 - check trusted workflow/ref/worker revision before reading `GITLAB_MIRROR_TOKEN`;
 - accept only a 40-hex subject SHA and worker SHA;
-- create a temporary executable helper with mode `0700`;
-- helper code reads the token from the inherited environment at invocation time; it must not embed the token text;
+- read `GITLAB_MIRROR_TOKEN` once, create a mode-0600 temporary credential material file, then remove the token variable from the process environment before invoking Git;
+- create a temporary executable helper with mode `0700`; helper code contains only the path to the temporary credential material, never the token literal;
 - helper emits Git credential protocol fields only to Git's credential-helper stdout;
-- call the existing `sync_ref` directly from trusted code;
-- cleanup helper/temp directory in `finally`;
-- never catch-and-print the token or raw environment.
+- call the existing `sync_ref` directly from trusted code after the token is absent from the child environment;
+- cleanup helper, credential material and temp directory in `finally` on success or failure;
+- never catch-and-print the token, credential material contents, or raw environment.
 
 - [ ] **Step 4: Implement the thin CLI wrapper**
 
@@ -202,7 +206,7 @@ git commit -m "feat: add trusted GitHub neutral mirror runtime"
 - Workflow name: `GitLab Neutral Mirror`.
 - Trigger: `workflow_dispatch` only for the initial trusted worker; no `pull_request`, `push`, or `workflow_run` automatic secret-bearing trigger.
 - Inputs: `subject_ref` and `subject_sha`, both required strings.
-- Environment: `gitlab-neutral-mirror`.
+- Environment: `gitlab-neutral-mirror`, configured in GitHub to allow deployments only from the protected trusted worker ref (initially `main`).
 - Secret: environment/repository secret `GITLAB_MIRROR_TOKEN`.
 - GitHub permissions: `contents: read`; no write permission is required.
 - Trusted branch/ref: `refs/heads/main` unless a later separately approved protected worker ref replaces it.
@@ -219,6 +223,8 @@ Add assertions that:
 - job is bound to the `gitlab-neutral-mirror` environment;
 - job fails unless running the trusted worker ref;
 - trusted code checkout/ref is the workflow revision, not `subject_sha`;
+- the environment name is `gitlab-neutral-mirror` and the runbook requires environment deployment-branch policy restricted to the protected trusted ref;
+- every external `uses:` action in the secret-bearing job is pinned to a full immutable commit SHA;
 - `subject_sha` never appears as an `actions/checkout ref`;
 - token is referenced only in the mirror step environment;
 - token text/name is not passed as a CLI argument;
@@ -238,7 +244,8 @@ Expected: FAIL because the workflow does not exist.
 
 Use:
 
-- `actions/checkout` pinned to the trusted workflow revision;
+- third-party actions (`actions/checkout`, `actions/setup-python`, artifact actions if needed) pinned to reviewed full commit SHAs;
+- checkout of trusted repository code at the trusted workflow revision;
 - Python 3.12;
 - minimal dependency install required by the existing mirror/runtime code;
 - mirror step with `GITLAB_MIRROR_TOKEN` only in step-level `env`;
@@ -358,6 +365,8 @@ Assert documentation states:
 - `CI_JOB_TOKEN` push cannot satisfy the final design because it does not trigger the required pipeline;
 - token is stored only in GitHub Actions secret/environment storage;
 - workflow must already be trusted before secret provisioning;
+- GitHub Environment `gitlab-neutral-mirror` must restrict deployments to the protected trusted worker ref; runtime YAML checks are defense-in-depth only;
+- all third-party actions in the secret-bearing worker must be pinned to immutable full commit SHAs;
 - subject ref/SHA are data;
 - exact manual dispatch procedure;
 - same-SHA refresh behavior;
@@ -457,6 +466,8 @@ Also verify:
 
 - no token in Git remote URL;
 - no subject-SHA checkout/execution in the secret-bearing worker job;
+- secret-bearing environment is protected by GitHub deployment-branch rules, not only in-workflow conditionals;
+- all external actions in that job are commit-SHA pinned;
 - no force push;
 - no automatic merge/deploy command.
 
@@ -552,7 +563,9 @@ Read the protected trusted ref and prove:
 
 - `.github/workflows/gitlab-neutral-mirror.yml` exists there;
 - its trusted commit SHA is the worker revision to execute;
-- branch protection/trusted-ref policy is intact.
+- branch protection/trusted-ref policy is intact;
+- GitHub Environment `gitlab-neutral-mirror` exists and its deployment branch/tag policy admits only the protected trusted worker ref;
+- external actions referenced by the trusted workflow are pinned to immutable full commit SHAs.
 
 If false:
 
@@ -568,7 +581,7 @@ This is a human authorization gate, not an implementation step. The approved imp
 
 - [ ] **Step 3: Provision the least-privilege GitLab credential**
 
-After the trusted worker exists, the user/authorized administrator creates or supplies a credential restricted to Git repository push for `chronoswhite-group/ChronosWhite-project` and stores only its token in the `gitlab-neutral-mirror` GitHub Actions environment as `GITLAB_MIRROR_TOKEN`.
+After the trusted worker and environment branch policy exist, the user/authorized administrator creates or supplies a credential restricted to Git repository push for `chronoswhite-group/ChronosWhite-project` and stores only its token in the `gitlab-neutral-mirror` GitHub Actions environment as `GITLAB_MIRROR_TOKEN`. The workflow uses the non-secret username `oauth2` for Git-over-HTTPS access-token authentication.
 
 Do not request the token in chat and do not store it in repository files.
 
