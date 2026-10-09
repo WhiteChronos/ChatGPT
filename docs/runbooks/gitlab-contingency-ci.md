@@ -153,22 +153,29 @@ Success requires all of the following:
 `.gitlab-ci.yml` executes only validation/evidence stages:
 
 ```text
-parity -> validate -> evidence
+parity -> validate -> evidence -> cleanup
 ```
 
 Only a branch pipeline created by the neutral worker's Git push is accepted by
 workflow rules. Tag pipelines, controller/multi-project pipelines, web, API and
 scheduled starts are rejected. Same-SHA refreshes use the reserved
 `whitechronos-refresh/*` branch class only as a pipeline trigger; parity is
-still computed against the receipt's original mirrored branch. Protect
-`whitechronos-refresh/*` for transport-only writes just like mirrored refs. The pipeline observes
+still computed against the receipt's original mirrored branch. Reserve
+`whitechronos-refresh/*` for transport-only writes. The GitLab project must allow
+the pipeline's authenticated CI job token to delete these one-shot refs after
+the evidence stage; ordinary users must not use this namespace. The cleanup
+job fails closed if a reserved ref is malformed or deletion fails. The pipeline observes
 the authoritative GitHub ref, compares it with the mirrored GitLab commit and CI
 subject SHA, runs the canonical repository gates, and writes provider-scoped evidence. A green GitLab pipeline is not an authority
 grant. GitLab evidence is eligible for corroboration only while parity is
 `HEALTHY`. The final evidence job re-observes both provider refs and re-runs
 the freshness check immediately before publishing evidence. Provider evidence
 binds SHA-256 digests of every consumed gate/parity artifact and is retained
-with `expire_in: never` for auditability.
+with `expire_in: never` for auditability, including every source artifact
+whose SHA-256 is bound into the provider evidence. Persisted GitLab evidence is
+an integrity record only: it cannot become corroborated/eligible offline without
+a separate authenticated live GitLab provider observation of the pipeline and
+current mirror state.
 
 ### Trusted GitLab runtime identity
 

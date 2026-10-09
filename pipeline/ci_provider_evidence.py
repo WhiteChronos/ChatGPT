@@ -13,6 +13,8 @@ _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 _SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 _PROVIDERS = {"github", "gitlab", "local"}
 _RESULTS = {"PASS", "FAIL", "UNAVAILABLE"}
+_EVIDENCE_MAX_AGE_SECONDS = 3600
+_MAX_FUTURE_CLOCK_SKEW_SECONDS = 300
 _EXPECTED_REPOSITORY_IDENTITIES = {
     "github": "WhiteChronos/ChatGPT",
     "gitlab": "chronoswhite-group/ChronosWhite-project",
@@ -80,6 +82,7 @@ class EvidenceDisposition(StrEnum):
     CONTINGENCY_EVIDENCE_ONLY = "CONTINGENCY_EVIDENCE_ONLY"
     PRIMARY_EVIDENCE_ONLY = "PRIMARY_EVIDENCE_ONLY"
     GITLAB_EVIDENCE_INELIGIBLE = "GITLAB_EVIDENCE_INELIGIBLE"
+    GITLAB_LIVE_VERIFICATION_REQUIRED = "GITLAB_LIVE_VERIFICATION_REQUIRED"
     SUBJECT_MISMATCH_BLOCKED = "SUBJECT_MISMATCH_BLOCKED"
 
 
@@ -127,8 +130,10 @@ def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None
         raise ValueError("timestamp must be timezone-aware")
     current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     observed = record.timestamp.astimezone(timezone.utc)
-    if (observed - current).total_seconds() > 300:
+    if (observed - current).total_seconds() > _MAX_FUTURE_CLOCK_SKEW_SECONDS:
         raise ValueError("evidence timestamp exceeds allowed future clock skew")
+    if (current - observed).total_seconds() > _EVIDENCE_MAX_AGE_SECONDS:
+        raise ValueError("evidence timestamp is expired")
     if record.provider == "gitlab" and record.mirror_parity_status != "HEALTHY":
         raise ValueError("GitLab evidence is ineligible unless mirror parity is HEALTHY")
     if record.provider != "gitlab" and record.mirror_parity_status not in {"NOT_APPLICABLE", "HEALTHY"}:
@@ -184,30 +189,24 @@ def compare_provider_evidence(
         validate_evidence(github)
     if gitlab is not None:
         validate_evidence(gitlab)
-    if github is None and gitlab is not None:
-        return EvidenceComparison(
-            EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY,
-            "GitHub evidence is unavailable; GitLab evidence has no merge authority",
-        )
-    if github is not None and gitlab is None:
-        return EvidenceComparison(
-            EvidenceDisposition.PRIMARY_EVIDENCE_ONLY,
-            "GitLab evidence is unavailable",
-        )
-    if github is None and gitlab is None:
-        return EvidenceComparison(
-            EvidenceDisposition.DISCREPANCY_BLOCKED,
-            "no provider evidence is available",
-        )
-    assert github is not None and gitlab is not None
-    if github.result != gitlab.result:
+    if github is not None and gitlab is not None and github.result != gitlab.result:
         return EvidenceComparison(
             EvidenceDisposition.DISCREPANCY_BLOCKED,
             "providers disagree for the same commit SHA",
         )
+    if gitlab is not None:
+        return EvidenceComparison(
+            EvidenceDisposition.GITLAB_LIVE_VERIFICATION_REQUIRED,
+            "persisted GitLab evidence requires independent authenticated live provider verification",
+        )
+    if github is not None:
+        return EvidenceComparison(
+            EvidenceDisposition.PRIMARY_EVIDENCE_ONLY,
+            "GitLab evidence is unavailable",
+        )
     return EvidenceComparison(
-        EvidenceDisposition.CORROBORATED,
-        "providers agree for the same commit SHA, gate, configuration revision, and configured identities",
+        EvidenceDisposition.DISCREPANCY_BLOCKED,
+        "no provider evidence is available",
     )
 
 

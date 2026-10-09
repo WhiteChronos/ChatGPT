@@ -24,6 +24,7 @@ stages:
   - parity
   - validate
   - evidence
+  - cleanup
 
 default:
   retry:
@@ -362,7 +363,7 @@ contingency-evidence:
       broker_gate = json.loads(Path("contingency-broker.json").read_text(encoding="utf-8"))
 
       ref_name = runtime_identity["ref_name"]
-      observation = observe_remote_ref(
+      github_observation_before = observe_remote_ref(
           "https://github.com/WhiteChronos/ChatGPT.git",
           ref_name,
       )
@@ -396,6 +397,16 @@ contingency-evidence:
       elif gitlab_probe.returncode != 2:
           raise SystemExit("GitLab final remote observation failed")
 
+      github_observation_after = observe_remote_ref(
+          "https://github.com/WhiteChronos/ChatGPT.git",
+          ref_name,
+      )
+      if (
+          github_observation_before.available != github_observation_after.available
+          or github_observation_before.sha != github_observation_after.sha
+      ):
+          raise SystemExit("authoritative GitHub ref changed during final evidence observation")
+
       receipt_timestamp = datetime.fromisoformat(
           str(mirror_input["receipt_timestamp"]).replace("Z", "+00:00")
       )
@@ -405,10 +416,10 @@ contingency-evidence:
               gitlab_project_id=int(runtime_identity["gitlab_project_id"]),
               gitlab_project_path=runtime_identity["gitlab_project_path"],
               ref_name=ref_name,
-              github_sha=observation.sha,
+              github_sha=github_observation_after.sha,
               gitlab_sha=gitlab_remote_sha,
               ci_subject_sha=runtime_identity["sha"],
-              github_available=observation.available,
+              github_available=github_observation_after.available,
               gitlab_available=gitlab_available,
               receipt_timestamp=receipt_timestamp,
               evaluated_at=datetime.now(timezone.utc),
@@ -488,7 +499,47 @@ contingency-evidence:
     when: always
     expire_in: never
     paths:
+      - mirror-input.json
       - mirror-parity.json
+      - gitlab-runtime-identity.json
+      - contingency-python.json
+      - contingency-broker.json
       - mirror-parity-final.json
       - contingency-gate.json
       - ci-provider-evidence.json
+
+
+cleanup-refresh:
+  stage: cleanup
+  image: python:3.12.13-slim@sha256:2f17fc044b579bab302c2e8054d3a686e2cb9a83de48e70534b94cd8ebbe06a9 # python:3.12.13-slim
+  needs:
+    - job: contingency-evidence
+      artifacts: false
+  when: always
+  allow_failure: false
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends git
+  script:
+    - |
+      set -euo pipefail
+      REF="${CI_COMMIT_BRANCH:-}"
+      case "$REF" in
+        whitechronos-refresh/*)
+          python - "$REF" <<'PY'
+          import re
+          import sys
+
+          ref = sys.argv[1]
+          if not re.fullmatch(r"whitechronos-refresh/[0-9a-f]{64}", ref):
+              raise SystemExit("malformed reserved refresh ref")
+          PY
+          export GIT_CONFIG_NOSYSTEM=1
+          export GIT_CONFIG_GLOBAL=/dev/null
+          export GIT_TERMINAL_PROMPT=0
+          git push origin --delete "$REF"
+          ;;
+        *)
+          echo "No refresh branch cleanup required."
+          ;;
+      esac
