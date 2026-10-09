@@ -26,3 +26,16 @@ A target-required requirement must name the exact expected target. The registere
 A live-verification-required requirement must declare the exact live operation. A true boolean without evidence for that operation (and the required target when one exists) is rejected.
 
 `MIRROR_PARITY` is an explicit process layer. `HEALTHY` is non-blocking; failure, divergence, stale, or unavailable parity blocks mirror-sensitive work. Unknown process-layer names are rejected.
+
+
+## Trust-bound evidence
+
+Positive provider claims require evidence with:
+- a registered probe operation;
+- the exact required target when applicable;
+- `outcome = success`;
+- a source allowlisted by the integration descriptor.
+
+Provider free-form summaries are untrusted diagnostic text and are never preserved verbatim in normalized reports. Optional degradation values are safe identifiers, not raw provider error strings.
+
+Positive or otherwise non-blocking process-layer states require structured evidence with a fresh timestamp and authoritative source. Bare positive strings are rejected. `MIRROR_PARITY=HEALTHY` additionally requires `evidence_eligible=true` and an exact 40-hex subject SHA matching the report subject SHA. The canonical parity mechanism remains the authority; the normalizer does not create parity evidence.

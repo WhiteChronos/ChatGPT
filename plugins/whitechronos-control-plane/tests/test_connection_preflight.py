@@ -33,9 +33,19 @@ def _provider_signal(
     operations: list[tuple[str, str | None]] | None = None,
     observed_at: str | None = None,
     summary: str = "non-secret provider evidence",
+    source: str | None = None,
+    outcome: str = "success",
 ) -> dict[str, object]:
     operations = operations or [("safe_probe", "test-target")]
     observed_at = observed_at or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    if source is None:
+        names = [operation for operation, _ in operations]
+        if any(name.startswith("gitlab.") for name in names):
+            source = "chatgpt-gitlab-connector"
+        elif any(name.startswith("tinyfish.") for name in names):
+            source = "chatgpt-tinyfish-app"
+        else:
+            source = "chatgpt-github-connector"
     return {
         "host_visible": host_visible,
         "authenticated": authenticated,
@@ -46,10 +56,11 @@ def _provider_signal(
         "optional_degradations": optional_degradations or [],
         "evidence": [
             {
-                "source": "test-harness",
+                "source": source,
                 "operation": operation,
                 "observed_at": observed_at,
                 "target": target,
+                "outcome": outcome,
                 "summary": summary,
             }
             for operation, target in operations
@@ -87,10 +98,23 @@ def _payload() -> dict[str, object]:
                 ]
             ),
         },
+        "subject_sha": "1111111111111111111111111111111111111111",
         "process_layers": {
-            "SUPERPOWERS": "PASS",
-            "ARENA": "PASS",
-            "RUNTIME_DOCTOR": "NOT_APPLICABLE",
+            "SUPERPOWERS": {
+                "status": "PASS",
+                "source": "superpowers-runtime",
+                "observed_at": datetime.now(timezone.utc).isoformat(),
+            },
+            "ARENA": {
+                "status": "PASS",
+                "source": "github-arena",
+                "observed_at": datetime.now(timezone.utc).isoformat(),
+            },
+            "RUNTIME_DOCTOR": {
+                "status": "NOT_APPLICABLE",
+                "source": "task-scope",
+                "observed_at": datetime.now(timezone.utc).isoformat(),
+            },
         },
     }
 
@@ -179,7 +203,11 @@ def test_preflight_output_does_not_echo_secret_fields():
     signal["cookie"] = "secret-cookie-value"
     signal["authorization"] = "Bearer secret-auth-value"
     report = api.build_connection_report(REPO, payload)
-    encoded = json.dumps(api.report_to_json(report, process_layers=payload["process_layers"]), sort_keys=True)
+    encoded = json.dumps(api.report_to_json(
+        report,
+        process_layers=payload["process_layers"],
+        subject_sha=payload.get("subject_sha"),
+    ), sort_keys=True)
     for secret in (
         "secret-token-value",
         "secret-password-value",
@@ -216,7 +244,11 @@ def test_acceptance_matrix_can_combine_connections_with_process_layer_evidence()
     api = _api()
     payload = _payload()
     report = api.build_connection_report(REPO, payload)
-    data = api.report_to_json(report, process_layers=payload["process_layers"])
+    data = api.report_to_json(
+        report,
+        process_layers=payload["process_layers"],
+        subject_sha=payload.get("subject_sha"),
+    )
     assert data["process_layers"] == {
         "ARENA": "PASS",
         "RUNTIME_DOCTOR": "NOT_APPLICABLE",
@@ -310,8 +342,9 @@ def test_target_requirement_rejected_when_descriptor_has_no_target_probe():
         api.build_connection_report(REPO, payload)
 
 
-def test_evidence_rejects_secret_in_allowed_summary():
+def test_evidence_secret_summary_is_normalized_before_serialization():
     api = _api()
+    secret = "Authorization: Bearer secret-provider-token-value"
     payload = {
         "requirements": [
             {
@@ -324,12 +357,13 @@ def test_evidence_rejects_secret_in_allowed_summary():
             "tinyfish": _provider_signal(
                 target_accessible=None,
                 operations=[("tinyfish.get_wallet", None)],
-                summary="Authorization: Bearer secret-provider-token-value",
+                summary=secret,
             )
         },
     }
-    with pytest.raises(ValueError, match=r"evidence.*secret"):
-        api.build_connection_report(REPO, payload)
+    report = api.build_connection_report(REPO, payload)
+    encoded = json.dumps(api.report_to_json(report), sort_keys=True)
+    assert secret not in encoded
 
 
 def test_evidence_requires_timezone_aware_timestamp():
@@ -383,17 +417,19 @@ def test_target_probe_must_match_required_target():
     github = payload["integrations"]["github-connector"]
     github["evidence"] = [
         {
-            "source": "test-harness",
+            "source": "chatgpt-github-connector",
             "operation": "github.get_profile",
             "observed_at": datetime.now(timezone.utc).isoformat(),
             "target": None,
+            "outcome": "success",
             "summary": "profile ok",
         },
         {
-            "source": "test-harness",
+            "source": "chatgpt-github-connector",
             "operation": "github.get_repo",
             "observed_at": datetime.now(timezone.utc).isoformat(),
             "target": "someone/else",
+            "outcome": "success",
             "summary": "wrong repository",
         },
     ]
@@ -427,7 +463,11 @@ def test_mirror_parity_failure_is_preserved_and_blocks_required_task():
     payload = _payload()
     payload["process_layers"]["MIRROR_PARITY"] = "FAIL"
     report = api.build_connection_report(REPO, payload)
-    data = api.report_to_json(report, process_layers=payload["process_layers"])
+    data = api.report_to_json(
+        report,
+        process_layers=payload["process_layers"],
+        subject_sha=payload.get("subject_sha"),
+    )
     assert data["process_layers"]["MIRROR_PARITY"] == "FAIL"
     assert report.required_task_connections_pass is False
     assert "MIRROR_PARITY:FAIL" in report.blockers
@@ -507,7 +547,11 @@ def test_generic_oauth_material_is_never_serialized_from_evidence(summary):
     payload["integrations"]["github-connector"]["evidence"][0]["summary"] = summary
     report = api.build_connection_report(REPO, payload)
     encoded = json.dumps(
-        api.report_to_json(report, process_layers=payload["process_layers"]),
+        api.report_to_json(
+        report,
+        process_layers=payload["process_layers"],
+        subject_sha=payload.get("subject_sha"),
+    ),
         sort_keys=True,
     )
     assert summary not in encoded

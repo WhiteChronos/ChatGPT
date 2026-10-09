@@ -141,6 +141,7 @@ def _connection(surface: str = "connector", *, target_probe: str | None = "provi
         "auth_required": True,
         "safe_probe": "provider.get_identity",
         "target_probe": target_probe,
+        "trusted_evidence_sources": ["provider-connector"],
         "paid_probe_forbidden": True,
         "credential_storage": "provider_managed",
     }
@@ -165,6 +166,7 @@ def test_registry_loads_github_gitlab_and_tinyfish_connection_specs():
     assert github.connection.auth_required is True
     assert github.connection.safe_probe == "github.get_profile"
     assert github.connection.target_probe == "github.get_repo"
+    assert github.connection.trusted_evidence_sources == ("chatgpt-github-connector",)
     assert github.connection.paid_probe_forbidden is True
     assert github.connection.credential_storage == "provider_managed"
 
@@ -172,6 +174,7 @@ def test_registry_loads_github_gitlab_and_tinyfish_connection_specs():
     assert gitlab.connection is not None
     assert gitlab.connection.safe_probe == "gitlab.get_current_user"
     assert gitlab.connection.target_probe == "gitlab.get_project"
+    assert gitlab.connection.trusted_evidence_sources == ("chatgpt-gitlab-connector",)
 
     tinyfish = registry["tinyfish"]
     assert tinyfish.source_type == "official_plugin"
@@ -181,6 +184,7 @@ def test_registry_loads_github_gitlab_and_tinyfish_connection_specs():
     assert tinyfish.connection.surfaces == ("chatgpt_plugin",)
     assert tinyfish.connection.safe_probe == "tinyfish.get_wallet"
     assert tinyfish.connection.target_probe is None
+    assert tinyfish.connection.trusted_evidence_sources == ("chatgpt-tinyfish-app",)
     assert tinyfish.connection.paid_probe_forbidden is True
     assert tinyfish.connection.credential_storage == "provider_managed"
 

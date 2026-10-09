@@ -132,3 +132,12 @@ Then restart the supported local client/start a new session and use Runtime Doct
 Repository code can govern WhiteChronos/Codex tasks that load these project instructions and can package supported Skills. It cannot force unrelated ChatGPT conversations to expose every plugin, cannot force unrelated ChatGPT conversations to keep every OAuth session alive, and cannot override provider/platform security policy.
 
 The durable contract is therefore task-scoped: required integrations are freshly checked before they are relied upon, optional degradation is reported precisely, and only the dependent action is stopped when a required capability cannot be proven.
+
+
+## Structured trust boundary
+
+Positive authentication, target-access, or live-verification claims are accepted only when the matching registered probe has `outcome=success` and the evidence source is allowlisted in the integration descriptor.
+
+Raw provider diagnostic bodies are not emitted verbatim. Do not place OAuth tokens, Authorization headers, cookies, or other credentials in evidence. Optional degradation values use safe identifiers such as `profile_api_error`, not raw error text.
+
+Process layers that would allow work to continue require structured fresh evidence rather than bare status strings. Mirror `HEALTHY` additionally binds `evidence_eligible=true` to the exact subject SHA; only the canonical mirror/parity mechanism can establish that evidence.
