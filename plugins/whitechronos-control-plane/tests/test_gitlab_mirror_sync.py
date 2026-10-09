@@ -402,3 +402,21 @@ def test_refresh_push_options_bind_reserved_pipeline_ref():
     joined = ' '.join(m._mirror_push_options(claim))
     assert f'ci.input=mirror_pipeline_ref={refresh}' in joined
     assert 'ci.input=mirror_ref=main' in joined
+
+
+def test_userless_scp_noncanonical_target_is_rejected_before_git(tmp_path, monkeypatch):
+    m = load_module()
+
+    def fail_git(*args, **kwargs):
+        raise AssertionError('git must not run before canonical direction validation')
+
+    monkeypatch.setattr(m, '_run_git', fail_git)
+    with pytest.raises(ValueError, match='direction'):
+        m.sync_ref(
+            ROOT,
+            'https://github.com/WhiteChronos/ChatGPT.git',
+            'gitlab.com:other-group/other-project.git',
+            'main',
+            tmp_path / 'r.json',
+            target_credential_helper='manager',
+        )
