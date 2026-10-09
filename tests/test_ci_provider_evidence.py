@@ -36,11 +36,12 @@ def provenance_sha256(data):
         'attempt',
         'input_artifacts_sha256',
         'worker_revision',
+        'schema_version',
     ):
         value = data[key]
         if key == 'timestamp' and isinstance(value, datetime):
             value = value.isoformat()
-        if key in {'subject_sha', 'ci_config_revision'}:
+        if key in {'subject_sha', 'ci_config_revision', 'worker_revision'}:
             value = str(value).lower()
         payload[key] = value
     encoded = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode('utf-8')
@@ -60,6 +61,7 @@ def ev(provider='github', result='PASS', sha=SHA, parity='NOT_APPLICABLE', **cha
         mirror_parity_status=parity,
         attempt=1,
         worker_revision='c' * 40,
+        schema_version=2,
         input_artifacts_sha256=(
             {
                 'mirror-input.json': '1' * 64,
@@ -227,8 +229,52 @@ def test_persisted_json_loader_parses_timestamp_before_validation(tmp_path):
 
 def test_schema_requires_worker_revision():
     schema = json.loads(SCHEMA.read_text(encoding='utf-8'))
-    assert 'worker_revision' in schema['required']
-    assert schema['properties']['worker_revision']['pattern'] == '^[0-9a-fA-F]{40}$'
+    assert 'worker_revision' not in schema['required']
+    assert schema['properties']['worker_revision']['pattern'] == '^[0-9a-fA-F]{40}
+
+
+def test_provider_provenance_changes_when_worker_revision_changes():
+    base = asdict(ev('gitlab', parity='HEALTHY'))
+    base['worker_revision'] = 'c' * 40
+    changed = dict(base)
+    changed['worker_revision'] = 'd' * 40
+
+    from pipeline.ci_provider_evidence import compute_provenance_sha256
+
+    assert compute_provenance_sha256(base) != compute_provenance_sha256(changed)
+
+
+
+def test_offline_gitlab_evidence_requires_live_provider_verification():
+    record = ev("gitlab", parity="HEALTHY")
+    comparison = compare_provider_evidence(None, record)
+    assert comparison.disposition.value == "GITLAB_LIVE_VERIFICATION_REQUIRED"
+
+
+def test_validate_rejects_expired_evidence():
+    record = ev("gitlab", parity="HEALTHY", timestamp=NOW - timedelta(seconds=3601))
+    with pytest.raises(ValueError, match="expired"):
+        validate_evidence(record, now=NOW)
+
+
+@pytest.mark.parametrize("attempt", [True, 1.5, float("nan")])
+def test_validate_rejects_non_integer_attempt_values(attempt):
+    record = ev("gitlab", parity="HEALTHY", attempt=attempt)
+    with pytest.raises(ValueError, match="attempt must be an integer"):
+        validate_evidence(record, now=NOW)
+
+
+def test_live_verified_gitlab_evidence_can_be_classified_for_runtime_drill():
+    comparison = compare_provider_evidence(
+        None,
+        ev("gitlab", parity="HEALTHY"),
+        gitlab_live_verified=True,
+        now=NOW,
+    )
+    assert comparison.disposition is EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY
+
+    assert schema['properties']['schema_version']['const'] == 2
+    assert schema['oneOf']
 
 
 def test_provider_provenance_changes_when_worker_revision_changes():
