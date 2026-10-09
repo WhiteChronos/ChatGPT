@@ -138,7 +138,23 @@ Allowed triggers should be limited to one or both of:
 
 It must not run on arbitrary fork-controlled workflow code with access to the GitLab write credential.
 
-### 5.2 Source SHA
+### 5.2 Trust bootstrap and secret isolation
+
+The GitLab `write_repository` secret must never be exposed to workflow code whose definition is controlled by the feature branch being mirrored.
+
+Therefore the live worker has a strict trust bootstrap:
+
+1. the neutral-worker workflow definition and the mirror script revision allowed to receive the secret must exist on a protected, reviewed GitHub ref;
+2. GitHub Environment/repository secret policy may further require explicit approval, but human approval alone does not make untrusted workflow code safe;
+3. the workflow may mirror an arbitrary eligible subject SHA as **data**, but executable worker code must come from the trusted worker revision;
+4. the trusted worker must record its own workflow/script revision in the receipt/evidence chain;
+5. before this trusted worker revision exists, no GitLab write secret is exposed to the feature branch.
+
+This creates a one-time bootstrap dependency. The system must not solve that dependency by weakening secret isolation, running a feature-branch-controlled workflow with repository-write credentials, or silently merging the worker into `main`.
+
+If the neutral-worker workflow is not yet present on a trusted protected ref, live mirror verification remains blocked until a separately authorized bootstrap path exists (for example, an already-trusted external neutral worker or a separately authorized merge of the reviewed worker infrastructure).
+
+### 5.3 Source SHA
 
 The worker must resolve the authoritative source SHA from the GitHub runner context and then prove that:
 
@@ -149,7 +165,7 @@ The worker must resolve the authoritative source SHA from the GitHub runner cont
 
 Caller-provided SHA text alone is not authority.
 
-### 5.3 GitLab credential
+### 5.4 GitLab credential
 
 Use a dedicated GitLab credential with the least privilege that still permits Git-over-HTTPS push.
 
@@ -166,13 +182,14 @@ The credential must:
 - never be echoed;
 - never be embedded in the remote URL;
 - never appear in process arguments, logs, artifacts, receipts or job summaries;
-- be exposed only to the mirror step;
+- be exposed only to the mirror step running trusted worker code from the protected worker revision;
+- never be made available merely because the subject feature branch requests a mirror;
 - be consumed through a temporary credential helper or equivalent stdin-based Git credential mechanism;
 - be removed at the end of the job even on failure.
 
 Do not grant GitLab API authority when `write_repository` is sufficient.
 
-### 5.4 Git hardening
+### 5.5 Git hardening
 
 The worker must reuse the hardening semantics of `sync_gitlab_mirror.py`:
 
@@ -186,7 +203,7 @@ The worker must reuse the hardening semantics of `sync_gitlab_mirror.py`:
 - canonical GitHub source and GitLab target identity validation;
 - explicit source and target credential scopes.
 
-### 5.5 Push behavior
+### 5.6 Push behavior
 
 Normal case:
 
@@ -208,7 +225,7 @@ The refresh digest remains derived from the receipt claim fields defined by the 
 
 The original mirrored branch remains the parity subject. The refresh branch exists only to cause a new authenticated `source=push` pipeline.
 
-### 5.6 CI inputs
+### 5.7 CI inputs
 
 The Git push must carry the typed GitLab CI inputs required by the existing `.gitlab-ci.yml` contract, including:
 
@@ -478,7 +495,9 @@ The implementation plan must include RED->GREEN tests for at least:
 21. no credential appears in artifacts/log-normalization fixtures;
 22. TinyFish is not needed for a successful mirror;
 23. GitHub AI reviewer unavailability is non-blocking to source correctness;
-24. existing PR #76 regression/governance suites remain green.
+24. existing PR #76 regression/governance suites remain green;
+25. a subject branch cannot alter executable worker code and then gain access to the GitLab write secret;
+26. the receipt records the trusted worker/workflow revision used for the mirror.
 
 ## 16. Rollout
 
@@ -494,12 +513,14 @@ Rollout order:
 8. Superpowers review;
 9. Arena review;
 10. GitHub PR CI;
-11. user or authorized administrator provisions the dedicated GitLab `write_repository` credential in GitHub Actions;
-12. execute neutral mirror for exact PR head;
-13. verify GitLab push pipeline and final artifacts;
-14. prove exact SHA parity;
-15. record `MIRROR_PARITY=HEALTHY`;
-16. STOP at the explicit merge gate.
+11. verify that the neutral-worker executable definition is already present on a protected trusted GitHub ref;
+12. if it is not present, STOP at the separate bootstrap gate; do not expose the GitLab secret to feature-branch-controlled workflow code;
+13. after the trusted worker exists, user or authorized administrator provisions the dedicated GitLab `write_repository` credential in GitHub Actions;
+14. execute the trusted neutral worker against the exact PR head as data;
+15. verify GitLab push pipeline and final artifacts;
+16. prove exact SHA parity;
+17. record `MIRROR_PARITY=HEALTHY`;
+18. STOP at the explicit merge gate.
 
 ## 17. Non-Goals
 
@@ -564,6 +585,7 @@ Rejected:
 - GitLab API/file-commit mirroring, because it does not preserve the authoritative Git commit SHA as the same commit object;
 - TinyFish browser automation as mirror authority;
 - direct default-branch edits;
+- exposing repository-write credentials to feature-branch-controlled workflow code;
 - automatic merge/deploy as part of mirror success.
 
 This keeps GitHub authoritative, makes GitLab evidence independently useful, minimizes credential scope, and preserves every existing review and production gate.
