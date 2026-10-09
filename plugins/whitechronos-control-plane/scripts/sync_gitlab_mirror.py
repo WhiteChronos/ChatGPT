@@ -261,6 +261,8 @@ def sync_ref(
     normalized_source_helper = _normalize_credential_helper(source_credential_helper)
     if _is_network_remote(target_url) and normalized_target_helper is None:
         raise ValueError("target credential helper is required for a network GitLab target")
+    if _is_network_remote(target_url) and not dry_run and receipt_signer is None:
+        raise ValueError("authenticated signing key is required for a network mirror push")
     decision = classify_ref(ref_name, policy)
     if not decision.eligible:
         raise ValueError("ref is not mirror eligible")
@@ -394,6 +396,13 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     try:
+        # The key is provided only through the worker host's secure environment.
+        # Remove it before Git subprocesses; never take key material on argv.
+        signing_key = os.environ.pop("GITLAB_MIRROR_SIGNING_KEY", None)
+        signer = None
+        if signing_key:
+            from pipeline.mirror_receipt_auth import sign_receipt_digest
+            signer = lambda digest: sign_receipt_digest(digest, signing_key)
         receipt = sync_ref(
             Path(args.repo_root),
             args.source_url,
@@ -405,6 +414,7 @@ def main() -> int:
             args.target_credential_helper,
             args.source_credential_helper,
             args.expected_source_sha,
+            receipt_signer=signer,
         )
     except Exception as exc:
         print(f"ERROR: {exc}")
