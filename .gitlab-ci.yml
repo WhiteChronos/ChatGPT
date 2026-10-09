@@ -501,6 +501,7 @@ contingency-evidence:
           "mirror_parity_status": parity_status,
           "attempt": retry_count + 1,
           "input_artifacts_sha256": input_artifacts_sha256,
+          "schema_version": 2,
           "worker_revision": runtime_identity["worker_revision"],
       }
       evidence["provenance_sha256"] = compute_provenance_sha256(evidence)
