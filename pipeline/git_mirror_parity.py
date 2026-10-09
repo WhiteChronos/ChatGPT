@@ -85,6 +85,12 @@ def _parse_dt(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
+def _require_json_bool(value: object, name: str) -> bool:
+    if type(value) is not bool:
+        raise ValueError(f"{name} must be a JSON boolean")
+    return value
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
@@ -101,8 +107,8 @@ def main() -> int:
             github_sha=raw.get("github_sha"),
             gitlab_sha=raw.get("gitlab_sha"),
             ci_subject_sha=raw.get("ci_subject_sha"),
-            github_available=bool(raw["github_available"]),
-            gitlab_available=bool(raw["gitlab_available"]),
+            github_available=_require_json_bool(raw["github_available"], "github_available"),
+            gitlab_available=_require_json_bool(raw["gitlab_available"], "gitlab_available"),
             receipt_timestamp=_parse_dt(raw["receipt_timestamp"]),
             evaluated_at=datetime.now(timezone.utc),
         )
