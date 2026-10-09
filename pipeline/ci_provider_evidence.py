@@ -183,6 +183,12 @@ def compare_provider_evidence(
             EvidenceDisposition.DISCREPANCY_BLOCKED,
             'GitLab evidence slot requires provider="gitlab"',
         )
+    # Retained v1 evidence is inspectable for audit, never current GitLab proof.
+    if gitlab is not None and gitlab.schema_version != 2:
+        return EvidenceComparison(
+            EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE,
+            "legacy v1 GitLab evidence is archival-only without trusted worker binding",
+        )
     if gitlab is not None and gitlab.mirror_parity_status != "HEALTHY":
         return EvidenceComparison(
             EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE,
