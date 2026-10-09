@@ -352,7 +352,11 @@ contingency-evidence:
       from datetime import datetime, timezone
       from pathlib import Path
 
-      from pipeline.ci_provider_evidence import compute_provenance_sha256
+      from pipeline.ci_provider_evidence import (
+          CIProviderEvidence,
+          compare_provider_evidence,
+          compute_provenance_sha256,
+      )
       from pipeline.git_mirror_observation import observe_remote_ref
       from pipeline.git_mirror_parity import MirrorParityInput, evaluate_mirror_parity
       from pipeline.gitlab_contingency_policy import load_policy
@@ -477,6 +481,7 @@ contingency-evidence:
           )
       }
       retry_count = int(os.environ.get("CI_JOB_RETRY_COUNT", "0"))
+      evidence_timestamp = datetime.now(timezone.utc)
       evidence = {
           "provider": "gitlab",
           "repository_identity": runtime_identity["gitlab_project_path"],
@@ -484,7 +489,7 @@ contingency-evidence:
           "pipeline_or_run_id": runtime_identity["pipeline_id"],
           "gate_name": "full-contingency",
           "result": "PASS" if validation_passed else "FAIL",
-          "timestamp": datetime.now(timezone.utc).isoformat(),
+          "timestamp": evidence_timestamp.isoformat(),
           "ci_config_revision": runtime_identity["sha"],
           "mirror_parity_status": parity_status,
           "attempt": retry_count + 1,
@@ -492,10 +497,34 @@ contingency-evidence:
       }
       evidence["provenance_sha256"] = compute_provenance_sha256(evidence)
       Path("ci-provider-evidence.json").write_text(json.dumps(evidence, sort_keys=True), encoding="utf-8")
+
+      evidence_record = CIProviderEvidence(
+          **{**evidence, "timestamp": evidence_timestamp}
+      )
+      disposition = compare_provider_evidence(
+          None,
+          evidence_record,
+          gitlab_live_verified=True,
+          now=evidence_timestamp,
+      )
+      Path("evidence-disposition.json").write_text(
+          json.dumps(
+              {
+                  "disposition": disposition.disposition.value,
+                  "reason": disposition.reason,
+                  "subject_sha": evidence_record.subject_sha,
+                  "pipeline_or_run_id": evidence_record.pipeline_or_run_id,
+                  "gitlab_live_verified": True,
+              },
+              sort_keys=True,
+          ),
+          encoding="utf-8",
+      )
       PY
     - cat mirror-parity-final.json
     - cat contingency-gate.json
     - cat ci-provider-evidence.json
+    - cat evidence-disposition.json
     - |
       if python - <<'PY'
       import json
@@ -522,6 +551,7 @@ contingency-evidence:
       - mirror-parity-final.json
       - contingency-gate.json
       - ci-provider-evidence.json
+      - evidence-disposition.json
 
 
 cleanup-refresh:
