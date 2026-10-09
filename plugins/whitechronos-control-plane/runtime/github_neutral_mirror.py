@@ -46,6 +46,8 @@ def validate_trusted_worker_context(
     workflow_sha: str,
     trusted_ref: str,
 ) -> None:
+    if os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("GITHUB_RUN_ATTEMPT") != "1":
+        raise ValueError("rerun attempt rejected for secret-bearing worker")
     if workflow_ref != trusted_ref:
         raise ValueError("trusted worker ref mismatch")
     worker_sha = _require_sha(request.worker_revision, "worker revision")
@@ -149,6 +151,13 @@ def run_neutral_mirror(
         workflow_sha=workflow_sha,
         trusted_ref=trusted_ref,
     )
+
+    # Guard against stale worker revisions before reading the token.
+    # Per-SHA GitHub Environment revocation is the actual secret-release gate.
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        observed_main_sha = _observe_source_sha(Path(repo_root), "main")
+        if observed_main_sha != _require_sha(request.worker_revision, "worker revision"):
+            raise ValueError("retired trusted worker revision is not current main")
 
     token = os.environ.pop(TOKEN_ENV, None)
     if not token:
