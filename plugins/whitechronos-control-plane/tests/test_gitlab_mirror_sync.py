@@ -368,6 +368,7 @@ def test_source_credential_helper_is_supported_separately_from_target(tmp_path, 
         tmp_path / 'receipt.json',
         source_credential_helper=str(source_helper),
         target_credential_helper=str(target_helper),
+        receipt_signer=lambda digest: 'a' * 64,  # synthetic signature; no secrets
     )
 
     assert any(helper == str(source_helper.resolve()) for argv, helper in calls if argv and argv[0] in {'fetch', 'remote-sha'})
