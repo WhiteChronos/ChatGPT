@@ -213,6 +213,8 @@ def test_neutral_mirror_workflow_is_read_only_and_environment_gated():
     assert "environment: gitlab-neutral-mirror" in text
     assert "github.ref == 'refs/heads/main'" in text
     assert "refs/heads/main" in text
+    assert "group: gitlab-neutral-mirror-${{ inputs.subject_ref }}" in text
+    assert "cancel-in-progress: false" in text
 
 
 def test_neutral_mirror_workflow_pins_all_external_actions():

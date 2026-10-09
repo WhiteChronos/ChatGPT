@@ -1,0 +1,72 @@
+name: GitLab Neutral Mirror
+
+on:
+  workflow_dispatch:
+    inputs:
+      subject_ref:
+        description: Eligible authoritative GitHub branch to mirror
+        required: true
+        type: string
+      subject_sha:
+        description: Exact authoritative 40-hex GitHub commit SHA
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gitlab-neutral-mirror-${{ inputs.subject_ref }}
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: gitlab-neutral-mirror
+    steps:
+      - name: Checkout trusted worker revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Install mirror dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-mirror.txt
+          python -m pip check
+
+      - name: Mirror exact subject SHA
+        shell: bash
+        env:
+          GITLAB_MIRROR_TOKEN: ${{ secrets.GITLAB_MIRROR_TOKEN }}
+          SUBJECT_REF: ${{ inputs.subject_ref }}
+          SUBJECT_SHA: ${{ inputs.subject_sha }}
+          TARGET_URL: https://gitlab.com/chronoswhite-group/ChronosWhite-project.git
+          RECEIPT_PATH: artifacts/gitlab-neutral-mirror/receipt.json
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname "$RECEIPT_PATH")"
+          python plugins/whitechronos-control-plane/scripts/github_neutral_mirror.py \
+            --repo-root "$GITHUB_WORKSPACE" \
+            --subject-ref "$SUBJECT_REF" \
+            --subject-sha "$SUBJECT_SHA" \
+            --worker-revision "$GITHUB_SHA" \
+            --target-url "$TARGET_URL" \
+            --receipt "$RECEIPT_PATH" \
+            --trusted-ref "refs/heads/main"
+
+      - name: Upload secret-free mirror receipt
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: gitlab-neutral-mirror-receipt
+          path: artifacts/gitlab-neutral-mirror/receipt.json
+          if-no-files-found: error
+          retention-days: 30
