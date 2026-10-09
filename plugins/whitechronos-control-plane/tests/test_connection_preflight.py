@@ -448,14 +448,21 @@ def test_live_verification_true_requires_task_specific_operation_evidence():
         api.build_connection_report(REPO, payload)
 
 
-def test_fine_grained_github_token_is_rejected_from_evidence():
+def test_fine_grained_github_token_in_summary_is_never_serialized():
     api = _api()
     payload = _payload()
-    payload["integrations"]["github-connector"]["evidence"][0]["summary"] = (
-        "github_pat_11AAABBBCCCDDDEEEFFF_abcdefghijklmnopqrstuvwxyz0123456789"
+    secret = "github_pat_11AAABBBCCCDDDEEEFFF_abcdefghijklmnopqrstuvwxyz0123456789"
+    payload["integrations"]["github-connector"]["evidence"][0]["summary"] = secret
+    report = api.build_connection_report(REPO, payload)
+    encoded = json.dumps(
+        api.report_to_json(
+            report,
+            process_layers=payload["process_layers"],
+            subject_sha=payload.get("subject_sha"),
+        ),
+        sort_keys=True,
     )
-    with pytest.raises(ValueError, match=r"evidence.*secret"):
-        api.build_connection_report(REPO, payload)
+    assert secret not in encoded
 
 
 def test_mirror_parity_failure_is_preserved_and_blocks_required_task():
