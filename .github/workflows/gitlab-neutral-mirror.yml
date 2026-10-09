@@ -64,6 +64,7 @@ jobs:
             --trusted-ref "refs/heads/main"
 
       - name: Upload secret-free mirror receipt
+        if: ${{ always() && hashFiles('artifacts/gitlab-neutral-mirror/receipt.json') != '' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: gitlab-neutral-mirror-receipt
