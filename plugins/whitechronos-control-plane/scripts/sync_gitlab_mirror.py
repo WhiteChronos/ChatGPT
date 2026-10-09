@@ -19,7 +19,7 @@ if str(_REPO_ROOT) not in sys.path:
 from pipeline.gitlab_contingency_policy import classify_ref, load_policy
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
-_SCP_REMOTE_RE = re.compile(r"^(?:[^/@:\\s]+@)?[^/:\\s]+:.+$")
+_SCP_REMOTE_RE = re.compile(r"^(?:[^/@:\s]+@)?[^/:\s]+:.+$")
 _WINDOWS_DRIVE_RE = re.compile(r"^[A-Za-z]:[\\\\/]")
 _BLOCKED_GIT_ENV_EXACT = {
     "GIT_CONFIG_COUNT",
