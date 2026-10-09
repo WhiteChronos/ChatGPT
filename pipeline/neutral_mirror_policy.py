@@ -77,7 +77,7 @@ def classify_ref(ref_name: str, policy: TrustedMirrorPolicy) -> RefDecision:
     raw = ref_name.strip()
     if raw.startswith("refs/heads/"):
         raw = raw[len("refs/heads/"):]
-    if not raw or raw.startswith("refs/") or ".." in raw.split("/"):
+    if not raw or raw.startswith("refs/") or ".." in raw:
         return RefDecision(ref_name, False, "unsafe or missing head ref")
     if any(c in raw for c in (" ", "\t", "\r", "\n", "\0", "~", "^", ":", "?", "*", "[", "\\")) or raw.endswith(("/", ".", ".lock")):
         return RefDecision(ref_name, False, "unsafe git ref characters")
