@@ -79,6 +79,7 @@ def test_subject_sha_is_data_not_executable_worker_revision(tmp_path, monkeypatc
         }
 
     monkeypatch.setattr(module, "_sync_ref", fake_sync)
+    monkeypatch.setattr(module, "_observe_source_sha", lambda *args, **kwargs: SUBJECT_SHA)
     monkeypatch.setenv("GITLAB_MIRROR_TOKEN", TOKEN)
     result = module.run_neutral_mirror(
         ROOT,
@@ -143,6 +144,7 @@ def test_token_is_removed_from_child_environment_before_git(tmp_path, monkeypatc
         }
 
     monkeypatch.setattr(module, "_sync_ref", fake_sync)
+    monkeypatch.setattr(module, "_observe_source_sha", lambda *args, **kwargs: SUBJECT_SHA)
     monkeypatch.setenv("GITLAB_MIRROR_TOKEN", TOKEN)
     module.run_neutral_mirror(
         ROOT,
@@ -170,6 +172,7 @@ def test_credential_helper_and_material_are_removed_on_success(tmp_path, monkeyp
         }
 
     monkeypatch.setattr(module, "_sync_ref", fake_sync)
+    monkeypatch.setattr(module, "_observe_source_sha", lambda *args, **kwargs: SUBJECT_SHA)
     monkeypatch.setenv("GITLAB_MIRROR_TOKEN", TOKEN)
     module.run_neutral_mirror(
         ROOT,
@@ -193,6 +196,7 @@ def test_credential_helper_and_material_are_removed_on_sync_failure(tmp_path, mo
         raise RuntimeError("synthetic sync failure")
 
     monkeypatch.setattr(module, "_sync_ref", fake_sync)
+    monkeypatch.setattr(module, "_observe_source_sha", lambda *args, **kwargs: SUBJECT_SHA)
     monkeypatch.setenv("GITLAB_MIRROR_TOKEN", TOKEN)
     with pytest.raises(RuntimeError, match="synthetic sync failure"):
         module.run_neutral_mirror(
@@ -219,6 +223,7 @@ def test_token_never_appears_in_sync_ref_arguments_or_receipt(tmp_path, monkeypa
         }
 
     monkeypatch.setattr(module, "_sync_ref", fake_sync)
+    monkeypatch.setattr(module, "_observe_source_sha", lambda *args, **kwargs: SUBJECT_SHA)
     monkeypatch.setenv("GITLAB_MIRROR_TOKEN", TOKEN)
     result = module.run_neutral_mirror(
         ROOT,
