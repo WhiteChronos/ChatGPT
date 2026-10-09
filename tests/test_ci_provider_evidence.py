@@ -234,3 +234,10 @@ def test_validate_rejects_expired_evidence():
     record = ev("gitlab", parity="HEALTHY", timestamp=NOW - timedelta(seconds=3601))
     with pytest.raises(ValueError, match="expired"):
         validate_evidence(record, now=NOW)
+
+
+@pytest.mark.parametrize("attempt", [True, 1.5, float("nan")])
+def test_validate_rejects_non_integer_attempt_values(attempt):
+    record = ev("gitlab", parity="HEALTHY", attempt=attempt)
+    with pytest.raises(ValueError, match="attempt must be an integer"):
+        validate_evidence(record, now=NOW)

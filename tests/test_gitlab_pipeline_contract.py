@@ -318,3 +318,34 @@ def test_final_evidence_reobserves_github_after_gitlab_probe():
     evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
     assert evidence_block.count("observe_remote_ref(") >= 2
     assert "authoritative GitHub ref changed during final evidence observation" in evidence_block
+
+
+def test_final_parity_artifact_persists_reconstructable_inputs():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    for token in (
+        '"github_repository": "WhiteChronos/ChatGPT"',
+        '"gitlab_project_id": int(runtime_identity["gitlab_project_id"])',
+        '"gitlab_project_path": runtime_identity["gitlab_project_path"]',
+        '"ref_name": ref_name',
+        '"github_sha": github_observation_after.sha',
+        '"gitlab_sha": gitlab_remote_sha',
+        '"ci_subject_sha": runtime_identity["sha"]',
+        '"github_available": github_observation_after.available',
+        '"gitlab_available": gitlab_available',
+        '"receipt_timestamp": receipt_timestamp.isoformat()',
+        '"evaluated_at": evaluated_at.isoformat()',
+    ):
+        assert token in evidence_block
+
+
+def test_contingency_pipeline_serializes_and_retains_evidence_disposition():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    assert "compare_provider_evidence(" in evidence_block
+    assert "gitlab_live_verified=True" in evidence_block
+    assert 'Path("evidence-disposition.json").write_text' in evidence_block
+    artifacts_block = evidence_block.rsplit("\n  artifacts:\n", 1)[1]
+    assert "- evidence-disposition.json" in artifacts_block
+
+    drill = (ROOT / "docs" / "runbooks" / "gitlab-contingency-drill.md").read_text(encoding="utf-8")
+    assert "evidence-disposition.json" in drill
+    assert "CONTINGENCY_EVIDENCE_ONLY" in drill
