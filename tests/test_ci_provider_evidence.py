@@ -187,3 +187,24 @@ def test_comparison_rejects_wrong_provider_in_gitlab_slot():
     github = ev('github')
     gitlab_slot = ev('github', parity='HEALTHY', repository_identity='chronoswhite-group/ChronosWhite-project')
     assert compare_provider_evidence(github, gitlab_slot).disposition is EvidenceDisposition.DISCREPANCY_BLOCKED
+
+
+def test_schema_requires_input_artifact_digests():
+    schema = json.loads(SCHEMA.read_text(encoding='utf-8'))
+    assert 'input_artifacts_sha256' in schema['required']
+    assert schema['properties']['input_artifacts_sha256']['type'] == 'object'
+
+
+def test_persisted_json_loader_parses_timestamp_before_validation(tmp_path):
+    from pipeline.ci_provider_evidence import load_evidence_json
+
+    record = ev('gitlab', parity='HEALTHY')
+    data = asdict(record)
+    data['timestamp'] = record.timestamp.isoformat()
+    path = tmp_path / 'evidence.json'
+    path.write_text(json.dumps(data), encoding='utf-8')
+
+    loaded = load_evidence_json(path)
+    assert isinstance(loaded.timestamp, datetime)
+    assert loaded.timestamp.tzinfo is not None
+    validate_evidence(loaded, now=NOW)
