@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 from urllib.parse import urlsplit
+from typing import Callable
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(_REPO_ROOT) not in sys.path:
@@ -191,7 +192,7 @@ def _refresh_ref(receipt: dict[str, object]) -> str:
     return f"refs/heads/whitechronos-refresh/{hashlib.sha256(raw).hexdigest()}"
 
 
-def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
+def _mirror_push_options(receipt: dict[str, object], *, signature: str | None = None) -> list[str]:
     digest = _mirror_receipt_digest(receipt)
     inputs = {
         "mirror_transport": receipt["transport"],
@@ -205,6 +206,10 @@ def _mirror_push_options(receipt: dict[str, object]) -> list[str]:
         "mirror_worker_revision": receipt["worker_revision"],
         "mirror_receipt_sha256": digest,
     }
+    if signature is not None:
+        if not re.fullmatch(r"[0-9a-f]{64}", signature):
+            raise ValueError("invalid detached receipt signature")
+        inputs["mirror_receipt_signature"] = signature
     options: list[str] = []
     for key, value in inputs.items():
         options.extend(["-o", f"ci.input={key}={value}"])
@@ -246,6 +251,7 @@ def sync_ref(
     target_credential_helper: str | None = None,
     source_credential_helper: str | None = None,
     expected_source_sha: str | None = None,
+    receipt_signer: Callable[[str], str] | None = None,
 ) -> dict[str, object]:
     _validate_remote_argument(source_url)
     _validate_remote_argument(target_url)
@@ -324,7 +330,11 @@ def sync_ref(
         if dry_run:
             push_args.append("--dry-run")
         if _is_network_remote(target_url):
-            push_args.extend(_mirror_push_options(receipt_claim))
+            receipt_signature = (
+                receipt_signer(_mirror_receipt_digest(receipt_claim))
+                if receipt_signer is not None else None
+            )
+            push_args.extend(_mirror_push_options(receipt_claim, signature=receipt_signature))
         push_args.extend([target_url, f"{source_local_ref}:{pipeline_full_ref}"])
         _run_git(
             push_args,
