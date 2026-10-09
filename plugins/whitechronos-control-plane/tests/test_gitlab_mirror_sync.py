@@ -576,7 +576,7 @@ def test_network_dry_run_exercises_target_write_authorization(tmp_path, monkeypa
     monkeypatch.setattr(m, "_run_git", fake_run_git)
     monkeypatch.setattr(m, "_remote_sha", fake_remote_sha)
 
-    m.sync_ref(
+    sync(m,
         ROOT,
         "https://github.com/WhiteChronos/ChatGPT.git",
         "https://gitlab.com/chronoswhite-group/ChronosWhite-project.git",
