@@ -224,7 +224,7 @@ Add assertions that:
 - job fails unless running the trusted worker ref;
 - trusted code checkout/ref is the workflow revision, not `subject_sha`;
 - the environment name is `gitlab-neutral-mirror` and the runbook requires environment deployment-branch policy restricted to the protected trusted ref;
-- every external `uses:` action in the secret-bearing job is pinned to a full immutable commit SHA;
+- every external `uses:` action in the secret-bearing job is pinned to the exact reviewed SHAs listed above;
 - `subject_sha` never appears as an `actions/checkout ref`;
 - token is referenced only in the mirror step environment;
 - token text/name is not passed as a CLI argument;
@@ -244,7 +244,7 @@ Expected: FAIL because the workflow does not exist.
 
 Use:
 
-- third-party actions (`actions/checkout`, `actions/setup-python`, artifact actions if needed) pinned to reviewed full commit SHAs;
+- pin `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` (v7.0.1), `actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97` (v7.0.0), and `actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9` (v7.0.2) if artifact upload is used; do not replace these with mutable tags during this implementation;
 - checkout of trusted repository code at the trusted workflow revision;
 - Python 3.12;
 - minimal dependency install required by the existing mirror/runtime code;
@@ -366,7 +366,7 @@ Assert documentation states:
 - token is stored only in GitHub Actions secret/environment storage;
 - workflow must already be trusted before secret provisioning;
 - GitHub Environment `gitlab-neutral-mirror` must restrict deployments to the protected trusted worker ref; runtime YAML checks are defense-in-depth only;
-- all third-party actions in the secret-bearing worker must be pinned to immutable full commit SHAs;
+- the runbook records the exact reviewed action SHAs (`checkout` v7.0.1, `setup-python` v7.0.0, `upload-artifact` v7.0.2) and requires a separate review before updating them;
 - subject ref/SHA are data;
 - exact manual dispatch procedure;
 - same-SHA refresh behavior;
@@ -564,7 +564,7 @@ Read the protected trusted ref and prove:
 - `.github/workflows/gitlab-neutral-mirror.yml` exists there;
 - its trusted commit SHA is the worker revision to execute;
 - branch protection/trusted-ref policy is intact;
-- GitHub Environment `gitlab-neutral-mirror` exists and its deployment branch/tag policy admits only the protected trusted worker ref;
+- GitHub Environment `gitlab-neutral-mirror` exists and its deployment branch/tag policy admits only the protected trusted worker ref; verify through the GitHub environment/deployment-branch-policy API or equivalent authoritative UI evidence, not from workflow YAML alone;
 - external actions referenced by the trusted workflow are pinned to immutable full commit SHAs.
 
 If false:
