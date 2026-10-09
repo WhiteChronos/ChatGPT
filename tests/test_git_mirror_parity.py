@@ -121,3 +121,48 @@ def test_cli_uses_current_clock_instead_of_replayed_evaluated_at(tmp_path):
     assert result.returncode == 2
     assert data['status'] == 'STALE'
     assert data['evidence_eligible'] is False
+
+
+@pytest.mark.parametrize(
+    ("github_available", "gitlab_available"),
+    [
+        ("false", False),
+        (False, "false"),
+        ("true", True),
+        (True, "true"),
+    ],
+)
+def test_cli_rejects_non_boolean_provider_availability(tmp_path, github_available, gitlab_available):
+    now = datetime.now(timezone.utc).isoformat()
+    payload = {
+        "github_repository": "WhiteChronos/ChatGPT",
+        "gitlab_project_id": 86465539,
+        "gitlab_project_path": "chronoswhite-group/ChronosWhite-project",
+        "ref_name": "main",
+        "github_sha": SHA,
+        "gitlab_sha": SHA,
+        "ci_subject_sha": SHA,
+        "github_available": github_available,
+        "gitlab_available": gitlab_available,
+        "receipt_timestamp": now,
+    }
+    evidence = tmp_path / "mirror-input.json"
+    evidence.write_text(json.dumps(payload), encoding="utf-8")
+    result = subprocess.run(
+        [
+            sys.executable,
+            "pipeline/git_mirror_parity.py",
+            "--input",
+            str(evidence),
+            "--policy",
+            str(POLICY),
+            "--json",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 1
+    data = json.loads(result.stdout)
+    assert "JSON boolean" in data["error"]

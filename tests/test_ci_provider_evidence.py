@@ -97,10 +97,10 @@ def test_schema_rejects_authority_fields():
 @pytest.mark.parametrize(
     ('github', 'gitlab', 'expected'),
     [
-        (ev('github', 'PASS'), ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.CORROBORATED),
+        (ev('github', 'PASS'), ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.GITLAB_LIVE_VERIFICATION_REQUIRED),
         (ev('github', 'PASS'), ev('gitlab', 'FAIL', parity='HEALTHY'), EvidenceDisposition.DISCREPANCY_BLOCKED),
         (ev('github', 'FAIL'), ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.DISCREPANCY_BLOCKED),
-        (None, ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY),
+        (None, ev('gitlab', 'PASS', parity='HEALTHY'), EvidenceDisposition.GITLAB_LIVE_VERIFICATION_REQUIRED),
         (ev('github', 'PASS'), ev('gitlab', 'PASS', parity='DIVERGED'), EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE),
         (ev('github', 'PASS'), ev('gitlab', 'PASS', sha=OTHER, parity='HEALTHY'), EvidenceDisposition.SUBJECT_MISMATCH_BLOCKED),
     ],
@@ -240,3 +240,33 @@ def test_provider_provenance_changes_when_worker_revision_changes():
     from pipeline.ci_provider_evidence import compute_provenance_sha256
 
     assert compute_provenance_sha256(base) != compute_provenance_sha256(changed)
+
+
+
+def test_offline_gitlab_evidence_requires_live_provider_verification():
+    record = ev("gitlab", parity="HEALTHY")
+    comparison = compare_provider_evidence(None, record)
+    assert comparison.disposition.value == "GITLAB_LIVE_VERIFICATION_REQUIRED"
+
+
+def test_validate_rejects_expired_evidence():
+    record = ev("gitlab", parity="HEALTHY", timestamp=NOW - timedelta(seconds=3601))
+    with pytest.raises(ValueError, match="expired"):
+        validate_evidence(record, now=NOW)
+
+
+@pytest.mark.parametrize("attempt", [True, 1.5, float("nan")])
+def test_validate_rejects_non_integer_attempt_values(attempt):
+    record = ev("gitlab", parity="HEALTHY", attempt=attempt)
+    with pytest.raises(ValueError, match="attempt must be an integer"):
+        validate_evidence(record, now=NOW)
+
+
+def test_live_verified_gitlab_evidence_can_be_classified_for_runtime_drill():
+    comparison = compare_provider_evidence(
+        None,
+        ev("gitlab", parity="HEALTHY"),
+        gitlab_live_verified=True,
+        now=NOW,
+    )
+    assert comparison.disposition is EvidenceDisposition.CONTINGENCY_EVIDENCE_ONLY

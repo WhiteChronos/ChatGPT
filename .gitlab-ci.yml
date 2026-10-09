@@ -26,6 +26,7 @@ stages:
   - parity
   - validate
   - evidence
+  - cleanup
 
 default:
   retry:
@@ -358,7 +359,11 @@ contingency-evidence:
       from datetime import datetime, timezone
       from pathlib import Path
 
-      from pipeline.ci_provider_evidence import compute_provenance_sha256
+      from pipeline.ci_provider_evidence import (
+          CIProviderEvidence,
+          compare_provider_evidence,
+          compute_provenance_sha256,
+      )
       from pipeline.git_mirror_observation import observe_remote_ref
       from pipeline.git_mirror_parity import MirrorParityInput, evaluate_mirror_parity
       from pipeline.gitlab_contingency_policy import load_policy
@@ -369,7 +374,7 @@ contingency-evidence:
       broker_gate = json.loads(Path("contingency-broker.json").read_text(encoding="utf-8"))
 
       ref_name = runtime_identity["ref_name"]
-      observation = observe_remote_ref(
+      github_observation_before = observe_remote_ref(
           "https://github.com/WhiteChronos/ChatGPT.git",
           ref_name,
       )
@@ -403,29 +408,54 @@ contingency-evidence:
       elif gitlab_probe.returncode != 2:
           raise SystemExit("GitLab final remote observation failed")
 
+      github_observation_after = observe_remote_ref(
+          "https://github.com/WhiteChronos/ChatGPT.git",
+          ref_name,
+      )
+      if (
+          github_observation_before.available != github_observation_after.available
+          or github_observation_before.sha != github_observation_after.sha
+      ):
+          raise SystemExit("authoritative GitHub ref changed during final evidence observation")
+
       receipt_timestamp = datetime.fromisoformat(
           str(mirror_input["receipt_timestamp"]).replace("Z", "+00:00")
       )
+      evaluated_at = datetime.now(timezone.utc)
+      final_parity_input = MirrorParityInput(
+          github_repository="WhiteChronos/ChatGPT",
+          gitlab_project_id=int(runtime_identity["gitlab_project_id"]),
+          gitlab_project_path=runtime_identity["gitlab_project_path"],
+          ref_name=ref_name,
+          github_sha=github_observation_after.sha,
+          gitlab_sha=gitlab_remote_sha,
+          ci_subject_sha=runtime_identity["sha"],
+          github_available=github_observation_after.available,
+          gitlab_available=gitlab_available,
+          receipt_timestamp=receipt_timestamp,
+          evaluated_at=evaluated_at,
+      )
       final_parity = evaluate_mirror_parity(
-          MirrorParityInput(
-              github_repository="WhiteChronos/ChatGPT",
-              gitlab_project_id=int(runtime_identity["gitlab_project_id"]),
-              gitlab_project_path=runtime_identity["gitlab_project_path"],
-              ref_name=ref_name,
-              github_sha=observation.sha,
-              gitlab_sha=gitlab_remote_sha,
-              ci_subject_sha=runtime_identity["sha"],
-              github_available=observation.available,
-              gitlab_available=gitlab_available,
-              receipt_timestamp=receipt_timestamp,
-              evaluated_at=datetime.now(timezone.utc),
-          ),
+          final_parity_input,
           load_policy(Path("governance/GITLAB_CONTINGENCY_CI_POLICY.json")),
       )
       parity_payload = {
           "status": final_parity.status.value,
           "evidence_eligible": final_parity.evidence_eligible,
           "reason": final_parity.reason,
+          "inputs": {
+              "github_repository": "WhiteChronos/ChatGPT",
+              "gitlab_project_id": int(runtime_identity["gitlab_project_id"]),
+              "gitlab_project_path": runtime_identity["gitlab_project_path"],
+              "ref_name": ref_name,
+              "github_sha": github_observation_after.sha,
+              "gitlab_sha": gitlab_remote_sha,
+              "ci_subject_sha": runtime_identity["sha"],
+              "github_available": github_observation_after.available,
+              "gitlab_available": gitlab_available,
+              "receipt_timestamp": receipt_timestamp.isoformat(),
+              "evaluated_at": evaluated_at.isoformat(),
+          },
       }
       Path("mirror-parity-final.json").write_text(
           json.dumps(parity_payload, sort_keys=True),
@@ -458,6 +488,7 @@ contingency-evidence:
           )
       }
       retry_count = int(os.environ.get("CI_JOB_RETRY_COUNT", "0"))
+      evidence_timestamp = datetime.now(timezone.utc)
       evidence = {
           "provider": "gitlab",
           "repository_identity": runtime_identity["gitlab_project_path"],
@@ -465,7 +496,7 @@ contingency-evidence:
           "pipeline_or_run_id": runtime_identity["pipeline_id"],
           "gate_name": "full-contingency",
           "result": "PASS" if validation_passed else "FAIL",
-          "timestamp": datetime.now(timezone.utc).isoformat(),
+          "timestamp": evidence_timestamp.isoformat(),
           "ci_config_revision": runtime_identity["sha"],
           "mirror_parity_status": parity_status,
           "attempt": retry_count + 1,
@@ -474,10 +505,34 @@ contingency-evidence:
       }
       evidence["provenance_sha256"] = compute_provenance_sha256(evidence)
       Path("ci-provider-evidence.json").write_text(json.dumps(evidence, sort_keys=True), encoding="utf-8")
+
+      evidence_record = CIProviderEvidence(
+          **{**evidence, "timestamp": evidence_timestamp}
+      )
+      disposition = compare_provider_evidence(
+          None,
+          evidence_record,
+          gitlab_live_verified=True,
+          now=evidence_timestamp,
+      )
+      Path("evidence-disposition.json").write_text(
+          json.dumps(
+              {
+                  "disposition": disposition.disposition.value,
+                  "reason": disposition.reason,
+                  "subject_sha": evidence_record.subject_sha,
+                  "pipeline_or_run_id": evidence_record.pipeline_or_run_id,
+                  "gitlab_live_verified": True,
+              },
+              sort_keys=True,
+          ),
+          encoding="utf-8",
+      )
       PY
     - cat mirror-parity-final.json
     - cat contingency-gate.json
     - cat ci-provider-evidence.json
+    - cat evidence-disposition.json
     - |
       if python - <<'PY'
       import json
@@ -496,7 +551,47 @@ contingency-evidence:
     when: always
     expire_in: never
     paths:
+      - mirror-input.json
       - mirror-parity.json
+      - gitlab-runtime-identity.json
+      - contingency-python.json
+      - contingency-broker.json
       - mirror-parity-final.json
       - contingency-gate.json
       - ci-provider-evidence.json
+      - evidence-disposition.json
+
+
+cleanup-refresh:
+  stage: cleanup
+  image: python:3.12.13-slim@sha256:2f17fc044b579bab302c2e8054d3a686e2cb9a83de48e70534b94cd8ebbe06a9 # python:3.12.13-slim
+  needs:
+    - job: contingency-evidence
+      artifacts: false
+  when: always
+  allow_failure: false
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends git
+  script:
+    - |
+      set -euo pipefail
+      case "${CI_COMMIT_BRANCH:-}" in
+        whitechronos-refresh/*)
+          python - "${CI_COMMIT_BRANCH}" <<'PY'
+          import re
+          import sys
+
+          ref = sys.argv[1]
+          if not re.fullmatch(r"whitechronos-refresh/[0-9a-f]{64}", ref):
+              raise SystemExit("malformed reserved refresh ref")
+          PY
+          export GIT_CONFIG_NOSYSTEM=1
+          export GIT_CONFIG_GLOBAL=/dev/null
+          export GIT_TERMINAL_PROMPT=0
+          git push origin --delete "${CI_COMMIT_BRANCH}"
+          ;;
+        *)
+          echo "No refresh branch cleanup required."
+          ;;
+      esac

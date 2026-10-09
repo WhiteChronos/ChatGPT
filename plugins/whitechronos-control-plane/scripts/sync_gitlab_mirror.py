@@ -19,7 +19,7 @@ if str(_REPO_ROOT) not in sys.path:
 from pipeline.gitlab_contingency_policy import classify_ref, load_policy
 
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
-_SCP_REMOTE_RE = re.compile(r"^(?:[^/@:\\s]+@)?[^/:\\s]+:.+$")
+_SCP_REMOTE_RE = re.compile(r"^(?:[^/@:\s]+@)?[^/:\s]+:.+$")
 _WINDOWS_DRIVE_RE = re.compile(r"^[A-Za-z]:[\\\\/]")
 _BLOCKED_GIT_ENV_EXACT = {
     "GIT_CONFIG_COUNT",
@@ -320,18 +320,21 @@ def sync_ref(
             pipeline_ref=pipeline_ref,
         )
 
+        push_args = ["push"]
+        if dry_run:
+            push_args.append("--dry-run")
+        if _is_network_remote(target_url):
+            push_args.extend(_mirror_push_options(receipt_claim))
+        push_args.extend([target_url, f"{source_local_ref}:{pipeline_full_ref}"])
+        _run_git(
+            push_args,
+            cwd=bare,
+            credential_helper=normalized_target_helper,
+        )
+
         if dry_run:
             target_after = target_before
         else:
-            push_args = ["push"]
-            if _is_network_remote(target_url):
-                push_args.extend(_mirror_push_options(receipt_claim))
-            push_args.extend([target_url, f"{source_local_ref}:{pipeline_full_ref}"])
-            _run_git(
-                push_args,
-                cwd=bare,
-                credential_helper=normalized_target_helper,
-            )
             target_after = _remote_sha(
                 target_url,
                 full_ref,

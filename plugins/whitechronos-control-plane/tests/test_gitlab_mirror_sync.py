@@ -542,3 +542,54 @@ def test_expected_source_sha_mismatch_is_rejected_before_push(tmp_path, monkeypa
             expected_source_sha='c' * 40,
         )
     assert pushed is False
+
+
+@pytest.mark.parametrize(
+    "remote",
+    [
+        "source.example:/repo.git",
+        "ssh-host:/group/repo.git",
+        "user@source.example:/repo.git",
+    ],
+)
+def test_scp_remote_with_letter_s_is_classified_as_network(remote):
+    m = load_module()
+    assert m._is_network_remote(remote) is True
+
+
+def test_network_dry_run_exercises_target_write_authorization(tmp_path, monkeypatch):
+    m = load_module()
+    calls = []
+    source_sha = "a" * 40
+
+    def fake_run_git(args, **kwargs):
+        calls.append((tuple(args), kwargs.get("credential_helper")))
+        if args[:1] == ["rev-parse"]:
+            return subprocess.CompletedProcess(args, 0, source_sha + "\n", "")
+        return subprocess.CompletedProcess(args, 0, "", "")
+
+    def fake_remote_sha(url, full_ref, **kwargs):
+        if "gitlab.com" in url:
+            return None
+        return source_sha
+
+    monkeypatch.setattr(m, "_run_git", fake_run_git)
+    monkeypatch.setattr(m, "_remote_sha", fake_remote_sha)
+
+    m.sync_ref(
+        ROOT,
+        "https://github.com/WhiteChronos/ChatGPT.git",
+        "https://gitlab.com/chronoswhite-group/ChronosWhite-project.git",
+        "main",
+        tmp_path / "receipt.json",
+        dry_run=True,
+        target_credential_helper="manager",
+    )
+
+    push_calls = [(argv, helper) for argv, helper in calls if argv and argv[0] == "push"]
+    assert len(push_calls) == 1
+    argv, helper = push_calls[0]
+    assert "--dry-run" in argv
+    assert helper == "manager"
+    assert "https://gitlab.com/chronoswhite-group/ChronosWhite-project.git" in argv
+    assert any(part.endswith("refs/whitechronos/source/main:refs/heads/main") for part in argv)

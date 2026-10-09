@@ -29,8 +29,8 @@ def test_pipeline_exists_and_parses():
 
 def test_required_jobs_and_stages_present():
     data = pipeline_data()
-    assert data['stages'] == ['parity', 'validate', 'evidence']
-    for job in ('mirror-parity', 'python-governance', 'broker', 'contingency-evidence'):
+    assert data['stages'] == ['parity', 'validate', 'evidence', 'cleanup']
+    for job in ('mirror-parity', 'python-governance', 'broker', 'contingency-evidence', 'cleanup-refresh'):
         assert job in data
 
 
@@ -325,3 +325,66 @@ def test_refresh_pipeline_keeps_original_mirror_ref_with_worker_revision():
     assert 'receipt["pipeline_ref"] != receipt["ref"]' in mirror_block
     assert 'receipt["worker_revision"]' in mirror_block
     assert '"ref_name": receipt["ref"]' in mirror_block
+
+
+def test_permanent_evidence_bundle_retains_every_provenance_bound_input():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    artifacts_block = evidence_block.rsplit("\n  artifacts:\n", 1)[1]
+    for name in (
+        "mirror-input.json",
+        "mirror-parity.json",
+        "gitlab-runtime-identity.json",
+        "contingency-python.json",
+        "contingency-broker.json",
+        "mirror-parity-final.json",
+        "contingency-gate.json",
+        "ci-provider-evidence.json",
+    ):
+        assert f"- {name}" in artifacts_block
+
+
+def test_refresh_branch_cleanup_is_strict_and_mandatory():
+    body = text()
+    assert "\ncleanup-refresh:\n" in body
+    cleanup = body.split("\ncleanup-refresh:\n", 1)[1]
+    assert "whitechronos-refresh/[0-9a-f]{64}" in cleanup
+    assert "git push origin --delete" in cleanup
+    assert "when: always" in cleanup
+    assert "allow_failure: false" in cleanup
+
+
+def test_final_evidence_reobserves_github_after_gitlab_probe():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    assert evidence_block.count("observe_remote_ref(") >= 2
+    assert "authoritative GitHub ref changed during final evidence observation" in evidence_block
+
+
+def test_final_parity_artifact_persists_reconstructable_inputs():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    for token in (
+        '"github_repository": "WhiteChronos/ChatGPT"',
+        '"gitlab_project_id": int(runtime_identity["gitlab_project_id"])',
+        '"gitlab_project_path": runtime_identity["gitlab_project_path"]',
+        '"ref_name": ref_name',
+        '"github_sha": github_observation_after.sha',
+        '"gitlab_sha": gitlab_remote_sha',
+        '"ci_subject_sha": runtime_identity["sha"]',
+        '"github_available": github_observation_after.available',
+        '"gitlab_available": gitlab_available',
+        '"receipt_timestamp": receipt_timestamp.isoformat()',
+        '"evaluated_at": evaluated_at.isoformat()',
+    ):
+        assert token in evidence_block
+
+
+def test_contingency_pipeline_serializes_and_retains_evidence_disposition():
+    evidence_block = text().split("\ncontingency-evidence:\n", 1)[1]
+    assert "compare_provider_evidence(" in evidence_block
+    assert "gitlab_live_verified=True" in evidence_block
+    assert 'Path("evidence-disposition.json").write_text' in evidence_block
+    artifacts_block = evidence_block.rsplit("\n  artifacts:\n", 1)[1]
+    assert "- evidence-disposition.json" in artifacts_block
+
+    drill = (ROOT / "docs" / "runbooks" / "gitlab-contingency-drill.md").read_text(encoding="utf-8")
+    assert "evidence-disposition.json" in drill
+    assert "CONTINGENCY_EVIDENCE_ONLY" in drill
