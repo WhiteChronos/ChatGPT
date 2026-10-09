@@ -297,7 +297,7 @@ def test_pipeline_requires_trusted_worker_revision_input():
     data = pipeline_data()
     inputs = data['spec']['inputs']
     assert 'mirror_worker_revision' in inputs
-    assert inputs['mirror_worker_revision']['regex'] == r'\\A[0-9a-fA-F]{40}\\z'
+    assert inputs['mirror_worker_revision']['regex'] == '\\A[0-9a-fA-F]{40}\\z'
     body = text()
     assert 'WHITECHRONOS_MIRROR_WORKER_REVISION' in body
     assert '$[[ inputs.mirror_worker_revision ]]' in body
