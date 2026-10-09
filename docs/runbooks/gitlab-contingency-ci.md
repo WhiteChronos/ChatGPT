@@ -87,10 +87,22 @@ For the current environment the recorded transport is:
 mirror_transport = neutral_worker
 ```
 
-The neutral worker is `plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py`.
-It must run outside GitHub Actions as the sole execution environment. Suitable
-hosts include an approved workstation, self-hosted runner, VM, NAS, or other
-independent automation host with Git and Python 3.12+.
+The canonical mirror engine remains
+`plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py`. The final
+trusted transport is the **GitHub Actions Neutral Mirror** workflow
+`.github/workflows/gitlab-neutral-mirror.yml`, which invokes that same engine
+through the trusted wrapper rather than introducing a second mirror
+implementation.
+
+The secret-bearing workflow is valid only after its definition is installed on
+the protected trusted GitHub ref and the GitHub Environment
+`gitlab-neutral-mirror` restricts deployment to that trusted ref. The subject
+branch and `subject_sha` are data; they never control the executable worker
+revision that receives the GitLab credential.
+
+An approved external workstation/self-hosted worker may remain a recovery or
+bootstrap option, but it is not the normal final transport once the trusted
+GitHub Actions worker is installed.
 
 ## Minimal host requirements
 
@@ -225,3 +237,58 @@ shows that same commit.
 - Verify source SHA == target SHA == CI subject SHA before accepting evidence.
 - If a target ref diverges, preserve it for investigation; never erase divergence
   automatically.
+
+
+## GitHub Actions Neutral Mirror
+
+The reviewed final transport is `.github/workflows/gitlab-neutral-mirror.yml`.
+
+The workflow is manual (`workflow_dispatch`) and accepts exactly:
+
+- `subject_ref`: the eligible authoritative GitHub branch;
+- `subject_sha`: the exact 40-hex authoritative GitHub commit SHA.
+
+The workflow executes code from its trusted GitHub revision, records that exact
+revision as `mirror_worker_revision`, and treats `subject_ref` /
+`subject_sha` only as data. The GitLab branch pipeline remains eligible only
+when `source=push`, `tag=false`, the receipt digest is valid, and the
+trusted worker revision carried by the receipt is bound into GitLab runtime and
+provider evidence.
+
+`CI_JOB_TOKEN` is used only inside GitLab to authenticate the current GitLab
+job identity. It is not the final mirror write credential: a repository push
+authenticated with `CI_JOB_TOKEN` does not trigger the required new pipeline.
+
+The GitHub worker uses a separately provisioned least-privilege GitLab
+repository-write credential stored only as `GITLAB_MIRROR_TOKEN` in the
+protected GitHub Environment `gitlab-neutral-mirror`. Prefer project-scoped
+`write_repository` access where the GitLab tier supports it. Do not broaden
+the credential to the `api` scope just for convenience.
+
+Do not provision or expose the secret until both conditions are true:
+
+1. the reviewed workflow exists on the protected trusted GitHub ref; and
+2. the GitHub Environment deployment branch policy admits only that protected
+   trusted ref.
+
+A feature branch cannot make itself trusted by adding an `if: github.ref`
+check to its own workflow YAML.
+
+For same-SHA freshness, the worker may push the same commit to the reserved
+`whitechronos-refresh/<digest>` trigger branch. The parity subject remains the
+original receipt `mirror_ref`; the refresh ref is never the authoritative
+mirror branch.
+
+Final acceptance remains:
+
+```text
+GITHUB_SHA == GITLAB_MIRROR_SHA == GITLAB_PIPELINE_SHA
+source=push
+tag=false
+FINAL_PARITY=HEALTHY
+EVIDENCE_ELIGIBLE=true
+MIRROR_PARITY=HEALTHY
+```
+
+No successful mirror authorizes GitHub merge, deploy, canary, stable promotion,
+live smoke, R2/R3, or PRODUCTION COMPLETE.
