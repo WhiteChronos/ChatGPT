@@ -439,3 +439,108 @@ def test_unknown_process_layer_is_rejected_instead_of_silently_dropped():
     payload["process_layers"]["UNKNOWN_LAYER"] = "PASS"
     with pytest.raises(ValueError, match=r"unknown process layer"):
         api.build_connection_report(REPO, payload)
+
+
+def test_positive_claim_rejects_failed_probe_outcome():
+    api = _api()
+    payload = _payload()
+    github = payload["integrations"]["github-connector"]
+    for item in github["evidence"]:
+        item["source"] = "chatgpt-github-connector"
+        item["outcome"] = "failure"
+    with pytest.raises(ValueError, match=r"successful.*outcome"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_positive_claim_requires_trusted_probe_source():
+    api = _api()
+    payload = _payload()
+    github = payload["integrations"]["github-connector"]
+    for item in github["evidence"]:
+        item["source"] = "caller-controlled-source"
+        item["outcome"] = "success"
+    with pytest.raises(ValueError, match=r"trusted.*source"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_positive_process_layer_rejects_bare_string_without_authoritative_evidence():
+    api = _api()
+    payload = _payload()
+    payload["process_layers"]["ARENA"] = "PASS"
+    with pytest.raises(ValueError, match=r"process_layers\.ARENA.*structured.*evidence"):
+        api.build_connection_report(REPO, payload)
+
+
+def test_optional_degradation_rejects_secret_material():
+    api = _api()
+    payload = _payload()
+    payload["requirements"].append(
+        {
+            "integration_id": "tinyfish",
+            "target_required": False,
+            "live_verification_required": False,
+        }
+    )
+    payload["integrations"]["tinyfish"] = _provider_signal(
+        target_accessible=None,
+        optional_degradations=[
+            "Authorization: Bearer SUPER_SECRET_DEGRADATION_TOKEN"
+        ],
+        operations=[("tinyfish.get_wallet", None)],
+    )
+    with pytest.raises(ValueError, match=r"optional_degradations.*safe identifier"):
+        api.build_connection_report(REPO, payload)
+
+
+@pytest.mark.parametrize(
+    "summary",
+    [
+        "token=oauth-secret-123",
+        "client_secret=oauth-client-secret-456",
+        "Authorization: Basic dXNlcjpzZWNyZXQ=",
+        "ya29.a0AfH6SMBExampleOpaqueOAuthTokenValue",
+    ],
+)
+def test_generic_oauth_material_is_never_serialized_from_evidence(summary):
+    api = _api()
+    payload = _payload()
+    payload["integrations"]["github-connector"]["evidence"][0]["summary"] = summary
+    report = api.build_connection_report(REPO, payload)
+    encoded = json.dumps(
+        api.report_to_json(report, process_layers=payload["process_layers"]),
+        sort_keys=True,
+    )
+    assert summary not in encoded
+
+
+def test_cli_validation_error_does_not_echo_untrusted_secret(tmp_path):
+    payload = _payload()
+    secret = "Authorization: Bearer TOP_SECRET_VALUE_123"
+    payload["integrations"]["github-connector"]["host_absence_status"] = secret
+    input_path = tmp_path / "evidence.json"
+    input_path.write_text(json.dumps(payload), encoding="utf-8")
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(CLI),
+            "--repo",
+            str(REPO),
+            "--input",
+            str(input_path),
+            "--json",
+        ],
+        text=True,
+        capture_output=True,
+    )
+    assert result.returncode == 1
+    assert secret not in result.stderr
+    assert "TOP_SECRET_VALUE_123" not in result.stderr
+
+
+def test_cli_argument_error_returns_one_not_blocker_exit_code():
+    result = subprocess.run(
+        [sys.executable, str(CLI), "--json"],
+        text=True,
+        capture_output=True,
+    )
+    assert result.returncode == 1
