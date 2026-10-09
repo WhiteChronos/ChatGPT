@@ -220,6 +220,7 @@ def test_pipeline_declares_typed_mirror_receipt_inputs():
         'mirror_timestamp',
         'mirror_receipt_sha256',
         'mirror_worker_revision',
+        'mirror_receipt_signature',
     }
     assert inputs['mirror_transport']['options'] == ['neutral_worker']
     assert inputs['mirror_pipeline_ref']['regex']
@@ -227,6 +228,7 @@ def test_pipeline_declares_typed_mirror_receipt_inputs():
     assert inputs['mirror_target_sha']['regex'] == '\A[0-9a-fA-F]{40}\z'
     assert inputs['mirror_receipt_sha256']['regex'] == '\A[0-9a-fA-F]{64}\z'
     assert inputs['mirror_worker_revision']['regex'] == '\A[0-9a-fA-F]{40}\z'
+    assert inputs['mirror_receipt_signature']['regex'] == '\A[0-9a-fA-F]{64}\z'
     body = text()
     assert '$[[ inputs.mirror_transport ]]' in body
     assert '$[[ inputs.mirror_pipeline_ref ]]' in body
