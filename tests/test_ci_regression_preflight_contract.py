@@ -50,3 +50,9 @@ def test_original_root_causes_remain_rejected():
     pipeline = (ROOT / ".gitlab-ci.yml").read_text(encoding="utf-8")
     assert "compare_provider_evidence(" in pipeline
     assert '"github_repository": "WhiteChronos/ChatGPT"' in pipeline
+
+def test_preflight_checks_out_and_verifies_actual_head_sha():
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "ref: ${{ github.event.pull_request.head.sha || github.sha }}" in workflow
+    assert 'git rev-parse HEAD' in workflow
+    assert "EXPECTED_SHA" in workflow
