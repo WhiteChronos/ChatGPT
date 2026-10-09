@@ -49,6 +49,9 @@ def _descriptor_from_data(repo_root: Path, data: dict[str, object]) -> Integrati
             auth_required=bool(connection_data["auth_required"]),
             safe_probe=str(connection_data["safe_probe"]),
             target_probe=None if target_probe is None else str(target_probe),
+            trusted_evidence_sources=tuple(
+                str(item) for item in connection_data["trusted_evidence_sources"]
+            ),
             paid_probe_forbidden=bool(connection_data["paid_probe_forbidden"]),
             credential_storage=str(connection_data["credential_storage"]),
         )

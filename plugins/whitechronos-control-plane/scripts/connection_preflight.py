@@ -15,8 +15,13 @@ if str(PLUGIN_ROOT) not in sys.path:
 from runtime.connection_preflight import build_connection_report, report_to_json
 
 
+class _UsageParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise ValueError("invalid command line")
+
+
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = _UsageParser(
         description="Normalize WhiteChronos connection evidence without invoking provider tools."
     )
     parser.add_argument("--repo", default=".", help="Repository root")
@@ -26,15 +31,19 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = _parser().parse_args(argv)
     try:
+        args = _parser().parse_args(argv)
         payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
         if not isinstance(payload, dict):
             raise ValueError("input must contain a JSON object")
         report = build_connection_report(Path(args.repo), payload)
-        data = report_to_json(report, process_layers=payload.get("process_layers"))
-    except Exception as exc:
-        print(f"Connection preflight failed: {exc}", file=sys.stderr)
+        data = report_to_json(
+            report,
+            process_layers=payload.get("process_layers"),
+            subject_sha=payload.get("subject_sha"),
+        )
+    except Exception:
+        print("Connection preflight failed: invalid input", file=sys.stderr)
         return 1
 
     if args.as_json:

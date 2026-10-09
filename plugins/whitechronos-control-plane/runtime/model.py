@@ -30,6 +30,7 @@ class ConnectionSpec:
     auth_required: bool
     safe_probe: str
     target_probe: str | None
+    trusted_evidence_sources: tuple[str, ...]
     paid_probe_forbidden: bool
     credential_storage: str
 

@@ -18,40 +18,166 @@
     "runtime_probe"
   ],
   "properties": {
-    "schema_version": {"const": 1},
-    "id": {"type": "string", "minLength": 1},
-    "display_name": {"type": "string", "minLength": 1},
-    "source_type": {"enum": ["local", "upstream_git", "external_reference", "official_plugin"]},
-    "source": {"type": "string", "minLength": 1},
-    "license_status": {"type": "string", "minLength": 1},
-    "execution_class": {"enum": ["SELF_MODIFYING", "BACKGROUND_AUTONOMOUS", "MCP_OR_CONNECTOR", "CREDENTIALLED", "NETWORKED", "LOCAL_MUTATING", "LOCAL_READ_ONLY", "REFERENCE_ONLY"]},
-    "status": {"enum": ["SCAFFOLDED", "REGISTERED_PROJECT", "PACKAGED", "GLOBAL_INSTALL_ELIGIBLE", "ACTIVATION_GATED", "ACTIVE_RUNTIME_VERIFIED"]},
-    "controller_plugin": {"type": ["string", "null"]},
-    "skill_paths": {"type": "array", "items": {"type": "string"}},
-    "mcp_servers": {"type": "array", "items": {"type": "string"}},
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_type": {
+      "enum": [
+        "local",
+        "upstream_git",
+        "external_reference",
+        "official_plugin"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "license_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_class": {
+      "enum": [
+        "SELF_MODIFYING",
+        "BACKGROUND_AUTONOMOUS",
+        "MCP_OR_CONNECTOR",
+        "CREDENTIALLED",
+        "NETWORKED",
+        "LOCAL_MUTATING",
+        "LOCAL_READ_ONLY",
+        "REFERENCE_ONLY"
+      ]
+    },
+    "status": {
+      "enum": [
+        "SCAFFOLDED",
+        "REGISTERED_PROJECT",
+        "PACKAGED",
+        "GLOBAL_INSTALL_ELIGIBLE",
+        "ACTIVATION_GATED",
+        "ACTIVE_RUNTIME_VERIFIED"
+      ]
+    },
+    "controller_plugin": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "skill_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mcp_servers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "connection": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
-      "required": ["surfaces", "auth_required", "safe_probe", "target_probe", "paid_probe_forbidden", "credential_storage"],
+      "required": [
+        "surfaces",
+        "auth_required",
+        "safe_probe",
+        "target_probe",
+        "trusted_evidence_sources",
+        "paid_probe_forbidden",
+        "credential_storage"
+      ],
       "properties": {
-        "surfaces": {"type": "array", "items": {"enum": ["chatgpt_plugin", "connector", "codex_plugin"]}},
-        "auth_required": {"type": "boolean"},
-        "safe_probe": {"type": "string", "minLength": 1},
-        "target_probe": {"type": ["string", "null"], "minLength": 1},
-        "paid_probe_forbidden": {"type": "boolean"},
-        "credential_storage": {"enum": ["provider_managed"]}
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "chatgpt_plugin",
+              "connector",
+              "codex_plugin"
+            ]
+          }
+        },
+        "auth_required": {
+          "type": "boolean"
+        },
+        "safe_probe": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_probe": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "paid_probe_forbidden": {
+          "type": "boolean"
+        },
+        "credential_storage": {
+          "enum": [
+            "provider_managed"
+          ]
+        },
+        "trusted_evidence_sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "runtime_probe": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
-      "required": ["plugin_root", "mcp_config", "mcp_server", "expected_tools", "required_for_broker_smoke"],
+      "required": [
+        "plugin_root",
+        "mcp_config",
+        "mcp_server",
+        "expected_tools",
+        "required_for_broker_smoke"
+      ],
       "properties": {
-        "plugin_root": {"type": "string", "minLength": 1},
-        "mcp_config": {"type": "string", "minLength": 1},
-        "mcp_server": {"type": "string", "minLength": 1},
-        "expected_tools": {"type": "array", "items": {"type": "string", "minLength": 1}},
-        "required_for_broker_smoke": {"type": "boolean"}
+        "plugin_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mcp_config": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mcp_server": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_for_broker_smoke": {
+          "type": "boolean"
+        }
       }
     }
   }

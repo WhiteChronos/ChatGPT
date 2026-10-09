@@ -11,12 +11,17 @@
   "skill_paths": [],
   "mcp_servers": [],
   "connection": {
-    "surfaces": ["chatgpt_plugin"],
+    "surfaces": [
+      "chatgpt_plugin"
+    ],
     "auth_required": true,
     "safe_probe": "tinyfish.get_wallet",
     "target_probe": null,
     "paid_probe_forbidden": true,
-    "credential_storage": "provider_managed"
+    "credential_storage": "provider_managed",
+    "trusted_evidence_sources": [
+      "chatgpt-tinyfish-app"
+    ]
   },
   "runtime_probe": null
 }

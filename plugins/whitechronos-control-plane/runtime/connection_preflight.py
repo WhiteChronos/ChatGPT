@@ -50,15 +50,30 @@ _MIRROR_PARITY_STATUSES = {"HEALTHY", "FAIL", "DIVERGED", "STALE", "UNAVAILABLE"
 _EVIDENCE_MAX_AGE = timedelta(minutes=15)
 _EVIDENCE_FUTURE_SKEW = timedelta(minutes=5)
 _SECRET_PATTERNS = (
-    re.compile(r"\bauthorization\s*[:=]\s*bearer\s+\S+", re.IGNORECASE),
+    re.compile(r"\bauthorization\s*[:=]\s*(?:bearer|basic)\s+\S+", re.IGNORECASE),
     re.compile(
-        r"\b(?:access[_-]?token|refresh[_-]?token|api[_-]?key|password|cookie)\s*[:=]\s*\S+",
+        r"\b(?:access[_-]?token|refresh[_-]?token|api[_-]?key|password|cookie|token|client_secret)\s*[:=]\s*\S+",
         re.IGNORECASE,
     ),
     re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"),
     re.compile(r"\bgithub_pat_[A-Za-z0-9_]{20,}\b"),
     re.compile(r"\bglpat-[A-Za-z0-9_-]{20,}\b"),
+    re.compile(r"\bya29\.[A-Za-z0-9._-]{10,}\b"),
 )
+_SAFE_IDENTIFIER_RE = re.compile(r"^[a-z][a-z0-9_.:-]{0,63}$")
+_SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
+_PROCESS_LAYER_TRUSTED_SOURCES = {
+    "SUPERPOWERS": {"superpowers-runtime"},
+    "ARENA": {"github-arena"},
+    "RUNTIME_DOCTOR": {"runtime-doctor"},
+    "MIRROR_PARITY": {"canonical-mirror-parity"},
+}
+_PROCESS_LAYER_POSITIVE = {
+    "SUPERPOWERS": {"PASS", "DEGRADED", "NOT_APPLICABLE"},
+    "ARENA": {"PASS", "DEGRADED", "NOT_APPLICABLE"},
+    "RUNTIME_DOCTOR": {"PASS", "DEGRADED", "NOT_APPLICABLE"},
+    "MIRROR_PARITY": {"HEALTHY", "NOT_APPLICABLE"},
+}
 
 
 def _bool_or_none(value: object, label: str) -> bool | None:
@@ -106,14 +121,17 @@ def _status_with_default(
     return default if parsed is None else parsed
 
 
-def _string_tuple(value: object, label: str) -> tuple[str, ...]:
+def _safe_identifier_tuple(value: object, label: str) -> tuple[str, ...]:
     if value is None:
         return ()
     if not isinstance(value, list):
         raise ValueError(f"{label} must be a list")
     result: list[str] = []
     for index, item in enumerate(value):
-        result.append(_nonempty_string(item, f"{label}[{index}]"))
+        item_text = _nonempty_string(item, f"{label}[{index}]")
+        if not _SAFE_IDENTIFIER_RE.fullmatch(item_text):
+            raise ValueError(f"{label}[{index}] must be a safe identifier")
+        result.append(item_text)
     return tuple(result)
 
 
@@ -165,12 +183,16 @@ def _evidence_tuple(
         target = item.get("target")
         if target is not None and not isinstance(target, str):
             raise ValueError(f"{item_label}.target must be a string or null")
-        summary = _nonempty_string(item.get("summary"), f"{item_label}.summary")
+        outcome = _nonempty_string(item.get("outcome"), f"{item_label}.outcome")
+        if outcome not in {"success", "failure"}:
+            raise ValueError(f"{item_label}.outcome must be success or failure")
+        raw_summary = item.get("summary")
+        if raw_summary is not None and not isinstance(raw_summary, str):
+            raise ValueError(f"{item_label}.summary must be a string or null")
         for evidence_value, field in (
             (source, "source"),
             (operation, "operation"),
             (target, "target"),
-            (summary, "summary"),
         ):
             _reject_secret_like(evidence_value, f"{item_label}.{field}")
         result.append(
@@ -179,7 +201,8 @@ def _evidence_tuple(
                 operation=operation,
                 observed_at=observed_at,
                 target=target,
-                summary=summary,
+                outcome=outcome,
+                summary="provider evidence normalized",
             )
         )
     return tuple(result)
@@ -243,19 +266,28 @@ def _require_probe_evidence(
     probe: str,
     label: str,
     *,
+    trusted_sources: tuple[str, ...],
     expected_target: str | None = None,
 ) -> None:
-    if any(
-        item.operation == probe
-        and (expected_target is None or item.target == expected_target)
+    candidates = [
+        item
         for item in evidence
+        if item.operation == probe
+        and (expected_target is None or item.target == expected_target)
+    ]
+    if not candidates:
+        if expected_target is None:
+            raise ValueError(f"{label} requires evidence for registered probe {probe}")
+        raise ValueError(
+            f"{label} requires evidence for registered probe {probe} on target {expected_target}"
+        )
+    if not any(item.source in trusted_sources for item in candidates):
+        raise ValueError(f"{label} requires evidence from a trusted source")
+    if not any(
+        item.source in trusted_sources and item.outcome == "success"
+        for item in candidates
     ):
-        return
-    if expected_target is None:
-        raise ValueError(f"{label} requires evidence for registered probe {probe}")
-    raise ValueError(
-        f"{label} requires evidence for registered probe {probe} on target {expected_target}"
-    )
+        raise ValueError(f"{label} requires a successful probe outcome")
 
 
 def build_connection_report(
@@ -267,8 +299,13 @@ def build_connection_report(
 
     registry = load_registry(Path(repo_root))
     requirements = _requirements(payload)
-    process_layers = _process_layers_to_json(payload.get("process_layers"))
     now = datetime.now(timezone.utc)
+    subject_sha = payload.get("subject_sha")
+    process_layers = _process_layers_to_json(
+        payload.get("process_layers"),
+        now=now,
+        subject_sha=subject_sha,
+    )
     integrations = payload.get("integrations", {})
     if not isinstance(integrations, dict):
         raise ValueError("integrations must be an object")
@@ -306,6 +343,7 @@ def build_connection_report(
                 evidence,
                 connection.safe_probe,
                 f"{label}.safe_probe",
+                trusted_sources=connection.trusted_evidence_sources,
             )
 
         if requirement.target_required:
@@ -318,6 +356,7 @@ def build_connection_report(
                     evidence,
                     connection.target_probe,
                     f"{label}.target_probe",
+                    trusted_sources=connection.trusted_evidence_sources,
                     expected_target=requirement.target,
                 )
 
@@ -330,6 +369,7 @@ def build_connection_report(
                 evidence,
                 requirement.live_operation or "",
                 f"{label}.live_verification",
+                trusted_sources=connection.trusted_evidence_sources if connection else (),
                 expected_target=requirement.target,
             )
 
@@ -354,7 +394,7 @@ def build_connection_report(
                 raw_signal.get("required_blocker"),
                 f"{label}.required_blocker",
             ),
-            optional_degradations=_string_tuple(
+            optional_degradations=_safe_identifier_tuple(
                 raw_signal.get("optional_degradations"),
                 f"{label}.optional_degradations",
             ),
@@ -386,7 +426,12 @@ def build_connection_report(
     )
 
 
-def _process_layers_to_json(process_layers: object) -> dict[str, str]:
+def _process_layers_to_json(
+    process_layers: object,
+    *,
+    now: datetime | None = None,
+    subject_sha: object = None,
+) -> dict[str, str]:
     if process_layers is None:
         return {}
     if not isinstance(process_layers, dict):
@@ -394,22 +439,70 @@ def _process_layers_to_json(process_layers: object) -> dict[str, str]:
     unknown = sorted(set(process_layers) - _PROCESS_LAYER_NAMES)
     if unknown:
         raise ValueError(f"unknown process layer: {unknown[0]}")
+    evaluated_at = now or datetime.now(timezone.utc)
     result: dict[str, str] = {}
     for name in sorted(_PROCESS_LAYER_NAMES):
         if name not in process_layers:
             continue
         raw = process_layers[name]
         allowed = _MIRROR_PARITY_STATUSES if name == "MIRROR_PARITY" else _PROCESS_LAYER_STATUSES
-        if not isinstance(raw, str) or raw not in allowed:
+        if isinstance(raw, str):
+            if raw not in allowed:
+                raise ValueError(f"process_layers.{name} has unknown status")
+            if raw in _PROCESS_LAYER_POSITIVE[name]:
+                raise ValueError(
+                    f"process_layers.{name} positive status requires structured authoritative evidence"
+                )
+            result[name] = raw
+            continue
+        if not isinstance(raw, dict):
+            raise ValueError(f"process_layers.{name} must be a status string or structured evidence")
+        permitted = {"status", "source", "observed_at", "subject_sha", "evidence_eligible"}
+        extras = sorted(set(raw) - permitted)
+        if extras:
+            raise ValueError(f"process_layers.{name} has unknown field {extras[0]}")
+        status = _nonempty_string(raw.get("status"), f"process_layers.{name}.status")
+        if status not in allowed:
             raise ValueError(f"process_layers.{name} has unknown status")
-        result[name] = raw
+        source = _nonempty_string(raw.get("source"), f"process_layers.{name}.source")
+        _, observed_dt = _timestamp(
+            raw.get("observed_at"),
+            f"process_layers.{name}.observed_at",
+        )
+        _require_fresh_timestamp(
+            observed_dt,
+            f"process_layers.{name}.observed_at",
+            evaluated_at,
+        )
+        if status in _PROCESS_LAYER_POSITIVE[name]:
+            allowed_sources = (
+                {"task-scope"}
+                if status == "NOT_APPLICABLE"
+                else _PROCESS_LAYER_TRUSTED_SOURCES[name]
+            )
+            if source not in allowed_sources:
+                raise ValueError(f"process_layers.{name} requires an authoritative source")
+        _reject_secret_like(source, f"process_layers.{name}.source")
+        if name == "MIRROR_PARITY" and status == "HEALTHY":
+            mirror_sha = _nonempty_string(
+                raw.get("subject_sha"),
+                "process_layers.MIRROR_PARITY.subject_sha",
+            )
+            expected_sha = _nonempty_string(subject_sha, "subject_sha")
+            if not _SHA_RE.fullmatch(mirror_sha) or not _SHA_RE.fullmatch(expected_sha):
+                raise ValueError("process_layers.MIRROR_PARITY subject SHA must be 40 hex characters")
+            if mirror_sha.lower() != expected_sha.lower():
+                raise ValueError("process_layers.MIRROR_PARITY subject SHA mismatch")
+            if raw.get("evidence_eligible") is not True:
+                raise ValueError("process_layers.MIRROR_PARITY requires evidence_eligible=true")
+        result[name] = status
     return result
-
 
 def report_to_json(
     report: ConnectionReport,
     *,
     process_layers: object = None,
+    subject_sha: object = None,
 ) -> dict[str, object]:
     observations: list[dict[str, object]] = []
     for item in report.observations:
@@ -429,6 +522,7 @@ def report_to_json(
                         "operation": evidence.operation,
                         "observed_at": evidence.observed_at,
                         "target": evidence.target,
+                        "outcome": evidence.outcome,
                         "summary": evidence.summary,
                     }
                     for evidence in item.evidence
@@ -437,7 +531,10 @@ def report_to_json(
         )
     return {
         "observations": observations,
-        "process_layers": _process_layers_to_json(process_layers),
+        "process_layers": _process_layers_to_json(
+            process_layers,
+            subject_sha=subject_sha,
+        ),
         "required_task_connections_pass": report.required_task_connections_pass,
         "blockers": list(report.blockers),
     }

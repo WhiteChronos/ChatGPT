@@ -22,6 +22,7 @@ class ConnectionEvidence:
     operation: str
     observed_at: str
     target: str | None
+    outcome: str
     summary: str
 
 

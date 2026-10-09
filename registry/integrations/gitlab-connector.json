@@ -11,12 +11,17 @@
   "skill_paths": [],
   "mcp_servers": [],
   "connection": {
-    "surfaces": ["connector"],
+    "surfaces": [
+      "connector"
+    ],
     "auth_required": true,
     "safe_probe": "gitlab.get_current_user",
     "target_probe": "gitlab.get_project",
     "paid_probe_forbidden": true,
-    "credential_storage": "provider_managed"
+    "credential_storage": "provider_managed",
+    "trusted_evidence_sources": [
+      "chatgpt-gitlab-connector"
+    ]
   },
   "runtime_probe": null
 }
