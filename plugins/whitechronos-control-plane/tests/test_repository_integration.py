@@ -246,3 +246,10 @@ def test_neutral_mirror_secret_is_step_scoped_and_never_passed_as_argument():
     assert "git push --force" not in text
     assert "gh pr merge" not in text
     assert "deploy" not in text.lower()
+
+
+def test_gitlab_pipeline_contract_binds_trusted_worker_revision():
+    pipeline = (REPO / ".gitlab-ci.yml").read_text(encoding="utf-8")
+    assert "mirror_worker_revision:" in pipeline
+    assert "WHITECHRONOS_MIRROR_WORKER_REVISION" in pipeline
+    assert '"worker_revision": receipt["worker_revision"]' in pipeline
