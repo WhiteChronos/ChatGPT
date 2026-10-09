@@ -372,3 +372,25 @@ def test_persisted_receipt_hash_binds_complete_record(tmp_path):
     tampered = dict(semantic)
     tampered['dry_run'] = not bool(tampered['dry_run'])
     assert m._mirror_receipt_digest(tampered) != digest
+
+
+def test_refresh_push_options_bind_reserved_pipeline_ref():
+    m = load_module()
+    policy = m.load_policy(ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json')
+    base = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-08T22:00:00+00:00',
+    )
+    refresh = m._refresh_ref(base)[len('refs/heads/'):]
+    claim = m._mirror_receipt_claim(
+        policy=policy,
+        ref='main',
+        source_sha='a' * 40,
+        timestamp='2026-10-08T22:00:00+00:00',
+        pipeline_ref=refresh,
+    )
+    joined = ' '.join(m._mirror_push_options(claim))
+    assert f'ci.input=mirror_pipeline_ref={refresh}' in joined
+    assert 'ci.input=mirror_ref=main' in joined
