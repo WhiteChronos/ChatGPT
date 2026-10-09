@@ -16,7 +16,7 @@ from typing import Any, Mapping
 
 SHA = re.compile(r"^[0-9a-fA-F]{40}$")
 DIGEST = re.compile(r"^[0-9a-fA-F]{64}$")
-CONFIG = re.compile(r"^([A-Za-z0-9_./-]+\\.ya?ml)@([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+):([A-Za-z0-9_./-]+)$")
+CONFIG = re.compile(r"^([A-Za-z0-9_./-]+\.ya?ml)@([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+):([A-Za-z0-9_./-]+)$")
 MIRROR = "chronoswhite-group/ChronosWhite-project"
 SOURCE = "WhiteChronos/ChatGPT"
 PROJECT_ID = 86465539
