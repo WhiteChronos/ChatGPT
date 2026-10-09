@@ -410,26 +410,41 @@ contingency-evidence:
       receipt_timestamp = datetime.fromisoformat(
           str(mirror_input["receipt_timestamp"]).replace("Z", "+00:00")
       )
+      evaluated_at = datetime.now(timezone.utc)
+      final_parity_input = MirrorParityInput(
+          github_repository="WhiteChronos/ChatGPT",
+          gitlab_project_id=int(runtime_identity["gitlab_project_id"]),
+          gitlab_project_path=runtime_identity["gitlab_project_path"],
+          ref_name=ref_name,
+          github_sha=github_observation_after.sha,
+          gitlab_sha=gitlab_remote_sha,
+          ci_subject_sha=runtime_identity["sha"],
+          github_available=github_observation_after.available,
+          gitlab_available=gitlab_available,
+          receipt_timestamp=receipt_timestamp,
+          evaluated_at=evaluated_at,
+      )
       final_parity = evaluate_mirror_parity(
-          MirrorParityInput(
-              github_repository="WhiteChronos/ChatGPT",
-              gitlab_project_id=int(runtime_identity["gitlab_project_id"]),
-              gitlab_project_path=runtime_identity["gitlab_project_path"],
-              ref_name=ref_name,
-              github_sha=github_observation_after.sha,
-              gitlab_sha=gitlab_remote_sha,
-              ci_subject_sha=runtime_identity["sha"],
-              github_available=github_observation_after.available,
-              gitlab_available=gitlab_available,
-              receipt_timestamp=receipt_timestamp,
-              evaluated_at=datetime.now(timezone.utc),
-          ),
+          final_parity_input,
           load_policy(Path("governance/GITLAB_CONTINGENCY_CI_POLICY.json")),
       )
       parity_payload = {
           "status": final_parity.status.value,
           "evidence_eligible": final_parity.evidence_eligible,
           "reason": final_parity.reason,
+          "inputs": {
+              "github_repository": "WhiteChronos/ChatGPT",
+              "gitlab_project_id": int(runtime_identity["gitlab_project_id"]),
+              "gitlab_project_path": runtime_identity["gitlab_project_path"],
+              "ref_name": ref_name,
+              "github_sha": github_observation_after.sha,
+              "gitlab_sha": gitlab_remote_sha,
+              "ci_subject_sha": runtime_identity["sha"],
+              "github_available": github_observation_after.available,
+              "gitlab_available": gitlab_available,
+              "receipt_timestamp": receipt_timestamp.isoformat(),
+              "evaluated_at": evaluated_at.isoformat(),
+          },
       }
       Path("mirror-parity-final.json").write_text(
           json.dumps(parity_payload, sort_keys=True),
