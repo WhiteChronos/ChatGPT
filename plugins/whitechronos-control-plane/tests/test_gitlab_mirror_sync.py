@@ -516,3 +516,29 @@ def test_same_sha_refresh_keeps_original_parity_ref_and_worker_revision():
     assert claim['ref'] == 'main'
     assert claim['pipeline_ref'] == refresh
     assert claim['worker_revision'] == WORKER_SHA
+
+
+def test_expected_source_sha_mismatch_is_rejected_before_push(tmp_path, monkeypatch):
+    m = load_module()
+    _, source, target = init_world(tmp_path)
+    pushed = False
+    original_run_git = m._run_git
+
+    def guarded_run_git(args, **kwargs):
+        nonlocal pushed
+        if args and args[0] == 'push':
+            pushed = True
+        return original_run_git(args, **kwargs)
+
+    monkeypatch.setattr(m, '_run_git', guarded_run_git)
+    with pytest.raises(RuntimeError, match='requested subject'):
+        m.sync_ref(
+            ROOT,
+            str(source),
+            str(target),
+            'main',
+            tmp_path / 'receipt.json',
+            worker_revision=WORKER_SHA,
+            expected_source_sha='c' * 40,
+        )
+    assert pushed is False
