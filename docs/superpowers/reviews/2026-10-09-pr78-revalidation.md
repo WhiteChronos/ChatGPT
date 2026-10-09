@@ -90,3 +90,41 @@ TDD and GitHub CI may be marked PASS only for a tested exact HEAD.
 PR merge is **not authorized**, no secret is provisioned, no live mirror or
 deploy executed. Leave unresolved provider-authentication threads open where
 their external enforcement has not been proven. STOP.
+
+
+## Second advisory review — follow-up gate (2026-10-09)
+
+A fresh Codex review identified **five additional P1 and two additional P2**
+after the original seven were addressed. They are tracked independently and
+do not revoke or fabricate prior CI evidence.
+
+| Review finding | Implemented response |
+| --- | --- |
+| P1 clean runner missing jsonschema | New strict stdlib-only `pipeline/neutral_mirror_policy.py`; credentialed GitHub workflow checks only stdlib runtime. |
+| P1 per-SHA Environment conflicts with runbook | Unified runbook and worker to exact worker-SHA Environment, no secret sharing/inheritance assumptions. |
+| P1 signing-key provisioning absent | Future **separately authorized** CSPRNG generation and dual-provider protected storage, rotation/revocation instructions; no secret created. |
+| P1 Git children inherit secrets | Pop both mirror-write and signing secrets *before* any source observation/module import/Git subprocess. |
+| P1 archival v1 can be promoted to current evidence | `compare_provider_evidence` now rejects legacy v1 GitLab records for current trust even when independently live-verified. |
+| P2 external recovery CLI unsigned | External CLI now pops signing key and signs network receipts; unsigned real network pushes fail closed. |
+| P2 failure discards written receipt | `upload-artifact` runs with `always() && hashFiles(...)` so previously written secret-free receipts survive wrapper failure. |
+
+Tests: `tests/test_neutral_mirror_review_round2.py`. Intermediate
+exact SHA `bb4446f6b1b1897483dc3bcb666ba070a649bd8f` completed five
+successful GitHub CI workflows. Its Runtime Foundation included
+**123 control-plane, 313 full-Python, 3 integration, 39 governance and 4
+Protocol Zero passing**. Subsequent documentation changes require new
+same-head CI checks before describing the **last** PR HEAD as green.
+
+**Additional independent trust finding:** an external protected GitLab YAML
+still cannot execute `pipeline/` Python from a subject-controlled Git commit.
+The protected evidence verifier **must** execute only protected code and
+policy fetched/pinned separately (for example `GIT_STRATEGY: none` and a
+separately checked-out reviewed verifier); the mirrored commit is inert data.
+See `docs/runbooks/github-neutral-mirror.md`. This cannot be operationally
+verified while the connected GitLab project returns `ci_config_path=""`.
+`TRUSTED_GITLAB_VERIFIER=NO`; fail closed.
+
+No GitLab project settings, protected refs, external runners, secrets,
+live Git push, deployment or merge were changed/executed in this review.
+Independent Superpowers subagents are not available in this tool runtime;
+all Arena strategy perspectives were sequential and not independent agents.
