@@ -384,6 +384,8 @@ def test_refresh_push_options_bind_reserved_pipeline_ref():
         timestamp='2026-10-08T22:00:00+00:00',
     )
     refresh = m._refresh_ref(base)[len('refs/heads/'):]
+    assert refresh.startswith('whitechronos-refresh/')
+    assert len(refresh.removeprefix('whitechronos-refresh/')) == 64
     claim = m._mirror_receipt_claim(
         policy=policy,
         ref='main',
