@@ -24,7 +24,7 @@ At execution planning time the connected environment reported:
 - Destination repository state before activation: empty.
 - Shared runners: enabled for the project/group.
 - GitLab CI/CD jobs: enabled.
-- GitLab-to-repository job-token push: disabled.
+- GitLab-to-repository job-token push: currently enabled on project `86465539`, but the reviewed final transport does not rely on `source=pipeline`; evidence remains push-only.
 - GitHub source repository: `WhiteChronos/ChatGPT`.
 - Connector project-creation action: unavailable; no duplicate project is needed.
 - Native GitLab pull-mirror configuration action: unavailable in the connected tool surface.
@@ -34,10 +34,10 @@ Re-run these checks before changing transport or credentials.
 
 Latest connected-project preflight (project `86465539`) also verified:
 
-- repository remains empty before live mirror binding: no commits, branches, or pipelines;
+- the repository is no longer empty: the contingency mirror/controller bootstrap has previously produced exact-SHA mirror evidence;
 - `restrict_user_defined_variables = true`;
 - `ci_pipeline_variables_minimum_override_role = no_one_allowed`;
-- `ci_push_repository_for_job_token_allowed = false`;
+- `ci_push_repository_for_job_token_allowed = true` at the latest connected-project preflight;
 - shared/group runners remain enabled.
 
 The contingency path deliberately preserves that variable lockdown. The neutral
@@ -98,6 +98,7 @@ The independent worker host requires only:
 
 - Git 2.x;
 - Python 3.12+;
+- `python -m pip install -r requirements-mirror.txt`;
 - network reachability to GitHub and GitLab;
 - this repository checkout containing the reviewed worker script and policy;
 - source read authentication only if public fetch is unavailable;
@@ -116,11 +117,15 @@ python plugins/whitechronos-control-plane/scripts/sync_gitlab_mirror.py \
   --source-url https://github.com/WhiteChronos/ChatGPT.git \
   --target-url https://gitlab.com/chronoswhite-group/ChronosWhite-project.git \
   --target-credential-helper manager \
+  --source-credential-helper manager \
   --ref main \
   --receipt mirror-receipt.json
 ```
 
-The network GitLab target requires an explicit credential helper. The standard Git for Windows / GCM selector `manager` is explicitly allowed; alternatively, an absolute executable helper path may be supplied.
+The network GitLab target requires an explicit credential helper. A separate
+`--source-credential-helper` may be supplied when the authoritative GitHub
+repository cannot be fetched anonymously; source and target helpers remain
+scoped independently to their Git commands. The standard Git for Windows / GCM selector `manager` is explicitly allowed; alternatively, an absolute executable helper path may be supplied.
 The worker clears inherited Git/SSH controls and applies the helper only through
 per-command `git -c credential.helper=...` settings after first clearing the
 helper list. Relative helper names, shell snippets, whitespace-bearing values,
@@ -134,6 +139,10 @@ Success requires all of the following:
   contract to the push through GitLab `ci.input` push options;
 - any pre-existing target ref is an ancestor of the source ref;
 - the push completes without force;
+- when the target branch is already at the authoritative SHA, the worker pushes
+  the same commit to a reserved `whitechronos-refresh/<digest>` branch with a
+  receipt-bound `mirror_pipeline_ref` so GitLab creates a fresh push pipeline;
+  the original target branch remains unchanged and is the ref used for parity;
 - post-sync target SHA exactly equals source SHA;
 - the authoritative GitHub ref is re-observed after the push and still resolves
   to that exact source SHA before a success receipt is written;
@@ -148,11 +157,18 @@ parity -> validate -> evidence
 ```
 
 Only a branch pipeline created by the neutral worker's Git push is accepted by
-workflow rules. Web, API and scheduled starts are rejected. The pipeline observes
+workflow rules. Tag pipelines, controller/multi-project pipelines, web, API and
+scheduled starts are rejected. Same-SHA refreshes use the reserved
+`whitechronos-refresh/*` branch class only as a pipeline trigger; parity is
+still computed against the receipt's original mirrored branch. Protect
+`whitechronos-refresh/*` for transport-only writes just like mirrored refs. The pipeline observes
 the authoritative GitHub ref, compares it with the mirrored GitLab commit and CI
 subject SHA, runs the canonical repository gates, and writes provider-scoped evidence. A green GitLab pipeline is not an authority
 grant. GitLab evidence is eligible for corroboration only while parity is
-`HEALTHY`.
+`HEALTHY`. The final evidence job re-observes both provider refs and re-runs
+the freshness check immediately before publishing evidence. Provider evidence
+binds SHA-256 digests of every consumed gate/parity artifact and is retained
+with `expire_in: never` for auditability.
 
 ### Trusted GitLab runtime identity
 

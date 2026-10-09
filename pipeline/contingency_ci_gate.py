@@ -86,6 +86,8 @@ def _expanded_argv(repo_root: Path, argv: tuple[str, ...]) -> list[str]:
     for value in argv:
         if any(ch in value for ch in "*?["):
             matches = sorted(glob.glob(str(repo_root / value)))
+            if not matches:
+                raise FileNotFoundError(f"mandatory test glob has no matches: {value}")
             expanded.extend(str(Path(match).relative_to(repo_root)) for match in matches)
         else:
             expanded.append(value)

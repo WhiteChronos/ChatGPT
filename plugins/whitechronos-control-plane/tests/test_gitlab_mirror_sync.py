@@ -220,6 +220,7 @@ def test_network_mirror_receipt_push_options_bind_transport_and_sha():
     assert 'ci.input=mirror_source_repository=WhiteChronos/ChatGPT' in joined
     assert 'ci.input=mirror_target_project=chronoswhite-group/ChronosWhite-project' in joined
     assert 'ci.input=mirror_ref=main' in joined
+    assert 'ci.input=mirror_pipeline_ref=main' in joined
     assert f'ci.input=mirror_source_sha={source_sha}' in joined
     assert f'ci.input=mirror_target_sha={source_sha}' in joined
     assert 'ci.input=mirror_receipt_sha256=' in joined
@@ -335,7 +336,7 @@ def test_source_credential_helper_is_supported_separately_from_target(tmp_path, 
             return subprocess.CompletedProcess(args, 0, '', '')
         return subprocess.CompletedProcess(args, 0, '', '')
 
-    remote_values = iter([None, 'a' * 40])
+    remote_values = iter([None, 'a' * 40, 'a' * 40])
     def fake_remote_sha(url, full_ref, **kwargs):
         calls.append((('remote-sha', url, full_ref), kwargs.get('credential_helper')))
         return next(remote_values)

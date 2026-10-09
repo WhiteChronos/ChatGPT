@@ -94,7 +94,7 @@ def test_freshness_requires_live_dual_provider_ref_observation():
     assert '"gitlab_sha": gitlab_remote_sha' in mirror_block
     assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
     assert '"observed_at": observed_at' in mirror_block
-    assert 'job_source not in {"push", "pipeline"}' in mirror_block
+    assert 'job_source != "push"' in mirror_block
     assert '1970-01-01T00:00:00+00:00' not in mirror_block
 
 def test_python_governance_job_installs_git_for_root_regression():
@@ -194,22 +194,22 @@ def test_pipeline_requires_neutral_worker_receipt_contract():
         'WHITECHRONOS_MIRROR_SOURCE_REPOSITORY',
         'WHITECHRONOS_MIRROR_TARGET_PROJECT',
         'WHITECHRONOS_MIRROR_REF',
+        'WHITECHRONOS_MIRROR_PIPELINE_REF',
         'WHITECHRONOS_MIRROR_SOURCE_SHA',
         'WHITECHRONOS_MIRROR_TARGET_SHA',
         'WHITECHRONOS_MIRROR_TIMESTAMP',
         'WHITECHRONOS_MIRROR_RECEIPT_SHA256',
     ):
         assert name in mirror_block
-    assert 'job_source not in {"push", "pipeline"}' in mirror_block
+    assert 'job_source != "push"' in mirror_block
     assert '"receipt_timestamp": receipt["timestamp"]' in mirror_block
     assert 'mirror receipt digest mismatch' in mirror_block
 
-def test_pipeline_accepts_push_and_controller_pipeline_only():
+def test_pipeline_accepts_push_only():
     data = pipeline_data()
     rules = data['workflow']['rules']
     assert rules == [
         {'if': '$CI_PIPELINE_SOURCE == "push"'},
-        {'if': '$CI_PIPELINE_SOURCE == "pipeline"'},
         {'when': 'never'},
     ]
 
@@ -221,13 +221,79 @@ def test_pipeline_declares_typed_mirror_receipt_inputs():
         'mirror_source_repository',
         'mirror_target_project',
         'mirror_ref',
+        'mirror_pipeline_ref',
         'mirror_source_sha',
         'mirror_target_sha',
         'mirror_timestamp',
         'mirror_receipt_sha256',
     }
     assert inputs['mirror_transport']['options'] == ['neutral_worker']
-    assert inputs['mirror_source_sha']['regex'] == '^[0-9a-fA-F]{40}$'
+    assert inputs['mirror_pipeline_ref']['regex']
+    assert inputs['mirror_source_sha']['regex'] == '^[0-9a-fA-F]{40}
+    assert inputs['mirror_target_sha']['regex'] == '^[0-9a-fA-F]{40}$'
+    assert inputs['mirror_receipt_sha256']['regex'] == '^[0-9a-fA-F]{64}$'
+    body = text()
+    assert '$[[ inputs.mirror_transport ]]' in body
+    assert '$[[ inputs.mirror_receipt_sha256 ]]' in body
+
+
+def test_pipeline_accepts_only_authenticated_git_push_source():
+    data = pipeline_data()
+    assert data['workflow']['rules'] == [
+        {'if': '$CI_PIPELINE_SOURCE == "push"'},
+        {'when': 'never'},
+    ]
+
+
+def test_pipeline_rejects_tag_jobs_for_branch_receipts():
+    body = text()
+    mirror_block = body.split('mirror-parity:', 1)[1].split('\npython-governance:', 1)[0]
+    assert 'job.get("tag")' in mirror_block
+    assert 'tag-triggered' in mirror_block.lower() or 'branch receipt' in mirror_block.lower()
+
+
+def test_same_sha_refresh_contract_uses_reserved_refresh_branch():
+    body = text()
+    assert 'whitechronos-refresh/' in body
+    assert 'mirror_pipeline_ref' in body
+
+
+def test_final_evidence_reobserves_live_provider_refs_and_freshness():
+    body = text()
+    evidence_block = body.split('\ncontingency-evidence:\n', 1)[1]
+    assert 'observe_remote_ref(' in evidence_block
+    assert 'receipt_timestamp' in evidence_block
+    assert 'git ls-remote' in evidence_block or 'ls-remote' in evidence_block
+
+
+def test_provider_evidence_records_actual_job_retry_attempt():
+    evidence_block = text().split('\ncontingency-evidence:\n', 1)[1]
+    assert 'CI_JOB_RETRY_COUNT' in evidence_block
+    assert '"attempt": retry_count + 1' in evidence_block
+
+
+def test_provider_evidence_artifact_is_retained_without_expiry():
+    evidence_block = text().split('\ncontingency-evidence:\n', 1)[1]
+    assert 'expire_in: never' in evidence_block
+
+
+def test_provider_evidence_binds_input_artifact_digests():
+    evidence_block = text().split('\ncontingency-evidence:\n', 1)[1]
+    for name in (
+        'mirror-parity.json',
+        'gitlab-runtime-identity.json',
+        'contingency-python.json',
+        'contingency-broker.json',
+    ):
+        assert name in evidence_block
+    assert 'input_artifacts_sha256' in evidence_block
+
+
+def test_runbook_declares_minimal_mirror_runtime_dependency_install():
+    body = RUNBOOK.read_text(encoding='utf-8')
+    assert 'requirements-mirror.txt' in body
+    assert 'python -m pip install -r requirements-mirror.txt' in body
+
     assert inputs['mirror_target_sha']['regex'] == '^[0-9a-fA-F]{40}$'
     assert inputs['mirror_receipt_sha256']['regex'] == '^[0-9a-fA-F]{64}$'
     body = text()
