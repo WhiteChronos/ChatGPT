@@ -326,6 +326,7 @@ def sync_ref(
             pipeline_ref=pipeline_ref,
         )
 
+        receipt_signature = None
         push_args = ["push"]
         if dry_run:
             push_args.append("--dry-run")
@@ -370,6 +371,8 @@ def sync_ref(
         "target_sha_before": target_before,
         "dry_run": bool(dry_run),
     }
+    if receipt_signature is not None:
+        receipt["receipt_signature"] = receipt_signature
     receipt["record_sha256"] = _mirror_receipt_digest(receipt)
     receipt_path = Path(receipt_path)
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
