@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -c "import jsonschema; import ssl; print('worker dependencies present')"
+          python -c "import ssl; import pipeline.neutral_mirror_policy; import pipeline.mirror_receipt_auth; print('stdlib-only mirror runtime ready')"
 
       - name: Mirror exact subject SHA
         shell: bash
