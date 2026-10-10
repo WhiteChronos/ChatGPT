@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import importlib.util
+
+import yaml
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -28,6 +30,26 @@ def test_desired_chronos_policy_is_valid():
     assert policy["required_status_checks"] == ["github-control-plane-policy"]
 
 
+def _setup_python_action_refs(source: str) -> list[str]:
+    """Read all action steps, including YAML block and flow mappings."""
+    document = yaml.safe_load(source)
+    assert isinstance(document, dict)
+    jobs = document.get("jobs", {})
+    assert isinstance(jobs, dict)
+    references = []
+    for job in jobs.values():
+        if not isinstance(job, dict):
+            continue
+        steps = job.get("steps", [])
+        assert isinstance(steps, list)
+        for step in steps:
+            assert isinstance(step, dict)
+            action = step.get("uses")
+            if isinstance(action, str) and action.startswith("actions/setup-python@"):
+                references.append(action)
+    return references
+
+
 def test_required_check_workflow_is_always_present_for_protected_prs():
     text = WORKFLOW.read_text(encoding="utf-8")
     assert "name: GitHub Control Plane Policy" in text
@@ -50,14 +72,35 @@ def test_required_check_workflow_is_always_present_for_protected_prs():
         "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",  # v5
         "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",  # v7.0.0
     )
-    import re
-    actual_pins = re.findall(
-        r"^\s*(?:-\s*)?uses:\s*['\"]?(actions/setup-python@[^\s'\"]+)",
-        text,
-        flags=re.MULTILINE,
-    )
+    actual_pins = _setup_python_action_refs(text)
     assert len(actual_pins) == 1
     assert actual_pins[0] in allowed_setup_python_pins
+
+
+def test_setup_python_parser_recognizes_yaml_step_shapes():
+    allowed = "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065"
+    for step in (
+        f"- uses: {allowed}",
+        f"- name: Set up Python\\n  uses: {allowed}",
+        f"- {{ uses: {allowed} }}",
+    ):
+        parsed_step = step.replace("\\n", "\n")
+        source = "jobs:\\n  verify:\\n    steps:\\n" + "\\n".join("      " + line for line in parsed_step.splitlines())
+        assert _setup_python_action_refs(source.replace("\\n", "\n")) == [allowed]
+
+
+def test_setup_python_parser_rejects_extra_or_unaudited_invocations():
+    approved = "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065"
+    invalid = ("actions/setup-python@v7", "actions/setup-python@" + "0" * 40)
+    for other in invalid:
+        source = (
+            "jobs:\\n  verify:\\n    steps:\\n"
+            f"      - uses: {approved}\\n"
+            f"      - {{ uses: {other} }}\\n"
+        ).replace("\\n", "\n")
+        refs = _setup_python_action_refs(source)
+        assert len(refs) != 1 or refs[0] not in (approved,)
+
 
 
 def test_path_classifier_covers_control_and_runtime_surfaces():
