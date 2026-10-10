@@ -1,3 +1,4 @@
+from dataclasses import replace
 from importlib.util import module_from_spec, spec_from_file_location
 import json
 from pathlib import Path
@@ -15,6 +16,24 @@ def load_module():
     module = module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
+
+    # Historical network and local mirror regression cases run against an
+    # explicitly enabled test-only policy. The repository's real policy is
+    # DISABLED; tests/test_github_only_mode.py checks that live network
+    # mirroring rejects before executing any Git command.
+    original_load_policy = module.load_policy
+
+    def enabled_legacy_fixture_policy(path):
+        raw = original_load_policy(path)
+        return replace(
+            raw,
+            provisioning_state="PROVISIONED",
+            gitlab_project_id=86465539,
+            gitlab_project_path="chronoswhite-group/ChronosWhite-project",
+            mirror_transport="neutral_worker",
+        )
+
+    module.load_policy = enabled_legacy_fixture_policy
     return module
 
 

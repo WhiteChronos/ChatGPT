@@ -89,6 +89,9 @@ class RefDecision:
 
 
 def classify_ref(ref_name: str, policy: GitLabContingencyPolicy) -> RefDecision:
+    # No ref may be mirror-eligible when contingency mirroring is disabled.
+    if policy.provisioning_state != "PROVISIONED":
+        return RefDecision(ref_name, False, "GitLab mirroring disabled by policy")
     raw = ref_name.strip()
     if raw.startswith("refs/heads/"):
         raw = raw[len("refs/heads/"):]

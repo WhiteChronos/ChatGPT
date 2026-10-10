@@ -10,8 +10,8 @@ import pytest
 from pipeline.ci_provider_evidence import (
     CIProviderEvidence,
     EvidenceDisposition,
-    compare_provider_evidence,
-    validate_evidence,
+    compare_provider_evidence as _compare_provider_evidence,
+    validate_evidence as _validate_evidence,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -128,6 +128,26 @@ from pipeline.ci_provider_evidence import FailureClass, RetryDisposition, classi
 from pipeline.gitlab_contingency_policy import load_policy
 
 POLICY = ROOT / 'governance' / 'GITLAB_CONTINGENCY_CI_POLICY.json'
+
+
+# Historical cross-provider behavior is preserved as offline regression only.
+# The canonical repository policy remains DISABLED and the new GitHub-only
+# tests call the real APIs without this explicit test-only policy override.
+LEGACY_POLICY = replace(
+    load_policy(POLICY),
+    provisioning_state="PROVISIONED",
+    allowed_evidence_providers=("github", "gitlab", "local"),
+)
+
+
+def compare_provider_evidence(*args, **kwargs):
+    kwargs.setdefault("policy", LEGACY_POLICY)
+    return _compare_provider_evidence(*args, **kwargs)
+
+
+def validate_evidence(*args, **kwargs):
+    kwargs.setdefault("policy", LEGACY_POLICY)
+    return _validate_evidence(*args, **kwargs)
 
 
 @pytest.mark.parametrize(

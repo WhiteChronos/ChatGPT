@@ -10,15 +10,14 @@
   "evidence_requires_exact_sha": true,
   "mirror_freshness_seconds": 3600,
   "max_clock_skew_seconds": 300,
-  "provisioning_state": "PROVISIONED",
-  "gitlab_project_id": 86465539,
-  "gitlab_project_path": "chronoswhite-group/ChronosWhite-project",
-  "mirror_transport": "neutral_worker",
+  "provisioning_state": "DISABLED",
+  "gitlab_project_id": null,
+  "gitlab_project_path": null,
+  "mirror_transport": null,
   "mirror_divergence_behavior": "FAIL_CLOSED",
   "provider_disagreement_behavior": "BLOCK_FOR_INVESTIGATION",
   "allowed_evidence_providers": [
     "github",
-    "gitlab",
     "local"
   ],
   "allowed_mirror_ref_classes": [
