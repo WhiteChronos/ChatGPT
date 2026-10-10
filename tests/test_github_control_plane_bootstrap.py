@@ -44,7 +44,13 @@ def test_required_check_workflow_is_always_present_for_protected_prs():
     assert "actions/checkout@v4" not in text
     assert "actions/setup-python@v5" not in text
     assert "actions/checkout@11d5960a326750d5838078e36cf38b85af677262" in text
-    # Dependabot may propose either audited immutable pin during the v5 -> v7 upgrade.\n    # Keep SHA pinning mandatory; do not accept mutable tags or arbitrary SHAs.\n    allowed_setup_python_pins = (\n        "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",  # v5\n        "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",  # v7.0.0\n    )\n    assert sum(pin in text for pin in allowed_setup_python_pins) == 1
+    # Dependabot may propose either audited immutable pin during the v5 -> v7 upgrade.
+    # Keep SHA pinning mandatory; do not accept mutable tags or arbitrary SHAs.
+    allowed_setup_python_pins = (
+        "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",  # v5
+        "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",  # v7.0.0
+    )
+    assert sum(pin in text for pin in allowed_setup_python_pins) == 1
 
 
 def test_path_classifier_covers_control_and_runtime_surfaces():
