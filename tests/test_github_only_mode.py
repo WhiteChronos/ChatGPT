@@ -105,3 +105,17 @@ def test_disabled_policy_rejects_retired_gitlab_provider_evidence():
             github, historical, gitlab_live_verified=True, now=now
         )
         assert outcome.disposition is EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE
+
+
+def test_github_only_runbook_cannot_trigger_pages_deployment():
+    # DEKS Pages auto-deploys on docs/** pushes to main. Keep this
+    # administrative runbook outside that publication path.
+    source = ROOT / "docs/runbooks/github-only-ci.md"
+    safe = ROOT / "runbooks/github-only-ci.md"
+    pages = (ROOT / ".github/workflows/deks-pages.yml").read_text(encoding="utf-8")
+    assert not source.exists()
+    assert safe.is_file()
+    assert "branches: [main]" in pages
+    assert "- 'docs/**'" in pages
+    assert "actions/deploy-pages@" in pages
+    assert "- 'runbooks/**'" not in pages
