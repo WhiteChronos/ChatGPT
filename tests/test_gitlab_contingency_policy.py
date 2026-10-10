@@ -80,7 +80,9 @@ from pipeline.gitlab_contingency_policy import classify_ref
     ],
 )
 def test_classify_ref(ref_name, eligible):
-    policy = load_policy(POLICY)
+    # Historic ref-classification cases are explicitly simulated under the
+    # former enabled state, never the active disabled repository policy.
+    policy = replace(load_policy(POLICY), provisioning_state="PROVISIONED")
     decision = classify_ref(ref_name, policy)
     assert decision.eligible is eligible
 
