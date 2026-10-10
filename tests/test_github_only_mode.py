@@ -59,3 +59,49 @@ def test_github_policy_remains_active_and_independent():
 
 def test_no_gitlab_mirror_workflow_is_enabled_on_main():
     assert not (ROOT / ".github/workflows/gitlab-neutral-mirror.yml").exists()
+
+
+def test_disabled_policy_rejects_any_gitlab_ref_as_mirror_eligible():
+    from pipeline.gitlab_contingency_policy import load_policy, classify_ref
+    assert classify_ref("main", load_policy(POLICY)).eligible is False
+
+
+def test_disabled_policy_rejects_retired_gitlab_provider_evidence():
+    from dataclasses import replace
+    from datetime import datetime, timezone
+    from pipeline.ci_provider_evidence import (
+        CIProviderEvidence, EvidenceDisposition, compare_provider_evidence,
+        compute_provenance_sha256, validate_evidence,
+    )
+
+    now = datetime.now(timezone.utc)
+    raw = CIProviderEvidence(
+        provider="gitlab",
+        repository_identity="chronoswhite-group/ChronosWhite-project",
+        subject_sha="a" * 40,
+        pipeline_or_run_id="historical-test-only",
+        gate_name="historical-gate",
+        result="PASS",
+        timestamp=now,
+        ci_config_revision="a" * 40,
+        mirror_parity_status="HEALTHY",
+        attempt=1,
+        input_artifacts_sha256={
+            "mirror-input.json": "1" * 64,
+            "mirror-parity.json": "2" * 64,
+            "gitlab-runtime-identity.json": "3" * 64,
+            "contingency-python.json": "4" * 64,
+            "contingency-broker.json": "5" * 64,
+            "mirror-parity-final.json": "6" * 64,
+        },
+        provenance_sha256="0" * 64,
+    )
+    historical = replace(raw, provenance_sha256=compute_provenance_sha256(raw))
+
+    with pytest.raises(ValueError, match="disabled"):
+        validate_evidence(historical, now=now)
+    for github in (None,):
+        outcome = compare_provider_evidence(
+            github, historical, gitlab_live_verified=True, now=now
+        )
+        assert outcome.disposition is EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE
