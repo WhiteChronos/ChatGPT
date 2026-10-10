@@ -28,5 +28,5 @@ multi_agent = true
 
 Current upstream Codex treats `multi_agent` as the Stable V1 collaboration feature (default enabled). Stable `multi_agent_v2` can select the V2 lifecycle and may also be selected by model/runtime metadata. Runtime Doctor therefore accepts a complete observed V1 or V2 lifecycle. No configuration setting is runtime proof: host discovery still requires the actual lifecycle tools to be visible.
 
-For fresh-session bootstrap, plugin refresh, Broker fallback binding, and the safe handoff into the approved GitLab contingency plan, follow `docs/runbooks/codex-subagent-runtime.md`.
+For fresh-session bootstrap, plugin refresh, Broker fallback binding, and the safe handoff into the approved GitHub-only implementation plan, follow `docs/runbooks/codex-subagent-runtime.md`.
 
