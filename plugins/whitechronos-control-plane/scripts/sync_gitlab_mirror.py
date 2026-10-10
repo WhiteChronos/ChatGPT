@@ -243,6 +243,12 @@ def sync_ref(
     _validate_remote_argument(source_url)
     _validate_remote_argument(target_url)
     policy = load_policy(Path(repo_root) / "governance" / "GITLAB_CONTINGENCY_CI_POLICY.json")
+    # Archived worker remains testable using local Git repositories only.
+    # A disabled policy must reject network operations before any Git subprocess.
+    if policy.provisioning_state != "PROVISIONED" and (
+        _is_network_remote(source_url) or _is_network_remote(target_url)
+    ):
+        raise ValueError("GitLab mirroring disabled by GitHub-only CI policy")
     _validate_mirror_direction(source_url, target_url, policy)
     normalized_target_helper = _normalize_credential_helper(target_credential_helper)
     normalized_source_helper = _normalize_credential_helper(source_credential_helper)
