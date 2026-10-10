@@ -2,11 +2,11 @@
   "upstream": {
     "repository": "affaan-m/ECC",
     "ref": "main",
-    "observed_sha": "ef648e01899ba3e8dc6371642deaaf64b4477775",
+    "observed_sha": "4eb71d92a39cab44ad40ac9d8a6a5ccb4029d6c2",
     "observed_version": "2.2.3",
-    "skill_count": 293,
-    "agent_count": 68,
-    "command_count": 94,
+    "skill_count": 302,
+    "agent_count": 71,
+    "command_count": 95,
     "license": "MIT",
     "native_codex_plugin": true
   },
