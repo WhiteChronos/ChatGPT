@@ -169,7 +169,7 @@ Therefore, once `HOST_SUBAGENT_DISCOVERY=PASS`:
 4. execute Task 1 in real Subagent-driven mode with independent implementer/reviewer evidence;
 5. never rebase execution onto the stale #68 planning branch just to reuse its ancestry.
 
-Task 8 external GitLab project/credential/mirror/CI activation remains a separate side-effect authority even though Tasks 1-10 implementation work was previously authorized.
+Task 8's former external-provider mirror and credential activation is retired under the GitHub-only architecture. Any alternative external integration requires a new, separately reviewed specification and explicit side-effect authorization.
 
 ## 8. Gates that remain independent
 
