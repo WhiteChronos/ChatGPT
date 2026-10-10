@@ -50,7 +50,14 @@ def test_required_check_workflow_is_always_present_for_protected_prs():
         "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",  # v5
         "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",  # v7.0.0
     )
-    assert sum(pin in text for pin in allowed_setup_python_pins) == 1
+    import re
+    actual_pins = re.findall(
+        r"^\\s*-\\s*uses:\\s*['\\\"]?(actions/setup-python@[^\\s'\\\"]+)",
+        text,
+        flags=re.MULTILINE,
+    )
+    assert len(actual_pins) == 1
+    assert actual_pins[0] in allowed_setup_python_pins
 
 
 def test_path_classifier_covers_control_and_runtime_surfaces():
