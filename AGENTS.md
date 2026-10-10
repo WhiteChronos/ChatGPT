@@ -252,3 +252,34 @@ For runtime claims about Codex, Arena MCP, Subagent Broker, or native multi-agen
 - `HOST_RELOAD_REQUIRED` must not trigger code changes; start a fresh Codex environment/session instead.
 - Independent subagent claims still require real lifecycle evidence from the current runtime.
 - Preserve the existing routing order: repository constraints -> Superpowers -> specialized capability -> GitHub -> GitHub Arena.
+
+
+## TinyFish connection and browser policy layer
+
+For TinyFish search, content retrieval, browser automation, Browser Profiles, monitors, and cost-sensitive actions, agents SHALL use `plugins/tinyfish-controller` as the routing and safety-policy layer while the official TinyFish ChatGPT app remains the runtime provider.
+
+The routing order for relevant work is:
+
+```text
+repository/system/user constraints
+-> Superpowers
+-> specialized capabilities/controllers
+-> Connection Controller / TinyFish policy when relevant
+-> native GitHub/GitLab evidence and mutation
+-> GitHub Arena final review
+```
+
+Agents SHALL:
+
+- prefer native GitHub/GitLab connectors for repository API reads, writes, pull requests, pipelines, and project metadata;
+- never use TinyFish as a credential broker for native GitHub/GitLab connectors;
+- never request passwords in chat and never persist passwords, tokens, cookies, browser storage, or session credentials in Git or evidence files;
+- keep TinyFish service authentication separate from Browser Profile health;
+- classify service PASS plus Browser Profile failure as `DEGRADED`, not as whole-service failure;
+- use TinyFish browser automation only for a concrete user-directed website interaction;
+- use Browser Profiles only when authenticated browser state is required and the profile API is healthy;
+- treat `HOST_POLICY_BLOCKED` as not a source-code defect and never mutate source merely to bypass platform policy;
+- never create Browser Profiles, Agent runs, Browser runs, monitors, top-up operations, or auto-reload changes as routine health checks;
+- create or run monitors only with explicit user intent for ongoing monitoring;
+- after a TinyFish browser timeout or error, poll the same run and do not start a duplicate run automatically;
+- preserve Runtime Doctor for Codex/Arena/Broker/native runtime claims and GitHub Arena for review rather than treating TinyFish as either runtime proof or an independent-agent substitute.

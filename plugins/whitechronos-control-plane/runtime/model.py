@@ -25,6 +25,17 @@ class RuntimeProbeSpec:
 
 
 @dataclass(frozen=True)
+class ConnectionSpec:
+    surfaces: tuple[str, ...]
+    auth_required: bool
+    safe_probe: str
+    target_probe: str | None
+    trusted_evidence_sources: tuple[str, ...]
+    paid_probe_forbidden: bool
+    credential_storage: str
+
+
+@dataclass(frozen=True)
 class IntegrationDescriptor:
     id: str
     display_name: str
@@ -37,6 +48,7 @@ class IntegrationDescriptor:
     skill_paths: tuple[str, ...]
     mcp_servers: tuple[str, ...]
     runtime_probe: RuntimeProbeSpec | None
+    connection: ConnectionSpec | None = None
 
 
 @dataclass(frozen=True)

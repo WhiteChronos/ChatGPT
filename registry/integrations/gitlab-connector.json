@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "gitlab-connector",
+  "display_name": "GitLab Connector",
+  "source_type": "official_plugin",
+  "source": "ChatGPT GitLab connector",
+  "license_status": "provider_managed",
+  "execution_class": "MCP_OR_CONNECTOR",
+  "status": "REGISTERED_PROJECT",
+  "controller_plugin": "whitechronos-control-plane",
+  "skill_paths": [],
+  "mcp_servers": [],
+  "connection": {
+    "surfaces": [
+      "connector"
+    ],
+    "auth_required": true,
+    "safe_probe": "gitlab.get_current_user",
+    "target_probe": "gitlab.get_project",
+    "paid_probe_forbidden": true,
+    "credential_storage": "provider_managed",
+    "trusted_evidence_sources": [
+      "chatgpt-gitlab-connector"
+    ]
+  },
+  "runtime_probe": null
+}

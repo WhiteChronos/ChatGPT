@@ -1,0 +1,3 @@
+interface:
+  display_name: "WhiteChronos Connection Controller"
+  short_description: "Verify GitHub, GitLab, TinyFish and runtime connection evidence safely."

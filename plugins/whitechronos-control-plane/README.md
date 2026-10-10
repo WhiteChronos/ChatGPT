@@ -1,6 +1,6 @@
 # WhiteChronos Control Plane
 
-The Runtime Foundation separates repository configuration from live Codex runtime evidence.
+The Runtime Foundation separates repository configuration from live Codex runtime evidence and task-scoped provider connection evidence.
 
 ## Runtime Doctor
 
@@ -30,3 +30,18 @@ Current upstream Codex treats `multi_agent` as the Stable V1 collaboration featu
 
 For fresh-session bootstrap, plugin refresh, Broker fallback binding, and the safe handoff into the approved GitHub-only implementation plan, follow `docs/runbooks/codex-subagent-runtime.md`.
 
+
+## Connection Preflight
+
+Normalize current host/provider evidence without calling ChatGPT connectors from local Python:
+
+```bash
+python plugins/whitechronos-control-plane/scripts/connection_preflight.py \
+  --repo . \
+  --input evidence.json \
+  --json
+```
+
+The host agent gathers safe, non-secret evidence from GitHub, GitLab, TinyFish, Superpowers, Arena, and Runtime Doctor as relevant. Repository configuration is not authentication proof. GitHub/GitLab mirror parity remains separate from connector authentication, and optional TinyFish Browser Profile degradation does not block unrelated native connector work.
+
+Exit codes: `0` when all required task connections pass, `2` when a required connection is blocked/unavailable/user-action-required, and `1` for malformed input or validation failure.

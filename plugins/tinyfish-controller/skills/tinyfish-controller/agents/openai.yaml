@@ -1,0 +1,3 @@
+interface:
+  display_name: "TinyFish Controller"
+  short_description: "Route TinyFish browser, profiles, monitors, and cost-sensitive actions safely."

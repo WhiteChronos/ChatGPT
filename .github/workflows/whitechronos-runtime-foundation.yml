@@ -4,18 +4,22 @@ on:
   pull_request:
     paths:
       - "plugins/whitechronos-control-plane/**"
+      - "plugins/tinyfish-controller/**"
       - "registry/integrations/**"
       - ".agents/plugins/marketplace.json"
       - ".codex/config.toml"
       - "AGENTS.md"
+      - "docs/runbooks/whitechronos-connections.md"
       - ".github/workflows/whitechronos-runtime-foundation.yml"
   push:
     paths:
       - "plugins/whitechronos-control-plane/**"
+      - "plugins/tinyfish-controller/**"
       - "registry/integrations/**"
       - ".agents/plugins/marketplace.json"
       - ".codex/config.toml"
       - "AGENTS.md"
+      - "docs/runbooks/whitechronos-connections.md"
       - ".github/workflows/whitechronos-runtime-foundation.yml"
   workflow_dispatch:
 
@@ -49,6 +53,12 @@ jobs:
 
       - name: Run Runtime Foundation tests
         run: python -m pytest -q plugins/whitechronos-control-plane/tests
+
+      - name: Run TinyFish controller tests
+        run: python -m pytest -q plugins/tinyfish-controller/tests
+
+      - name: Verify combined repository integration modules collect cleanly
+        run: python -m pytest -q plugins/whitechronos-control-plane/tests/test_repository_integration.py plugins/tinyfish-controller/tests/test_tinyfish_repository_integration.py
 
       - name: Run full repository regression suite
         run: python -m pytest -q
