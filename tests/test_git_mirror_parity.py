@@ -102,6 +102,17 @@ def test_cli_uses_current_clock_instead_of_replayed_evaluated_at(tmp_path):
     }
     evidence = tmp_path / 'mirror-input.json'
     evidence.write_text(json.dumps(payload), encoding='utf-8')
+    # The subprocess exercises stale-evidence semantics under an explicitly
+    # enabled offline fixture; the live repository policy remains DISABLED.
+    legacy = json.loads(POLICY.read_text(encoding='utf-8'))
+    legacy.update(
+        provisioning_state='PROVISIONED',
+        gitlab_project_id=86465539,
+        gitlab_project_path='chronoswhite-group/ChronosWhite-project',
+        mirror_transport='neutral_worker',
+    )
+    offline_policy = tmp_path / 'test-only-legacy-policy.json'
+    offline_policy.write_text(json.dumps(legacy), encoding='utf-8')
     result = subprocess.run(
         [
             sys.executable,
@@ -109,7 +120,7 @@ def test_cli_uses_current_clock_instead_of_replayed_evaluated_at(tmp_path):
             '--input',
             str(evidence),
             '--policy',
-            str(POLICY),
+            str(offline_policy),
             '--json',
         ],
         cwd=ROOT,
