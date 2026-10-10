@@ -9,6 +9,8 @@ import re
 from pathlib import Path
 from typing import Mapping
 
+from pipeline.gitlab_contingency_policy import GitLabContingencyPolicy, load_policy
+
 _SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 _SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 _PROVIDERS = {"github", "gitlab", "local"}
@@ -92,9 +94,27 @@ class EvidenceComparison:
     reason: str
 
 
-def validate_evidence(record: CIProviderEvidence, *, now: datetime | None = None) -> None:
+def _effective_policy(policy: GitLabContingencyPolicy | None) -> GitLabContingencyPolicy:
+    # Canonical project policy is mandatory when callers do not provide a
+    # trusted, explicit policy snapshot (e.g. in historical isolated tests).
+    if policy is None:
+        return load_policy(Path(__file__).resolve().parents[1] / "governance/GITLAB_CONTINGENCY_CI_POLICY.json")
+    return policy
+
+
+def validate_evidence(
+    record: CIProviderEvidence,
+    *,
+    now: datetime | None = None,
+    policy: GitLabContingencyPolicy | None = None,
+) -> None:
     if record.provider not in _PROVIDERS:
         raise ValueError(f"unknown CI provider: {record.provider}")
+    effective = _effective_policy(policy)
+    if record.provider not in effective.allowed_evidence_providers or (
+        record.provider == "gitlab" and effective.provisioning_state != "PROVISIONED"
+    ):
+        raise ValueError("CI evidence provider disabled by active policy")
     if not record.repository_identity.strip() or not record.pipeline_or_run_id.strip() or not record.gate_name.strip():
         raise ValueError("evidence identity fields must be nonblank")
     expected_identity = _EXPECTED_REPOSITORY_IDENTITIES.get(record.provider)
@@ -148,7 +168,24 @@ def compare_provider_evidence(
     *,
     gitlab_live_verified: bool = False,
     now: datetime | None = None,
+    policy: GitLabContingencyPolicy | None = None,
 ) -> EvidenceComparison:
+    effective = _effective_policy(policy)
+    # Historical GitLab records remain readable, but may never be promoted
+    # as live corroboration once the GitLab provider is retired.
+    if gitlab is not None and (
+        effective.provisioning_state != "PROVISIONED"
+        or "gitlab" not in effective.allowed_evidence_providers
+    ):
+        return EvidenceComparison(
+            EvidenceDisposition.GITLAB_EVIDENCE_INELIGIBLE,
+            "GitLab CI evidence is disabled by active policy",
+        )
+    if github is not None and "github" not in effective.allowed_evidence_providers:
+        return EvidenceComparison(
+            EvidenceDisposition.DISCREPANCY_BLOCKED,
+            "GitHub evidence is disabled by active policy",
+        )
     if type(gitlab_live_verified) is not bool:
         raise ValueError("gitlab_live_verified must be a boolean")
     if github is not None and github.provider != "github":
@@ -193,9 +230,9 @@ def compare_provider_evidence(
                 "provider CI configuration revisions do not match",
             )
     if github is not None:
-        validate_evidence(github, now=now)
+        validate_evidence(github, now=now, policy=effective)
     if gitlab is not None:
-        validate_evidence(gitlab, now=now)
+        validate_evidence(gitlab, now=now, policy=effective)
     if github is not None and gitlab is not None and github.result != gitlab.result:
         return EvidenceComparison(
             EvidenceDisposition.DISCREPANCY_BLOCKED,
