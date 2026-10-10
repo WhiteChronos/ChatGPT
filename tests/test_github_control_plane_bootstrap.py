@@ -52,7 +52,7 @@ def test_required_check_workflow_is_always_present_for_protected_prs():
     )
     import re
     actual_pins = re.findall(
-        r"^\s*-\s*uses:\s*['\"]?(actions/setup-python@[^\s'\"]+)",
+        r"^\s*(?:-\s*)?uses:\s*['\"]?(actions/setup-python@[^\s'\"]+)",
         text,
         flags=re.MULTILINE,
     )
