@@ -1,21 +1,8 @@
 name: DEKS Pages
 
+# Explicit manual invocation only; automatic Pages publication is suspended.
+# This safety gate prevents deleted legacy docs from initiating a deploy.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'docs/**'
-      - 'pipeline/build_deks_docs.py'
-      - 'pipeline/build_interactive_glossary.py'
-      - 'pipeline/build_public_glossary.py'
-      - 'pipeline/deks_engine.py'
-      - 'pipeline/glossary_engine.py'
-      - 'pipeline/knowledge_ingestion.py'
-      - 'datacenter/**'
-      - 'ingestion/**'
-      - 'mkdocs.yml'
-      - 'requirements-dev.txt'
-      - '.github/workflows/deks-pages.yml'
   workflow_dispatch:
 
 permissions:
