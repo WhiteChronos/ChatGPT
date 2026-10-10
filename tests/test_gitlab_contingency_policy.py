@@ -23,13 +23,13 @@ def test_policy_invariants():
     assert policy['evidence_requires_exact_sha'] is True
     assert policy['mirror_freshness_seconds'] == 3600
     assert policy['max_clock_skew_seconds'] == 300
-    assert policy['provisioning_state'] == 'PROVISIONED'
-    assert policy['gitlab_project_id'] == 86465539
-    assert policy['gitlab_project_path'] == 'chronoswhite-group/ChronosWhite-project'
-    assert policy['mirror_transport'] == 'neutral_worker'
+    assert policy['provisioning_state'] == 'DISABLED'
+    assert policy['gitlab_project_id'] is None
+    assert policy['gitlab_project_path'] is None
+    assert policy['mirror_transport'] is None
     assert policy['mirror_divergence_behavior'] == 'FAIL_CLOSED'
     assert policy['provider_disagreement_behavior'] == 'BLOCK_FOR_INVESTIGATION'
-    assert policy['allowed_evidence_providers'] == ['github', 'gitlab', 'local']
+    assert policy['allowed_evidence_providers'] == ['github', 'local']
     assert policy['allowed_mirror_ref_classes'] == [
         'main', 'spec/*', 'plan/*', 'feat/*', 'fix/*', 'release/*'
     ]
