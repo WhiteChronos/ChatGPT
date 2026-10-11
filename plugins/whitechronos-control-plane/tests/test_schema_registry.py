@@ -81,6 +81,26 @@ def test_registry_loads_arena_and_broker_descriptors():
     assert registry["subagent-broker"].runtime_probe.expected_tools == BROKER_TOOLS
 
 
+def test_local_adapters_keep_local_runtime_sources_and_record_upstream_bindings():
+    registry = load_registry(REPO)
+
+    arena = registry["github-arena"]
+    assert arena.source_type == "local"
+    assert arena.source == "plugins/github-arena"
+    assert arena.upstream is not None
+    assert arena.upstream.repository == "https://github.com/Jakeschincariol/arena-skill.git"
+    assert arena.upstream.relationship == "methodology_adaptation"
+    assert arena.upstream.commit == "df07b8e518e10cdecd8cd7712d9958b6f396250e"
+
+    broker = registry["subagent-broker"]
+    assert broker.source_type == "local"
+    assert broker.source == "plugins/subagent-broker"
+    assert broker.upstream is not None
+    assert broker.upstream.repository == "https://github.com/Shubhamsaboo/awesome-llm-apps.git"
+    assert broker.upstream.relationship == "agent_ecosystem_reference"
+    assert broker.upstream.commit == "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+
+
 def test_registry_rejects_duplicate_ids(tmp_path):
     first = _valid_descriptor("duplicate")
     second = copy.deepcopy(first)
@@ -103,6 +123,21 @@ def test_registry_rejects_runtime_probe_outside_declared_plugin_root(tmp_path):
     descriptor["runtime_probe"]["mcp_config"] = "../subagent-broker/.mcp.json"
     repo = _write_temp_registry(tmp_path, [descriptor])
     with pytest.raises(ValueError, match=r"runtime_probe\.mcp_config.*plugin_root"):
+        load_registry(repo)
+
+
+@pytest.mark.parametrize("commit", ["x" * 40, "a" * 39, "a" * 41])
+def test_registry_rejects_malformed_upstream_commit(tmp_path, commit):
+    descriptor = _valid_descriptor("bad-upstream")
+    descriptor["upstream"] = {
+        "repository": "https://github.com/example/project.git",
+        "ref": "main",
+        "commit": commit,
+        "license_status": "MIT",
+        "relationship": "reference",
+    }
+    repo = _write_temp_registry(tmp_path, [descriptor])
+    with pytest.raises(ValueError, match=r"upstream\.commit.*40-character hexadecimal"):
         load_registry(repo)
 
 

@@ -10,6 +10,13 @@
   "controller_plugin": "subagent-broker",
   "skill_paths": ["plugins/subagent-broker/skills/subagent-broker/SKILL.md"],
   "mcp_servers": ["subagent_broker"],
+  "upstream": {
+    "repository": "https://github.com/Shubhamsaboo/awesome-llm-apps.git",
+    "ref": "main",
+    "commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+    "license_status": "Apache-2.0",
+    "relationship": "agent_ecosystem_reference"
+  },
   "runtime_probe": {
     "plugin_root": "plugins/subagent-broker",
     "mcp_config": ".mcp.json",

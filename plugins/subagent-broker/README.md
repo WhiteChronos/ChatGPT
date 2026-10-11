@@ -2,6 +2,16 @@
 
 Native-first fallback runtime for independent Codex subagents.
 
+## Upstream binding
+
+The canonical upstream ecosystem requested for this adapter is
+`https://github.com/Shubhamsaboo/awesome-llm-apps.git`, pinned in the integration
+registry at commit `4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2`.
+
+That upstream is the agent/app reference ecosystem. The Codex-loadable Broker
+runtime remains the WhiteChronos adapter implemented in `plugins/subagent-broker`;
+the upstream catalog is not represented as if it directly shipped this MCP server.
+
 ## Routing
 
 1. If the current Codex harness exposes native multi-agent spawn/follow-up/wait tools, use those.

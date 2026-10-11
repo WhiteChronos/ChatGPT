@@ -2,6 +2,10 @@
 
 Camada Arena global de qualidade para ChatGPT/Codex, com proteções adicionais para tarefas GitHub. Adaptada da metodologia MIT de [Jakeschincariol/arena-skill](https://github.com/Jakeschincariol/arena-skill).
 
+O repositório upstream canônico é `https://github.com/Jakeschincariol/arena-skill.git`.
+O adaptador MCP carregável pelo Codex permanece neste repositório, em
+`plugins/github-arena`; vincular o upstream não substitui esse adaptador local.
+
 ## Política
 
 - **Micro Arena**: padrão para toda tarefa quando a Skill está instalada.

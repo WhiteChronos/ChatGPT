@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import os
+import shlex
+import shutil
 import subprocess
+import sys
+from pathlib import Path
 
 from .model import CodexCapabilities
 
@@ -23,10 +27,40 @@ def _minimal_env() -> dict[str, str]:
     return {key: os.environ[key] for key in _SAFE_ENV_KEYS if key in os.environ}
 
 
+def _command_argv(command: str, args: list[str]) -> list[str]:
+    """Resolve shebang scripts explicitly on Windows, where CreateProcess ignores them."""
+    if os.name != "nt":
+        return [command, *args]
+    path = Path(command)
+    if not path.is_file():
+        return [command, *args]
+    try:
+        with path.open("r", encoding="utf-8") as script:
+            first_line = script.readline().strip()
+    except (OSError, UnicodeError):
+        return [command, *args]
+    if not first_line.startswith("#!"):
+        return [command, *args]
+    tokens = shlex.split(first_line[2:].strip(), posix=True)
+    if not tokens:
+        return [command, *args]
+    interpreter = Path(tokens[0]).name
+    interpreter_args = tokens[1:]
+    if interpreter == "env":
+        if not interpreter_args:
+            return [command, *args]
+        interpreter, *interpreter_args = interpreter_args
+    if interpreter.lower() in {"python", "python3", "python.exe", "python3.exe"}:
+        executable = sys.executable
+    else:
+        executable = shutil.which(interpreter) or interpreter
+    return [executable, *interpreter_args, command, *args]
+
+
 def _capture(command: str, args: list[str], timeout_seconds: float) -> tuple[int, str, str]:
     try:
         completed = subprocess.run(
-            [command, *args],
+            _command_argv(command, args),
             shell=False,
             env=_minimal_env(),
             stdin=subprocess.DEVNULL,

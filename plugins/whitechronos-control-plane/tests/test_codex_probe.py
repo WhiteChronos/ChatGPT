@@ -40,7 +40,12 @@ def test_missing_codex_is_unavailable_without_exception(tmp_path):
 def test_exec_without_json_is_not_smoke_capable(tmp_path):
     fake = _make_executable(
         tmp_path / "codex-no-json",
-        "#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then echo 'codex-cli 1'; exit 0; fi\nif [ \"$1\" = \"exec\" ]; then echo 'Usage: codex exec [--sandbox MODE]'; exit 0; fi\nexit 1\n",
+        "#!/usr/bin/env python3\n"
+        "import sys\n"
+        "args=sys.argv[1:]\n"
+        "if args==['--version']: print('codex-cli 1'); raise SystemExit(0)\n"
+        "if args==['exec','--help']: print('Usage: codex exec [--sandbox MODE]'); raise SystemExit(0)\n"
+        "raise SystemExit(1)\n",
     )
     caps = probe_codex_cli(str(fake))
     assert caps.exec is True

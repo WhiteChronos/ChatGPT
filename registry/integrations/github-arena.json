@@ -10,6 +10,13 @@
   "controller_plugin": "github-arena",
   "skill_paths": ["plugins/github-arena/skills/github-arena/SKILL.md"],
   "mcp_servers": ["github_arena"],
+  "upstream": {
+    "repository": "https://github.com/Jakeschincariol/arena-skill.git",
+    "ref": "main",
+    "commit": "df07b8e518e10cdecd8cd7712d9958b6f396250e",
+    "license_status": "MIT",
+    "relationship": "methodology_adaptation"
+  },
   "runtime_probe": {
     "plugin_root": "plugins/github-arena",
     "mcp_config": ".mcp.json",

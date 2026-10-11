@@ -3,7 +3,11 @@ import {buildChildEnv,redactText} from './redaction.mjs';
 import {brokerError} from './protocol.mjs';
 import {readLinuxProcessIdentity,isSameProcessIdentity,terminateProcessGroup} from './process_identity.mjs';
 
-function execCapture(command,args,{cwd,env}={}){return new Promise((resolve,reject)=>{const child=spawn(command,args,{cwd,env,shell:false,stdio:['ignore','pipe','pipe']});let stdout='',stderr='';child.stdout.on('data',d=>stdout+=d);child.stderr.on('data',d=>stderr+=d);child.on('error',reject);child.on('close',code=>resolve({code,stdout,stderr}));});}
+function resolveCommand(command,args){
+  if(process.platform==='win32'&&/\.(?:js|mjs|cjs)$/i.test(command))return{command:process.execPath,args:[command,...args]};
+  return{command,args};
+}
+function execCapture(command,args,{cwd,env}={}){return new Promise((resolve,reject)=>{const resolved=resolveCommand(command,args);const child=spawn(resolved.command,resolved.args,{cwd,env,shell:false,stdio:['ignore','pipe','pipe']});let stdout='',stderr='';child.stdout.on('data',d=>stdout+=d);child.stderr.on('data',d=>stderr+=d);child.on('error',reject);child.on('close',code=>resolve({code,stdout,stderr}));});}
 export function extractSessionId(event){
   if(!event||typeof event!=='object')return null;
   const direct=['session_id','sessionId','thread_id','threadId'];for(const k of direct)if(typeof event[k]==='string'&&event[k])return event[k];
@@ -28,7 +32,8 @@ export class CodexCliBackend{
     if(caps.sandboxReadOnly||caps.sandboxWorkspaceWrite)args.push('--sandbox',workspace_mode==='worktree_write'?'workspace-write':'read-only');
     if(caps.approvalNever)args.push('--ask-for-approval','never');
     if(resumeSession)args.push('resume',resumeSession,'-');else args.push('-');
-    const child=spawn(this.codexPath,args,{cwd,env:buildChildEnv(this.parentEnv),shell:false,detached:process.platform==='linux',stdio:['pipe','pipe','pipe']});
+    const resolved=resolveCommand(this.codexPath,args);
+    const child=spawn(resolved.command,resolved.args,{cwd,env:buildChildEnv(this.parentEnv),shell:false,detached:process.platform==='linux',stdio:['pipe','pipe','pipe']});
     const identity=await this.processProbe(child.pid);let session_id=resumeSession??null,final_text='',stderr='';const pending=[];let buffer='';
     child.stdout.setEncoding('utf8');child.stdout.on('data',chunk=>{buffer+=chunk;let idx;while((idx=buffer.indexOf('\n'))>=0){const line=buffer.slice(0,idx);buffer=buffer.slice(idx+1);if(!line.trim())continue;pending.push(this.stateStore.appendEvent(agent_id,line));try{const event=JSON.parse(line);session_id=extractSessionId(event)??session_id;final_text=extractAgentText(event)??final_text;}catch{}}});
     child.stderr.setEncoding('utf8');child.stderr.on('data',chunk=>{const clean=redactText(chunk,this.parentEnv);stderr=(stderr+clean).slice(-65536);pending.push(this.stateStore.appendStderr(agent_id,clean));});

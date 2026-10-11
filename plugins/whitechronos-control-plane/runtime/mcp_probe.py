@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import os
-import selectors
+import queue
+import signal
 import subprocess
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
+from typing import BinaryIO
 
 from .model import CheckStatus, IntegrationDescriptor, McpProbeResult
 
@@ -23,6 +26,8 @@ _SAFE_ENV_KEYS = (
     "COMSPEC",
     "PATHEXT",
 )
+_MAX_EVENT_CHUNKS = 16
+_MAX_STDOUT_FRAME_BYTES = 1024 * 1024
 
 
 class McpProbeSecurityError(ValueError):
@@ -106,7 +111,13 @@ def resolve_mcp_launch(
 def _terminate(child: subprocess.Popen[bytes]) -> None:
     if child.poll() is not None:
         return
-    child.terminate()
+    if os.name == "nt":
+        try:
+            child.send_signal(signal.CTRL_BREAK_EVENT)
+        except OSError:
+            child.terminate()
+    else:
+        child.terminate()
     try:
         child.wait(timeout=0.5)
     except subprocess.TimeoutExpired:
@@ -120,26 +131,62 @@ def probe_stdio_mcp(
     expected_tools: tuple[str, ...],
     timeout_seconds: float = 5.0,
 ) -> McpProbeResult:
+    child_env = _minimal_env()
+    child_env.update(launch.env)
+    creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) if os.name == "nt" else 0
     child = subprocess.Popen(
         [launch.command, *launch.args],
         cwd=launch.cwd,
-        env=launch.env,
+        env=child_env,
         shell=False,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        creationflags=creationflags,
     )
     assert child.stdin is not None and child.stdout is not None and child.stderr is not None
-    selector = selectors.DefaultSelector()
-    selector.register(child.stdout, selectors.EVENT_READ, "stdout")
-    selector.register(child.stderr, selectors.EVENT_READ, "stderr")
-    os.set_blocking(child.stdout.fileno(), False)
-    os.set_blocking(child.stderr.fileno(), False)
+    events: queue.Queue[tuple[str, bytes | None]] = queue.Queue(maxsize=_MAX_EVENT_CHUNKS)
+    stop_readers = threading.Event()
+
+    def emit(event: tuple[str, bytes | None]) -> bool:
+        while not stop_readers.is_set():
+            try:
+                events.put(event, timeout=0.05)
+                return True
+            except queue.Full:
+                continue
+        return False
+
+    def pump(name: str, stream: BinaryIO) -> None:
+        read_chunk = getattr(stream, "read1", stream.read)
+        try:
+            while not stop_readers.is_set():
+                chunk = read_chunk(65536)
+                if not chunk:
+                    break
+                if not emit((name, chunk)):
+                    break
+        finally:
+            emit((name, None))
+
+    readers = (
+        threading.Thread(target=pump, args=("stdout", child.stdout), daemon=True),
+        threading.Thread(target=pump, args=("stderr", child.stderr), daemon=True),
+    )
+    for reader in readers:
+        reader.start()
     stdout_buffer = bytearray()
     stderr_buffer = bytearray()
     responses: dict[int, dict[str, object]] = {}
     sent_list = False
+    protocol_error: str | None = None
+    open_streams = {"stdout", "stderr"}
     deadline = time.monotonic() + max(0.01, timeout_seconds)
+
+    def append_stderr(chunk: bytes) -> None:
+        stderr_buffer.extend(chunk)
+        if len(stderr_buffer) > 65536:
+            del stderr_buffer[:-65536]
 
     def send(payload: dict[str, object]) -> None:
         child.stdin.write((json.dumps(payload, separators=(",", ":")) + "\n").encode("utf-8"))
@@ -149,41 +196,54 @@ def probe_stdio_mcp(
     try:
         while time.monotonic() < deadline and 2 not in responses:
             remaining = max(0.0, deadline - time.monotonic())
-            for key, _ in selector.select(remaining):
+            try:
+                name, chunk = events.get(timeout=remaining)
+            except queue.Empty:
+                break
+            if chunk is None:
+                open_streams.discard(name)
+                if not open_streams:
+                    break
+                continue
+            if name == "stderr":
+                append_stderr(chunk)
+                continue
+            stdout_buffer.extend(chunk)
+            if len(stdout_buffer) > _MAX_STDOUT_FRAME_BYTES and b"\n" not in stdout_buffer:
+                protocol_error = f"MCP stdout frame exceeds {_MAX_STDOUT_FRAME_BYTES} bytes"
+                break
+            while b"\n" in stdout_buffer:
+                raw, _, rest = stdout_buffer.partition(b"\n")
+                stdout_buffer = bytearray(rest)
+                if len(raw) > _MAX_STDOUT_FRAME_BYTES:
+                    protocol_error = f"MCP stdout frame exceeds {_MAX_STDOUT_FRAME_BYTES} bytes"
+                    break
+                if not raw.strip():
+                    continue
                 try:
-                    chunk = os.read(key.fileobj.fileno(), 65536)
-                except BlockingIOError:
+                    message = json.loads(raw.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
                     continue
-                if not chunk:
-                    try:
-                        selector.unregister(key.fileobj)
-                    except Exception:
-                        pass
-                    continue
-                if key.data == "stderr":
-                    stderr_buffer.extend(chunk)
-                    if len(stderr_buffer) > 65536:
-                        del stderr_buffer[:-65536]
-                    continue
-                stdout_buffer.extend(chunk)
-                while b"\n" in stdout_buffer:
-                    raw, _, rest = stdout_buffer.partition(b"\n")
-                    stdout_buffer = bytearray(rest)
-                    if not raw.strip():
-                        continue
-                    try:
-                        message = json.loads(raw.decode("utf-8"))
-                    except (UnicodeDecodeError, json.JSONDecodeError):
-                        continue
-                    if isinstance(message, dict) and isinstance(message.get("id"), int):
-                        responses[int(message["id"])] = message
+                if isinstance(message, dict) and isinstance(message.get("id"), int):
+                    responses[int(message["id"])] = message
+            if protocol_error is not None:
+                break
             if 1 in responses and not sent_list:
                 send({"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}})
                 send({"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}})
                 sent_list = True
     finally:
         _terminate(child)
-        selector.close()
+        stop_readers.set()
+        for reader in readers:
+            reader.join(timeout=0.5)
+        while True:
+            try:
+                name, chunk = events.get_nowait()
+            except queue.Empty:
+                break
+            if name == "stderr" and chunk:
+                append_stderr(chunk)
 
     stderr_tail = stderr_buffer.decode("utf-8", errors="replace")[-8192:]
     init = responses.get(1)
@@ -192,7 +252,7 @@ def probe_stdio_mcp(
         return McpProbeResult(
             server_name="unknown",
             status=CheckStatus.FAIL,
-            server_info={"error": "MCP probe timed out or returned incomplete JSON-RPC responses"},
+            server_info={"error": protocol_error or "MCP probe timed out or returned incomplete JSON-RPC responses"},
             tools=(),
             missing_tools=tuple(expected_tools),
             unexpected_tools=(),
