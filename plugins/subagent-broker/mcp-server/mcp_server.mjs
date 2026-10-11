@@ -33,6 +33,7 @@ const handlers={subagent_spawn:a=>broker.spawn(a),subagent_status:a=>broker.stat
 
 const rl=readline.createInterface({input:process.stdin,crlfDelay:Infinity});
 for await(const line of rl){if(!line.trim())continue;let req;try{req=JSON.parse(line);}catch{errorResponse(null,-32700,'Parse error');continue;}const{id,method,params={}}=req;try{
+ if(method==='notifications/initialized')continue;
  if(method==='initialize'){response(id,{protocolVersion:params.protocolVersion||'2025-03-26',capabilities:{tools:{}},serverInfo:{name:'subagent-broker',version:'1.0.0'}});continue;}
  if(method==='ping'){response(id,{});continue;}
  if(method==='tools/list'){response(id,{tools:TOOLS.map(([name,description,readOnly,destructive])=>({name,description,inputSchema:schema(name),annotations:{readOnlyHint:readOnly,destructiveHint:destructive,idempotentHint:readOnly,openWorldHint:false}}))});continue;}
