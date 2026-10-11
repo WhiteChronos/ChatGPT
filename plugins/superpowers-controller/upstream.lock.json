@@ -2,8 +2,8 @@
   "upstream": {
     "repository": "obra/superpowers",
     "ref": "main",
-    "observed_sha": "8ca22dba9a94f28898bbce59f2537ff4d87c747d",
-    "observed_version": "6.4.2",
+    "observed_sha": "bb92a77741419a4ab5f06e711a283343f1ada0c3",
+    "observed_version": "7.0.0",
     "license": "MIT"
   },
   "official_codex_marketplace": {
