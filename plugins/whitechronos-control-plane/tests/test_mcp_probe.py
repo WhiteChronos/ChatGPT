@@ -65,13 +65,32 @@ def test_probe_reports_missing_tool_as_failure(tmp_path):
 def test_probe_times_out_and_terminates_child(tmp_path):
     marker = tmp_path / "terminated"
     script = tmp_path / "hang.mjs"
-    script.write_text("""import fs from 'node:fs';process.on('SIGTERM',()=>{fs.writeFileSync(process.env.MARKER,'yes');process.exit(0)});setInterval(()=>{},1000);""", encoding="utf-8")
+    script.write_text("""import fs from 'node:fs';const stop=()=>{fs.writeFileSync(process.env.MARKER,'yes');process.exit(0)};process.on('SIGTERM',stop);process.on('SIGBREAK',stop);setInterval(()=>{},1000);""", encoding="utf-8")
     launch = McpLaunchSpec(command="node", args=(str(script),), cwd=tmp_path, env={"PATH": os.environ["PATH"], "MARKER": str(marker)})
     started = time.monotonic()
     result = probe_stdio_mcp(launch, expected_tools=("never",), timeout_seconds=0.25)
     assert result.status is CheckStatus.FAIL
     assert time.monotonic() - started < 2.0
     assert marker.exists()
+
+
+def test_probe_rejects_oversized_stdout_frame_without_unbounded_buffering(tmp_path):
+    script = tmp_path / "oversized.mjs"
+    script.write_text(
+        "process.stdout.write('x'.repeat(1024 * 1024 + 1));setInterval(()=>{},1000);",
+        encoding="utf-8",
+    )
+    launch = McpLaunchSpec(
+        command="node",
+        args=(str(script),),
+        cwd=tmp_path,
+        env={"PATH": os.environ["PATH"]},
+    )
+    started = time.monotonic()
+    result = probe_stdio_mcp(launch, expected_tools=("never",), timeout_seconds=2.0)
+    assert result.status is CheckStatus.FAIL
+    assert result.server_info["error"] == "MCP stdout frame exceeds 1048576 bytes"
+    assert time.monotonic() - started < 2.0
 
 def test_broker_launch_rejects_manifest_without_repo_root_env_passthrough(tmp_path):
     repo = tmp_path / "repo"
