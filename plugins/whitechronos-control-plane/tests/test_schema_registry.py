@@ -74,7 +74,7 @@ def _valid_descriptor(integration_id: str = "sample") -> dict:
 
 def test_registry_loads_arena_and_broker_descriptors():
     registry = load_registry(REPO)
-    assert tuple(registry) == ("github-arena", "subagent-broker")
+    assert tuple(registry) == ("github-arena", "subagent-broker", "arena-2.0")
     assert registry["github-arena"].runtime_probe is not None
     assert registry["github-arena"].runtime_probe.expected_tools == ARENA_TOOLS
     assert registry["subagent-broker"].runtime_probe is not None
@@ -126,3 +126,21 @@ def test_schema_validator_rejects_unsupported_keyword(tmp_path):
     (reg / "index.json").write_text(json.dumps({"schema_version":1,"descriptors":["entry.json"]}), encoding="utf-8")
     with pytest.raises(ValueError, match=r"unsupported schema keyword.*pattern"):
         load_registry(repo)
+
+
+def test_arena2_external_reference_is_non_executable_and_isolated():
+    registry = load_registry(REPO)
+    entry = registry["arena-2.0"]
+    assert entry.display_name == "ARENA 2.0 Research Curriculum"
+    assert entry.source_type == "external_reference"
+    assert entry.source == "https://github.com/callummcdougall/ARENA_2.0.git"
+    assert entry.license_status == "UNVERIFIED"
+    assert entry.execution_class == "REFERENCE_ONLY"
+    assert entry.status == "ACTIVATION_GATED"
+    assert entry.controller_plugin is None
+    assert entry.skill_paths == ()
+    assert entry.mcp_servers == ()
+    assert entry.runtime_probe is None
+    routing = (REPO / "runbooks" / "arena2-research-reference.md").read_text(encoding="utf-8")
+    assert "e805ad8772b81fa44252ab3b7590ac614aa29376" in routing
+    assert "GitHub Arena" in routing and "Subagent Broker" in routing

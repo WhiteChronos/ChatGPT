@@ -2,6 +2,7 @@
   "schema_version": 1,
   "descriptors": [
     "github-arena.json",
-    "subagent-broker.json"
+    "subagent-broker.json",
+    "arena-2.0.json"
   ]
 }

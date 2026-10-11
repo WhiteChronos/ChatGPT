@@ -252,3 +252,10 @@ For runtime claims about Codex, Arena MCP, Subagent Broker, or native multi-agen
 - `HOST_RELOAD_REQUIRED` must not trigger code changes; start a fresh Codex environment/session instead.
 - Independent subagent claims still require real lifecycle evidence from the current runtime.
 - Preserve the existing routing order: repository constraints -> Superpowers -> specialized capability -> GitHub -> GitHub Arena.
+
+
+## Optional ARENA 2.0 research reference
+
+When ARENA 2.0 from `callummcdougall/ARENA_2.0` is requested, use `registry/integrations/arena-2.0.json` and `runbooks/arena2-research-reference.md` as a **reference-only, license-unverified** source. Its ML curriculum is unrelated to GitHub Arena's review process, and it SHALL NOT become an active Codex plugin, MCP service, independent subagent, or required runtime dependency.
+
+The four requested operator-facing roles are GitHub Arena (review), Codex Runtime Doctor (runtime evidence), Subagent Broker (real independent lifecycle when discovered), and Superpowers Controller (official workflow routing). The `@` labels are documentation names, not evidence of host-side invocation aliases. Do not claim any was loaded by the live host without observed evidence. GitHub remains the sole CI/merge authority; no website deployment, local-PC connection, additional secret, or background execution is implied.
