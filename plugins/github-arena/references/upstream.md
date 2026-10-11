@@ -2,6 +2,10 @@
 
 Primary upstream: https://github.com/Jakeschincariol/arena-skill
 
+Canonical clone URL: https://github.com/Jakeschincariol/arena-skill.git
+
+Pinned `main` commit: `df07b8e518e10cdecd8cd7712d9958b6f396250e`
+
 Observed on 2026-10-02:
 
 - public repository;
@@ -18,3 +22,7 @@ The original system gives every competitor the same task plus a different strate
 Upstream rubric: correctness 30, completeness 25, robustness 20, specificity 15, clarity 10.
 
 Re-check the upstream license before importing future substantive source changes.
+
+The Codex-loadable MCP adapter remains implemented locally at
+`plugins/github-arena`. The upstream binding records methodology and provenance;
+it does not change the plugin runtime source to the Claude-oriented upstream.

@@ -25,6 +25,15 @@ class RuntimeProbeSpec:
 
 
 @dataclass(frozen=True)
+class UpstreamBinding:
+    repository: str
+    ref: str
+    commit: str
+    license_status: str
+    relationship: str
+
+
+@dataclass(frozen=True)
 class IntegrationDescriptor:
     id: str
     display_name: str
@@ -37,6 +46,7 @@ class IntegrationDescriptor:
     skill_paths: tuple[str, ...]
     mcp_servers: tuple[str, ...]
     runtime_probe: RuntimeProbeSpec | None
+    upstream: UpstreamBinding | None = None
 
 
 @dataclass(frozen=True)

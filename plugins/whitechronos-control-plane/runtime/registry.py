@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
-from .model import IntegrationDescriptor, RuntimeProbeSpec
+from .model import IntegrationDescriptor, RuntimeProbeSpec, UpstreamBinding
 from .schema import validate_schema_subset
 
 
@@ -41,6 +42,19 @@ def _descriptor_from_data(repo_root: Path, data: dict[str, object]) -> Integrati
             required_for_broker_smoke=bool(probe_data["required_for_broker_smoke"]),
         )
     controller = data.get("controller_plugin")
+    upstream_data = data.get("upstream")
+    upstream = None
+    if isinstance(upstream_data, dict):
+        upstream_commit = str(upstream_data["commit"])
+        if re.fullmatch(r"[0-9a-fA-F]{40}", upstream_commit) is None:
+            raise ValueError("upstream.commit must be a 40-character hexadecimal Git commit")
+        upstream = UpstreamBinding(
+            repository=str(upstream_data["repository"]),
+            ref=str(upstream_data["ref"]),
+            commit=upstream_commit,
+            license_status=str(upstream_data["license_status"]),
+            relationship=str(upstream_data["relationship"]),
+        )
     return IntegrationDescriptor(
         id=str(data["id"]),
         display_name=str(data["display_name"]),
@@ -53,6 +67,7 @@ def _descriptor_from_data(repo_root: Path, data: dict[str, object]) -> Integrati
         skill_paths=tuple(str(item) for item in data["skill_paths"]),
         mcp_servers=tuple(str(item) for item in data["mcp_servers"]),
         runtime_probe=probe,
+        upstream=upstream,
     )
 
 

@@ -40,6 +40,18 @@
         "expected_tools": {"type": "array", "items": {"type": "string", "minLength": 1}},
         "required_for_broker_smoke": {"type": "boolean"}
       }
+    },
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "ref", "commit", "license_status", "relationship"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "minLength": 1},
+        "license_status": {"type": "string", "minLength": 1},
+        "relationship": {"type": "string", "minLength": 1}
+      }
     }
   }
 }
