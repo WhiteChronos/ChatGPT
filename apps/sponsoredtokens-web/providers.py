@@ -1,4 +1,4 @@
-"""Bounded Responses transports and the explicit two-provider failover policy."""
+"""Bounded SponsoredTokens Responses transport for the local-only chat."""
 
 import http.client
 import json
@@ -9,8 +9,6 @@ from typing import Callable
 
 SPONSOREDTOKENS_ENDPOINT = "https://sponsoredtokens.com/api/v1/responses"
 SPONSOREDTOKENS_MODEL = "sponsored/openai/gpt-5.1-codex-mini"
-OPENAI_ENDPOINT = "https://api.openai.com/v1/responses"
-OPENAI_MODEL = "gpt-5-mini"
 UPSTREAM_TIMEOUT_SECONDS = 30
 MAX_RESPONSE_BYTES = 1_048_576
 
@@ -24,23 +22,9 @@ _ERRORS = {
     "invalid_request": (400, "Provider rejected the request"),
     "invalid_upstream_response": (502, "Provider returned an invalid response"),
 }
-_FALLBACK_CODES = frozenset({
-    "quota_exhausted", "rate_limited", "upstream_timeout", "upstream_unavailable",
-})
-
-
 @dataclass(frozen=True)
-class ProviderConfig:
-    name: str
-    endpoint: str
-    model: str
+class SponsoredTokensConfig:
     api_key: str | None = field(repr=False)
-
-
-@dataclass(frozen=True)
-class RuntimeConfig:
-    primary: ProviderConfig
-    fallback: ProviderConfig
 
 
 @dataclass(frozen=True)
@@ -48,7 +32,6 @@ class ProviderResult:
     text: str
     provider: str
     model: str
-    fallback_used: bool
 
 
 class ProviderError(Exception):
@@ -120,13 +103,13 @@ def _reject_json_constant(value: str):
     raise ValueError("Non-standard JSON number")
 
 
-def call_provider(
-    config: ProviderConfig,
+def call_sponsoredtokens(
+    config: SponsoredTokensConfig,
     messages: list[dict[str, str]],
     *,
     opener: Callable = urllib.request.urlopen,
-) -> str:
-    """Make one bounded request using only this provider's configured key."""
+) -> ProviderResult:
+    """Make one bounded request using only the SponsoredTokens credential."""
     if not config.api_key or not config.api_key.strip():
         raise ProviderError("configuration_required")
 
@@ -138,8 +121,10 @@ def call_provider(
     error_code = None
     try:
         request = urllib.request.Request(
-            config.endpoint,
-            data=json.dumps(build_upstream_payload(messages, config.model), ensure_ascii=False).encode("utf-8"),
+            SPONSOREDTOKENS_ENDPOINT,
+            data=json.dumps(
+                build_upstream_payload(messages, SPONSOREDTOKENS_MODEL), ensure_ascii=False,
+            ).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + config.api_key,
@@ -154,7 +139,11 @@ def call_provider(
             error_code = "invalid_upstream_response"
         else:
             payload = json.loads(body, parse_constant=_reject_json_constant)
-            return extract_response_text(payload)
+            text = extract_response_text(payload)
+            if config.api_key in text:
+                error_code = "invalid_upstream_response"
+            else:
+                return ProviderResult(text, "SponsoredTokens", SPONSOREDTOKENS_MODEL)
     except urllib.error.HTTPError as error:
         error_code = _http_error_code(error.code)
         error.close()
@@ -172,34 +161,3 @@ def call_provider(
     # Raise after leaving the except block: raw exceptions are not retained in
     # __context__, __cause__, display text, or logs.
     raise ProviderError(error_code)
-
-
-def _reject_credential_echo(text: str, config: RuntimeConfig) -> None:
-    """Reject the entire response rather than alter text or expose either key."""
-    for provider in (config.primary, config.fallback):
-        key = provider.api_key
-        if key and key.strip() and key in text:
-            raise ProviderError("invalid_upstream_response")
-
-
-def route_chat(
-    config: RuntimeConfig,
-    messages: list[dict[str, str]],
-    *,
-    caller: Callable = call_provider,
-) -> ProviderResult:
-    """Try primary, then one explicit fallback only for availability failures."""
-    try:
-        text = caller(config.primary, messages)
-    except ProviderError as error:
-        if error.code not in _FALLBACK_CODES:
-            raise
-    else:
-        _reject_credential_echo(text, config)
-        return ProviderResult(text, config.primary.name, config.primary.model, False)
-
-    # Outside the primary exception handler, so a fallback failure cannot chain
-    # the original failure or induce retries. No sponsor footer is synthesized.
-    text = caller(config.fallback, messages)
-    _reject_credential_echo(text, config)
-    return ProviderResult(text, config.fallback.name, config.fallback.model, True)
