@@ -1,4 +1,17 @@
-"""Shared request validation for the local SponsoredTokens chat server."""
+"""Secure loopback HTTP boundary for the local SponsoredTokens chat."""
+
+import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from typing import Callable
+
+from providers import (
+    SPONSOREDTOKENS_MODEL,
+    ProviderError,
+    ProviderResult,
+    SponsoredTokensConfig,
+    call_sponsoredtokens,
+)
 
 MAX_BODY_BYTES = 1_048_576
 MAX_MESSAGES = 100
@@ -48,3 +61,165 @@ def validate_messages(value: object) -> list[dict[str, str]]:
         validated.append({"role": role, "content": content})
 
     return validated
+
+
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
+_STATIC_ROUTES = {
+    "/": ("index.html", "text/html; charset=utf-8"),
+    "/index.html": ("index.html", "text/html; charset=utf-8"),
+    "/app.css": ("app.css", "text/css; charset=utf-8"),
+    "/app.js": ("app.js", "text/javascript; charset=utf-8"),
+}
+_SECURITY_HEADERS = {
+    "Content-Security-Policy": (
+        "default-src 'self'; connect-src 'self'; img-src 'self'; "
+        "style-src 'self'; script-src 'self'; base-uri 'none'; "
+        "form-action 'self'; frame-ancestors 'none'"
+    ),
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Cache-Control": "no-store",
+}
+
+
+def make_handler(
+    config: SponsoredTokensConfig,
+    transport: Callable = call_sponsoredtokens,
+):
+    """Build a request handler closed over one immutable provider config."""
+
+    class LocalChatHandler(BaseHTTPRequestHandler):
+        server_version = "SponsoredTokensLocalChat"
+        sys_version = ""
+
+        def log_message(self, format, *args):
+            return
+
+        def _valid_request_authority(self) -> bool:
+            if self.path.startswith(("http://", "https://", "//")):
+                return False
+            host_values = self.headers.get_all("Host", failobj=[])
+            expected = f"127.0.0.1:{self.server.server_address[1]}"
+            return host_values == [expected]
+
+        def _send(self, status: int, body: bytes, content_type: str) -> None:
+            self.send_response(status)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(body)))
+            for name, value in _SECURITY_HEADERS.items():
+                self.send_header(name, value)
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(body)
+
+        def _send_json(self, status: int, payload: dict) -> None:
+            body = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            self._send(status, body, "application/json; charset=utf-8")
+
+        def _error(self, status: int, code: str) -> None:
+            self._send_json(status, {"error": code})
+
+        def _require_authority(self) -> bool:
+            if self._valid_request_authority():
+                return True
+            self.close_connection = True
+            self._error(400, "invalid_request")
+            return False
+
+        def do_GET(self):
+            if not self._require_authority():
+                return
+            if self.path == "/api/health":
+                ready = bool(config.api_key and config.api_key.strip())
+                self._send_json(200, {
+                    "ready": ready,
+                    "provider": "SponsoredTokens",
+                    "model": SPONSOREDTOKENS_MODEL,
+                })
+                return
+            asset = _STATIC_ROUTES.get(self.path)
+            if asset is None:
+                self._error(404, "not_found")
+                return
+            filename, content_type = asset
+            self._send(200, (_STATIC_DIR / filename).read_bytes(), content_type)
+
+        def do_POST(self):
+            if not self._require_authority():
+                return
+            if self.path != "/api/chat":
+                self._error(404, "not_found")
+                return
+            lengths = self.headers.get_all("Content-Length", failobj=[])
+            if len(lengths) != 1:
+                self.close_connection = True
+                self._error(411, "length_required")
+                return
+            try:
+                length = int(lengths[0])
+            except (TypeError, ValueError):
+                self.close_connection = True
+                self._error(400, "invalid_request")
+                return
+            if length < 0:
+                self.close_connection = True
+                self._error(400, "invalid_request")
+                return
+            if length > MAX_BODY_BYTES:
+                self.close_connection = True
+                self._error(413, "body_too_large")
+                return
+            body = self.rfile.read(length)
+            if len(body) != length:
+                self.close_connection = True
+                self._error(400, "invalid_request")
+                return
+            try:
+                payload = json.loads(body.decode("utf-8"))
+                if not isinstance(payload, dict) or set(payload) != {"messages"}:
+                    raise RequestValidationError()
+                messages = validate_messages(payload["messages"])
+            except (UnicodeDecodeError, json.JSONDecodeError, RequestValidationError):
+                self._error(400, "invalid_request")
+                return
+            try:
+                result: ProviderResult = transport(config, messages)
+            except ProviderError as error:
+                self._error(error.http_status, error.code)
+                return
+            except Exception:
+                self._error(502, "upstream_unavailable")
+                return
+            self._send_json(200, {
+                "text": result.text,
+                "provider": result.provider,
+                "model": result.model,
+            })
+
+        def _method_not_allowed(self):
+            if not self._require_authority():
+                return
+            self._error(405, "method_not_allowed")
+
+        do_DELETE = _method_not_allowed
+        do_HEAD = _method_not_allowed
+        do_OPTIONS = _method_not_allowed
+        do_PATCH = _method_not_allowed
+        do_PUT = _method_not_allowed
+        do_TRACE = _method_not_allowed
+
+    return LocalChatHandler
+
+
+def create_server(
+    config: SponsoredTokensConfig,
+    *,
+    host: str = "127.0.0.1",
+    port: int = 0,
+    transport: Callable = call_sponsoredtokens,
+) -> ThreadingHTTPServer:
+    """Create, but do not start, an IPv4 loopback-only threaded server."""
+    validated_host = validate_bind_host(host)
+    server = ThreadingHTTPServer((validated_host, port), make_handler(config, transport))
+    server.daemon_threads = True
+    return server

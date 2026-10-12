@@ -2,7 +2,9 @@ import copy
 import http.client
 import io
 import json
+import socket
 import sys
+import threading
 import traceback
 import unittest
 import urllib.error
@@ -258,6 +260,193 @@ class ProviderTests(unittest.TestCase):
                 opener=lambda *args, **kwargs: FakeResponse(body),
             )
         self.assert_safe_error(caught.exception, "invalid_upstream_response", 502)
+
+
+class HttpBoundaryTests(unittest.TestCase):
+    def setUp(self):
+        self.calls = []
+        self.config = providers.SponsoredTokensConfig("sentinel-sponsored-secret")
+
+        def transport(config, messages):
+            self.calls.append((config, copy.deepcopy(messages)))
+            return providers.ProviderResult(
+                "Resposta 🌍\n\nSponsored by Example\n ",
+                "SponsoredTokens",
+                providers.SPONSOREDTOKENS_MODEL,
+            )
+
+        self.server = __import__("server").create_server(self.config, transport=transport)
+        self.port = self.server.server_address[1]
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.server.server_close()
+        self.thread.join(timeout=2)
+
+    def request(self, method, path, body=None, headers=None):
+        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=2)
+        connection.request(method, path, body=body, headers=headers or {})
+        response = connection.getresponse()
+        payload = response.read()
+        result = response.status, dict(response.getheaders()), payload
+        connection.close()
+        return result
+
+    def assert_security_headers(self, headers):
+        lowered = {key.lower(): value for key, value in headers.items()}
+        self.assertIn("default-src 'self'", lowered["content-security-policy"])
+        self.assertEqual(lowered["x-content-type-options"], "nosniff")
+        self.assertEqual(lowered["referrer-policy"], "no-referrer")
+        self.assertEqual(lowered["cache-control"], "no-store")
+        self.assertNotIn("access-control-allow-origin", lowered)
+
+    def test_health_reports_fixed_metadata_and_key_readiness(self):
+        status, headers, body = self.request("GET", "/api/health")
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body), {
+            "ready": True,
+            "provider": "SponsoredTokens",
+            "model": providers.SPONSOREDTOKENS_MODEL,
+        })
+        self.assert_security_headers(headers)
+        self.assertNotIn(b"sentinel-sponsored-secret", body)
+
+        other = __import__("server").create_server(providers.SponsoredTokensConfig(None))
+        thread = threading.Thread(target=other.serve_forever, daemon=True)
+        thread.start()
+        try:
+            connection = http.client.HTTPConnection("127.0.0.1", other.server_address[1], timeout=2)
+            connection.request("GET", "/api/health")
+            response = connection.getresponse()
+            payload = json.loads(response.read())
+            self.assertEqual(response.status, 200)
+            self.assertFalse(payload["ready"])
+            connection.close()
+        finally:
+            other.shutdown()
+            other.server_close()
+            thread.join(timeout=2)
+
+    def test_chat_returns_exact_result_and_invokes_transport_once(self):
+        messages = [{"role": "user", "content": "Olá"}]
+        status, headers, body = self.request(
+            "POST", "/api/chat",
+            json.dumps({"messages": messages}, ensure_ascii=False).encode("utf-8"),
+            {"Content-Type": "application/json"},
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body), {
+            "text": "Resposta 🌍\n\nSponsored by Example\n ",
+            "provider": "SponsoredTokens",
+            "model": providers.SPONSOREDTOKENS_MODEL,
+        })
+        self.assertEqual(self.calls, [(self.config, messages)])
+        self.assert_security_headers(headers)
+
+    def test_provider_errors_keep_stable_code_and_status(self):
+        for code, expected_status in (
+            ("configuration_required", 503), ("authentication_failed", 502),
+            ("quota_exhausted", 503), ("rate_limited", 429),
+            ("upstream_timeout", 504), ("upstream_unavailable", 502),
+            ("invalid_request", 400), ("invalid_upstream_response", 502),
+        ):
+            with self.subTest(code=code):
+                server = __import__("server").create_server(
+                    self.config,
+                    transport=lambda *args, error_code=code: (_ for _ in ()).throw(
+                        providers.ProviderError(error_code)
+                    ),
+                )
+                thread = threading.Thread(target=server.serve_forever, daemon=True)
+                thread.start()
+                try:
+                    connection = http.client.HTTPConnection("127.0.0.1", server.server_address[1], timeout=2)
+                    body = b'{"messages":[{"role":"user","content":"hi"}]}'
+                    connection.request("POST", "/api/chat", body, {"Content-Type": "application/json"})
+                    response = connection.getresponse()
+                    response_body = response.read()
+                    self.assertEqual(response.status, expected_status)
+                    self.assertEqual(json.loads(response_body), {"error": code})
+                    self.assertNotIn(b"sentinel-sponsored-secret", response_body)
+                    connection.close()
+                finally:
+                    server.shutdown()
+                    server.server_close()
+                    thread.join(timeout=2)
+
+    def test_rejects_invalid_missing_and_oversized_request_bodies(self):
+        cases = (
+            (b"not-json", {}, 400),
+            (b"\xff", {}, 400),
+            (b"{}", {}, 400),
+            (b'{"messages":[]}', {}, 400),
+            (b"{}", {"Content-Length": str(1_048_577)}, 413),
+        )
+        for body, headers, expected in cases:
+            with self.subTest(body=body[:12], expected=expected):
+                supplied = {"Content-Type": "application/json", **headers}
+                status, response_headers, response_body = self.request("POST", "/api/chat", body, supplied)
+                self.assertEqual(status, expected)
+                self.assert_security_headers(response_headers)
+                self.assertNotIn(b"sentinel-sponsored-secret", response_body)
+        self.assertEqual(self.calls, [])
+
+    def test_rejects_missing_content_length_without_waiting(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=2)
+        connection.putrequest("POST", "/api/chat", skip_host=True)
+        connection.putheader("Host", f"127.0.0.1:{self.port}")
+        connection.putheader("Content-Type", "application/json")
+        connection.endheaders()
+        response = connection.getresponse()
+        self.assertEqual(response.status, 411)
+        self.assertNotIn(b"sentinel-sponsored-secret", response.read())
+        connection.close()
+
+    def test_rejects_partial_body(self):
+        raw = socket.create_connection(("127.0.0.1", self.port), timeout=2)
+        raw.sendall((
+            f"POST /api/chat HTTP/1.1\r\nHost: 127.0.0.1:{self.port}\r\n"
+            "Content-Type: application/json\r\nContent-Length: 99\r\n\r\n{}"
+        ).encode("ascii"))
+        raw.shutdown(socket.SHUT_WR)
+        response = raw.recv(4096)
+        raw.close()
+        self.assertIn(b" 400 ", response)
+        self.assertNotIn(b"sentinel-sponsored-secret", response)
+
+    def test_rejects_unsupported_method_host_absolute_target_and_traversal(self):
+        status, headers, _ = self.request("PUT", "/api/chat")
+        self.assertEqual(status, 405)
+        self.assert_security_headers(headers)
+
+        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=2)
+        connection.putrequest("GET", "/api/health", skip_host=True)
+        connection.putheader("Host", "evil.example")
+        connection.endheaders()
+        response = connection.getresponse()
+        self.assertEqual(response.status, 400)
+        response.read()
+        connection.close()
+
+        self.assertEqual(self.request("GET", "http://evil.example/api/health")[0], 400)
+        self.assertEqual(self.request("GET", "/%2e%2e/server.py")[0], 404)
+        self.assertEqual(self.request("GET", "/unknown")[0], 404)
+
+    def test_static_allowlist_uses_fixed_mime_types(self):
+        for path, content_type in (
+            ("/", "text/html; charset=utf-8"),
+            ("/index.html", "text/html; charset=utf-8"),
+            ("/app.css", "text/css; charset=utf-8"),
+            ("/app.js", "text/javascript; charset=utf-8"),
+        ):
+            with self.subTest(path=path):
+                status, headers, body = self.request("GET", path)
+                self.assertEqual(status, 200)
+                self.assertEqual(headers["Content-Type"], content_type)
+                self.assertTrue(body)
+                self.assert_security_headers(headers)
 
 
 class ValidateBindHostTests(unittest.TestCase):
