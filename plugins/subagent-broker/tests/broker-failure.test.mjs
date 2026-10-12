@@ -6,6 +6,7 @@ import path from 'node:path';
 import {StateStore} from '../mcp-server/state_store.mjs';
 import {SubagentBroker} from '../mcp-server/broker.mjs';
 import {brokerError} from '../mcp-server/protocol.mjs';
+import {removeTree} from './test_helpers.mjs';
 
 function deferred() {
   let resolve, reject;
@@ -53,7 +54,7 @@ test('followup launch failure becomes FAILED instead of remaining SPAWNING', asy
     assert.equal((await broker.status('sa_failure')).state,'FAILED');
   } finally {
     await broker.shutdown();
-    await fs.rm(root,{recursive:true,force:true});
+    await removeTree(root);
   }
 });
 
@@ -71,7 +72,7 @@ test('followup child rejection becomes FAILED instead of remaining RUNNING', asy
     assert.equal(state,'FAILED');
   } finally {
     await broker.shutdown();
-    await fs.rm(root,{recursive:true,force:true});
+    await removeTree(root);
   }
 });
 
@@ -91,6 +92,6 @@ test('timeout containment failure is ORPHANED, not falsely TIMED_OUT', async () 
     assert.equal((await broker.status('sa_timeout')).state,'ORPHANED');
   } finally {
     await broker.shutdown();
-    await fs.rm(root,{recursive:true,force:true});
+    await removeTree(root);
   }
 });

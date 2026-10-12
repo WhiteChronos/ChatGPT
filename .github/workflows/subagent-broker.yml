@@ -59,3 +59,13 @@ jobs:
         run: python -m pytest -q tests/test_engineering_compatibility_gate.py
       - name: Protocol Zero tests
         run: python -m pytest -q tests/test_protocol_zero_gate.py
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test Subagent Broker on Windows
+        run: node --test plugins/subagent-broker/tests/*.test.mjs
