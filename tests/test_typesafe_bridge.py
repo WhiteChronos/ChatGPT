@@ -217,3 +217,20 @@ def test_llm_comparison_does_not_forward_nested_debug_metadata():
                                   client_factory=lambda **kw: FakeClient(raw))
     assert "debug" not in got["answers"]["route"]
     assert "confidential payload" not in json.dumps(got)
+
+
+def test_llm_adapter_supplies_required_official_constructor_options():
+    seen = {}
+    def client_factory(*, structured_outputs, llm_answer_mode, normalize_probabilities):
+        seen.update({"structured_outputs": structured_outputs,
+                     "llm_answer_mode": llm_answer_mode,
+                     "normalize_probabilities": normalize_probabilities})
+        return FakeClient(payload(model="test-model"))
+    got = evaluate_llm_comparison(
+        "synthetic", QUESTIONS, provider="gemini", model="test-model",
+        client_factory=client_factory,
+    )
+    assert got["provider"] == "gemini"
+    assert seen == {"structured_outputs": True,
+                    "llm_answer_mode": "probabilities",
+                    "normalize_probabilities": False}

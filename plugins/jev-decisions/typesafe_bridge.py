@@ -172,7 +172,10 @@ def evaluate_llm_comparison(state: str | dict | list, questions: dict, *,
             raise IntegrationError("Install the official system-one-adapter with the relevant provider extra") from None
         client_factory = SystemOneAdapterClient
     try:
-        with client_factory() as client:
+        with client_factory(
+            structured_outputs=True, llm_answer_mode="probabilities",
+            normalize_probabilities=False,
+        ) as client:
             result = client.system_one(state=state, questions=valid, provider=provider, model=model)
         view = _read_result(result, valid, model=None, allow_unknown_usage=True)
         return {**view, "provider": provider, "engine": "llm_comparison"}
