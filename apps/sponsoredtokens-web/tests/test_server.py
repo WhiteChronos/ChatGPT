@@ -2,6 +2,7 @@ import copy
 import http.client
 import io
 import json
+import re
 import socket
 import sys
 import threading
@@ -447,6 +448,49 @@ class HttpBoundaryTests(unittest.TestCase):
                 self.assertEqual(headers["Content-Type"], content_type)
                 self.assertTrue(body)
                 self.assert_security_headers(headers)
+
+
+class AssetPolicyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        static = Path(__file__).resolve().parents[1] / "static"
+        cls.html = (static / "index.html").read_text(encoding="utf-8")
+        cls.css = (static / "app.css").read_text(encoding="utf-8")
+        cls.js = (static / "app.js").read_text(encoding="utf-8")
+
+    def test_html_has_accessible_named_chat_controls(self):
+        for element_id in (
+            "status", "provider", "model", "messages", "composer",
+            "message-input", "send", "retry", "clear",
+        ):
+            self.assertRegex(self.html, rf'id=["\']{re.escape(element_id)}["\']')
+        self.assertIn('aria-live="polite"', self.html)
+        self.assertIn('for="message-input"', self.html)
+        self.assertIn('type="submit"', self.html)
+        self.assertIn('type="button"', self.html)
+
+    def test_assets_are_local_only_and_do_not_offer_provider_selection(self):
+        combined = "\n".join((self.html, self.css, self.js))
+        for forbidden in (
+            "http://", "https://", "OPENAI_API_KEY", "api.openai.com",
+            "gpt-5-mini", "provider-select", "fallback", "localStorage",
+            "sessionStorage", "document.cookie", "innerHTML",
+        ):
+            self.assertNotIn(forbidden, combined)
+        self.assertIn('href="/app.css"', self.html)
+        self.assertIn('src="/app.js"', self.html)
+
+    def test_javascript_keeps_one_in_memory_history_and_renders_text_only(self):
+        declarations = re.findall(r"\b(?:const|let)\s+messages\s*=\s*\[\]", self.js)
+        self.assertEqual(len(declarations), 1)
+        self.assertIn("textContent", self.js)
+        self.assertIn("document.createTextNode", self.js)
+        self.assertIn("fetch('/api/health'", self.js)
+        self.assertIn("fetch('/api/chat'", self.js)
+        self.assertIn("JSON.stringify({ messages })", self.js)
+        self.assertRegex(self.js, r"\bsubmitting\b")
+        self.assertRegex(self.js, r"\bretry\b")
+        self.assertRegex(self.js, r"messages\.splice\(0\)")
 
 
 class ValidateBindHostTests(unittest.TestCase):
