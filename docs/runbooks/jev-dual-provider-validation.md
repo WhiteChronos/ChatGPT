@@ -51,3 +51,12 @@ No live request, credential provisioning, installation, merge, deploy, canary/st
 - TypeSafe System One LLM adapter: https://github.com/typesafe-ai/system-one-adapter-python (separate opt-in providers).
 - DefAPI schema and examples: https://defapi.org/api/model/en/typesafe/jev-1.13 (OpenAPI 3.0.3; custom envelope includes `task_id` and `consumed`).
 - GitHub-only policy: `runbooks/github-only-ci.md` and active ruleset `Chronos`.
+
+## Reproducible real-service proof (manual only)
+
+See [Jev live connection proof](jev-live-connection-proof.md) for the gated
+real-host preflight and two-provider synthetic authenticated check. The script
+`plugins/jev-decisions/scripts/verify_live.py` is **never run live by CI**;
+its mock tests are included in the offline Jev workflow. This environment
+lacked both credentials and outbound DNS on 2026-10-12, so live connection
+remains unverified until an authorized external host supplies evidence.
