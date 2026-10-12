@@ -127,6 +127,58 @@ export async function statusWorkspace(workspace) {
   };
 }
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function registeredWorktreePaths(repoRoot) {
+  const result = await execFile('git', ['worktree', 'list', '--porcelain'], { cwd: repoRoot });
+  return result.stdout.split(/\r?\n/)
+    .filter(line => line.startsWith('worktree '))
+    .map(line => path.resolve(line.slice('worktree '.length)));
+}
+
+async function removeWorktreeWithRetries(repoRoot, workspacePath) {
+  let lastError = '';
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const result = await execFile('git', ['worktree', 'remove', workspacePath], { cwd: repoRoot, allowFailure: true });
+    if (result.code === 0) return;
+    lastError = result.stderr || result.stdout || 'git worktree remove failed';
+    const registered = await registeredWorktreePaths(repoRoot);
+    if (!registered.includes(workspacePath)) {
+      await fs.rm(workspacePath, { recursive: true, force: true, maxRetries: 8, retryDelay: 125 });
+      return;
+    }
+    if (attempt < 5) await delay(100 * (attempt + 1));
+  }
+  throw new Error(lastError);
+}
+
+export async function commitWorkspaceChanges(workspace, { message } = {}) {
+  if (workspace.mode !== 'worktree_write' || !workspace.branch) {
+    throw new Error('commits require a worktree_write workspace');
+  }
+  const workspacePath = assertInsideWorktreeNamespace(workspace.repo_root, workspace.path);
+  const expectedBranch = `subagent/${workspace.agent_id}`;
+  if (workspace.branch !== expectedBranch) {
+    throw new Error(`branch identity mismatch for workspace: expected ${expectedBranch}, observed ${workspace.branch}`);
+  }
+  const current = await execFile('git', ['branch', '--show-current'], { cwd: workspacePath, allowFailure: true });
+  if (current.code !== 0 || current.stdout !== expectedBranch) {
+    throw new Error(`workspace ownership mismatch: expected branch ${expectedBranch}`);
+  }
+  const commitMessage = String(message ?? '').trim();
+  if (!commitMessage || /[\0\r\n]/.test(commitMessage)) throw new Error('invalid commit message');
+  const before = await statusWorkspace(workspace);
+  if (!before.dirty) return before;
+  await execFile('git', ['add', '--all'], { cwd: workspacePath });
+  const staged = await execFile('git', ['diff', '--cached', '--quiet'], { cwd: workspacePath, allowFailure: true });
+  if (staged.code === 0) return statusWorkspace(workspace);
+  if (staged.code !== 1) throw new Error(staged.stderr || 'git diff --cached --quiet failed');
+  await execFile('git', ['commit', '-m', commitMessage], { cwd: workspacePath });
+  return statusWorkspace(workspace);
+}
+
 export async function cleanupWorkspace(workspace, { purgeBranch = false } = {}) {
   const root = path.resolve(workspace.repo_root);
   const workspacePath = assertInsideWorktreeNamespace(root, workspace.path);
@@ -148,7 +200,7 @@ export async function cleanupWorkspace(workspace, { purgeBranch = false } = {}) 
   }
   const status = await statusWorkspace(workspace);
   if (status.dirty) throw new Error(`refusing cleanup of dirty worktree: ${status.porcelain}`);
-  await execFile('git', ['worktree', 'remove', workspacePath], { cwd: root });
+  await removeWorktreeWithRetries(root, workspacePath);
   if (purgeBranch && workspace.branch) {
     await execFile('git', ['branch', '-D', workspace.branch], { cwd: root });
   }
