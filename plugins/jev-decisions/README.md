@@ -23,7 +23,7 @@ Jev is **not a generative LLM**. Its choice/score/noul values serve as bounded a
 |---|---|
 | `typesafe_bridge.py` | Explicit official Jev evaluation (`evaluate_jev`), optional LLM comparison through upstream System One adapter (`evaluate_llm_comparison`), pure allowlisted route selection (`choose_llm_handler`), and a bounded Jev-to-LLM recommendation (`route_with_jev`) |
 | `chatgpt-action-typesafe.openapi.json` | Optional legacy Custom GPT Action schema for official TypeSafe endpoint — private Bearer key configured in a supported GPT editor, **not** auto-activated |
-| `defapi_jev.py` / `chatgpt-action.openapi.json` | Existing alternative third-party gateway, unchanged |
+| `defapi_jev.py` / `chatgpt-action.openapi.json` | Third-party gateway, kept separate; client hardened and verified offline |
 | `registry/integrations/typesafe-jev.json` | Separate official adapter descriptor, `CREDENTIALLED` / `ACTIVATION_GATED`; no enabled MCP server, host probe, worker, or default installation |
 | `tests/test_typesafe_bridge.py` | Offline fake-client TDD for request validation, official response shape, LLM optional integrations, uncertainty gating, and credential leak resistance |
 
