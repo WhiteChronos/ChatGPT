@@ -1,57 +1,87 @@
-# DefAPI Jev-1.13 — optional WhiteChronos decision adapter
+# WhiteChronos Jev — official TypeSafe + optional DefAPI + LLM comparisons
 
-**State: ACTIVATION_GATED.** The repository contains an optional Python adapter and a ChatGPT Action OpenAPI schema. This does not install or connect the model to the current ChatGPT session.
+**Activation state: `ACTIVATION_GATED`.** These modules and schemas are **source code and documentation only**. A repository commit or PR does **not** install a ChatGPT plugin, enable hosted inference, make a model appear in ChatGPT, or start a background service.
 
-## Contract and privacy
+## Source of truth / identity
 
-- Source of truth: https://defapi.org/api/model/en/typesafe/jev-1.13
-- Endpoint: POST https://api.defapi.org/api/v1/decisions
-- Model: typesafe/jev-1.13 — a typed decision model, **not** a chat-completions model.
-- State may be text, object or array. Each named question uses noul, choice or score. Replies include answers, usage, task_id and consumed.
-- Every API request sends state and instructions to the third-party provider; **never** submit credentials, private engineering documents, personal data, repository secrets or proprietary code without separately approved sharing.
-- Jev output is advisory only. It **cannot** approve or execute a PR merge, deployment, release, live smoke or runtime readiness declaration.
+- **Original model vendor:** TypeSafe AI — https://typesafe.ai/ (the Jev author, not `jev-ai.org` or an unrelated SEO mirror).
+- **Official docs:** https://docs.typesafe.ai/
+- **Official API:** `POST https://api.typesafe.ai/v1/systemone`, model `jev-1.13.0` (pinned); `jev-latest` is a moving alias, not recommended for reproducible governance.
+- **Official console:** https://console.typesafe.ai/ (acquire/configure `TYPESAFE_API_KEY` privately).
+- **First-party Python SDK:** https://github.com/typesafe-ai/typesafe-sdk-python (package `typesafe-sdk`; Python 3.10+).
+- **First-party JS SDK:** https://github.com/typesafe-ai/typesafe-sdk-js (`@typesafe-ai/sdk`).
+- **First-party System One LLM adapter:** https://github.com/typesafe-ai/system-one-adapter-python (`system-one-adapter` with optional `openai`, `anthropic`, and `gemini` extras).
+- **First-party agent skills:** https://github.com/typesafe-ai/skills (referenced, **not automatically installed or vendored**).
+- **TypeSafe compatible gateways, documented by vendor:** OpenRouter, Vercel AI Gateway, Pydantic AI Gateway: https://docs.typesafe.ai/sdk/python/usage#configuring-the-base-url . They require their **own** credentials and model IDs and are NOT automatically activated.
+- **Third-party DefAPI:** https://defapi.org/api/model/en/typesafe/jev-1.13 . Earlier client `defapi_jev.py` and `chatgpt-action.openapi.json` stay separate and read `DEFAPI_API_KEY`. Do **not** send a DefAPI key to the TypeSafe API or vice versa.
 
-## Manual ChatGPT connection: Custom GPT Action
+Jev is **not a generative LLM**. Its choice/score/noul values serve as bounded advisory decisions for ordinary code. OpenAI, Anthropic and Gemini are separately configured LLM backends used for **comparison** or downstream specialist handling, not claims of TypeSafe-owned or Jev-native LLM models.
 
-1. Obtain a **DefAPI** API key through your DefAPI account; never paste it into chat, repository source, PR, issues or documentation.
-2. In a ChatGPT Custom GPT editor with Actions enabled, select **Actions > Create new action** and paste/import [chatgpt-action.openapi.json](chatgpt-action.openapi.json).
-3. Set **Authentication > API key > Bearer**. Enter your DefAPI key in the editor's protected authentication field (omit the literal Bearer prefix if the editor supplies it). **Do not** use an OpenAI API key.
-4. Add GPT instructions: call the action only after an explicit request; get authorization before transmitting third-party state; pass only nonconfidential data; treat output as an estimate and never an action or release gate.
-5. Test in Preview with synthetic data, and verify answers, usage, task_id, and consumed. A 401 means authentication failed; a 400 suggests input validation.
+## What is in this PR
 
-This is a manual compatibility bridge. **It does not change the ChatGPT model selector and does not connect this existing conversation automatically.** Some ChatGPT workspaces restrict Action domains or modes. OpenAI has announced a migration from Custom GPTs toward plugins for affected workspaces; future production use should employ a separately built/reviewed/hosted ChatGPT plugin or MCP app with secret management. See https://help.openai.com/en/articles/9442513 .
+| File | Role |
+|---|---|
+| `typesafe_bridge.py` | Explicit official Jev evaluation (`evaluate_jev`), optional LLM comparison through upstream System One adapter (`evaluate_llm_comparison`), pure allowlisted route selection (`choose_llm_handler`), and a bounded Jev-to-LLM recommendation (`route_with_jev`) |
+| `chatgpt-action-typesafe.openapi.json` | Optional legacy Custom GPT Action schema for official TypeSafe endpoint — private Bearer key configured in a supported GPT editor, **not** auto-activated |
+| `defapi_jev.py` / `chatgpt-action.openapi.json` | Existing alternative third-party gateway, unchanged |
+| `registry/integrations/typesafe-jev.json` | Separate official adapter descriptor, `CREDENTIALLED` / `ACTIVATION_GATED`; no enabled MCP server, host probe, worker, or default installation |
+| `tests/test_typesafe_bridge.py` | Offline fake-client TDD for request validation, official response shape, LLM optional integrations, uncertainty gating, and credential leak resistance |
 
-## Python adapter: opt-in, zero third-party dependencies
+## How to use (authorized development environment only)
 
-The [defapi_jev.py](defapi_jev.py) module reads DEFAPI_API_KEY from the OS environment **at call time**. It never stores credentials, schedules calls or enables a worker. Example, after adding this directory to PYTHONPATH and configuring the secret **outside** the repository:
+**Dependencies are optional and are not installed by this PR.** Following review and explicit consent to run paid external calls:
 
-```python
-from defapi_jev import decide
-result = decide(
-    {"ticket": "Synthetic page renders incorrectly"},
-    {"owner": {
-        "type": "choice",
-        "instructions": "Which synthetic group should investigate?",
-        "criteria": {"frontend": "Rendering", "data": "Data pipeline"},
-    }},
-)
-print(result["answers"]["owner"])
+```bash
+python -m pip install typesafe-sdk
+python -m pip install 'system-one-adapter[openai,anthropic,gemini]'
 ```
 
-A real request requires an API key and can incur fees. All repository tests use mocks and do **not** contact DefAPI.
+Use only the extras you intend to operate; validate and pin versions according to your lockfile/security policy. Set secrets through a supported **external** secret manager or interactive environment; never commit `.env`/keys, post keys in ChatGPT, or put them in GitHub Actions logs. The SDK's own logger may include request/response bodies; do not enable debug logging for real user state.
 
-Local tests: `python -m pytest -q tests/test_jev_decisions.py`.
+```python
+from typesafe_bridge import evaluate_jev, route_with_jev
 
-## GitHub registration and security gates
+# Safe example uses intentionally synthetic data.
+result = evaluate_jev("A fictional customer needs help with a refund.", {
+    "department": {"type": "choice", "instructions": "Which team handles this?",
+                   "criteria": {"billing": "charges/refunds", "technical": "bugs"}}
+})
 
-The registry entry `registry/integrations/defapi-jev.json` is `CREDENTIALLED` / `ACTIVATION_GATED`; it has **no** active MCP server or host runtime probe. The PR cannot grant runtime health or production-ready status. This integration adds no GitHub secrets, no paid network workflow, no auto-merge, no deployment and no GitLab components. The existing GitHub-only ruleset, security checks, and exact-SHA merge gate remain authoritative.
+# User/app controls the allowlisted candidates and the LLM model IDs.
+catalog = {
+    "openai": {"provider": "openai", "model": "your-allowed-openai-model", "description": "Short coding requests"},
+    "anthropic": {"provider": "anthropic", "model": "your-allowed-anthropic-model", "description": "Long document analysis"},
+    "human": {"provider": "human", "model": "", "description": "Ambiguous, unsafe or high-impact requests"}
+}
+route = route_with_jev("A synthetic request to classify", catalog)
+# route.status is SUGGESTED_ONLY or REVIEW_REQUIRED; no LLM was invoked.
+```
 
-## Outstanding work
+For opt-in A/B comparison against a generative LLM using the **official TypeSafe System One adapter**:
 
-- Configure the DefAPI key only in a supported secret UI or external secret manager.
-- Import and manually verify the Action in an eligible ChatGPT host with an approved synthetic live request.
-- Before real business usage, review data-sharing and privacy boundaries.
-- If the Custom GPT migration disables Actions, design/host/register a proper ChatGPT plugin/MCP adapter separately.
-- Merge, deployment, secret provisioning, and any external live smoke are blocked pending their independent approvals.
+```python
+from typesafe_bridge import evaluate_llm_comparison
+alternative = evaluate_llm_comparison(
+    "Fictional sample", {"urgent": {"type": "noul", "instructions": "Does this sound urgent?"}},
+    provider="openai", model="your-configured-model-id",
+)
+```
 
-Rollback: before merge, close this draft PR; after any independently authorized merge, revert with an ordinary reviewed PR. No provider credentials are created here.
+These are **separate calls**; comparison does not imply Jev ran OpenAI, Claude or Gemini inside the TypeSafe service. The LLM adapter's debug traces may contain state and prompts; the WhiteChronos wrapper intentionally omits debug fields from returned data.
+
+`route_with_jev` suggests a provider only; the host/application is responsible for approved credentials, permission checks, model call, costs, human review and redaction. Example thresholds (0.80 confidence / 0.75 selected-option probability) are not production-calibrated. If the choice is uncertain, absent, not on the allowlist or selects a human/no-match path, it returns `REVIEW_REQUIRED`. There is no auto-merge, code write, tool dispatch, deployment, production approval or fallback-to-external API.
+
+## ChatGPT connection (manual only)
+
+For a Custom GPT that still supports Actions, use `chatgpt-action-typesafe.openapi.json` in **Actions > Create new action**, choose protected API Key/Bearer authentication and store only the **TypeSafe** key there. Test with synthetic data in Preview. These custom GPT Actions are being retired/migrated to plugins and **will not be preserved automatically**: https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq . A durable ChatGPT integration needs a separately developed, hosted, reviewed and connected **MCP plugin/app**, with server-side secret handling and workspace authorization: https://developers.openai.com/api/docs/guides/custom-mcp-server . No such hosted MCP server is created by this source PR.
+
+## Gates / data boundary
+
+- Never send engineering baselines, private projects, confidential files, health records, source code or identifiable user information to TypeSafe/DefAPI/other LLM vendors without separate legal/privacy approval. This repository is public.
+- Keep the official and DefAPI responses separate: **TypeSafe does not require `task_id` or `consumed`**; those fields are specific to the earlier DefAPI integration. Do not conflate model IDs or service keys.
+- Use a pinned Jev model for repeatable measurement. The official documentation notes that Jev's primary training language is English; benchmark Portuguese workflows using labeled examples before operational routing.
+- All network calls are explicit opt-in; this PR includes **only mocked/offline tests**.
+- No merge, secrets provisioning, runtime/host discovery claim, external live smoke, deployment, GitLab reactivation, or `PRODUCTION_COMPLETE`.
+- Stop at **READY FOR MERGE REVIEW**, subject to exact-HEAD CI/security/review and explicit SHA-specific merge authorization.
+
+Offline tests: `python -m pytest -q tests/test_typesafe_bridge.py tests/test_jev_decisions.py` in a full checkout. New tests can be run in isolation without the optional vendor SDKs.
