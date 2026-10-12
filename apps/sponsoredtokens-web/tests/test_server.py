@@ -303,6 +303,46 @@ class ProviderTests(unittest.TestCase):
                 self.assertEqual(calls, [(self.configs[0], before), (self.configs[1], before)])
                 self.assertEqual(self.messages, before)
 
+    def test_primary_success_echoing_either_key_is_rejected_without_fallback(self):
+        for credential in self.configs:
+            with self.subTest(echoed_provider=credential.name):
+                calls = []
+
+                def caller(config, messages):
+                    calls.append(config)
+                    return "Resposta " + credential.api_key + "\n\nSponsored by Example\n "
+
+                with self.assertRaises(providers.ProviderError) as caught:
+                    providers.route_chat(self.runtime, self.messages, caller=caller)
+                self.assert_safe_error(caught.exception, "invalid_upstream_response", 502)
+                self.assertEqual(calls, [self.configs[0]])
+
+    def test_fallback_success_echoing_either_key_is_rejected_without_another_attempt(self):
+        for credential in self.configs:
+            with self.subTest(echoed_provider=credential.name):
+                calls = []
+
+                def caller(config, messages):
+                    calls.append(config)
+                    if len(calls) == 1:
+                        raise providers.ProviderError("quota_exhausted")
+                    return "OpenAI answer " + credential.api_key
+
+                with self.assertRaises(providers.ProviderError) as caught:
+                    providers.route_chat(self.runtime, self.messages, caller=caller)
+                self.assert_safe_error(caught.exception, "invalid_upstream_response", 502)
+                self.assertEqual(calls, list(self.configs))
+
+    def test_unconfigured_fallback_key_does_not_reject_safe_primary_text(self):
+        text = "Resposta 🌍\n\nSponsored by Example\n "
+        for key in (None, "", " \t\n"):
+            with self.subTest(key=key):
+                fallback = providers.ProviderConfig("OpenAI", self.configs[1].endpoint, "gpt-5-mini", key)
+                runtime = providers.RuntimeConfig(self.configs[0], fallback)
+                result = providers.route_chat(runtime, self.messages, caller=lambda *args: text)
+                self.assertEqual(result.text, text)
+                self.assertFalse(result.fallback_used)
+
     def test_disallowed_failures_never_call_fallback(self):
         for code in ("configuration_required", "authentication_failed", "invalid_request", "invalid_upstream_response"):
             with self.subTest(code=code):

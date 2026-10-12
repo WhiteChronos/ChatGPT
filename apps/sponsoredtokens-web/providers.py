@@ -174,6 +174,14 @@ def call_provider(
     raise ProviderError(error_code)
 
 
+def _reject_credential_echo(text: str, config: RuntimeConfig) -> None:
+    """Reject the entire response rather than alter text or expose either key."""
+    for provider in (config.primary, config.fallback):
+        key = provider.api_key
+        if key and key.strip() and key in text:
+            raise ProviderError("invalid_upstream_response")
+
+
 def route_chat(
     config: RuntimeConfig,
     messages: list[dict[str, str]],
@@ -187,9 +195,11 @@ def route_chat(
         if error.code not in _FALLBACK_CODES:
             raise
     else:
+        _reject_credential_echo(text, config)
         return ProviderResult(text, config.primary.name, config.primary.model, False)
 
     # Outside the primary exception handler, so a fallback failure cannot chain
     # the original failure or induce retries. No sponsor footer is synthesized.
     text = caller(config.fallback, messages)
+    _reject_credential_echo(text, config)
     return ProviderResult(text, config.fallback.name, config.fallback.model, True)
