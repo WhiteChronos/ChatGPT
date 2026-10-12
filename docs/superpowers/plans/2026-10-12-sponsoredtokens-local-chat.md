@@ -12,7 +12,9 @@
 
 ## Global Constraints
 
-- Never write, print, snapshot, commit, or return either API key.
+- Never write either API key to repository files, ordinary local files, logs,
+  command lines, snapshots, browser responses, or Git; only the approved
+  Windows user environment may persist it through the secure-input helper.
 - Bind only to `127.0.0.1`; reject wildcard, LAN, and non-loopback hosts.
 - Do not add runtime packages, JavaScript packages, CDNs, telemetry, storage, cookies, CORS, agents, MCP, shell execution, or internet deployment.
 - Keep paid/live traffic opt-in. All normal tests mock both outbound boundaries.
