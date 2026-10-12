@@ -10,11 +10,23 @@ import json
 import math
 import os
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 DEFAPI_URL = "https://api.defapi.org/api/v1/decisions"
 MODEL = "typesafe/jev-1.13"
 _MAX_RESPONSE_BYTES = 262144
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    """Prevent following 30x responses carrying the DefAPI Bearer credential."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def urlopen(request: Request, *, timeout: float):
+    """Single HTTPS origin only. Exposed as a function for offline test injection."""
+    return build_opener(_NoRedirect()).open(request, timeout=timeout)
 
 
 class DecisionError(ValueError):
@@ -93,9 +105,32 @@ def _decode_response(raw: bytes, questions: dict[str, dict[str, object]]) -> dic
             raise DecisionError("invalid confidence value")
         if "probabilities" in answer:
             probs = answer["probabilities"]
-            if not isinstance(probs, dict) or not all(isinstance(k, str) and _valid_number(v) for k, v in probs.items()):
+            expected_keys = (set(question["criteria"]) if kind == "choice" else
+                             {str(i) for i in range(len(question["criteria"]))} if kind == "score" else None)
+            if (not isinstance(probs, dict) or not all(isinstance(k, str) and _valid_number(v) for k, v in probs.items())
+                    or (expected_keys is not None and
+                        (set(probs) != expected_keys or abs(sum(probs.values()) - 1.0) > 0.01))):
                 raise DecisionError("invalid probability distribution")
-    return data
+        if kind == "score" and "legend" in answer:
+            legend = answer["legend"]
+            if not isinstance(legend, dict) or set(legend) != {str(i) for i in range(len(question["criteria"]))} or not all(
+                isinstance(v, str) for v in legend.values()
+            ):
+                raise DecisionError("invalid score legend")
+    # Preserve the documented response contract while eliminating arbitrary upstream
+    # debug/echo fields that may repeat state, credentials, or internal prompts.
+    permitted_answer_fields = {"type", "noul", "choice", "score", "confidence", "probabilities", "legend"}
+    safe_answers = {name: {field: value for field, value in answer.items()
+                           if field in permitted_answer_fields} for name, answer in answers.items()}
+    output = {"model": MODEL, "answers": safe_answers,
+              "usage": {"input_tokens": usage["input_tokens"], "output_tokens": usage["output_tokens"]},
+              "task_id": data["task_id"], "consumed": data["consumed"]}
+    if "cost" in usage and _valid_number(usage["cost"], 0, float("inf")):
+        output["usage"]["cost"] = usage["cost"]
+    for field in ("id", "provider"):
+        if isinstance(data.get(field), str):
+            output[field] = data[field]
+    return output
 
 
 def decide(state: str | dict | list, questions: dict, *, timeout: float = 15) -> dict[str, object]:

@@ -144,7 +144,9 @@ def evaluate_jev(state: str | dict | list, questions: dict, *,
     try:
         with client_factory(model=MODEL_ID) as client:
             result = client.system_one(state=state, questions=valid, model=MODEL_ID)
-        return _read_result(result, valid, model=MODEL_ID)
+        # The official TypeSafe SDK models usage counts as int | None.
+        # Preserve unknown metrics as None rather than fabricating zero usage.
+        return _read_result(result, valid, model=MODEL_ID, allow_unknown_usage=True)
     except IntegrationError:
         raise
     except Exception:
@@ -177,7 +179,7 @@ def evaluate_llm_comparison(state: str | dict | list, questions: dict, *,
             normalize_probabilities=False,
         ) as client:
             result = client.system_one(state=state, questions=valid, provider=provider, model=model)
-        view = _read_result(result, valid, model=None, allow_unknown_usage=True)
+        view = _read_result(result, valid, model=model, allow_unknown_usage=True)
         return {**view, "provider": provider, "engine": "llm_comparison"}
     except IntegrationError:
         raise
@@ -199,6 +201,10 @@ def choose_llm_handler(decision: Mapping[str, Any], catalog: Mapping[str, Mappin
     try:
         if not isinstance(decision, Mapping) or not isinstance(catalog, Mapping):
             return review
+        # A routing suggestion must be grounded in a typed decision from the
+        # pinned official Jev model, never caller-assembled or substituted text.
+        if decision.get("model") != MODEL_ID:
+            return review
         a = decision["answers"][question]
         if not isinstance(a, Mapping) or a.get("type") != "choice":
             return review
@@ -206,6 +212,10 @@ def choose_llm_handler(decision: Mapping[str, Any], catalog: Mapping[str, Mappin
         probs = a.get("probabilities")
         confidence = a.get("confidence")
         if not isinstance(choice, str) or not isinstance(probs, Mapping) or not _between(confidence):
+            return review
+        if not probs or not all(isinstance(k, str) and _between(v) for k, v in probs.items()):
+            return review
+        if abs(sum(probs.values()) - 1.0) > 0.01:
             return review
         if not _between(probs.get(choice)) or confidence < min_confidence or probs[choice] < min_probability:
             return review

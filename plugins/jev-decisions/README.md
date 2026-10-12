@@ -75,6 +75,12 @@ These are **separate calls**; comparison does not imply Jev ran OpenAI, Claude o
 
 For a Custom GPT that still supports Actions, use `chatgpt-action-typesafe.openapi.json` in **Actions > Create new action**, choose protected API Key/Bearer authentication and store only the **TypeSafe** key there. Test with synthetic data in Preview. These custom GPT Actions are being retired/migrated to plugins and **will not be preserved automatically**: https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq . A durable ChatGPT integration needs a separately developed, hosted, reviewed and connected **MCP plugin/app**, with server-side secret handling and workspace authorization: https://developers.openai.com/api/docs/guides/custom-mcp-server . No such hosted MCP server is created by this source PR.
 
+## Two-provider validation and GitHub CI
+
+The **official vendor** and **DefAPI** are individually verified using the fixed endpoints, model identifiers and separate credentials listed in [the dual-provider runbook](../../docs/runbooks/jev-dual-provider-validation.md). The first-party SDK models token counts as nullable; missing usage is represented by `None`, never fabricated as zero. DefAPI rejects Bearer-bearing redirects, invalid probability distributions and untrusted provider debug/echo fields.
+
+The [offline Jev CI workflow](../../.github/workflows/jev-dual-contract.yml) runs the existing vendor and gateway suites plus the cross-provider safety suite. Its checks use synthetic fixtures and **never** establish a live hosted connection, provider availability or model quality.
+
 ## Gates / data boundary
 
 - Never send engineering baselines, private projects, confidential files, health records, source code or identifiable user information to TypeSafe/DefAPI/other LLM vendors without separate legal/privacy approval. This repository is public.

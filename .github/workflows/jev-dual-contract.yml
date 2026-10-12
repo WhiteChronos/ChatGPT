@@ -1,0 +1,45 @@
+name: Jev Dual-Provider Contract (Offline)
+
+on:
+  pull_request:
+    paths:
+      - "plugins/jev-decisions/**"
+      - "tests/test_jev_decisions.py"
+      - "tests/test_typesafe_bridge.py"
+      - "tests/test_jev_dual_contract.py"
+      - "registry/integrations/defapi-jev.json"
+      - "registry/integrations/typesafe-jev.json"
+      - ".github/workflows/jev-dual-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact PR source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install offline test runner
+        run: python -m pip install pytest==8.4.1
+
+      - name: Validate both Jev contracts without external API requests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m pytest -q \
+            tests/test_jev_decisions.py \
+            tests/test_typesafe_bridge.py \
+            tests/test_jev_dual_contract.py
+          python -m json.tool plugins/jev-decisions/chatgpt-action.openapi.json > /dev/null
+          python -m json.tool plugins/jev-decisions/chatgpt-action-typesafe.openapi.json > /dev/null
