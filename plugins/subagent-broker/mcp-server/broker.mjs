@@ -1,8 +1,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { validateSpawnArgs, TERMINAL_STATES, brokerError } from './protocol.mjs';
 import * as defaultWorktrees from './worktree_manager.mjs';
+
+const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
 
 function now() { return new Date().toISOString(); }
 function newAgentId() { return `sa_${crypto.randomUUID().replace(/-/g,'').slice(0,20)}`; }
@@ -64,7 +67,7 @@ export class SubagentBroker {
     this.backend = backend;
     this.workspaceManager = workspaceManager;
     this.roleLoader = roleLoader ?? (async role => {
-      const file = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'roles', `${role}.md`);
+      const file = path.resolve(MODULE_DIR, '..', 'roles', `${role}.md`);
       return fs.readFile(file, 'utf8');
     });
     this.maxRunning = maxRunning;
