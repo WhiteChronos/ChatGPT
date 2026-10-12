@@ -1,6 +1,10 @@
 """Secure loopback HTTP boundary for the local SponsoredTokens chat."""
 
+import argparse
 import json
+import os
+import webbrowser
+from collections.abc import Mapping, Sequence
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Callable
@@ -223,3 +227,72 @@ def create_server(
     server = ThreadingHTTPServer((validated_host, port), make_handler(config, transport))
     server.daemon_threads = True
     return server
+
+
+def load_config_from_environment(environ: Mapping[str, str]) -> SponsoredTokensConfig:
+    """Read the one credential owned by this application."""
+    return SponsoredTokensConfig(environ.get("SPONSOREDTOKENS_API_KEY"))
+
+
+def _port(value: str) -> int:
+    try:
+        port = int(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("port must be an integer") from error
+    if not 1 <= port <= 65535:
+        raise argparse.ArgumentTypeError("port must be between 1 and 65535")
+    return port
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Chat local privado via SponsoredTokens")
+    parser.add_argument("--port", type=_port, default=8765, help="porta local (padrao: 8765)")
+    parser.add_argument("--open", action="store_true", help="abrir o navegador apos iniciar")
+    parser.add_argument(
+        "--live-smoke", action="store_true",
+        help="executar uma unica chamada real e sair",
+    )
+    return parser.parse_args(argv)
+
+
+def run_live_smoke(config: SponsoredTokensConfig) -> bool:
+    """Run one explicit live request and print only safe status metadata."""
+    if not config.api_key or not config.api_key.strip():
+        print("LIVE_SMOKE=FAIL code=configuration_required")
+        return False
+    try:
+        result = call_sponsoredtokens(
+            config, [{"role": "user", "content": "Responda apenas: OK"}],
+        )
+    except ProviderError as error:
+        print(f"LIVE_SMOKE=FAIL code={error.code}")
+        return False
+    print(f"LIVE_SMOKE=PASS provider={result.provider} model={result.model}")
+    return True
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    options = parse_args(argv)
+    config = load_config_from_environment(os.environ)
+    if options.live_smoke:
+        return 0 if run_live_smoke(config) else 1
+
+    server = create_server(config, port=options.port)
+    actual_port = server.server_address[1]
+    url = f"http://127.0.0.1:{actual_port}/"
+    readiness = "ready" if config.api_key and config.api_key.strip() else "configuration_required"
+    print(f"URL={url}")
+    print(f"provider=SponsoredTokens model={SPONSOREDTOKENS_MODEL} readiness={readiness}")
+    if options.open:
+        webbrowser.open(url)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

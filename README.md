@@ -94,3 +94,7 @@ O workflow mensal `document-tooling-discovery.yml` pesquisa novas candidatas. De
 - `.github/`: workflows e processo de revisão.
 
 O aplicativo deve ler estas regras antes de gerar ou aprovar qualquer documento.
+
+## Aplicacoes locais
+
+- [Chat local privado SponsoredTokens](apps/sponsoredtokens-web/README.md)

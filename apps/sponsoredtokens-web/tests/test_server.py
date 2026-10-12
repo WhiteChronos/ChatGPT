@@ -1,4 +1,5 @@
 import copy
+import contextlib
 import http.client
 import io
 import json
@@ -491,6 +492,110 @@ class AssetPolicyTests(unittest.TestCase):
         self.assertRegex(self.js, r"\bsubmitting\b")
         self.assertRegex(self.js, r"\bretry\b")
         self.assertRegex(self.js, r"messages\.splice\(0\)")
+
+
+class CliTests(unittest.TestCase):
+    def setUp(self):
+        self.module = __import__("server")
+        self.key = "sentinel-sponsored-secret"
+
+    def test_environment_loader_reads_only_sponsoredtokens_key(self):
+        class TrackedEnvironment(dict):
+            def __init__(self):
+                super().__init__({"SPONSOREDTOKENS_API_KEY": self_key})
+                self.accessed = []
+
+            def get(self, key, default=None):
+                self.accessed.append(key)
+                return super().get(key, default)
+
+        self_key = self.key
+        environ = TrackedEnvironment()
+        config = self.module.load_config_from_environment(environ)
+        self.assertEqual(config.api_key, self.key)
+        self.assertEqual(environ.accessed, ["SPONSOREDTOKENS_API_KEY"])
+        self.assertNotIn(self.key, repr(config))
+
+    def test_cli_defaults_and_explicit_options(self):
+        defaults = self.module.parse_args([])
+        self.assertEqual(defaults.port, 8765)
+        self.assertFalse(defaults.open)
+        self.assertFalse(defaults.live_smoke)
+        options = self.module.parse_args(["--port", "43210", "--open", "--live-smoke"])
+        self.assertEqual(options.port, 43210)
+        self.assertTrue(options.open)
+        self.assertTrue(options.live_smoke)
+
+    def test_cli_refuses_host_override_and_invalid_ports(self):
+        for argv in (["--host", "0.0.0.0"], ["--port", "0"], ["--port", "65536"]):
+            with self.subTest(argv=argv), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    self.module.parse_args(argv)
+
+    def test_live_smoke_refuses_missing_key_without_transport(self):
+        output = io.StringIO()
+        with patch.object(self.module, "call_sponsoredtokens") as transport:
+            with contextlib.redirect_stdout(output):
+                result = self.module.run_live_smoke(providers.SponsoredTokensConfig(None))
+        self.assertFalse(result)
+        transport.assert_not_called()
+        self.assertEqual(output.getvalue().strip(), "LIVE_SMOKE=FAIL code=configuration_required")
+
+    def test_live_smoke_reports_only_safe_success_metadata(self):
+        config = providers.SponsoredTokensConfig(self.key)
+        expected = providers.ProviderResult("private response", "SponsoredTokens", providers.SPONSOREDTOKENS_MODEL)
+        output = io.StringIO()
+        with patch.object(self.module, "call_sponsoredtokens", return_value=expected) as transport:
+            with contextlib.redirect_stdout(output):
+                result = self.module.run_live_smoke(config)
+        self.assertTrue(result)
+        messages = transport.call_args.args[1]
+        self.assertEqual(messages, [{"role": "user", "content": "Responda apenas: OK"}])
+        visible = output.getvalue()
+        self.assertIn("LIVE_SMOKE=PASS", visible)
+        self.assertIn("provider=SponsoredTokens", visible)
+        self.assertIn("model=" + providers.SPONSOREDTOKENS_MODEL, visible)
+        self.assertNotIn(self.key, visible)
+        self.assertNotIn("private response", visible)
+
+    def test_live_smoke_reports_safe_provider_failure(self):
+        output = io.StringIO()
+        with patch.object(
+            self.module, "call_sponsoredtokens",
+            side_effect=providers.ProviderError("upstream_unavailable"),
+        ):
+            with contextlib.redirect_stdout(output):
+                result = self.module.run_live_smoke(providers.SponsoredTokensConfig(self.key))
+        self.assertFalse(result)
+        self.assertEqual(output.getvalue().strip(), "LIVE_SMOKE=FAIL code=upstream_unavailable")
+        self.assertNotIn(self.key, output.getvalue())
+
+    def test_main_opens_browser_only_after_server_is_created(self):
+        events = []
+
+        class FakeServer:
+            server_address = ("127.0.0.1", 45678)
+
+            def serve_forever(self):
+                events.append("serve")
+                raise KeyboardInterrupt
+
+            def server_close(self):
+                events.append("close")
+
+        def create(*args, **kwargs):
+            events.append("bind")
+            return FakeServer()
+
+        output = io.StringIO()
+        with patch.object(self.module, "load_config_from_environment", return_value=providers.SponsoredTokensConfig(self.key)):
+            with patch.object(self.module, "create_server", side_effect=create):
+                with patch("webbrowser.open", side_effect=lambda url: events.append(("open", url))):
+                    with contextlib.redirect_stdout(output):
+                        result = self.module.main(["--port", "45678", "--open"])
+        self.assertEqual(result, 0)
+        self.assertEqual(events, ["bind", ("open", "http://127.0.0.1:45678/"), "serve", "close"])
+        self.assertNotIn(self.key, output.getvalue())
 
 
 class ValidateBindHostTests(unittest.TestCase):
