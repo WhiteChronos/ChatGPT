@@ -31,6 +31,28 @@ e repita. Os demais codigos seguros incluem `configuration_required`,
 `authentication_failed`, `quota_exhausted`, `rate_limited`, `upstream_timeout`,
 `invalid_request` e `invalid_upstream_response`.
 
+## Inicio automatico no Windows
+
+O gerenciador registra uma tarefa apenas para o usuario atual. A tarefa inicia
+no login, reinicia o processo se ele falhar e le a chave diretamente da
+variavel de usuario do Windows. A chave nao entra no agendamento nem na linha de
+comando.
+
+```powershell
+pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Install
+pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Start
+pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Status
+```
+
+Para parar ou remover o inicio automatico:
+
+```powershell
+pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Stop
+pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Uninstall
+```
+
+O estado tambem pode ser lido por automacao acrescentando `-Json`.
+
 ## Limites e separacao
 
 Este app nao possui agentes, ferramentas, persistencia, telemetria, publicacao

@@ -4,7 +4,9 @@ import http.client
 import io
 import json
 import re
+import shutil
 import socket
+import subprocess
 import sys
 import threading
 import traceback
@@ -596,6 +598,56 @@ class CliTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertEqual(events, ["bind", ("open", "http://127.0.0.1:45678/"), "serve", "close"])
         self.assertNotIn(self.key, output.getvalue())
+
+
+class WindowsAutomationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.pwsh = shutil.which("pwsh") or shutil.which("powershell")
+        if not cls.pwsh:
+            raise unittest.SkipTest("PowerShell is unavailable")
+        cls.script = Path(__file__).resolve().parents[1] / "windows" / "Manage-AutoStart.ps1"
+
+    def test_status_is_machine_readable_and_never_contains_the_key(self):
+        environment = dict(**__import__("os").environ)
+        environment["SPONSOREDTOKENS_API_KEY"] = "sentinel-sponsored-secret"
+        result = subprocess.run(
+            [self.pwsh, "-NoProfile", "-File", str(self.script), "-Action", "Status", "-Json"],
+            capture_output=True, text=True, timeout=15, env=environment,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(set(payload), {"installed", "running", "ready", "url", "task"})
+        self.assertEqual(payload["url"], "http://127.0.0.1:8765/")
+        self.assertEqual(payload["task"], "WhiteChronos-SponsoredTokens-LocalChat")
+        self.assertNotIn("sentinel-sponsored-secret", result.stdout + result.stderr)
+
+    def test_install_whatif_describes_safe_automatic_start_without_changing_state(self):
+        before = subprocess.run(
+            [self.pwsh, "-NoProfile", "-File", str(self.script), "-Action", "Status", "-Json"],
+            capture_output=True, text=True, timeout=15, check=True,
+        )
+        result = subprocess.run(
+            [
+                self.pwsh, "-NoProfile", "-File", str(self.script),
+                "-Action", "Install", "-WhatIf", "-Json",
+            ],
+            capture_output=True, text=True, timeout=15,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload, {
+            "action": "Install",
+            "changed": False,
+            "task": "WhiteChronos-SponsoredTokens-LocalChat",
+            "url": "http://127.0.0.1:8765/",
+            "keySource": "SPONSOREDTOKENS_API_KEY",
+        })
+        after = subprocess.run(
+            [self.pwsh, "-NoProfile", "-File", str(self.script), "-Action", "Status", "-Json"],
+            capture_output=True, text=True, timeout=15, check=True,
+        )
+        self.assertEqual(json.loads(before.stdout)["installed"], json.loads(after.stdout)["installed"])
 
 
 class ValidateBindHostTests(unittest.TestCase):
