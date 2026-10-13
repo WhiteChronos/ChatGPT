@@ -408,6 +408,18 @@ class HttpBoundaryTests(unittest.TestCase):
         self.assertNotIn(b"sentinel-sponsored-secret", response.read())
         connection.close()
 
+    def test_oversized_length_returns_413_reliably_on_windows(self):
+        for _ in range(10):
+            status, response_headers, response_body = self.request(
+                "POST",
+                "/api/chat",
+                b"{}",
+                {"Content-Type": "application/json", "Content-Length": str(1_048_577)},
+            )
+            self.assertEqual(status, 413)
+            self.assert_security_headers(response_headers)
+            self.assertEqual(json.loads(response_body), {"error": "body_too_large"})
+
     def test_rejects_partial_body(self):
         raw = socket.create_connection(("127.0.0.1", self.port), timeout=2)
         raw.sendall((

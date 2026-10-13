@@ -130,6 +130,24 @@ def make_handler(
             self._error(400, "invalid_request")
             return False
 
+        def _discard_available_request_body(self, declared_length: int) -> None:
+            """Drain a bounded, already-arrived prefix before closing the socket.
+
+            Windows can reset a TCP connection when it is closed with unread request
+            bytes.  That reset may hide the 413 response from an otherwise well-behaved
+            client, so consume at most one small buffered chunk without trusting the
+            attacker-controlled Content-Length value.
+            """
+
+            previous_timeout = self.connection.gettimeout()
+            try:
+                self.connection.settimeout(0.05)
+                self.rfile.read1(min(declared_length, 8192))
+            except (OSError, TimeoutError):
+                pass
+            finally:
+                self.connection.settimeout(previous_timeout)
+
         def do_GET(self):
             if not self._require_authority():
                 return
@@ -170,6 +188,7 @@ def make_handler(
                 self._error(400, "invalid_request")
                 return
             if length > MAX_BODY_BYTES:
+                self._discard_available_request_body(length)
                 self.close_connection = True
                 self._error(413, "body_too_large")
                 return
