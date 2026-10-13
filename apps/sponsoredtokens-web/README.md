@@ -33,10 +33,10 @@ e repita. Os demais codigos seguros incluem `configuration_required`,
 
 ## Inicio automatico no Windows
 
-O gerenciador registra uma tarefa apenas para o usuario atual. A tarefa inicia
-no login, reinicia o processo se ele falhar e le a chave diretamente da
-variavel de usuario do Windows. A chave nao entra no agendamento nem na linha de
-comando.
+O gerenciador instala uma copia estavel em `%LOCALAPPDATA%`, cria um atalho
+oculto na pasta `Inicializar` apenas para o usuario atual e mantem um supervisor
+que reinicia o processo se ele falhar. A chave e lida diretamente da variavel
+de usuario do Windows; ela nao entra no atalho nem na linha de comando.
 
 ```powershell
 pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Install

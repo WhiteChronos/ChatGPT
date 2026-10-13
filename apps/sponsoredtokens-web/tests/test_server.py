@@ -642,6 +642,10 @@ class WindowsAutomationTests(unittest.TestCase):
             "task": "WhiteChronos-SponsoredTokens-LocalChat",
             "url": "http://127.0.0.1:8765/",
             "keySource": "SPONSOREDTOKENS_API_KEY",
+            "installRoot": str(
+                Path(__import__("os").environ["LOCALAPPDATA"])
+                / "WhiteChronos" / "SponsoredTokensLocalChat"
+            ),
         })
         after = subprocess.run(
             [self.pwsh, "-NoProfile", "-File", str(self.script), "-Action", "Status", "-Json"],

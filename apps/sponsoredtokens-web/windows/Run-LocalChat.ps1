@@ -1,5 +1,10 @@
 $ErrorActionPreference = 'Stop'
-$AppRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+$AppRoot = if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'server.py')) {
+    $PSScriptRoot
+}
+else {
+    (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+}
 $ServerPath = Join-Path $AppRoot 'server.py'
 $Key = [Environment]::GetEnvironmentVariable('SPONSOREDTOKENS_API_KEY', 'User')
 
@@ -10,5 +15,7 @@ if ([string]::IsNullOrWhiteSpace($Key)) {
 
 $env:SPONSOREDTOKENS_API_KEY = $Key
 $Python = (Get-Command python -ErrorAction Stop).Source
-& $Python $ServerPath --port 8765
-exit $LASTEXITCODE
+while ($true) {
+    & $Python $ServerPath --port 8765
+    Start-Sleep -Seconds 5
+}

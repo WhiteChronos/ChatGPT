@@ -9,36 +9,46 @@ param(
 $ErrorActionPreference = 'Stop'
 $TaskName = 'WhiteChronos-SponsoredTokens-LocalChat'
 $LocalUrl = 'http://127.0.0.1:8765/'
-$RunnerPath = Join-Path $PSScriptRoot 'Run-LocalChat.ps1'
+$SourceRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+$InstallRoot = Join-Path $env:LOCALAPPDATA 'WhiteChronos\SponsoredTokensLocalChat'
+$RunnerPath = Join-Path $InstallRoot 'Run-LocalChat.ps1'
+$StartupShortcut = Join-Path ([Environment]::GetFolderPath('Startup')) ($TaskName + '.lnk')
 
 function Write-Result([System.Collections.IDictionary]$Value) {
-    if ($Json) {
-        $Value | ConvertTo-Json -Compress
+    if ($Json) { $Value | ConvertTo-Json -Compress }
+    else { $Value.GetEnumerator() | ForEach-Object { '{0}={1}' -f $_.Key, $_.Value } }
+}
+
+function Get-Health {
+    try {
+        $health = Invoke-RestMethod -Uri ($LocalUrl + 'api/health') -TimeoutSec 2
+        return [pscustomobject]@{ running = $true; ready = [bool]$health.ready }
     }
-    else {
-        $Value.GetEnumerator() | ForEach-Object { '{0}={1}' -f $_.Key, $_.Value }
+    catch {
+        return [pscustomobject]@{ running = $false; ready = $false }
     }
 }
 
 function Get-LocalChatState {
-    $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-    $ready = $false
-    $running = $false
-    try {
-        $health = Invoke-RestMethod -Uri ($LocalUrl + 'api/health') -TimeoutSec 2
-        $running = $true
-        $ready = [bool]$health.ready
-    }
-    catch {
-        $running = $false
-        $ready = $false
-    }
+    $health = Get-Health
     [ordered]@{
-        installed = [bool]$task
-        running = $running
-        ready = $ready
+        installed = Test-Path -LiteralPath $StartupShortcut -PathType Leaf
+        running = $health.running
+        ready = $health.ready
         url = $LocalUrl
         task = $TaskName
+    }
+}
+
+function Stop-InstalledProcesses {
+    if (-not (Test-Path -LiteralPath $InstallRoot)) { return }
+    $escapedRoot = [WildcardPattern]::Escape($InstallRoot)
+    $processes = @(Get-CimInstance Win32_Process | Where-Object {
+        $_.CommandLine -and $_.CommandLine -like ('*' + $escapedRoot + '*') -and
+        $_.Name -in @('pwsh.exe', 'powershell.exe', 'python.exe', 'pythonw.exe')
+    })
+    foreach ($process in ($processes | Sort-Object { if ($_.Name -match 'powershell|pwsh') { 0 } else { 1 } })) {
+        Stop-Process -Id $process.ProcessId -Force -ErrorAction SilentlyContinue
     }
 }
 
@@ -54,6 +64,7 @@ if ($Action -eq 'Install' -and $WhatIfPreference) {
         task = $TaskName
         url = $LocalUrl
         keySource = 'SPONSOREDTOKENS_API_KEY'
+        installRoot = $InstallRoot
     })
     exit 0
 }
@@ -61,56 +72,72 @@ if ($Action -eq 'Install' -and $WhatIfPreference) {
 $changed = $false
 switch ($Action) {
     'Install' {
-        if (-not (Test-Path -LiteralPath $RunnerPath -PathType Leaf)) {
+        $sourceRunner = Join-Path $PSScriptRoot 'Run-LocalChat.ps1'
+        if (-not (Test-Path -LiteralPath $sourceRunner -PathType Leaf)) {
             throw 'The local chat runner is missing.'
         }
-        if ($PSCmdlet.ShouldProcess($TaskName, 'Register automatic start at user logon')) {
-            $shellPath = (Get-Process -Id $PID).Path
+        if ($PSCmdlet.ShouldProcess($TaskName, 'Install automatic start for the current user')) {
+            $staticRoot = Join-Path $InstallRoot 'static'
+            New-Item -ItemType Directory -Path $staticRoot -Force | Out-Null
+            foreach ($name in @('providers.py', 'server.py')) {
+                Copy-Item -LiteralPath (Join-Path $SourceRoot $name) -Destination $InstallRoot -Force
+            }
+            foreach ($name in @('index.html', 'app.css', 'app.js')) {
+                Copy-Item -LiteralPath (Join-Path (Join-Path $SourceRoot 'static') $name) -Destination $staticRoot -Force
+            }
+            Copy-Item -LiteralPath $sourceRunner -Destination $RunnerPath -Force
+
+            # Remove the exact legacy task from earlier versions of this installer.
+            $legacyTask = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+            if ($legacyTask) {
+                Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+                Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
+            }
+
+            $shellPath = (Get-Command powershell.exe -ErrorAction Stop).Source
             $arguments = '-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}"' -f $RunnerPath
-            $taskAction = New-ScheduledTaskAction -Execute $shellPath -Argument $arguments
-            $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-            $trigger = New-ScheduledTaskTrigger -AtLogOn -User $currentUser
-            $settings = New-ScheduledTaskSettingsSet `
-                -StartWhenAvailable `
-                -RestartCount 20 `
-                -RestartInterval (New-TimeSpan -Minutes 1) `
-                -ExecutionTimeLimit ([TimeSpan]::Zero) `
-                -MultipleInstances IgnoreNew
-            $principal = New-ScheduledTaskPrincipal `
-                -UserId $currentUser `
-                -LogonType Interactive `
-                -RunLevel Limited
-            Register-ScheduledTask `
-                -TaskName $TaskName `
-                -Action $taskAction `
-                -Trigger $trigger `
-                -Settings $settings `
-                -Principal $principal `
-                -Description 'Starts the private SponsoredTokens loopback chat.' `
-                -Force | Out-Null
+            $shell = New-Object -ComObject WScript.Shell
+            $shortcut = $shell.CreateShortcut($StartupShortcut)
+            $shortcut.TargetPath = $shellPath
+            $shortcut.Arguments = $arguments
+            $shortcut.WorkingDirectory = $InstallRoot
+            $shortcut.WindowStyle = 7
+            $shortcut.Description = 'Starts the private SponsoredTokens loopback chat.'
+            $shortcut.Save()
             $changed = $true
         }
     }
     'Start' {
-        $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-        if (-not $task) { throw 'Automatic start is not installed.' }
-        if ($PSCmdlet.ShouldProcess($TaskName, 'Start local chat task')) {
-            Start-ScheduledTask -TaskName $TaskName
+        if (-not (Test-Path -LiteralPath $StartupShortcut -PathType Leaf)) {
+            throw 'Automatic start is not installed.'
+        }
+        if (-not (Get-Health).running -and $PSCmdlet.ShouldProcess($TaskName, 'Start local chat supervisor')) {
+            $shellPath = (Get-Command powershell.exe -ErrorAction Stop).Source
+            $arguments = '-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "{0}"' -f $RunnerPath
+            Start-Process -FilePath $shellPath -ArgumentList $arguments -WorkingDirectory $InstallRoot -WindowStyle Hidden
             $changed = $true
         }
     }
     'Stop' {
-        $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-        if ($task -and $PSCmdlet.ShouldProcess($TaskName, 'Stop local chat task')) {
-            Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+        if ($PSCmdlet.ShouldProcess($TaskName, 'Stop installed local chat processes')) {
+            Stop-InstalledProcesses
             $changed = $true
         }
     }
     'Uninstall' {
-        $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-        if ($task -and $PSCmdlet.ShouldProcess($TaskName, 'Remove automatic start task')) {
-            Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-            Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
+        if ($PSCmdlet.ShouldProcess($TaskName, 'Remove automatic start')) {
+            Stop-InstalledProcesses
+            if (Test-Path -LiteralPath $StartupShortcut) {
+                Remove-Item -LiteralPath $StartupShortcut -Force
+            }
+            if (Test-Path -LiteralPath $InstallRoot) {
+                $resolvedInstallRoot = (Resolve-Path -LiteralPath $InstallRoot).Path
+                $expectedParent = Join-Path $env:LOCALAPPDATA 'WhiteChronos'
+                if (-not $resolvedInstallRoot.StartsWith($expectedParent, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    throw 'Refusing to remove files outside the expected installation directory.'
+                }
+                Remove-Item -LiteralPath $resolvedInstallRoot -Recurse -Force
+            }
             $changed = $true
         }
     }
