@@ -42,9 +42,9 @@ function Get-LocalChatState {
 
 function Stop-InstalledProcesses {
     if (-not (Test-Path -LiteralPath $InstallRoot)) { return }
-    $escapedRoot = [WildcardPattern]::Escape($InstallRoot)
     $processes = @(Get-CimInstance Win32_Process | Where-Object {
-        $_.CommandLine -and $_.CommandLine -like ('*' + $escapedRoot + '*') -and
+        $_.ProcessId -ne $PID -and $_.CommandLine -and
+        $_.CommandLine.Contains($InstallRoot, [System.StringComparison]::OrdinalIgnoreCase) -and
         $_.Name -in @('pwsh.exe', 'powershell.exe', 'python.exe', 'pythonw.exe')
     })
     foreach ($process in ($processes | Sort-Object { if ($_.Name -match 'powershell|pwsh') { 0 } else { 1 } })) {
@@ -77,9 +77,10 @@ switch ($Action) {
             throw 'The local chat runner is missing.'
         }
         if ($PSCmdlet.ShouldProcess($TaskName, 'Install automatic start for the current user')) {
+            Stop-InstalledProcesses
             $staticRoot = Join-Path $InstallRoot 'static'
             New-Item -ItemType Directory -Path $staticRoot -Force | Out-Null
-            foreach ($name in @('providers.py', 'server.py')) {
+            foreach ($name in @('providers.py', 'routing.py', 'server.py')) {
                 Copy-Item -LiteralPath (Join-Path $SourceRoot $name) -Destination $InstallRoot -Force
             }
             foreach ($name in @('index.html', 'app.css', 'app.js')) {

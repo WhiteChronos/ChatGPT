@@ -313,6 +313,7 @@ class HttpBoundaryTests(unittest.TestCase):
             "ready": True,
             "provider": "SponsoredTokens",
             "model": providers.SPONSOREDTOKENS_MODEL,
+            "router": "fixed",
         })
         self.assert_security_headers(headers)
         self.assertNotIn(b"sentinel-sponsored-secret", body)
@@ -333,6 +334,31 @@ class HttpBoundaryTests(unittest.TestCase):
             other.server_close()
             thread.join(timeout=2)
 
+    def test_health_reports_jev_when_typesafe_key_is_configured(self):
+        other = __import__("server").create_server(
+            providers.SponsoredTokensConfig(
+                "sentinel-sponsored-secret",
+                "sentinel-typesafe-secret",
+            )
+        )
+        thread = threading.Thread(target=other.serve_forever, daemon=True)
+        thread.start()
+        try:
+            connection = http.client.HTTPConnection(
+                "127.0.0.1", other.server_address[1], timeout=2,
+            )
+            connection.request("GET", "/api/health")
+            response = connection.getresponse()
+            payload = json.loads(response.read())
+            self.assertEqual(response.status, 200)
+            self.assertEqual(payload["router"], "jev")
+            self.assertNotIn(b"sentinel-typesafe-secret", json.dumps(payload).encode())
+            connection.close()
+        finally:
+            other.shutdown()
+            other.server_close()
+            thread.join(timeout=2)
+
     def test_chat_returns_exact_result_and_invokes_transport_once(self):
         messages = [{"role": "user", "content": "Olá"}]
         status, headers, body = self.request(
@@ -345,9 +371,147 @@ class HttpBoundaryTests(unittest.TestCase):
             "text": "Resposta 🌍\n\nSponsored by Example\n ",
             "provider": "SponsoredTokens",
             "model": providers.SPONSOREDTOKENS_MODEL,
+            "router": "fixed",
         })
         self.assertEqual(self.calls, [(self.config, messages)])
         self.assert_security_headers(headers)
+
+    def test_chat_uses_jev_choice_to_select_a_sponsored_model(self):
+        decision_requests = []
+        provider_requests = []
+
+        def decision_opener(request, *, timeout):
+            decision_requests.append((request, timeout))
+            return FakeResponse(json.dumps({
+                "answers": {
+                    "route": {
+                        "choice": "fast",
+                        "probabilities": {"fast": 0.93, "balanced": 0.05, "deep": 0.02},
+                        "confidence": 0.93,
+                    }
+                },
+                "model": "jev-1.13.0",
+            }).encode())
+
+        def provider_opener(request, *, timeout):
+            provider_requests.append((request, timeout))
+            return FakeResponse(json.dumps({"output_text": "Resposta eficiente"}).encode())
+
+        config = providers.SponsoredTokensConfig(
+            "sentinel-sponsored-secret", "sentinel-typesafe-secret",
+        )
+
+        def transport(current_config, messages):
+            return providers.call_sponsoredtokens(
+                current_config,
+                messages,
+                opener=provider_opener,
+                decision_opener=decision_opener,
+            )
+
+        other = __import__("server").create_server(config, transport=transport)
+        thread = threading.Thread(target=other.serve_forever, daemon=True)
+        thread.start()
+        try:
+            connection = http.client.HTTPConnection(
+                "127.0.0.1", other.server_address[1], timeout=2,
+            )
+            connection.request(
+                "POST",
+                "/api/chat",
+                body=json.dumps({
+                    "messages": [{"role": "user", "content": "Resuma isto em uma linha"}],
+                }).encode(),
+                headers={"Content-Type": "application/json"},
+            )
+            response = connection.getresponse()
+            payload = json.loads(response.read())
+            self.assertEqual(response.status, 200)
+            self.assertEqual(payload, {
+                "text": "Resposta eficiente",
+                "provider": "SponsoredTokens",
+                "model": "sponsored/openai/gpt-6-luna",
+                "router": "jev",
+            })
+            connection.close()
+        finally:
+            other.shutdown()
+            other.server_close()
+            thread.join(timeout=2)
+
+        self.assertEqual(len(decision_requests), 1)
+        decision_request, decision_timeout = decision_requests[0]
+        self.assertEqual(decision_request.full_url, "https://api.typesafe.ai/v1/systemone")
+        self.assertEqual(
+            decision_request.get_header("Authorization"),
+            "Bearer sentinel-typesafe-secret",
+        )
+        self.assertLessEqual(decision_timeout, 5)
+        decision_payload = json.loads(decision_request.data)
+        self.assertEqual(decision_payload["model"], "jev-latest")
+        self.assertEqual(decision_payload["state"], {
+            "message": "Resuma isto em uma linha",
+        })
+        self.assertEqual(set(decision_payload["questions"]["route"]["criteria"]), {
+            "fast", "balanced", "deep",
+        })
+
+        self.assertEqual(len(provider_requests), 1)
+        provider_payload = json.loads(provider_requests[0][0].data)
+        self.assertEqual(provider_payload["model"], "sponsored/openai/gpt-6-luna")
+
+    def test_chat_falls_back_to_proven_model_when_jev_is_unavailable(self):
+        provider_requests = []
+
+        def decision_opener(*args, **kwargs):
+            raise urllib.error.URLError("private Jev outage detail")
+
+        def provider_opener(request, *, timeout):
+            provider_requests.append(request)
+            return FakeResponse(json.dumps({"output_text": "Resposta preservada"}).encode())
+
+        config = providers.SponsoredTokensConfig(
+            "sentinel-sponsored-secret", "sentinel-typesafe-secret",
+        )
+
+        def transport(current_config, messages):
+            return providers.call_sponsoredtokens(
+                current_config,
+                messages,
+                opener=provider_opener,
+                decision_opener=decision_opener,
+            )
+
+        other = __import__("server").create_server(config, transport=transport)
+        thread = threading.Thread(target=other.serve_forever, daemon=True)
+        thread.start()
+        try:
+            connection = http.client.HTTPConnection(
+                "127.0.0.1", other.server_address[1], timeout=2,
+            )
+            connection.request(
+                "POST",
+                "/api/chat",
+                body=json.dumps({"messages": [{"role": "user", "content": "Olá"}]}).encode(),
+                headers={"Content-Type": "application/json"},
+            )
+            response = connection.getresponse()
+            payload = json.loads(response.read())
+            self.assertEqual(response.status, 200)
+            self.assertEqual(payload["model"], providers.SPONSOREDTOKENS_MODEL)
+            self.assertEqual(payload["router"], "fixed")
+            self.assertNotIn("private Jev outage detail", json.dumps(payload))
+            connection.close()
+        finally:
+            other.shutdown()
+            other.server_close()
+            thread.join(timeout=2)
+
+        self.assertEqual(len(provider_requests), 1)
+        self.assertEqual(
+            json.loads(provider_requests[0].data)["model"],
+            providers.SPONSOREDTOKENS_MODEL,
+        )
 
     def test_provider_errors_keep_stable_code_and_status(self):
         for code, expected_status in (
@@ -475,7 +639,7 @@ class AssetPolicyTests(unittest.TestCase):
 
     def test_html_has_accessible_named_chat_controls(self):
         for element_id in (
-            "status", "provider", "model", "messages", "composer",
+            "status", "provider", "model", "router", "messages", "composer",
             "message-input", "send", "retry", "clear",
         ):
             self.assertRegex(self.html, rf'id=["\']{re.escape(element_id)}["\']')
@@ -513,10 +677,13 @@ class CliTests(unittest.TestCase):
         self.module = __import__("server")
         self.key = "sentinel-sponsored-secret"
 
-    def test_environment_loader_reads_only_sponsoredtokens_key(self):
+    def test_environment_loader_reads_provider_and_jev_keys_without_exposing_them(self):
         class TrackedEnvironment(dict):
             def __init__(self):
-                super().__init__({"SPONSOREDTOKENS_API_KEY": self_key})
+                super().__init__({
+                    "SPONSOREDTOKENS_API_KEY": self_key,
+                    "TYPESAFE_API_KEY": "sentinel-typesafe-secret",
+                })
                 self.accessed = []
 
             def get(self, key, default=None):
@@ -527,8 +694,10 @@ class CliTests(unittest.TestCase):
         environ = TrackedEnvironment()
         config = self.module.load_config_from_environment(environ)
         self.assertEqual(config.api_key, self.key)
-        self.assertEqual(environ.accessed, ["SPONSOREDTOKENS_API_KEY"])
+        self.assertEqual(config.jev_api_key, "sentinel-typesafe-secret")
+        self.assertEqual(environ.accessed, ["SPONSOREDTOKENS_API_KEY", "TYPESAFE_API_KEY"])
         self.assertNotIn(self.key, repr(config))
+        self.assertNotIn("sentinel-typesafe-secret", repr(config))
 
     def test_cli_defaults_and_explicit_options(self):
         defaults = self.module.parse_args([])
@@ -569,6 +738,7 @@ class CliTests(unittest.TestCase):
         self.assertIn("LIVE_SMOKE=PASS", visible)
         self.assertIn("provider=SponsoredTokens", visible)
         self.assertIn("model=" + providers.SPONSOREDTOKENS_MODEL, visible)
+        self.assertIn("router=fixed", visible)
         self.assertNotIn(self.key, visible)
         self.assertNotIn("private response", visible)
 

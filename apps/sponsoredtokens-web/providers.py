@@ -7,8 +7,10 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Callable
 
+from routing import DEFAULT_MODEL, select_model
+
 SPONSOREDTOKENS_ENDPOINT = "https://sponsoredtokens.com/api/v1/responses"
-SPONSOREDTOKENS_MODEL = "sponsored/openai/gpt-5.1-codex-mini"
+SPONSOREDTOKENS_MODEL = DEFAULT_MODEL
 UPSTREAM_TIMEOUT_SECONDS = 30
 MAX_RESPONSE_BYTES = 1_048_576
 
@@ -25,6 +27,7 @@ _ERRORS = {
 @dataclass(frozen=True)
 class SponsoredTokensConfig:
     api_key: str | None = field(repr=False)
+    jev_api_key: str | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -32,6 +35,7 @@ class ProviderResult:
     text: str
     provider: str
     model: str
+    router: str = "fixed"
 
 
 class ProviderError(Exception):
@@ -108,6 +112,7 @@ def call_sponsoredtokens(
     messages: list[dict[str, str]],
     *,
     opener: Callable = urllib.request.urlopen,
+    decision_opener: Callable | None = None,
 ) -> ProviderResult:
     """Make one bounded request using only the SponsoredTokens credential."""
     if not config.api_key or not config.api_key.strip():
@@ -118,12 +123,13 @@ def call_sponsoredtokens(
     if opener is urllib.request.urlopen:
         opener = urllib.request.build_opener(_NoRedirectHandler()).open
 
+    decision = select_model(config.jev_api_key, messages, opener=decision_opener)
     error_code = None
     try:
         request = urllib.request.Request(
             SPONSOREDTOKENS_ENDPOINT,
             data=json.dumps(
-                build_upstream_payload(messages, SPONSOREDTOKENS_MODEL), ensure_ascii=False,
+                build_upstream_payload(messages, decision.model), ensure_ascii=False,
             ).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
@@ -143,7 +149,7 @@ def call_sponsoredtokens(
             if config.api_key in text:
                 error_code = "invalid_upstream_response"
             else:
-                return ProviderResult(text, "SponsoredTokens", SPONSOREDTOKENS_MODEL)
+                return ProviderResult(text, "SponsoredTokens", decision.model, decision.router)
     except urllib.error.HTTPError as error:
         error_code = _http_error_code(error.code)
         error.close()

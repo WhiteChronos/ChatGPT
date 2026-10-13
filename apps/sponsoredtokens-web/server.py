@@ -157,6 +157,7 @@ def make_handler(
                     "ready": ready,
                     "provider": "SponsoredTokens",
                     "model": SPONSOREDTOKENS_MODEL,
+                    "router": "jev" if config.jev_api_key and config.jev_api_key.strip() else "fixed",
                 })
                 return
             asset = _STATIC_ROUTES.get(self.path)
@@ -217,6 +218,7 @@ def make_handler(
                 "text": result.text,
                 "provider": result.provider,
                 "model": result.model,
+                "router": result.router,
             })
 
         def _method_not_allowed(self):
@@ -249,8 +251,11 @@ def create_server(
 
 
 def load_config_from_environment(environ: Mapping[str, str]) -> SponsoredTokensConfig:
-    """Read the one credential owned by this application."""
-    return SponsoredTokensConfig(environ.get("SPONSOREDTOKENS_API_KEY"))
+    """Read provider and decision credentials owned by this application."""
+    return SponsoredTokensConfig(
+        environ.get("SPONSOREDTOKENS_API_KEY"),
+        environ.get("TYPESAFE_API_KEY"),
+    )
 
 
 def _port(value: str) -> int:
@@ -286,7 +291,10 @@ def run_live_smoke(config: SponsoredTokensConfig) -> bool:
     except ProviderError as error:
         print(f"LIVE_SMOKE=FAIL code={error.code}")
         return False
-    print(f"LIVE_SMOKE=PASS provider={result.provider} model={result.model}")
+    print(
+        f"LIVE_SMOKE=PASS provider={result.provider} "
+        f"model={result.model} router={result.router}"
+    )
     return True
 
 

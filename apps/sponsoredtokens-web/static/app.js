@@ -7,6 +7,7 @@ let failedTurn = false;
 const statusNode = document.getElementById('status');
 const providerNode = document.getElementById('provider');
 const modelNode = document.getElementById('model');
+const routerNode = document.getElementById('router');
 const messagesNode = document.getElementById('messages');
 const emptyNode = document.getElementById('empty-state');
 const form = document.getElementById('composer');
@@ -53,6 +54,7 @@ async function submitHistory() {
     renderMessage('assistant', payload.text);
     providerNode.textContent = payload.provider;
     modelNode.textContent = payload.model;
+    routerNode.textContent = payload.router === 'jev' ? 'Jev' : 'Fallback fixo';
     failedTurn = false;
     setStatus('Pronto');
   } catch (error) {
@@ -101,6 +103,7 @@ async function loadHealth() {
     const health = await response.json();
     providerNode.textContent = health.provider;
     modelNode.textContent = health.model;
+    routerNode.textContent = health.router === 'jev' ? 'Jev configurada' : 'Fallback fixo';
     setStatus(health.ready ? 'Pronto' : 'Chave nao configurada');
     send.disabled = !health.ready;
   } catch (error) {

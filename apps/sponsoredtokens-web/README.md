@@ -6,8 +6,11 @@ memoria da aba. Atualizar ou fechar a pagina apaga a conversa.
 
 ## Iniciar
 
-A variavel de usuario `SPONSOREDTOKENS_API_KEY` deve estar disponivel no
-PowerShell. A chave nunca e enviada ao navegador, impressa ou gravada pelo app.
+As variaveis de usuario `SPONSOREDTOKENS_API_KEY` e, opcionalmente,
+`TYPESAFE_API_KEY` devem estar disponiveis no PowerShell. As chaves nunca sao
+enviadas ao navegador, impressas ou gravadas pelo app. Crie a chave Jev no
+painel oficial [TypeSafe AI](https://console.typesafe.ai/) e salve-a diretamente
+como variavel de usuario do Windows; nao cole a chave em conversas nem no Git.
 
 ```powershell
 python apps/sponsoredtokens-web/server.py --open
@@ -18,8 +21,8 @@ outra porta local. Pressione `Ctrl+C` no PowerShell para encerrar.
 
 ## Teste real opcional
 
-O teste real faz uma unica chamada minima e informa somente resultado, provedor
-e modelo:
+O teste real faz uma unica chamada minima e informa somente resultado, provedor,
+modelo e roteador:
 
 ```powershell
 python apps/sponsoredtokens-web/server.py --live-smoke
@@ -53,9 +56,22 @@ pwsh -File apps/sponsoredtokens-web/windows/Manage-AutoStart.ps1 -Action Uninsta
 
 O estado tambem pode ser lido por automacao acrescentando `-Json`.
 
+## Roteamento Jev
+
+A Jev atua somente como roteador de decisao. Para cada envio, recebe apenas a
+ultima mensagem do usuario, limitada a 4.000 caracteres, e escolhe uma rota:
+
+- `fast`: `sponsored/openai/gpt-6-luna`;
+- `balanced`: `sponsored/openai/gpt-5.6-luna`;
+- `deep`: `sponsored/openai/gpt-5.1-codex-mini`.
+
+O SponsoredTokens continua sendo o unico gerador de respostas. Se a chave Jev
+nao estiver configurada, for invalida ou o servico estiver indisponivel, a
+aplicacao usa automaticamente a rota `deep` e continua pelo SponsoredTokens.
+
 ## Limites e separacao
 
 Este app nao possui agentes, ferramentas, persistencia, telemetria, publicacao
-na internet ou escolha de provedor. O Codex local pode usar o mesmo perfil
+na internet ou escolha de provedor generativo. O Codex local pode usar o mesmo perfil
 SponsoredTokens separadamente. O ChatGPT web continua usando o login e o plano
 da conta; ele nao le a variavel desta aplicacao local.
