@@ -911,6 +911,25 @@ class WindowsAutomationTests(unittest.TestCase):
         self.assertIn("Restore-InstalledApplication", install_body)
         self.assertIn("Assert-ContainedPath", install_body)
 
+    def test_first_install_rollback_removes_new_runtime_and_orphaned_shortcut(self):
+        install_switch = self.manager_source.index("'Install' {")
+        install_body = self.manager_source[install_switch:]
+        self.assertIn("$runtimePreviouslyInstalled", install_body)
+        self.assertIn("$shortcutPreviouslyInstalled", install_body)
+        self.assertIn(
+            "elseif ($preparedRuntime.Activate -and $runtimeActivated "
+            "-and -not $runtimePreviouslyInstalled "
+            "-and (Test-Path -LiteralPath $RuntimeRoot))",
+            install_body,
+        )
+        self.assertIn(
+            "elseif (-not $shortcutPreviouslyInstalled -and "
+            "(Test-Path -LiteralPath $StartupShortcut))",
+            install_body,
+        )
+        self.assertIn("Remove-ContainedPath -Path $applicationStage", install_body)
+        self.assertIn("Remove-ContainedPath -Path $preparedRuntime.Path", install_body)
+
     def test_process_containment_and_independent_backoff_are_explicit(self):
         self.assertIn("Test-PathWithinRoot", self.manager_source)
         self.assertIn("$RuntimeBaseRoot", self.manager_source)

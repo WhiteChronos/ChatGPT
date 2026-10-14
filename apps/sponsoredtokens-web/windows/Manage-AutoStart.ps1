@@ -195,13 +195,16 @@ function Stage-Application {
     return $stage
 }
 
-function Restore-InstalledApplication([string]$BackupPath) {
+function Restore-InstalledApplication([string]$BackupPath, [bool]$RemoveActivated) {
     Assert-ContainedPath -Path $InstallRoot -Root $WhiteChronosRoot
-    if (Test-Path -LiteralPath $InstallRoot) {
-        Remove-ContainedPath -Path $InstallRoot -Root $WhiteChronosRoot
-    }
     if (Test-Path -LiteralPath $BackupPath) {
+        if (Test-Path -LiteralPath $InstallRoot) {
+            Remove-ContainedPath -Path $InstallRoot -Root $WhiteChronosRoot
+        }
         Move-Item -LiteralPath $BackupPath -Destination $InstallRoot
+    }
+    elseif ($RemoveActivated -and (Test-Path -LiteralPath $InstallRoot)) {
+        Remove-ContainedPath -Path $InstallRoot -Root $WhiteChronosRoot
     }
 }
 
@@ -249,9 +252,21 @@ switch ($Action) {
 
             $applicationBackup = $InstallRoot + '.backup'
             $runtimeBackup = $RuntimeRoot + '.backup'
+            $shortcutBackup = Join-Path $WhiteChronosRoot 'SponsoredTokensLocalChat.startup-shortcut.backup'
+            $runtimePreviouslyInstalled = Test-Path -LiteralPath $RuntimeRoot
+            $shortcutPreviouslyInstalled = Test-Path -LiteralPath $StartupShortcut -PathType Leaf
+            $applicationActivated = $false
+            $runtimeActivated = $false
             Assert-ContainedPath -Path $InstallRoot -Root $WhiteChronosRoot
             Assert-ContainedPath -Path $RuntimeRoot -Root $WhiteChronosRoot
+            Assert-ContainedPath -Path $shortcutBackup -Root $WhiteChronosRoot
             try {
+                if (Test-Path -LiteralPath $shortcutBackup) {
+                    Remove-ContainedPath -Path $shortcutBackup -Root $WhiteChronosRoot
+                }
+                if ($shortcutPreviouslyInstalled) {
+                    Copy-Item -LiteralPath $StartupShortcut -Destination $shortcutBackup
+                }
                 if ($preparedRuntime.Activate) {
                     if (Test-Path -LiteralPath $runtimeBackup) {
                         Remove-ContainedPath -Path $runtimeBackup -Root $RuntimeBaseRoot
@@ -260,6 +275,7 @@ switch ($Action) {
                         Move-Item -LiteralPath $RuntimeRoot -Destination $runtimeBackup
                     }
                     Move-Item -LiteralPath $preparedRuntime.Path -Destination $RuntimeRoot
+                    $runtimeActivated = $true
                 }
 
                 if (Test-Path -LiteralPath $applicationBackup) {
@@ -269,6 +285,7 @@ switch ($Action) {
                     Move-Item -LiteralPath $InstallRoot -Destination $applicationBackup
                 }
                 Move-Item -LiteralPath $applicationStage -Destination $InstallRoot
+                $applicationActivated = $true
                 Set-StartupShortcut
 
                 $legacyTask = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
@@ -276,15 +293,34 @@ switch ($Action) {
                     Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
                     Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
                 }
+                if (Test-Path -LiteralPath $shortcutBackup) {
+                    Remove-ContainedPath -Path $shortcutBackup -Root $WhiteChronosRoot
+                }
                 $changed = $true
             }
             catch {
-                Restore-InstalledApplication -BackupPath $applicationBackup
+                Restore-InstalledApplication -BackupPath $applicationBackup -RemoveActivated $applicationActivated
                 if ($preparedRuntime.Activate -and (Test-Path -LiteralPath $runtimeBackup)) {
                     if (Test-Path -LiteralPath $RuntimeRoot) {
                         Remove-ContainedPath -Path $RuntimeRoot -Root $RuntimeBaseRoot
                     }
                     Move-Item -LiteralPath $runtimeBackup -Destination $RuntimeRoot
+                }
+                elseif ($preparedRuntime.Activate -and $runtimeActivated -and -not $runtimePreviouslyInstalled -and (Test-Path -LiteralPath $RuntimeRoot)) {
+                    Remove-ContainedPath -Path $RuntimeRoot -Root $RuntimeBaseRoot
+                }
+                if (Test-Path -LiteralPath $shortcutBackup) {
+                    Copy-Item -LiteralPath $shortcutBackup -Destination $StartupShortcut -Force
+                    Remove-ContainedPath -Path $shortcutBackup -Root $WhiteChronosRoot
+                }
+                elseif (-not $shortcutPreviouslyInstalled -and (Test-Path -LiteralPath $StartupShortcut)) {
+                    Remove-Item -LiteralPath $StartupShortcut -Force
+                }
+                if (Test-Path -LiteralPath $applicationStage) {
+                    Remove-ContainedPath -Path $applicationStage -Root $WhiteChronosRoot
+                }
+                if ($preparedRuntime.Activate -and (Test-Path -LiteralPath $preparedRuntime.Path)) {
+                    Remove-ContainedPath -Path $preparedRuntime.Path -Root $RuntimeBaseRoot
                 }
                 throw 'Installation activation failed; the previous application was restored.'
             }
