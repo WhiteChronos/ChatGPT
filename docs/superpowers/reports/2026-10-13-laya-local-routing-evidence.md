@@ -1,7 +1,9 @@
 # Evidência operacional — roteamento Laya local
 
-Data: 2026-10-13  
-Branch: `feat/sponsoredtokens-local-chat`  
+Data: 2026-10-13
+
+Branch: `feat/sponsoredtokens-local-chat`
+
 Revisão validada antes deste relatório: `f4d3956688468a398d771b075fcd095ce4fb1de7`
 
 Este relatório contém somente metadados operacionais seguros. Nenhuma chave,
