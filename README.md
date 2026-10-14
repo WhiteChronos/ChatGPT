@@ -97,4 +97,6 @@ O aplicativo deve ler estas regras antes de gerar ou aprovar qualquer documento.
 
 ## Aplicacoes locais
 
-- [Chat local privado SponsoredTokens](apps/sponsoredtokens-web/README.md)
+- [Chat local privado SponsoredTokens com roteamento Laya](apps/sponsoredtokens-web/README.md) —
+  gerador SponsoredTokens único, classificador multilíngue local em loopback e
+  fallback determinístico quando o classificador não está pronto.
