@@ -25,6 +25,7 @@ from server import (
 )
 
 import providers
+import routing
 
 
 class FakeResponse:
@@ -51,6 +52,17 @@ class ProviderTests(unittest.TestCase):
             {"role": "assistant", "content": "こんにちは"},
         ])
         self.config = providers.SponsoredTokensConfig("sentinel-sponsored-secret")
+        self.routing_patch = patch.object(
+            providers,
+            "select_model",
+            return_value=routing.RoutingDecision(
+                providers.SPONSOREDTOKENS_MODEL, "deterministic"
+            ),
+        )
+        self.routing_patch.start()
+
+    def tearDown(self):
+        self.routing_patch.stop()
 
     def assert_safe_error(self, error, code, status):
         self.assertEqual(error.code, code)
@@ -88,6 +100,7 @@ class ProviderTests(unittest.TestCase):
         result = providers.call_sponsoredtokens(self.config, self.messages, opener=opener)
         self.assertEqual(result, providers.ProviderResult(
             "Resposta 🌍", "SponsoredTokens", "sponsored/openai/gpt-5.1-codex-mini",
+            "deterministic",
         ))
         self.assertEqual(len(seen), 1)
         request, timeout = seen[0]
@@ -104,6 +117,7 @@ class ProviderTests(unittest.TestCase):
 
     def test_configuration_repr_omits_credential(self):
         self.assertNotIn("sentinel-sponsored-secret", repr(self.config))
+        self.assertEqual(self.config.routing, routing.RoutingConfig())
 
     def test_default_transport_refuses_credential_forwarding_on_redirect(self):
         response = FakeResponse(b'{"output_text":"ok"}')
@@ -277,9 +291,14 @@ class HttpBoundaryTests(unittest.TestCase):
                 "Resposta 🌍\n\nSponsored by Example\n ",
                 "SponsoredTokens",
                 providers.SPONSOREDTOKENS_MODEL,
+                "deterministic",
             )
 
-        self.server = __import__("server").create_server(self.config, transport=transport)
+        self.server = __import__("server").create_server(
+            self.config,
+            transport=transport,
+            router_probe=lambda config: False,
+        )
         self.port = self.server.server_address[1]
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -306,19 +325,24 @@ class HttpBoundaryTests(unittest.TestCase):
         self.assertEqual(lowered["cache-control"], "no-store")
         self.assertNotIn("access-control-allow-origin", lowered)
 
-    def test_health_reports_fixed_metadata_and_key_readiness(self):
+    def test_health_reports_deterministic_metadata_and_provider_key_readiness(self):
         status, headers, body = self.request("GET", "/api/health")
         self.assertEqual(status, 200)
         self.assertEqual(json.loads(body), {
             "ready": True,
             "provider": "SponsoredTokens",
             "model": providers.SPONSOREDTOKENS_MODEL,
-            "router": "fixed",
+            "router": "deterministic",
+            "router_ready": False,
+            "router_endpoint": "loopback",
         })
         self.assert_security_headers(headers)
         self.assertNotIn(b"sentinel-sponsored-secret", body)
 
-        other = __import__("server").create_server(providers.SponsoredTokensConfig(None))
+        other = __import__("server").create_server(
+            providers.SponsoredTokensConfig(None),
+            router_probe=lambda config: False,
+        )
         thread = threading.Thread(target=other.serve_forever, daemon=True)
         thread.start()
         try:
@@ -334,12 +358,11 @@ class HttpBoundaryTests(unittest.TestCase):
             other.server_close()
             thread.join(timeout=2)
 
-    def test_health_reports_jev_when_typesafe_key_is_configured(self):
+    def test_health_reports_laya_only_after_successful_probe(self):
+        probed = []
         other = __import__("server").create_server(
-            providers.SponsoredTokensConfig(
-                "sentinel-sponsored-secret",
-                "sentinel-typesafe-secret",
-            )
+            providers.SponsoredTokensConfig("sentinel-sponsored-secret"),
+            router_probe=lambda config: probed.append(config) or True,
         )
         thread = threading.Thread(target=other.serve_forever, daemon=True)
         thread.start()
@@ -351,7 +374,10 @@ class HttpBoundaryTests(unittest.TestCase):
             response = connection.getresponse()
             payload = json.loads(response.read())
             self.assertEqual(response.status, 200)
-            self.assertEqual(payload["router"], "jev")
+            self.assertEqual(payload["router"], "laya")
+            self.assertTrue(payload["router_ready"])
+            self.assertEqual(payload["router_endpoint"], "loopback")
+            self.assertEqual(probed, [providers.SponsoredTokensConfig("sentinel-sponsored-secret").routing])
             self.assertNotIn(b"sentinel-typesafe-secret", json.dumps(payload).encode())
             connection.close()
         finally:
@@ -371,12 +397,12 @@ class HttpBoundaryTests(unittest.TestCase):
             "text": "Resposta 🌍\n\nSponsored by Example\n ",
             "provider": "SponsoredTokens",
             "model": providers.SPONSOREDTOKENS_MODEL,
-            "router": "fixed",
+            "router": "deterministic",
         })
         self.assertEqual(self.calls, [(self.config, messages)])
         self.assert_security_headers(headers)
 
-    def test_chat_uses_jev_choice_to_select_a_sponsored_model(self):
+    def test_chat_uses_laya_choice_to_select_a_sponsored_model(self):
         decision_requests = []
         provider_requests = []
 
@@ -390,16 +416,14 @@ class HttpBoundaryTests(unittest.TestCase):
                         "confidence": 0.93,
                     }
                 },
-                "model": "jev-1.13.0",
+                "model": "multilingual",
             }).encode())
 
         def provider_opener(request, *, timeout):
             provider_requests.append((request, timeout))
             return FakeResponse(json.dumps({"output_text": "Resposta eficiente"}).encode())
 
-        config = providers.SponsoredTokensConfig(
-            "sentinel-sponsored-secret", "sentinel-typesafe-secret",
-        )
+        config = providers.SponsoredTokensConfig("sentinel-sponsored-secret")
 
         def transport(current_config, messages):
             return providers.call_sponsoredtokens(
@@ -409,7 +433,9 @@ class HttpBoundaryTests(unittest.TestCase):
                 decision_opener=decision_opener,
             )
 
-        other = __import__("server").create_server(config, transport=transport)
+        other = __import__("server").create_server(
+            config, transport=transport, router_probe=lambda current: True,
+        )
         thread = threading.Thread(target=other.serve_forever, daemon=True)
         thread.start()
         try:
@@ -431,7 +457,7 @@ class HttpBoundaryTests(unittest.TestCase):
                 "text": "Resposta eficiente",
                 "provider": "SponsoredTokens",
                 "model": "sponsored/openai/gpt-6-luna",
-                "router": "jev",
+                "router": "laya",
             })
             connection.close()
         finally:
@@ -441,14 +467,11 @@ class HttpBoundaryTests(unittest.TestCase):
 
         self.assertEqual(len(decision_requests), 1)
         decision_request, decision_timeout = decision_requests[0]
-        self.assertEqual(decision_request.full_url, "https://api.typesafe.ai/v1/systemone")
-        self.assertEqual(
-            decision_request.get_header("Authorization"),
-            "Bearer sentinel-typesafe-secret",
-        )
-        self.assertLessEqual(decision_timeout, 5)
+        self.assertEqual(decision_request.full_url, "http://127.0.0.1:8770/v1/systemone")
+        self.assertIsNone(decision_request.get_header("Authorization"))
+        self.assertLessEqual(decision_timeout, 2)
         decision_payload = json.loads(decision_request.data)
-        self.assertEqual(decision_payload["model"], "jev-latest")
+        self.assertEqual(decision_payload["model"], "multilingual")
         self.assertEqual(decision_payload["state"], {
             "message": "Resuma isto em uma linha",
         })
@@ -460,19 +483,17 @@ class HttpBoundaryTests(unittest.TestCase):
         provider_payload = json.loads(provider_requests[0][0].data)
         self.assertEqual(provider_payload["model"], "sponsored/openai/gpt-6-luna")
 
-    def test_chat_falls_back_to_proven_model_when_jev_is_unavailable(self):
+    def test_chat_falls_back_deterministically_when_laya_is_unavailable(self):
         provider_requests = []
 
         def decision_opener(*args, **kwargs):
-            raise urllib.error.URLError("private Jev outage detail")
+            raise urllib.error.URLError("private Laya outage detail")
 
         def provider_opener(request, *, timeout):
             provider_requests.append(request)
             return FakeResponse(json.dumps({"output_text": "Resposta preservada"}).encode())
 
-        config = providers.SponsoredTokensConfig(
-            "sentinel-sponsored-secret", "sentinel-typesafe-secret",
-        )
+        config = providers.SponsoredTokensConfig("sentinel-sponsored-secret")
 
         def transport(current_config, messages):
             return providers.call_sponsoredtokens(
@@ -482,7 +503,9 @@ class HttpBoundaryTests(unittest.TestCase):
                 decision_opener=decision_opener,
             )
 
-        other = __import__("server").create_server(config, transport=transport)
+        other = __import__("server").create_server(
+            config, transport=transport, router_probe=lambda current: False,
+        )
         thread = threading.Thread(target=other.serve_forever, daemon=True)
         thread.start()
         try:
@@ -498,9 +521,9 @@ class HttpBoundaryTests(unittest.TestCase):
             response = connection.getresponse()
             payload = json.loads(response.read())
             self.assertEqual(response.status, 200)
-            self.assertEqual(payload["model"], providers.SPONSOREDTOKENS_MODEL)
-            self.assertEqual(payload["router"], "fixed")
-            self.assertNotIn("private Jev outage detail", json.dumps(payload))
+            self.assertEqual(payload["model"], "sponsored/openai/gpt-5.6-luna")
+            self.assertEqual(payload["router"], "deterministic")
+            self.assertNotIn("private Laya outage detail", json.dumps(payload))
             connection.close()
         finally:
             other.shutdown()
@@ -510,7 +533,7 @@ class HttpBoundaryTests(unittest.TestCase):
         self.assertEqual(len(provider_requests), 1)
         self.assertEqual(
             json.loads(provider_requests[0].data)["model"],
-            providers.SPONSOREDTOKENS_MODEL,
+            "sponsored/openai/gpt-5.6-luna",
         )
 
     def test_provider_errors_keep_stable_code_and_status(self):
@@ -670,6 +693,10 @@ class AssetPolicyTests(unittest.TestCase):
         self.assertRegex(self.js, r"\bsubmitting\b")
         self.assertRegex(self.js, r"\bretry\b")
         self.assertRegex(self.js, r"messages\.splice\(0\)")
+        self.assertIn("Laya local", self.js)
+        self.assertIn("Fallback determinístico", self.js)
+        self.assertNotIn("Jev configurada", self.js)
+        self.assertNotIn("Fallback fixo", self.js)
 
 
 class CliTests(unittest.TestCase):
@@ -677,7 +704,7 @@ class CliTests(unittest.TestCase):
         self.module = __import__("server")
         self.key = "sentinel-sponsored-secret"
 
-    def test_environment_loader_reads_provider_and_jev_keys_without_exposing_them(self):
+    def test_environment_loader_reads_only_provider_key_without_exposing_it(self):
         class TrackedEnvironment(dict):
             def __init__(self):
                 super().__init__({
@@ -694,8 +721,8 @@ class CliTests(unittest.TestCase):
         environ = TrackedEnvironment()
         config = self.module.load_config_from_environment(environ)
         self.assertEqual(config.api_key, self.key)
-        self.assertEqual(config.jev_api_key, "sentinel-typesafe-secret")
-        self.assertEqual(environ.accessed, ["SPONSOREDTOKENS_API_KEY", "TYPESAFE_API_KEY"])
+        self.assertEqual(config.routing, routing.RoutingConfig())
+        self.assertEqual(environ.accessed, ["SPONSOREDTOKENS_API_KEY"])
         self.assertNotIn(self.key, repr(config))
         self.assertNotIn("sentinel-typesafe-secret", repr(config))
 
@@ -726,7 +753,12 @@ class CliTests(unittest.TestCase):
 
     def test_live_smoke_reports_only_safe_success_metadata(self):
         config = providers.SponsoredTokensConfig(self.key)
-        expected = providers.ProviderResult("private response", "SponsoredTokens", providers.SPONSOREDTOKENS_MODEL)
+        expected = providers.ProviderResult(
+            "private response",
+            "SponsoredTokens",
+            providers.SPONSOREDTOKENS_MODEL,
+            "deterministic",
+        )
         output = io.StringIO()
         with patch.object(self.module, "call_sponsoredtokens", return_value=expected) as transport:
             with contextlib.redirect_stdout(output):
@@ -738,7 +770,7 @@ class CliTests(unittest.TestCase):
         self.assertIn("LIVE_SMOKE=PASS", visible)
         self.assertIn("provider=SponsoredTokens", visible)
         self.assertIn("model=" + providers.SPONSOREDTOKENS_MODEL, visible)
-        self.assertIn("router=fixed", visible)
+        self.assertIn("router=deterministic", visible)
         self.assertNotIn(self.key, visible)
         self.assertNotIn("private response", visible)
 

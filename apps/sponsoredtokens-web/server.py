@@ -16,6 +16,7 @@ from providers import (
     SponsoredTokensConfig,
     call_sponsoredtokens,
 )
+from routing import probe_router
 
 MAX_BODY_BYTES = 1_048_576
 MAX_MESSAGES = 100
@@ -89,6 +90,7 @@ _SECURITY_HEADERS = {
 def make_handler(
     config: SponsoredTokensConfig,
     transport: Callable = call_sponsoredtokens,
+    router_probe: Callable = probe_router,
 ):
     """Build a request handler closed over one immutable provider config."""
 
@@ -153,11 +155,17 @@ def make_handler(
                 return
             if self.path == "/api/health":
                 ready = bool(config.api_key and config.api_key.strip())
+                try:
+                    router_ready = bool(router_probe(config.routing))
+                except Exception:
+                    router_ready = False
                 self._send_json(200, {
                     "ready": ready,
                     "provider": "SponsoredTokens",
                     "model": SPONSOREDTOKENS_MODEL,
-                    "router": "jev" if config.jev_api_key and config.jev_api_key.strip() else "fixed",
+                    "router": "laya" if router_ready else "deterministic",
+                    "router_ready": router_ready,
+                    "router_endpoint": "loopback",
                 })
                 return
             asset = _STATIC_ROUTES.get(self.path)
@@ -242,20 +250,20 @@ def create_server(
     host: str = "127.0.0.1",
     port: int = 0,
     transport: Callable = call_sponsoredtokens,
+    router_probe: Callable = probe_router,
 ) -> ThreadingHTTPServer:
     """Create, but do not start, an IPv4 loopback-only threaded server."""
     validated_host = validate_bind_host(host)
-    server = ThreadingHTTPServer((validated_host, port), make_handler(config, transport))
+    server = ThreadingHTTPServer(
+        (validated_host, port), make_handler(config, transport, router_probe)
+    )
     server.daemon_threads = True
     return server
 
 
 def load_config_from_environment(environ: Mapping[str, str]) -> SponsoredTokensConfig:
-    """Read provider and decision credentials owned by this application."""
-    return SponsoredTokensConfig(
-        environ.get("SPONSOREDTOKENS_API_KEY"),
-        environ.get("TYPESAFE_API_KEY"),
-    )
+    """Read the sole provider credential owned by this application."""
+    return SponsoredTokensConfig(environ.get("SPONSOREDTOKENS_API_KEY"))
 
 
 def _port(value: str) -> int:

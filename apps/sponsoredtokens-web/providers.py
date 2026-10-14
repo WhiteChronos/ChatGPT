@@ -7,7 +7,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Callable
 
-from routing import DEFAULT_MODEL, select_model
+from routing import DEFAULT_MODEL, RoutingConfig, select_model
 
 SPONSOREDTOKENS_ENDPOINT = "https://sponsoredtokens.com/api/v1/responses"
 SPONSOREDTOKENS_MODEL = DEFAULT_MODEL
@@ -27,7 +27,7 @@ _ERRORS = {
 @dataclass(frozen=True)
 class SponsoredTokensConfig:
     api_key: str | None = field(repr=False)
-    jev_api_key: str | None = field(default=None, repr=False)
+    routing: RoutingConfig = field(default_factory=RoutingConfig)
 
 
 @dataclass(frozen=True)
@@ -35,7 +35,7 @@ class ProviderResult:
     text: str
     provider: str
     model: str
-    router: str = "fixed"
+    router: str = "deterministic"
 
 
 class ProviderError(Exception):
@@ -123,7 +123,7 @@ def call_sponsoredtokens(
     if opener is urllib.request.urlopen:
         opener = urllib.request.build_opener(_NoRedirectHandler()).open
 
-    decision = select_model(config.jev_api_key, messages, opener=decision_opener)
+    decision = select_model(config.routing, messages, opener=decision_opener)
     error_code = None
     try:
         request = urllib.request.Request(

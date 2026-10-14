@@ -18,6 +18,10 @@ const clear = document.getElementById('clear');
 
 function setStatus(text) { statusNode.textContent = text; }
 
+function routerLabel(router) {
+  return router === 'laya' ? 'Laya local' : 'Fallback determinístico';
+}
+
 function renderMessage(role, content) {
   const article = document.createElement('article');
   article.className = `message message-${role}`;
@@ -54,7 +58,7 @@ async function submitHistory() {
     renderMessage('assistant', payload.text);
     providerNode.textContent = payload.provider;
     modelNode.textContent = payload.model;
-    routerNode.textContent = payload.router === 'jev' ? 'Jev' : 'Fallback fixo';
+    routerNode.textContent = routerLabel(payload.router);
     failedTurn = false;
     setStatus('Pronto');
   } catch (error) {
@@ -103,7 +107,7 @@ async function loadHealth() {
     const health = await response.json();
     providerNode.textContent = health.provider;
     modelNode.textContent = health.model;
-    routerNode.textContent = health.router === 'jev' ? 'Jev configurada' : 'Fallback fixo';
+    routerNode.textContent = routerLabel(health.router);
     setStatus(health.ready ? 'Pronto' : 'Chave nao configurada');
     send.disabled = !health.ready;
   } catch (error) {
