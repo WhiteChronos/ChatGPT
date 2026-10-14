@@ -820,7 +820,11 @@ class WindowsAutomationTests(unittest.TestCase):
         cls.pwsh = shutil.which("pwsh") or shutil.which("powershell")
         if not cls.pwsh:
             raise unittest.SkipTest("PowerShell is unavailable")
-        cls.script = Path(__file__).resolve().parents[1] / "windows" / "Manage-AutoStart.ps1"
+        cls.app_root = Path(__file__).resolve().parents[1]
+        cls.script = cls.app_root / "windows" / "Manage-AutoStart.ps1"
+        cls.runner = cls.app_root / "windows" / "Run-LocalChat.ps1"
+        cls.manager_source = cls.script.read_text(encoding="utf-8")
+        cls.runner_source = cls.runner.read_text(encoding="utf-8")
 
     def test_status_is_machine_readable_and_never_contains_the_key(self):
         environment = dict(**__import__("os").environ)
@@ -831,9 +835,13 @@ class WindowsAutomationTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(set(payload), {"installed", "running", "ready", "url", "task"})
+        self.assertEqual(set(payload), {
+            "installed", "running", "ready", "routerRunning", "routerReady",
+            "router", "url", "task",
+        })
         self.assertEqual(payload["url"], "http://127.0.0.1:8765/")
         self.assertEqual(payload["task"], "WhiteChronos-SponsoredTokens-LocalChat")
+        self.assertIn(payload["router"], {"laya", "deterministic"})
         self.assertNotIn("sentinel-sponsored-secret", result.stdout + result.stderr)
 
     def test_install_whatif_describes_safe_automatic_start_without_changing_state(self):
@@ -860,12 +868,71 @@ class WindowsAutomationTests(unittest.TestCase):
                 Path(__import__("os").environ["LOCALAPPDATA"])
                 / "WhiteChronos" / "SponsoredTokensLocalChat"
             ),
+            "runtimeRoot": str(
+                Path(__import__("os").environ["LOCALAPPDATA"])
+                / "WhiteChronos" / "SponsoredTokensRuntimes" / "laya-0.4.6-py311"
+            ),
+            "layaRequirement": "laya[serve]==0.4.6",
+            "routerUrl": "http://127.0.0.1:8770/",
+            "phases": ["prepare-runtime", "stage-application", "stop-installed", "activate", "shortcut"],
         })
         after = subprocess.run(
             [self.pwsh, "-NoProfile", "-File", str(self.script), "-Action", "Status", "-Json"],
             capture_output=True, text=True, timeout=15, check=True,
         )
         self.assertEqual(json.loads(before.stdout)["installed"], json.loads(after.stdout)["installed"])
+
+    def test_scripts_remove_typesafe_and_use_literal_argument_boundaries(self):
+        combined = self.manager_source + self.runner_source
+        self.assertNotIn("TYPESAFE_API_KEY", combined)
+        self.assertNotIn("Invoke-Expression", combined)
+        self.assertIn("-LiteralPath", self.manager_source)
+        self.assertIn("-ArgumentList @(", combined)
+        self.assertIn("$env:LAYA_HOST = '127.0.0.1'", self.runner_source)
+        self.assertIn("$env:LAYA_PORT = '8770'", self.runner_source)
+        self.assertIn("$env:LAYA_MODELS = 'multilingual'", self.runner_source)
+        self.assertIn("$env:LAYA_DEFAULT_MODEL = 'multilingual'", self.runner_source)
+        self.assertIn("('\"{0}\"' -f $ServerPath)", self.runner_source)
+
+    def test_installation_stages_before_stop_and_retains_a_recoverable_backup(self):
+        install_switch = self.manager_source.index("'Install' {")
+        install_body = self.manager_source[install_switch:]
+        self.assertLess(
+            install_body.index("Prepare-LayaRuntime"),
+            install_body.index("Stop-InstalledProcesses"),
+        )
+        self.assertLess(
+            install_body.index("Stage-Application"),
+            install_body.index("Stop-InstalledProcesses"),
+        )
+        self.assertIn(".backup", install_body)
+        self.assertIn("Restore-InstalledApplication", install_body)
+        self.assertIn("Assert-ContainedPath", install_body)
+
+    def test_process_containment_and_independent_backoff_are_explicit(self):
+        self.assertIn("Test-PathWithinRoot", self.manager_source)
+        self.assertIn("$RuntimeBaseRoot", self.manager_source)
+        self.assertIn("$ChatRestartDelay", self.runner_source)
+        self.assertIn("$RouterRestartDelay", self.runner_source)
+        self.assertGreaterEqual(self.runner_source.count("[Math]::Min(60"), 2)
+        self.assertIn("Assert-ContainedPath -Path $InstallRoot", self.manager_source)
+        self.assertIn("Assert-ContainedPath -Path $RuntimeRoot", self.manager_source)
+
+    def test_laya_requirement_is_exact_and_application_owned(self):
+        requirement = self.app_root / "requirements-laya.txt"
+        self.assertTrue(requirement.is_file())
+        content = requirement.read_text(encoding="utf-8")
+        self.assertIn("https://github.com/NandhaKishorM/laya", content)
+        requirements = [
+            line.strip() for line in content.splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
+        self.assertEqual(requirements, ["laya[serve]==0.4.6"])
+
+    def test_runtime_version_probe_contains_valid_python(self):
+        match = re.search(r"& \$PythonPath -c '([^']+)'", self.manager_source)
+        self.assertIsNotNone(match)
+        compile(match.group(1), "<laya-version-probe>", "exec")
 
 
 class ValidateBindHostTests(unittest.TestCase):
