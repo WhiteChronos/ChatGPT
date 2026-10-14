@@ -142,7 +142,10 @@ def _finite_probability(value: object) -> bool:
 
 
 def _validated_laya_decision(
-    payload: object, config: RoutingConfig
+    payload: object,
+    config: RoutingConfig,
+    *,
+    require_admission: bool = True,
 ) -> RoutingDecision | None:
     if not isinstance(payload, dict):
         return None
@@ -163,7 +166,7 @@ def _validated_laya_decision(
         return None
     if not _finite_probability(confidence):
         return None
-    if choice != "deep" and confidence < config.min_confidence:
+    if require_admission and choice != "deep" and confidence < config.min_confidence:
         return None
     return RoutingDecision(ROUTED_MODELS[choice], "laya")
 
@@ -172,6 +175,8 @@ def _query_laya(
     config: RoutingConfig,
     messages: list[dict[str, str]],
     opener: Callable | None,
+    *,
+    require_admission: bool = True,
 ) -> RoutingDecision | None:
     if opener is None:
         opener = urllib.request.build_opener(_NoRedirectHandler()).open
@@ -192,7 +197,9 @@ def _query_laya(
                 ValueError("Non-standard JSON number")
             ),
         )
-        return _validated_laya_decision(payload, config)
+        return _validated_laya_decision(
+            payload, config, require_admission=require_admission
+        )
     except urllib.error.HTTPError as error:
         error.close()
     except (
@@ -226,4 +233,6 @@ def probe_router(
 ) -> bool:
     """Confirm that the loopback listener implements the expected Laya contract."""
     safe_probe = [{"role": "user", "content": "Classifique uma solicitação local."}]
-    return _query_laya(config, safe_probe, opener) is not None
+    return _query_laya(
+        config, safe_probe, opener, require_admission=False
+    ) is not None

@@ -8,15 +8,14 @@ else {
 $ServerPath = Join-Path $AppRoot 'server.py'
 $RuntimeRoot = Join-Path $env:LOCALAPPDATA 'WhiteChronos\SponsoredTokensRuntimes\laya-0.4.6-py311'
 $Python = Join-Path $RuntimeRoot 'Scripts\python.exe'
-$LayaServe = Join-Path $RuntimeRoot 'Scripts\laya-serve.exe'
+$LayaModuleArguments = @('-m', 'laya.serve')
 $Key = [Environment]::GetEnvironmentVariable('SPONSOREDTOKENS_API_KEY', 'User')
 
 if ([string]::IsNullOrWhiteSpace($Key)) {
     Write-Error 'SPONSOREDTOKENS_API_KEY is not configured for this user.'
     exit 2
 }
-if (-not (Test-Path -LiteralPath $Python -PathType Leaf) -or
-    -not (Test-Path -LiteralPath $LayaServe -PathType Leaf)) {
+if (-not (Test-Path -LiteralPath $Python -PathType Leaf)) {
     Write-Error 'The application-owned Laya runtime is unavailable.'
     exit 3
 }
@@ -52,7 +51,7 @@ try {
         }
         if ($null -eq $RouterProcess -and $now -ge $RouterNextStart) {
             try {
-                $RouterProcess = Start-Process -FilePath $LayaServe -WorkingDirectory $RuntimeRoot -WindowStyle Hidden -PassThru
+                $RouterProcess = Start-Process -FilePath $Python -ArgumentList $LayaModuleArguments -WorkingDirectory $RuntimeRoot -WindowStyle Hidden -PassThru
                 $RouterStartedAt = $now
             }
             catch {

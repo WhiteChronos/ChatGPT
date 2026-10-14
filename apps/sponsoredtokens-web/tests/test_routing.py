@@ -244,6 +244,14 @@ class LayaRoutingTests(unittest.TestCase):
                 opener=lambda *args, **kwargs: FakeResponse(laya_payload("deep", 0.4)),
             )
         )
+        self.assertTrue(
+            routing.probe_router(
+                self.config,
+                opener=lambda *args, **kwargs: FakeResponse(
+                    laya_payload("balanced", 0.5)
+                ),
+            )
+        )
         incompatible = lambda *args, **kwargs: FakeResponse({"status": "listening"})
         self.assertFalse(routing.probe_router(self.config, opener=incompatible))
 

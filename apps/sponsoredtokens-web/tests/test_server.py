@@ -892,6 +892,8 @@ class WindowsAutomationTests(unittest.TestCase):
         self.assertIn("$env:LAYA_PORT = '8770'", self.runner_source)
         self.assertIn("$env:LAYA_MODELS = 'multilingual'", self.runner_source)
         self.assertIn("$env:LAYA_DEFAULT_MODEL = 'multilingual'", self.runner_source)
+        self.assertIn("$LayaModuleArguments = @('-m', 'laya.serve')", self.runner_source)
+        self.assertNotIn("laya-serve.exe", self.runner_source)
         self.assertIn("('\"{0}\"' -f $ServerPath)", self.runner_source)
 
     def test_installation_stages_before_stop_and_retains_a_recoverable_backup(self):
@@ -912,6 +914,8 @@ class WindowsAutomationTests(unittest.TestCase):
     def test_process_containment_and_independent_backoff_are_explicit(self):
         self.assertIn("Test-PathWithinRoot", self.manager_source)
         self.assertIn("$RuntimeBaseRoot", self.manager_source)
+        self.assertIn("$installedServerFullPath", self.manager_source)
+        self.assertIn("$isInstalledChat", self.manager_source)
         self.assertIn("$ChatRestartDelay", self.runner_source)
         self.assertIn("$RouterRestartDelay", self.runner_source)
         self.assertGreaterEqual(self.runner_source.count("[Math]::Min(60"), 2)

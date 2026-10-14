@@ -18,7 +18,6 @@ $InstallRoot = Join-Path $WhiteChronosRoot 'SponsoredTokensLocalChat'
 $RuntimeBaseRoot = Join-Path $WhiteChronosRoot 'SponsoredTokensRuntimes'
 $RuntimeRoot = Join-Path $RuntimeBaseRoot 'laya-0.4.6-py311'
 $RuntimePython = Join-Path $RuntimeRoot 'Scripts\python.exe'
-$LayaExecutable = Join-Path $RuntimeRoot 'Scripts\laya-serve.exe'
 $RunnerPath = Join-Path $InstallRoot 'Run-LocalChat.ps1'
 $StartupShortcut = Join-Path ([Environment]::GetFolderPath('Startup')) ($TaskName + '.lnk')
 
@@ -84,8 +83,7 @@ function Get-LocalChatState {
         installed = (
             (Test-Path -LiteralPath $StartupShortcut -PathType Leaf) -and
             (Test-Path -LiteralPath $RunnerPath -PathType Leaf) -and
-            (Test-Path -LiteralPath $RuntimePython -PathType Leaf) -and
-            (Test-Path -LiteralPath $LayaExecutable -PathType Leaf)
+            (Test-Path -LiteralPath $RuntimePython -PathType Leaf)
         )
         running = $chat.running
         ready = $chat.ready
@@ -99,6 +97,7 @@ function Get-LocalChatState {
 
 function Get-InstalledProcesses {
     $runnerFullPath = [IO.Path]::GetFullPath($RunnerPath)
+    $installedServerFullPath = [IO.Path]::GetFullPath((Join-Path $InstallRoot 'server.py'))
     @(Get-CimInstance Win32_Process | Where-Object {
         if ($_.ProcessId -eq $PID) { return $false }
         $name = [string]$_.Name
@@ -113,7 +112,11 @@ function Get-InstalledProcesses {
             -not [string]::IsNullOrWhiteSpace($executable) -and
             (Test-PathWithinRoot -Path $executable -Root $RuntimeRoot)
         )
-        $isSupervisor -or $isRuntimeChild
+        $isInstalledChat = (
+            $name -in @('python.exe', 'pythonw.exe') -and
+            $commandLine.IndexOf($installedServerFullPath, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+        )
+        $isSupervisor -or $isRuntimeChild -or $isInstalledChat
     })
 }
 
@@ -124,12 +127,11 @@ function Stop-InstalledProcesses {
     }
 }
 
-function Test-LayaRuntime([string]$PythonPath, [string]$ServePath) {
-    if (-not (Test-Path -LiteralPath $PythonPath -PathType Leaf) -or
-        -not (Test-Path -LiteralPath $ServePath -PathType Leaf)) {
+function Test-LayaRuntime([string]$PythonPath) {
+    if (-not (Test-Path -LiteralPath $PythonPath -PathType Leaf)) {
         return $false
     }
-    & $PythonPath -c 'import importlib.metadata as m,sys;sys.exit(0 if m.version("laya")=="0.4.6" else 1)'
+    & $PythonPath -c 'import importlib.metadata as m, laya.serve, sys;sys.exit(0 if m.version("laya")=="0.4.6" else 1)'
     return $LASTEXITCODE -eq 0
 }
 
@@ -150,7 +152,7 @@ function Get-Python311Launcher {
 }
 
 function Prepare-LayaRuntime {
-    if (Test-LayaRuntime -PythonPath $RuntimePython -ServePath $LayaExecutable) {
+    if (Test-LayaRuntime -PythonPath $RuntimePython) {
         return [pscustomobject]@{ Path = $RuntimeRoot; Activate = $false }
     }
     if (-not (Test-Path -LiteralPath $RequirementsPath -PathType Leaf)) {
@@ -165,10 +167,9 @@ function Prepare-LayaRuntime {
         & $launcher.FilePath @venvArguments
         if ($LASTEXITCODE -ne 0) { throw 'Python runtime preparation failed.' }
         $stagePython = Join-Path $stage 'Scripts\python.exe'
-        $stageServe = Join-Path $stage 'Scripts\laya-serve.exe'
         & $stagePython -m pip install --disable-pip-version-check --requirement $RequirementsPath
         if ($LASTEXITCODE -ne 0) { throw 'Laya dependency preparation failed.' }
-        if (-not (Test-LayaRuntime -PythonPath $stagePython -ServePath $stageServe)) {
+        if (-not (Test-LayaRuntime -PythonPath $stagePython)) {
             throw 'Laya runtime verification failed.'
         }
         return [pscustomobject]@{ Path = $stage; Activate = $true }
