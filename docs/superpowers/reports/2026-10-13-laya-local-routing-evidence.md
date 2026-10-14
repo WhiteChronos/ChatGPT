@@ -4,7 +4,7 @@ Data: 2026-10-13
 
 Branch: `feat/sponsoredtokens-local-chat`
 
-Revisão validada antes deste relatório: `f4d3956688468a398d771b075fcd095ce4fb1de7`
+Revisão funcional validada: `c3b8742427bca1a32c15a73755532ebd8e8af9af`
 
 Este relatório contém somente metadados operacionais seguros. Nenhuma chave,
 mensagem, resposta gerativa, cabeçalho de autenticação ou corpo upstream foi
@@ -113,9 +113,28 @@ Comando:
 python -m unittest discover -s apps/sponsoredtokens-web/tests -v
 ```
 
-Resultado mais recente antes do relatório: `67/67` testes aprovados, zero falhas
+Resultado final: `68/68` testes aprovados, zero falhas
 e zero erros. Os dois scripts PowerShell também foram analisados pelo parser do
 PowerShell sem erro de sintaxe.
 
-Os gates completos do repositório são registrados na etapa final do plano após
-este relatório.
+## Revisão final e gates do repositório
+
+A revisão nativa do diff completo identificou uma lacuna no rollback de uma
+primeira instalação: uma falha tardia poderia deixar o runtime recém-ativado ou
+um atalho órfão. A correção `c3b87424` passou por teste de regressão e agora
+restaura o atalho anterior, remove os artefatos ativados sem predecessor e limpa
+os diretórios de preparação. Nenhuma pendência crítica ou importante permaneceu
+depois da correção.
+
+Verificações finais executadas sobre essa revisão:
+
+- suíte geral: `173/173` testes aprovados;
+- Engineering Compatibility: executável `PASS` e `39/39` testes aprovados;
+- Protocol Zero: executável `PASS` e `4/4` testes aprovados;
+- `git diff --check`: aprovado;
+- Arena local: plano de 16 estratégias e rubrica completa; o adaptador apenas
+  organiza a revisão e não cria subagentes;
+- reinstalação final: concluída, seguida por estado integralmente saudável;
+- smoke SponsoredTokens final: `PASS`;
+- smoke final pela rota Laya: `PASS`, com
+  `sponsored/openai/gpt-5.1-codex-mini` e `router=laya`.
