@@ -199,7 +199,7 @@ def staging_card(record: dict[str, Any]) -> str:
         "Payload": payload,
         "Proveniência": provenance,
     }
-    return f"""
+    return "\n".join(line.rstrip() for line in f"""
 <article class="deks-glossary-card deks-glossary-card-staging" data-scope="staging" data-source="{esc(source)}" data-entity="{esc(entity)}" data-status="{esc(status)}" data-evidence="{esc(evidence)}" data-title="{esc(external_id.casefold())}" data-search="{esc(search_text)}">
   <div class="deks-card-topline"><span class="deks-badge deks-badge-review">STAGING — NÃO APROVADO</span><span class="deks-badge">{esc(evidence)}</span></div>
   {symbol_preview}
@@ -215,7 +215,7 @@ def staging_card(record: dict[str, Any]) -> str:
     <table class="deks-detail-table">{table_rows(detail)}</table>
   </template>
 </article>
-""".strip()
+""".strip().splitlines())
 
 
 def options(values: set[str], label: str) -> str:
