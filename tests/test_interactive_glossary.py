@@ -22,6 +22,12 @@ def test_interactive_glossary_separates_canonical_and_staging():
     assert len(staging) == 40
 
 
+def test_interactive_glossary_has_no_trailing_whitespace():
+    page = build_page(load_json(MASTER), load_json(REGISTRY), iter_staging_records())
+
+    assert all(line == line.rstrip() for line in page.splitlines())
+
+
 def test_symbol_dimension_is_explicit_only_for_discrete_field_cell():
     staging = iter_staging_records()
     symbols = [item for item in staging if item.get("entity_type") == "symbol"]

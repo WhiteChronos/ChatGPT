@@ -1,0 +1,2 @@
+# Apache-2.0 upstream: https://github.com/NandhaKishorM/laya
+laya[serve]==0.4.6
