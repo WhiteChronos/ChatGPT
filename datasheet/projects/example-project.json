@@ -66,7 +66,8 @@
       "evidence_quality": {
         "rating": "HIGH",
         "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."
-      }
+      },
+      "reference_ids": []
     },
     {
       "id": "ASM-ELE-001",
@@ -93,7 +94,8 @@
       "evidence_quality": {
         "rating": "HIGH",
         "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."
-      }
+      },
+      "reference_ids": []
     },
     {
       "id": "ASM-AUT-001",
@@ -120,7 +122,11 @@
       "evidence_quality": {
         "rating": "HIGH",
         "rationale": "Direct synthetic source evidence with immutable SHA-256 provenance."
-      }
+      },
+      "reference_ids": [
+        "IEC-61131-3-2025",
+        "ISA-5.1-2024"
+      ]
     },
     {
       "id": "ASM-IF-HVAC-AUT-001",
@@ -157,7 +163,11 @@
       "evidence_quality": {
         "rating": "HIGH",
         "rationale": "Both interface endpoints are backed by current source documents and matching provenance."
-      }
+      },
+      "reference_ids": [
+        "IEC-61131-3-2025",
+        "ISA-5.1-2024"
+      ]
     }
   ],
   "scope_summary": {
@@ -231,7 +241,8 @@
         "question": "Are the synthetic current baselines mutually reconciled before findings are evaluated?",
         "answer": "Yes. The positive fixture explicitly marks the current synthetic HVAC, Electrical and Automation baselines as reconciled.",
         "status": "ANSWERED",
-        "promotes_to_finding": false
+        "promotes_to_finding": false,
+        "finding_ids": []
       }
     ]
   },
@@ -239,6 +250,110 @@
     "model": "AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0",
     "automation_hyperfocus": true,
     "data_lineage_required": true,
-    "failure_mode_review_required": true
+    "failure_mode_review_required": true,
+    "hyperfocus_checks": [
+      {
+        "stage": "PROCESS_REQUIREMENT",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms the process/HVAC requirement is represented.",
+        "reference_ids": []
+      },
+      {
+        "stage": "EQUIPMENT_TAG",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms equipment/TAG identity is represented.",
+        "reference_ids": [
+          "ISA-5.1-2024"
+        ]
+      },
+      {
+        "stage": "POWER",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms power/protection interface is represented.",
+        "reference_ids": []
+      },
+      {
+        "stage": "COMMAND_FEEDBACK",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms command/feedback path is represented.",
+        "reference_ids": [
+          "IEC-61131-3-2025"
+        ]
+      },
+      {
+        "stage": "IO",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms I/O coverage is represented.",
+        "reference_ids": [
+          "IEC-61131-3-2025"
+        ]
+      },
+      {
+        "stage": "PLC_RTU",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms PLC/RTU endpoint coverage is represented.",
+        "reference_ids": [
+          "IEC-61131-3-2025"
+        ]
+      },
+      {
+        "stage": "CONTROL_LOGIC",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms control-logic coverage is represented.",
+        "reference_ids": [
+          "IEC-61131-3-2025"
+        ]
+      },
+      {
+        "stage": "NETWORK_PROTOCOL",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms network/protocol coverage is represented.",
+        "reference_ids": []
+      },
+      {
+        "stage": "DATA_QUALITY",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms data-quality coverage is represented.",
+        "reference_ids": [
+          "JSON-SCHEMA-2020-12"
+        ]
+      },
+      {
+        "stage": "HMI_SCADA",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms HMI/SCADA coverage is represented.",
+        "reference_ids": [
+          "ISA-101.01-2015"
+        ]
+      },
+      {
+        "stage": "ALARM_HISTORY",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms alarm/history coverage is represented.",
+        "reference_ids": [
+          "ISA-18.2-2016"
+        ]
+      },
+      {
+        "stage": "FAT_SAT",
+        "status": "VERIFIED",
+        "evidence": "Synthetic fixture confirms FAT/SAT coverage is represented.",
+        "reference_ids": []
+      }
+    ]
+  },
+  "reference_context": {
+    "registry_id": "ENGINEERING_REFERENCE_REGISTRY_V1_0",
+    "authoritative_source_ids": [
+      "IEC-61131-3-2025",
+      "ISA-5.1-2024",
+      "JSON-SCHEMA-2020-12",
+      "ISA-101.01-2015",
+      "ISA-18.2-2016"
+    ],
+    "open_source_repository_ids": [
+      "GITHUB-JSONSCHEMA"
+    ],
+    "profile_id": "AUTOMATION_ENGINEERING_V1"
   }
 }
