@@ -446,3 +446,100 @@ def test_broker_host_discovery_requires_actual_matching_repo_binding(tmp_path, m
     )
     assert _status(matched, "BROKER_REPO_BINDING") is CheckStatus.PASS
     assert _status(matched, "HOST_BROKER_DISCOVERY") is CheckStatus.PASS
+
+def test_mixed_plain_and_namespaced_v2_lifecycle_is_not_discovered(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    plain = {"spawn_agent", "send_message", "followup_task"}
+    namespaced = {
+        f"collaboration__{name}"
+        for name in ("wait_agent", "interrupt_agent", "list_agents")
+    }
+    report = _run(
+        repo,
+        host_tools=plain | namespaced,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.selected_subagent_path != "native_codex_multi_agent"
+
+
+def test_mixed_default_and_custom_v2_namespaces_are_not_discovered(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    feature = "[features]\nmulti_agent = true\n\n"
+    configured = """[features]
+multi_agent = false
+
+[features.multi_agent_v2]
+enabled = true
+tool_namespace = "agents"
+
+"""
+    assert feature in current
+    _replace_codex_config(repo, current.replace(feature, configured))
+    default_tools = {
+        f"collaboration__{name}"
+        for name in ("spawn_agent", "send_message", "followup_task")
+    }
+    custom_tools = {
+        f"agents__{name}"
+        for name in ("wait_agent", "interrupt_agent", "list_agents")
+    }
+    report = _run(
+        repo,
+        host_tools=default_tools | custom_tools,
+        runtime_kind="trusted_remote",
+        expected_commit=_head(repo),
+    )
+    assert _status(report, "HOST_NATIVE_SUBAGENT_DISCOVERY") is CheckStatus.HOST_RELOAD_REQUIRED
+    assert report.selected_subagent_path != "native_codex_multi_agent"
+
+
+def test_explicit_v2_suppresses_v1_effectiveness(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    feature = "[features]\nmulti_agent = true\n\n"
+    assert feature in current
+    _replace_codex_config(
+        repo,
+        current.replace(
+            feature,
+            "[features]\nmulti_agent = true\nmulti_agent_v2 = true\n\n",
+        ),
+    )
+    report = _run(repo)
+    check = next(item for item in report.checks if item.name == "NATIVE_MULTI_AGENT_CONFIG")
+    assert check.status is CheckStatus.PASS
+    assert check.evidence["multi_agent_v1_effective"] is False
+    assert check.evidence["multi_agent_v2_effective"] is True
+    assert "via v2" in check.detail
+    assert "v1" not in check.detail
+
+
+def test_toml_parse_failure_cannot_report_native_config_ready(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    _replace_codex_config(repo, "[features\nmulti_agent = true\n")
+    report = _run(repo)
+    assert _status(report, "CODEX_CONFIG_PARSE") is CheckStatus.FAIL
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is not CheckStatus.PASS
+
+
+def test_v1_feature_table_shape_is_rejected_even_when_v2_is_enabled(tmp_path, monkeypatch):
+    repo = _fixture_repo(tmp_path); _pass_probes(monkeypatch)
+    current = (repo / ".codex" / "config.toml").read_text(encoding="utf-8")
+    feature = "[features]\nmulti_agent = true\n\n"
+    invalid = """[features.multi_agent]
+enabled = true
+
+[features.multi_agent_v2]
+enabled = true
+tool_namespace = "agents"
+
+"""
+    assert feature in current
+    _replace_codex_config(repo, current.replace(feature, invalid))
+    report = _run(repo)
+    assert _status(report, "CODEX_CONFIG_PARSE") is CheckStatus.PASS
+    assert _status(report, "NATIVE_MULTI_AGENT_CONFIG") is CheckStatus.FAIL
+

@@ -196,16 +196,29 @@ def _host_check(name: str, expected: tuple[str, ...], host_tools: frozenset[str]
     return _check(name, CheckStatus.HOST_RELOAD_REQUIRED, f"local MCP is healthy but host is missing: {', '.join(missing)}", missing=list(missing))
 
 
-def _feature_enabled(features: object, key: str, *, default: bool) -> bool:
+def _feature_enabled(
+    features: object,
+    key: str,
+    *,
+    default: bool,
+    allow_table: bool = False,
+) -> bool:
     if not isinstance(features, dict) or key not in features:
         return default
     raw = features[key]
     if isinstance(raw, bool):
         return raw
-    if isinstance(raw, dict):
+    if allow_table and isinstance(raw, dict):
         enabled = raw.get("enabled")
         return default if enabled is None else enabled is True
     return False
+
+
+def _feature_shape_valid(features: object, key: str, *, allow_table: bool) -> bool:
+    if not isinstance(features, dict) or key not in features:
+        return True
+    raw = features[key]
+    return isinstance(raw, bool) or (allow_table and isinstance(raw, dict))
 
 
 def _configured_v2_namespaces(features: object) -> tuple[str, ...]:
@@ -219,29 +232,26 @@ def _configured_v2_namespaces(features: object) -> tuple[str, ...]:
     return tuple(namespaces)
 
 
-def _native_tool_visible(
-    host_tools: frozenset[str],
-    tool: str,
-    namespaces: tuple[str, ...],
-) -> bool:
-    if tool in host_tools:
-        return True
-    for namespace in namespaces:
-        if f"{namespace}__{tool}" in host_tools:
-            return True
-    return False
-
-
 def _native_missing(
     host_tools: frozenset[str],
     expected: tuple[str, ...],
     namespaces: tuple[str, ...],
 ) -> tuple[str, ...]:
-    return tuple(
-        tool
-        for tool in expected
-        if not _native_tool_visible(host_tools, tool, namespaces)
-    )
+    representations = [
+        tuple(tool for tool in expected if tool not in host_tools),
+        *[
+            tuple(
+                tool
+                for tool in expected
+                if f"{namespace}__{tool}" not in host_tools
+            )
+            for namespace in namespaces
+        ],
+    ]
+    for missing in representations:
+        if not missing:
+            return ()
+    return min(representations, key=len)
 
 
 def _native_host_check(
@@ -306,8 +316,10 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     checks.append(_check("WORKTREE_STATE", CheckStatus.PASS if clean else CheckStatus.FAIL, "source-relevant worktree is clean" if clean else f"source-relevant worktree is dirty or unavailable: {status_text or status_err}", porcelain=status_text))
 
     config: dict[str, object] = {}
+    config_parsed = False
     try:
         config = _read_toml(repo / ".codex" / "config.toml")
+        config_parsed = True
         checks.append(_check("CODEX_CONFIG_PARSE", CheckStatus.PASS, ".codex/config.toml parsed successfully"))
     except Exception as exc:
         checks.append(_check("CODEX_CONFIG_PARSE", CheckStatus.FAIL, f"cannot parse .codex/config.toml: {exc}"))
@@ -351,11 +363,34 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
     agents = config.get("agents") if isinstance(config, dict) else None
     native_enabled = True if not isinstance(agents, dict) else agents.get("enabled", True) is True
     features = config.get("features") if isinstance(config, dict) else None
-    multi_agent_v1_enabled = _feature_enabled(features, "multi_agent", default=True)
-    multi_agent_v2_enabled = _feature_enabled(features, "multi_agent_v2", default=False)
-    multi_agent_v1_effective = native_enabled and multi_agent_v1_enabled
+    multi_agent_v1_shape_valid = _feature_shape_valid(
+        features,
+        "multi_agent",
+        allow_table=False,
+    )
+    multi_agent_v1_enabled = _feature_enabled(
+        features,
+        "multi_agent",
+        default=True,
+        allow_table=False,
+    )
+    multi_agent_v2_enabled = _feature_enabled(
+        features,
+        "multi_agent_v2",
+        default=False,
+        allow_table=True,
+    )
     multi_agent_v2_effective = multi_agent_v2_enabled
-    native_config_ok = multi_agent_v2_effective or multi_agent_v1_effective
+    multi_agent_v1_effective = (
+        not multi_agent_v2_effective
+        and native_enabled
+        and multi_agent_v1_enabled
+    )
+    native_config_ok = (
+        config_parsed
+        and multi_agent_v1_shape_valid
+        and (multi_agent_v2_effective or multi_agent_v1_effective)
+    )
     if native_config_ok:
         enabled_versions = [
             version
@@ -374,17 +409,27 @@ def run_doctor(inputs: DoctorInput) -> DoctorReport:
             multi_agent_v2_enabled=multi_agent_v2_enabled,
             multi_agent_v1_effective=multi_agent_v1_effective,
             multi_agent_v2_effective=multi_agent_v2_effective,
+            multi_agent_v1_shape_valid=multi_agent_v1_shape_valid,
+            config_parsed=config_parsed,
         )
     else:
+        if not config_parsed:
+            detail = "native Codex multi-agent eligibility cannot be derived because .codex/config.toml did not parse"
+        elif not multi_agent_v1_shape_valid:
+            detail = "features.multi_agent must be a boolean; V1 table syntax is not supported by Codex"
+        else:
+            detail = "repository configuration does not guarantee an enabled native Codex multi-agent route"
         native_config = _check(
             "NATIVE_MULTI_AGENT_CONFIG",
             CheckStatus.FAIL,
-            "repository configuration does not guarantee an enabled native Codex multi-agent route",
+            detail,
             agents_enabled=native_enabled,
             multi_agent_v1_enabled=multi_agent_v1_enabled,
             multi_agent_v2_enabled=multi_agent_v2_enabled,
             multi_agent_v1_effective=multi_agent_v1_effective,
             multi_agent_v2_effective=multi_agent_v2_effective,
+            multi_agent_v1_shape_valid=multi_agent_v1_shape_valid,
+            config_parsed=config_parsed,
         )
     checks.append(native_config)
 
