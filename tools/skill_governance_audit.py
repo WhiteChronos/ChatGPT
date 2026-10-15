@@ -1,33 +1,46 @@
 #!/usr/bin/env python3
-"""Read-only skill governance audit. No code generation, installation or network calls."""
+"""Read-only audit of first-party skill metadata, with fail-closed exit status."""
 import argparse
 import json
 from pathlib import Path
 
-REQUIRED = ("name:", "description:")
+EXCLUDED = {".git", "node_modules", ".venv", "vendor", "__pycache__"}
 
 
 def audit(root: Path) -> dict:
     findings = []
     checked = 0
     for path in sorted(root.rglob("SKILL.md")):
-        if any(part in (".git", "node_modules", ".venv", "vendor") for part in path.parts):
+        if any(part in EXCLUDED for part in path.relative_to(root).parts):
             continue
         checked += 1
-        body = path.read_text(encoding="utf-8")
-        front = body.split("---", 2)
-        if len(front) < 3 or front[0].strip():
-            findings.append({"path": str(path.relative_to(root)), "problem": "missing YAML frontmatter"})
+        relative = str(path.relative_to(root))
+        try:
+            body = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            findings.append({"path": relative, "problem": "unreadable file: " + type(exc).__name__})
             continue
-        for field in REQUIRED:
-            if not any(line.startswith(field) for line in front[1].splitlines()):
-                findings.append({"path": str(path.relative_to(root)), "problem": "missing " + field})
-        if "TODO" in body:
-            findings.append({"path": str(path.relative_to(root)), "problem": "unresolved TODO"})
+        if not body.startswith("---\n"):
+            findings.append({"path": relative, "problem": "missing YAML frontmatter"})
+            continue
+        parts = body.split("---", 2)
+        if len(parts) < 3:
+            findings.append({"path": relative, "problem": "unterminated YAML frontmatter"})
+            continue
+        headers = {}
+        for line in parts[1].splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                headers[k.strip()] = v.strip().strip('"').strip("'")
+        for field in ("name", "description"):
+            if not headers.get(field):
+                findings.append({"path": relative, "problem": "missing " + field})
+        if not parts[2].strip():
+            findings.append({"path": relative, "problem": "empty instructions"})
     return {"checked_skills": checked, "findings": findings, "status": "PASS" if not findings else "REVIEW_REQUIRED"}
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--output", type=Path, default=Path("skill-audit.json"))
@@ -35,8 +48,7 @@ def main():
     result = audit(args.root.resolve())
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False))
-    # Non-blocking until baseline has been reviewed; findings still captured.
-    return 0
+    return 0 if result["status"] == "PASS" else 1
 
 
 if __name__ == "__main__":
