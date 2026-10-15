@@ -9,7 +9,7 @@
   "status": "ACTIVATION_GATED",
   "controller_plugin": "ecc-controller",
   "skill_paths": [
-    "plugins/ecc-controller/SKILL.md"
+    "plugins/ecc-controller/skills/ecc-controller/SKILL.md"
   ],
   "mcp_servers": [],
   "runtime_probe": null,
