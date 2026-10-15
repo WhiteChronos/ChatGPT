@@ -20,7 +20,7 @@ O inventario vive em `registry/integrations/index.json` e seus descritores segue
 ## Fornecedores e ambientes independentes
 
 - **JEV/TypeSafe** continua separado de **SponsoredTokens/Laya**: autenticacao, chaves, inferencias, modelos e quotas nao se misturam. A [PR #91](https://github.com/WhiteChronos/ChatGPT/pull/91) ainda e draft.
-- **SponsoredTokens/Laya** permanece bloqueado para uso produtivo enquanto os P1 da [Issue #94](https://github.com/WhiteChronos/ChatGPT/issues/94) estiverem sem resolucao verificavel; registrar a saude somente no host Windows real.
+- **SponsoredTokens/Laya** foi retirado do `main` pela [PR #98](https://github.com/WhiteChronos/ChatGPT/pull/98). Permanece um fornecedor independente e inativo no codigo principal; nao reintroduzir nem executar sem nova autorizacao, verificacao de seguranca dos P1 da [Issue #94](https://github.com/WhiteChronos/ChatGPT/issues/94) e validacao real do host.
 - A configuracao `INSTALLED_BY_DEFAULT` no marketplace descreve intencao de empacotamento, nao instalacao nem disponibilidade no Codex Cloud. Nenhuma nova configuracao MCP e adicionada nesta etapa.
 - Todos os espelhos em `vendor/` permanecem de leitura. Nao usar o checkout do espelho como runtime de plugin.
 - Nenhuma credencial pode ser armazenada neste registro ou enviada de um provedor a outro. Nao realizar testes pagos de inferencia ou instalacoes automaticas.
