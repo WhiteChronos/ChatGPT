@@ -30,6 +30,20 @@ class SkillAuditTests(unittest.TestCase):
             (vendor / "SKILL.md").write_text("invalid", encoding="utf-8")
             self.assertEqual(audit(root)["checked_skills"], 0)
 
+    def test_fixture_excluded_but_real_invalid_skill_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fixture = root / "plugins" / "example" / "tests" / "fixtures" / "upstream"
+            fixture.mkdir(parents=True)
+            (fixture / "SKILL.md").write_text("invalid", encoding="utf-8")
+            actual = root / "plugins" / "example" / "real"
+            actual.mkdir()
+            (actual / "SKILL.md").write_text("invalid", encoding="utf-8")
+            result = audit(root)
+            self.assertEqual(result["checked_skills"], 1)
+            self.assertEqual(result["status"], "REVIEW_REQUIRED")
+            self.assertEqual(len(result["findings"]), 1)
+
     def test_empty_instructions_fail(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
