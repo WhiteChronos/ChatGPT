@@ -9,7 +9,7 @@
   "status": "REGISTERED_PROJECT",
   "controller_plugin": "matt-pocock-controller",
   "skill_paths": [
-    "plugins/matt-pocock-controller/SKILL.md"
+    "plugins/matt-pocock-controller/skills/matt-pocock-controller/SKILL.md"
   ],
   "mcp_servers": [],
   "runtime_probe": null,
