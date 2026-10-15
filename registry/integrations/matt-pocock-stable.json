@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "matt-pocock-stable",
+  "display_name": "Matt Pocock stable project skills",
+  "source_type": "local",
+  "source": "plugins/matt-pocock-controller",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "REGISTERED_PROJECT",
+  "controller_plugin": "matt-pocock-controller",
+  "skill_paths": [
+    "plugins/matt-pocock-controller/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null,
+  "upstream": {
+    "repository": "https://github.com/mattpocock/skills.git",
+    "ref": "main",
+    "commit": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
+    "license_status": "MIT",
+    "relationship": "stable_project_skill_projection"
+  }
+}
