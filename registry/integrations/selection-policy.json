@@ -56,7 +56,7 @@
       "id": "sponsoredtokens-laya",
       "status": "DEFERRED",
       "tracking": "https://github.com/WhiteChronos/ChatGPT/issues/94",
-      "reason": "separate local service has open security review and unverified Windows health"
+      "reason": "retired from main by PR #98; reintroduction requires separate security acceptance and explicit authorization"
     }
   ],
   "reference_only": [
