@@ -42,7 +42,7 @@ export async function runLiveSmoke({env=process.env}={}){
     agents[0].result=await broker.result(a.agent_id);agents[1].result=await broker.result(b.agent_id);
 
     const smokeFile=`.subagent-broker-smoke-${Date.now()}.txt`;
-    const w=await broker.spawn({task:`In this isolated child worktree only, create ${smokeFile} containing exactly smoke, git add it, and commit it with message \"test: subagent broker smoke\". Do not change any other file.`,role:'implementer',workspace_mode:'worktree_write'});agents.push({kind:'write',spawn:w});
+    const w=await broker.spawn({task:`In this isolated child worktree only, create ${smokeFile} containing exactly smoke. Do not run git add or git commit; the Broker records successful worktree changes after your run. Do not change any other file.`,role:'implementer',workspace_mode:'worktree_write'});agents.push({kind:'write',spawn:w});
     const ww=await broker.wait(w.agent_id,600000);if(ww.state!=='COMPLETED')throw new Error(`Write smoke child ended ${ww.state}`);
     const wr=await broker.result(w.agent_id);agents[2].result=wr;
     if(!wr.branch||!wr.worktree||!wr.commits?.length)throw new Error('Write smoke child did not produce branch/worktree/commit evidence.');
@@ -64,12 +64,14 @@ export async function runLiveSmoke({env=process.env}={}){
     const cancelled=await broker.cancel(long.agent_id);if(cancelled.state!=='CANCELLED')throw new Error(`Cancel target ended ${cancelled.state}`);
     summary.cancellation=cancelled;
 
+    const cleanupErrors=[];
     for(const entry of agents){
       const st=await broker.status(entry.spawn.agent_id);
       if(['COMPLETED','FAILED','TIMED_OUT','CANCELLED','ORPHANED'].includes(st.state)){
-        try{entry.cleanup=await broker.cleanup(entry.spawn.agent_id);}catch(e){entry.cleanup_error=String(e?.message??e);}
+        try{entry.cleanup=await broker.cleanup(entry.spawn.agent_id);}catch(e){entry.cleanup_error=String(e?.message??e);cleanupErrors.push(`${entry.spawn.agent_id}: ${entry.cleanup_error}`);}
       }
     }
+    if(cleanupErrors.length)throw new Error(`Smoke cleanup failed: ${cleanupErrors.join('; ')}`);
     summary.success=true;
     summary.completed_at=new Date().toISOString();
     await fs.writeFile(path.join(evidenceDir,'summary.json'),JSON.stringify(summary,null,2)+'\n',{mode:0o600});

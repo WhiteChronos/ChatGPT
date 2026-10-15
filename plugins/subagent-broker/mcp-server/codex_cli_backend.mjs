@@ -1,7 +1,7 @@
 import {spawn} from 'node:child_process';
 import {buildChildEnv,redactText} from './redaction.mjs';
 import {brokerError} from './protocol.mjs';
-import {readLinuxProcessIdentity,isSameProcessIdentity,terminateProcessGroup} from './process_identity.mjs';
+import {readProcessIdentity,isSameProcessIdentity,terminateProcessGroup} from './process_identity.mjs';
 
 function resolveCommand(command,args){
   if(process.platform==='win32'&&/\.(?:js|mjs|cjs)$/i.test(command))return{command:process.execPath,args:[command,...args]};
@@ -17,7 +17,7 @@ export function extractSessionId(event){
 function extractAgentText(event){const item=event?.item;if(item?.type==='agent_message'&&typeof item.text==='string')return item.text;if(event?.type==='agent_message'&&typeof event.text==='string')return event.text;return null;}
 
 export class CodexCliBackend{
-  constructor({codexPath='codex',stateStore,parentEnv=process.env,processProbe=readLinuxProcessIdentity}={}){if(!stateStore)throw new Error('stateStore required');this.codexPath=codexPath;this.stateStore=stateStore;this.parentEnv=parentEnv;this.processProbe=processProbe;this.cached=null;}
+  constructor({codexPath='codex',stateStore,parentEnv=process.env,processProbe=readProcessIdentity}={}){if(!stateStore)throw new Error('stateStore required');this.codexPath=codexPath;this.stateStore=stateStore;this.parentEnv=parentEnv;this.processProbe=processProbe;this.cached=null;}
   async probe({refresh=false}={}){
     if(this.cached&&!refresh)return this.cached;
     const env=buildChildEnv(this.parentEnv);const version=await execCapture(this.codexPath,['--version'],{env}).catch(()=>({code:1,stdout:'',stderr:''}));
@@ -45,9 +45,9 @@ export class CodexCliBackend{
   async followup(handle,message){const caps=await this.probe();if(!caps.resume||!handle?.session_id)throw brokerError('CAPABILITY_UNAVAILABLE','codex resume is unavailable');return this.#launch({agent_id:handle.agent_id,prompt:message,cwd:handle.cwd,workspace_mode:handle.workspace_mode,resumeSession:handle.session_id});}
   async cancel(handle,{graceSeconds=10}={}){
     if(!handle?.pid)throw brokerError('CAPABILITY_UNAVAILABLE','child pid is unavailable');
-    const current=await this.processProbe(handle.pid);if(handle.process_identity&&!isSameProcessIdentity(handle.process_identity,current))throw brokerError('PROCESS_IDENTITY_MISMATCH','recorded child process identity no longer matches live pid');
-    terminateProcessGroup(handle.pid,'SIGTERM');const deadline=Date.now()+Math.max(0,graceSeconds)*1000;
+    const current=await this.processProbe(handle.pid);if(!handle.process_identity||!isSameProcessIdentity(handle.process_identity,current))throw brokerError('PROCESS_IDENTITY_MISMATCH','recorded child process identity no longer matches live pid');
+    await terminateProcessGroup(handle.pid,'SIGTERM');const deadline=Date.now()+Math.max(0,graceSeconds)*1000;
     while(Date.now()<deadline){const now=await this.processProbe(handle.pid);if(!now||!isSameProcessIdentity(handle.process_identity,now))return;await new Promise(r=>setTimeout(r,50));}
-    const again=await this.processProbe(handle.pid);if(handle.process_identity&&isSameProcessIdentity(handle.process_identity,again)){terminateProcessGroup(handle.pid,'SIGKILL');return;}
+    const again=await this.processProbe(handle.pid);if(handle.process_identity&&isSameProcessIdentity(handle.process_identity,again)){await terminateProcessGroup(handle.pid,'SIGKILL');return;}
   }
 }
