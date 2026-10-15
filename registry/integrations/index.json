@@ -3,6 +3,10 @@
   "descriptors": [
     "github-arena.json",
     "subagent-broker.json",
-    "arena-2.0.json"
+    "arena-2.0.json",
+    "superpowers-official.json",
+    "ecc-specialists.json",
+    "matt-pocock-stable.json",
+    "awesome-llm-apps-curated.json"
   ]
 }

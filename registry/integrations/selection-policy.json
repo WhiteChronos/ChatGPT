@@ -1,0 +1,74 @@
+{
+  "schema_version": "whitechronos-selective-integration/v1",
+  "authority_repository": "WhiteChronos/ChatGPT",
+  "coordination_issue": "https://github.com/WhiteChronos/ChatGPT/issues/95",
+  "default_activation": "DENY",
+  "selected_capabilities": [
+    {
+      "id": "superpowers-official",
+      "mode": "OFFICIAL_PLUGIN_PREFERRED",
+      "upstream_lock": "plugins/superpowers-controller/upstream.lock.json",
+      "requires": [
+        "explicit_scope",
+        "current_sha_review",
+        "runtime_evidence"
+      ]
+    },
+    {
+      "id": "ecc-specialists",
+      "mode": "EXPLICIT_SPECIALIST_ONLY",
+      "upstream_lock": "plugins/ecc-controller/upstream.lock.json",
+      "requires": [
+        "explicit_scope",
+        "current_sha_review",
+        "runtime_evidence"
+      ]
+    },
+    {
+      "id": "matt-pocock-stable",
+      "mode": "STABLE_PROJECT_SKILLS",
+      "upstream_lock": "plugins/matt-pocock-controller/upstream.lock.json",
+      "requires": [
+        "explicit_scope",
+        "current_sha_review",
+        "runtime_evidence"
+      ]
+    },
+    {
+      "id": "awesome-llm-apps-curated",
+      "mode": "READ_ONLY_CATALOG",
+      "upstream_lock": "plugins/awesome-llm-apps-controller/upstream.lock.json",
+      "requires": [
+        "explicit_scope",
+        "current_sha_review",
+        "runtime_evidence"
+      ]
+    }
+  ],
+  "deferred_services": [
+    {
+      "id": "typesafe-jev",
+      "status": "DEFERRED",
+      "tracking": "https://github.com/WhiteChronos/ChatGPT/pull/91",
+      "reason": "independent provider integration remains draft; no live authentication evidence"
+    },
+    {
+      "id": "sponsoredtokens-laya",
+      "status": "DEFERRED",
+      "tracking": "https://github.com/WhiteChronos/ChatGPT/issues/94",
+      "reason": "retired from main by PR #98; reintroduction requires separate security acceptance and explicit authorization"
+    }
+  ],
+  "reference_only": [
+    "arena-2.0"
+  ],
+  "security": {
+    "auto_install": false,
+    "auto_execute": false,
+    "cross_provider_credentials": false,
+    "automatic_external_network_calls": false,
+    "automatic_merge": false,
+    "automatic_deploy": false,
+    "automatic_live_inference": false
+  }
+}
