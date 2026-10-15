@@ -9,7 +9,7 @@
   "status": "ACTIVATION_GATED",
   "controller_plugin": "awesome-llm-apps-controller",
   "skill_paths": [
-    "plugins/awesome-llm-apps-controller/SKILL.md"
+    "plugins/awesome-llm-apps-controller/skills/awesome-llm-apps-controller/SKILL.md"
   ],
   "mcp_servers": [],
   "runtime_probe": null,
