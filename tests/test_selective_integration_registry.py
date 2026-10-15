@@ -94,9 +94,9 @@ def test_every_curated_provider_is_pinned_not_host_activated():
         for field in expected["commit_path"]:
             pinned = pinned[field]
         assert provider.upstream.commit == pinned, identifier
-        assert (ROOT / "plugins" / expected["controller"] / "SKILL.md").is_file()
+        assert (ROOT / "plugins" / expected["controller"] / "skills" / expected["controller"] / "SKILL.md").is_file()
         assert provider.skill_paths == (
-            f"plugins/{expected['controller']}/SKILL.md",
+            f"plugins/{expected['controller']}/skills/{expected['controller']}/SKILL.md",
         )
 
 
