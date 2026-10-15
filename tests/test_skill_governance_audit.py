@@ -50,6 +50,36 @@ class SkillAuditTests(unittest.TestCase):
             (root / "SKILL.md").write_text("---\nname: example\ndescription: x\n---\n", encoding="utf-8")
             self.assertEqual(audit(root)["status"], "REVIEW_REQUIRED")
 
+    def test_test_fixtures_are_not_active_skills(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fixture = root / "plugins" / "example" / "tests" / "fixtures" / "upstream"
+            fixture.mkdir(parents=True)
+            (fixture / "SKILL.md").write_text("invalid fixture", encoding="utf-8")
+            result = audit(root)
+            self.assertEqual(result["checked_skills"], 0)
+            self.assertEqual(result["status"], "PASS")
+
+    def test_fixture_named_active_skill_is_still_audited(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            active = root / ".agents" / "skills" / "fixtures"
+            active.mkdir(parents=True)
+            (active / "SKILL.md").write_text("invalid active skill", encoding="utf-8")
+            result = audit(root)
+            self.assertEqual(result["checked_skills"], 1)
+            self.assertEqual(result["status"], "REVIEW_REQUIRED")
+
+    def test_non_fixture_path_with_tests_and_fixtures_is_audited(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            active = root / "tests" / "sample-plugin" / "fixtures"
+            active.mkdir(parents=True)
+            (active / "SKILL.md").write_text("invalid active skill", encoding="utf-8")
+            result = audit(root)
+            self.assertEqual(result["checked_skills"], 1)
+            self.assertEqual(result["status"], "REVIEW_REQUIRED")
+
 
 if __name__ == "__main__":
     unittest.main()

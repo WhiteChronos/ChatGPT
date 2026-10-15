@@ -11,8 +11,12 @@ def audit(root: Path) -> dict:
     findings = []
     checked = 0
     for path in sorted(root.rglob("SKILL.md")):
-        parts = path.relative_to(root).parts
-        if any(part in EXCLUDED for part in parts) or "fixtures" in parts and "tests" in parts:
+        relative_parts = path.relative_to(root).parts
+        if any(part in EXCLUDED for part in relative_parts):
+            continue
+        # Test inputs are not installed entrypoints. Match the adjacent path
+        # components, not unrelated directories named tests and fixtures.
+        if any(pair == ("tests", "fixtures") for pair in zip(relative_parts, relative_parts[1:])):
             continue
         checked += 1
         relative = str(path.relative_to(root))

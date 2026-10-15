@@ -15,6 +15,13 @@ GitHub is the versioned source of truth for proposed and approved WhiteChronos s
 ## Current implementation
 A daily GitHub Actions workflow runs a read-only, no-network skill metadata audit and attaches JSON findings. It neither creates new skills nor changes code, PRs, credentials, deployment or local installations.
 
+The audit excludes upstream vendor trees, dependency environments and paths under
+`tests/fixtures/`: these are synthetic test inputs, not installed skill entrypoints.
+Other directories named `fixtures`, including an active skill with that name, are
+still audited. Regression tests cover both cases so malformed active skills remain
+blocking. This lightweight metadata check is not a full YAML or behavioral skill
+evaluation, and a successful run does not demonstrate improved model reasoning.
+
 ## Next gates
 - Confirm current main SHA and action pin allowlist at PR HEAD.
 - Add evaluated before/after task datasets and duplicate-skill detection.
