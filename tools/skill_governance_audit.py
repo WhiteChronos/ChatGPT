@@ -11,7 +11,8 @@ def audit(root: Path) -> dict:
     findings = []
     checked = 0
     for path in sorted(root.rglob("SKILL.md")):
-        if any(part in EXCLUDED for part in path.relative_to(root).parts):
+        parts = path.relative_to(root).parts
+        if any(part in EXCLUDED for part in parts) or "fixtures" in parts and "tests" in parts:
             continue
         checked += 1
         relative = str(path.relative_to(root))
