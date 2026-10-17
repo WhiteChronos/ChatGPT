@@ -7,6 +7,9 @@ on:
       - 'tools/spec_kit_six_file_validator.py'
       - 'tests/test_spec_kit_six_file_validator.py'
       - 'tests/test_spec_kit_decisions_board.py'
+      - 'tests/test_spec_kit_codex_skill_bridge.py'
+      - '.agents/skills/spec-kit-*/**'
+      - 'skills/spec-kit-*/**'
       - 'examples/spec_kit_decisions_board/**'
       - '.github/workflows/spec-kit-six-file-qa.yml'
   workflow_dispatch:
@@ -25,5 +28,7 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_spec_kit_six_file_validator.py' -v
       - name: Decisions Board behavior tests
         run: python -m unittest discover -s tests -p 'test_spec_kit_decisions_board.py' -v
+      - name: Codex skill discovery bridge tests
+        run: python -m unittest discover -s tests -p 'test_spec_kit_codex_skill_bridge.py' -v
       - name: Traceability check
         run: python tools/spec_kit_six_file_validator.py examples/spec-kit-decisions-board
