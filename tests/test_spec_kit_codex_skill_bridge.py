@@ -24,7 +24,7 @@ class CodexSkillBridgeTests(unittest.TestCase):
                 expected = (bridge.parent / "../../../" / "skills" / name / "SKILL.md").resolve()
                 self.assertEqual(expected, canonical.resolve())
                 self.assertIn("AGENTS.md", body)
-                self.assertTrue(re.match(r"^---\\n", body))
+                self.assertTrue(body.startswith("---" + chr(10)))
 
 if __name__ == "__main__":
     unittest.main()
