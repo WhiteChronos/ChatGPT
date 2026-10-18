@@ -8,11 +8,11 @@ No Codex local, as instruções globais podem indicar ferramentas locais dispon�
 
 O fluxo não substitui o modelo deste chat, não instala serviços, não cria chaves e não muda o tarifário do Codex. O contexto completo continua necessário quando a pergunta, a segurança, dependências ou regras do projeto assim exigirem. Relatórios de engenharia e /visualize permanecem completos.
 
-## Evidência delimitada
+## Limites de comprovação
 
-Em 18/10/2026, o ensaio local 1e77457c5499472ba48a42a278add55e comparou três fontes próprias, três repetições, dois modos e o mesmo qwen3:4b-instruct-2507-q4_K_M. As 18 respostas exatas passaram. Entrada 1521→549, saída 51→51, total 1572→600: 61,83% de redução de tokens do runtime local.
+Esta política define uma prática de leitura, sem afirmar redução quantitativa. Ensaios locais mantidos fora deste repositório não são evidência auditável de economia no Codex Web. Qualquer alegação futura precisa de um artefato durável com entradas, modos comparados, respostas, contagens por pedido e proveniência imutável, preservando dados privados.
 
-Esse resultado não mede este repositório em Codex Web, não demonstra economia universal e não prova desconto financeiro. Os dados oficiais de uso consultados não forneceram cobrança monetária por tarefa para atribuir economia ao ECC. Não transportar os 61,83% para outras tarefas ou ambientes sem nova medição comparável.
+A economia na cobrança do Codex não está comprovada. Não transportar percentuais de outras tarefas ou ambientes sem nova medição comparável.
 
 ## Validação da adoção
 

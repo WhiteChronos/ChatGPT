@@ -269,7 +269,7 @@ Use selective context by default in Codex tasks in this repository:
 - Never truncate required engineering reports or the complete /visualize output to meet a token target.
 - Use only tools actually available in the current host. Local Windows paths, Ollama models and optional plugins are not automatically available in Codex Web.
 - Keep the current provider and model unless the task explicitly authorizes a change. Do not install hooks, services or extra MCP servers just to apply this reading policy.
-- Treat the documented local 18-request result (1572 to 600 runtime tokens, 61.83%, 18 exact answers) as a bounded local benchmark, not a promised saving for this repository, cloud runtime or Codex billing.
+- Do not infer a savings percentage from this policy. Any local benchmark is environment-specific and does not establish savings for this repository, cloud runtime or Codex billing.
 
 This default complements all existing governance and release gates. See runbooks/context-efficiency.md for evidence and application limits.
 <!-- /ecc-selective-context-default -->
