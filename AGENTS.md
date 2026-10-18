@@ -259,3 +259,17 @@ For runtime claims about Codex, Arena MCP, Subagent Broker, or native multi-agen
 When ARENA 2.0 from `callummcdougall/ARENA_2.0` is requested, use `registry/integrations/arena-2.0.json` and `runbooks/arena2-research-reference.md` as a **reference-only, license-unverified** source. Its ML curriculum is unrelated to GitHub Arena's review process, and it SHALL NOT become an active Codex plugin, MCP service, independent subagent, or required runtime dependency.
 
 The four requested operator-facing roles are GitHub Arena (review), Codex Runtime Doctor (runtime evidence), Subagent Broker (real independent lifecycle when discovered), and Superpowers Controller (official workflow routing). The `@` labels are documentation names, not evidence of host-side invocation aliases. Do not claim any was loaded by the live host without observed evidence. GitHub remains the sole CI/merge authority; no website deployment, local-PC connection, additional secret, or background execution is implied.
+
+<!-- ecc-selective-context-default -->
+## Default selective-context efficiency
+
+Use selective context by default in Codex tasks in this repository:
+- Search first, then read the relevant ranges. Expand context whenever correctness, security, dependencies or governing instructions require it.
+- Reuse current evidence and avoid duplicate catalog loading, agents and checks without a new reason. Run every required validation and preserve full source evidence.
+- Never truncate required engineering reports or the complete /visualize output to meet a token target.
+- Use only tools actually available in the current host. Local Windows paths, Ollama models and optional plugins are not automatically available in Codex Web.
+- Keep the current provider and model unless the task explicitly authorizes a change. Do not install hooks, services or extra MCP servers just to apply this reading policy.
+- Treat the documented local 18-request result (1572 to 600 runtime tokens, 61.83%, 18 exact answers) as a bounded local benchmark, not a promised saving for this repository, cloud runtime or Codex billing.
+
+This default complements all existing governance and release gates. See runbooks/context-efficiency.md for evidence and application limits.
+<!-- /ecc-selective-context-default -->
