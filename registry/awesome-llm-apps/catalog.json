@@ -27,7 +27,7 @@
       "source_type": "external_reference",
       "subtype": "external_reference",
       "title": "\ud83c\udf10 Openwork - Open Browser Automation Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": null
     },
     {
@@ -57,7 +57,7 @@
       "source_type": "external_reference",
       "subtype": "external_reference",
       "title": "\ud83c\udf99\ufe0f OpenSource Voice Dictation Agent (Wispr Flow clone)",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": null
     },
     {
@@ -89,7 +89,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfae AI 3D PyGame Visualizer with DeepSeek R1",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/autonomous_game_playing_agent_apps/ai_3dpygame_r1"
     },
     {
@@ -121,7 +121,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u265c Agent White vs Agent Black: Chess Game",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/autonomous_game_playing_agent_apps/ai_chess_agent"
     },
     {
@@ -153,7 +153,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfae Agent X vs Agent O: Tic-Tac-Toe Game",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/autonomous_game_playing_agent_apps/ai_tic_tac_toe_agent"
     },
     {
@@ -185,7 +185,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AG2 Adaptive Research Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ag2_adaptive_research_team"
     },
     {
@@ -217,7 +217,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\uddf2 AI Competitor Intelligence Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_competitor_intelligence_agent_team"
     },
     {
@@ -249,7 +249,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Finance Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_finance_agent_team"
     },
     {
@@ -281,7 +281,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Game Design Agent Team \ud83c\udfae",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_game_design_agent_team"
     },
     {
@@ -313,7 +313,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc68\u200d\u2696\ufe0f AI Legal Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_legal_agent_team"
     },
     {
@@ -345,7 +345,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Local Ai Legal Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_legal_agent_team/local_ai_legal_agent_team"
     },
     {
@@ -377,7 +377,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfe0 AI Real Estate Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_real_estate_agent_team"
     },
     {
@@ -409,7 +409,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcbc AI Recruitment Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_recruitment_agent_team"
     },
     {
@@ -441,7 +441,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc68\ud83c\udffb\u200d\ud83d\udcbc AI Sales Intelligence Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_sales_intelligence_agent_team"
     },
     {
@@ -473,7 +473,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd0d AI SEO Audit Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_seo_audit_team"
     },
     {
@@ -505,7 +505,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Services Agency \ud83d\udc68\u200d\ud83d\udcbc",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_services_agency"
     },
     {
@@ -537,7 +537,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc68\u200d\ud83c\udfeb AI Teaching Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_teaching_agent_team"
     },
     {
@@ -565,7 +565,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u2708\ufe0f TripCraft AI",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team"
     },
     {
@@ -602,7 +602,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Backend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend"
     },
     {
@@ -632,7 +632,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "TripCraft AI - Agent Architecture",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/agents"
     },
     {
@@ -662,7 +662,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Api",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/api"
     },
     {
@@ -692,7 +692,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Config",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/config"
     },
     {
@@ -722,7 +722,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Models",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/models"
     },
     {
@@ -752,7 +752,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Repository",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/repository"
     },
     {
@@ -782,7 +782,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Router",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/router"
     },
     {
@@ -812,7 +812,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Services",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/services"
     },
     {
@@ -842,7 +842,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/backend/tools"
     },
     {
@@ -877,7 +877,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "or",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client"
     },
     {
@@ -907,7 +907,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app"
     },
     {
@@ -937,7 +937,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "[...All]",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/api/auth/[...all]"
     },
     {
@@ -967,7 +967,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Submit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/api/plan/submit"
     },
     {
@@ -997,7 +997,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Plans",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/api/plans"
     },
     {
@@ -1027,7 +1027,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "[Id]",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/api/plans/[id]"
     },
     {
@@ -1057,7 +1057,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Retry",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/api/plans/[id]/retry"
     },
     {
@@ -1087,7 +1087,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Auth",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/auth"
     },
     {
@@ -1117,7 +1117,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Plan",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/plan"
     },
     {
@@ -1147,7 +1147,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "[Id]",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/plan/[id]"
     },
     {
@@ -1177,7 +1177,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Plans",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/app/plans"
     },
     {
@@ -1207,7 +1207,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/components"
     },
     {
@@ -1237,7 +1237,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/components/ui"
     },
     {
@@ -1267,7 +1267,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_travel_planner_agent_team/client/lib"
     },
     {
@@ -1299,7 +1299,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcca AI VC Due Diligence Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/ai_vc_due_diligence_agent_team"
     },
     {
@@ -1331,7 +1331,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u2696\ufe0f LLM Panel Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/llm_panel_agent_team"
     },
     {
@@ -1363,7 +1363,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcbb Multimodal AI Coding Agent Team with o3-mini and Gemini",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/multimodal_coding_agent_team"
     },
     {
@@ -1395,7 +1395,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multimodal AI Design Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/multimodal_design_agent_team"
     },
     {
@@ -1427,7 +1427,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfa8 \ud83c\udf4c Multimodal UI/UX Feedback Agent Team with Nano Banana",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/agent_teams/multimodal_uiux_feedback_agent_team"
     },
     {
@@ -1459,7 +1459,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf0d AQI Analysis Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_aqi_analysis_agent"
     },
     {
@@ -1493,7 +1493,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u26a1 Codebase Migration & Refactor Planner (LangGraph)",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_codebase_migration_agent"
     },
     {
@@ -1525,7 +1525,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd0d AI Domain Deep Research Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_domain_deep_research_agent"
     },
     {
@@ -1557,7 +1557,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Email Gtm Outreach Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_email_gtm_outreach_agent"
     },
     {
@@ -1589,7 +1589,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Financial Coach Agent with Google ADK \ud83d\udcb0",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_financial_coach_agent"
     },
     {
@@ -1621,7 +1621,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfda\ufe0f \ud83c\udf4c AI Home Renovation Planner Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_home_renovation_agent"
     },
     {
@@ -1653,7 +1653,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Mental Wellbeing Agent Team \ud83e\udde0",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_mental_wellbeing_agent"
     },
     {
@@ -1683,7 +1683,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfae AI Negotiation Battle Simulator",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator"
     },
     {
@@ -1715,7 +1715,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Backend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator/backend"
     },
     {
@@ -1745,7 +1745,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator/backend/agents"
     },
     {
@@ -1775,7 +1775,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Config",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator/backend/config"
     },
     {
@@ -1808,7 +1808,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Frontend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator/frontend"
     },
     {
@@ -1838,7 +1838,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator/frontend/src/app"
     },
     {
@@ -1868,7 +1868,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Copilotkit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_negotiation_battle_simulator/frontend/src/app/api/copilotkit"
     },
     {
@@ -1900,7 +1900,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Beifong",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong"
     },
     {
@@ -1930,7 +1930,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/agents"
     },
     {
@@ -1960,7 +1960,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Db",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/db"
     },
     {
@@ -1990,7 +1990,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Slack",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/integrations/slack"
     },
     {
@@ -2020,7 +2020,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Models",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/models"
     },
     {
@@ -2050,7 +2050,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Processors",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/processors"
     },
     {
@@ -2080,7 +2080,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Routers",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/routers"
     },
     {
@@ -2110,7 +2110,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Services",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/services"
     },
     {
@@ -2140,7 +2140,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tests",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/tests"
     },
     {
@@ -2170,7 +2170,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/tools"
     },
     {
@@ -2200,7 +2200,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Pipeline",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/tools/pipeline"
     },
     {
@@ -2230,7 +2230,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Social",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/tools/social"
     },
     {
@@ -2260,7 +2260,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Utils",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/beifong/utils"
     },
     {
@@ -2290,7 +2290,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Web",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web"
     },
     {
@@ -2320,7 +2320,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/src"
     },
     {
@@ -2350,7 +2350,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/src/components"
     },
     {
@@ -2380,7 +2380,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Social",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/src/components/social"
     },
     {
@@ -2410,7 +2410,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Icons",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/src/icons"
     },
     {
@@ -2440,7 +2440,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Pages",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/src/pages"
     },
     {
@@ -2470,7 +2470,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Services",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/src/services"
     },
     {
@@ -2502,7 +2502,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\uddec Self-Evolving AI Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_self_evolving_agent"
     },
     {
@@ -2532,7 +2532,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Speech Trainer Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_speech_trainer_agent"
     },
     {
@@ -2562,7 +2562,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Backend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_speech_trainer_agent/backend"
     },
     {
@@ -2592,7 +2592,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_speech_trainer_agent/backend/agents"
     },
     {
@@ -2622,7 +2622,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_speech_trainer_agent/backend/agents/tools"
     },
     {
@@ -2652,7 +2652,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Frontend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_speech_trainer_agent/frontend"
     },
     {
@@ -2682,7 +2682,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Pages",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/ai_speech_trainer_agent/frontend/pages"
     },
     {
@@ -2714,7 +2714,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 DevPulseAI \u2014 Multi-Agent Signal Intelligence",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/devpulse_ai"
     },
     {
@@ -2744,7 +2744,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Adapters",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/devpulse_ai/adapters"
     },
     {
@@ -2774,7 +2774,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/devpulse_ai/agents"
     },
     {
@@ -2806,7 +2806,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi Agent Researcher",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/multi_agent_researcher"
     },
     {
@@ -2838,7 +2838,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd1d Multi-Agent Trust Layer - Secure Agent-to-Agent Communication",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/multi_agent_trust_layer"
     },
     {
@@ -2870,7 +2870,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\ude80 AI Product Launch Intelligence Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/product_launch_intelligence_agent"
     },
     {
@@ -2902,7 +2902,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udee1\ufe0f Trust-Gated Multi-Agent Research Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/multi_agent_apps/trust_gated_agent_team"
     },
     {
@@ -2934,7 +2934,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udee1\ufe0f AI Agent Governance - Policy-Based Sandboxing",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_agent_governance"
     },
     {
@@ -2966,7 +2966,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd1d AI Consultant Agent with Google ADK",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_consultant_agent"
     },
     {
@@ -2998,7 +2998,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Customer Support Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_customer_support_agent"
     },
     {
@@ -3030,7 +3030,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Deep Research Agent with OpenAI Agents SDK and Firecrawl",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_deep_research_agent"
     },
     {
@@ -3062,7 +3062,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\ude80 AI Email GTM Reachout Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_email_gtm_reachout_agent"
     },
     {
@@ -3094,7 +3094,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Fraud Investigation Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_fraud_investigation_agent"
     },
     {
@@ -3126,7 +3126,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Health & Fitness Planner Agent \ud83c\udfcb\ufe0f\u200d\u2642\ufe0f",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_health_fitness_agent"
     },
     {
@@ -3158,7 +3158,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Investment Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_investment_agent"
     },
     {
@@ -3190,7 +3190,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Journalist Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_journalist_agent"
     },
     {
@@ -3222,7 +3222,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Meeting Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_meeting_agent"
     },
     {
@@ -3254,7 +3254,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Movie Production Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_movie_production_agent"
     },
     {
@@ -3286,7 +3286,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Personal Finance Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_personal_finance_agent"
     },
     {
@@ -3318,7 +3318,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf7d\ufe0f AI Recipe & Meal Planning Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_recipe_meal_planning_agent"
     },
     {
@@ -3350,7 +3350,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd25 AI Startup Insight with Firecrawl FIRE-1 Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_startup_insight_fire1_agent"
     },
     {
@@ -3382,7 +3382,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd16 AI System Architect Advisor with R1",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/ai_system_architect_r1"
     },
     {
@@ -3417,7 +3417,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udce1 Earnings Call Analyst Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/earnings_call_analyst_agent"
     },
     {
@@ -3448,7 +3448,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Live Demo",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/earnings_call_analyst_agent/live_demo"
     },
     {
@@ -3478,7 +3478,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tests",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/earnings_call_analyst_agent/tests"
     },
     {
@@ -3510,7 +3510,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd2c AI Research Planner & Executor Agent with Google's Interactions API",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/research_agent_gemini_interaction_api"
     },
     {
@@ -3542,7 +3542,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "main.py",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent"
     },
     {
@@ -3572,7 +3572,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Windows Use",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use"
     },
     {
@@ -3602,7 +3602,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use/agent"
     },
     {
@@ -3632,7 +3632,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Prompt",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use/agent/prompt"
     },
     {
@@ -3662,7 +3662,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Registry",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use/agent/registry"
     },
     {
@@ -3692,7 +3692,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use/agent/tools"
     },
     {
@@ -3722,7 +3722,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Desktop",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use/desktop"
     },
     {
@@ -3752,7 +3752,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tree",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_ai_agents/single_agent_apps/windows_use_autonomous_agent/windows_use/tree"
     },
     {
@@ -3784,7 +3784,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u2728 The Magician IA Reader: AI-Powered NLP & Tarot Insights \u2728",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat-with-tarots"
     },
     {
@@ -3814,7 +3814,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Helpers",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat-with-tarots/helpers"
     },
     {
@@ -3846,7 +3846,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat With Github",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/chat_with_github"
     },
     {
@@ -3878,7 +3878,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat With Gmail",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/chat_with_gmail"
     },
     {
@@ -3910,7 +3910,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat With Pdf",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/chat_with_pdf"
     },
     {
@@ -3942,7 +3942,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat With Research Papers",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/chat_with_research_papers"
     },
     {
@@ -3974,7 +3974,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat With Substack",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/chat_with_substack"
     },
     {
@@ -4006,7 +4006,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat With Youtube Videos",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/chat_with_youtube_videos"
     },
     {
@@ -4040,7 +4040,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Streaming AI Chatbot",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/streaming_ai_chatbot"
     },
     {
@@ -4070,7 +4070,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Steps",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/chat_with_X_tutorials/streaming_ai_chatbot/steps"
     },
     {
@@ -4102,7 +4102,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Cursor Ai Experiments",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/cursor_ai_experiments"
     },
     {
@@ -4134,7 +4134,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Llm Router App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/cursor_ai_experiments/llm_router_app"
     },
     {
@@ -4166,8 +4166,40 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Local Chatgpt Clone",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/cursor_ai_experiments/local_chatgpt_clone"
+    },
+    {
+      "background_capable": false,
+      "category": "agent_app",
+      "credentials_required": false,
+      "docker_paths": [],
+      "env_example_paths": [],
+      "execution_class": "LOCAL_READ_ONLY",
+      "external_services": [],
+      "external_url": null,
+      "frameworks": [],
+      "high_stakes_domain": false,
+      "id": "upstream-internal:advanced-llm-apps-excaliflow",
+      "languages": [
+        "js"
+      ],
+      "license_path": "LICENSE",
+      "license_status": "VERIFIED_ROOT_LICENSE",
+      "manifest_paths": [
+        "advanced_llm_apps/excaliflow/package.json"
+      ],
+      "mcp_related_paths": [],
+      "network_required": false,
+      "providers": [],
+      "readme_path": "advanced_llm_apps/excaliflow/README.md",
+      "self_modifying": false,
+      "skill_paths": [],
+      "source_type": "upstream_internal",
+      "subtype": "agent_app",
+      "title": "\u270f\ufe0f Excaliflow",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
+      "upstream_path": "advanced_llm_apps/excaliflow"
     },
     {
       "background_capable": false,
@@ -4198,7 +4230,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd04 GPT-OSS Advanced Critique & Improvement Loop",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/gpt_oss_critique_improvement_loop"
     },
     {
@@ -4230,7 +4262,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Adk Career Coach Agent Memory",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/adk_career_coach_agent_memory"
     },
     {
@@ -4262,7 +4294,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Arxiv Agent Memory",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/ai_arxiv_agent_memory"
     },
     {
@@ -4294,7 +4326,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Travel Agent Memory",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/ai_travel_agent_memory"
     },
     {
@@ -4326,7 +4358,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Llama3 Stateful Chat",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/llama3_stateful_chat"
     },
     {
@@ -4358,7 +4390,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Llm App Personalized Memory",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/llm_app_personalized_memory"
     },
     {
@@ -4390,7 +4422,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Local Chatgpt With Memory",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/local_chatgpt_with_memory"
     },
     {
@@ -4422,7 +4454,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi Llm Memory",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_apps_with_memory_tutorials/multi_llm_memory"
     },
     {
@@ -4454,7 +4486,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "or latest Unsloth per their guidance",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_finetuning_tutorials/gemma3_finetuning"
     },
     {
@@ -4486,7 +4518,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Run the entire script",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_finetuning_tutorials/llama3.2_finetuning"
     },
     {
@@ -4514,7 +4546,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf LLM Optimization Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_optimization_tools"
     },
     {
@@ -4546,7 +4578,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 Headroom - Context Optimization Layer",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_optimization_tools/headroom_context_optimization"
     },
     {
@@ -4578,7 +4610,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Toonify Token Optimization",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/llm_optimization_tools/toonify_token_optimization"
     },
     {
@@ -4606,7 +4638,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfac Multimodal Video Moment Finder",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/multimodal_video_moment_finder"
     },
     {
@@ -4638,7 +4670,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Backend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/multimodal_video_moment_finder/backend"
     },
     {
@@ -4671,7 +4703,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "or",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/multimodal_video_moment_finder/frontend"
     },
     {
@@ -4701,7 +4733,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/multimodal_video_moment_finder/frontend/app"
     },
     {
@@ -4735,7 +4767,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udea1 Needle - A New Way to Find",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle"
     },
     {
@@ -4765,7 +4797,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Api",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/api"
     },
     {
@@ -4795,7 +4827,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Extension",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/extension"
     },
     {
@@ -4825,7 +4857,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/scripts"
     },
     {
@@ -4855,7 +4887,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Server",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/server"
     },
     {
@@ -4886,7 +4918,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/src"
     },
     {
@@ -4916,7 +4948,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/src/components"
     },
     {
@@ -4946,7 +4978,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tests",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/needle/tests"
     },
     {
@@ -4978,7 +5010,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcc4 Resume & Job Matcher",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/resume_job_matcher"
     },
     {
@@ -5012,7 +5044,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ripple - Change One Thing, Find What Else Needs to Change",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/ripple"
     },
     {
@@ -5042,7 +5074,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Extension",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/ripple/extension"
     },
     {
@@ -5072,7 +5104,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/ripple/scripts"
     },
     {
@@ -5102,7 +5134,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tests",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/ripple/tests"
     },
     {
@@ -5134,7 +5166,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "ThinkPath Chatbot  \ud83e\udde0",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "advanced_llm_apps/thinkpath_chatbot_app"
     },
     {
@@ -5162,7 +5194,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde9 Agent Skills",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills"
     },
     {
@@ -5192,7 +5224,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "advisor-orchestrator-worker",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/advisor-orchestrator-worker"
     },
     {
@@ -5222,7 +5254,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "commit-archaeologist",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/commit-archaeologist"
     },
     {
@@ -5252,7 +5284,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/commit-archaeologist/scripts"
     },
     {
@@ -5282,7 +5314,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "dependency-doctor",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/dependency-doctor"
     },
     {
@@ -5312,7 +5344,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/dependency-doctor/scripts"
     },
     {
@@ -5340,7 +5372,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Skill Evals",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals"
     },
     {
@@ -5370,7 +5402,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Commit Archaeologist",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals/commit-archaeologist"
     },
     {
@@ -5400,7 +5432,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Dependency Doctor",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals/dependency-doctor"
     },
     {
@@ -5430,7 +5462,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "First Reader",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals/first-reader"
     },
     {
@@ -5460,7 +5492,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Project Graveyard",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals/project-graveyard"
     },
     {
@@ -5490,7 +5522,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scope Creep Detector",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals/scope-creep-detector"
     },
     {
@@ -5520,7 +5552,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/evals/tools"
     },
     {
@@ -5550,7 +5582,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "first-reader",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/first-reader"
     },
     {
@@ -5580,7 +5612,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/first-reader/scripts"
     },
     {
@@ -5610,7 +5642,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "project-graveyard",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/project-graveyard"
     },
     {
@@ -5640,7 +5672,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/project-graveyard/scripts"
     },
     {
@@ -5670,7 +5702,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "scope-creep-detector",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/scope-creep-detector"
     },
     {
@@ -5700,7 +5732,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/scope-creep-detector/scripts"
     },
     {
@@ -5728,7 +5760,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u267e\ufe0f Self-Improving Agent Skills",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/self-improving-agent-skills"
     },
     {
@@ -5760,7 +5792,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Backend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/self-improving-agent-skills/backend"
     },
     {
@@ -5793,7 +5825,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Frontend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/self-improving-agent-skills/frontend"
     },
     {
@@ -5823,7 +5855,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/self-improving-agent-skills/frontend/src/app"
     },
     {
@@ -5853,7 +5885,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/self-improving-agent-skills/frontend/src/components"
     },
     {
@@ -5883,7 +5915,7 @@
       "source_type": "upstream_internal",
       "subtype": "canonical_skill",
       "title": "thinking-out-loud",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "agent_skills/thinking-out-loud"
     },
     {
@@ -5911,7 +5943,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\ude80 Google ADK Crash Course",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course"
     },
     {
@@ -5941,7 +5973,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 1: Your First ADK Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/1_starter_agent"
     },
     {
@@ -5973,7 +6005,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Creative Writing Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/1_starter_agent/creative_writing_agent"
     },
     {
@@ -6003,7 +6035,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 2: Model-Agnostic Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/2_model_agnostic_agent"
     },
     {
@@ -6035,7 +6067,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "2 1 Openai Adk Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/2_model_agnostic_agent/2_1_openai_adk_agent"
     },
     {
@@ -6067,7 +6099,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "2 2 Anthropic Adk Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/2_model_agnostic_agent/2_2_anthropic_adk_agent"
     },
     {
@@ -6095,7 +6127,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 3: Structured Output Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/3_structured_output_agent"
     },
     {
@@ -6125,7 +6157,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfab Customer Support Ticketing Agent with Structured Output",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/3_structured_output_agent/3_1_customer_support_ticket_agent"
     },
     {
@@ -6157,7 +6189,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Customer Support Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/3_structured_output_agent/3_1_customer_support_ticket_agent/customer_support_agent"
     },
     {
@@ -6187,7 +6219,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udce7 Email Generation Agent with Structured Output",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/3_structured_output_agent/3_2_email_agent"
     },
     {
@@ -6219,7 +6251,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Email Generator Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/3_structured_output_agent/3_2_email_agent/email_generator_agent"
     },
     {
@@ -6247,7 +6279,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 4: Tool Using Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent"
     },
     {
@@ -6279,7 +6311,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd0d Built-in Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_1_builtin_tools"
     },
     {
@@ -6309,7 +6341,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Code Exec Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_1_builtin_tools/code_exec_agent"
     },
     {
@@ -6339,7 +6371,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Search Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_1_builtin_tools/search_agent"
     },
     {
@@ -6369,7 +6401,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u26a1 Function Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_2_function_tools"
     },
     {
@@ -6399,7 +6431,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Calculator Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_2_function_tools/calculator_agent"
     },
     {
@@ -6429,7 +6461,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Utility Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_2_function_tools/utility_agent"
     },
     {
@@ -6461,7 +6493,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd17 Third-party Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_3_thirdparty_tools"
     },
     {
@@ -6491,7 +6523,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Crewai Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_3_thirdparty_tools/crewai_agent"
     },
     {
@@ -6521,7 +6553,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Langchain Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_3_thirdparty_tools/langchain_agent"
     },
     {
@@ -6557,7 +6589,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf10 MCP Tools Integration",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_4_mcp_tools"
     },
     {
@@ -6591,7 +6623,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcc1 Filesystem Agent - MCP Integration",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_4_mcp_tools/filesystem_agent"
     },
     {
@@ -6625,7 +6657,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd25 Firecrawl Agent - Advanced Web Scraping with MCP",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/4_tool_using_agent/4_4_mcp_tools/firecrawl_agent"
     },
     {
@@ -6653,7 +6685,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 Tutorial 5: Memory Agents - Sessions, State & Events",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/5_memory_agent"
     },
     {
@@ -6687,7 +6719,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 Tutorial 5.1: In-Memory Conversation Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/5_memory_agent/5_1_in_memory_conversation_agent"
     },
     {
@@ -6721,7 +6753,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\uddc4\ufe0f Tutorial 5.2: Persistent Conversation Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/5_memory_agent/5_2_persistent_conversation_agent"
     },
     {
@@ -6749,7 +6781,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udccb Tutorial 6: Callbacks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/6_callbacks"
     },
     {
@@ -6783,7 +6815,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "6.1 Agent Lifecycle Callbacks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/6_callbacks/6_1_agent_lifecycle_callbacks"
     },
     {
@@ -6817,7 +6849,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "6.2 LLM Interaction Callbacks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/6_callbacks/6_2_llm_interaction_callbacks"
     },
     {
@@ -6851,7 +6883,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 6.3: Tool Execution Callbacks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/6_callbacks/6_3_tool_execution_callbacks"
     },
     {
@@ -6885,7 +6917,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd0c Tutorial 7: Plugins",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/7_plugins"
     },
     {
@@ -6915,7 +6947,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 8: Simple Multi\u2011Agent Researcher (Runs with ADK)",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/8_simple_multi_agent"
     },
     {
@@ -6947,7 +6979,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi Agent Researcher",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/8_simple_multi_agent/multi_agent_researcher"
     },
     {
@@ -6981,7 +7013,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 9.1: Sequential Agents - Business Implementation Plan Generator",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/9_multi_agent_patterns/9_1_sequential_agent"
     },
     {
@@ -7013,7 +7045,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd01 Tutorial 9.2: Loop Agents - Iterative Plan Refiner",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/9_multi_agent_patterns/9_2_loop_agent"
     },
     {
@@ -7047,7 +7079,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u26a1 Tutorial 9.3: Parallel Agents - Market Snapshot Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/9_multi_agent_patterns/9_3_parallel_agent"
     },
     {
@@ -7077,7 +7109,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi-Agent Web Research System (YAML-based)",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/adk_yaml_examples/multi_agent_web_research_team"
     },
     {
@@ -7109,7 +7141,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi Agent Web Researcher",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/google_adk_crash_course/adk_yaml_examples/multi_agent_web_research_team/multi_agent_web_researcher"
     },
     {
@@ -7137,7 +7169,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\ude80 OpenAI Agents SDK Crash Course",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course"
     },
     {
@@ -7171,7 +7203,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 1: Your First OpenAI Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/1_starter_agent"
     },
     {
@@ -7203,7 +7235,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Personal Assistant Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/1_starter_agent/1_personal_assistant_agent"
     },
     {
@@ -7237,7 +7269,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd0d Tutorial 8: Tracing & Observability",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/10_tracing_observability"
     },
     {
@@ -7269,7 +7301,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Default Tracing",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/10_tracing_observability/10_1_default_tracing"
     },
     {
@@ -7301,7 +7333,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Custom Tracing",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/10_tracing_observability/10_2_custom_tracing"
     },
     {
@@ -7331,7 +7363,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf99\ufe0f Tutorial 11: Voice Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/11_voice"
     },
     {
@@ -7365,7 +7397,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\u26a1 Realtime Voice Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/11_voice/realtime"
     },
     {
@@ -7399,7 +7431,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf99\ufe0f Static Voice Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/11_voice/static"
     },
     {
@@ -7433,7 +7465,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf0a Streaming Voice Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/11_voice/streamed"
     },
     {
@@ -7467,7 +7499,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 2: Structured Output Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/2_structured_output_agent"
     },
     {
@@ -7499,7 +7531,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Support Ticket Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/2_structured_output_agent/2_1_support_ticket_agent"
     },
     {
@@ -7531,7 +7563,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Product Review Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/2_structured_output_agent/2_2_product_review_agent"
     },
     {
@@ -7563,7 +7595,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 3: Tool Using Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/3_tool_using_agent"
     },
     {
@@ -7595,7 +7627,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Function Tools Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/3_tool_using_agent/3_1_function_tools"
     },
     {
@@ -7627,7 +7659,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Built-in Tools Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/3_tool_using_agent/3_2_builtin_tools"
     },
     {
@@ -7659,7 +7691,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agents as Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/3_tool_using_agent/3_3_agents_as_tools"
     },
     {
@@ -7693,7 +7725,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\ude80 Tutorial 4: Running Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/4_running_agents"
     },
     {
@@ -7725,7 +7757,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Execution Methods",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/4_running_agents/4_1_execution_methods"
     },
     {
@@ -7757,7 +7789,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Conversation Management",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/4_running_agents/4_2_conversation_management"
     },
     {
@@ -7787,7 +7819,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "4 3 Run Configuration",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/4_running_agents/4_3_run_configuration"
     },
     {
@@ -7817,7 +7849,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "4 4 Streaming Events",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/4_running_agents/4_4_streaming_events"
     },
     {
@@ -7849,7 +7881,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 Tutorial 5: Context Management",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/5_context_management"
     },
     {
@@ -7881,7 +7913,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udee1\ufe0f Tutorial 6: Guardrails & Validation",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/6_guardrails_validation"
     },
     {
@@ -7915,7 +7947,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfaf Tutorial 7: Sessions & Memory Management",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/7_sessions"
     },
     {
@@ -7947,7 +7979,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Basic Sessions",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/7_sessions/7_1_basic_sessions"
     },
     {
@@ -7979,7 +8011,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Memory Operations",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/7_sessions/7_2_memory_operations"
     },
     {
@@ -8011,7 +8043,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi Sessions",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/7_sessions/7_3_multi_sessions"
     },
     {
@@ -8045,7 +8077,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd1d Tutorial 8: Handoffs & Delegation",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/8_handoffs_delegation"
     },
     {
@@ -8077,7 +8109,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Basic Handoffs",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/8_handoffs_delegation/8_1_basic_handoffs"
     },
     {
@@ -8109,7 +8141,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Advanced Handoffs",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/8_handoffs_delegation/8_2_advanced_handoffs"
     },
     {
@@ -8143,7 +8175,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfbc Tutorial 9: Multi-Agent Orchestration",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/9_multi_agent_orchestration"
     },
     {
@@ -8175,7 +8207,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Parallel Execution",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/9_multi_agent_orchestration/9_1_parallel_execution"
     },
     {
@@ -8207,7 +8239,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agents as Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "ai_agent_framework_crash_course/openai_sdk_crash_course/9_multi_agent_orchestration/9_2_agents_as_tools"
     },
     {
@@ -8239,7 +8271,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcf0 Always-on Hacker News Briefing Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "always_on_agents/always_on_hn_briefing_agent"
     },
     {
@@ -8269,7 +8301,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Unit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "always_on_agents/always_on_hn_briefing_agent/tests/unit"
     },
     {
@@ -8301,7 +8333,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udce1 Release Radar Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "always_on_agents/release_radar_agent"
     },
     {
@@ -8331,7 +8363,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Unit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "always_on_agents/release_radar_agent/tests/unit"
     },
     {
@@ -8359,7 +8391,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\uddbc\ufe0f Generative UI and Agentic Frontends",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents"
     },
     {
@@ -8394,7 +8426,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Dashboard Canvas Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent"
     },
     {
@@ -8426,7 +8458,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/agent"
     },
     {
@@ -8456,7 +8488,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/scripts"
     },
     {
@@ -8486,7 +8518,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/app"
     },
     {
@@ -8516,7 +8548,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Copilotkit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/app/api/copilotkit"
     },
     {
@@ -8546,7 +8578,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/chat"
     },
     {
@@ -8576,7 +8608,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Actions",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/chat/actions"
     },
     {
@@ -8606,7 +8638,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Layout",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/chat/layout"
     },
     {
@@ -8636,7 +8668,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Dashboard",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/dashboard"
     },
     {
@@ -8666,7 +8698,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Charts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/dashboard/charts"
     },
     {
@@ -8696,7 +8728,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Layout",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/dashboard/layout"
     },
     {
@@ -8726,7 +8758,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Metrics",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/dashboard/metrics"
     },
     {
@@ -8756,7 +8788,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/components/ui"
     },
     {
@@ -8786,7 +8818,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-dashboard-canvas-agent/src/lib"
     },
     {
@@ -8823,7 +8855,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Deep Research Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-deep-research-agent"
     },
     {
@@ -8855,7 +8887,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-deep-research-agent/agent"
     },
     {
@@ -8885,7 +8917,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-deep-research-agent/src/app"
     },
     {
@@ -8915,7 +8947,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Copilotkit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-deep-research-agent/src/app/api/copilotkit"
     },
     {
@@ -8945,7 +8977,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-deep-research-agent/src/components"
     },
     {
@@ -8975,7 +9007,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Types",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-deep-research-agent/src/types"
     },
     {
@@ -9011,7 +9043,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Financial Coach Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent"
     },
     {
@@ -9043,7 +9075,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent/agent"
     },
     {
@@ -9073,7 +9105,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent/scripts"
     },
     {
@@ -9103,7 +9135,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent/src/app"
     },
     {
@@ -9133,7 +9165,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Copilotkit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent/src/app/api/copilotkit"
     },
     {
@@ -9163,7 +9195,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent/src/components"
     },
     {
@@ -9193,7 +9225,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-financial-coach-agent/src/lib"
     },
     {
@@ -9228,7 +9260,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Knowledge Explorer",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer"
     },
     {
@@ -9260,7 +9292,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/agent"
     },
     {
@@ -9290,7 +9322,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/agent/src"
     },
     {
@@ -9320,7 +9352,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/scripts"
     },
     {
@@ -9350,7 +9382,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/src/app"
     },
     {
@@ -9380,7 +9412,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "[[...Slug]]",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/src/app/api/copilotkit/[[...slug]]"
     },
     {
@@ -9410,7 +9442,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Upload",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/src/app/api/upload"
     },
     {
@@ -9440,7 +9472,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/src/components"
     },
     {
@@ -9471,7 +9503,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Hooks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/src/hooks"
     },
     {
@@ -9501,7 +9533,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-knowledge-explorer/src/lib"
     },
     {
@@ -9547,7 +9579,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI MCP App Builder",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder"
     },
     {
@@ -9589,7 +9621,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "MCP Server built with mcp-use",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server"
     },
     {
@@ -9619,7 +9651,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent Skills",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/.agent"
     },
     {
@@ -9652,7 +9684,7 @@
       "source_type": "upstream_internal",
       "subtype": "project_internal_skill",
       "title": "chatgpt-app-builder",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/.agent/skills/chatgpt-app-builder"
     },
     {
@@ -9688,7 +9720,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Evals",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/.agent/skills/chatgpt-app-builder/evals"
     },
     {
@@ -9721,7 +9753,7 @@
       "source_type": "upstream_internal",
       "subtype": "project_internal_skill",
       "title": "mcp-apps-builder",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/.agent/skills/mcp-apps-builder"
     },
     {
@@ -9754,7 +9786,7 @@
       "source_type": "upstream_internal",
       "subtype": "project_internal_skill",
       "title": "mcp-builder",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/.agent/skills/mcp-builder"
     },
     {
@@ -9788,7 +9820,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Evals",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/.agent/skills/mcp-builder/evals"
     },
     {
@@ -9822,7 +9854,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Product Search Result",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/resources/product-search-result"
     },
     {
@@ -9858,7 +9890,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/resources/product-search-result/components"
     },
     {
@@ -9890,7 +9922,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Hooks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/resources/product-search-result/hooks"
     },
     {
@@ -9922,7 +9954,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tools",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/mcp-use-server/tools"
     },
     {
@@ -9966,7 +9998,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Example: Three.js App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/threejs-server"
     },
     {
@@ -10000,7 +10032,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/threejs-server/src"
     },
     {
@@ -10040,7 +10072,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Name",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web"
     },
     {
@@ -10076,7 +10108,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app"
     },
     {
@@ -10108,7 +10140,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Call Tool",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/call-tool"
     },
     {
@@ -10140,7 +10172,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Copilotkit",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/copilotkit"
     },
     {
@@ -10172,7 +10204,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Mastra Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/mastra-agent"
     },
     {
@@ -10204,7 +10236,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Mcp Introspect",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/mcp-introspect"
     },
     {
@@ -10236,7 +10268,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Download",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/download"
     },
     {
@@ -10268,7 +10300,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Edit File",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/edit-file"
     },
     {
@@ -10300,7 +10332,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Exec",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/exec"
     },
     {
@@ -10332,7 +10364,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Info",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/info"
     },
     {
@@ -10364,7 +10396,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Provision",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/provision"
     },
     {
@@ -10396,7 +10428,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Read File",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/read-file"
     },
     {
@@ -10428,7 +10460,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Write File",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/api/workspace/write-file"
     },
     {
@@ -10469,7 +10501,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/components"
     },
     {
@@ -10503,7 +10535,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Constants",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/constants"
     },
     {
@@ -10537,7 +10569,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Hooks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/app/hooks"
     },
     {
@@ -10570,7 +10602,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/lib"
     },
     {
@@ -10605,7 +10637,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Workspace",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/lib/workspace"
     },
     {
@@ -10637,7 +10669,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-mcp-app-builder/apps/web/scripts"
     },
     {
@@ -10669,7 +10701,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "AI Shadcn Component Generator",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator"
     },
     {
@@ -10701,7 +10733,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/agent"
     },
     {
@@ -10731,7 +10763,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/agent/src"
     },
     {
@@ -10763,7 +10795,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Runtime",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/runtime"
     },
     {
@@ -10795,7 +10827,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui"
     },
     {
@@ -10826,7 +10858,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui/src"
     },
     {
@@ -10856,7 +10888,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui/src/components"
     },
     {
@@ -10886,7 +10918,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Chat",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui/src/components/chat"
     },
     {
@@ -10916,7 +10948,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui/src/components/ui"
     },
     {
@@ -10946,7 +10978,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Hooks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui/src/hooks"
     },
     {
@@ -10976,7 +11008,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/ai-shadcn-component-generator/apps/ui/src/lib"
     },
     {
@@ -11015,7 +11047,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Generative UI Starter Project",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project"
     },
     {
@@ -11047,7 +11079,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/agent"
     },
     {
@@ -11077,7 +11109,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/agent/src"
     },
     {
@@ -11107,7 +11139,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "A2Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/agent/src/a2ui"
     },
     {
@@ -11137,7 +11169,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Schemas",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/agent/src/a2ui/schemas"
     },
     {
@@ -11167,7 +11199,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Scripts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/scripts"
     },
     {
@@ -11197,7 +11229,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/app"
     },
     {
@@ -11227,7 +11259,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "[[...Slug]]",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/app/api/copilotkit/[[...slug]]"
     },
     {
@@ -11258,7 +11290,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Declarative Generative Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/app/declarative-generative-ui"
     },
     {
@@ -11288,7 +11320,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Components",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/components"
     },
     {
@@ -11318,7 +11350,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Example Canvas",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/components/example-canvas"
     },
     {
@@ -11348,7 +11380,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Example Layout",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/components/example-layout"
     },
     {
@@ -11378,7 +11410,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Generative Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/components/generative-ui"
     },
     {
@@ -11409,7 +11441,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Charts",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/components/generative-ui/charts"
     },
     {
@@ -11439,7 +11471,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ui",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/components/ui"
     },
     {
@@ -11470,7 +11502,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Hooks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/hooks"
     },
     {
@@ -11500,7 +11532,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Lib",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/generative-ui-starter-project/src/lib"
     },
     {
@@ -11545,7 +11577,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "MCP Apps Generative UI Showcase",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase"
     },
     {
@@ -11587,7 +11619,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Mcp Server",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase/mcp-server"
     },
     {
@@ -11626,7 +11658,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Apps",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase/mcp-server/apps"
     },
     {
@@ -11661,7 +11693,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase/mcp-server/src"
     },
     {
@@ -11696,7 +11728,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase/src/app"
     },
     {
@@ -11728,7 +11760,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "[[...Slug]]",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase/src/app/api/copilotkit/[[...slug]]"
     },
     {
@@ -11760,7 +11792,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Hooks",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "generative_ui_agents/mcp-apps-generative-ui-showcase/src/hooks"
     },
     {
@@ -11796,7 +11828,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Travel Planner Mcp Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/ai_travel_planner_mcp_agent_team"
     },
     {
@@ -11834,7 +11866,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf10 Browser MCP Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/browser_mcp_agent"
     },
     {
@@ -11870,7 +11902,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc19 GitHub MCP Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/github_mcp_agent"
     },
     {
@@ -11906,7 +11938,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\ude80 Multi-MCP Intelligent Assistant",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/multi_mcp_agent"
     },
     {
@@ -11942,7 +11974,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multi-MCP Agent Router",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/multi_mcp_agent_router"
     },
     {
@@ -11978,7 +12010,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcd1 Notion MCP Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/notion_mcp_agent"
     },
     {
@@ -12014,7 +12046,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "OpenAI Remote MCP Tool Bridge",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "mcp_ai_agents/openai_remote_mcp_bridge"
     },
     {
@@ -12046,7 +12078,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agentic Rag Embedding Gemma",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_embedding_gemma"
     },
     {
@@ -12078,7 +12110,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 Agentic RAG with GPT-5",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_gpt5"
     },
     {
@@ -12108,7 +12140,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udde0 Math Tutor Agent \u2013 Agentic RAG with Feedback Loop",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_math_agent"
     },
     {
@@ -12138,7 +12170,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "App",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_math_agent/app"
     },
     {
@@ -12168,7 +12200,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Data",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_math_agent/data"
     },
     {
@@ -12198,7 +12230,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Rag",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_math_agent/rag"
     },
     {
@@ -12230,7 +12262,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\uddd0 Agentic RAG with Reasoning",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_rag_with_reasoning"
     },
     {
@@ -12264,7 +12296,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Typed Agentic RAG with Pydantic AI",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/agentic_typed_rag_pydanticai"
     },
     {
@@ -12296,7 +12328,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agentic RAG with LangGraph: AI Blog Search",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/ai_blog_search"
     },
     {
@@ -12328,7 +12360,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd16 AutoRAG: Autonomous RAG with GPT-4o and Vector Database",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/autonomous_rag"
     },
     {
@@ -12360,7 +12392,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Contextual AI RAG Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/contextualai_rag_agent"
     },
     {
@@ -12392,7 +12424,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd04 Corrective RAG Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/corrective_rag"
     },
     {
@@ -12424,7 +12456,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc0b Deepseek Local RAG Reasoning Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/deepseek_local_rag_agent"
     },
     {
@@ -12456,7 +12488,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd14 Agentic RAG with Gemini Flash Thinking",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/gemini_agentic_rag"
     },
     {
@@ -12488,7 +12520,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc40 RAG App with Hybrid Search",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/hybrid_search_rag"
     },
     {
@@ -12523,7 +12555,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd0d Knowledge Graph RAG with Verifiable Citations",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/knowledge_graph_rag_citations"
     },
     {
@@ -12555,7 +12587,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Llama3.1 Local Rag",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/llama3.1_local_rag"
     },
     {
@@ -12587,7 +12619,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udda5\ufe0f Local RAG App with Hybrid Search",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/local_hybrid_search_rag"
     },
     {
@@ -12619,7 +12651,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Local Rag Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/local_rag_agent"
     },
     {
@@ -12647,7 +12679,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multimodal Agentic RAG",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/multimodal_agentic_rag"
     },
     {
@@ -12679,7 +12711,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Backend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/multimodal_agentic_rag/backend"
     },
     {
@@ -12709,7 +12741,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Agentic Rag Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/multimodal_agentic_rag/backend/agentic_rag_agent"
     },
     {
@@ -12741,7 +12773,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Frontend",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/multimodal_agentic_rag/frontend"
     },
     {
@@ -12772,7 +12804,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Src",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/multimodal_agentic_rag/frontend/src"
     },
     {
@@ -12804,7 +12836,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc0b Qwen 3 Local RAG Reasoning Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/qwen_local_rag"
     },
     {
@@ -12836,7 +12868,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "RAG Agent with Cohere \u2318R",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/rag_agent_cohere"
     },
     {
@@ -12868,7 +12900,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Rag As A Service",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/rag-as-a-service"
     },
     {
@@ -12900,7 +12932,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "PharmaQuery",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/rag_chain"
     },
     {
@@ -12932,7 +12964,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udce0 RAG Agent with Database Routing",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/rag_database_routing"
     },
     {
@@ -12964,7 +12996,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "RAG Failure Diagnostics Clinic",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/rag_failure_diagnostics_clinic"
     },
     {
@@ -12996,7 +13028,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Vision RAG with Cohere Embed-4 \ud83d\uddbc\ufe0f",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "rag_tutorials/vision_rag"
     },
     {
@@ -13028,7 +13060,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Blog To Podcast Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_blog_to_podcast_agent"
     },
     {
@@ -13060,7 +13092,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udc94 Breakup Recovery Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_breakup_recovery_agent"
     },
     {
@@ -13092,7 +13124,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcca AI Data Analysis Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_data_analysis_agent"
     },
     {
@@ -13124,7 +13156,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udcca AI Data Visualization Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_data_visualisation_agent"
     },
     {
@@ -13156,7 +13188,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udee1\ufe0f Life Insurance Coverage Advisor Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_life_insurance_advisor_agent"
     },
     {
@@ -13188,7 +13220,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\ude7b Medical Imaging Diagnosis Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_medical_imaging_agent"
     },
     {
@@ -13221,7 +13253,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83e\udd78 AI Meme Generator Agent - Browser Use",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_meme_generator_agent_browseruse"
     },
     {
@@ -13253,7 +13285,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Music Generator Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_music_generator_agent"
     },
     {
@@ -13285,7 +13317,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Reasoning Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_reasoning_agent"
     },
     {
@@ -13317,7 +13349,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Startup Trend Analysis Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_startup_trend_analysis_agent"
     },
     {
@@ -13349,7 +13381,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Ai Travel Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_travel_agent"
     },
     {
@@ -13381,7 +13413,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Full agent: natural-language question \u2192 paid data \u2192 answer",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/ai_x402_paying_agent"
     },
     {
@@ -13413,7 +13445,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Mixture Of Agents",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/mixture_of_agents"
     },
     {
@@ -13445,7 +13477,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Multimodal Ai Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/multimodal_ai_agent"
     },
     {
@@ -13477,7 +13509,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "OpenAI Researcher Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/openai_research_agent"
     },
     {
@@ -13509,7 +13541,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83d\udd77\ufe0f Web Scraping AI Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/web_scraping_ai_agent"
     },
     {
@@ -13541,7 +13573,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Xai Finance Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "starter_ai_agents/xai_finance_agent"
     },
     {
@@ -13573,7 +13605,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udfa7 Self-Guided AI Audio Tour Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "voice_ai_agents/ai_audio_tour_agent"
     },
     {
@@ -13605,7 +13637,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "\ud83c\udf99\ufe0f Customer Support Voice Agent",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "voice_ai_agents/customer_support_voice_agent"
     },
     {
@@ -13639,7 +13671,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Insurance Claim Live Agent Team",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "voice_ai_agents/insurance_claim_live_agent_team"
     },
     {
@@ -13670,7 +13702,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Live Demo",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "voice_ai_agents/insurance_claim_live_agent_team/live_demo"
     },
     {
@@ -13701,7 +13733,7 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Tests",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "voice_ai_agents/insurance_claim_live_agent_team/tests"
     },
     {
@@ -13733,10 +13765,10 @@
       "source_type": "upstream_internal",
       "subtype": "agent_app",
       "title": "Voice Rag Openaisdk",
-      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+      "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779",
       "upstream_path": "voice_ai_agents/voice_rag_openaisdk"
     }
   ],
   "schema_version": 1,
-  "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+  "upstream_commit": "fba2c90c568b3a61d8080be5cee38ed6908d8779"
 }
