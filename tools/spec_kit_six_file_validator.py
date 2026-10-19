@@ -7,6 +7,10 @@ from pathlib import Path
 
 FILES = ("prd.md", "arquitetura.md", "regras.md", "tarefas.md", "memoria.md", "cenario.md")
 ID = re.compile(r"\b(?:REQ|AC|TASK|SC)-\d{2}\b")
+TRACEABILITY = re.compile(
+    r"\|\s*(REQ-\d{2})\s*\|\s*(TASK-\d{2})\s*\|\s*(SC-\d{2})\s*\|"
+    r"\s*(TEST-\d{2})\s*\|\s*(EVIDENCE-\d{2})\s*\|"
+)
 
 def validate(folder: Path) -> dict:
     findings = []
@@ -33,6 +37,36 @@ def validate(folder: Path) -> dict:
         expected_ac = set(re.findall(r"\bAC-\d{2}\b", bodies["prd.md"]))
         for ac in sorted(expected_ac - set(re.findall(r"\bAC-\d{2}\b", bodies["cenario.md"]))):
             findings.append({"file": "cenario.md", "problem": f"missing acceptance case {ac}"})
+        traceability_rows = TRACEABILITY.findall(bodies["memoria.md"])
+        traced_requirements = {row[0] for row in traceability_rows}
+        for req in sorted(required - traced_requirements):
+            findings.append({
+                "file": "memoria.md",
+                "problem": f"missing end-to-end traceability for {req} through TEST and EVIDENCE",
+            })
+        reference_sources = (
+            (1, "tarefas.md"),
+            (2, "cenario.md"),
+            (3, "cenario.md"),
+        )
+        for row in traceability_rows:
+            for position, source in reference_sources:
+                identifier = row[position]
+                if identifier not in bodies[source]:
+                    findings.append({
+                        "file": "memoria.md",
+                        "problem": f"invalid traceability reference {identifier} for {row[0]}",
+                    })
+        evidence_ids = set(re.findall(
+            r"(?m)^(?:##\s+|-\s+)(EVIDENCE-\d{2})\b",
+            bodies["memoria.md"],
+        ))
+        for row in traceability_rows:
+            if row[4] not in evidence_ids:
+                findings.append({
+                    "file": "memoria.md",
+                    "problem": f"invalid traceability reference {row[4]} for {row[0]}",
+                })
     return {"files_checked": len(bodies), "status": "PASS" if not findings else "FAIL", "findings": findings}
 
 def main():
