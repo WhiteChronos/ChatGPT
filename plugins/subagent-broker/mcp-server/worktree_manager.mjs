@@ -12,7 +12,10 @@ function sanitizedGitEnv() {
 
 function execFile(command, args, { cwd, allowFailure = false } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, env: sanitizedGitEnv(), shell: false, stdio: ['ignore','pipe','pipe'] });
+    const effectiveArgs = command === 'git' && cwd
+      ? ['-c', `safe.directory=${path.resolve(cwd)}`, ...args]
+      : args;
+    const child = spawn(command, effectiveArgs, { cwd, env: sanitizedGitEnv(), shell: false, stdio: ['ignore','pipe','pipe'] });
     let stdout = '';
     let stderr = '';
     child.stdout.on('data', d => stdout += d);
@@ -21,7 +24,7 @@ function execFile(command, args, { cwd, allowFailure = false } = {}) {
     child.on('close', code => {
       const result = { code, stdout: stdout.trim(), stderr: stderr.trim() };
       if (code === 0 || allowFailure) resolve(result);
-      else reject(new Error(stderr.trim() || `${command} ${args.join(' ')} failed with ${code}`));
+      else reject(new Error(stderr.trim() || `${command} ${effectiveArgs.join(' ')} failed with ${code}`));
     });
   });
 }
