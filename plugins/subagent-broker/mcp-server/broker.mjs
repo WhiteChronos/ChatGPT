@@ -499,10 +499,14 @@ export class SubagentBroker {
   async cancel(agentId) {
     let handle = null;
     let queued = false;
+    let terminal = null;
     await this.#withLock(async () => {
       let record = await this.stateStore.get(agentId);
       if (!record) throw brokerError('NOT_FOUND', `unknown agent: ${agentId}`);
-      if (TERMINAL_STATES.has(record.state)) return;
+      if (TERMINAL_STATES.has(record.state)) {
+        terminal = publicRecord(record);
+        return;
+      }
       if (record.state === 'QUEUED') {
         this.#dequeue(agentId);
         queued = true;
@@ -526,6 +530,7 @@ export class SubagentBroker {
         } : null);
       }
     });
+    if (terminal) return terminal;
     if (queued) return this.status(agentId);
     let cancelError = null;
     if (handle) {
