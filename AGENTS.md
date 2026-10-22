@@ -273,3 +273,13 @@ Use selective context by default in Codex tasks in this repository:
 
 This default complements all existing governance and release gates. See runbooks/context-efficiency.md for evidence and application limits.
 <!-- /ecc-selective-context-default -->
+
+<!-- vibe-toolkit-repository -->
+## Vibe Coding Toolkit por projeto
+
+Em tarefas de desenvolvimento, setup, revisao e validacao, consulte a skill
+`.agents/skills/vibe-coding-toolkit-repo/SKILL.md`. Prefira o MCP quando exposto;
+sem ele, use a referencia versionada, sem dependencias, descrita na skill.
+Diferencie `local_reference` de chamada MCP e preserve a governanca deste repo.
+A presenca dos arquivos nao comprova carregamento em todos os hosts.
+<!-- /vibe-toolkit-repository -->
