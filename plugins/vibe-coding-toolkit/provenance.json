@@ -1,0 +1,9 @@
+{
+  "upstream": "https://github.com/soumatheusgomes/vibe-coding-toolkit",
+  "snapshot": "2026-10-21",
+  "source_zip_sha256": "f8b16c0a7d299131721e552c40270c731f1b2288c8a1bf0b2fe6b6611d9ab6fc",
+  "catalog_sha256": "c9763cccb0e3c6f44bd3d8d3c700a803e23e23a7a993301822a96f6ee2e34d80",
+  "documents": 107,
+  "license": "MIT",
+  "copyright": "Copyright (c) 2026 Matheus Gomes"
+}

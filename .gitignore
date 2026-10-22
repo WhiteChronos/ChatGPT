@@ -1,2 +1,7 @@
 .superpowers/subagents/
 .worktrees/
+
+# Vibe Coding Toolkit local evidence
+plugins/vibe-coding-toolkit/*.jsonl
+plugins/vibe-coding-toolkit/*.log
+plugins/vibe-coding-toolkit/__pycache__/
