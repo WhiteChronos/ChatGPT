@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "awesome-llm-apps-curated",
+  "display_name": "Curated Awesome LLM Apps references",
+  "source_type": "local",
+  "source": "plugins/awesome-llm-apps-controller",
+  "license_status": "Apache-2.0",
+  "execution_class": "REFERENCE_ONLY",
+  "status": "ACTIVATION_GATED",
+  "controller_plugin": "awesome-llm-apps-controller",
+  "skill_paths": [
+    "plugins/awesome-llm-apps-controller/skills/awesome-llm-apps-controller/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null,
+  "upstream": {
+    "repository": "https://github.com/Shubhamsaboo/awesome-llm-apps.git",
+    "ref": "main",
+    "commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+    "license_status": "Apache-2.0",
+    "relationship": "read_only_catalog_reference"
+  }
+}

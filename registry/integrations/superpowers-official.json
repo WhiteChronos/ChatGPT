@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "superpowers-official",
+  "display_name": "Official Superpowers workflow",
+  "source_type": "official_plugin",
+  "source": "superpowers@openai-curated",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "REGISTERED_PROJECT",
+  "controller_plugin": "superpowers-controller",
+  "skill_paths": [
+    "plugins/superpowers-controller/skills/superpowers-controller/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null,
+  "upstream": {
+    "repository": "https://github.com/obra/superpowers.git",
+    "ref": "main",
+    "commit": "bb92a77741419a4ab5f06e711a283343f1ada0c3",
+    "license_status": "MIT",
+    "relationship": "read_only_workflow_provenance"
+  }
+}
