@@ -1,0 +1,4 @@
+interface:
+  display_name: "REA Engenharia Reversa Evolutiva"
+  short_description: "Engenharia reversa, evidencias e melhoria continua"
+  default_prompt: "Investigue o funcionamento do sistema com evidencia, limites e testes; proponha skills complementares quando necessario."

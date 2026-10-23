@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jev Contexto ChatGPT"
+  short_description: "Retencao de contexto e verificacao de compactacao"
+  default_prompt: "Organize o contexto acessivel, preserve evidencias e restricoes, e verifique o que poderia ser reduzido sem perda de informacao."
