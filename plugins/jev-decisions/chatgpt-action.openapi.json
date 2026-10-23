@@ -1,0 +1,105 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "DefAPI Jev 1.13 Decisions (opt-in)",
+    "version": "1.0.0",
+    "description": "Optional, user-invoked probabilistic classification: noul, choice and score. Send only synthetic or explicitly approved nonconfidential state. An answer does not authorize a repository action."
+  },
+  "servers": [{"url": "https://api.defapi.org"}],
+  "paths": {
+    "/api/v1/decisions": {
+      "post": {
+        "operationId": "submitJevDecisions",
+        "summary": "Evaluate explicit structured decision questions with Jev-1.13",
+        "description": "Call only when asked to evaluate choices, scores or probability. Never transmit repository secrets, private project data, personal information or credentials.",
+        "security": [{"ApiKeyAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/DecisionsRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Typed decision results; verify them before using in downstream workflows",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/DecisionsResponse"}}}
+          },
+          "400": {"description": "Invalid question or model"},
+          "401": {"description": "Missing or invalid API key"},
+          "500": {"description": "Provider or upstream failure"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer <DefAPI key>. In ChatGPT choose API Key authentication with Bearer type; configure the secret in the GPT editor, never here."
+      }
+    },
+    "schemas": {
+      "DecisionsRequest": {
+        "type": "object",
+        "required": ["model", "state", "questions"],
+        "properties": {
+          "model": {"type": "string", "enum": ["typesafe/jev-1.13"]},
+          "state": {"oneOf": [{"type": "string"}, {"type": "object"}, {"type": "array"}], "description": "Text or structured state. Do not include private or secret data."},
+          "questions": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {"$ref": "#/components/schemas/Question"},
+            "description": "Named typed questions; keys are returned in answers."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Question": {
+        "type": "object",
+        "required": ["type", "instructions"],
+        "properties": {
+          "type": {"type": "string", "enum": ["noul", "choice", "score"]},
+          "instructions": {"type": "string", "minLength": 1},
+          "criteria": {
+            "description": "noul: optional true/false descriptions; choice: named alternatives (max 255); score: 2-10 ordered strings",
+            "oneOf": [
+              {"type": "object", "additionalProperties": {"type": "string"}},
+              {"type": "array", "minItems": 2, "maxItems": 10, "items": {"type": "string"}}
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "DecisionsResponse": {
+        "type": "object",
+        "required": ["model", "answers", "usage", "task_id", "consumed"],
+        "properties": {
+          "id": {"type": "string"},
+          "model": {"type": "string"},
+          "provider": {"type": "string"},
+          "answers": {"type": "object", "additionalProperties": {"$ref": "#/components/schemas/Answer"}},
+          "usage": {"type": "object", "properties": {"input_tokens": {"type": "integer"}, "output_tokens": {"type": "integer"}, "cost": {"type": "number"}}},
+          "task_id": {"type": "string"},
+          "consumed": {"type": "string"}
+        }
+      },
+      "Answer": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {"type": "string", "enum": ["noul", "choice", "score"]},
+          "noul": {"type": "number", "minimum": 0, "maximum": 1},
+          "choice": {"type": "string"},
+          "score": {"type": "number"},
+          "probabilities": {"type": "object", "additionalProperties": {"type": "number"}},
+          "legend": {"type": "object", "additionalProperties": {"type": "string"}},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    }
+  }
+}

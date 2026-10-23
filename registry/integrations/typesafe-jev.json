@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "typesafe-jev-official",
+  "display_name": "TypeSafe Jev-1.13 (official API)",
+  "source_type": "local",
+  "source": "plugins/jev-decisions",
+  "license_status": "FIRST_PARTY_ADAPTER",
+  "execution_class": "CREDENTIALLED",
+  "status": "ACTIVATION_GATED",
+  "controller_plugin": null,
+  "skill_paths": [],
+  "mcp_servers": [],
+  "runtime_probe": null
+}
