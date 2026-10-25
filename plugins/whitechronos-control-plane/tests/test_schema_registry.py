@@ -74,7 +74,7 @@ def _valid_descriptor(integration_id: str = "sample") -> dict:
 
 def test_registry_loads_arena_and_broker_descriptors():
     registry = load_registry(REPO)
-    assert tuple(registry) == ("github-arena", "subagent-broker", "arena-2.0")
+    assert tuple(registry) == ("github-arena", "subagent-broker", "arena-2.0", "replica-controller")
     assert registry["github-arena"].runtime_probe is not None
     assert registry["github-arena"].runtime_probe.expected_tools == ARENA_TOOLS
     assert registry["subagent-broker"].runtime_probe is not None
