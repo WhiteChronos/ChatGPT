@@ -131,3 +131,7 @@ Deliver:
 - confidence/source class;
 - unresolved conflicts;
 - evolution record when workflow changed.
+
+
+## 3D / isometric specialization
+For STEP/BREP-based view generation and isometric DXF creation, route through the dedicated `isometric-dxf-engineering` workflow. It must derive FRONT/LEFT/RIGHT/TOP/BOTTOM/ISO from one geometry master, use hidden-line projection, create separate view DXFs plus a non-overlapping MULTIVIEW DXF, and reject pseudo-isometric cubes or overlapping layouts.
