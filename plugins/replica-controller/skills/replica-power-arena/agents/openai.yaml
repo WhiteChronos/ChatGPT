@@ -1,0 +1,6 @@
+interface:
+  display_name: "replica-power-arena"
+  short_description: "Selecionar e conduzir o fluxo pertinente por tarefa"
+  default_prompt: "Use $replica-power-arena para conduzir esta tarefa no escopo informado."
+policy:
+  allow_implicit_invocation: true

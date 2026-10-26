@@ -1,5 +1,32 @@
 # Replica Controller
 
+## Task-scoped automatic entry points (1.2.0)
+
+The package now contains eleven pinned Replica skills and four integration
+skills: replica-workflow, superpowers-workflow, arena-workflow, and the existing
+replica-power-arena coordinator. The first three run independently; the
+coordinator selects the relevant combination. Official Superpowers and Arena
+remain separate dependencies, not copied or reinstalled here.
+
+Skill metadata allows implicit invocation where supported by the host. This
+permits host selection during a user task; it does not intercept every message,
+start a background service, or grant access to another computer.
+
+The optional deterministic helper selects a plan from an explicit intent:
+
+```powershell
+python plugins/replica-controller/scripts/workflow.py plan --system replica --intent compare
+python plugins/replica-controller/scripts/workflow.py plan --system superpowers --intent bugfix
+python plugins/replica-controller/scripts/workflow.py plan --system arena --intent review
+python plugins/replica-controller/scripts/workflow.py plan --system combined --intent build-from-reference
+```
+
+The agent reads the selected skills and executes the authorized task. The
+helper always reports PLAN_ONLY; it does not invoke models, agents or shells.
+`doctor` accepts repeated `--skills-root` and `--available-tool` values to check
+local prerequisites. File presence or supplied inventory is not proof that a
+new conversation loaded a skill. No periodic verification is configured.
+
 Eleven pinned [Replica skills](https://github.com/Jakeschincariol/replica-skill),
 six offline Python tools, and the `replica-power-arena` routing skill. Replica
 handles application reconstruction; the existing official Superpowers plugin

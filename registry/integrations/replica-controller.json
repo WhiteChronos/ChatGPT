@@ -20,7 +20,10 @@
     "plugins/replica-controller/skills/replica-launch/SKILL.md",
     "plugins/replica-controller/skills/replica-power-arena/SKILL.md",
     "plugins/replica-controller/skills/replica-recon/SKILL.md",
-    "plugins/replica-controller/skills/replica-test/SKILL.md"
+    "plugins/replica-controller/skills/replica-test/SKILL.md",
+    "plugins/replica-controller/skills/replica-workflow/SKILL.md",
+    "plugins/replica-controller/skills/superpowers-workflow/SKILL.md",
+    "plugins/replica-controller/skills/arena-workflow/SKILL.md"
   ],
   "mcp_servers": [],
   "runtime_probe": null,

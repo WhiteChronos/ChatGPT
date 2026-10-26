@@ -60,8 +60,8 @@ class ControllerTests(unittest.TestCase):
         dest=Path(self.temp.name)/'new skills'
         first=controller.install_skills(self.root,dest)
         second=controller.install_skills(self.root,dest)
-        self.assertEqual(first['installed'],12)
-        self.assertEqual(second['already_matching'],12)
+        self.assertEqual(first['installed'],15)
+        self.assertEqual(second['already_matching'],15)
         self.assertTrue((dest/'replica-diff/parity.py').exists())
 
 if __name__=='__main__': unittest.main()

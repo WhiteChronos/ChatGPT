@@ -1,0 +1,6 @@
+interface:
+  display_name: "arena-workflow"
+  short_description: "Selecionar e conduzir o fluxo pertinente por tarefa"
+  default_prompt: "Use $arena-workflow para conduzir esta tarefa no escopo informado."
+policy:
+  allow_implicit_invocation: true
