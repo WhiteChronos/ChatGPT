@@ -48,4 +48,14 @@ class IndividualPluginTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             separate.generate(ROOT,ROOT/'skills'/'bad-output',ROOT/'bad-packages')
 
+    def test_checked_in_copies_preserve_source_metadata_and_provenance(self):
+        rows=json.loads((ROOT/'registry.json').read_text(encoding='utf-8'))
+        for row in rows:
+            name=row['skill_name'];plugin=ROOT/'individual'/name
+            self.assertTrue((plugin/'plugin.json').is_file())
+            for rel in ('SKILL.md','agents/openai.yaml','references/source.json'):
+                self.assertEqual((ROOT/'skills'/name/rel).read_bytes(),
+                                 (plugin/'skills'/name/rel).read_bytes(),name+'/'+rel)
+
 if __name__=='__main__': unittest.main()
+
