@@ -12,6 +12,13 @@ project tag / requirement -> object identity -> manufacturer -> exact model / pa
 
 Never invent geometry, dimensions, mounting points, ports, service clearances, or supplier identity.
 
+## Process documents
+Apply the repository process documents as the operational control plane:
+- `../../docs/WORKFLOW.md`: canonical process and stage gates.
+- `../../docs/METHODOLOGY.md`: elaboration methodology.
+- `../../docs/CONTINUOUS_IMPROVEMENT.md`: controlled improvement cycle.
+- `../../docs/PROCESS_CHECKLIST.md`: execution checklist.
+
 ## Modes
 1. Discovery: identify exact manufacturer/model, official PDF/catalog/CAD and suppliers.
 2. Block: prefer native CAD/BIM; otherwise reconstruct only from official dimensional evidence.
@@ -30,6 +37,9 @@ Never invent geometry, dimensions, mounting points, ports, service clearances, o
 - ARIAL text style
 - preserve original manufacturer geometry and orthographic views
 - preserve mounting holes, panels, grilles, fans, louvers, piping/drain/electrical points, bases and flanges
+
+## Mandatory gates
+Do not publish final geometry unless G1 identity, G2 dimensional evidence, G3 elaboration standard, G4 QA, and G5 publication package have passed. When a gate fails, keep the object BLOQUEADO or at the highest supported confidence class.
 
 ## Controlled evolution
 Never self-modify silently. Record failures and improvements. Require human review before changing source authority, geometry acceptance criteria, units, confidence classification, tolerances, or automatic model-matching thresholds.
