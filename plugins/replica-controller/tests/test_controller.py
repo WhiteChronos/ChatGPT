@@ -21,6 +21,19 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(len(lock['skills']),11)
         self.assertEqual(len(lock['tools']),6)
 
+    def test_missing_coordination_skill_or_evolution_reference_is_rejected(self):
+        for relative in ('skills/replica-power-arena/SKILL.md',
+                         'skills/replica-power-arena/references/evolution.md'):
+            with self.subTest(relative=relative):
+                target=self.root/relative
+                original=target.read_bytes()
+                target.unlink()
+                try:
+                    with self.assertRaisesRegex(ValueError,'Coordination resource missing'):
+                        controller.verify_package(self.root)
+                finally:
+                    target.write_bytes(original)
+
     def test_tampering_and_parent_escape_are_rejected(self):
         script=self.root/'skills/replica-diff/parity.py'
         script.write_text('changed',encoding='utf-8')

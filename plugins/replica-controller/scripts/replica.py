@@ -38,6 +38,10 @@ def verify_package(root=ROOT):
             raise ValueError('Invalid skill name')
         if 'skills/'+skill+'/SKILL.md' not in lock['files']:
             raise ValueError('Skill is not pinned: '+skill)
+    for resource in ('skills/replica-power-arena/SKILL.md',
+                     'skills/replica-power-arena/references/evolution.md'):
+        if not contained(root,resource).is_file():
+            raise ValueError('Coordination resource missing: '+resource)
     return lock
 
 def run_tool(root, name, arguments):
