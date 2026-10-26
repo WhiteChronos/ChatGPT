@@ -87,7 +87,10 @@ def main():
         if v not in VIEWS: raise SystemExit(f"unknown view: {v}")
         vis,hid=project(model,VIEWS[v])
         if not vis: raise SystemExit(f"projection produced no visible geometry: {v}")
-        if args.no_hidden: hid=None
+        if args.no_hidden:
+            hid=None
+        elif v == "ISO" and not args.iso_hidden:
+            hid=None
         view_data[v]=(vis,hid,bb2(vis)); save_single(outdir/f"{name}_{v}.dxf",v,vis,hid)
     maxdim=max(max(d[2]["width"],d[2]["height"]) for d in view_data.values())
     gap=args.gap if args.gap is not None else max(maxdim*0.20,0.01)
