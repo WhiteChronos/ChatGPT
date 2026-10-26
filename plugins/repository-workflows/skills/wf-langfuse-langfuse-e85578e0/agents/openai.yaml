@@ -1,0 +1,6 @@
+interface:
+  display_name: "langfuse/langfuse"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-langfuse-langfuse-e85578e0 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

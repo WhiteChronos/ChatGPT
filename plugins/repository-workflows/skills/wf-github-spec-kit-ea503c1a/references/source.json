@@ -1,0 +1,25 @@
+{
+  "repository": "github/spec-kit",
+  "skills": [
+    {
+      "path": ".github/skills/code-review/SKILL.md",
+      "sha": "b3e549b2ca8e704f8c25e2573b8b204af05e2293",
+      "url": "https://github.com/github/spec-kit/blob/cf3f8778a20d6cfda57e457ac1029166bd61cd30/.github/skills/code-review/SKILL.md"
+    },
+    {
+      "path": ".github/skills/add-community-extension/SKILL.md",
+      "sha": "179c11b3e2d097a265a83aafbfaca036747bb76b",
+      "url": "https://github.com/github/spec-kit/blob/cf3f8778a20d6cfda57e457ac1029166bd61cd30/.github/skills/add-community-extension/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-github-spec-kit-ea503c1a",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".github/skills/code-review/SKILL.md",
+    "name": "code-review",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "repository": "mlflow/mlflow",
+  "skills": [
+    {
+      "path": ".claude/skills/triage/SKILL.md",
+      "sha": "565ed0d8787768cc72f7c2285f1bdfe730f900da",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/triage/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/ui-review/SKILL.md",
+      "sha": "94d6407bdd20493c2d39fdad4dcdc24d2aef0e98",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/ui-review/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/pr-review/SKILL.md",
+      "sha": "28cc1e9e7a96728340882b5e20c90b235413e22a",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/pr-review/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/analyze-ci/SKILL.md",
+      "sha": "b931dc5ece451207dbd5e4c05b28a8a7ec6cc290",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/analyze-ci/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/upload-media/SKILL.md",
+      "sha": "e20c4a5a2c396798bd65476a46ccff4c34c7cab6",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/upload-media/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/python-style/SKILL.md",
+      "sha": "b4bdecbfd5e29c1db15cf0380747a6b96476cdc8",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/python-style/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/github-actions-style/SKILL.md",
+      "sha": "45b488820a31b7554cc969e18275d47829e297e6",
+      "url": "https://github.com/mlflow/mlflow/blob/387eaeda91dfdf411a6913eabab36284fa635d34/.claude/skills/github-actions-style/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-mlflow-mlflow-93fff73e",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/triage/SKILL.md",
+    "name": "triage",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,260 @@
+[
+  {
+    "repository": "1337hero/faster-chat",
+    "skill_name": "wf-1337hero-faster-chat-11cb6c69",
+    "observed_skill_paths": 4,
+    "source": "skills/wf-1337hero-faster-chat-11cb6c69/references/source.json"
+  },
+  {
+    "repository": "aeroxy/chrome-devtools-cli",
+    "skill_name": "wf-aeroxy-chrome-devtools-cli-ec64bb78",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-aeroxy-chrome-devtools-cli-ec64bb78/references/source.json"
+  },
+  {
+    "repository": "affaan-m/ECC",
+    "skill_name": "wf-affaan-m-ecc-0658d7fa",
+    "observed_skill_paths": 100,
+    "source": "skills/wf-affaan-m-ecc-0658d7fa/references/source.json"
+  },
+  {
+    "repository": "Arize-ai/phoenix",
+    "skill_name": "wf-arize-ai-phoenix-1ca6c04a",
+    "observed_skill_paths": 44,
+    "source": "skills/wf-arize-ai-phoenix-1ca6c04a/references/source.json"
+  },
+  {
+    "repository": "ChromeDevTools/chrome-devtools-mcp",
+    "skill_name": "wf-chromedevtools-chrome-devtools-mcp-c68b4f26",
+    "observed_skill_paths": 7,
+    "source": "skills/wf-chromedevtools-chrome-devtools-mcp-c68b4f26/references/source.json"
+  },
+  {
+    "repository": "comet-ml/opik-mcp",
+    "skill_name": "wf-comet-ml-opik-mcp-786fea2f",
+    "observed_skill_paths": 10,
+    "source": "skills/wf-comet-ml-opik-mcp-786fea2f/references/source.json"
+  },
+  {
+    "repository": "dataelement/bisheng",
+    "skill_name": "wf-dataelement-bisheng-e21a4138",
+    "observed_skill_paths": 21,
+    "source": "skills/wf-dataelement-bisheng-e21a4138/references/source.json"
+  },
+  {
+    "repository": "future-agi/future-agi",
+    "skill_name": "wf-future-agi-future-agi-dc3bdaee",
+    "observed_skill_paths": 2,
+    "source": "skills/wf-future-agi-future-agi-dc3bdaee/references/source.json"
+  },
+  {
+    "repository": "gbasin/dejank",
+    "skill_name": "wf-gbasin-dejank-5a6ba81e",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-gbasin-dejank-5a6ba81e/references/source.json"
+  },
+  {
+    "repository": "github/spec-kit",
+    "skill_name": "wf-github-spec-kit-ea503c1a",
+    "observed_skill_paths": 2,
+    "source": "skills/wf-github-spec-kit-ea503c1a/references/source.json"
+  },
+  {
+    "repository": "google/perfetto",
+    "skill_name": "wf-google-perfetto-72e3738b",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-google-perfetto-72e3738b/references/source.json"
+  },
+  {
+    "repository": "GoogleChrome/lighthouse",
+    "skill_name": "wf-googlechrome-lighthouse-d1708a87",
+    "observed_skill_paths": 3,
+    "source": "skills/wf-googlechrome-lighthouse-d1708a87/references/source.json"
+  },
+  {
+    "repository": "Jakeschincariol/arena-skill",
+    "skill_name": "wf-jakeschincariol-arena-skill-c734ca29",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-jakeschincariol-arena-skill-c734ca29/references/source.json"
+  },
+  {
+    "repository": "Jakeschincariol/replica-skill",
+    "skill_name": "wf-jakeschincariol-replica-skill-a44b40b4",
+    "observed_skill_paths": 11,
+    "source": "skills/wf-jakeschincariol-replica-skill-a44b40b4/references/source.json"
+  },
+  {
+    "repository": "jamesmoore24/treegpt",
+    "skill_name": "wf-jamesmoore24-treegpt-6a43b665",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-jamesmoore24-treegpt-6a43b665/references/source.json"
+  },
+  {
+    "repository": "katanemo/plano",
+    "skill_name": "wf-katanemo-plano-5d0e2850",
+    "observed_skill_paths": 17,
+    "source": "skills/wf-katanemo-plano-5d0e2850/references/source.json"
+  },
+  {
+    "repository": "kepano/obsidian-skills",
+    "skill_name": "wf-kepano-obsidian-skills-bdf89258",
+    "observed_skill_paths": 6,
+    "source": "skills/wf-kepano-obsidian-skills-bdf89258/references/source.json"
+  },
+  {
+    "repository": "langfuse/langfuse",
+    "skill_name": "wf-langfuse-langfuse-e85578e0",
+    "observed_skill_paths": 17,
+    "source": "skills/wf-langfuse-langfuse-e85578e0/references/source.json"
+  },
+  {
+    "repository": "latitude-dev/latitude-llm",
+    "skill_name": "wf-latitude-dev-latitude-llm-02e58234",
+    "observed_skill_paths": 30,
+    "source": "skills/wf-latitude-dev-latitude-llm-02e58234/references/source.json"
+  },
+  {
+    "repository": "LibreChat-AI/LibreChat",
+    "skill_name": "wf-librechat-ai-librechat-438ddea7",
+    "observed_skill_paths": 2,
+    "source": "skills/wf-librechat-ai-librechat-438ddea7/references/source.json"
+  },
+  {
+    "repository": "lobehub/lobehub",
+    "skill_name": "wf-lobehub-lobehub-273e910e",
+    "observed_skill_paths": 57,
+    "source": "skills/wf-lobehub-lobehub-273e910e/references/source.json"
+  },
+  {
+    "repository": "LogneBudo/llmxray",
+    "skill_name": "wf-lognebudo-llmxray-26c34ef4",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-lognebudo-llmxray-26c34ef4/references/source.json"
+  },
+  {
+    "repository": "mastra-ai/mastra",
+    "skill_name": "wf-mastra-ai-mastra-db814e7b",
+    "observed_skill_paths": 9,
+    "source": "skills/wf-mastra-ai-mastra-db814e7b/references/source.json"
+  },
+  {
+    "repository": "microsoft/playwright",
+    "skill_name": "wf-microsoft-playwright-afbb5a8a",
+    "observed_skill_paths": 8,
+    "source": "skills/wf-microsoft-playwright-afbb5a8a/references/source.json"
+  },
+  {
+    "repository": "mlflow/mlflow",
+    "skill_name": "wf-mlflow-mlflow-93fff73e",
+    "observed_skill_paths": 7,
+    "source": "skills/wf-mlflow-mlflow-93fff73e/references/source.json"
+  },
+  {
+    "repository": "monoscope-tech/monoscope",
+    "skill_name": "wf-monoscope-tech-monoscope-66266baf",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-monoscope-tech-monoscope-66266baf/references/source.json"
+  },
+  {
+    "repository": "obra/superpowers",
+    "skill_name": "wf-obra-superpowers-4251a228",
+    "observed_skill_paths": 15,
+    "source": "skills/wf-obra-superpowers-4251a228/references/source.json"
+  },
+  {
+    "repository": "openai/skills",
+    "skill_name": "wf-openai-skills-f46db908",
+    "observed_skill_paths": 44,
+    "source": "skills/wf-openai-skills-f46db908/references/source.json"
+  },
+  {
+    "repository": "openobserve/openobserve",
+    "skill_name": "wf-openobserve-openobserve-edacb9cb",
+    "observed_skill_paths": 6,
+    "source": "skills/wf-openobserve-openobserve-edacb9cb/references/source.json"
+  },
+  {
+    "repository": "puppeteer/puppeteer",
+    "skill_name": "wf-puppeteer-puppeteer-7201fb0e",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-puppeteer-puppeteer-7201fb0e/references/source.json"
+  },
+  {
+    "repository": "pydantic/logfire",
+    "skill_name": "wf-pydantic-logfire-0b169f2d",
+    "observed_skill_paths": 6,
+    "source": "skills/wf-pydantic-logfire-0b169f2d/references/source.json"
+  },
+  {
+    "repository": "shimo4228/jev-skill-router",
+    "skill_name": "wf-shimo4228-jev-skill-router-d055091d",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-shimo4228-jev-skill-router-d055091d/references/source.json"
+  },
+  {
+    "repository": "theopenco/llmgateway",
+    "skill_name": "wf-theopenco-llmgateway-74060a45",
+    "observed_skill_paths": 19,
+    "source": "skills/wf-theopenco-llmgateway-74060a45/references/source.json"
+  },
+  {
+    "repository": "tma1-ai/tma1",
+    "skill_name": "wf-tma1-ai-tma1-0b591684",
+    "observed_skill_paths": 13,
+    "source": "skills/wf-tma1-ai-tma1-0b591684/references/source.json"
+  },
+  {
+    "repository": "vectorize-io/hindsight",
+    "skill_name": "wf-vectorize-io-hindsight-57687486",
+    "observed_skill_paths": 19,
+    "source": "skills/wf-vectorize-io-hindsight-57687486/references/source.json"
+  },
+  {
+    "repository": "vercel-labs/agent-skills",
+    "skill_name": "wf-vercel-labs-agent-skills-7327b382",
+    "observed_skill_paths": 9,
+    "source": "skills/wf-vercel-labs-agent-skills-7327b382/references/source.json"
+  },
+  {
+    "repository": "vercel-labs/skills",
+    "skill_name": "wf-vercel-labs-skills-ac98481e",
+    "observed_skill_paths": 3,
+    "source": "skills/wf-vercel-labs-skills-ac98481e/references/source.json"
+  },
+  {
+    "repository": "vercel/next.js",
+    "skill_name": "wf-vercel-next-js-079c0319",
+    "observed_skill_paths": 25,
+    "source": "skills/wf-vercel-next-js-079c0319/references/source.json"
+  },
+  {
+    "repository": "vllm-project/semantic-router",
+    "skill_name": "wf-vllm-project-semantic-router-5b33926f",
+    "observed_skill_paths": 5,
+    "source": "skills/wf-vllm-project-semantic-router-5b33926f/references/source.json"
+  },
+  {
+    "repository": "vllm-project/speculators",
+    "skill_name": "wf-vllm-project-speculators-14d6fbcd",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-vllm-project-speculators-14d6fbcd/references/source.json"
+  },
+  {
+    "repository": "WhiteChronos/ChatGPT",
+    "skill_name": "wf-whitechronos-chatgpt-e5a7df31",
+    "observed_skill_paths": 57,
+    "source": "skills/wf-whitechronos-chatgpt-e5a7df31/references/source.json"
+  },
+  {
+    "repository": "WhiteChronos/whitechronos-rea-lab",
+    "skill_name": "wf-whitechronos-whitechronos-rea-lab-13b1eca9",
+    "observed_skill_paths": 1,
+    "source": "skills/wf-whitechronos-whitechronos-rea-lab-13b1eca9/references/source.json"
+  },
+  {
+    "repository": "WXK-AI/jev-opus",
+    "skill_name": "wf-wxk-ai-jev-opus-3395fe54",
+    "observed_skill_paths": 2,
+    "source": "skills/wf-wxk-ai-jev-opus-3395fe54/references/source.json"
+  }
+]

@@ -1,0 +1,6 @@
+interface:
+  display_name: "latitude-dev/latitude-llm"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-latitude-dev-latitude-llm-02e58234 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "github/spec-kit"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-github-spec-kit-ea503c1a para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

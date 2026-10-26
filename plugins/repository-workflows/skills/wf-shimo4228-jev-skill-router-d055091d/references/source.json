@@ -1,0 +1,20 @@
+{
+  "repository": "shimo4228/jev-skill-router",
+  "skills": [
+    {
+      "path": "skills/jev-skill-router/SKILL.md",
+      "sha": "7321f443e286ebf890e04f0c9fd0587fb7e2c56d",
+      "url": "https://github.com/shimo4228/jev-skill-router/blob/ad3b942b2b332cd3365698cb05bd88d5a53818ce/skills/jev-skill-router/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-shimo4228-jev-skill-router-d055091d",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/jev-skill-router/SKILL.md",
+    "name": "jev-skill-router",
+    "read_verified": true
+  }
+}

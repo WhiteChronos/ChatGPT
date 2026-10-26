@@ -1,0 +1,36 @@
+{
+  "repository": "WhiteChronos/whitechronos-rea-lab",
+  "skills": [
+    {
+      "path": "skills/whitechronos-lab/SKILL.md",
+      "sha256": "1d78ee43965e9fabc53349e368bb6b79c6bd346c93c678256463c0b7451a1779",
+      "commit": null
+    }
+  ],
+  "local_evidence": [
+    {
+      "commit": null,
+      "skills_observed": 1,
+      "dirty": true
+    },
+    {
+      "commit": "499aa982d78d7efa0d0bc8f186672eb75984eb43",
+      "skills_observed": 1,
+      "dirty": true
+    },
+    {
+      "commit": "4bccfd861d2bee6d6b81d2458aff220c867583db",
+      "skills_observed": 1,
+      "dirty": true
+    },
+    {
+      "commit": "b0dbc01eae5af984447e61098c0bffe8967b2eb8",
+      "skills_observed": 1,
+      "dirty": false
+    }
+  ],
+  "skill_name": "wf-whitechronos-whitechronos-rea-lab-13b1eca9",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED"
+}

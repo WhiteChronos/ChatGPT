@@ -1,0 +1,100 @@
+{
+  "repository": "langfuse/langfuse",
+  "skills": [
+    {
+      "path": ".agents/skills/grill-me/SKILL.md",
+      "sha": "5a547bc336c614480e9f224484c6287503e330eb",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/grill-me/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/storybook/SKILL.md",
+      "sha": "c686588037d8a22dbd06339b5bd7c2ef7afc0ad1",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/storybook/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/turborepo/SKILL.md",
+      "sha": "3ded13e09096a36af4841a37bc2906fe0cc3fdba",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/turborepo/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/code-review/SKILL.md",
+      "sha": "ffac37bd59197587483b363324e0ca7626832a8c",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/code-review/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/housekeeping/SKILL.md",
+      "sha": "1d463420e358542ff10eee29ff94682be16f60e7",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/housekeeping/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/git-workflow/SKILL.md",
+      "sha": "9cd444402dfb99ddec9d9921cbfaaf5b5125c415",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/git-workflow/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/skill-creator/SKILL.md",
+      "sha": "38ddb4aeeca3f9c09c87b210efa44cd3a782cdd4",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/skill-creator/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/infra-scaling/SKILL.md",
+      "sha": "a8540b46ad3030cc0f93ef409ddbf8f3bcafc976",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/infra-scaling/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/add-model-price/SKILL.md",
+      "sha": "efa6e56d1b84aa6a7ead3f86696505a42f7bb093",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/add-model-price/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/security-review/SKILL.md",
+      "sha": "02ac965b4845fc88bac00f04b320942436128a67",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/security-review/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/create-repo-agent/SKILL.md",
+      "sha": "3cb5054c7acdb650a536d4250e431f125c6a3210",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/create-repo-agent/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/changelog-writing/SKILL.md",
+      "sha": "7fc3f0ceaf1f1fbb64ef604ce91194ad4b6cf3ae",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/changelog-writing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/linear-bug-triage/SKILL.md",
+      "sha": "7ea96276894ef8415c977a68cd2626b278f626ee",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/linear-bug-triage/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/langfuse-previews/SKILL.md",
+      "sha": "e17a0631d61384ba98f5a7bb2cff9374e17970ce",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/langfuse-previews/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/linear-work-rhythm/SKILL.md",
+      "sha": "c5a33896ef3f6e33400601b638c4b63be1eb329e",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/linear-work-rhythm/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/linear-agent-writes/SKILL.md",
+      "sha": "f41d28d7bd99278ac64759bb1798cf62c4ec0055",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/linear-agent-writes/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/analyze-cloud-costs/SKILL.md",
+      "sha": "c91065b6546106f9d88b2e37c83118491f3746a9",
+      "url": "https://github.com/langfuse/langfuse/blob/b410c6998d8c86d1f31e068f2f1f701c646575db/.agents/skills/analyze-cloud-costs/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-langfuse-langfuse-e85578e0",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/grill-me/SKILL.md",
+    "name": "grill-me",
+    "read_verified": true
+  }
+}
