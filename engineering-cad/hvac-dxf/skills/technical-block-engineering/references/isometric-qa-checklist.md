@@ -8,3 +8,11 @@
 - [ ] ISO visible edges only by default
 - [ ] ISO hidden edges absent from default package or turned off by default
 - [ ] MULTIVIEW uses clean ISO rather than x-ray ISO
+
+
+- [ ] Isometric camera uses orthographic/parallel projection
+- [ ] Selected camera quadrant is verified against the intended manufacturer view
+- [ ] Front/external faces occlude geometry behind them
+- [ ] No internal components appear through opaque covers
+- [ ] Original assembly/compound was not fused merely for line cleanup
+- [ ] Solid/depth reference from the same STEP/BREP matches the DXF ISO
