@@ -40,3 +40,10 @@ Use the real project symbol as a separate block, based on the project DWG/standa
 
 ### G7 — Publication
 Publish only with manifest, sources, QA and confidence class.
+
+
+### G4B — ISO visibility policy
+- The final ISO must be a clean external-object view with visible edges only.
+- Do not publish the ISO with hidden edges enabled by default.
+- If a technical hidden-line ISO is needed, publish it as a secondary variant.
+- MULTIVIEW must use the clean ISO.
