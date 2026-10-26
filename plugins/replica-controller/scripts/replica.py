@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
+INTEGRATION_SKILLS=('replica-power-arena','replica-workflow','superpowers-workflow','arena-workflow')
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -38,8 +39,9 @@ def verify_package(root=ROOT):
             raise ValueError('Invalid skill name')
         if 'skills/'+skill+'/SKILL.md' not in lock['files']:
             raise ValueError('Skill is not pinned: '+skill)
-    for resource in ('skills/replica-power-arena/SKILL.md',
-                     'skills/replica-power-arena/references/evolution.md'):
+    resources=['skills/'+name+'/SKILL.md' for name in INTEGRATION_SKILLS]
+    resources.append('skills/replica-power-arena/references/evolution.md')
+    for resource in resources:
         if not contained(root,resource).is_file():
             raise ValueError('Coordination resource missing: '+resource)
     return lock
@@ -54,7 +56,7 @@ def run_tool(root, name, arguments):
 
 def install_skills(root, destination, dry_run=False):
     root=Path(root); destination=Path(destination); lock=verify_package(root)
-    names=lock['skills']+['replica-power-arena']
+    names=lock['skills']+list(INTEGRATION_SKILLS)
     actions=[]; files={}
     # Validate every destination before writing any skill. Never overwrite human files.
     for name in names:

@@ -5,6 +5,23 @@ description: Coordenar Replica, Superpowers e GitHub Arena para desenvolver apli
 
 # Replica, Superpowers e Arena
 
+## Entrada automática por tarefa
+
+Respeite primeiro o modo explícito do usuário: replica-workflow para Replica
+sozinho, superpowers-workflow para Superpowers sozinho, arena-workflow para
+revisão Arena. Nenhum modo individual exige ativar os outros dois.
+
+Sem modo explícito, identifique a intenção: reconstruir referência combina os
+três; correção, funcionalidade ou atualização usa Superpowers e revisão Arena
+proporcional, sem forçar reconstrução; comparação de paridade entra em Replica;
+revisão isolada entra em Arena. Reuse etapas já aprovadas. Diante de ambiguidade
+material, obtenha o alvo/aceite que falta; não classifique por palavras soltas.
+
+O seletor opcional scripts/workflow.py do plugin aceita intenção declarada e
+retorna PLAN_ONLY. Seu doctor verifica arquivos/dependências locais; não prova
+carregamento no host. O agente lê as skills selecionadas, executa o trabalho
+autorizado e verifica o resultado. Não há execução remota ou daemon implícito.
+
 Use este adaptador para reconstrução e evolução de aplicações. Não carregue as
 onze skills de uma vez: escolha a etapa necessária e preserve as instruções do
 projeto. Para tarefas comuns de código sem aplicação de referência, siga o
