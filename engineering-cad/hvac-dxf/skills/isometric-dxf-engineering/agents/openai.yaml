@@ -1,0 +1,3 @@
+interface:
+  display_name: "Isometric DXF Engineering"
+  short_description: "Generate accurate CAD projections and isometric DXF views"
