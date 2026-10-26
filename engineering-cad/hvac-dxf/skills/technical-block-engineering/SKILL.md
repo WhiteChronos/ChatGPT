@@ -143,3 +143,7 @@ The final package must present the isometric view as a solid external-object rep
 - Hidden ISO edges: optional and secondary.
 - MULTIVIEW must use the clean ISO.
 - If the ISO looks transparent because hidden edges are visible, the package fails QA.
+
+
+## True isometric solid-visibility rule
+For final manufacturer-style ISO blocks, require face-based occlusion, not edge filtering alone. The nearest enclosure/cover surface must hide internal/back geometry. Preserve original assembly/compound topology; do not fuse components just to clean linework unless the fused topology is validated against the source.
