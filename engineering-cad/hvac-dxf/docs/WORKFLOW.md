@@ -47,3 +47,16 @@ Publish only with manifest, sources, QA and confidence class.
 - Do not publish the ISO with hidden edges enabled by default.
 - If a technical hidden-line ISO is needed, publish it as a secondary variant.
 - MULTIVIEW must use the clean ISO.
+
+
+### G3D — Preserve topology before projection
+- Do not boolean-fuse assemblies/compounds only to remove line clutter.
+- Preserve manufacturer component topology unless a fuse is technically required and verified.
+- Validate shape before and after any boolean operation.
+
+### G4D — True isometric face occlusion
+- Use orthographic isometric projection with perspective disabled.
+- Use surface/depth occlusion so the nearest face hides geometry behind it.
+- The front cover/enclosure must remain visible when it is visible from the selected quadrant.
+- Reject any ISO that looks like a section/x-ray/wireframe when no section was requested.
+- Compare the DXF to a solid surface reference from the same geometry master.
