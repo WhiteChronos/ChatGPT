@@ -55,3 +55,13 @@ When a projection fails or loses geometry, record the model, source format, back
 - Hidden edges in the ISO are optional and must be exported only as a secondary technical variant or on a separate hidden layer that is turned off by default.
 - The combined MULTIVIEW drawing must use the clean ISO, not the x-ray ISO.
 - If a view appears as a transparent/radiographic object, the QA must reject it.
+
+
+## True solid isometric gate
+Before approving ISO_CLEAN, read `references/true-isometric-3d-standard.md` and `references/occlusion-backends.md`.
+
+The final ISO must be an orthographic projection of the real 3D solid with face-based occlusion. A front/external face must hide geometry behind it. Do not approve a line-only result that removes the front cover or exposes internal parts.
+
+Never boolean-fuse an assembly merely to reduce line clutter. Preserve the original compound/assembly and let the visibility engine perform occlusion unless a fuse is technically required and independently validated.
+
+Generate a solid/depth reference with `scripts/render_iso_surface_reference.py` when using an edge-based backend and compare the DXF ISO against that reference before publication.
