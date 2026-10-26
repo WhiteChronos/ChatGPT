@@ -1,81 +1,133 @@
 ---
 name: technical-block-engineering
-description: Research, identify, reconstruct, validate, and continuously improve technical CAD blocks from real equipment evidence. Use when ChatGPT must find an exact manufacturer/model, suppliers, official catalogs, technical datasheet PDFs, dimensional drawings, CAD/BIM files, or create/normalize/validate DXF blocks from those sources for HVAC, automation, electrical, instrumentation, mechanical, or industrial equipment. Also use when a block is too simplified, a project model is ambiguous, dimensions conflict, provenance must be audited, or the block-generation workflow should learn from verified failures without silently changing rules.
+description: Research, identify, create, validate, and continuously improve hyper-realistic technical CAD blocks from real equipment evidence. Use when ChatGPT must find an exact manufacturer/model, official catalog/datasheet/dimensional drawing/CAD/BIM, suppliers, and deliver the real physical object DXF with all available orthographic views plus isometric view and its separate real project symbol. Also use when a block is too simplified, geometry fidelity must match manufacturer/reference DXFs, or the CAD workflow needs controlled improvement.
 ---
 
 # Technical Block Engineering
 
 ## Purpose
-Build technical blocks from evidence, not visual approximation. Treat the technical object as a traceable engineering record: manufacturer, exact model/part number, official technical sources, geometry, dimensions, interfaces, provenance, confidence class, and validation history.
+Build technical blocks from evidence, not approximation. Every deliverable must clearly distinguish:
+1. **physical object block** — the real manufacturer object; and
+2. **project symbol block** — the schematic/instrumentation symbol.
+
+Default to delivering both when applicable.
 
 ## Core rule
-Never invent geometry, dimensions, mounting points, ports, service clearances, supplier identity, or project layer colors.
+Never invent geometry, dimensions, mounting points, ports, service clearances, supplier identity, or project graphical conventions.
 
 Use this evidence chain:
-**project tag / requirement -> object identity -> manufacturer -> exact model / part number -> official catalog -> official datasheet PDF -> dimensional drawing -> native CAD/BIM -> normalized DXF -> QA -> memory / improvement record**
+**project requirement -> object identity -> manufacturer -> exact model/part number -> catalog -> datasheet PDF -> dimensional drawing -> native CAD/BIM -> hyper-realistic DXF -> QA -> memory/improvement**
 
-## Workflow decision tree
-1. Find object -> Discovery.
-2. Create/improve physical block -> Block workflow.
-3. Validate existing block -> QA workflow.
-4. Learn from verified defect/better source -> Controlled evolution.
-5. If a DWG/DXF is supplied as project symbology reference -> Project instrumentation-symbol mode.
-
-## Source classes
-- CAD_FABRICANTE
-- RECONSTRUCAO_FICHA
-- REFERENCIA_PROJETO
-- BLOQUEADO
-
-## DXF standard
-- Model Space 1:1
-- meters
-- ARIAL text style
-- preserve manufacturer geometry and available views
-- preserve mounting, connections, clearances and interfaces supported by evidence
-- convert coordinates numerically when changing units
-
-## Project instrumentation-symbol mode
-Read `references/instrumentation-dwg-style.md` before generating or revising schematic symbols from a user-supplied base DWG/DXF.
-- Base drawing controls project symbol presentation: layer names, colors, linetypes, text style, tag layout and marker placement.
-- Manufacturer evidence controls physical equipment geometry only.
-- Preserve confirmed layer/block names, Arial and ByLayer behavior.
-- If native DWG layer-table extraction is unavailable, never claim exact color indices. Keep entities BYLAYER, centralize provisional mapping in the layer table, and mark it pending.
-- Never make LSH and LSL graphically identical when the project distinguishes high/low function. Differentiate by tag and marker/position while preserving project convention.
-- Use PIT for pressure indicating transmitter only when project convention supports it.
-- Preserve project code TTU when explicitly requested for temperature/humidity transmission; do not reinterpret it as a manufacturer identity.
-
-## QA
-Before calling a physical block usable:
-1. exact object identity confirmed;
-2. source/drawing recorded;
-3. units and scale checked;
-4. extents checked;
-5. interfaces checked when available;
-6. DXF audit has no unresolved errors;
-7. visual comparison complete;
-8. conflicts documented.
-
-For schematic symbols from a base DWG, also verify:
-- project layer name;
-- ByLayer/ByBlock behavior;
-- text style;
-- high/low functional distinction;
-- source DWG revision;
-- color mapping status (confirmed vs provisional).
-
-## Controlled evolution
-Never self-modify silently. Record failure, root cause, smallest reusable improvement and regression result. Human review is mandatory before changing source authority, geometry acceptance, units, confidence classes, tolerances, automatic matching thresholds, or project color/layer conventions.
-
-## Files
+## Mandatory references
+Before creating a final object block, read:
 - `references/source-policy.md`
 - `references/object-schema.md`
+- `references/hyperrealistic-dxf-standard.md`
+- `references/cad-toolchain.md`
 - `references/qa-policy.md`
-- `references/evolution-policy.md`
-- `references/open-source-tooling.md`
-- `references/instrumentation-dwg-style.md`
-- `assets/technical_object_manifest.yaml`
-- `assets/evolution_record.yaml`
-- `assets/instrumentation_style.json`
-- `scripts/validate_manifest.py`
-- `scripts/validate_dxf.py`
+
+For project symbols also read `references/instrumentation-dwg-style.md`.
+
+## Reference fidelity standard
+The user-supplied DXFs `3D135205A0.dxf`, `3D135206A0.dxf`, and `FXAQ20~63AVM.dxf` are benchmark references for geometry richness and manufacturer-style drafting. Their entity density is diagnostic, not a blind threshold.
+
+Reject final physical blocks that reduce a detailed manufacturer object to a rectangle, generic prism/cube, or low-detail silhouette.
+
+## Required output modes
+### Physical object
+Deliver all views supported by evidence:
+- FRONT
+- LEFT
+- RIGHT
+- TOP
+- BOTTOM when available
+- SECTION when available
+- ISO
+
+### Project symbol
+Deliver separately:
+- real function symbol (e.g. LSH, LSL, PIT, TTU)
+- project layer/style mapping
+- source DWG/standard
+- link to the physical object manifest
+
+## Discovery workflow
+1. Identify family/function/tag.
+2. Resolve manufacturer, series, exact model, part number, variant/revision.
+3. Search official product page, catalog, datasheet, manual, dimensional drawing, CAD/BIM portal.
+4. Confirm identity with at least two independent technical discriminators.
+5. Find suppliers separately from manufacturer identity.
+6. If the input is a photo, use it only to generate candidates; never close exact identity from appearance alone.
+
+## Physical block workflow
+1. Prefer native manufacturer DXF/DWG/STEP/IGES/RFA/IFC.
+2. Preserve native geometry and curve types.
+3. If STEP/IGES/BREP exists, use FreeCAD/TechDraw or OpenCascade/pythonocc to derive orthographic views and ISO.
+4. If only dimensional PDF/drawing exists, reconstruct parametrically with CadQuery/FreeCAD/pythonocc.
+5. Preserve housing shape, covers, vents, display, fasteners, probes, floats, brackets, process connections, cable entries, connectors, mounting details and other visible engineering features when documented.
+6. Normalize to Model Space 1:1, meters, Arial without altering geometry.
+7. Create stable block names by manufacturer + model + view.
+
+## Source classes
+- `CAD_FABRICANTE`
+- `RECONSTRUCAO_FICHA`
+- `REFERENCIA_PROJETO`
+- `BLOQUEADO`
+
+## Symbol workflow
+The symbol never substitutes the physical object.
+- Base project DWG/standard controls symbol appearance.
+- LSH and LSL must not be graphically identical.
+- Keep colors/layers BYLAYER when exact native DWG properties are not verified.
+- Preserve project code semantics such as PIT/TTU when explicitly specified.
+
+## QA workflow
+A physical block is usable only when:
+1. exact identity is confirmed;
+2. source/drawing is recorded;
+3. units/scale are verified;
+4. extents match official dimensions;
+5. interfaces are checked;
+6. DXF audit has no unresolved structural errors;
+7. orthographic views are consistent;
+8. ISO is consistent with orthographic views;
+9. visual comparison against manufacturer source and reference DXFs passes;
+10. provenance/conflicts are documented.
+
+Use complexity metrics (entity count/type mix) only to detect suspicious oversimplification. Do not optimize toward a target count.
+
+## Open-source CAD toolchain
+Prefer:
+- `mozman/ezdxf`
+- `FreeCAD/FreeCAD`
+- `CadQuery/cadquery`
+- `tpaviot/pythonocc-core`
+- `fougue/mayo`
+- `LibreDWG/libredwg`
+- `codelibs/libdxfrw`
+- `LibreCAD/LibreCAD`
+- `solvespace/solvespace`
+
+Verify current license before adopting/redistributing. Prefer dependency/fork/submodule over copying source.
+
+## Controlled evolution
+Trigger improvement when:
+- generated geometry is visibly simpler than manufacturer/reference CAD;
+- curves/details are lost;
+- ISO and orthographic views disagree;
+- source quality improves;
+- symbol and physical object are confused;
+- user supplies a better benchmark.
+
+For every event: capture evidence -> root cause -> smallest reusable fix -> regression test on failing + known-good cases -> record change -> require human review for geometry/source/units/tolerance policy changes.
+
+## Required output
+Deliver:
+- hyper-realistic physical DXF package;
+- separate symbol DXF when applicable;
+- manifest;
+- QA report;
+- source/provenance list;
+- confidence/source class;
+- unresolved conflicts;
+- evolution record when workflow changed.
