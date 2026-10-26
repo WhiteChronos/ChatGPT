@@ -1,0 +1,16 @@
+{
+  "name": "replica-controller",
+  "version": "1.1.1",
+  "description": "Eleven pinned Replica skills and offline tools coordinated with official Superpowers and GitHub Arena.",
+  "author": {
+    "name": "WhiteChronos"
+  },
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/replica-controller",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Replica + Power + Arena",
+    "shortDescription": "Replica skills, Superpowers workflow and Arena review."
+  }
+}

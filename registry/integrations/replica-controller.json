@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "replica-controller",
+  "display_name": "Replica + Power + Arena",
+  "source_type": "local",
+  "source": "plugins/replica-controller",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "replica-controller",
+  "skill_paths": [
+    "plugins/replica-controller/skills/replica-architect/SKILL.md",
+    "plugins/replica-controller/skills/replica-backend/SKILL.md",
+    "plugins/replica-controller/skills/replica-brand/SKILL.md",
+    "plugins/replica-controller/skills/replica-build/SKILL.md",
+    "plugins/replica-controller/skills/replica-deploy/SKILL.md",
+    "plugins/replica-controller/skills/replica-design/SKILL.md",
+    "plugins/replica-controller/skills/replica-diff/SKILL.md",
+    "plugins/replica-controller/skills/replica-entrepreneur/SKILL.md",
+    "plugins/replica-controller/skills/replica-launch/SKILL.md",
+    "plugins/replica-controller/skills/replica-power-arena/SKILL.md",
+    "plugins/replica-controller/skills/replica-recon/SKILL.md",
+    "plugins/replica-controller/skills/replica-test/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null,
+  "upstream": {
+    "repository": "https://github.com/Jakeschincariol/replica-skill.git",
+    "ref": "main",
+    "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51",
+    "license_status": "MIT",
+    "relationship": "pinned_skills_and_offline_tools"
+  }
+}
