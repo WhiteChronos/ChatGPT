@@ -80,7 +80,7 @@ def main():
     ap.add_argument("--views",default="FRONT,LEFT,RIGHT,TOP,BOTTOM,ISO")
     ap.add_argument("--no-hidden",action="store_true"); args=ap.parse_args()
     src=Path(args.step); outdir=Path(args.outdir); outdir.mkdir(parents=True,exist_ok=True); name=args.name or src.stem
-    model=cq.importers.importStep(str(src),unit="M").val()
+    model=cq.importers.importStep(str(src)).val().scale(0.001)
     requested=[v.strip().upper() for v in args.views.split(",") if v.strip()]
     view_data={}
     for v in requested:
