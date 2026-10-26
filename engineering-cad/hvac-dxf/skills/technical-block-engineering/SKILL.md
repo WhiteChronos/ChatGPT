@@ -5,25 +5,21 @@ description: Research, identify, reconstruct, validate, and continuously improve
 
 # Technical Block Engineering
 
-Build technical blocks from evidence, not visual approximation.
+## Purpose
+Build technical blocks from evidence, not visual approximation. Treat the technical object as a traceable engineering record: manufacturer, exact model/part number, official technical sources, geometry, dimensions, interfaces, provenance, confidence class, and validation history.
 
-## Evidence chain
-project tag / requirement -> object identity -> manufacturer -> exact model / part number -> official catalog -> official datasheet PDF -> dimensional drawing -> native CAD/BIM -> normalized DXF -> QA -> memory / improvement record
+## Core rule
+Never invent geometry, dimensions, mounting points, ports, service clearances, supplier identity, or project layer colors.
 
-Never invent geometry, dimensions, mounting points, ports, service clearances, or supplier identity.
+Use this evidence chain:
+**project tag / requirement -> object identity -> manufacturer -> exact model / part number -> official catalog -> official datasheet PDF -> dimensional drawing -> native CAD/BIM -> normalized DXF -> QA -> memory / improvement record**
 
-## Process documents
-Apply the repository process documents as the operational control plane:
-- `../../docs/WORKFLOW.md`: canonical process and stage gates.
-- `../../docs/METHODOLOGY.md`: elaboration methodology.
-- `../../docs/CONTINUOUS_IMPROVEMENT.md`: controlled improvement cycle.
-- `../../docs/PROCESS_CHECKLIST.md`: execution checklist.
-
-## Modes
-1. Discovery: identify exact manufacturer/model, official PDF/catalog/CAD and suppliers.
-2. Block: prefer native CAD/BIM; otherwise reconstruct only from official dimensional evidence.
-3. QA: verify identity, units, scale, extents, interfaces, DXF audit, visual match and provenance.
-4. Controlled evolution: record verified failures, root cause, smallest reusable improvement, regression tests and human review where required.
+## Workflow decision tree
+1. Find object -> Discovery.
+2. Create/improve physical block -> Block workflow.
+3. Validate existing block -> QA workflow.
+4. Learn from verified defect/better source -> Controlled evolution.
+5. If a DWG/DXF is supplied as project symbology reference -> Project instrumentation-symbol mode.
 
 ## Source classes
 - CAD_FABRICANTE
@@ -31,15 +27,55 @@ Apply the repository process documents as the operational control plane:
 - REFERENCIA_PROJETO
 - BLOQUEADO
 
-## Default DXF standard
+## DXF standard
 - Model Space 1:1
 - meters
 - ARIAL text style
-- preserve original manufacturer geometry and orthographic views
-- preserve mounting holes, panels, grilles, fans, louvers, piping/drain/electrical points, bases and flanges
+- preserve manufacturer geometry and available views
+- preserve mounting, connections, clearances and interfaces supported by evidence
+- convert coordinates numerically when changing units
 
-## Mandatory gates
-Do not publish final geometry unless G1 identity, G2 dimensional evidence, G3 elaboration standard, G4 QA, and G5 publication package have passed. When a gate fails, keep the object BLOQUEADO or at the highest supported confidence class.
+## Project instrumentation-symbol mode
+Read `references/instrumentation-dwg-style.md` before generating or revising schematic symbols from a user-supplied base DWG/DXF.
+- Base drawing controls project symbol presentation: layer names, colors, linetypes, text style, tag layout and marker placement.
+- Manufacturer evidence controls physical equipment geometry only.
+- Preserve confirmed layer/block names, Arial and ByLayer behavior.
+- If native DWG layer-table extraction is unavailable, never claim exact color indices. Keep entities BYLAYER, centralize provisional mapping in the layer table, and mark it pending.
+- Never make LSH and LSL graphically identical when the project distinguishes high/low function. Differentiate by tag and marker/position while preserving project convention.
+- Use PIT for pressure indicating transmitter only when project convention supports it.
+- Preserve project code TTU when explicitly requested for temperature/humidity transmission; do not reinterpret it as a manufacturer identity.
+
+## QA
+Before calling a physical block usable:
+1. exact object identity confirmed;
+2. source/drawing recorded;
+3. units and scale checked;
+4. extents checked;
+5. interfaces checked when available;
+6. DXF audit has no unresolved errors;
+7. visual comparison complete;
+8. conflicts documented.
+
+For schematic symbols from a base DWG, also verify:
+- project layer name;
+- ByLayer/ByBlock behavior;
+- text style;
+- high/low functional distinction;
+- source DWG revision;
+- color mapping status (confirmed vs provisional).
 
 ## Controlled evolution
-Never self-modify silently. Record failures and improvements. Require human review before changing source authority, geometry acceptance criteria, units, confidence classification, tolerances, or automatic model-matching thresholds.
+Never self-modify silently. Record failure, root cause, smallest reusable improvement and regression result. Human review is mandatory before changing source authority, geometry acceptance, units, confidence classes, tolerances, automatic matching thresholds, or project color/layer conventions.
+
+## Files
+- `references/source-policy.md`
+- `references/object-schema.md`
+- `references/qa-policy.md`
+- `references/evolution-policy.md`
+- `references/open-source-tooling.md`
+- `references/instrumentation-dwg-style.md`
+- `assets/technical_object_manifest.yaml`
+- `assets/evolution_record.yaml`
+- `assets/instrumentation_style.json`
+- `scripts/validate_manifest.py`
+- `scripts/validate_dxf.py`
