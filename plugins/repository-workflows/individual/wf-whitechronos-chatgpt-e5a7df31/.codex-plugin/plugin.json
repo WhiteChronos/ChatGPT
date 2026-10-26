@@ -1,0 +1,11 @@
+{
+  "name": "wf-whitechronos-chatgpt-e5a7df31",
+  "version": "1.0.1",
+  "description": "Workflow individual para WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WhiteChronos/ChatGPT Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "wf-gbasin-dejank-5a6ba81e",
+  "version": "1.0.1",
+  "description": "Workflow individual para gbasin/dejank",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "gbasin/dejank Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

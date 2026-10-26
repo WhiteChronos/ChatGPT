@@ -1,0 +1,6 @@
+interface:
+  display_name: "future-agi/future-agi"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-future-agi-future-agi-dc3bdaee para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,30 @@
+{
+  "repository": "vercel-labs/skills",
+  "skills": [
+    {
+      "path": "skills/find-skills/SKILL.md",
+      "sha": "a41bdd074bb587afd861332cf2f473f3154de4d7",
+      "url": "https://github.com/vercel-labs/skills/blob/65d20cb6e3d951434bf408215309bb8aa094135a/skills/find-skills/SKILL.md"
+    },
+    {
+      "path": ".vc/automations/workflows/triage/skills/triage/SKILL.md",
+      "sha": "711ef21136f838e2a81a74d519c1c3d9bab5c980",
+      "url": "https://github.com/vercel-labs/skills/blob/65d20cb6e3d951434bf408215309bb8aa094135a/.vc/automations/workflows/triage/skills/triage/SKILL.md"
+    },
+    {
+      "path": ".vc/automations/workflows/pr-labeling/skills/pr-labeling/SKILL.md",
+      "sha": "7420be30bea97f914503206ae7c85413dfa5a4d6",
+      "url": "https://github.com/vercel-labs/skills/blob/65d20cb6e3d951434bf408215309bb8aa094135a/.vc/automations/workflows/pr-labeling/skills/pr-labeling/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-vercel-labs-skills-ac98481e",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/find-skills/SKILL.md",
+    "name": "find-skills",
+    "read_verified": true
+  }
+}

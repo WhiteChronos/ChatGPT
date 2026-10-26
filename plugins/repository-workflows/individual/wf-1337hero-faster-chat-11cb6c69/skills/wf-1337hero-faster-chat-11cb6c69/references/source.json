@@ -1,0 +1,35 @@
+{
+  "repository": "1337hero/faster-chat",
+  "skills": [
+    {
+      "path": ".claude/skill/insecure-defaults/SKILL.md",
+      "sha": "d1b29cd32f38fb5e62823628c8a8d4afeb0215a6",
+      "url": "https://github.com/1337hero/faster-chat/blob/3bead7d0136a7c2f51419f7c63a1f8fcb7a7ac6c/.claude/skill/insecure-defaults/SKILL.md"
+    },
+    {
+      "path": ".claude/skill/frontend-philosophy/SKILL.md",
+      "sha": "dabd348de95879eee68f407662ae19d9938c9f4f",
+      "url": "https://github.com/1337hero/faster-chat/blob/3bead7d0136a7c2f51419f7c63a1f8fcb7a7ac6c/.claude/skill/frontend-philosophy/SKILL.md"
+    },
+    {
+      "path": ".claude/skill/systematic-debugging/SKILL.md",
+      "sha": "b316eb945a4365772ce9003959a47e1a1b1573ed",
+      "url": "https://github.com/1337hero/faster-chat/blob/3bead7d0136a7c2f51419f7c63a1f8fcb7a7ac6c/.claude/skill/systematic-debugging/SKILL.md"
+    },
+    {
+      "path": ".claude/skill/test-driven-development/SKILL.md",
+      "sha": "78f5077d6ec8c87a9cde9d485c098a149e5d5e2c",
+      "url": "https://github.com/1337hero/faster-chat/blob/3bead7d0136a7c2f51419f7c63a1f8fcb7a7ac6c/.claude/skill/test-driven-development/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-1337hero-faster-chat-11cb6c69",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skill/insecure-defaults/SKILL.md",
+    "name": "insecure-defaults",
+    "read_verified": true
+  }
+}

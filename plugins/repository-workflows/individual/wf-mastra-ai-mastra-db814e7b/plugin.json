@@ -1,0 +1,11 @@
+{
+  "name": "wf-mastra-ai-mastra-db814e7b",
+  "version": "1.0.1",
+  "description": "Workflow individual para mastra-ai/mastra",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "mastra-ai/mastra Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

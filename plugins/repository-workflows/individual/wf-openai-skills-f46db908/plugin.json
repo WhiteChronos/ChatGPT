@@ -1,0 +1,11 @@
+{
+  "name": "wf-openai-skills-f46db908",
+  "version": "1.0.1",
+  "description": "Workflow individual para openai/skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "openai/skills Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

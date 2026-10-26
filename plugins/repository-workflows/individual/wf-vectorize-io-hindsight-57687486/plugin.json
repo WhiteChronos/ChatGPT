@@ -1,0 +1,11 @@
+{
+  "name": "wf-vectorize-io-hindsight-57687486",
+  "version": "1.0.1",
+  "description": "Workflow individual para vectorize-io/hindsight",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "vectorize-io/hindsight Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

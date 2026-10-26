@@ -1,0 +1,11 @@
+{
+  "name": "wf-latitude-dev-latitude-llm-02e58234",
+  "version": "1.0.1",
+  "description": "Workflow individual para latitude-dev/latitude-llm",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "latitude-dev/latitude-llm Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

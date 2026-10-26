@@ -1,0 +1,11 @@
+{
+  "name": "wf-whitechronos-whitechronos-rea-lab-13b1eca9",
+  "version": "1.0.1",
+  "description": "Workflow individual para WhiteChronos/whitechronos-rea-lab",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WhiteChronos/whitechronos-rea-lab Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

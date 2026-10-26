@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-theopenco-llmgateway-74060a45",
+  "display_name": "theopenco/llmgateway Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-theopenco-llmgateway-74060a45",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-theopenco-llmgateway-74060a45",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-theopenco-llmgateway-74060a45/skills/wf-theopenco-llmgateway-74060a45/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

@@ -1,0 +1,11 @@
+{
+  "name": "wf-github-spec-kit-ea503c1a",
+  "version": "1.0.1",
+  "description": "Workflow individual para github/spec-kit",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "github/spec-kit Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

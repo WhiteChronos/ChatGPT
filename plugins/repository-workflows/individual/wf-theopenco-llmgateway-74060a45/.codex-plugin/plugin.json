@@ -1,0 +1,11 @@
+{
+  "name": "wf-theopenco-llmgateway-74060a45",
+  "version": "1.0.1",
+  "description": "Workflow individual para theopenco/llmgateway",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "theopenco/llmgateway Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

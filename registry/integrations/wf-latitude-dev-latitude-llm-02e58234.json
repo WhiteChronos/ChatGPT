@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-latitude-dev-latitude-llm-02e58234",
+  "display_name": "latitude-dev/latitude-llm Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-latitude-dev-latitude-llm-02e58234",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-latitude-dev-latitude-llm-02e58234",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-latitude-dev-latitude-llm-02e58234/skills/wf-latitude-dev-latitude-llm-02e58234/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

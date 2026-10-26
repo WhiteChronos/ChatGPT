@@ -1,0 +1,11 @@
+{
+  "name": "wf-lognebudo-llmxray-26c34ef4",
+  "version": "1.0.1",
+  "description": "Workflow individual para LogneBudo/llmxray",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "LogneBudo/llmxray Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

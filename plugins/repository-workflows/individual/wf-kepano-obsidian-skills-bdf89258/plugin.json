@@ -1,0 +1,11 @@
+{
+  "name": "wf-kepano-obsidian-skills-bdf89258",
+  "version": "1.0.1",
+  "description": "Workflow individual para kepano/obsidian-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "kepano/obsidian-skills Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-vercel-next-js-079c0319",
+  "display_name": "vercel/next.js Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-vercel-next-js-079c0319",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-vercel-next-js-079c0319",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-vercel-next-js-079c0319/skills/wf-vercel-next-js-079c0319/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

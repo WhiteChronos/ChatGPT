@@ -1,0 +1,50 @@
+{
+  "repository": "ChromeDevTools/chrome-devtools-mcp",
+  "skills": [
+    {
+      "path": "skills/a11y-debugging/SKILL.md",
+      "sha": "d6b2413b7aa090c8a5c605982456811767a3c622",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/a11y-debugging/SKILL.md"
+    },
+    {
+      "path": "skills/troubleshooting/SKILL.md",
+      "sha": "94a23d4cb7f4dfce11eacf6f0e418d445f12fb50",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/troubleshooting/SKILL.md"
+    },
+    {
+      "path": "skills/chrome-devtools/SKILL.md",
+      "sha": "ab71579f7667050ef13d8c87c9fcdde522271482",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/chrome-devtools/SKILL.md"
+    },
+    {
+      "path": "skills/cookie-debugging/SKILL.md",
+      "sha": "2a0d5663dd94cba6c89a3c9d1a76d066b949f1d6",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/cookie-debugging/SKILL.md"
+    },
+    {
+      "path": "skills/debug-optimize-lcp/SKILL.md",
+      "sha": "89b48b64b0352c850e64c8db7cdfbd3527361f54",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/debug-optimize-lcp/SKILL.md"
+    },
+    {
+      "path": "skills/chrome-devtools-cli/SKILL.md",
+      "sha": "b1e8ae12b3e685b181a729561ce001bc37a31908",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/chrome-devtools-cli/SKILL.md"
+    },
+    {
+      "path": "skills/memory-leak-debugging/SKILL.md",
+      "sha": "5f2adc3abf021b118892ed87fdba803e702947e3",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/172656ab38a4ff666f88dc9032fa841834a69495/skills/memory-leak-debugging/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-chromedevtools-chrome-devtools-mcp-c68b4f26",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/a11y-debugging/SKILL.md",
+    "name": "a11y-debugging",
+    "read_verified": true
+  }
+}

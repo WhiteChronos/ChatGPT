@@ -1,0 +1,11 @@
+{
+  "name": "wf-vercel-labs-agent-skills-7327b382",
+  "version": "1.0.1",
+  "description": "Workflow individual para vercel-labs/agent-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "vercel-labs/agent-skills Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

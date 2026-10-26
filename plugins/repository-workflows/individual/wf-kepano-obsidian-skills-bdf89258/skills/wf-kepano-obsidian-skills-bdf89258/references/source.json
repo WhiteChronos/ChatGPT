@@ -1,0 +1,45 @@
+{
+  "repository": "kepano/obsidian-skills",
+  "skills": [
+    {
+      "path": "skills/knap/SKILL.md",
+      "sha": "c27139dcb94c45d49d5fb0b5ff82148c83799496",
+      "url": "https://github.com/kepano/obsidian-skills/blob/3ccff5338ea700537839b21900aa5358a0402c98/skills/knap/SKILL.md"
+    },
+    {
+      "path": "skills/defuddle/SKILL.md",
+      "sha": "c1c9b1ba572cb725cb616ccd2d36f1737c65f18e",
+      "url": "https://github.com/kepano/obsidian-skills/blob/3ccff5338ea700537839b21900aa5358a0402c98/skills/defuddle/SKILL.md"
+    },
+    {
+      "path": "skills/json-canvas/SKILL.md",
+      "sha": "8fb2c9de2bbba52b53ca243fbfdab650ee61711c",
+      "url": "https://github.com/kepano/obsidian-skills/blob/3ccff5338ea700537839b21900aa5358a0402c98/skills/json-canvas/SKILL.md"
+    },
+    {
+      "path": "skills/obsidian-cli/SKILL.md",
+      "sha": "0046c45abc11cbba48cee538e9cce9993a62747b",
+      "url": "https://github.com/kepano/obsidian-skills/blob/3ccff5338ea700537839b21900aa5358a0402c98/skills/obsidian-cli/SKILL.md"
+    },
+    {
+      "path": "skills/obsidian-bases/SKILL.md",
+      "sha": "e857041265fb8ac9f6f7c6606f2dbc762c45a91d",
+      "url": "https://github.com/kepano/obsidian-skills/blob/3ccff5338ea700537839b21900aa5358a0402c98/skills/obsidian-bases/SKILL.md"
+    },
+    {
+      "path": "skills/obsidian-markdown/SKILL.md",
+      "sha": "bca51a429c020a4cb6740a917517116e66d428b1",
+      "url": "https://github.com/kepano/obsidian-skills/blob/3ccff5338ea700537839b21900aa5358a0402c98/skills/obsidian-markdown/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-kepano-obsidian-skills-bdf89258",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/knap/SKILL.md",
+    "name": "knap",
+    "read_verified": true
+  }
+}

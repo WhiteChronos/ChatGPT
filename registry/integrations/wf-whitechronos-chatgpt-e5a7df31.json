@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-whitechronos-chatgpt-e5a7df31",
+  "display_name": "WhiteChronos/ChatGPT Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-whitechronos-chatgpt-e5a7df31",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-whitechronos-chatgpt-e5a7df31",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-whitechronos-chatgpt-e5a7df31/skills/wf-whitechronos-chatgpt-e5a7df31/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

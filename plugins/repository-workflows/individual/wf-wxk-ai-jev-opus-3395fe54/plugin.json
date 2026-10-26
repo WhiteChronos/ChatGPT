@@ -1,0 +1,11 @@
+{
+  "name": "wf-wxk-ai-jev-opus-3395fe54",
+  "version": "1.0.1",
+  "description": "Workflow individual para WXK-AI/jev-opus",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WXK-AI/jev-opus Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

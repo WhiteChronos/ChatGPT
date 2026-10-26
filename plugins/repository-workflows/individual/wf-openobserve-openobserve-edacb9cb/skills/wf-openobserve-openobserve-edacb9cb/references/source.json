@@ -1,0 +1,45 @@
+{
+  "repository": "openobserve/openobserve",
+  "skills": [
+    {
+      "path": ".claude/skills/o2-loop/SKILL.md",
+      "sha": "39c775ba08144fbcf8cf81f333489f8025931e94",
+      "url": "https://github.com/openobserve/openobserve/blob/d17b828325e26ffe13b6aa62711ddb2bd679cab1/.claude/skills/o2-loop/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/bug-me-not/SKILL.md",
+      "sha": "d8136ae4a674313872b8d674578b0231d5101282",
+      "url": "https://github.com/openobserve/openobserve/blob/d17b828325e26ffe13b6aa62711ddb2bd679cab1/.claude/skills/bug-me-not/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/o2-pr-brief/SKILL.md",
+      "sha": "4c00ffc4e3582c057cdc5f14656fa34a4201b380",
+      "url": "https://github.com/openobserve/openobserve/blob/d17b828325e26ffe13b6aa62711ddb2bd679cab1/.claude/skills/o2-pr-brief/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/bounty-board/SKILL.md",
+      "sha": "fb034fd5c61f2b1eae22a6c983baea93e06acdca",
+      "url": "https://github.com/openobserve/openobserve/blob/d17b828325e26ffe13b6aa62711ddb2bd679cab1/.claude/skills/bounty-board/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/ui-architect/SKILL.md",
+      "sha": "2a6ed00a853e6b8f74d5015654858335a00a32cc",
+      "url": "https://github.com/openobserve/openobserve/blob/d17b828325e26ffe13b6aa62711ddb2bd679cab1/.claude/skills/ui-architect/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/eslint-error-handling/SKILL.md",
+      "sha": "6d1b0a81847460c0a78b0eec83faf3885022037b",
+      "url": "https://github.com/openobserve/openobserve/blob/d17b828325e26ffe13b6aa62711ddb2bd679cab1/.claude/skills/eslint-error-handling/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-openobserve-openobserve-edacb9cb",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/o2-loop/SKILL.md",
+    "name": "o2-loop",
+    "read_verified": true
+  }
+}

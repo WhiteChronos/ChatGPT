@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-google-perfetto-72e3738b",
+  "display_name": "google/perfetto Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-google-perfetto-72e3738b",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-google-perfetto-72e3738b",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-google-perfetto-72e3738b/skills/wf-google-perfetto-72e3738b/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

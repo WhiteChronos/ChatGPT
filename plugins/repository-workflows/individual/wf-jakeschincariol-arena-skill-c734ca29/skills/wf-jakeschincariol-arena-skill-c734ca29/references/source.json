@@ -1,0 +1,26 @@
+{
+  "repository": "Jakeschincariol/arena-skill",
+  "skills": [
+    {
+      "path": "skills/arena/SKILL.md",
+      "sha": "559957505a5688e4fa6569cab35d8d63f73a67a7",
+      "url": "https://github.com/Jakeschincariol/arena-skill/blob/df07b8e518e10cdecd8cd7712d9958b6f396250e/skills/arena/SKILL.md"
+    }
+  ],
+  "local_evidence": [
+    {
+      "commit": "df07b8e518e10cdecd8cd7712d9958b6f396250e",
+      "skills_observed": 1,
+      "dirty": false
+    }
+  ],
+  "skill_name": "wf-jakeschincariol-arena-skill-c734ca29",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/arena/SKILL.md",
+    "name": "arena",
+    "read_verified": true
+  }
+}

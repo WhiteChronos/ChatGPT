@@ -1,0 +1,11 @@
+{
+  "name": "wf-langfuse-langfuse-e85578e0",
+  "version": "1.0.1",
+  "description": "Workflow individual para langfuse/langfuse",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "langfuse/langfuse Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

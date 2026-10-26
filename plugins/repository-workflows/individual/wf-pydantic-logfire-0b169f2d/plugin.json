@@ -1,0 +1,11 @@
+{
+  "name": "wf-pydantic-logfire-0b169f2d",
+  "version": "1.0.1",
+  "description": "Workflow individual para pydantic/logfire",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "pydantic/logfire Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "aeroxy/chrome-devtools-cli"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-aeroxy-chrome-devtools-cli-ec64bb78 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

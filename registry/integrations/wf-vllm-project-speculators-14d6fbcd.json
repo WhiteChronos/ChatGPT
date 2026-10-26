@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-vllm-project-speculators-14d6fbcd",
+  "display_name": "vllm-project/speculators Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-vllm-project-speculators-14d6fbcd",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-vllm-project-speculators-14d6fbcd",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-vllm-project-speculators-14d6fbcd/skills/wf-vllm-project-speculators-14d6fbcd/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

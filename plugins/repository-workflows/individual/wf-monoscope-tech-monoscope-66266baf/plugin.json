@@ -1,0 +1,11 @@
+{
+  "name": "wf-monoscope-tech-monoscope-66266baf",
+  "version": "1.0.1",
+  "description": "Workflow individual para monoscope-tech/monoscope",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "monoscope-tech/monoscope Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

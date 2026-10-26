@@ -1,0 +1,110 @@
+{
+  "repository": "theopenco/llmgateway",
+  "skills": [
+    {
+      "path": ".agents/skills/blog/SKILL.md",
+      "sha": "da4433cc4b359ab717c56feea298ff06b3663702",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/blog/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/verify/SKILL.md",
+      "sha": "cec6f90d531a1cf5c843489cfa193570d5ff1c24",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/verify/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/gateway/SKILL.md",
+      "sha": "8a1d8f1b93ce677d180906e86048d31f657f7acb",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/gateway/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/testing/SKILL.md",
+      "sha": "cefeef46244ef83a037437946a0bb1b06567dfff",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/testing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/billing/SKILL.md",
+      "sha": "4451608ad72b8864fca5a400e1baa4a55bb49618",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/billing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/database/SKILL.md",
+      "sha": "267765b4b661ad9deceff8f44b0e0d71c498f43d",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/database/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/frontend/SKILL.md",
+      "sha": "3b90c5e7ffbeab604803666d0768a46278098e51",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/frontend/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/changelog/SKILL.md",
+      "sha": "92c79ecfaf4fb477de478d5ae69d8b9039176a28",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/changelog/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/add-model/SKILL.md",
+      "sha": "a3f6eeb87ac029d30a02ec37703ced00c970caf4",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/add-model/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/migrations/SKILL.md",
+      "sha": "6833f12a73f4579e05cd7b096bdd96c868453602",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/migrations/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/legal-pages/SKILL.md",
+      "sha": "d3e6c3d14acbdcbed5f183c174607758929f2b61",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/legal-pages/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/local-stack/SKILL.md",
+      "sha": "ddfbb1284adb1a13602bbd35285b97950bb37f12",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/local-stack/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/pull-request/SKILL.md",
+      "sha": "b6fca303dc3692f92a8df8cfee9c093c19db34ca",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/pull-request/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/security-audit/SKILL.md",
+      "sha": "d84037dbd0c34f6c254d7c200704a28c2ea0c3c2",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/security-audit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/knowledge-base/SKILL.md",
+      "sha": "fa730e7e32ba9042681fba27ffb310f59d976606",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/knowledge-base/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/infrastructure/SKILL.md",
+      "sha": "61cfbd90e61482012c2f644d279f562cbb63b59b",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/infrastructure/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/skill-authoring/SKILL.md",
+      "sha": "bba24f7046fca840d7ff1dad4b2110a763149baa",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/skill-authoring/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/core-web-vitals/SKILL.md",
+      "sha": "deb8bc66e9d919bbc455f4cc5c0c1556ed273e79",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/core-web-vitals/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/model-benchmarks/SKILL.md",
+      "sha": "c26b673704956ccde75b7c83720676540e3aa84f",
+      "url": "https://github.com/theopenco/llmgateway/blob/852ba594fa3063abaaa5bf7c1cc0cf7e5cf06a7b/.agents/skills/model-benchmarks/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-theopenco-llmgateway-74060a45",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/blog/SKILL.md",
+    "name": "blog",
+    "read_verified": true
+  }
+}

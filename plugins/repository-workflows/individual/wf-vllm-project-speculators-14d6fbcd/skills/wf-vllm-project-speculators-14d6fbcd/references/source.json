@@ -1,0 +1,20 @@
+{
+  "repository": "vllm-project/speculators",
+  "skills": [
+    {
+      "path": ".claude/skills/pr-review/SKILL.md",
+      "sha": "70f244e39228951ff303e5e9b3ce27cb42ffc997",
+      "url": "https://github.com/vllm-project/speculators/blob/47ef5b51efdaa90fb6fe8acbf53f6a3d5ec9c1d1/.claude/skills/pr-review/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-vllm-project-speculators-14d6fbcd",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/pr-review/SKILL.md",
+    "name": "pr-review",
+    "read_verified": true
+  }
+}

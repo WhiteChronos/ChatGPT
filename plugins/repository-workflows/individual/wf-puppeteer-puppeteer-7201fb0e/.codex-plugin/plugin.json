@@ -1,0 +1,11 @@
+{
+  "name": "wf-puppeteer-puppeteer-7201fb0e",
+  "version": "1.0.1",
+  "description": "Workflow individual para puppeteer/puppeteer",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "puppeteer/puppeteer Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

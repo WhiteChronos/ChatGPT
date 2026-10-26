@@ -1,0 +1,11 @@
+{
+  "name": "wf-vercel-labs-skills-ac98481e",
+  "version": "1.0.1",
+  "description": "Workflow individual para vercel-labs/skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "vercel-labs/skills Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

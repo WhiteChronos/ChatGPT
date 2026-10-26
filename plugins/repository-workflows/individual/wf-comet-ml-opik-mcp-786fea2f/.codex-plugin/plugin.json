@@ -1,0 +1,11 @@
+{
+  "name": "wf-comet-ml-opik-mcp-786fea2f",
+  "version": "1.0.1",
+  "description": "Workflow individual para comet-ml/opik-mcp",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "comet-ml/opik-mcp Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

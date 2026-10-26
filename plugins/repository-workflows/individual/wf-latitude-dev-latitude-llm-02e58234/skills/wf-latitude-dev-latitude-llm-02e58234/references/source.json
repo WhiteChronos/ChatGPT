@@ -1,0 +1,165 @@
+{
+  "repository": "latitude-dev/latitude-llm",
+  "skills": [
+    {
+      "path": ".agents/skills/docs/SKILL.md",
+      "sha": "e59842bc5bec7b60e9ea224846814595a011d887",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/docs/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/testing/SKILL.md",
+      "sha": "d276250fe311a6b8f5c46ae7bfd46459a2b0fa13",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/testing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/gh-issue/SKILL.md",
+      "sha": "c2c7dd85dce6337edc2016704e3a44901b7496a5",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/gh-issue/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/humanizer/SKILL.md",
+      "sha": "24ea1106a7aaf8dbbdfc87772b90fcc387a950ac",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/humanizer/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/create-pr/SKILL.md",
+      "sha": "64310d59f1f5792c523c3e7e8dab99814063418b",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/create-pr/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/code-style/SKILL.md",
+      "sha": "dabd0ce9074a4c771e168dd95a66866c90a87e28",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/code-style/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/backoffice/SKILL.md",
+      "sha": "10dfe13fdb900d9f1b7a79eddc4e4f800bf2973a",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/backoffice/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/ci-watchdog/SKILL.md",
+      "sha": "e12e5ae31dfc2bfc21aea9a3f4eec164c873c6ea",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/ci-watchdog/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/web-frontend/SKILL.md",
+      "sha": "0373fc27f947f8d4402f184ac5a1fcbf954cc7c4",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/web-frontend/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/api-endpoints/SKILL.md",
+      "sha": "b60b6ad95a96348a3eb3b1fab8279d5f941bf4a0",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/api-endpoints/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/notifications/SKILL.md",
+      "sha": "f28b05239dc117004a9c14a85569f25d3c82cee4",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/notifications/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/authentication/SKILL.md",
+      "sha": "b8fb6d34000a38aa8c785e178cb09630b8a7338d",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/authentication/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/analyze-problem/SKILL.md",
+      "sha": "cf5a5212d83adcc9844e1918f8a7693d7d01a5f8",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/analyze-problem/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/mintlify-preview/SKILL.md",
+      "sha": "346a21195f49319f02297ed4a9d9da54de859774",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/mintlify-preview/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/database-postgres/SKILL.md",
+      "sha": "00418e195d29fb251c3067c48a3b446c3375b1e5",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/database-postgres/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/env-configuration/SKILL.md",
+      "sha": "33c993101678e9c73fede2b96b0e5c8db8443254",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/env-configuration/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/artifact-designer/SKILL.md",
+      "sha": "f2c68b48a3de05d5e39e1e9ca746662d85f9fd33",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/artifact-designer/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/effect-and-errors/SKILL.md",
+      "sha": "ee75240934819faa490641cc418acacce056a647",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/effect-and-errors/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/explain-diff-html/SKILL.md",
+      "sha": "e4982a26bc8975dd45eeb96ad8c68f2f25fc42c7",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/explain-diff-html/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/toolchain-commands/SKILL.md",
+      "sha": "893d9220a355108e268d7120a9bf61edd7cc2351",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/toolchain-commands/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/review-pr-comments/SKILL.md",
+      "sha": "7debe2355a1b3a54ba4e1991e29a2bacd44239df",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/review-pr-comments/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/fix-datadog-issues/SKILL.md",
+      "sha": "55c1f7079266c19df3a527f42492ea80dfb46c86",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/fix-datadog-issues/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/temporal-developer/SKILL.md",
+      "sha": "7b9bc8e38b90b350d4a677dafc75914d1e0a4e4b",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/temporal-developer/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/production-release/SKILL.md",
+      "sha": "3b8ce8716f0d9b99dcf5e047ebf95492bfe8bd30",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/production-release/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/database-clickhouse/SKILL.md",
+      "sha": "8aaacdc7aab939e4c3835c11d817abbc1ed1ec6b",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/database-clickhouse/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/agentation-watch-mode/SKILL.md",
+      "sha": "263972667ccdcf3f16edaf68639423748c79042b",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/agentation-watch-mode/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/async-jobs-and-events/SKILL.md",
+      "sha": "3ee7e0edc54a59292934b9ea6a78ee188f883023",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/async-jobs-and-events/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/architecture-boundaries/SKILL.md",
+      "sha": "8906b331fe091c0267eee955e47337e1054a6580",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/architecture-boundaries/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/better-auth-best-practices/SKILL.md",
+      "sha": "3e6a4e1972bdaffdda71d420c54206802f5dce71",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/better-auth-best-practices/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/managing-maintenance-windows/SKILL.md",
+      "sha": "52876e5a9dfad6c96fd4edb1e47dfc6b2852057e",
+      "url": "https://github.com/latitude-dev/latitude-llm/blob/195bd6154e0fc97fcba60b63a04f0c63ee80aea0/.agents/skills/managing-maintenance-windows/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-latitude-dev-latitude-llm-02e58234",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/docs/SKILL.md",
+    "name": "docs",
+    "read_verified": true
+  }
+}

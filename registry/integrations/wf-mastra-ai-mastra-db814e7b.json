@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-mastra-ai-mastra-db814e7b",
+  "display_name": "mastra-ai/mastra Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-mastra-ai-mastra-db814e7b",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-mastra-ai-mastra-db814e7b",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-mastra-ai-mastra-db814e7b/skills/wf-mastra-ai-mastra-db814e7b/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

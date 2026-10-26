@@ -1,0 +1,20 @@
+{
+  "repository": "gbasin/dejank",
+  "skills": [
+    {
+      "path": "SKILL.md",
+      "sha": "a004cbb697473dfc216084c74a174f2904afb4ca",
+      "url": "https://github.com/gbasin/dejank/blob/c1ff9354a6a5a17814daa00a194f35a7886f7e7b/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-gbasin-dejank-5a6ba81e",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "SKILL.md",
+    "name": "dejank",
+    "read_verified": true
+  }
+}

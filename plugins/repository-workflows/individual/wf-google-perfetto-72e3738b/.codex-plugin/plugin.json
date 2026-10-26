@@ -1,0 +1,11 @@
+{
+  "name": "wf-google-perfetto-72e3738b",
+  "version": "1.0.1",
+  "description": "Workflow individual para google/perfetto",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "google/perfetto Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-gbasin-dejank-5a6ba81e",
+  "display_name": "gbasin/dejank Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-gbasin-dejank-5a6ba81e",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-gbasin-dejank-5a6ba81e",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-gbasin-dejank-5a6ba81e/skills/wf-gbasin-dejank-5a6ba81e/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

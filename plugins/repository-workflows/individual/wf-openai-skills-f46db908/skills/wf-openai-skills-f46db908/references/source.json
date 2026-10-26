@@ -1,0 +1,235 @@
+{
+  "repository": "openai/skills",
+  "skills": [
+    {
+      "path": "skills/.curated/pdf/SKILL.md",
+      "sha": "fd5d56058f10202e4f50a30bc2906f39696024a1",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/pdf/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/yeet/SKILL.md",
+      "sha": "acce5634f720e0a26c65c5e6048e0b43f6a3abd8",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/yeet/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma/SKILL.md",
+      "sha": "b4f18d2969fe827778b13b5a0fb08a158ec091b1",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/speech/SKILL.md",
+      "sha": "54727b1f84831739e7262b4db8271ada026d20c7",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/speech/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/linear/SKILL.md",
+      "sha": "6982ccbe4835ed207f6c7c0b2f011d903dbe2960",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/linear/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/sentry/SKILL.md",
+      "sha": "c94f7efa9d513f381d5fcd07912d56581ec3dc2a",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/sentry/SKILL.md"
+    },
+    {
+      "path": "skills/.system/imagegen/SKILL.md",
+      "sha": "88195882efdedbfab56e0eb2570dd4fd6d9e8610",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/imagegen/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/winui-app/SKILL.md",
+      "sha": "28e67e8677f0ab74ac921ec85dd80888f7d53fa7",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/winui-app/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/hatch-pet/SKILL.md",
+      "sha": "5f6e79a444d2a1ccb38cec02fa6830c7bb2521ba",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/hatch-pet/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-use/SKILL.md",
+      "sha": "4b0e23f53d8160e1623177f518535d1588a53c69",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-use/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/gh-fix-ci/SKILL.md",
+      "sha": "76bdeb6a7bff93cbe924c0652f1fd7a3c3ffc46c",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/gh-fix-ci/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/playwright/SKILL.md",
+      "sha": "77c01afb31aa602d0b002ae2438c2b67f0335fcb",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/playwright/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/screenshot/SKILL.md",
+      "sha": "1d967bfb1d7d38874147b5810f2a19677bc3161b",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/screenshot/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/transcribe/SKILL.md",
+      "sha": "757576f9bbd1782f14fcc28ca85159139a2b8fa5",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/transcribe/SKILL.md"
+    },
+    {
+      "path": "skills/.system/openai-docs/SKILL.md",
+      "sha": "df395fb442746703eefcc1d0cb9183efa39d9e66",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/openai-docs/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/cli-creator/SKILL.md",
+      "sha": "60e5a9a03f89cf66a60aa798bfc6f3c3fa5ed8c4",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/cli-creator/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/aspnet-core/SKILL.md",
+      "sha": "c71ed6e705c44038fbcd2e37a3e12c3a81683fdf",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/aspnet-core/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/openai-docs/SKILL.md",
+      "sha": "ec6a2b06e4bca7b08e27c7be3ae512bc97008e8c",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/openai-docs/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/define-goal/SKILL.md",
+      "sha": "87f111bd700e0d993465f7ac741847b5daee57d6",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/define-goal/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/chatgpt-apps/SKILL.md",
+      "sha": "6280a08c57db44ab622dcccbd853e01005edfcbd",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/chatgpt-apps/SKILL.md"
+    },
+    {
+      "path": "skills/.system/skill-creator/SKILL.md",
+      "sha": "72bc0b97e7a6476254a9d5c424c9971748402ec3",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/vercel-deploy/SKILL.md",
+      "sha": "a7e6faf3b999d31e8224e232d39fbf58952b7a5b",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/vercel-deploy/SKILL.md"
+    },
+    {
+      "path": "skills/.system/plugin-creator/SKILL.md",
+      "sha": "5108f549a7d6f93eb4b80dc9990bbd966157330a",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/plugin-creator/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/render-deploy/SKILL.md",
+      "sha": "a0f78c13b07df3def82c16bccf4a1c17c4d8e30d",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/render-deploy/SKILL.md"
+    },
+    {
+      "path": "skills/.system/skill-installer/SKILL.md",
+      "sha": "8ca23bf833379d2272a0a67e0026c2709b8823f1",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-installer/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/netlify-deploy/SKILL.md",
+      "sha": "52075090a6644b104fc34837c9923b403d949369",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/netlify-deploy/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/migrate-to-codex/SKILL.md",
+      "sha": "b1c001b70e8cf326b8196e153b87811a43b23d48",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/migrate-to-codex/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/jupyter-notebook/SKILL.md",
+      "sha": "e1d1748cac9e9313c8229763751714628d1f6853",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/jupyter-notebook/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/cloudflare-deploy/SKILL.md",
+      "sha": "e2d73abb7e5a550af3d9e40797a28259bddba97d",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/cloudflare-deploy/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/gh-address-comments/SKILL.md",
+      "sha": "0ee19e080dc9f0b082157080d1e65511ddc49e7e",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/gh-address-comments/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-create-new-file/SKILL.md",
+      "sha": "8f74967b9bb4c26b3b8e2a8d102f004d6962ae0d",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-create-new-file/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-generate-design/SKILL.md",
+      "sha": "f71d7e71600e84e95639ca2b3e2b8578ac50c3ea",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-generate-design/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/security-threat-model/SKILL.md",
+      "sha": "abd3c1c95d49c4e0e0664f198f4bf168c6291aec",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/security-threat-model/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/playwright-interactive/SKILL.md",
+      "sha": "7d85f8284014c8c2690918a596a4b5bef7cb86e1",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/playwright-interactive/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-implement-design/SKILL.md",
+      "sha": "9aacde6657a913db819d7938f3fd1888ff643c6a",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-implement-design/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/security-ownership-map/SKILL.md",
+      "sha": "0164d0d8809825dc5bccc99e87cafb8345a6be72",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/security-ownership-map/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-generate-library/SKILL.md",
+      "sha": "0c162901c29dba36094c324cd9ffabd2a6b33498",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-generate-library/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/security-best-practices/SKILL.md",
+      "sha": "45ccbd8d671c4c4cc3e7e0645a16a3f80ec50de7",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/security-best-practices/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/notion-knowledge-capture/SKILL.md",
+      "sha": "5d347f66e6b494328a81f3ecb4fd7865f95b0067",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/notion-knowledge-capture/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/notion-meeting-intelligence/SKILL.md",
+      "sha": "efc716839ee614cf57efb3858fcfb538e0c4a8d9",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/notion-meeting-intelligence/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/notion-spec-to-implementation/SKILL.md",
+      "sha": "d6a0a0e0fb358f56e1d4893c54a25c6c2e04fc65",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/notion-spec-to-implementation/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/notion-research-documentation/SKILL.md",
+      "sha": "4bd40dbe0eb8d9d8920e3a4d705b38b4887623c7",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/notion-research-documentation/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-code-connect-components/SKILL.md",
+      "sha": "d417e16baf15bad3f1dd147d562c8b2578e4b4bd",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-code-connect-components/SKILL.md"
+    },
+    {
+      "path": "skills/.curated/figma-create-design-system-rules/SKILL.md",
+      "sha": "42cc4ce838276cb68a14bbb29c5a6f1e19b6e50d",
+      "url": "https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/figma-create-design-system-rules/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-openai-skills-f46db908",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/.curated/pdf/SKILL.md",
+    "name": "pdf",
+    "read_verified": true
+  }
+}
