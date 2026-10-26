@@ -1,0 +1,20 @@
+{
+  "base_dwg": "INDICAÇÕES INSTRUMENTAÇÃO-R1.dwg",
+  "format": "AC1032",
+  "confirmed": {
+    "text_font": "Arial",
+    "property_mode": "ByLayer",
+    "names": [
+      "G-SYM--5",
+      "G-SYM02",
+      "GSM-I-01",
+      "GSM-I",
+      "G-SYM-015A",
+      "DIM01",
+      "DT-AP",
+      "NIVEL B"
+    ]
+  },
+  "color_status": "PENDING_NATIVE_DWG_LAYER_TABLE",
+  "rule": "Keep generated entities BYLAYER. Do not claim exact project colors until native DWG layer-table extraction is available."
+}
