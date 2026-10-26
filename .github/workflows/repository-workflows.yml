@@ -1,0 +1,20 @@
+name: Repository Workflows
+on:
+  pull_request:
+    paths:
+      - 'plugins/repository-workflows/**'
+      - 'registry/integrations/repository-workflows.json'
+      - '.github/workflows/repository-workflows.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Routing and focused security regressions
+        run: python -B -m unittest discover -s plugins/repository-workflows/tests -v

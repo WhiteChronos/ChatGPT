@@ -1,0 +1,6 @@
+interface:
+  display_name: "tma1-ai/tma1"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-tma1-ai-tma1-0b591684 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

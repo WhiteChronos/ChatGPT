@@ -1,0 +1,6 @@
+interface:
+  display_name: "vercel/next.js"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-vercel-next-js-079c0319 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

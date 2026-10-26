@@ -1,0 +1,11 @@
+{
+  "name": "repository-workflows",
+  "version": "1.0.0",
+  "description": "Original workflows for verified skill repositories; selective REA coordination.",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Workflows dos Reposit\u00f3rios + REA",
+    "shortDescription": "Entradas individuais e coordena\u00e7\u00e3o seletiva."
+  }
+}

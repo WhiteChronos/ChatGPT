@@ -1,0 +1,20 @@
+{
+  "repository": "monoscope-tech/monoscope",
+  "skills": [
+    {
+      "path": ".github/skills/impeccable/SKILL.md",
+      "sha": "af3a75d0ac58bc67aa782650be601a4848582730",
+      "url": "https://github.com/monoscope-tech/monoscope/blob/f3a3a9ce89902ac05bfda67b9a43dc1e62f1ce8d/.github/skills/impeccable/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-monoscope-tech-monoscope-66266baf",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".github/skills/impeccable/SKILL.md",
+    "name": "impeccable",
+    "read_verified": true
+  }
+}

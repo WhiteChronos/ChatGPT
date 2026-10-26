@@ -1,0 +1,25 @@
+{
+  "repository": "future-agi/future-agi",
+  "skills": [
+    {
+      "path": ".agents/skills/reviewing-prs/SKILL.md",
+      "sha": "8e1550c4a4c15808d307bb6908ece646d61d04fa",
+      "url": "https://github.com/future-agi/future-agi/blob/018f24a8f3c4b9b71dc0d5443eefe1d7b89ced28/.agents/skills/reviewing-prs/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/writing-e2e-flows/SKILL.md",
+      "sha": "8b6553ed93e948f5ceb61bd4fec1b2d358145bb3",
+      "url": "https://github.com/future-agi/future-agi/blob/018f24a8f3c4b9b71dc0d5443eefe1d7b89ced28/.agents/skills/writing-e2e-flows/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-future-agi-future-agi-dc3bdaee",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/reviewing-prs/SKILL.md",
+    "name": "reviewing-prs",
+    "read_verified": true
+  }
+}

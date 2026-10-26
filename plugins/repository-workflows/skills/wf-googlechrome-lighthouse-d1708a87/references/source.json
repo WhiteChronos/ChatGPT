@@ -1,0 +1,30 @@
+{
+  "repository": "GoogleChrome/lighthouse",
+  "skills": [
+    {
+      "path": ".agents/skills/update-ard-port/SKILL.md",
+      "sha": "d67a264ea5f2556bd68e5c88406606f6603a3b7c",
+      "url": "https://github.com/GoogleChrome/lighthouse/blob/1a4ffa418258919adbbf6ccca548c02e0092bafd/.agents/skills/update-ard-port/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/update-trace-engine/SKILL.md",
+      "sha": "29849a5fe7aa83db613f988a50b9ee2c700f5d45",
+      "url": "https://github.com/GoogleChrome/lighthouse/blob/1a4ffa418258919adbbf6ccca548c02e0092bafd/.agents/skills/update-trace-engine/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/lighthouse-verification/SKILL.md",
+      "sha": "05402961bd4b61d5d3da7d31d5e98db5ba26affb",
+      "url": "https://github.com/GoogleChrome/lighthouse/blob/1a4ffa418258919adbbf6ccca548c02e0092bafd/.agents/skills/lighthouse-verification/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-googlechrome-lighthouse-d1708a87",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/update-ard-port/SKILL.md",
+    "name": "update-ard-port",
+    "read_verified": true
+  }
+}

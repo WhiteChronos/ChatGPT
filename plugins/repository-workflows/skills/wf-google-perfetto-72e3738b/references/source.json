@@ -1,0 +1,19 @@
+{
+  "repository": "google/perfetto",
+  "skills": [
+    {
+      "path": "ai/evals/cases/negative-python/graders/no-skill.md",
+      "sha": "be6b972da80e2f12b08d52ea9eee10bacbd2e88e",
+      "url": "https://github.com/google/perfetto/blob/188f63155cddbfc36a1ef0345b8b0dfb57a7a8c3/ai/evals/cases/negative-python/graders/no-skill.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-google-perfetto-72e3738b",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "ai/evals/cases/negative-python/graders/no-skill.md",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "dataelement/bisheng"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-dataelement-bisheng-e21a4138 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true
