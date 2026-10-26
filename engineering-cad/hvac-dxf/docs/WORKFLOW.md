@@ -1,149 +1,42 @@
-# Workflow do Processo — Bloco Técnico
+# WORKFLOW — Hyper-realistic Technical Block
 
-## Objetivo
-Garantir que todo bloco técnico seja produzido a partir de evidência rastreável e possa ser auditado, revisado e melhorado sem perda de histórico.
+## Objective
+Create a technical CAD package that depicts the real manufacturer object at the fidelity level demonstrated by the user-supplied reference DXFs, plus the real project symbol as a separate linked artifact.
 
-## Fluxo canônico
+## Canonical flow
+1. Receive object/tag/photo/reference drawing.
+2. Decide output: object, symbol, or both. Default to both when applicable.
+3. Resolve identity: manufacturer, exact model, part number, revision/variant.
+4. Gather technical evidence: catalog, datasheet PDF, dimensional drawing, CAD/BIM/STEP/DWG/DXF, supplier evidence.
+5. Prefer native manufacturer geometry.
+6. If native 3D exists: import -> clean -> orthographic projection -> ISO -> DXF.
+7. If only dimensional evidence exists: reconstruct parametric 3D/2D -> project views -> ISO -> DXF.
+8. Create symbol separately from the physical object.
+9. Run hyper-realistic fidelity QA against manufacturer source and benchmark DXFs.
+10. Publish DXF(s), manifest, QA, source list and confidence class.
+11. Record lessons and regressions.
 
-```text
-ENTRADA DO PROJETO
-      |
-      v
-[1] IDENTIFICAR O OBJETO
-      |
-      +--> TAG / função / disciplina / família
-      +--> fabricante/modelo já informado?
-      |
-      v
-[2] RESOLVER IDENTIDADE TÉCNICA
-      |
-      +--> fabricante
-      +--> série
-      +--> modelo exato
-      +--> part number / variante
-      |
-      +-- se ambíguo --> BLOQUEADO
-      |
-      v
-[3] PESQUISAR FONTES
-      |
-      +--> página oficial
-      +--> catálogo
-      +--> ficha técnica PDF
-      +--> manual
-      +--> desenho dimensional
-      +--> CAD/BIM
-      +--> fornecedores
-      |
-      v
-[4] CLASSIFICAR A FONTE
-      |
-      +--> CAD_FABRICANTE
-      +--> RECONSTRUCAO_FICHA
-      +--> REFERENCIA_PROJETO
-      +--> BLOQUEADO
-      |
-      v
-[5] ELABORAR / NORMALIZAR BLOCO
-      |
-      +--> 1:1
-      +--> metros
-      +--> Arial
-      +--> layers
-      +--> vistas
-      +--> interfaces/montagem
-      |
-      v
-[6] QA TÉCNICO
-      |
-      +--> identidade
-      +--> dimensões
-      +--> extents
-      +--> furos/conexões
-      +--> auditoria DXF
-      +--> comparação visual
-      +--> proveniência
-      |
-      +-- falha --> CORREÇÃO / EVOLUÇÃO
-      |
-      v
-[7] APROVAR E PUBLICAR
-      |
-      +--> DXF
-      +--> manifesto
-      +--> fontes
-      +--> QA
-      +--> classe de confiança
-      |
-      v
-[8] MEMÓRIA E MELHORIA
-      |
-      +--> registrar erro
-      +--> causa raiz
-      +--> regra reaproveitável
-      +--> regressão
-      +--> revisão humana quando necessário
-```
+## Gates
+### G0 — Input
+Object family/function/tag known.
 
-## Gates obrigatórios
+### G1 — Identity
+Exact manufacturer/model/variant closed or explicitly BLOCKED.
 
-### Gate G0 — Entrada mínima
-Necessário:
-- objeto ou TAG;
-- disciplina;
-- função ou família.
+### G2 — Source
+Native CAD/BIM preferred. Reconstruction is allowed only from official technical evidence.
 
-Sem isso: não iniciar modelagem.
+### G3 — Geometry fidelity
+Reject generic boxes/prisms when the source exposes richer geometry. Preserve curves, interfaces, housings, probes, displays, mounting and connectors.
 
-### Gate G1 — Identidade
-Para avançar como bloco real:
-- fabricante confirmado;
-- modelo/part number confirmado ou família tecnicamente inequívoca;
-- pelo menos dois discriminadores técnicos compatíveis.
+### G4 — View package
+Include all available orthographic views and ISO. Views must be mutually consistent.
 
-Se não: `BLOQUEADO`.
+### G5 — Symbol
+Use the real project symbol as a separate block, based on the project DWG/standard.
 
-### Gate G2 — Evidência dimensional
-Aceitar:
-- CAD/BIM do fabricante; ou
-- desenho dimensional/ficha oficial suficiente para reconstrução.
+### G6 — QA
+0 unresolved DXF structural errors; dimensions/interfaces/provenance verified; visual comparison passed.
 
-Foto comercial não atende o gate.
-
-### Gate G3 — Elaboração
-O arquivo deve atender:
-- Model Space 1:1;
-- unidade em metros;
-- Arial;
-- geometria preservada ou reconstruída por cotas;
-- views e interfaces conforme fonte.
-
-### Gate G4 — QA
-Todos os itens críticos devem passar:
-- identidade;
-- dimensões;
-- extents;
-- unidades;
-- montagem;
-- conexões;
-- auditoria DXF;
-- comparação visual;
-- proveniência.
-
-### Gate G5 — Publicação
-Publicar somente com:
-- DXF;
-- manifesto;
-- fontes;
-- resultado de QA;
-- classe de confiança;
-- conflitos pendentes registrados.
-
-## Saídas por status
-
-| Status | Uso permitido |
-|---|---|
-| CAD_FABRICANTE | layout, interferência, montagem, biblioteca final |
-| RECONSTRUCAO_FICHA | layout e interferência conforme evidência disponível |
-| REFERENCIA_PROJETO | estudo preliminar/envelope somente |
-| BLOQUEADO | não usar para projeto executivo |
+### G7 — Publication
+Publish only with manifest, sources, QA and confidence class.
