@@ -1,0 +1,11 @@
+{
+  "name": "wf-aeroxy-chrome-devtools-cli-ec64bb78",
+  "version": "1.0.1",
+  "description": "Workflow individual para aeroxy/chrome-devtools-cli",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "aeroxy/chrome-devtools-cli Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

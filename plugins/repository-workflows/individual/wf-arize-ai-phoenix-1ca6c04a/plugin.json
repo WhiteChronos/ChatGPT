@@ -1,0 +1,11 @@
+{
+  "name": "wf-arize-ai-phoenix-1ca6c04a",
+  "version": "1.0.1",
+  "description": "Workflow individual para Arize-ai/phoenix",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Arize-ai/phoenix Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

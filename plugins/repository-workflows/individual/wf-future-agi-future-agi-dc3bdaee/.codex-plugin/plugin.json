@@ -1,0 +1,11 @@
+{
+  "name": "wf-future-agi-future-agi-dc3bdaee",
+  "version": "1.0.1",
+  "description": "Workflow individual para future-agi/future-agi",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "future-agi/future-agi Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "wf-librechat-ai-librechat-438ddea7",
+  "version": "1.0.1",
+  "description": "Workflow individual para LibreChat-AI/LibreChat",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "LibreChat-AI/LibreChat Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

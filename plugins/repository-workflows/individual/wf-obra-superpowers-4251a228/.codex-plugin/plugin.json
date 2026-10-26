@@ -1,0 +1,11 @@
+{
+  "name": "wf-obra-superpowers-4251a228",
+  "version": "1.0.1",
+  "description": "Workflow individual para obra/superpowers",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "obra/superpowers Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

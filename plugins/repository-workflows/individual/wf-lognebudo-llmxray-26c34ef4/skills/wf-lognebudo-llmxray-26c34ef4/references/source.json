@@ -1,0 +1,20 @@
+{
+  "repository": "LogneBudo/llmxray",
+  "skills": [
+    {
+      "path": "skills/diagnose-ollama-calls/SKILL.md",
+      "sha": "8cebb0d569950a9f7e3045ca52f235fde778438e",
+      "url": "https://github.com/LogneBudo/llmxray/blob/6d876b27b5abde898f93415a28d1791a06efac98/skills/diagnose-ollama-calls/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-lognebudo-llmxray-26c34ef4",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/diagnose-ollama-calls/SKILL.md",
+    "name": "diagnose-ollama-calls",
+    "read_verified": true
+  }
+}

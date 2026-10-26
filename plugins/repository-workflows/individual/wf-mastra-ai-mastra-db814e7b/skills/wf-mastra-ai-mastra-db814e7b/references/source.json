@@ -1,0 +1,60 @@
+{
+  "repository": "mastra-ai/mastra",
+  "skills": [
+    {
+      "path": ".claude/skills/ralph-plan/SKILL.md",
+      "sha": "64c07f31d1dad4384da20ad177518f55dd4c20af",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/ralph-plan/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/docs-audit/SKILL.md",
+      "sha": "c35fedae4935c4b70a6c2e97681800e6707d984e",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/docs-audit/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/pr-splitter/SKILL.md",
+      "sha": "482deba202bc0d1a275cd32bfa2ef8efa2cdb441",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/pr-splitter/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/mastra-docs/SKILL.md",
+      "sha": "2e00509abb0faaf4d3a759a09d2e91923b2c3bd1",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/mastra-docs/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/tailwind-v4/SKILL.md",
+      "sha": "9a9d33b54d7cb80882487f9f64dccc9632ec9550",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/tailwind-v4/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/pr-explainer/SKILL.md",
+      "sha": "6a842dee70e86333a72cd99783c62f0b0be3a390",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/pr-explainer/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/docs-diagrams/SKILL.md",
+      "sha": "895e9886a0ee3ada55743128d0caba65519b456e",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/docs-diagrams/SKILL.md"
+    },
+    {
+      "path": ".mastracode/skills/gh-review/SKILL.md",
+      "sha": "f583bfdb6ed51f7a8044bec6ed99e42dc49eb27d",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.mastracode/skills/gh-review/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/mastra-frontend/SKILL.md",
+      "sha": "85603580d96c38444fb56b46dda723c6db738f59",
+      "url": "https://github.com/mastra-ai/mastra/blob/7d63f0792041c7a620982c62550ae9d6b9a58d28/.claude/skills/mastra-frontend/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-mastra-ai-mastra-db814e7b",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/ralph-plan/SKILL.md",
+    "name": "ralph-plan",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "wf-vllm-project-speculators-14d6fbcd",
+  "version": "1.0.1",
+  "description": "Workflow individual para vllm-project/speculators",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "vllm-project/speculators Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

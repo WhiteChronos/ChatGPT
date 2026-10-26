@@ -1,0 +1,25 @@
+{
+  "repository": "WXK-AI/jev-opus",
+  "skills": [
+    {
+      "path": "plugin/skills/jev/SKILL.md",
+      "sha": "e2c892cc9486b311ec7b8d4b0d0769344cd4b172",
+      "url": "https://github.com/WXK-AI/jev-opus/blob/e8197b43d07ee54647bcdb3e6724305f546246cb/plugin/skills/jev/SKILL.md"
+    },
+    {
+      "path": "plugin/skills/jev-route/SKILL.md",
+      "sha": "04a5e45e04e7dbd1a772c00b9ccc31f34aec78a4",
+      "url": "https://github.com/WXK-AI/jev-opus/blob/e8197b43d07ee54647bcdb3e6724305f546246cb/plugin/skills/jev-route/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-wxk-ai-jev-opus-3395fe54",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "plugin/skills/jev/SKILL.md",
+    "name": "jev",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-monoscope-tech-monoscope-66266baf",
+  "display_name": "monoscope-tech/monoscope Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-monoscope-tech-monoscope-66266baf",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-monoscope-tech-monoscope-66266baf",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-monoscope-tech-monoscope-66266baf/skills/wf-monoscope-tech-monoscope-66266baf/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

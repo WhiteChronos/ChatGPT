@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-jakeschincariol-replica-skill-a44b40b4",
+  "display_name": "Jakeschincariol/replica-skill Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-jakeschincariol-replica-skill-a44b40b4",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-jakeschincariol-replica-skill-a44b40b4",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-jakeschincariol-replica-skill-a44b40b4/skills/wf-jakeschincariol-replica-skill-a44b40b4/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

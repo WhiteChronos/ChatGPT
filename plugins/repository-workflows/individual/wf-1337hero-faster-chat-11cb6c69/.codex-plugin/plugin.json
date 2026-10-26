@@ -1,0 +1,11 @@
+{
+  "name": "wf-1337hero-faster-chat-11cb6c69",
+  "version": "1.0.1",
+  "description": "Workflow individual para 1337hero/faster-chat",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "1337hero/faster-chat Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

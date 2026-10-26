@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-openobserve-openobserve-edacb9cb",
+  "display_name": "openobserve/openobserve Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-openobserve-openobserve-edacb9cb",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-openobserve-openobserve-edacb9cb",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-openobserve-openobserve-edacb9cb/skills/wf-openobserve-openobserve-edacb9cb/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

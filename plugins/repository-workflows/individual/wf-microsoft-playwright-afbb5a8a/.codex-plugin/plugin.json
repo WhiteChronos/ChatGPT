@@ -1,0 +1,11 @@
+{
+  "name": "wf-microsoft-playwright-afbb5a8a",
+  "version": "1.0.1",
+  "description": "Workflow individual para microsoft/playwright",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "microsoft/playwright Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

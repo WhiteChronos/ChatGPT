@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-future-agi-future-agi-dc3bdaee",
+  "display_name": "future-agi/future-agi Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-future-agi-future-agi-dc3bdaee",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-future-agi-future-agi-dc3bdaee",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-future-agi-future-agi-dc3bdaee/skills/wf-future-agi-future-agi-dc3bdaee/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

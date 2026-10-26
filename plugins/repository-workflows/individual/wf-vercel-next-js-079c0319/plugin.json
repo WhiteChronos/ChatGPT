@@ -1,0 +1,11 @@
+{
+  "name": "wf-vercel-next-js-079c0319",
+  "version": "1.0.1",
+  "description": "Workflow individual para vercel/next.js",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "vercel/next.js Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-tma1-ai-tma1-0b591684",
+  "display_name": "tma1-ai/tma1 Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-tma1-ai-tma1-0b591684",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-tma1-ai-tma1-0b591684",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-tma1-ai-tma1-0b591684/skills/wf-tma1-ai-tma1-0b591684/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

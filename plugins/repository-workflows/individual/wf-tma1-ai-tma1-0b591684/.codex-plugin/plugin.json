@@ -1,0 +1,11 @@
+{
+  "name": "wf-tma1-ai-tma1-0b591684",
+  "version": "1.0.1",
+  "description": "Workflow individual para tma1-ai/tma1",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "tma1-ai/tma1 Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

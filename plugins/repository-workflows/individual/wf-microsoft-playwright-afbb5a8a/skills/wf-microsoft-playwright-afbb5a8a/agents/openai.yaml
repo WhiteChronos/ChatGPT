@@ -1,0 +1,6 @@
+interface:
+  display_name: "microsoft/playwright"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-microsoft-playwright-afbb5a8a para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

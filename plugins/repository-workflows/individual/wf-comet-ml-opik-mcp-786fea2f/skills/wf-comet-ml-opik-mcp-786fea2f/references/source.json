@@ -1,0 +1,65 @@
+{
+  "repository": "comet-ml/opik-mcp",
+  "skills": [
+    {
+      "path": "plugins/opik/skills/opik/SKILL.md",
+      "sha": "4a738add8d6c7c2dd1e21845c06cdbdb4d6d197a",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-verify/SKILL.md",
+      "sha": "cdebbf5e61e43ee2785f5d64431cccab02b40a6b",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-verify/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-compare/SKILL.md",
+      "sha": "c10065e243e67e4b4438cc73c41de34c328b9f31",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-compare/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-explain/SKILL.md",
+      "sha": "270d551cf61166d29db31e9d7e48c0f6bc1622e2",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-explain/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-optimize/SKILL.md",
+      "sha": "cef25f5de4309216c5d5ca08b9e8cf7775f4723a",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-optimize/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-diagnose/SKILL.md",
+      "sha": "b6ad1d9c62e36f19930c5b3c45ae012f7eabfabc",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-diagnose/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-evaluate/SKILL.md",
+      "sha": "293f6b61fff672e5a77b4bbc2b7deff3651fa4e5",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-evaluate/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-instrument/SKILL.md",
+      "sha": "c6acb6300d609bf3dc8dd0296f2a8917245846af",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-instrument/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-online-eval/SKILL.md",
+      "sha": "8059a08119f51d4b2d269d611a79a03100c15375",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-online-eval/SKILL.md"
+    },
+    {
+      "path": "plugins/opik/skills/opik-test/SKILL.md",
+      "sha": "520eef7bf271b79d917b22dc9b03cf3bb8cb0bc6",
+      "url": "https://github.com/comet-ml/opik-mcp/blob/2898593e4cfcec52dcc0cb45e522165c1ea70011/plugins/opik/skills/opik-test/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-comet-ml-opik-mcp-786fea2f",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "plugins/opik/skills/opik/SKILL.md",
+    "name": "opik",
+    "read_verified": true
+  }
+}

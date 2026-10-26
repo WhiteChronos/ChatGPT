@@ -1,0 +1,306 @@
+{
+  "repository": "WhiteChronos/ChatGPT",
+  "skills": [
+    {
+      "path": ".agents/skills/pr/SKILL.md",
+      "sha": "84dd4fb2f068e9f6282690235d20dd505b418119",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/pr/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/tdd/SKILL.md",
+      "sha": "250871ccdfefa7525309acfebda090edf4046882",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/tdd/SKILL.md"
+    },
+    {
+      "path": "plugins/github-arena/SKILL.md",
+      "sha": "f85955a6653ed5a38b33decb63d623cc7ecfcf1b",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/github-arena/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/teach/SKILL.md",
+      "sha": "c679eeccd48ca720c8196e5d9a9e58223abf213b",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/teach/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/retro/SKILL.md",
+      "sha": "12149acf2dd23b4514dec57b04a6293eaa1352fa",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/retro/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/wizard/SKILL.md",
+      "sha": "c4294ad8298b9b95fc727496b1b802b1f7363fba",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/wizard/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/triage/SKILL.md",
+      "sha": "3fd5617e906cf9b71a6b17424791adb905fc248b",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/triage/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/handoff/SKILL.md",
+      "sha": "2eb98a51b97bb5bac461a26ad14828eeac827909",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/handoff/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/to-spec/SKILL.md",
+      "sha": "3f52599ae2a4347aee5a07432c2707518e691a7f",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/to-spec/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/grilling/SKILL.md",
+      "sha": "8ca78c6d8f901aab0c5a1f896034b70e666ff2a3",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/grilling/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/grill-me/SKILL.md",
+      "sha": "3947ff9c4ad980d14fc07fccbf659d47c114e81d",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/grill-me/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/ask-matt/SKILL.md",
+      "sha": "ce33ac632400b1f439695bd2b5274fd903355323",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/ask-matt/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/research/SKILL.md",
+      "sha": "fecee97e9457ba039678d2fcf1b1bc9fca78307d",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/research/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/wayfinder/SKILL.md",
+      "sha": "812805b760baf328db0ebdef6f3807e381f97016",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/wayfinder/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/implement/SKILL.md",
+      "sha": "7a0b11f5f4fe9505ea5c7983c3083ba1bf754f69",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/implement/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/wait-what/SKILL.md",
+      "sha": "9b15cd1a7dda0854ca093e29e3e0de57e241b2ac",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/wait-what/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/prototype/SKILL.md",
+      "sha": "a0044501fe0d385b4d8575b610188ede9b236ccf",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/prototype/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/to-tickets/SKILL.md",
+      "sha": "e868c831fcfb1e124e010bcdf84a429ec879160f",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/to-tickets/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/typesafe-ai/SKILL.md",
+      "sha": "0109513f9656917dc93cbc5ecddfca465a53ce66",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/typesafe-ai/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/code-review/SKILL.md",
+      "sha": "a5fedc89a6198a84f4f0962727627095107dc6cd",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/code-review/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/first-reader/SKILL.md",
+      "sha": "bdb6ae0b340fbc05b2090c0fc4b9e105c5e075ca",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/first-reader/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/implement-spec/SKILL.md",
+      "sha": "183923797ab58f1b3ef09e03bc1f1f203c309f37",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/implement-spec/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/diagnosing-bugs/SKILL.md",
+      "sha": "1b929e29fb519c26b500d3eda744177986883ac8",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/diagnosing-bugs/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/codebase-design/SKILL.md",
+      "sha": "3f63c8146dd2604b419c929e9876b90c30d410e9",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/codebase-design/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/domain-modeling/SKILL.md",
+      "sha": "a4438c6879c517d1a08e2b5fbca049b632688dfe",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/domain-modeling/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/grill-with-docs/SKILL.md",
+      "sha": "62b9efb6f991d1b229adee7506962f13ced0c499",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/grill-with-docs/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/to-questionnaire/SKILL.md",
+      "sha": "dadd0c00d6a350acaa15bb9ca1b96b20ead684ca",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/to-questionnaire/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/dependency-doctor/SKILL.md",
+      "sha": "56a8729a5c72106523271f2425c2ade9e772d475",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/dependency-doctor/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/project-graveyard/SKILL.md",
+      "sha": "e6dacd4addb4b75a99a7c437cfd9dd99e2d54712",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/project-graveyard/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/thinking-out-loud/SKILL.md",
+      "sha": "58b09c963c60480d2bee2ef0d9a7a3edb75096c9",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/thinking-out-loud/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/writing-for-agents/SKILL.md",
+      "sha": "a37608daf6e835e767deecfb498facecaaba82ba",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/writing-for-agents/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/commit-archaeologist/SKILL.md",
+      "sha": "a80214bea58747d97e9e128d58930658bee912d1",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/commit-archaeologist/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/scope-creep-detector/SKILL.md",
+      "sha": "302718a69b41bee9abd2c1dc09585767c0de1b40",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/scope-creep-detector/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/vibe-coding-toolkit-repo/SKILL.md",
+      "sha": "f79d386c0e83d730b1fbe2d0bc9c38c9a6dd0417",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/vibe-coding-toolkit-repo/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/setup-matt-pocock-skills/SKILL.md",
+      "sha": "0ec2c25f09e68eee28f6a6634866c9c289126991",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/setup-matt-pocock-skills/SKILL.md"
+    },
+    {
+      "path": "plugins/github-arena/skills/github-arena/SKILL.md",
+      "sha": "2d41e8b4868c7a3f9ecf1f826fd80a4cc90d56b9",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/github-arena/skills/github-arena/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/advisor-orchestrator-worker/SKILL.md",
+      "sha": "2ed4a682ac4418e27d9908c260e98244b4f93924",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/advisor-orchestrator-worker/SKILL.md"
+    },
+    {
+      "path": "plugins/ecc-controller/skills/ecc-controller/SKILL.md",
+      "sha": "e9353f21216d694bce588af246bafc92027069de",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/ecc-controller/skills/ecc-controller/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/improve-codebase-architecture/SKILL.md",
+      "sha": "44cc7d3136c44534d68ac523fa6cd37e759d2846",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/.agents/skills/improve-codebase-architecture/SKILL.md"
+    },
+    {
+      "path": "plugins/subagent-broker/skills/subagent-broker/SKILL.md",
+      "sha": "eb1ee7acc83cbb3c4974a8bac29049a4a5a3208f",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/subagent-broker/skills/subagent-broker/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-diff/SKILL.md",
+      "sha": "1322d76e6f383171808491f691dbdc477f250343",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-diff/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-build/SKILL.md",
+      "sha": "c54a7990c50cdd97e40ad31d1e7605f5c871039b",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-build/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-recon/SKILL.md",
+      "sha": "e877302e106c839b81835edaa2a409cd239c52e3",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-recon/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-brand/SKILL.md",
+      "sha": "08933c7cfd2b570b084a890c7874fc2c3372120c",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-brand/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-launch/SKILL.md",
+      "sha": "0fe60edc02e4d8fc91db0716998632beb5dc5b91",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-launch/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-design/SKILL.md",
+      "sha": "cfb3df4161d770770e5440f3d1d22344e24747f4",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-design/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/arena-workflow/SKILL.md",
+      "sha": "191a12076c8abfbf0bf4f424eddeb8be41e171b9",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/arena-workflow/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-deploy/SKILL.md",
+      "sha": "cd0ab67170a96690a748bfa1975b1845b6731e50",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-deploy/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-backend/SKILL.md",
+      "sha": "1aacf10acb4969dfe6795fd7f765fd5361ddf694",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-backend/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-workflow/SKILL.md",
+      "sha": "3370558d4e3b1004fe125bb085ba8b873de99104",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-workflow/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-architect/SKILL.md",
+      "sha": "7d96f586d8d20f7e38b19772dbacc711b4cdd41b",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-architect/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-power-arena/SKILL.md",
+      "sha": "f2349ca83de33ea4dcc3a1aaa0d1c3d4cc028488",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-power-arena/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/replica-entrepreneur/SKILL.md",
+      "sha": "6d43280fb5026cf8eca3f7f73eea386141fdba79",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/replica-entrepreneur/SKILL.md"
+    },
+    {
+      "path": "plugins/replica-controller/skills/superpowers-workflow/SKILL.md",
+      "sha": "94fee08550c5023f58a5b23dda14c3ceea53993c",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/replica-controller/skills/superpowers-workflow/SKILL.md"
+    },
+    {
+      "path": "plugins/superpowers-controller/skills/superpowers-controller/SKILL.md",
+      "sha": "f8ea879e8807b43cfec326875bf76f82276926d6",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/superpowers-controller/skills/superpowers-controller/SKILL.md"
+    },
+    {
+      "path": "plugins/matt-pocock-controller/skills/matt-pocock-controller/SKILL.md",
+      "sha": "06ab59e39936e6ebfb48b8f43d03234a0b5040c0",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/matt-pocock-controller/skills/matt-pocock-controller/SKILL.md"
+    },
+    {
+      "path": "plugins/whitechronos-control-plane/skills/codex-runtime-doctor/SKILL.md",
+      "sha": "d7368c07311cc3bcdf28aec9470d93a1ec38f044",
+      "url": "https://github.com/WhiteChronos/ChatGPT/blob/ca8e684ce6d9407bc9c4850eae28998dca9aa5e4/plugins/whitechronos-control-plane/skills/codex-runtime-doctor/SKILL.md"
+    }
+  ],
+  "local_evidence": [
+    {
+      "commit": "49a2634009e0ca3bb507541c343d1a972c58a25b",
+      "skills_observed": 1135,
+      "dirty": true
+    }
+  ],
+  "skill_name": "wf-whitechronos-chatgpt-e5a7df31",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/pr/SKILL.md",
+    "name": "pr",
+    "read_verified": true
+  }
+}

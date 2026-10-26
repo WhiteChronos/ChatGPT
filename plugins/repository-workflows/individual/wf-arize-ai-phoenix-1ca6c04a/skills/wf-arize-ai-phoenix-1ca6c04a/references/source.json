@@ -1,0 +1,235 @@
+{
+  "repository": "Arize-ai/phoenix",
+  "skills": [
+    {
+      "path": "docs/phoenix/skill.md",
+      "sha": "3602b205c0739ebc31ec69dccb6f9124c8b7f733",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/docs/phoenix/skill.md"
+    },
+    {
+      "path": ".agents/skills/daytona/SKILL.md",
+      "sha": "5aa536c5cab6bf6c70bae3242cdf2a83969afbcc",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/daytona/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/mintlify/SKILL.md",
+      "sha": "b0e9e45285dcf6911b1051d162ef3944406261c6",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/mintlify/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/gh-stack/SKILL.md",
+      "sha": "8e39024612eee7754304d55c0f974a40e6b41801",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/gh-stack/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/rewardkit/SKILL.md",
+      "sha": "a4d521089699379c722f1526af816a3b8fb1ea06",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/rewardkit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/create-task/SKILL.md",
+      "sha": "a36132b2c5ccc10c6aa0f23187044ae709cf8a3c",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/create-task/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/harbor-exec/SKILL.md",
+      "sha": "0f33cae659ffa5eaa37d98f0cfebaccecf19b4ed",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/harbor-exec/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-cli/SKILL.md",
+      "sha": "de77421c3a86d64f751eb7cf109c4f79dbee8667",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-cli/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/issue-triage/SKILL.md",
+      "sha": "d04db112f28830dcd41f6112d499fd34bd82d707",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/issue-triage/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-evals/SKILL.md",
+      "sha": "4ab4591a6f13d94b749e1cbaa96b7d16e0a847a3",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-evals/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-design/SKILL.md",
+      "sha": "279dd47f402f82b19b44b0b0b2e7f4ea594333f0",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-design/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-harbor/SKILL.md",
+      "sha": "a979dfd08cd146400943f6de9dccdeda5ebfbcb3",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-harbor/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-server/SKILL.md",
+      "sha": "90d45f7c2bdaab0d703a6d8e148248e7a5348f53",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-server/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-sqlean/SKILL.md",
+      "sha": "4968d74570637abf0a360ddcb3d22684ed51053b",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-sqlean/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-github/SKILL.md",
+      "sha": "da54e2df6ede7ef8b65187728be7d44929e8147f",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-github/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-tracing/SKILL.md",
+      "sha": "cb2dd1bc4cbb61a51c12b8f2ad290505ffe0f6d9",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-tracing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-llms-txt/SKILL.md",
+      "sha": "9db43362cfd8086be5efc2e9d661ef1555458838",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-llms-txt/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-frontend/SKILL.md",
+      "sha": "73c47395a73497f3029eee51bb0f2a31ab1e81cb",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-frontend/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-rest-api/SKILL.md",
+      "sha": "d283470e5669836647d22ffd65389d415055a946",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-rest-api/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-storybook/SKILL.md",
+      "sha": "4e4b8050c4b9eb3b4d798e07dd2c0e6ea2cc072b",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-storybook/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-typescript/SKILL.md",
+      "sha": "a5794b2d867fd251387776d7dffde22c2b9b755f",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-typescript/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-skills-audit/SKILL.md",
+      "sha": "8977f6b48b512bcc7c0fa0f51d80632012ddacde",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-skills-audit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-release-notes/SKILL.md",
+      "sha": "e6208545d64e4b5b7a0896888b1376253706b338",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-release-notes/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-pr-screenshot/SKILL.md",
+      "sha": "124205a05eebfa12f1239014e8cd1bf7ed196a95",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-pr-screenshot/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-docs-gap-audit/SKILL.md",
+      "sha": "61854c91d825f0a28cf9d7cebfb97a96b9f504c8",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-docs-gap-audit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-error-analysis/SKILL.md",
+      "sha": "601cccda4fe21ab70e948b77f6134a190cdca5b6",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-error-analysis/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-pr-description/SKILL.md",
+      "sha": "976b443d1df6262a9896de56f487f8553142eb8b",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-pr-description/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-release-please/SKILL.md",
+      "sha": "d07171ca75a2500af1413b72eb952bc8ad8b9622",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-release-please/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-pxi-playwright/SKILL.md",
+      "sha": "1ed690f4b2d6401a23f27ca95419b81275e76ae5",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-pxi-playwright/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-evals-new-metric/SKILL.md",
+      "sha": "14fd33cd8f4bd73b05671da4e9bb38ced24fab91",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-evals-new-metric/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "sha": "237988de4a66dd8a71d30a2c24ebe1a86b58d04e",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/vercel-react-best-practices/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-integration-snippets/SKILL.md",
+      "sha": "f1d866743fd1cc8e7d15367b6b6d5ac66b0b3e7e",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-integration-snippets/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/typescript-tooling-migration/SKILL.md",
+      "sha": "dd3203a8f369551193bc82e55e2a5577d777a0d6",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/typescript-tooling-migration/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-typescript-package-docs/SKILL.md",
+      "sha": "52bb04e955e5b184c5f4ec28f9d63ce5c6ef8d42",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-typescript-package-docs/SKILL.md"
+    },
+    {
+      "path": "src/phoenix/server/agents/prompts/skills/datasets/SKILL.md",
+      "sha": "3accd516b5974dd328e67920fef3f8acb7fdc8d6",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/src/phoenix/server/agents/prompts/skills/datasets/SKILL.md"
+    },
+    {
+      "path": "src/phoenix/server/agents/prompts/skills/playground/SKILL.md",
+      "sha": "056475143387b6d33c5b89aa67d327b466eee569",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/src/phoenix/server/agents/prompts/skills/playground/SKILL.md"
+    },
+    {
+      "path": "src/phoenix/server/agents/prompts/skills/evaluators/SKILL.md",
+      "sha": "468bd2ac5bf6e012de814cb0830bf5b07d0e4a3d",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/src/phoenix/server/agents/prompts/skills/evaluators/SKILL.md"
+    },
+    {
+      "path": "src/phoenix/server/mcp/skills/phoenix-error-analysis/SKILL.md",
+      "sha": "601cccda4fe21ab70e948b77f6134a190cdca5b6",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/src/phoenix/server/mcp/skills/phoenix-error-analysis/SKILL.md"
+    },
+    {
+      "path": "src/phoenix/server/agents/prompts/skills/experiments/SKILL.md",
+      "sha": "5bbcde2c2952fae987179118647f441619440809",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/src/phoenix/server/agents/prompts/skills/experiments/SKILL.md"
+    },
+    {
+      "path": "src/phoenix/server/agents/prompts/skills/phoenix-graphql/SKILL.md",
+      "sha": "9ecca2e0acb6f97df2ba9fbeaf94c33c2c9a7957",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/src/phoenix/server/agents/prompts/skills/phoenix-graphql/SKILL.md"
+    },
+    {
+      "path": "js/packages/phoenix-cli/.agents/skills/phoenix-cli-development/SKILL.md",
+      "sha": "3541959f536775382cfb895acea203bfc2dca107",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/js/packages/phoenix-cli/.agents/skills/phoenix-cli-development/SKILL.md"
+    },
+    {
+      "path": "js/packages/phoenix-otel/.agents/skills/phoenix-otel-development/SKILL.md",
+      "sha": "dd77798400202a48c107b0e88b8b6211b0d4f44c",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/js/packages/phoenix-otel/.agents/skills/phoenix-otel-development/SKILL.md"
+    },
+    {
+      "path": "js/packages/phoenix-client/.agents/skills/phoenix-client-development/SKILL.md",
+      "sha": "871f017e887b3b7dd539ec9d07bc20374ea6850c",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/js/packages/phoenix-client/.agents/skills/phoenix-client-development/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/phoenix-playwright-tests/SKILL.md",
+      "sha": "d374912b4ef0880f22453965c8ebfa9ede30d047",
+      "url": "https://github.com/Arize-ai/phoenix/blob/23bd69f0cade8fe7cd96bb0f92d36ac072ee46be/.agents/skills/phoenix-playwright-tests/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-arize-ai-phoenix-1ca6c04a",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "docs/phoenix/skill.md",
+    "name": "arize-phoenix",
+    "read_verified": true
+  }
+}

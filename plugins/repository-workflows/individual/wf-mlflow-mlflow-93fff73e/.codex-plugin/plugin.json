@@ -1,0 +1,11 @@
+{
+  "name": "wf-mlflow-mlflow-93fff73e",
+  "version": "1.0.1",
+  "description": "Workflow individual para mlflow/mlflow",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "mlflow/mlflow Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

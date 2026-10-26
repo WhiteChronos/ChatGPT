@@ -1,0 +1,11 @@
+{
+  "name": "wf-jakeschincariol-replica-skill-a44b40b4",
+  "version": "1.0.1",
+  "description": "Workflow individual para Jakeschincariol/replica-skill",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Jakeschincariol/replica-skill Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

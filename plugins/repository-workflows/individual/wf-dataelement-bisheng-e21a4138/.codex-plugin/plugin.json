@@ -1,0 +1,11 @@
+{
+  "name": "wf-dataelement-bisheng-e21a4138",
+  "version": "1.0.1",
+  "description": "Workflow individual para dataelement/bisheng",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "dataelement/bisheng Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Jakeschincariol/arena-skill"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-jakeschincariol-arena-skill-c734ca29 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

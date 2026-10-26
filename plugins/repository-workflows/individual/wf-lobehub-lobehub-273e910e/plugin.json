@@ -1,0 +1,11 @@
+{
+  "name": "wf-lobehub-lobehub-273e910e",
+  "version": "1.0.1",
+  "description": "Workflow individual para lobehub/lobehub",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "lobehub/lobehub Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

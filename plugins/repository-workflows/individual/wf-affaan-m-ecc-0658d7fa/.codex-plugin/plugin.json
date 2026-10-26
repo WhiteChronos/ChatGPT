@@ -1,0 +1,11 @@
+{
+  "name": "wf-affaan-m-ecc-0658d7fa",
+  "version": "1.0.1",
+  "description": "Workflow individual para affaan-m/ECC",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "affaan-m/ECC Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

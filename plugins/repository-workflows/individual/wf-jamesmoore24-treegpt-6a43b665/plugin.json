@@ -1,0 +1,11 @@
+{
+  "name": "wf-jamesmoore24-treegpt-6a43b665",
+  "version": "1.0.1",
+  "description": "Workflow individual para jamesmoore24/treegpt",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "jamesmoore24/treegpt Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

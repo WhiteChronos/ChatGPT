@@ -1,0 +1,6 @@
+interface:
+  display_name: "vllm-project/semantic-router"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-vllm-project-semantic-router-5b33926f para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,11 @@
+{
+  "name": "wf-vllm-project-semantic-router-5b33926f",
+  "version": "1.0.1",
+  "description": "Workflow individual para vllm-project/semantic-router",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "vllm-project/semantic-router Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

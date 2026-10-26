@@ -1,0 +1,11 @@
+{
+  "name": "wf-katanemo-plano-5d0e2850",
+  "version": "1.0.1",
+  "description": "Workflow individual para katanemo/plano",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "katanemo/plano Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

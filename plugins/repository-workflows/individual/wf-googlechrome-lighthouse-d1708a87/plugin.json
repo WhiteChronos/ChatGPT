@@ -1,0 +1,11 @@
+{
+  "name": "wf-googlechrome-lighthouse-d1708a87",
+  "version": "1.0.1",
+  "description": "Workflow individual para GoogleChrome/lighthouse",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "GoogleChrome/lighthouse Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

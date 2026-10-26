@@ -1,0 +1,11 @@
+{
+  "name": "wf-shimo4228-jev-skill-router-d055091d",
+  "version": "1.0.1",
+  "description": "Workflow individual para shimo4228/jev-skill-router",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "shimo4228/jev-skill-router Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}

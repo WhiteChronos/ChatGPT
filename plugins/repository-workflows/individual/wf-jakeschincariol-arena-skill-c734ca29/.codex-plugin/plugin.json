@@ -1,0 +1,11 @@
+{
+  "name": "wf-jakeschincariol-arena-skill-c734ca29",
+  "version": "1.0.1",
+  "description": "Workflow individual para Jakeschincariol/arena-skill",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Jakeschincariol/arena-skill Workflow",
+    "shortDescription": "Skill e workflow individuais deste repositório."
+  }
+}
