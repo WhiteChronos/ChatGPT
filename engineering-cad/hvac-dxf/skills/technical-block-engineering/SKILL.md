@@ -135,3 +135,11 @@ Deliver:
 
 ## 3D / isometric specialization
 For STEP/BREP-based view generation and isometric DXF creation, route through the dedicated `isometric-dxf-engineering` workflow. It must derive FRONT/LEFT/RIGHT/TOP/BOTTOM/ISO from one geometry master, use hidden-line projection, create separate view DXFs plus a non-overlapping MULTIVIEW DXF, and reject pseudo-isometric cubes or overlapping layouts.
+
+
+## ISO presentation rule
+The final package must present the isometric view as a solid external-object representation, not as a radiographic/x-ray view.
+- Default ISO: visible edges only.
+- Hidden ISO edges: optional and secondary.
+- MULTIVIEW must use the clean ISO.
+- If the ISO looks transparent because hidden edges are visible, the package fails QA.
