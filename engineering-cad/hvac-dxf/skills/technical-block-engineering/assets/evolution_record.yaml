@@ -1,0 +1,14 @@
+event_id: ""
+date: ""
+affected_object: ""
+observed_failure: ""
+evidence: []
+root_cause: ""
+proposed_improvement: ""
+changed_rules_or_files: []
+regression_cases: []
+validation_result: ""
+human_review_required: false
+approval_status: "PROPOSED"
+supersedes: ""
+notes: ""
