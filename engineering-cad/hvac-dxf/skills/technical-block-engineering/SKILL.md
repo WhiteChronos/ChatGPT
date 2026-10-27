@@ -1,6 +1,6 @@
 ---
 name: technical-block-engineering
-description: Research, identify, create, validate, and continuously improve hyper-realistic technical CAD blocks from real equipment evidence. Use when ChatGPT must find an exact manufacturer/model, official catalog/datasheet/dimensional drawing/CAD/BIM, suppliers, and deliver the real physical object DXF with all available orthographic views plus isometric view and its separate real project symbol. Also use when a block is too simplified, geometry fidelity must match manufacturer/reference DXFs, or the CAD workflow needs controlled improvement.
+description: Research, identify, create, validate, and continuously improve hyper-realistic technical CAD blocks from real equipment evidence. Use when ChatGPT must find an exact manufacturer/model, official catalog/datasheet/dimensional drawing/CAD/BIM, manufacturer-direct or manufacturer-verified authorized suppliers, and deliver the real physical object DXF with all available orthographic views plus isometric view and its separate real project symbol. Also use when supplier authority must be verified by brand, a block is too simplified, geometry fidelity must match manufacturer/reference DXFs, or the CAD workflow needs controlled improvement.
 ---
 
 # Technical Block Engineering
@@ -13,7 +13,7 @@ Build technical blocks from evidence, not approximation. Every deliverable must 
 Default to delivering both when applicable.
 
 ## Core rule
-Never invent geometry, dimensions, mounting points, ports, service clearances, supplier identity, or project graphical conventions.
+Never invent geometry, dimensions, mounting points, ports, service clearances, supplier identity, supplier authorization, or project graphical conventions. Never use a marketplace, reseller, or self-declared distributor as final technical authority unless the manufacturer itself verifies that relationship.
 
 Use this evidence chain:
 **project requirement -> object identity -> manufacturer -> exact model/part number -> catalog -> datasheet PDF -> dimensional drawing -> native CAD/BIM -> hyper-realistic DXF -> QA -> memory/improvement**
@@ -25,6 +25,8 @@ Before creating a final object block, read:
 - `references/hyperrealistic-dxf-standard.md`
 - `references/cad-toolchain.md`
 - `references/qa-policy.md`
+- `references/preferred-sources-and-suppliers.md`
+- `assets/brand-authority-registry.yaml`
 
 For project symbols also read `references/instrumentation-dwg-style.md`.
 
@@ -54,10 +56,11 @@ Deliver separately:
 ## Discovery workflow
 1. Identify family/function/tag.
 2. Resolve manufacturer, series, exact model, part number, variant/revision.
-3. Search official product page, catalog, datasheet, manual, dimensional drawing, CAD/BIM portal.
-4. Confirm identity with at least two independent technical discriminators.
-5. Find suppliers separately from manufacturer identity.
-6. If the input is a photo, use it only to generate candidates; never close exact identity from appearance alone.
+3. Lock the brand authority chain: official manufacturer domain first; distributor/partner only after validation in the manufacturer's own locator/page.
+4. Search official product page, catalog, datasheet, manual, dimensional drawing, CAD/BIM portal.
+5. Confirm identity with at least two independent technical discriminators.
+6. Record supplier authority evidence in the manifest. If authorization is unverified, use manufacturer-direct sources only and set the supplier source to blocked for final geometry.
+7. If the input is a photo, use it only to generate candidates; never close exact identity from appearance alone.
 
 ## Physical block workflow
 1. Prefer native manufacturer DXF/DWG/STEP/IGES/RFA/IFC.
