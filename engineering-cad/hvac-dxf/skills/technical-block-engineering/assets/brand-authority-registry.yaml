@@ -1,0 +1,58 @@
+version: 1
+policy: brand_locked_authority
+default_when_unverified: MANUFACTURER_DIRECT_ONLY
+brands:
+  WEG:
+    official_domains:
+      - weg.net
+    authorized_channel:
+      type: manufacturer_where_to_buy
+      url: https://www.weg.net/institutional/BR/pt/contact/where-to-buy
+    status: VERIFIED
+  Schneider_Electric:
+    official_domains:
+      - se.com
+    authorized_channel:
+      type: manufacturer_partner_locator
+      urls:
+        - https://www.se.com/br/pt/work/support/locator/map/
+        - https://www.se.com/br/pt/partners/distributors/
+    status: VERIFIED
+  Phoenix_Contact:
+    official_domains:
+      - phoenixcontact.com
+    authorized_channel:
+      type: manufacturer_partner_distributor_page
+      url: https://www.phoenixcontact.com/pt-br/empresa/parceiros-distribuidores-fornecedores
+    status: VERIFIED
+  Rockwell_Automation:
+    brands:
+      - Allen-Bradley
+      - FactoryTalk
+    official_domains:
+      - rockwellautomation.com
+    authorized_channel:
+      type: PartnerNetwork
+      url: https://www.rockwellautomation.com/en-pr/sales.html
+    status: VERIFIED
+  Daikin:
+    official_domains:
+      - daikin.com.br
+    authorized_channel:
+      type: manufacturer_distributor_locator
+      url: https://www.daikin.com.br/onde-comprar/distribuidor
+    status: VERIFIED
+  Belimo:
+    official_domains:
+      - belimo.com
+    authorized_channel:
+      type: manufacturer_distributor_lookup
+      url: https://www.belimo.com/br/en_US/contact/channels/distributor-lookup
+    status: VERIFIED
+  Vaisala:
+    official_domains:
+      - vaisala.com
+    authorized_channel:
+      type: manufacturer_partner_finder
+      url: https://www.vaisala.com/en/partners/find-partner?field_countries_value=BR
+    status: VERIFIED

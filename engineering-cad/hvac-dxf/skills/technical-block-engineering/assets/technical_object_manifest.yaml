@@ -1,0 +1,54 @@
+project_tag: ""
+discipline: ""
+equipment_family: ""
+function: ""
+manufacturer: ""
+manufacturer_region: ""
+series: ""
+exact_model: ""
+part_number: ""
+revision_or_variant: ""
+lifecycle_status: ""
+source_class: "BLOQUEADO"
+confidence: "BLOCKED"
+geometry:
+  units: "m"
+  modelspace_scale: "1:1"
+  width: null
+  height: null
+  depth: null
+  mounting: []
+  connections: []
+sources:
+  product_page_url: ""
+  catalog_url: ""
+  datasheet_pdf_url: ""
+  installation_manual_url: ""
+  dimensional_drawing_url: ""
+  drawing_number: ""
+  drawing_revision: ""
+  native_cad_url: ""
+  native_cad_format: ""
+suppliers: []
+supplier_authority:
+  brand: ""
+  supplier_name: ""
+  relationship: ""  # MANUFACTURER | AUTHORIZED_DISTRIBUTOR | AUTHORIZED_PARTNER | SYSTEM_INTEGRATOR | RESELLER | UNKNOWN
+  manufacturer_official_domain: ""
+  official_verification_url: ""
+  country_or_region: ""
+  checked_date: ""
+  verification_status: "UNVERIFIED"  # VERIFIED | UNVERIFIED | BLOCKED
+project_values: {}
+manufacturer_values: {}
+conflicts: []
+qa:
+  identity_confirmed: false
+  units_checked: false
+  extents_checked: false
+  interfaces_checked: false
+  dxf_audit_errors: null
+  visual_compared: false
+  provenance_complete: false
+checked_date: ""
+notes: ""
