@@ -40,4 +40,3 @@ class SecurityBoundaryTests(unittest.TestCase):
                     self.assertFalse(result['background_enabled'])
 
 if __name__=='__main__': unittest.main()
-

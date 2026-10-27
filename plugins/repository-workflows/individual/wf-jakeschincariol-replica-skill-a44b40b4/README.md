@@ -1,6 +1,6 @@
 # Jakeschincariol/replica-skill — workflow individual
 
-Skill: `wf-jakeschincariol-replica-skill-a44b40b4`. Plugin: `wf-jakeschincariol-replica-skill-a44b40b4`. Versão: 1.0.1.
+Skill: `wf-jakeschincariol-replica-skill-a44b40b4`. Plugin: `wf-jakeschincariol-replica-skill-a44b40b4`. Versão: 1.0.2.
 Origem: https://github.com/Jakeschincariol/replica-skill.
 
 Use `$wf-jakeschincariol-replica-skill-a44b40b4` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

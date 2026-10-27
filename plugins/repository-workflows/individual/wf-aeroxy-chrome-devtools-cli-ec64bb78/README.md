@@ -1,6 +1,6 @@
 # aeroxy/chrome-devtools-cli — workflow individual
 
-Skill: `wf-aeroxy-chrome-devtools-cli-ec64bb78`. Plugin: `wf-aeroxy-chrome-devtools-cli-ec64bb78`. Versão: 1.0.1.
+Skill: `wf-aeroxy-chrome-devtools-cli-ec64bb78`. Plugin: `wf-aeroxy-chrome-devtools-cli-ec64bb78`. Versão: 1.0.2.
 Origem: https://github.com/aeroxy/chrome-devtools-cli.
 
 Use `$wf-aeroxy-chrome-devtools-cli-ec64bb78` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

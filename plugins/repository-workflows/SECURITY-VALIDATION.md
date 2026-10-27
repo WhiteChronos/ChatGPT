@@ -5,4 +5,3 @@ The package adds implicit invocation metadata for 44 original adapters. The meta
 `tests/test_workflows.py` additionally covers unknown commands/modes, path escape rejection, installation preflight preserving human changes, distinct portable package identities, and registry consistency. Run both suites with `python -B -m unittest discover -s plugins/repository-workflows/tests -v`. CI runs the same command on Windows with read-only contents permission.
 
 No ECC application permissions are modified. No branch protection is disabled. No upstream skill bodies, credentials, private conversation data or local runtime configuration are distributed.
-

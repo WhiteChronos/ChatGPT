@@ -1,6 +1,6 @@
 # lobehub/lobehub — workflow individual
 
-Skill: `wf-lobehub-lobehub-273e910e`. Plugin: `wf-lobehub-lobehub-273e910e`. Versão: 1.0.1.
+Skill: `wf-lobehub-lobehub-273e910e`. Plugin: `wf-lobehub-lobehub-273e910e`. Versão: 1.0.2.
 Origem: https://github.com/lobehub/lobehub.
 
 Use `$wf-lobehub-lobehub-273e910e` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

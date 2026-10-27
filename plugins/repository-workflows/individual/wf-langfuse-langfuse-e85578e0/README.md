@@ -1,6 +1,6 @@
 # langfuse/langfuse — workflow individual
 
-Skill: `wf-langfuse-langfuse-e85578e0`. Plugin: `wf-langfuse-langfuse-e85578e0`. Versão: 1.0.1.
+Skill: `wf-langfuse-langfuse-e85578e0`. Plugin: `wf-langfuse-langfuse-e85578e0`. Versão: 1.0.2.
 Origem: https://github.com/langfuse/langfuse.
 
 Use `$wf-langfuse-langfuse-e85578e0` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

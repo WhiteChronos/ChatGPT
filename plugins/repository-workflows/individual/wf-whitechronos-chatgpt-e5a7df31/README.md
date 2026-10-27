@@ -1,6 +1,6 @@
 # WhiteChronos/ChatGPT — workflow individual
 
-Skill: `wf-whitechronos-chatgpt-e5a7df31`. Plugin: `wf-whitechronos-chatgpt-e5a7df31`. Versão: 1.0.1.
+Skill: `wf-whitechronos-chatgpt-e5a7df31`. Plugin: `wf-whitechronos-chatgpt-e5a7df31`. Versão: 1.0.2.
 Origem: https://github.com/WhiteChronos/ChatGPT.
 
 Use `$wf-whitechronos-chatgpt-e5a7df31` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

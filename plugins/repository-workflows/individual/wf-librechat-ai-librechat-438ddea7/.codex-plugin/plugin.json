@@ -1,11 +1,21 @@
 {
   "name": "wf-librechat-ai-librechat-438ddea7",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para LibreChat-AI/LibreChat",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
   "skills": "./skills/",
   "interface": {
     "displayName": "LibreChat-AI/LibreChat Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "longDescription": "Workflow individual para LibreChat-AI/LibreChat Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Use este workflow na tarefa e no repositório que eu indicar."
+    ]
   }
 }

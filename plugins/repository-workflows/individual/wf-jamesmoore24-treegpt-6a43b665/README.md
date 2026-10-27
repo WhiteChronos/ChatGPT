@@ -1,6 +1,6 @@
 # jamesmoore24/treegpt — workflow individual
 
-Skill: `wf-jamesmoore24-treegpt-6a43b665`. Plugin: `wf-jamesmoore24-treegpt-6a43b665`. Versão: 1.0.1.
+Skill: `wf-jamesmoore24-treegpt-6a43b665`. Plugin: `wf-jamesmoore24-treegpt-6a43b665`. Versão: 1.0.2.
 Origem: https://github.com/jamesmoore24/treegpt.
 
 Use `$wf-jamesmoore24-treegpt-6a43b665` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

@@ -1,11 +1,21 @@
 {
   "name": "wf-pydantic-logfire-0b169f2d",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para pydantic/logfire",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
   "skills": "./skills/",
   "interface": {
     "displayName": "pydantic/logfire Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "longDescription": "Workflow individual para pydantic/logfire Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Use este workflow na tarefa e no repositório que eu indicar."
+    ]
   }
 }

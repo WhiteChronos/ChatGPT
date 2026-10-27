@@ -1,11 +1,21 @@
 {
   "name": "repository-workflows",
-  "version": "1.0.0",
-  "description": "Original workflows for verified skill repositories; selective REA coordination.",
+  "version": "1.0.2",
+  "description": "Workflows por repositório com coordenação seletiva REA.",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
   "skills": "./skills/",
   "interface": {
-    "displayName": "Workflows dos Reposit\u00f3rios + REA",
-    "shortDescription": "Entradas individuais e coordena\u00e7\u00e3o seletiva."
+    "displayName": "Workflows dos Repositórios + REA",
+    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "longDescription": "Workflows por repositório com coordenação seletiva REA. Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Use este workflow na tarefa e no repositório que eu indicar."
+    ]
   }
 }

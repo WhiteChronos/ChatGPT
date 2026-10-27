@@ -1,11 +1,21 @@
 {
   "name": "wf-lognebudo-llmxray-26c34ef4",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para LogneBudo/llmxray",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
   "skills": "./skills/",
   "interface": {
     "displayName": "LogneBudo/llmxray Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "longDescription": "Workflow individual para LogneBudo/llmxray Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Use este workflow na tarefa e no repositório que eu indicar."
+    ]
   }
 }
