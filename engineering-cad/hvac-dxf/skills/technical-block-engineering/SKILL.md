@@ -168,17 +168,17 @@ Rules:
 - if authorization is not verifiable, use manufacturer-direct technical sources only and mark the supplier source blocked for final geometry;
 - for new brands, add the official manufacturer domain and authorized-channel evidence to the brand registry before relying on that channel.
 
-## Descriptive DXF filename rule
-Every published DXF filename must identify the instrument/equipment without opening the file.
+## Compact DXF filename rule
+Every published DXF filename must identify the instrument without creating long Windows/AutoCAD paths.
 
 Canonical pattern:
-`TIPO_INSTRUMENTO_FABRICANTE_MODELO_ARTEFATO_REVISAO.dxf`
+`TIPO_FAB_MODELO_ARTEFATO_REV.dxf`
 
-Requirements:
+Rules:
+- target <=64 characters including `.dxf`; hard limit 80;
 - ASCII uppercase, digits and underscores only;
-- no spaces or accents;
-- include instrument/equipment type, real manufacturer, exact model, artifact/view and revision;
-- symbol files must use `SIMBOLOGIA_<CODIGO>`;
-- multiview files must use `CONJUNTO_MULTIVISTAS`;
-- packages must include `INDICE_DXF_NOMES_DESCRITIVOS.csv` and `INDICE_DXF_NOMES_DESCRITIVOS.txt`;
+- keep instrument type, manufacturer, model, compact artifact token and revision;
+- use compact artifact tokens: `FRT`, `ESQ`, `DIR`, `SUP`, `INF`, `ISO`, `MV`, `SEC_<ID>`, `SYM_<CODIGO>`;
+- keep the full human-readable description in `INDICE_DXF.csv`, `INDICE_DXF.txt` and the manifest;
+- do not repeat words such as TRANSMISSOR, INSTRUMENTO or VISTA when the short type/artifact token already identifies them;
 - run `scripts/validate_dxf_filename.py` before publication.
