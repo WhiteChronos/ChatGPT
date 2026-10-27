@@ -1,6 +1,6 @@
 {
   "name": "wf-affaan-m-ecc-0658d7fa",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Workflow individual para affaan-m/ECC",
   "author": {
     "name": "WhiteChronos"
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "affaan-m/ECC Workflow",
-    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "shortDescription": "Workflows por repositório",
     "longDescription": "Workflow individual para affaan-m/ECC Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
     "developerName": "WhiteChronos",
     "category": "Developer Tools",

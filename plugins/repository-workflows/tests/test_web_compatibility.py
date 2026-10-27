@@ -24,6 +24,7 @@ class WebCompatibilityTests(unittest.TestCase):
         self.assertEqual(portable['name'],overlay['name'])
         self.assertEqual(portable['version'],overlay['version'])
         self.assertEqual(portable['extensions']['com.openai']['interface'],overlay['interface'])
+        self.assertLessEqual(len(portable['extensions']['com.openai']['interface']['shortDescription']),30)
         self.assertTrue((folder/overlay['skills']).is_dir())
         self.assertNotIn('hooks',portable['extensions']['com.openai'])
         self.assertNotIn('apps',portable['extensions']['com.openai'])

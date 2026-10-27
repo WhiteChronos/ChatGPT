@@ -1,6 +1,6 @@
 # katanemo/plano — workflow individual
 
-Skill: `wf-katanemo-plano-5d0e2850`. Plugin: `wf-katanemo-plano-5d0e2850`. Versão: 1.0.2.
+Skill: `wf-katanemo-plano-5d0e2850`. Plugin: `wf-katanemo-plano-5d0e2850`. Versão: 1.0.3.
 Origem: https://github.com/katanemo/plano.
 
 Use `$wf-katanemo-plano-5d0e2850` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

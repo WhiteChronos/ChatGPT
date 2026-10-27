@@ -1,6 +1,6 @@
 # Jakeschincariol/arena-skill — workflow individual
 
-Skill: `wf-jakeschincariol-arena-skill-c734ca29`. Plugin: `wf-jakeschincariol-arena-skill-c734ca29`. Versão: 1.0.2.
+Skill: `wf-jakeschincariol-arena-skill-c734ca29`. Plugin: `wf-jakeschincariol-arena-skill-c734ca29`. Versão: 1.0.3.
 Origem: https://github.com/Jakeschincariol/arena-skill.
 
 Use `$wf-jakeschincariol-arena-skill-c734ca29` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

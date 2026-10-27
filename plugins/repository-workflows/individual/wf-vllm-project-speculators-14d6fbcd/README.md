@@ -1,6 +1,6 @@
 # vllm-project/speculators — workflow individual
 
-Skill: `wf-vllm-project-speculators-14d6fbcd`. Plugin: `wf-vllm-project-speculators-14d6fbcd`. Versão: 1.0.2.
+Skill: `wf-vllm-project-speculators-14d6fbcd`. Plugin: `wf-vllm-project-speculators-14d6fbcd`. Versão: 1.0.3.
 Origem: https://github.com/vllm-project/speculators.
 
 Use `$wf-vllm-project-speculators-14d6fbcd` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.
