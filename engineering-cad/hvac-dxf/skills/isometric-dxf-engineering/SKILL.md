@@ -76,3 +76,17 @@ Preferred OpenCascade HLR composition for ISO_CLEAN:
 - exclude `Rg1LineVCompound` by default unless a specific model requires it for external form recognition.
 
 Reject ISO_CLEAN if curves are visibly fragmented, contours do not close, or the object looks exploded/disconnected.
+
+
+## AutoCAD canonical isometric orientation
+Before generating or approving an ISO view, read `references/autocad-isometric-standard.md`.
+
+Default project convention:
+- +X projects at 30 degrees;
+- +Z projects vertically at 90 degrees;
+- +Y projects at 150 degrees;
+- the projector frame must include a fixed in-plane X direction so the CAD kernel cannot choose arbitrary roll;
+- default output is an AutoCAD-style true-length isometric drawing; use the single uniform factor sqrt(3/2) after mathematical orthographic isometric projection;
+- circles on isometric planes remain projected ellipses/isocircles.
+
+Reject the ISO when the measured projected axes do not pass the 30/90/150 gate.
