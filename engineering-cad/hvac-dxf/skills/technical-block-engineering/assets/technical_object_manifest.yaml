@@ -30,6 +30,15 @@ sources:
   native_cad_url: ""
   native_cad_format: ""
 suppliers: []
+supplier_authority:
+  brand: ""
+  supplier_name: ""
+  relationship: ""  # MANUFACTURER | AUTHORIZED_DISTRIBUTOR | AUTHORIZED_PARTNER | SYSTEM_INTEGRATOR | RESELLER | UNKNOWN
+  manufacturer_official_domain: ""
+  official_verification_url: ""
+  country_or_region: ""
+  checked_date: ""
+  verification_status: "UNVERIFIED"  # VERIFIED | UNVERIFIED | BLOCKED
 project_values: {}
 manufacturer_values: {}
 conflicts: []
