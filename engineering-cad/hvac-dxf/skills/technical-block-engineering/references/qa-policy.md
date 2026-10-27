@@ -20,3 +20,11 @@ For `CAD_FABRICANTE` or `RECONSTRUCAO_FICHA`:
 13. official verification URL, region and checked date recorded in the manifest;
 14. `RESELLER`, `UNKNOWN`, marketplace, or self-declared distributor sources are blocked from final geometry;
 15. when no authorized channel can be verified, use manufacturer-direct technical sources only.
+
+## Filename/package gates
+Before publishing a DXF package:
+16. every DXF filename passes `scripts/validate_dxf_filename.py`;
+17. filename identifies instrument/equipment type, manufacturer, exact model, artifact/view and revision;
+18. symbol filenames include the real symbol code;
+19. no generic/model-only filenames remain;
+20. descriptive CSV and TXT indexes are present and consistent with the files in the package.
