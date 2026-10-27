@@ -1,6 +1,6 @@
 {
   "name": "wf-chromedevtools-chrome-devtools-mcp-c68b4f26",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Workflow individual para ChromeDevTools/chrome-devtools-mcp",
   "author": {
     "name": "WhiteChronos"
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "ChromeDevTools/chrome-devtools-mcp Workflow",
-    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "shortDescription": "Workflows por repositório",
     "longDescription": "Workflow individual para ChromeDevTools/chrome-devtools-mcp Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
     "developerName": "WhiteChronos",
     "category": "Developer Tools",

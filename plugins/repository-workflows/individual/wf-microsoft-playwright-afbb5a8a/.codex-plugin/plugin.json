@@ -1,6 +1,6 @@
 {
   "name": "wf-microsoft-playwright-afbb5a8a",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Workflow individual para microsoft/playwright",
   "author": {
     "name": "WhiteChronos"
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "microsoft/playwright Workflow",
-    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "shortDescription": "Workflows por repositório",
     "longDescription": "Workflow individual para microsoft/playwright Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
     "developerName": "WhiteChronos",
     "category": "Developer Tools",

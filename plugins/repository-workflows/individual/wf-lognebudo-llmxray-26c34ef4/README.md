@@ -1,6 +1,6 @@
 # LogneBudo/llmxray — workflow individual
 
-Skill: `wf-lognebudo-llmxray-26c34ef4`. Plugin: `wf-lognebudo-llmxray-26c34ef4`. Versão: 1.0.2.
+Skill: `wf-lognebudo-llmxray-26c34ef4`. Plugin: `wf-lognebudo-llmxray-26c34ef4`. Versão: 1.0.3.
 Origem: https://github.com/LogneBudo/llmxray.
 
 Use `$wf-lognebudo-llmxray-26c34ef4` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

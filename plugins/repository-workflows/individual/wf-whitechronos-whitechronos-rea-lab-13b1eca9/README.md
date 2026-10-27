@@ -1,6 +1,6 @@
 # WhiteChronos/whitechronos-rea-lab — workflow individual
 
-Skill: `wf-whitechronos-whitechronos-rea-lab-13b1eca9`. Plugin: `wf-whitechronos-whitechronos-rea-lab-13b1eca9`. Versão: 1.0.2.
+Skill: `wf-whitechronos-whitechronos-rea-lab-13b1eca9`. Plugin: `wf-whitechronos-whitechronos-rea-lab-13b1eca9`. Versão: 1.0.3.
 Origem: https://github.com/WhiteChronos/whitechronos-rea-lab.
 
 Use `$wf-whitechronos-whitechronos-rea-lab-13b1eca9` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

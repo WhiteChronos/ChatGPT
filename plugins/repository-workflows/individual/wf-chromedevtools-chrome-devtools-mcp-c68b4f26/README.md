@@ -1,6 +1,6 @@
 # ChromeDevTools/chrome-devtools-mcp — workflow individual
 
-Skill: `wf-chromedevtools-chrome-devtools-mcp-c68b4f26`. Plugin: `wf-chromedevtools-chrome-devtools-mcp-c68b4f26`. Versão: 1.0.2.
+Skill: `wf-chromedevtools-chrome-devtools-mcp-c68b4f26`. Plugin: `wf-chromedevtools-chrome-devtools-mcp-c68b4f26`. Versão: 1.0.3.
 Origem: https://github.com/ChromeDevTools/chrome-devtools-mcp.
 
 Use `$wf-chromedevtools-chrome-devtools-mcp-c68b4f26` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

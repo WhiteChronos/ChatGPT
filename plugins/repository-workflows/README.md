@@ -10,4 +10,4 @@ Cobertura é presença, não inventário exaustivo: buscas indexadas podem omiti
 
 Sem agendamento semanal. Revalidação após atualização relevante. Conta web, descoberta em novas conversas e execução real de cada upstream permanecem NOT_VERIFIED até prova específica.
 
-Versão de empacotamento 1.0.2: veja [compatibilidade ChatGPT web/Codex/GitHub](COMPATIBILITY.md).
+Versão de empacotamento 1.0.3: veja [compatibilidade ChatGPT web/Codex/GitHub](COMPATIBILITY.md).

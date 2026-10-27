@@ -1,6 +1,6 @@
 {
   "name": "wf-google-perfetto-72e3738b",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Workflow individual para google/perfetto",
   "author": {
     "name": "WhiteChronos"
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "google/perfetto Workflow",
-    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "shortDescription": "Workflows por repositório",
     "longDescription": "Workflow individual para google/perfetto Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
     "developerName": "WhiteChronos",
     "category": "Developer Tools",

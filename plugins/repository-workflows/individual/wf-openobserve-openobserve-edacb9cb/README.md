@@ -1,6 +1,6 @@
 # openobserve/openobserve — workflow individual
 
-Skill: `wf-openobserve-openobserve-edacb9cb`. Plugin: `wf-openobserve-openobserve-edacb9cb`. Versão: 1.0.2.
+Skill: `wf-openobserve-openobserve-edacb9cb`. Plugin: `wf-openobserve-openobserve-edacb9cb`. Versão: 1.0.3.
 Origem: https://github.com/openobserve/openobserve.
 
 Use `$wf-openobserve-openobserve-edacb9cb` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

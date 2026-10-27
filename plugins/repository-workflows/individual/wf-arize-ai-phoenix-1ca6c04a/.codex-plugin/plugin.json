@@ -1,6 +1,6 @@
 {
   "name": "wf-arize-ai-phoenix-1ca6c04a",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Workflow individual para Arize-ai/phoenix",
   "author": {
     "name": "WhiteChronos"
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Arize-ai/phoenix Workflow",
-    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "shortDescription": "Workflows por repositório",
     "longDescription": "Workflow individual para Arize-ai/phoenix Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
     "developerName": "WhiteChronos",
     "category": "Developer Tools",

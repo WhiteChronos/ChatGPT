@@ -1,6 +1,6 @@
 # GoogleChrome/lighthouse — workflow individual
 
-Skill: `wf-googlechrome-lighthouse-d1708a87`. Plugin: `wf-googlechrome-lighthouse-d1708a87`. Versão: 1.0.2.
+Skill: `wf-googlechrome-lighthouse-d1708a87`. Plugin: `wf-googlechrome-lighthouse-d1708a87`. Versão: 1.0.3.
 Origem: https://github.com/GoogleChrome/lighthouse.
 
 Use `$wf-googlechrome-lighthouse-d1708a87` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

@@ -1,6 +1,6 @@
 {
   "name": "wf-vllm-project-speculators-14d6fbcd",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Workflow individual para vllm-project/speculators",
   "author": {
     "name": "WhiteChronos"
@@ -10,7 +10,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "vllm-project/speculators Workflow",
-    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "shortDescription": "Workflows por repositório",
     "longDescription": "Workflow individual para vllm-project/speculators Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
     "developerName": "WhiteChronos",
     "category": "Developer Tools",

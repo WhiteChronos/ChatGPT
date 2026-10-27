@@ -1,6 +1,6 @@
 # vercel-labs/skills — workflow individual
 
-Skill: `wf-vercel-labs-skills-ac98481e`. Plugin: `wf-vercel-labs-skills-ac98481e`. Versão: 1.0.2.
+Skill: `wf-vercel-labs-skills-ac98481e`. Plugin: `wf-vercel-labs-skills-ac98481e`. Versão: 1.0.3.
 Origem: https://github.com/vercel-labs/skills.
 
 Use `$wf-vercel-labs-skills-ac98481e` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.
