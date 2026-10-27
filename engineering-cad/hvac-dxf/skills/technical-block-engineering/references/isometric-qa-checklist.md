@@ -16,3 +16,8 @@
 - [ ] No internal components appear through opaque covers
 - [ ] Original assembly/compound was not fused merely for line cleanup
 - [ ] Solid/depth reference from the same STEP/BREP matches the DXF ISO
+
+
+- [ ] Curves/edges are continuous and not fragmented by visibility sampling
+- [ ] External silhouette closes coherently where geometry requires it
+- [ ] Object does not look exploded/disconnected
