@@ -1,0 +1,173 @@
+name: AUT Panel P0 Real E2E Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_number:
+        description: Project number
+        required: true
+        default: '25279'
+        type: string
+      panel_id:
+        description: Panel identifier used by the P0 artifact bundle
+        required: true
+        default: 'PN-AUT-001'
+        type: string
+      project_control:
+        description: Canonical project-control JSON path
+        required: true
+        default: 'datacenter/projects/25279/PN_AUT_01_PROJECT_CONTROL_V1.json'
+        type: string
+      artifact_root:
+        description: P0 real artifact directory
+        required: true
+        default: 'datacenter/projects/25279/PN-AUT-001/p0_real'
+        type: string
+  workflow_call:
+    inputs:
+      project_number:
+        description: Project number
+        required: false
+        default: '25279'
+        type: string
+      panel_id:
+        description: Panel identifier used by the P0 artifact bundle
+        required: false
+        default: 'PN-AUT-001'
+        type: string
+      project_control:
+        description: Canonical project-control JSON path
+        required: false
+        default: 'datacenter/projects/25279/PN_AUT_01_PROJECT_CONTROL_V1.json'
+        type: string
+      artifact_root:
+        description: P0 real artifact directory
+        required: false
+        default: 'datacenter/projects/25279/PN-AUT-001/p0_real'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p0-real-panel-${{ github.workflow }}-${{ inputs.project_number }}-${{ inputs.panel_id }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  contract-tests:
+    name: P0 gate contract tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run P0 gate regression tests
+        run: python -m pytest -q tests/test_p0_real_panel_e2e_gate.py
+
+  p0-real-panel-e2e:
+    name: P0 real panel E2E
+    needs: contract-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PROJECT_NUMBER: ${{ inputs.project_number }}
+      PANEL_ID: ${{ inputs.panel_id }}
+      PROJECT_CONTROL: ${{ inputs.project_control }}
+      ARTIFACT_ROOT: ${{ inputs.artifact_root }}
+      REPORT_DIR: build/p0-real-panel
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require controlled P0 artifact set
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$PROJECT_CONTROL"
+          test -f "$ARTIFACT_ROOT/INPUT_GAP_REGISTER_CURRENT.json"
+          test -f "$ARTIFACT_ROOT/PANEL_GEOMETRY_MANIFEST.json"
+          test -f "$ARTIFACT_ROOT/P0_REAL_PANEL_E2E_RESULT.json"
+          test -f "$ARTIFACT_ROOT/MULTIVIEW_RENDER_MANIFEST.json"
+          test -f "$ARTIFACT_ROOT/FINAL_IMAGE_QA_MANIFEST.json"
+
+      - name: Evaluate frozen-state and E2E evidence chain
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$REPORT_DIR"
+          python pipeline/p0_real_panel_e2e_gate.py \
+            --project-number "$PROJECT_NUMBER" \
+            --panel-id "$PANEL_ID" \
+            --project-control "$PROJECT_CONTROL" \
+            --artifact-root "$ARTIFACT_ROOT" \
+            --report "$REPORT_DIR/p0-real-gate-report.json" \
+            | tee "$REPORT_DIR/p0-real-gate-output.json"
+
+      - name: Verify canonical geometry deterministically
+        shell: bash
+        run: |
+          set -euo pipefail
+          python pipeline/panel_3d_geometry_gate.py \
+            "$ARTIFACT_ROOT/PANEL_GEOMETRY_MANIFEST.json" \
+            | tee "$REPORT_DIR/geometry-gate.json"
+
+      - name: Verify multiview assembly identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python skills/aut-panel-pn-image-fidelity/scripts/validate_multiview_manifest.py \
+            "$ARTIFACT_ROOT/MULTIVIEW_RENDER_MANIFEST.json" \
+            | tee "$REPORT_DIR/multiview-gate.json"
+
+      - name: Verify final engineering image QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          python skills/aut-panel-final-image-verification/scripts/verify_final_image_manifest.py \
+            "$ARTIFACT_ROOT/FINAL_IMAGE_QA_MANIFEST.json" \
+            --output "$REPORT_DIR/final-image-gate.json"
+
+      - name: Publish gate evidence summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## AUT Panel P0 Real E2E"
+            echo
+            echo "- Project: $PROJECT_NUMBER"
+            echo "- Panel: $PANEL_ID"
+            echo "- Source SHA: ${GITHUB_SHA}"
+            echo "- Control: $PROJECT_CONTROL"
+            echo "- Artifact root: $ARTIFACT_ROOT"
+            echo
+            for report in \
+              "$REPORT_DIR/p0-real-gate-report.json" \
+              "$REPORT_DIR/geometry-gate.json" \
+              "$REPORT_DIR/multiview-gate.json" \
+              "$REPORT_DIR/final-image-gate.json"; do
+              if test -f "$report"; then
+                echo "### $report"
+                cat "$report"
+              fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload P0 verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p0-real-panel-e2e-${{ inputs.project_number }}-${{ inputs.panel_id }}-${{ github.sha }}
+          path: build/p0-real-panel
+          if-no-files-found: warn
+          retention-days: 30
