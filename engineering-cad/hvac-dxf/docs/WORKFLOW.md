@@ -102,3 +102,17 @@ Examples already registered include WEG, Schneider Electric, Phoenix Contact, Ro
 - A distributor/partner may support final geometry only when its authorization is verified by the brand itself and recorded in the manifest.
 - Marketplace, reseller, forum, copied catalog, and self-declared distributor sources remain research leads only.
 - `source_class` must remain `BLOQUEADO` or supplier evidence must be excluded from final authority when this gate fails.
+
+### G7A — Descriptive DXF filenames
+Before publication:
+- name every DXF using `TIPO_INSTRUMENTO_FABRICANTE_MODELO_ARTEFATO_REVISAO.dxf`;
+- use ASCII uppercase, digits and underscores only;
+- instrument/equipment type, manufacturer, exact model, artifact/view and revision are mandatory;
+- symbol files use `SIMBOLOGIA_<CODIGO>`;
+- multiview files use `CONJUNTO_MULTIVISTAS`;
+- reject generic names such as `ISO.dxf`, `FRONT.dxf`, `BLOCK1.dxf`, `FINAL.dxf` or model-only names;
+- run `scripts/validate_dxf_filename.py` on every published DXF;
+- generate `INDICE_DXF_NOMES_DESCRITIVOS.csv` and `INDICE_DXF_NOMES_DESCRITIVOS.txt`;
+- the index must map filename to instrument, manufacturer/model, function/symbol, artifact/view and revision.
+
+STOP publication if any DXF fails the filename gate.
