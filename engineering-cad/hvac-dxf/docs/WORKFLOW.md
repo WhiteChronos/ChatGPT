@@ -74,3 +74,11 @@ Publish only with manifest, sources, QA and confidence class.
 - Default true-length axis scale must equal 1.0.
 - Reject arbitrary camera roll or visually rotated post-processing.
 - Validate circles/conics on the correct Left/Top/Right isoplane.
+
+
+### G4G — R9 regression baseline
+- Use `engineering-cad/hvac-dxf/baselines/R9/` as the canonical regression baseline for the current isometric workflow.
+- Before accepting changes to projector frame, HLR edge selection, true-length scaling, isoplane handling, layout, or DXF export, compare against the R9 baseline.
+- Required default geometry remains X=30 degrees, Z=90 degrees, Y=150 degrees, with true-length projected axis scale 1.0.
+- The four baseline models must retain zero layout collisions and zero DXF structural audit errors.
+- R9 may be superseded only by a documented baseline revision with comparison evidence and human review.
