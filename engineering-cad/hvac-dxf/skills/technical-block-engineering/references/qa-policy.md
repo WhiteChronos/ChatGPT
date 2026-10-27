@@ -24,7 +24,9 @@ For `CAD_FABRICANTE` or `RECONSTRUCAO_FICHA`:
 ## Filename/package gates
 Before publishing a DXF package:
 16. every DXF filename passes `scripts/validate_dxf_filename.py`;
-17. filename identifies instrument/equipment type, manufacturer, exact model, artifact/view and revision;
-18. symbol filenames include the real symbol code;
-19. no generic/model-only filenames remain;
-20. descriptive CSV and TXT indexes are present and consistent with the files in the package.
+17. filename follows `TIPO_FAB_MODELO_ARTEFATO_REV.dxf`;
+18. recommended filename length is <=64 characters and hard maximum is 80;
+19. symbol filenames include the real symbol code using `SYM_<CODIGO>`;
+20. no generic/model-only filenames remain;
+21. `INDICE_DXF.csv` and `INDICE_DXF.txt` contain the complete description that was intentionally removed from the short filename;
+22. package/subfolder naming is also kept compact to reduce total Windows path length.
