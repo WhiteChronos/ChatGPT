@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Kit Controle de Elaboracao"
+  short_description: "Controla requisitos, arquitetura, regras, tarefas, memoria e validacao"
+  default_prompt: "Use o GitHub Spec Kit como metodo de controle desta elaboracao com rastreabilidade e testes."
