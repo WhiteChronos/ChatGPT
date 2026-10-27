@@ -66,3 +66,11 @@ Publish only with manifest, sources, QA and confidence class.
 - Final ISO_CLEAN must preserve complete continuous projected edges.
 - Reject fragmented/pixel-clipped linework, open silhouettes caused by filtering, and exploded-looking geometry.
 - Surface/depth-buffer may be used to validate occlusion, but final DXF linework should remain exact CAD curves from the projection kernel whenever possible.
+
+
+### G4F — Isometric axis geometry
+- Validate the isometric frame before geometry QA.
+- Required default projected axes: X=30 degrees, Z=90 degrees, Y=150 degrees.
+- Default true-length axis scale must equal 1.0.
+- Reject arbitrary camera roll or visually rotated post-processing.
+- Validate circles/conics on the correct Left/Top/Right isoplane.
