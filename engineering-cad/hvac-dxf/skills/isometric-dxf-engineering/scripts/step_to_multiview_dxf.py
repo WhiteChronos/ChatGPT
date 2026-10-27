@@ -20,12 +20,15 @@ def flatten_edges(s):
     if s.IsNull(): return []
     BRepLib.BuildCurves3d_s(s,TOLERANCE)
     return Shape(s).Edges()
-def project(shape,direction):
+def project(shape,view_spec,clean_iso=False):
+    direction=view_spec["direction"]; xdir=view_spec["xdir"]
     hlr=HLRBRep_Algo(); hlr.Add(shape.wrapped)
-    hlr.Projector(HLRAlgo_Projector(gp_Ax2(gp_Pnt(),gp_Dir(*direction))))
+    ax2=gp_Ax2(gp_Pnt(),gp_Dir(*direction),gp_Dir(*xdir))
+    hlr.Projector(HLRAlgo_Projector(ax2))
     hlr.Update(); hlr.Hide(); hs=HLRBRep_HLRToShape(hlr)
     visible=[]; hidden=[]
-    for getter in ("VCompound","Rg1LineVCompound","OutLineVCompound"):
+    visible_getters=("VCompound","OutLineVCompound") if clean_iso else ("VCompound","Rg1LineVCompound","OutLineVCompound")
+    for getter in visible_getters:
         visible.extend(flatten_edges(getattr(hs,getter)()))
     for getter in ("HCompound","OutLineHCompound"):
         hidden.extend(flatten_edges(getattr(hs,getter)()))
@@ -73,6 +76,24 @@ def arrange(view_data,gap):
     return placed
 def overlaps(a,b,eps=1e-9):
     return not (a["xmax"]<=b["xmin"]+eps or b["xmax"]<=a["xmin"]+eps or a["ymax"]<=b["ymin"]+eps or b["ymax"]<=a["ymin"]+eps)
+def _norm(v):
+    n=math.sqrt(sum(x*x for x in v)); return tuple(x/n for x in v)
+def _cross(a,b):
+    return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
+def _dot(a,b):
+    return sum(x*y for x,y in zip(a,b))
+def canonical_iso_axis_qa(true_length=True):
+    spec=VIEWS["ISO"]; zdir=_norm(spec["direction"]); xdir=_norm(spec["xdir"]); ydir=_norm(_cross(zdir,xdir))
+    scale=ISO_TRUE_LENGTH_SCALE if true_length else 1.0
+    basis={"X":(1.0,0.0,0.0),"Y":(0.0,1.0,0.0),"Z":(0.0,0.0,1.0)}
+    expected={"X":30.0,"Y":150.0,"Z":90.0}; axes={}
+    for name,axis in basis.items():
+        sx=_dot(axis,xdir)*scale; sy=_dot(axis,ydir)*scale
+        axes[name]={"angle_deg":math.degrees(math.atan2(sy,sx))%360.0,"projected_axis_length":math.hypot(sx,sy)}
+    passed=all(abs(axes[k]["angle_deg"]-expected[k])<1e-6 for k in expected)
+    if true_length: passed=passed and all(abs(axes[k]["projected_axis_length"]-1.0)<1e-6 for k in expected)
+    return {"mode":"true_length" if true_length else "projection","axes":axes,"expected_angles_deg":expected,"pass":passed}
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("step"); ap.add_argument("--outdir",required=True); ap.add_argument("--name",default=None)
@@ -85,7 +106,7 @@ def main():
     view_data={}
     for v in requested:
         if v not in VIEWS: raise SystemExit(f"unknown view: {v}")
-        vis,hid=project(model,VIEWS[v])
+        vis,hid=project(model,VIEWS[v],clean_iso=(v=="ISO" and not args.iso_hidden))
         if not vis: raise SystemExit(f"projection produced no visible geometry: {v}")
         if args.no_hidden:
             hid=None
