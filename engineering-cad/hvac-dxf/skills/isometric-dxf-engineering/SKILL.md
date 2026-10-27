@@ -65,3 +65,14 @@ The final ISO must be an orthographic projection of the real 3D solid with face-
 Never boolean-fuse an assembly merely to reduce line clutter. Preserve the original compound/assembly and let the visibility engine perform occlusion unless a fuse is technically required and independently validated.
 
 Generate a solid/depth reference with `scripts/render_iso_surface_reference.py` when using an edge-based backend and compare the DXF ISO against that reference before publication.
+
+
+## Continuous-edge ISO rule
+For the default ISO_CLEAN, preserve complete projected CAD edges/curves. Do not clip the isometric into many short independently visible segments.
+
+Preferred OpenCascade HLR composition for ISO_CLEAN:
+- `OutLineVCompound` for external contour;
+- `VCompound` for visible hard edges/details;
+- exclude `Rg1LineVCompound` by default unless a specific model requires it for external form recognition.
+
+Reject ISO_CLEAN if curves are visibly fragmented, contours do not close, or the object looks exploded/disconnected.
