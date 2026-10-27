@@ -7,7 +7,8 @@ Create a technical CAD package that depicts the real manufacturer object at the 
 1. Receive object/tag/photo/reference drawing.
 2. Decide output: object, symbol, or both. Default to both when applicable.
 3. Resolve identity: manufacturer, exact model, part number, revision/variant.
-4. Gather technical evidence: catalog, datasheet PDF, dimensional drawing, CAD/BIM/STEP/DWG/DXF, supplier evidence.
+4. Lock brand/source authority: manufacturer official domain first; validate any distributor/partner through the manufacturer's own official locator/page before using it as evidence.
+5. Gather technical evidence: catalog, datasheet PDF, dimensional drawing, CAD/BIM/STEP/DWG/DXF, supplier evidence.
 5. Prefer native manufacturer geometry.
 6. If native 3D exists: import -> clean -> orthographic projection -> ISO -> DXF.
 7. If only dimensional evidence exists: reconstruct parametric 3D/2D -> project views -> ISO -> DXF.
@@ -93,3 +94,11 @@ Before accepting supplier evidence:
 - when no verified authorized channel is available, use manufacturer-direct sources only.
 
 Examples already registered include WEG, Schneider Electric, Phoenix Contact, Rockwell Automation/Allen-Bradley, Daikin, Belimo and Vaisala. The registry is extensible and must be expanded from brand-owned evidence only.
+
+
+### G2B — Supplier authority STOP gate
+- STOP before geometry approval if supplier authorization cannot be verified from the manufacturer.
+- Final geometry may proceed with manufacturer-direct evidence even when no distributor is selected.
+- A distributor/partner may support final geometry only when its authorization is verified by the brand itself and recorded in the manifest.
+- Marketplace, reseller, forum, copied catalog, and self-declared distributor sources remain research leads only.
+- `source_class` must remain `BLOQUEADO` or supplier evidence must be excluded from final authority when this gate fails.
