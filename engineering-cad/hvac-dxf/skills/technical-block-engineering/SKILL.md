@@ -147,3 +147,19 @@ The final package must present the isometric view as a solid external-object rep
 
 ## True isometric solid-visibility rule
 For final manufacturer-style ISO blocks, require face-based occlusion, not edge filtering alone. The nearest enclosure/cover surface must hide internal/back geometry. Preserve original assembly/compound topology; do not fuse components just to clean linework unless the fused topology is validated against the source.
+
+
+## Brand-locked supplier authority
+Every technical source and commercial supplier must be validated against the real manufacturer brand.
+
+Before using a distributor/partner as evidence, read:
+- `references/source-policy.md`
+- `references/preferred-sources-and-suppliers.md`
+- `assets/brand-authority-registry.yaml`
+
+Rules:
+- manufacturer official sources are primary;
+- a distributor/partner is accepted only when authorization is verifiable from the manufacturer's own official locator/page;
+- reseller/marketplace/self-declared distributor sources are lead-only;
+- if authorization is not verifiable, use manufacturer-direct technical sources only and mark the supplier source blocked for final geometry;
+- for new brands, add the official manufacturer domain and authorized-channel evidence to the brand registry before relying on that channel.
