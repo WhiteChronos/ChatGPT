@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import re
 import zipfile
+from manifest_compat import portable, codex, VERSION
 
 def write_owned(path, content):
     data=content.encode('utf-8') if isinstance(content,str) else content
@@ -27,10 +28,8 @@ def generate(root, output, packages):
         if not source.resolve().is_relative_to(skills): raise ValueError('Source escape')
         folder=output/name
         if not folder.resolve().is_relative_to(output): raise ValueError('Output escape')
-        manifest={'name':name,'version':'1.0.1','description':'Workflow individual para '+row['repository'],
-                  'license':'MIT','skills':'./skills/',
-                  'interface':{'displayName':row['repository']+' Workflow',
-                               'shortDescription':'Skill e workflow individuais deste repositório.'}}
+        manifest=portable(name,row['repository']+' Workflow','Workflow individual para '+row['repository'])
+        overlay=codex(manifest)
         workflow={'repository':row['repository'],'skill':name,'default_mode':'individual',
                   'individual':{'steps':[name],'executed':False,'depends_on_other_systems':False},
                   'integrations':{'rea':{'skill':'whitechronos-lab','when':'static-analysis-requested'},
@@ -40,13 +39,13 @@ def generate(root, output, packages):
                                   'vibe':{'skill':'vibe-coding-toolkit','when':'project-setup-or-guidance'}},
                   'execution_owner':'current host agent','background_enabled':False,
                   'web_account_installation':'NOT_VERIFIED','host_discovery':'NOT_VERIFIED'}
-        files={'.codex-plugin/plugin.json':json.dumps(manifest,ensure_ascii=False,indent=2),
+        files={'.codex-plugin/plugin.json':json.dumps(overlay,ensure_ascii=False,indent=2),
                'plugin.json':json.dumps(manifest,ensure_ascii=False,indent=2),
                'workflow.json':json.dumps(workflow,ensure_ascii=False,indent=2),
                'LICENSE':(root/'LICENSE').read_bytes(),
                'README.md':f'''# {row['repository']} — workflow individual
 
-Skill: `{name}`. Plugin: `{name}`. Versão: 1.0.1.
+Skill: `{name}`. Plugin: `{name}`. Versão: {VERSION}.
 Origem: https://github.com/{row['repository']}.
 
 Use `${name}` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.
@@ -76,10 +75,10 @@ Instalação, seleção e execução são evidências distintas. Upload da conta
         name=row['skill_name']
         for rel,content in files.items(): write_owned(folder/rel,content)
         packages.mkdir(parents=True,exist_ok=True)
-        archive=packages/(name+'-1.0.1.zip')
+        archive=packages/(name+'-'+VERSION+'.zip')
         with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
             for rel in sorted(files): z.write(folder/rel,rel)
-        result.append({'repository':row['repository'],'name':name,'version':'1.0.1','zip':archive.name,
+        result.append({'repository':row['repository'],'name':name,'version':VERSION,'zip':archive.name,
                        'sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'files':len(files),
                        'web_account_installation':'NOT_RUN'})
     return result

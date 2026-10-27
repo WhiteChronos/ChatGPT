@@ -1,11 +1,21 @@
 {
   "name": "wf-wxk-ai-jev-opus-3395fe54",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para WXK-AI/jev-opus",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
   "skills": "./skills/",
   "interface": {
     "displayName": "WXK-AI/jev-opus Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "longDescription": "Workflow individual para WXK-AI/jev-opus Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Use este workflow na tarefa e no repositório que eu indicar."
+    ]
   }
 }

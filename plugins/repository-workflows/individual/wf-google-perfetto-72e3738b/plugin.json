@@ -1,11 +1,25 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "wf-google-perfetto-72e3738b",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para google/perfetto",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
-  "skills": "./skills/",
-  "interface": {
-    "displayName": "google/perfetto Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "google/perfetto Workflow",
+        "shortDescription": "Workflow com skills e fontes verificáveis.",
+        "longDescription": "Workflow individual para google/perfetto Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+        "developerName": "WhiteChronos",
+        "category": "Developer Tools",
+        "defaultPrompt": [
+          "Use este workflow na tarefa e no repositório que eu indicar."
+        ]
+      }
+    }
   }
 }

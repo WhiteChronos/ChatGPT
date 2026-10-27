@@ -1,11 +1,21 @@
 {
   "name": "wf-github-spec-kit-ea503c1a",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para github/spec-kit",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
   "skills": "./skills/",
   "interface": {
     "displayName": "github/spec-kit Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+    "shortDescription": "Workflow com skills e fontes verificáveis.",
+    "longDescription": "Workflow individual para github/spec-kit Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Use este workflow na tarefa e no repositório que eu indicar."
+    ]
   }
 }

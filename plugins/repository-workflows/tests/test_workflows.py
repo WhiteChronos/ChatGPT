@@ -3,9 +3,11 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+import sys
 
 script=Path(__file__).with_name('build.py')
 if not script.exists(): script=Path(__file__).resolve().parents[1]/'scripts/workflows.py'
+sys.path.insert(0,str(script.parent))
 spec = importlib.util.spec_from_file_location('workflows', script)
 w = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(w)

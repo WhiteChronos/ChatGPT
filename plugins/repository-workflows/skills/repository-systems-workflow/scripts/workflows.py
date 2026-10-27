@@ -57,12 +57,13 @@ def install(source, destination):
     return receipt
 
 def package(root, output, title, skills):
+    from manifest_compat import portable, codex, VERSION
     root=Path(root);output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
-    manifest={'name':skills[0] if len(skills)==1 else 'repository-workflows','version':'1.0.0','description':'Original repository-scoped workflows; upstream systems remain separate.',
-              'skills':'./skills/','interface':{'displayName':title,'shortDescription':'Workflows individuais e coordenação seletiva com REA.'}}
+    manifest=portable(skills[0] if len(skills)==1 else 'repository-workflows',title,'Workflows por repositório com coordenação seletiva REA.')
     with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED) as z:
         z.writestr('plugin.json',json.dumps(manifest,ensure_ascii=False,indent=2))
-        for name in ('LICENSE','README.md'):
+        z.writestr('.codex-plugin/plugin.json',json.dumps(codex(manifest),ensure_ascii=False,indent=2))
+        for name in ('LICENSE','README.md','COMPATIBILITY.md'):
             if (root/name).is_file(): z.write(root/name,name)
         for name in skills:
             if not re.fullmatch('[a-z0-9-]+',name): raise ValueError('Invalid skill directory')
@@ -82,6 +83,7 @@ def metadata(name,title):
             '\npolicy:\n  allow_implicit_invocation: true\n')
 
 def build(base):
+    from manifest_compat import portable, codex, VERSION
     base=Path(base)
     remote=json.loads((base/'remote-inventory.json').read_text(encoding='utf-8'))
     local=json.loads((base/'local-inventory.json').read_text(encoding='utf-8'))
@@ -159,9 +161,9 @@ O helper scripts/workflows.py plan retorna PLAN_ONLY. A execução cabe ao agent
             'source':'skills/'+r['skill_name']+'/references/source.json'} for r in rows]
     write(root/'skills'/central/'references/registry.json',json.dumps(index,ensure_ascii=False,indent=2))
     write(root/'registry.json',json.dumps(index,ensure_ascii=False,indent=2))
-    manifest={'name':'repository-workflows','version':'1.0.0','description':'Original workflows for verified skill repositories; selective REA coordination.',
-              'license':'MIT','skills':'./skills/','interface':{'displayName':'Workflows dos Repositórios + REA','shortDescription':'Entradas individuais e coordenação seletiva.'}}
-    write(root/'.codex-plugin/plugin.json',json.dumps(manifest,indent=2))
+    manifest=portable('repository-workflows','Workflows dos Repositórios + REA','Workflows por repositório com coordenação seletiva REA.')
+    write(root/'plugin.json',json.dumps(manifest,ensure_ascii=False,indent=2))
+    write(root/'.codex-plugin/plugin.json',json.dumps(codex(manifest),ensure_ascii=False,indent=2))
     write(root/'README.md',f'''# Workflows dos Repositórios + REA
 
 {len(rows)} repositórios com presença confirmada de SKILL.md, um adaptador individual para cada um e um coordenador conjunto. Conteúdo próprio: não redistribui skills upstream nem substitui plugins oficiais.
@@ -176,9 +178,12 @@ Sem agendamento semanal. Revalidação após atualização relevante. Conta web,
 ''')
     write(root/'LICENSE','MIT License\n\nCopyright (c) 2026 WhiteChronos\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n')
     (root/'scripts').mkdir(exist_ok=True);shutil.copyfile(Path(__file__),root/'scripts/workflows.py')
+    helper=Path(__file__).with_name('manifest_compat.py')
+    write(root/'scripts/manifest_compat.py',helper.read_text(encoding='utf-8'))
     write(root/'skills'/central/'scripts/workflows.py',Path(__file__).read_text(encoding='utf-8'))
-    packages=[package(root,base/'packages'/f'{r["skill_name"]}-1.0.0.zip',r['repository']+' Workflow',[r['skill_name']]) for r in rows]
-    packages.append(package(root,base/'packages'/'repository-workflows-1.0.0.zip','Workflows dos Repositórios + REA',[r['skill_name'] for r in rows]+[central]))
+    write(root/'skills'/central/'scripts/manifest_compat.py',helper.read_text(encoding='utf-8'))
+    packages=[package(root,base/'packages'/f'{r["skill_name"]}-{VERSION}.zip',r['repository']+' Workflow',[r['skill_name']]) for r in rows]
+    packages.append(package(root,base/'packages'/f'repository-workflows-{VERSION}.zip','Workflows dos Repositórios + REA',[r['skill_name'] for r in rows]+[central]))
     write(base/'packages.json',json.dumps(packages,indent=2))
     matched={r['repository'].lower() for r in rows}
     pending=[r for r in remote['catalog_repositories'] if r.lower() not in matched]

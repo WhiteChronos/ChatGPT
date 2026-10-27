@@ -1,11 +1,25 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "wf-shimo4228-jev-skill-router-d055091d",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para shimo4228/jev-skill-router",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
-  "skills": "./skills/",
-  "interface": {
-    "displayName": "shimo4228/jev-skill-router Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "shimo4228/jev-skill-router Workflow",
+        "shortDescription": "Workflow com skills e fontes verificáveis.",
+        "longDescription": "Workflow individual para shimo4228/jev-skill-router Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+        "developerName": "WhiteChronos",
+        "category": "Developer Tools",
+        "defaultPrompt": [
+          "Use este workflow na tarefa e no repositório que eu indicar."
+        ]
+      }
+    }
   }
 }

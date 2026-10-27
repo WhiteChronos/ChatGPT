@@ -1,6 +1,6 @@
 # vercel/next.js — workflow individual
 
-Skill: `wf-vercel-next-js-079c0319`. Plugin: `wf-vercel-next-js-079c0319`. Versão: 1.0.1.
+Skill: `wf-vercel-next-js-079c0319`. Plugin: `wf-vercel-next-js-079c0319`. Versão: 1.0.2.
 Origem: https://github.com/vercel/next.js.
 
 Use `$wf-vercel-next-js-079c0319` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

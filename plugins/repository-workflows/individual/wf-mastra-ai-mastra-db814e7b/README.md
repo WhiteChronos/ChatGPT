@@ -1,6 +1,6 @@
 # mastra-ai/mastra — workflow individual
 
-Skill: `wf-mastra-ai-mastra-db814e7b`. Plugin: `wf-mastra-ai-mastra-db814e7b`. Versão: 1.0.1.
+Skill: `wf-mastra-ai-mastra-db814e7b`. Plugin: `wf-mastra-ai-mastra-db814e7b`. Versão: 1.0.2.
 Origem: https://github.com/mastra-ai/mastra.
 
 Use `$wf-mastra-ai-mastra-db814e7b` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

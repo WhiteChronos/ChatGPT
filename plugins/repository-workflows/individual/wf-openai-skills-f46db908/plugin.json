@@ -1,11 +1,25 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "wf-openai-skills-f46db908",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Workflow individual para openai/skills",
+  "author": {
+    "name": "WhiteChronos"
+  },
   "license": "MIT",
-  "skills": "./skills/",
-  "interface": {
-    "displayName": "openai/skills Workflow",
-    "shortDescription": "Skill e workflow individuais deste repositório."
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "openai/skills Workflow",
+        "shortDescription": "Workflow com skills e fontes verificáveis.",
+        "longDescription": "Workflow individual para openai/skills Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+        "developerName": "WhiteChronos",
+        "category": "Developer Tools",
+        "defaultPrompt": [
+          "Use este workflow na tarefa e no repositório que eu indicar."
+        ]
+      }
+    }
   }
 }

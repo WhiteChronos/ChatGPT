@@ -1,6 +1,6 @@
 # WXK-AI/jev-opus — workflow individual
 
-Skill: `wf-wxk-ai-jev-opus-3395fe54`. Plugin: `wf-wxk-ai-jev-opus-3395fe54`. Versão: 1.0.1.
+Skill: `wf-wxk-ai-jev-opus-3395fe54`. Plugin: `wf-wxk-ai-jev-opus-3395fe54`. Versão: 1.0.2.
 Origem: https://github.com/WXK-AI/jev-opus.
 
 Use `$wf-wxk-ai-jev-opus-3395fe54` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

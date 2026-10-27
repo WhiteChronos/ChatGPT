@@ -1,6 +1,6 @@
 # mlflow/mlflow — workflow individual
 
-Skill: `wf-mlflow-mlflow-93fff73e`. Plugin: `wf-mlflow-mlflow-93fff73e`. Versão: 1.0.1.
+Skill: `wf-mlflow-mlflow-93fff73e`. Plugin: `wf-mlflow-mlflow-93fff73e`. Versão: 1.0.2.
 Origem: https://github.com/mlflow/mlflow.
 
 Use `$wf-mlflow-mlflow-93fff73e` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

@@ -1,6 +1,6 @@
 # future-agi/future-agi — workflow individual
 
-Skill: `wf-future-agi-future-agi-dc3bdaee`. Plugin: `wf-future-agi-future-agi-dc3bdaee`. Versão: 1.0.1.
+Skill: `wf-future-agi-future-agi-dc3bdaee`. Plugin: `wf-future-agi-future-agi-dc3bdaee`. Versão: 1.0.2.
 Origem: https://github.com/future-agi/future-agi.
 
 Use `$wf-future-agi-future-agi-dc3bdaee` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.

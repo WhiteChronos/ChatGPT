@@ -1,6 +1,6 @@
 # vectorize-io/hindsight — workflow individual
 
-Skill: `wf-vectorize-io-hindsight-57687486`. Plugin: `wf-vectorize-io-hindsight-57687486`. Versão: 1.0.1.
+Skill: `wf-vectorize-io-hindsight-57687486`. Plugin: `wf-vectorize-io-hindsight-57687486`. Versão: 1.0.2.
 Origem: https://github.com/vectorize-io/hindsight.
 
 Use `$wf-vectorize-io-hindsight-57687486` ao trabalhar nas skills deste repositório. Confirme o alvo, leia a skill upstream pertinente e execute os passos autorizados com as ferramentas disponíveis no host. O arquivo `workflow.json` registra o modo individual e as integrações opcionais. Não é um executor de comandos.
