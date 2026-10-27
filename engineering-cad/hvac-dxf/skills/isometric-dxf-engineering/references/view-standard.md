@@ -22,3 +22,12 @@
 - Do not publish per-pixel/per-segment depth clipping as final DXF when it produces broken curves.
 - Use exact HLR edge classification for final linework, and surface/depth rendering as QA/reference.
 - Default ISO_CLEAN should use `OutLineVCompound + VCompound`; keep `Rg1LineVCompound` out unless justified.
+
+
+## 30/90/150 canonical axes
+- X axis: 30 degrees.
+- Z axis: 90 degrees vertical.
+- Y axis: 150 degrees.
+- Default is true-length isometric drawing scale.
+- Mathematical foreshortened projection is optional only when explicitly requested.
+- Do not rotate a finished DXF as a substitute for setting the correct projector frame.
