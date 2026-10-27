@@ -60,3 +60,9 @@ Publish only with manifest, sources, QA and confidence class.
 - The front cover/enclosure must remain visible when it is visible from the selected quadrant.
 - Reject any ISO that looks like a section/x-ray/wireframe when no section was requested.
 - Compare the DXF to a solid surface reference from the same geometry master.
+
+
+### G4E — Curve continuity
+- Final ISO_CLEAN must preserve complete continuous projected edges.
+- Reject fragmented/pixel-clipped linework, open silhouettes caused by filtering, and exploded-looking geometry.
+- Surface/depth-buffer may be used to validate occlusion, but final DXF linework should remain exact CAD curves from the projection kernel whenever possible.
