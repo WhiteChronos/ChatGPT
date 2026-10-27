@@ -15,3 +15,10 @@
 - Hidden ISO edges are optional and must not be shown in the final default package unless explicitly requested.
 - If hidden ISO edges are exported, they must be a separate technical variant or a hidden layer turned off by default.
 - MULTIVIEW.dxf must include the clean ISO.
+
+
+## Curve continuity rule
+- Preserve full HLR edges and analytic curves whenever possible.
+- Do not publish per-pixel/per-segment depth clipping as final DXF when it produces broken curves.
+- Use exact HLR edge classification for final linework, and surface/depth rendering as QA/reference.
+- Default ISO_CLEAN should use `OutLineVCompound + VCompound`; keep `Rg1LineVCompound` out unless justified.
