@@ -103,16 +103,16 @@ Examples already registered include WEG, Schneider Electric, Phoenix Contact, Ro
 - Marketplace, reseller, forum, copied catalog, and self-declared distributor sources remain research leads only.
 - `source_class` must remain `BLOQUEADO` or supplier evidence must be excluded from final authority when this gate fails.
 
-### G7A — Descriptive DXF filenames
+### G7A — Compact DXF filenames
 Before publication:
-- name every DXF using `TIPO_INSTRUMENTO_FABRICANTE_MODELO_ARTEFATO_REVISAO.dxf`;
-- use ASCII uppercase, digits and underscores only;
-- instrument/equipment type, manufacturer, exact model, artifact/view and revision are mandatory;
-- symbol files use `SIMBOLOGIA_<CODIGO>`;
-- multiview files use `CONJUNTO_MULTIVISTAS`;
-- reject generic names such as `ISO.dxf`, `FRONT.dxf`, `BLOCK1.dxf`, `FINAL.dxf` or model-only names;
-- run `scripts/validate_dxf_filename.py` on every published DXF;
-- generate `INDICE_DXF_NOMES_DESCRITIVOS.csv` and `INDICE_DXF_NOMES_DESCRITIVOS.txt`;
-- the index must map filename to instrument, manufacturer/model, function/symbol, artifact/view and revision.
+- use `TIPO_FAB_MODELO_ARTEFATO_REV.dxf`;
+- target <=64 characters including `.dxf`; hard limit 80;
+- use compact type tokens such as `NIVEL`, `PRESS`, `TEMPUMID`;
+- use compact artifact tokens `FRT`, `ESQ`, `DIR`, `SUP`, `INF`, `ISO`, `MV`, `SEC_<ID>`, `SYM_<CODIGO>`;
+- keep manufacturer and exact model traceable;
+- store the complete natural-language description in `INDICE_DXF.csv`, `INDICE_DXF.txt` and the manifest;
+- prefer short subfolder/package names to reduce total Windows path length;
+- reject generic names and any filename over the hard limit;
+- run `scripts/validate_dxf_filename.py` on every published DXF.
 
-STOP publication if any DXF fails the filename gate.
+STOP publication if any DXF fails the compact filename gate.
