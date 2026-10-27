@@ -11,3 +11,12 @@ Final geometry gates:
 8. project-vs-manufacturer conflicts documented;
 9. provenance manifest complete;
 10. reusable rule changes regression-tested against failing and known-good cases.
+
+
+## Supplier/source authority gates
+For `CAD_FABRICANTE` or `RECONSTRUCAO_FICHA`:
+11. supplier authority verified from the manufacturer's own official domain/locator;
+12. supplier relationship is `MANUFACTURER`, `AUTHORIZED_DISTRIBUTOR`, or `AUTHORIZED_PARTNER`;
+13. official verification URL, region and checked date recorded in the manifest;
+14. `RESELLER`, `UNKNOWN`, marketplace, or self-declared distributor sources are blocked from final geometry;
+15. when no authorized channel can be verified, use manufacturer-direct technical sources only.
