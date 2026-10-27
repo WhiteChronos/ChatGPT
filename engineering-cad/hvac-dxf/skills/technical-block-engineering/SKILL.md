@@ -25,6 +25,7 @@ Before creating a final object block, read:
 - `references/hyperrealistic-dxf-standard.md`
 - `references/cad-toolchain.md`
 - `references/qa-policy.md`
+- `references/dxf-filename-standard.md`
 - `references/preferred-sources-and-suppliers.md`
 - `assets/brand-authority-registry.yaml`
 
@@ -69,7 +70,7 @@ Deliver separately:
 4. If only dimensional PDF/drawing exists, reconstruct parametrically with CadQuery/FreeCAD/pythonocc.
 5. Preserve housing shape, covers, vents, display, fasteners, probes, floats, brackets, process connections, cable entries, connectors, mounting details and other visible engineering features when documented.
 6. Normalize to Model Space 1:1, meters, Arial without altering geometry.
-7. Create stable block names by manufacturer + model + view.
+7. Name every final DXF using `references/dxf-filename-standard.md`: instrument/equipment type + manufacturer + exact model + artifact/view + revision. A model-only or generic filename is not acceptable.
 
 ## Source classes
 - `CAD_FABRICANTE`
@@ -166,3 +167,18 @@ Rules:
 - reseller/marketplace/self-declared distributor sources are lead-only;
 - if authorization is not verifiable, use manufacturer-direct technical sources only and mark the supplier source blocked for final geometry;
 - for new brands, add the official manufacturer domain and authorized-channel evidence to the brand registry before relying on that channel.
+
+## Descriptive DXF filename rule
+Every published DXF filename must identify the instrument/equipment without opening the file.
+
+Canonical pattern:
+`TIPO_INSTRUMENTO_FABRICANTE_MODELO_ARTEFATO_REVISAO.dxf`
+
+Requirements:
+- ASCII uppercase, digits and underscores only;
+- no spaces or accents;
+- include instrument/equipment type, real manufacturer, exact model, artifact/view and revision;
+- symbol files must use `SIMBOLOGIA_<CODIGO>`;
+- multiview files must use `CONJUNTO_MULTIVISTAS`;
+- packages must include `INDICE_DXF_NOMES_DESCRITIVOS.csv` and `INDICE_DXF_NOMES_DESCRITIVOS.txt`;
+- run `scripts/validate_dxf_filename.py` before publication.
