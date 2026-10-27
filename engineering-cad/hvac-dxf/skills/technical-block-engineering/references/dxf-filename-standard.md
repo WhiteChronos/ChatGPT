@@ -1,51 +1,61 @@
-# DXF Descriptive Filename Standard
+# DXF Compact Filename Standard
 
 ## Objective
-Every final DXF filename must identify the instrument/equipment without opening the file.
+Keep DXF filenames short enough for Windows/AutoCAD paths while still identifying the instrument.
 
 ## Canonical pattern
 
-`TIPO_INSTRUMENTO_FABRICANTE_MODELO_ARTEFATO_REVISAO.dxf`
+`TIPO_FAB_MODELO_ARTEFATO_REV.dxf`
 
-Use ASCII uppercase only, digits, and underscores. Do not use spaces, accents, slashes, parentheses, or punctuation other than the final `.dxf`.
+Recommended basename length: **<= 64 characters including .dxf**. Do not exceed 80 characters.
 
-## Required semantic fields
-1. `TIPO_INSTRUMENTO` — descriptive equipment/instrument class, not only the tag.
-2. `FABRICANTE` — real manufacturer/brand.
-3. `MODELO` — exact model/part family used by the block.
-4. `ARTEFATO` — view, multiview set, section, or symbol.
-5. `REVISAO` — revision token, normally `R01`, `R02`, ... `R10`.
+Use ASCII uppercase letters, digits and underscores only.
 
-## Canonical artifact tokens
-- `VISTA_FRONTAL`
-- `VISTA_LATERAL_ESQUERDA`
-- `VISTA_LATERAL_DIREITA`
-- `VISTA_SUPERIOR`
-- `VISTA_INFERIOR`
-- `VISTA_ISOMETRICA`
-- `CONJUNTO_MULTIVISTAS`
-- `SECAO_<IDENTIFICADOR>`
-- `SIMBOLOGIA_<CODIGO>`
+## Required fields
+1. `TIPO` — short readable instrument/equipment class.
+2. `FAB` — short manufacturer/brand token.
+3. `MODELO` — exact model or compact exact model token.
+4. `ARTEFATO` — short view/symbol token.
+5. `REV` — revision token such as `R10`.
+
+## Standard type tokens
+- `NIVEL` — level switch/instrument
+- `PRESS` — pressure transmitter/instrument
+- `TEMPUMID` — temperature + humidity transmitter
+- add another short readable token only when needed.
+
+## Standard artifact tokens
+- `FRT` — front
+- `ESQ` — left
+- `DIR` — right
+- `SUP` — top
+- `INF` — bottom
+- `ISO` — isometric
+- `MV` — multiview
+- `SEC_<ID>` — section
+- `SYM_<CODIGO>` — project symbol
 
 ## Examples
-- `CHAVE_NIVEL_LATERAL_EICOS_LA32N2_40_VISTA_ISOMETRICA_R10.dxf`
-- `CHAVE_NIVEL_LATERAL_EICOS_LA32N2_40_SIMBOLOGIA_LSH_R10.dxf`
-- `TRANSMISSOR_PRESSAO_EMERSON_ROSEMOUNT_3051T_VISTA_FRONTAL_R10.dxf`
-- `TRANSMISSOR_TEMPERATURA_UMIDADE_EE_EE300EX_M1_T1_CONJUNTO_MULTIVISTAS_R10.dxf`
-- `TRANSMISSOR_TEMPERATURA_UMIDADE_VAISALA_HMT370EX_HMP374_SIMBOLOGIA_TTU_R10.dxf`
+- `NIVEL_EICOS_LA32N2_40_ISO_R10.dxf`
+- `NIVEL_EICOS_LA32N2_40_SYM_LSH_R10.dxf`
+- `PRESS_ROSEMOUNT_3051T_FRT_R10.dxf`
+- `PRESS_ROSEMOUNT_3051T_SYM_PIT_R10.dxf`
+- `TEMPUMID_EE_EE300EX_M1T1_MV_R10.dxf`
+- `TEMPUMID_VAISALA_HMT370EX_HMP374_ISO_R10.dxf`
+- `TEMPUMID_VAISALA_HMT370EX_HMP374_SYM_TTU_R10.dxf`
 
 ## Rules
-- The filename must remain descriptive even when copied outside its original folder.
-- Do not use a model-only filename such as `3051T_ISO.dxf`.
-- Do not use ambiguous names such as `BLOCK1.dxf`, `ISO.dxf`, `FRONT.dxf`, or `FINAL.dxf`.
-- Keep manufacturer/model spelling traceable to the technical-object manifest.
-- Keep the instrument type semantically aligned with the project function and symbol code.
-- A project tag may be appended before the artifact token when needed, but it must not replace instrument/manufacturer/model identification.
-- Keep revision in the filename and manifest consistent.
+- Keep the full human-readable description in the package index and manifest, not in the filename.
+- Do not repeat words such as `TRANSMISSOR`, `INSTRUMENTO`, `VISTA`, `FABRICANTE` in the filename.
+- Do not use generic names such as `ISO.dxf`, `FRONT.dxf`, `BLOCK1.dxf`, or `FINAL.dxf`.
+- The filename must remain traceable to the manifest.
+- A project tag may be added only if the resulting basename remains <=64 characters; otherwise keep the tag in the index/manifest.
+- Prefer short package/subfolder names as well to reduce the total Windows path length.
 
 ## Package index
-Every published package must include:
-- `INDICE_DXF_NOMES_DESCRITIVOS.csv`
-- a human-readable `INDICE_DXF_NOMES_DESCRITIVOS.txt`
+Every package must include:
+- `INDICE_DXF.csv`
+- `INDICE_DXF.txt`
 
-The index must map filename -> instrument -> manufacturer/model -> function/symbol -> artifact/view -> revision.
+The index carries the complete description:
+filename -> full instrument description -> manufacturer/model -> function/symbol -> artifact/view -> revision.
