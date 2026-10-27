@@ -21,3 +21,10 @@
 - [ ] Curves/edges are continuous and not fragmented by visibility sampling
 - [ ] External silhouette closes coherently where geometry requires it
 - [ ] Object does not look exploded/disconnected
+
+
+- [ ] X axis projects at 30 degrees
+- [ ] Z axis projects vertically at 90 degrees
+- [ ] Y axis projects at 150 degrees
+- [ ] Default true-length projected axis scale is 1.0
+- [ ] Isometric circles/conics follow the correct isoplane
