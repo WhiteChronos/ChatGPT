@@ -82,3 +82,14 @@ Publish only with manifest, sources, QA and confidence class.
 - Required default geometry remains X=30 degrees, Z=90 degrees, Y=150 degrees, with true-length projected axis scale 1.0.
 - The four baseline models must retain zero layout collisions and zero DXF structural audit errors.
 - R9 may be superseded only by a documented baseline revision with comparison evidence and human review.
+
+
+### G2A — Brand/supplier authority
+Before accepting supplier evidence:
+- confirm the manufacturer/brand official domain;
+- verify the supplier/partner through the manufacturer's own official locator, partner page, or official document;
+- record supplier name, relationship, official verification URL, region, and checked date;
+- if verification fails, classify the supplier as RESELLER/UNKNOWN and block it from supporting final geometry or supplier authorization;
+- when no verified authorized channel is available, use manufacturer-direct sources only.
+
+Examples already registered include WEG, Schneider Electric, Phoenix Contact, Rockwell Automation/Allen-Bradley, Daikin, Belimo and Vaisala. The registry is extensible and must be expanded from brand-owned evidence only.
