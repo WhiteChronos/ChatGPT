@@ -1,0 +1,36 @@
+name: MCE independent system QA
+on:
+  pull_request:
+    paths:
+      - 'systems/mce/**'
+      - '.agents/skills/padronizacao-mce/**'
+      - '.agents/skills/engenharia-mce-projeto/**'
+      - '.github/workflows/mce-independent-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mce-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r systems/mce/requirements.txt
+      - run: python systems/mce/scripts/validate_skills.py
+      - name: Verify globally discoverable MCE skill copies
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          root = Path('.')
+          local = root / 'systems/mce/.agents/skills'
+          for source in local.rglob('*'):
+              if not source.is_file():
+                  continue
+              target = root / '.agents/skills' / source.relative_to(local)
+              if not target.is_file() or target.read_bytes() != source.read_bytes():
+                  raise SystemExit(f'MCE skill divergence: {source}')
+          print('MCE_SKILLS_SYNC=PASS')
+          PYCODE
+      - run: python -m pytest -q systems/mce/tests

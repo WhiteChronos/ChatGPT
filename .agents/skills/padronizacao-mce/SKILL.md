@@ -1,12 +1,11 @@
 ---
 name: padronizacao-mce
-description: "Preservar o XLSX mestre de Matriz de Causa e Efeito, cabecalhos, estilos, formulas e no maximo 50 causas por folha."
+description: Controlar e preservar rigorosamente o modelo Excel mestre da Matriz de Causa e Efeito (MCE), inclusive estilos, cabecalhos, formulas, legendas e limite de 50 itens de causa por folha. Usar em qualquer projeto que precise inventariar, validar, proteger ou reutilizar um modelo de MCE ou conferir modificacoes textuais com identificacao cinza apenas nas celulas autorizadas.
 ---
-
 # Padronizacao MCE — contrato imutavel do modelo Excel
 
 1. **Nunca alterar o arquivo original**. Inventariar o XLSX por SHA-256, abas, conteudo, estilos, formulas, mesclas, imagens, protecoes, configuracao de impressao, ranges e relacionamentos OOXML.
-2. Ler `references/contrato-modelo.md` antes de qualquer liberacao. O exemplo incluido em `assets/` e **nao homologado**; jamais tratar como modelo Petrobras oficial.
+2. Ler `references/contrato-modelo.md` antes de qualquer liberacao. Exemplos de Excel sao distribuicoes locais separadas e **nao homologadas**; nao existe modelo oficial publicado neste repositorio.
 3. Definir no `contract.json` as abas congeladas, todas as faixas de cabecalho protegidas (`protected_rows_by_sheet`), os intervalos de causas por folha (`matrix_ranges`) e a whitelist precisa (`editable_cells`). Exigir revisao humana do contrato e declaracao `model_approved=true` com inventario `MODELO_APROVADO`. Nunca liberar todos os campos automaticamente.
 4. `max_causes_per_sheet=50` e obrigatorio; se a area real for menor, respeitar o limite fisico. Caso haja necessidade de novas folhas, nao clonar/alterar sem autorizacao e validacao do modelo.
 5. O cabecalho, logotipos, numeros de documento, projeto e SS no cabecalho, revisoes, legendas e rodapes continuam inalterados. Divergencias sao registradas como pendencias externas ao XLSX.

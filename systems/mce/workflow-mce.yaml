@@ -1,0 +1,55 @@
+name: workflow-mce
+version: 2
+mode: local
+steps:
+  - id: intake
+    description: Inventariar Excel mestre e fontes com SHA-256
+    command: mce_workflow.py init
+    next: pid-optional
+  - id: pid-optional
+    description: Importar exportacoes locais e rastreadas de P&ID (Azure/Houston/exemplos de interlock)
+    command: mce_system.py pid-import
+    optional: true
+    requires_status: INVENTARIADO
+    allow_mce_changes: false
+    next: io-optional
+  - id: io-optional
+    description: Comparar TAGs nao verificadas com lista de I/O inventariada
+    command: mce_system.py compare-io
+    optional: true
+    requires_status: INVENTARIADO
+    allow_mce_changes: false
+    next: understand
+  - id: understand
+    description: Registrar entendimento e parecer humano por SHA sobre todos os derivados P&ID
+    command: mce_workflow.py understand
+    needs_review_for_pid: true
+    stop: true
+    status: ANALISADO_AGUARDANDO_DECISAO
+  - id: authorize
+    description: Exigir autorizacao expressa, modelo homologado, IDs comprovados e contrato de edicao
+    command: mce_workflow.py authorize
+    needs: [understand, approved_model, project_identified, ss_identified, approved_edit_contract]
+    next: apply
+  - id: apply
+    description: Editar SOMENTE texto autorizado e cinza em copia derivada, mantendo cabeçalho
+    command: mce_workflow.py apply
+    needs: [authorize, per_cell_provenance]
+    next: audit
+  - id: audit
+    description: Verificar hash, componentes OOXML, estilos, formulas e no maximo 50 causas por folha
+    command: mce_workflow.py audit
+    result: MCE_PRELIMINAR_PARA_REVISAO
+  - id: multidisciplinary-review
+    description: Validacao por Processo, Instrumentacao, Automacao, Operacao e Seguranca quando aplicavel
+    automated: false
+    stop: true
+    status: AGUARDANDO_ACEITE_TECNICO
+limits:
+  max_causes_per_sheet: 50
+  modify_template: false
+  modify_header: false
+  permit_automatic_safety_actions: false
+  default_edit_permission: deny
+  do_not_publish_private_sources: true
+  third_party_license_check_required: true

@@ -142,6 +142,29 @@ def run_understand(args):
     a=readjson(args.analysis)
     if not a.get('summary') or not isinstance(a.get('findings'),list) or not isinstance(a.get('gaps'),list):
         fail('Analise exige resumo, fatos e pendencias.')
+    # Evidencias de P&ID/OCR/benchmark nao se tornam conclusoes documentadas
+    # apenas porque um adaptador produziu um JSON. Exigir revisao humana por SHA.
+    derived=s.get('pid_integrations',[])
+    if derived:
+        reviews=a.get('pid_integration_review',[])
+        if not isinstance(reviews,list) or len(reviews)!=len(derived):
+            fail('STOP: toda integracao P&ID precisa de revisao humana no analise.json.')
+        refs={x['output_file']:x for x in derived}
+        seen=set()
+        for item in reviews:
+            if not isinstance(item,dict):fail('Revisao de P&ID malformada.')
+            name=item.get('output_file')
+            if name not in refs or name in seen:
+                fail('Revisao P&ID duplicada ou origem sem inventario.')
+            seen.add(name)
+            if item.get('output_sha256')!=refs[name]['output_sha256']:
+                fail('Revisao P&ID com hash divergente.')
+            if item.get('review_status') not in ('REVISADO_COM_RESSALVAS','DESCARTADO'):
+                fail('Status de revisao P&ID invalido; nao ha aprovacao automatica.')
+            if not isinstance(item.get('reviewer'),str) or not item['reviewer'].strip():
+                fail('Revisao P&ID exige responsavel humano.')
+            if not isinstance(item.get('comment'),str) or not item['comment'].strip():
+                fail('Revisao P&ID exige conclusao escrita.')
     for item in a['findings']:validate_finding(w,s,item)
     a.setdefault('project','NAO IDENTIFICADO')
     a.setdefault('ss','NAO IDENTIFICADA')
@@ -162,6 +185,12 @@ def run_understand(args):
     for f in a['findings']:
         src=f.get('source_name','SEM FONTE');ln=f.get('line','?')
         parts.append(f"- **{f['classification']}** — {f['text']} (fonte: {src}, linha/pagina: {ln})")
+    if derived:
+        parts.extend(['','## Revisao dos resultados dos adaptadores P&ID'])
+        for item in a['pid_integration_review']:
+            parts.append(f"- **{item['review_status']}** — {item['output_file']}, SHA-256 {item['output_sha256']}; " 
+                         f"revisor: {item['reviewer']}; observacao: {item['comment']}")
+        parts.append('- Estes resultados nao sao autorizacao de logica MCE e nao substituem os P&IDs e narrativas aprovados.')
     parts.extend(['','## Lacunas'])
     parts.extend('- '+str(x) for x in a['gaps'])
     parts.extend(['','## Gate humano','',

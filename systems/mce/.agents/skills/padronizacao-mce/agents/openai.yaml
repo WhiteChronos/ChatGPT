@@ -1,0 +1,3 @@
+interface:
+  display_name: "Padronizacao MCE Excel"
+  short_description: "Preserva e valida o modelo mestre de MCE."

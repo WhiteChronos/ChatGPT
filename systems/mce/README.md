@@ -1,25 +1,52 @@
-# MCE — Matriz de Causa e Efeito (sistema independente)
+# Sistema MCE INDEPENDENTE — Matriz de Causa e Efeito
 
-Este diretorio documenta o **nucleo publico e reutilizavel** das Skills MCE e o fluxo de edicao controlada. O codigo executavel principal reside em `.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py`. A Skill `padronizacao-mce` define o contrato de preservacao do Excel e oferece inventario somente-leitura.
+**Sistema próprio de engenharia industrial; não depende de REA, MCP ou serviços Web externos.**
 
-## Isolamento
+Contém duas Skills locais `padronizacao-mce` e `engenharia-mce-projeto`, editor OOXML de texto controlado, inventário SHA-256, prévia P&ID via adaptadores de formato JSON/CSV, verificação humana e testes.
 
-MCE nao importa REA, nao requer servidor MCP e nao possui dependencia do codigo de `systems/rea/`. REA e outro produto, com runtime proprio. Analise de P&ID, listas I/O e matriz pertencem somente ao MCE.
+## Instalar e verificar
 
-## Execucao local
+Requer Python 3.12+; no diretório extraído:
 
 ```bash
-python -m pip install -r systems/mce/requirements.txt
-python .agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py --help
-python .agents/skills/padronizacao-mce/scripts/inventariar_modelo.py ARQUIVO_MODELO.xlsx
+python -m pip install -r requirements.txt
+python scripts/validate_skills.py
+python -m pytest -q tests/
 ```
 
-Fluxo: `init` -> `understand` -> **STOP para revisao humana** -> `authorize` -> `apply` -> `audit`.
+No Codex, colocar ambas as pastas sob `.agents/skills/` do projeto MCE e iniciar sessão nova, verificando a descoberta. No ChatGPT Web, importar as Skills individualmente quando a interface da conta oferecer a opção. A presença dos arquivos no pacote não confirma instalação global.
 
-**Gates obrigatorios:** o XLSX mestre nao e alterado; protecao de cabecalhos, formulas e areas nao autorizadas; limite de 50 causas por folha; evidencia documental e autorizacao humana; sinalizacao cinza apenas nas celulas textuais realmente modificadas. Resultados para revisao multidisciplinar, nunca homologacao automatica.
+## Fase 1 (não editar Excel)
 
-## Escopo deste PR
+```bash
+python .agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py init --workspace PROJETO --master MODELO.xlsx --sources P_ID.pdf lista-io.csv
+python .agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py understand --workspace PROJETO --analysis analise.json
+```
 
-Primeiro incremento publico: duas Skills e seu executor de workflow. Os adaptadores P&ID/OCR, o aplicativo de orquestracao e os testes completos existentes no pacote independente de entrega nao foram automaticamente transferidos para este PR. Eles exigem importacao de fonte e validacao de licencas/evidencias antes de nova versao. Nao alegar que este diretorio e a distribuicao integral daquele ZIP.
+Prepare `analise.json` com evidências literais e revise as fontes; consulte `docs/EXECUCAO.md` antes da análise. O fluxo **para** em `ANALISADO_AGUARDANDO_DECISAO`.
 
-Nenhum documento confidencial, projeto, SS, modelo Excel nao homologado ou resultado real deve ser commitado neste repositorio publico.
+### P&ID/IO opcional e local
+
+```bash
+python scripts/mce_system.py pid-import --workspace PROJETO --adapter azure --source-name grafo.json --document PI-001 --revision R00 --location 'folha 1'
+python scripts/mce_system.py compare-io --workspace PROJETO --graph-name PID_NORMALIZADO.json --io-name lista-io.csv
+```
+
+As saídas são candidatas, precisam estar no inventário inicial e requerem revisão humana registrada por SHA. Não são propostas de intertravamento aprovadas.
+
+## Fase 2: somente após autorização formal
+
+```bash
+python .agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py authorize --workspace PROJETO --authorization autorizacao.json
+python .agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py apply --workspace PROJETO --changes alteracoes.json
+python .agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py audit --workspace PROJETO
+```
+
+O executor modifica uma cópia do modelo `.xlsx` somente em células textuais explicitamente liberadas, destaca em cinza e audita os demais componentes OOXML. Não oferece autorização automática, homologação Petrobras nem suporte `.xlsm` neste fluxo.
+
+## Independência
+
+- Executável principal: `scripts/mce_system.py`, `mce_workflow.py` nas Skills.
+- Código de P&ID: `pid_bridge.py` na Skill de engenharia; **sem dependência REA ou MCP**.
+- Pacote separado de qualquer motor de engenharia reversa, porta HTTP ou biblioteca de varredura de código.
+- Fontes GitHub catalogadas em `research/` são referências metodológicas, sem execução de código de terceiros.
