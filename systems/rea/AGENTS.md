@@ -1,3 +1,10 @@
-# REA — instrucoes locais
+# REA independente — contrato operacional
 
-REA e independente de MCE. Respeitar `AGENTS.md` raiz. Nao executar binarios arbitrarios, extrair segredos ou divulgar dados de terceiros. Registrar evidencia e SHA antes de recomendar alteracoes. REA oficial e o upstream `morluto/rea`, nao o motor interno Python.
+Sistema dedicado a engenharia reversa autorizada, com proteção de dados, inventário SHA-256, relatórios rastreáveis e análises estáticas. Não depende de outros produtos de engenharia.
+
+- Usar upstream `morluto/rea` quando efetivamente instalado e descoberto; caso contrário, identificar a ferramenta local como independente e limitada.
+- Escopo de caminhos sempre restrito ao root autorizado. Negar symlink de escape, credenciais, chaves e arquivos ocultos.
+- Sem engenharia reversa em alvos não autorizados, bypass de licenças, captura indevida ou exfiltração.
+- Evitar alegar execução de 100 agentes ou que o ranking automatizado é empírico.
+- Não operar serviços em rede pública; exigir autenticação e revisão de segurança para qualquer implantação.
+- Não modificar outros projetos nem arquivos analisados; análises são read-only.

@@ -1,0 +1,22 @@
+name: REA independent system QA
+on:
+  pull_request:
+    paths:
+      - 'systems/rea/**'
+      - '.agents/skills/rea-engenharia-reversa-evolutiva/**'
+      - '.github/workflows/rea-independent-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rea-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r systems/rea/requirements.txt
+      - run: python -m pytest -q systems/rea/tests
+      - name: Inspect independent REA runtime status
+        run: python systems/rea/scripts/rea_native_doctor.py

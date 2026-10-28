@@ -1,21 +1,42 @@
-# REA — Engenharia Reversa (sistema independente)
+# REA INDEPENDENTE — Engenharia Reversa / MCP / Arena
 
-REA e produto autonomo, **nao e modulo do sistema MCE**. A Skill em `.agents/skills/rea-engenharia-reversa-evolutiva/` organiza analises seguras, evidencias e lacunas verificaveis.
+**Produto independente do MCE e de qualquer projeto Excel.** Este pacote NÃO é uma distribuição do REA oficial e não incorpora seu código. Possui uma ponte MCP própria, motor estático Python/JS/TS, grafo de imports, candidatos a risco com evidências SHA-256, análise de repositórios a partir de catálogo local, Arena de quatro perspectivas, interface Web de loopback e testes.
 
-## Distincao de runtimes
+## REA oficial (opcional e separado)
 
-1. REA **oficial**: [morluto/rea](https://github.com/morluto/rea) e pacote npm `rea-agents`. Instalar no computador/host suportado conforme documentacao oficial, por exemplo `npx rea-agents setup`; conferir versao e prerequisitos atuais, aprovar alteracoes, reiniciar agente e verificar `tools/list` real no host.
-2. Motor **interno anterior**: artefato de entrega `SISTEMA_REA_INDEPENDENTE.zip`, com servidor Python de analise estatica/MCP. O ZIP nao foi automaticamente espelhado aqui. Nao chamar o motor interno de copia integral do REA oficial.
-3. ChatGPT Web: Skills textuais disponiveis nao implicam servidor MCP ativo ou instalacao permanente. Para usar REA na Web, configurar uma integracao MCP aprovada e exposta por HTTPS com controle de acesso e depois comprovar descoberta e testes reais.
+O produto original é https://github.com/morluto/rea (`rea-agents`). Instale-o pelo método oficial em host com Node/npm compatíveis:
 
-## Contratos operacionais
+```bash
+npx rea-agents setup
+```
 
-- Inspecionar apenas fontes autorizadas; nao contornar autenticacao, licencas ou protecoes.
-- Registrar alvo, commit/SHA, localizacao, ferramenta, observacao e reproducibilidade.
-- Usar GitHub Arena e Superpowers quando presentes; nunca representar perspectivas do mesmo modelo como subagentes independentes.
-- Proibir publicacao de segredos, arquivos privados, dumps de memoria ou dados do usuario.
-- Respeitar `AGENTS.md` e a governanca da raiz.
+Escolha seu agente, revise mudanças e reinicie-o. A conexão no ChatGPT Web depende de servidor HTTPS compatível, permissões e autenticação no host. O nosso código não instala o REA oficial, não o substitui, nem prova que suas ferramentas foram descobertas.
 
-## Estado desta entrega
+## REA interno: executar sem MCE
 
-Este PR e uma **primeira integracao publicavel da Skill REA**, com documentacao de conexao, nao a instalacao de `rea-agents`, um espelhamento do ZIP interno, ou um deploy Web. Motor, testes de runtime, servidor e endpoint HTTPS sao gates posteriores a serem validados separadamente.
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q tests/
+python scripts/rea_native_doctor.py
+python scripts/create_mcp_config.py --data-root /DIRETORIO_DE_CODIGO_AUTORIZADO
+python src/server.py --transport stdio --root /DIRETORIO_DE_CODIGO_AUTORIZADO
+```
+
+O servidor MCP expõe sete ferramentas estritamente de leitura; o root autorizado não deve incluir documentos sigilosos desnecessários. O ranking `rea_repositories_top10` recebe `catalog` com caminho relativo a um JSON próprio, formato `{"captured_at":"2026-10-28", "reviewed":[{"repo":"owner/project","score_editorial":75,"license":"MIT","head":"SHA"}]}`. Os escores são fornecidos pelo usuário, não medidos automaticamente.
+
+## Painel Web local (não publicado)
+
+```bash
+export REA_MCP_TOKEN="$(python -c 'import secrets; print(secrets.token_urlsafe(36))')"
+python src/web_app.py --root /DIRETORIO_DE_CODIGO_AUTORIZADO --host 127.0.0.1 --port 8769
+```
+
+Abra http://127.0.0.1:8769/ no mesmo host. Não exponha a porta na Internet sem autenticação e revisão adicional. Nenhum token é publicado neste ZIP.
+
+## Garantias e limites
+
+- Inspeção estática limitada a 100 arquivos / 8 MB; sem execução de aplicações alvo, descompilação, observação dinâmica ou análise binária nativa.
+- O código independente não pode enviar arquivos à nuvem nem acessar caminhos fora do root permitido.
+- O motor Arena local compara quatro abordagens por heurística; não é torneio de 100 subagentes.
+- `REA_RUNTIME=UNAVAILABLE` se as ferramentas nativas não forem realmente expostas no host; arquivos de configuração não representam host ativado.
+- O sistema não contém P&ID, lógica de matrizes ou modelos de Excel.
