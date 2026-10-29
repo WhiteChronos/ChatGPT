@@ -40,3 +40,7 @@ Abra http://127.0.0.1:8769/ no mesmo host. Não exponha a porta na Internet sem 
 - O motor Arena local compara quatro abordagens por heurística; não é torneio de 100 subagentes.
 - `REA_RUNTIME=UNAVAILABLE` se as ferramentas nativas não forem realmente expostas no host; arquivos de configuração não representam host ativado.
 - O sistema não contém P&ID, lógica de matrizes ou modelos de Excel.
+
+## Preparacao para producao (nao homologacao automatica)
+
+Ver `docs/PRODUCTION_ACCEPTANCE.md` para a lista de evidencias obrigatorias e verificacao fail-closed. Exemplo de comando: `python scripts/production_smoke.py --url https://rea.sua-organizacao.example/mcp`. O resultado automatico nao certifica `PRODUCTION_COMPLETE`.
