@@ -16,7 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r systems/rea/requirements.txt
-      - run: python -m pytest -q systems/rea/tests
+      - run: python -m pip install -r systems/rea/requirements-mcp.txt
+      - name: Verify official SDK protocol across in-process, stdio and Streamable HTTP
+        run: python -m pytest -q systems/rea/tests
       - name: Inspect independent REA runtime status
         run: python systems/rea/scripts/rea_native_doctor.py

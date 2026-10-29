@@ -44,3 +44,14 @@ Abra http://127.0.0.1:8769/ no mesmo host. Não exponha a porta na Internet sem 
 ## Preparacao para producao (nao homologacao automatica)
 
 Ver `docs/PRODUCTION_ACCEPTANCE.md` para a lista de evidencias obrigatorias e verificacao fail-closed. Exemplo de comando: `python scripts/production_smoke.py --url https://rea.sua-organizacao.example/mcp`. O resultado automatico nao certifica `PRODUCTION_COMPLETE`.
+
+## Nova conexao padronizada ao ChatGPT (privada)
+
+Para executar as sete ferramentas pelo SDK MCP **oficial v2**, sem alterar o motor REA interno:
+
+```bash
+python -m pip install -r requirements-mcp.txt
+python src/sdk_server.py --root /CODIGO_AUTORIZADO --transport stdio
+```
+
+A conexao ChatGPT Web precisa de permissao do workspace e de um **Secure MCP Tunnel** configurado no host real. Consulte `docs/PRIVATE_MCP_TUNNEL.md` para autenticacao do tunel, validacao por `tunnel-client doctor`, modo de falha segura e gates de aceite. Nao executar `--host 0.0.0.0`. Ter codigo no GitHub ou passar CI nao equivale a host descoberto.
