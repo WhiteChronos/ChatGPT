@@ -10,3 +10,12 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 6. No máximo 50 causas por folha (ou menos quando modelo limitar). Auditar OOXML e SHA da fonte e apresentar como preliminar à validação multidisciplinar.
 7. Exportações P&ID OCR/grafo são auxiliares e exigem verificação humana por fonte/arquivo/revisão; nunca geram comandos de segurança.
 8. Não importar módulos de outros produtos para executar este workflow. Não publicar documentos privados.
+ 
+## Contrato de continuidade documental obrigatório (2026-10-29)
+
+- Antes de planejar, implementar ou revisar este produto, **ler primeiro** `systems/mce/spec/memoria.md` e `systems/mce/docs/DATACENTER_MEMORY.md`, depois consultar o HEAD atual do PR #118, checks e bloqueios.
+- Considerar o Markdown **checkpoint histórico** e o GitHub a fonte de verdade de código; banco SQLite separado no host privado não é acessível automaticamente pelo ChatGPT Web.
+- Após cada mudança verificada ou decisão nova, acrescentar ao `spec/memoria.md` um evento com data, DEC/PEND estável, SHA, fonte, teste e pendência, preservando entradas anteriores. Nunca apagar decisão para ocultar conflito; registrar substituição justificada.
+- Não alegar execução de Codex, Superpowers, MCP ou aceites humanos apenas porque há instrução ou configuração versionada.
+- Não colocar segredos, transcrições integrais, documentos industriais, banco SQLite, backups ou DataSheets operacionais neste repositório; não usar a memória do outro sistema como dependência.
+- O arquivo é *recuperável por consulta*, não há garantia de memória nativa entre chats nem persistência eterna. Para retomada, consultar o documento diretamente e comparar os fatos com o PR atual.

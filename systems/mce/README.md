@@ -73,3 +73,7 @@ O operador deve obter modelo oficial, projeto/SS, documentacao e aceite externo.
 ## DataCenter SQL e memoria persistente independente (29/10/2026)
 
 A memoria operacional SQLite versionada, DataSheet, busca de registros, backup/restauracao, verificador de integridade e pipeline read-only estao em `docs/DATACENTER_MEMORY.md`. Os bancos reais pertencem ao host privado, nunca ao GitHub ou ao ChatGPT. CI de seguranca e testes: `.github/workflows/mce-memory-qa.yml`. `PRODUCTION_COMPLETE=NO` ate ambiente real, revisao e aceite independentes.
+ 
+## Retomada de contexto em nova conversa
+
+**Memória documental canônica deste produto:** [`spec/memoria.md`](spec/memoria.md). Antes de continuar trabalho no Codex ou ChatGPT Web, consultar este arquivo, `AGENTS.md`, `docs/DATACENTER_MEMORY.md` e o HEAD/CI reais do [PR #118](https://github.com/WhiteChronos/ChatGPT/pull/118). Não reconstruir etapas já comprovadas; decisões e pendências têm IDs estáveis. A memória não recolhe chats automaticamente; acrescentar novos fatos apenas após verificação e sem publicar conteúdo confidencial.
