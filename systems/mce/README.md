@@ -62,3 +62,10 @@ Antes de instalar qualquer release MCE, executar `python scripts/release_integri
 ### Verificacao adicional de procedencia
 
 Para um candidato aprovado, informe tambem `--expected-sha256 SHA256_DO_CANAL_CONFIAVEL` e `--expected-git-sha COMMIT40_REVISADO`. Consulte `docs/RELEASE_INTEGRITY.md`: hashes internos nao comprovam origem, e nenhuma flag comprova engenharia ou producao automaticamente.
+
+
+## Skill adicional: fechamento operacional (2026-10-29)
+
+A Skill `.agents/skills/mce-fechamento-operacional/` organiza a comprovacao tecnica sem escrever no Excel mestre, com verificador de SHA-256 de evidencias e bloqueio explicito de homologacao automatica. As Skills originais de elaboracao MCE e padronizacao do modelo permanecem independentes e intocadas.
+
+O operador deve obter modelo oficial, projeto/SS, documentacao e aceite externo. O verificador de arquivos retorna `ARTIFACT_INTEGRITY_PASS` apenas para correspondencia de hashes, **nao** `PRODUCTION_COMPLETE`.
