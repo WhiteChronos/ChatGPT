@@ -8,3 +8,11 @@ Sistema dedicado a engenharia reversa autorizada, com proteção de dados, inven
 - Evitar alegar execução de 100 agentes ou que o ranking automatizado é empírico.
 - Não operar serviços em rede pública; exigir autenticação e revisão de segurança para qualquer implantação.
 - Não modificar outros projetos nem arquivos analisados; análises são read-only.
+
+## Leitura obrigatória de memória e continuidade (2026-10-29)
+
+- Antes de qualquer alteração ou revisão REA, consultar `systems/rea/spec/memoria.md`, `systems/rea/docs/DATACENTER_MEMORY.md` e HEAD/CI do PR #119.
+- Aplicar os registros DEC-REA e PEND-REA; ao final, acrescentar decisões novas à memória com data, evidência, SHA, testes e gate. Nunca sobrescrever decisões antigas para simular aprovação; documentar `SUBSTITUIDA_POR`.
+- O banco SQLite é privado e não sincroniza automaticamente mensagens do ChatGPT; o GitHub permanece a fonte do código e do histórico documental.
+- Nunca transferir dados, segredos, conteúdo de código analisado, backup ou conversas completas ao repositório público; manter o REA independente do MCE.
+- Antes de afirmar host descoberto, MCP conectado ou `PRODUCTION_COMPLETE=YES`, exigir evidência operacional independente e aceite humano. Configuração/CI são prova insuficiente.

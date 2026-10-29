@@ -67,3 +67,7 @@ Este repositorio agora inclui `plugin.json` no formato portatil Agent Plugins e 
 ## DataCenter SQL e memoria persistente independente (29/10/2026)
 
 Memoria operacional SQLite versionada, DataSheet, busca, backup/restauracao e pipeline de status read-only descritos em `docs/DATACENTER_MEMORY.md`. Os bancos reais ficam em host privado. CI de seguranca e testes: `.github/workflows/rea-memory-qa.yml`. MCP e host ChatGPT Web dependem de configuracao e aceite externos. `PRODUCTION_COMPLETE=NO`.
+
+## Memória canônica e retomada de contexto
+
+Ler primeiro [`spec/memoria.md`](spec/memoria.md) e `AGENTS.md`, depois consultar `docs/DATACENTER_MEMORY.md` e o HEAD/CI do [PR #119](https://github.com/WhiteChronos/ChatGPT/pull/119). Os registros DEC-REA/PEND-REA preservam decisões, evidências e pendências. A memória é versionada no GitHub; o SQLite privado não captura conversas automaticamente.
