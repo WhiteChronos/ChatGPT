@@ -1,0 +1,3 @@
+interface:
+  display_name: "MCE Fechamento Operacional"
+  short_description: "Auditar evidencias e gates do MCE independente sem alterar o Excel"

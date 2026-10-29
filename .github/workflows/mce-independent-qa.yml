@@ -5,6 +5,7 @@ on:
       - 'systems/mce/**'
       - '.agents/skills/padronizacao-mce/**'
       - '.agents/skills/engenharia-mce-projeto/**'
+      - '.agents/skills/mce-fechamento-operacional/**'
       - '.github/workflows/mce-independent-qa.yml'
   workflow_dispatch:
 permissions:
