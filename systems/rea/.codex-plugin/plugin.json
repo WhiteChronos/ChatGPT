@@ -1,0 +1,13 @@
+{
+  "name": "rea-independent",
+  "version": "0.1.0",
+  "description": "Independent read-only REA workflow for Codex; MCP runtime configured separately.",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "REA Independente",
+    "shortDescription": "Skills REA e MCP privado sob autorizacao",
+    "capabilities": ["Read"],
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools"
+  }
+}

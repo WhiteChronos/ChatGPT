@@ -59,3 +59,7 @@ A conexao ChatGPT Web precisa de permissao do workspace e de um **Secure MCP Tun
 ## Novo gate de integridade do release REA (sem depender do MCE)
 
 Antes de instalar, execute `python scripts/release_integrity.py --zip /ARQUIVO_REA.zip --expected-sha256 SHA256_FORA_DO_ZIP --expected-git-sha COMMIT40_APROVADO`. O verificador nao extrai nem executa codigo; exige cobertura exata do manifesto e recusa caminhos inseguros, links, duplicatas e divergencias de hash. `INTEGRITY_PASS` **nao significa producao homologada**. Consulte `docs/RELEASE_INTEGRITY.md`.
+
+## Plugin REA independente para Codex e ChatGPT Web (2026-10-29)
+
+Este repositorio agora inclui `plugin.json` no formato portatil Agent Plugins e um overlay `.codex-plugin/plugin.json`, com as Skills `rea-setup` e `rea-operacao`. O motor `src/sdk_server.py` continua independente, somente leitura e restrito a loopback/stdio. Instalacao de Skills ou plugin **nao** cria conexao MCP remota; verificar `docs/PLUGIN_PORTABLE.md` para onboarding, runtime real e Secure MCP Tunnel autorizado. Nao acoplar MCE nem expor servidor publicamente.
