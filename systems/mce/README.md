@@ -69,3 +69,7 @@ Para um candidato aprovado, informe tambem `--expected-sha256 SHA256_DO_CANAL_CO
 A Skill `.agents/skills/mce-fechamento-operacional/` organiza a comprovacao tecnica sem escrever no Excel mestre, com verificador de SHA-256 de evidencias e bloqueio explicito de homologacao automatica. As Skills originais de elaboracao MCE e padronizacao do modelo permanecem independentes e intocadas.
 
 O operador deve obter modelo oficial, projeto/SS, documentacao e aceite externo. O verificador de arquivos retorna `ARTIFACT_INTEGRITY_PASS` apenas para correspondencia de hashes, **nao** `PRODUCTION_COMPLETE`.
+
+## DataCenter SQL e memoria persistente independente (29/10/2026)
+
+A memoria operacional SQLite versionada, DataSheet, busca de registros, backup/restauracao, verificador de integridade e pipeline read-only estao em `docs/DATACENTER_MEMORY.md`. Os bancos reais pertencem ao host privado, nunca ao GitHub ou ao ChatGPT. CI de seguranca e testes: `.github/workflows/mce-memory-qa.yml`. `PRODUCTION_COMPLETE=NO` ate ambiente real, revisao e aceite independentes.
