@@ -110,3 +110,14 @@ O gate verifica todos os commits apos bb4a7b43084da406f4a7d78685068c827d301300, 
 | PEND-MCE-010 | Modelo mestre, fontes reais, contrato e autorizacoes, QA multidisciplinar, FAT/SAT e aceite permanecem necessarios; configuracao global e pacote nao constituem homologacao. | EXTERNAL_GATE |
 
 Partida: b73a4f14a602599a0c7fe30a1ecd535b5762e573. Corrigidos bloqueio de hardlinks no Windows e historico Git UTF-8. O scan ampliado encontrou quatro parsers XML sem defesa contra entidades; passaram a usar defusedxml 0.7.1, preservando serializacao e o editor OOXML. Regressao maliciosa falhou antes e passou apos a correcao. Regressao local: 101 PASS e 2 SKIP por privilegio de symlink ausente. Bandit 1.8.6 em scripts e todas as Skills canonicas: nenhum achado medio/alto. Espelhos de descoberta sincronizados, novo workflow de seguranca e QA Windows/Linux. Ver docs/CODEX_GLOBAL_ROUTING.md. Revisao ECC externa e protecoes administrativas continuam gates proprios. Nenhum Excel mestre real foi alterado, sem merge/deploy; PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-29 - DEC-MCE-016: Skill especifica MATRIZ DE CAUSA E EFEITO com fontes GitHub
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-MCE-016 | Esta conversa fica exclusivamente no escopo MCE. Skill nova `matriz-causa-efeito` integra as tres Skills MCE existentes e cataloga repositorios GitHub auxiliares com verificacao de licencas/formatos, sem substituir executores, sem inferir logica de seguranca, sem depender do REA. Codigo no PR #118; memoria canonicamente versionada neste arquivo. | VIGENTE |
+| PEND-MCE-011 | Instalacao/descoberta efetiva da nova Skill no ChatGPT Web e Codex, homologacao do modelo XLSX real, contrato e autorizacoes de engenharia ainda carecem de evidencia propria. | USER_ACTION_REQUIRED |
+
+O modelo Excel mestre nao foi alterado, nenhum documento industrial foi publicado, nenhum merge ou deploy autorizado. A nova Skill mantem `ANALISADO_AGUARDANDO_DECISAO` antes de qualquer edicao e `PRODUCTION_COMPLETE=NO`.

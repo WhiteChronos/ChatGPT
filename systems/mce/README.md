@@ -87,3 +87,8 @@ Indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/120. Memoria c
 ## Captura imediata de decisoes
 
 O Issue #120 e uma caixa de entrada persistente: https://github.com/WhiteChronos/ChatGPT/issues/120 . Consulte scripts/github_memory_inbox.py para eventos ainda nao consolidados no spec/memoria.md. A CI audita todo o historico recente. O ChatGPT nao oferece captura nativa automatica de cada mensagem no GitHub.
+
+
+## Skill Matriz de Causa e Efeito — entrada MCE exclusiva
+
+A nova [`matriz-causa-efeito`](.agents/skills/matriz-causa-efeito/SKILL.md) e o ponto de entrada especializado para elaborar e revisar MCE a partir de P&IDs, lista I/O, narrativas e modelo mestre. Coordena as 3 Skills existentes, usa catalogo GitHub auxiliar revisado, nao duplica a edicao OOXML e para em `ANALISADO_AGUARDANDO_DECISAO`. So edita copia derivada com modelo oficial, contrato e `AUTORIZO_ELABORACAO_MCE` comprovados. Instalacao no ChatGPT Web e Codex precisa ser feita/verificada na plataforma correspondente.

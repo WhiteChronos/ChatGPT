@@ -6,6 +6,7 @@ on:
       - '.agents/skills/padronizacao-mce/**'
       - '.agents/skills/engenharia-mce-projeto/**'
       - '.agents/skills/mce-fechamento-operacional/**'
+      - '.agents/skills/matriz-causa-efeito/**'
       - '.github/workflows/mce-*.yml'
   workflow_dispatch:
 permissions:

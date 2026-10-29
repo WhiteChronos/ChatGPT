@@ -21,3 +21,7 @@ Em Codex local, usar o Python MCE e arquivos autorizados. Na web sem executor,
 executar apenas analise documental identificada e registrar NOT_RUN para comandos.
 Nao declarar homologacao por instalacao, testes sinteticos ou metadata de aprovacao.
 Memoria operacional, SQLite e backups ficam em host privado. PRODUCTION_COMPLETE=NO.
+
+
+## Orquestrador canonico (2026-10-29)
+Adicionar `matriz-causa-efeito` como quarta Skill, ponto de entrada para pedido de criacao/revisao de matriz. As tres Skills anteriores permanecem tecnicamente operativas, com scripts e contratos intactos. Nao ativar para REA nem assumir que um manifesto publicado no GitHub instala a Skill no host.

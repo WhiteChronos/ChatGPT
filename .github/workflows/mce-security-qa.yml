@@ -1,7 +1,7 @@
 name: MCE full product security evidence
 on:
   pull_request:
-    paths: ['systems/mce/**', '.agents/skills/engenharia-mce-projeto/**', '.agents/skills/padronizacao-mce/**', '.agents/skills/mce-fechamento-operacional/**', '.github/workflows/mce-*.yml']
+    paths: ['systems/mce/**', '.agents/skills/engenharia-mce-projeto/**', '.agents/skills/padronizacao-mce/**', '.agents/skills/mce-fechamento-operacional/**', '.agents/skills/matriz-causa-efeito/**', '.github/workflows/mce-*.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,7 +20,7 @@ jobs:
         run: python -m bandit -ll -r systems/mce/scripts systems/mce/.agents/skills --exclude systems/mce/.agents/skills/mce-fechamento-operacional/tests
       - name: Security, workbook and evidence regression
         run: python -m pytest -q systems/mce/tests
-      - name: Verify three canonical skills
+      - name: Verify four canonical skills
         run: python systems/mce/scripts/validate_skills.py
       - name: Evidence boundary
         run: echo 'Full MCE product Python scope and regression passed; no real template or engineering approval is inferred.' >> "$GITHUB_STEP_SUMMARY"
