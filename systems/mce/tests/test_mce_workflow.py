@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from defusedxml.common import EntitiesForbidden
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill
 
@@ -15,6 +16,12 @@ CLI = ROOT/'.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py'
 SPEC = importlib.util.spec_from_file_location('mce_workflow',CLI)
 mod = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(mod)
+
+
+def test_untrusted_worksheet_entities_are_rejected():
+    payload = b'<!DOCTYPE x [<!ENTITY unsafe "INJECTED">]><worksheet>&unsafe;</worksheet>'
+    with pytest.raises(EntitiesForbidden):
+        mod.update_xml_sheet(payload, [], None, {})
 
 
 def command(*args, ok=True):

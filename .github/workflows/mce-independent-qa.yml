@@ -12,9 +12,21 @@ permissions:
   contents: read
 jobs:
   mce-regression:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            systems/mce
+            .agents/skills
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

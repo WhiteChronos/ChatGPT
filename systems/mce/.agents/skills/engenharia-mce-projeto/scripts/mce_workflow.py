@@ -20,6 +20,7 @@ import zipfile
 from pathlib import Path
 
 from openpyxl import load_workbook
+from defusedxml import ElementTree as SafeET
 from openpyxl.utils.cell import coordinate_from_string
 
 MAIN = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
@@ -256,8 +257,8 @@ def run_authorize(args):
 
 
 def rel_sheet_paths(zin):
-    wb=ET.fromstring(zin.read('xl/workbook.xml'))
-    rel=ET.fromstring(zin.read('xl/_rels/workbook.xml.rels'))
+    wb=SafeET.fromstring(zin.read('xl/workbook.xml'))
+    rel=SafeET.fromstring(zin.read('xl/_rels/workbook.xml.rels'))
     ids={x.get('Id'):x.get('Target') for x in rel.findall('{'+PKG+'}Relationship')}
     d={}
     for s in wb.findall('m:sheets/m:sheet',NS):
@@ -302,7 +303,7 @@ def gray_style(styles,old_sid,cache):
 
 
 def update_xml_sheet(src,changes,styles,styles_cache):
-    root=ET.fromstring(src)
+    root=SafeET.fromstring(src)
     cells={c.get('r'):c for c in root.findall('.//m:sheetData/m:row/m:c',NS)}
     for entry in changes:
         coord=entry['cell']
@@ -327,7 +328,7 @@ def patch_workbook(master,output,changes):
     with zipfile.ZipFile(master,'r') as zi:
         paths=rel_sheet_paths(zi)
         if 'xl/styles.xml' not in zi.namelist():fail('Planilha sem styles.xml.')
-        styles=ET.fromstring(zi.read('xl/styles.xml'))
+        styles=SafeET.fromstring(zi.read('xl/styles.xml'))
         by_sheet={}
         for item in changes:
             if item['sheet'] not in paths:fail('Aba ausente: '+item['sheet'])

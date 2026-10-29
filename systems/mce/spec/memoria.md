@@ -99,3 +99,14 @@ Gate: systems/mce/scripts/github_memory_gate.py; workflow: .github/workflows/mce
 | PEND-MCE-009 | Nao existe leitura nativa automatica de todas as mensagens do ChatGPT por este repositorio. Captura exige acao autorizada no GitHub. Seguranca ECC integral e configuracao de check obrigatorio tambem permanecem gates. | EXTERNAL_GATE |
 
 O gate verifica todos os commits apos bb4a7b43084da406f4a7d78685068c827d301300, evitando omissao de memoria encoberta por commit posterior. Sem merge, deploy ou alteracao de Excel mestre. PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-29 - DEC-MCE-015: Skills por contexto MCE e protecao XML/Windows
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-MCE-015 | Distribuir as tres Skills existentes pelo plugin MCE independente 0.1.0 e aciona-las somente em tarefas de Matriz de Causa e Efeito. Preservar motor, banco e gates humanos proprios; roteamento central nao acopla ao REA. | VIGENTE |
+| PEND-MCE-010 | Modelo mestre, fontes reais, contrato e autorizacoes, QA multidisciplinar, FAT/SAT e aceite permanecem necessarios; configuracao global e pacote nao constituem homologacao. | EXTERNAL_GATE |
+
+Partida: b73a4f14a602599a0c7fe30a1ecd535b5762e573. Corrigidos bloqueio de hardlinks no Windows e historico Git UTF-8. O scan ampliado encontrou quatro parsers XML sem defesa contra entidades; passaram a usar defusedxml 0.7.1, preservando serializacao e o editor OOXML. Regressao maliciosa falhou antes e passou apos a correcao. Regressao local: 101 PASS e 2 SKIP por privilegio de symlink ausente. Bandit 1.8.6 em scripts e todas as Skills canonicas: nenhum achado medio/alto. Espelhos de descoberta sincronizados, novo workflow de seguranca e QA Windows/Linux. Ver docs/CODEX_GLOBAL_ROUTING.md. Revisao ECC externa e protecoes administrativas continuam gates proprios. Nenhum Excel mestre real foi alterado, sem merge/deploy; PRODUCTION_COMPLETE=NO.
