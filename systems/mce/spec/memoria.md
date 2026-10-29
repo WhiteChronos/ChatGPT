@@ -147,3 +147,5 @@ Arquivos: `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`; `systems/mce/datacente
 | PEND-MCE-013 | Comprovar no novo HEAD a execução Windows de todos os checks, o ZIP de Skill produzido em Windows e a descoberta no host Codex/ChatGPT Web. Uso de projeto real depende de documentos, contrato Excel e aceite humano. Workflows globais compartilhados permanecem fora do escopo MCE. | USER_ACTION_REQUIRED |
 
 A Skill é uma ferramenta subordinada ao MCE, reutilizando o DataCenter SQLite e memória GitHub existentes. Nenhuma edição no Excel mestre, merge, deploy ou aprovação de engenharia. PRODUCTION_COMPLETE=NO.
+
+2026-10-29 — QA-RETIFICACAO-MCE-003: o runner Windows gerou arquivos temporarios `__pycache__/*.pyc` ao executar os tres adaptadores. O verificador de espelhos da Skill foi corrigido para ignorar exclusivamente caches Python gerados (nao versionados) e continuar comparando todos os arquivos-fonte MCE. Os 41 testes funcionais haviam passado antes do erro de comparacao. Revisar novo SHA e CI antes de declarar sucesso; PRODUCTION_COMPLETE=NO.

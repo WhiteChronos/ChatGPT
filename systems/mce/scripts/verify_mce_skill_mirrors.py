@@ -13,6 +13,8 @@ def verify() -> int:
     for source in sorted(SOURCE.rglob("*")):
         if source.is_dir():
             continue
+        if "__pycache__" in source.parts or ".pytest_cache" in source.parts or source.suffix in (".pyc", ".pyo"):
+            continue
         if source.is_symlink() or not source.is_file():
             raise ValueError("Unsafe Skill source")
         target = MIRROR / source.relative_to(SOURCE)

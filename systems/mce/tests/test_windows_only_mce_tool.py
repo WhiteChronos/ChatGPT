@@ -54,3 +54,9 @@ def test_skill_package_generated_in_windows_ci():
     assert "Compress-Archive" in ci
     assert "actions/upload-artifact@v4" in ci
     assert "matriz-causa-efeito-windows-skill" in ci
+
+
+def test_generated_python_bytecode_not_treated_as_skill_source():
+    checker = (MCE / "scripts" / "verify_mce_skill_mirrors.py").read_text(encoding="utf-8")
+    assert '"__pycache__" in source.parts' in checker
+    assert 'source.suffix in (".pyc", ".pyo")' in checker
