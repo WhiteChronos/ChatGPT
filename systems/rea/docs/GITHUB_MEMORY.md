@@ -19,3 +19,12 @@ Fonte documental: systems/rea/spec/memoria.md, versionada por Git. Nao depende d
 
 ## Confirmacao de runtime
 A presenca de manifesto/plugin e a passagem da CI nao significam HOST_DISCOVERED nem LIVE_VERIFIED. Exigir tools/list, rea_bridge_status, autenticação, revogacao, rollback e aceite no host real.
+
+
+## Caixa de entrada estruturada do Issue #121
+
+Decisoes tecnicas publicaveis podem ser registradas imediatamente no Issue https://github.com/WhiteChronos/ChatGPT/issues/121 como comentario com marcador WC_MEMORY_EVENT_V1 e bloco JSON contendo schema=1, system=REA_INDEPENDENTE, kind=DECISION, id=DEC-REA-014 (novo ID para cada evento), date, title, summary, origin=USER_REQUEST e approval=NOT_ENG_APPROVED. Evento inicial: https://github.com/WhiteChronos/ChatGPT/issues/121#issuecomment-6506917648 . Nao incluir codigo de terceiros, documentos privados, segredos ou transcricoes integrais.
+
+O script python systems/rea/scripts/github_memory_inbox.py consulta os comentarios do GitHub de forma somente leitura (GITHUB_TOKEN opcional). Saidas MIRRORED_IN_GIT e ISSUE_ONLY_PENDING_MIRROR distinguem eventos consolidados dos que ainda precisam de revisao/atualizacao do memoria.md. Nao equivale a captura automatica de conversas, nem a aprovacao tecnica.
+
+O workflow de memoria REA usa fetch-depth: 0 para validar todos os commits depois do checkpoint 88413a907366512169b6b0812296c64a8ee11ee5; recusa mudanca de codigo sem memoria no mesmo commit, mesmo quando a memoria aparece em commit posterior. Nao ha auto-merge ou deploy.

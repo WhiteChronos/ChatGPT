@@ -24,3 +24,11 @@ Sistema dedicado a engenharia reversa autorizada, com proteção de dados, inven
 - Consultar systems/rea/spec/memoria.md e systems/rea/docs/GITHUB_MEMORY.md antes de cada nova investigacao.
 - Toda alteracao REA/Skills REA deve incluir registro datado no mesmo commit; gate read-only: .github/workflows/rea-github-memory.yml.
 - Nao presumir captura automatica de chats, host MCP, conexao ChatGPT Web, aprovacoes ou producao.
+
+
+## Registro imediato via GitHub Issue #121
+
+- Ler os comentarios do Issue #121 antes de atuar, alem do memoria.md e do HEAD/CI do PR #119.
+- Para decisao tecnica explicitamente publicavel, se houver conector GitHub autorizado, registrar o evento WC_MEMORY_EVENT_V1 no Issue #121 e verificar URL; assim a captura inicial nao exige commit manual.
+- Nao registrar conversas inteiras, codigo privado, dados de clientes, credenciais ou aprovacao inventada. Na ausencia de ferramenta, relatar impossibilidade de gravacao.
+- Reconciliar eventos pendentes no memoria.md quando fizer mudancas no PR; a CI verifica todos os commits posteriores a ativacao do controle. REA nao depende do MCE.

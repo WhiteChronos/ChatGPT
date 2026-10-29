@@ -86,3 +86,14 @@
 | PEND-REA-008 | Não há captura automática de conversas do ChatGPT, inclusive discussões sem commit. É preciso registrar nova decisão explicitamente no GitHub. | NAO_IMPLEMENTADO |
 
 Gate independente: systems/rea/scripts/github_memory_gate.py; workflow: .github/workflows/rea-github-memory.yml. O texto anterior foi preservado. HEAD histórico de partida: 59dc18d73d758708ea9e652121bff1a17087fd59. A operação MCP remota continua condicionada a autorização e teste real. PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-29 - DEC-REA-014: Evento de memoria diretamente no GitHub
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-REA-014 | Issue #121 recebe eventos tecnicos publicaveis estruturados, sem commit manual na captura inicial. Evento: https://github.com/WhiteChronos/ChatGPT/issues/121#issuecomment-6506917648 . O leitor github_memory_inbox.py identifica registros ainda nao espelhados no Markdown, sem conceder aprovacoes. | VIGENTE |
+| PEND-REA-009 | Nao existe exportacao nativa automatica de todas as mensagens do ChatGPT para este repositorio. Captura exige acao GitHub autorizada. Seguranca ECC integral, configuracao de check obrigatorio e comprovacao MCP no host continuam pendentes. | EXTERNAL_GATE |
+
+O gate audita todos os commits desde 88413a907366512169b6b0812296c64a8ee11ee5; um commit tardio de memoria nao pode ocultar codigo anterior sem registro. Sem merge, deploy nem ativacao remota do REA. PRODUCTION_COMPLETE=NO.

@@ -76,3 +76,8 @@ Ler primeiro [`spec/memoria.md`](spec/memoria.md) e `AGENTS.md`, depois consulta
 ## Memoria GitHub sem dependencia do ChatGPT
 
 Issue indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/121. Arquivo canonico: [spec/memoria.md](spec/memoria.md). Contrato: [docs/GITHUB_MEMORY.md](docs/GITHUB_MEMORY.md). Gate: .github/workflows/rea-github-memory.yml. Decisoes precisam ser registradas no GitHub; conversas nao sao importadas automaticamente.
+
+
+## Captura imediata de decisoes no GitHub
+
+O Issue #121 e a caixa de entrada: https://github.com/WhiteChronos/ChatGPT/issues/121 . O script scripts/github_memory_inbox.py consulta eventos e sua consolidacao no spec/memoria.md. O workflow rea-github-memory.yml avalia todos os commits desde a ativacao do controle. Nao existe captura automatica de cada mensagem privada do ChatGPT.
