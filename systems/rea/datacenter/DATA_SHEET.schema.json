@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "REA_INDEPENDENTE DataSheet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "product",
+    "schema_version",
+    "exported_utc",
+    "integrity",
+    "event_count",
+    "head_sha256",
+    "by_kind",
+    "events",
+    "production_complete"
+  ],
+  "properties": {
+    "product": {
+      "const": "REA_INDEPENDENTE"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "exported_utc": {
+      "type": "string"
+    },
+    "integrity": {
+      "const": "INTEGRITY_PASS"
+    },
+    "event_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "head_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "by_kind": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "seq",
+          "kind",
+          "subject",
+          "digest"
+        ]
+      }
+    },
+    "production_complete": {
+      "const": false
+    }
+  }
+}

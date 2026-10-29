@@ -63,3 +63,7 @@ Antes de instalar, execute `python scripts/release_integrity.py --zip /ARQUIVO_R
 ## Plugin REA independente para Codex e ChatGPT Web (2026-10-29)
 
 Este repositorio agora inclui `plugin.json` no formato portatil Agent Plugins e um overlay `.codex-plugin/plugin.json`, com as Skills `rea-setup` e `rea-operacao`. O motor `src/sdk_server.py` continua independente, somente leitura e restrito a loopback/stdio. Instalacao de Skills ou plugin **nao** cria conexao MCP remota; verificar `docs/PLUGIN_PORTABLE.md` para onboarding, runtime real e Secure MCP Tunnel autorizado. Nao acoplar MCE nem expor servidor publicamente.
+
+## DataCenter SQL e memoria persistente independente (29/10/2026)
+
+Memoria operacional SQLite versionada, DataSheet, busca, backup/restauracao e pipeline de status read-only descritos em `docs/DATACENTER_MEMORY.md`. Os bancos reais ficam em host privado. CI de seguranca e testes: `.github/workflows/rea-memory-qa.yml`. MCP e host ChatGPT Web dependem de configuracao e aceite externos. `PRODUCTION_COMPLETE=NO`.
