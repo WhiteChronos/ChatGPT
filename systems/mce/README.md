@@ -54,3 +54,7 @@ O executor modifica uma cópia do modelo `.xlsx` somente em células textuais ex
 ## Preparacao para producao (nao homologacao automatica)
 
 Ver `docs/PRODUCTION_ACCEPTANCE.md` para a lista de evidencias obrigatorias e verificacao fail-closed. Exemplo de comando: `python scripts/production_readiness.py --workspace /PROJETO_MCE_AUTORIZADO`. O resultado automatico nao certifica `PRODUCTION_COMPLETE`.
+
+## Novo gate de integridade do pacote independente
+
+Antes de instalar qualquer release MCE, executar `python scripts/release_integrity.py --zip /RELEASE_APROVADO.zip` e conferir `INTEGRITY_PASS`, incluindo verificacao SHA-256 de todos os membros. Consulte `docs/RELEASE_INTEGRITY.md`. Esse gate **nao** dispensa autorizacao documental, verificacao do workbook mestre, revisao e aceite de engenharia. Nenhuma dependencia com REA foi adicionada.
