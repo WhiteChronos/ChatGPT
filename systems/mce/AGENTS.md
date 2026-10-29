@@ -19,3 +19,11 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Não alegar execução de Codex, Superpowers, MCP ou aceites humanos apenas porque há instrução ou configuração versionada.
 - Não colocar segredos, transcrições integrais, documentos industriais, banco SQLite, backups ou DataSheets operacionais neste repositório; não usar a memória do outro sistema como dependência.
 - O arquivo é *recuperável por consulta*, não há garantia de memória nativa entre chats nem persistência eterna. Para retomada, consultar o documento diretamente e comparar os fatos com o PR atual.
+
+
+## Vinculo GitHub da memoria (2026-10-29)
+
+- Indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/120
+- Consultar systems/mce/spec/memoria.md e systems/mce/docs/GITHUB_MEMORY.md antes de atuar.
+- Alteracoes MCE devem acrescentar registro datado na memoria no mesmo commit. Validacao: .github/workflows/mce-github-memory.yml. Nao contornar falhas da CI.
+- A memoria nao captura chats automaticamente; registrar decisoes verificadas no GitHub sem dados confidenciais.

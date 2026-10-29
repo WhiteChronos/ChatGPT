@@ -77,3 +77,8 @@ A memoria operacional SQLite versionada, DataSheet, busca de registros, backup/r
 ## Retomada de contexto em nova conversa
 
 **Memória documental canônica deste produto:** [`spec/memoria.md`](spec/memoria.md). Antes de continuar trabalho no Codex ou ChatGPT Web, consultar este arquivo, `AGENTS.md`, `docs/DATACENTER_MEMORY.md` e o HEAD/CI reais do [PR #118](https://github.com/WhiteChronos/ChatGPT/pull/118). Não reconstruir etapas já comprovadas; decisões e pendências têm IDs estáveis. A memória não recolhe chats automaticamente; acrescentar novos fatos apenas após verificação e sem publicar conteúdo confidencial.
+
+
+## Memoria GitHub sem dependencia do ChatGPT
+
+Indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/120. Memoria canonica: [spec/memoria.md](spec/memoria.md). Contrato: [docs/GITHUB_MEMORY.md](docs/GITHUB_MEMORY.md). CI: .github/workflows/mce-github-memory.yml. Para atualizar o sistema, adicionar registro datado da decisao no mesmo commit. Nao ha captura automatica dos chats.

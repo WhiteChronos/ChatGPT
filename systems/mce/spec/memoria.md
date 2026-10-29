@@ -76,3 +76,15 @@ Continuam pendentes o Excel mestre oficial, os documentos contratuais do projeto
 
 **Texto de retomada reutilizável:** "Retomar MCE_INDEPENDENTE em WhiteChronos/ChatGPT, PR #118. Ler systems/mce/AGENTS.md, systems/mce/spec/memoria.md e docs/DATACENTER_MEMORY.md; consultar HEAD/checks e seguir PEND-MCE sem reexecutar etapas comprovadas, sem usar REA, sem editar Excel mestre ou presumir autorizações."
 
+
+
+---
+
+### 2026-10-29 — DEC-MCE-013: vínculo permanente da memória ao GitHub
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-MCE-013 | GitHub é a fonte documental da memória MCE; Issue #120 (https://github.com/WhiteChronos/ChatGPT/issues/120) funciona como índice permanente, enquanto systems/mce/spec/memoria.md guarda o histórico versionado. A CI deve recusar alterações do produto sem atualizar essa memória no mesmo commit. | VIGENTE |
+| PEND-MCE-008 | Sincronização automática de conversas ChatGPT com o GitHub não foi implementada. Decisões somente discutidas no chat exigem registro explícito no GitHub. | NAO_IMPLEMENTADO |
+
+Gate: systems/mce/scripts/github_memory_gate.py; workflow: .github/workflows/mce-github-memory.yml. A memória anterior foi preservada integralmente. Referência de origem antes deste registro: afc81270a7b9ef29315c52019c617bd8ec5bfefd. Nenhum Excel mestre foi alterado, nenhum merge autorizado e PRODUCTION_COMPLETE=NO.
