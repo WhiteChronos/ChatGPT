@@ -50,3 +50,7 @@ O executor modifica uma cópia do modelo `.xlsx` somente em células textuais ex
 - Código de P&ID: `pid_bridge.py` na Skill de engenharia; **sem dependência REA ou MCP**.
 - Pacote separado de qualquer motor de engenharia reversa, porta HTTP ou biblioteca de varredura de código.
 - Fontes GitHub catalogadas em `research/` são referências metodológicas, sem execução de código de terceiros.
+
+## Preparacao para producao (nao homologacao automatica)
+
+Ver `docs/PRODUCTION_ACCEPTANCE.md` para a lista de evidencias obrigatorias e verificacao fail-closed. Exemplo de comando: `python scripts/production_readiness.py --workspace /PROJETO_MCE_AUTORIZADO`. O resultado automatico nao certifica `PRODUCTION_COMPLETE`.
