@@ -1,5 +1,6 @@
 """TDD regression for MCE_INDEPENDENTE independent SQLite memory."""
 import hashlib
+import os
 import importlib.util
 import json
 from pathlib import Path
@@ -173,3 +174,23 @@ def test_pipeline_blocks_without_real_project_and_records_status(tmp_path):
     assert out.is_file()
     assert m.verify(db)['by_kind']['STATUS'] == 1
     assert json.loads(out.read_text())['production_complete'] is False
+
+
+def test_forbid_entire_git_checkout_when_repo_metadata_present(tmp_path):
+    m, db = fresh(tmp_path)
+    checkout = ROOT.parents[1]
+    if not (checkout/'AGENTS.md').is_file() and not (checkout/'.git').exists():
+        pytest.skip('Standalone package has no Git checkout metadata')
+    with pytest.raises(ValueError, match='checkout'):
+        m.init(checkout/'private-memory-should-not-exist.sqlite3')
+
+
+def test_hardlink_to_existing_database_rejected(tmp_path):
+    m, db = fresh(tmp_path)
+    alias = tmp_path/'hardlink.sqlite3'
+    try:
+        os.link(db, alias)
+    except OSError:
+        pytest.skip('Hardlink unavailable')
+    with pytest.raises(ValueError, match='Hardlinked'):
+        m.verify(alias)
