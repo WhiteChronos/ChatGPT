@@ -1,0 +1,41 @@
+name: MCE Matriz Causa Efeito Tool QA
+on:
+  pull_request:
+    paths:
+      - 'systems/mce/scripts/matriz_causa_efeito_tool.py'
+      - 'systems/mce/tests/test_matriz_causa_efeito_tool.py'
+      - 'systems/mce/datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json'
+      - 'systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md'
+      - 'systems/mce/.agents/skills/matriz-causa-efeito/**'
+      - '.agents/skills/matriz-causa-efeito/**'
+      - '.github/workflows/mce-matriz-tool-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preanalysis-tool:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install MCE test dependencies
+        run: python -m pip install -r systems/mce/requirements.txt 'bandit==1.8.6'
+      - name: Scan deterministic tool (no third-party execution)
+        run: python -m bandit -q -ll systems/mce/scripts/matriz_causa_efeito_tool.py
+      - name: Run real three-adapter synthetic integration and adversarial tests
+        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py
+      - name: Validate MCE skill sync and four canonical skills
+        run: python systems/mce/scripts/validate_skills.py
+      - name: Evidence boundary
+        run: echo 'MCE pre-analysis synthetic gate only; no industrial source, engineering approval, Excel master editing or live Codex installation verified.' >> "$GITHUB_STEP_SUMMARY"

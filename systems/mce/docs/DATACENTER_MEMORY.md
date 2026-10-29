@@ -34,3 +34,7 @@ Pipeline de entendimento (somente leitura): `python systems/mce/scripts/continui
 - O filtro de strings sensiveis nao substitui DLP. Nao incluir credenciais, chaves, P&IDs, fontes confidenciais, dados pessoais nem dumps inteiros. O SQLite nao faz criptografia da aplicacao: exigir criptografia de volume e backup, IAM/ACL, politicas de retencao e auditoria do host.
 - A permanencia de dados nao e infinita: verificar disco, backups versionados, restauracao periodica e recuperacao de desastres. Nunca afirmar que o ChatGPT memorizou automaticamente o conteudo do banco.
 - `PRODUCTION_COMPLETE=NO` ate workflow GitHub no SHA, host real, autorizacoes, revisoes, monitoramento, rollback e aceite por responsaveis. Evidencias sintenticas de CI nao comprovam producao.
+
+## Memoria da ferramenta no DataCenter do MCE
+
+Nao criar banco isolado. O mesmo `mce_memory.py` armazena eventos `STATUS` com `subject=MCE_TOOL_MATRIZ_CAUSA_EFEITO` e `detail.tool=matriz-causa-efeito`. O DataSheet privado esta em `workspace/derived` conforme `datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json`. Nao publicar dados industriais no GitHub. Ver `docs/MATRIZ_CAUSA_EFEITO_TOOL.md`.

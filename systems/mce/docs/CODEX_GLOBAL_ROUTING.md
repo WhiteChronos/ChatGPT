@@ -25,3 +25,7 @@ Memoria operacional, SQLite e backups ficam em host privado. PRODUCTION_COMPLETE
 
 ## Orquestrador canonico (2026-10-29)
 Adicionar `matriz-causa-efeito` como quarta Skill, ponto de entrada para pedido de criacao/revisao de matriz. As tres Skills anteriores permanecem tecnicamente operativas, com scripts e contratos intactos. Nao ativar para REA nem assumir que um manifesto publicado no GitHub instala a Skill no host.
+
+## Execucao do orquestrador matriz-causa-efeito
+
+`plan` e `run` do script `systems/mce/scripts/matriz_causa_efeito_tool.py` usam os adaptadores existentes sem novo editor ou banco. Manifesto privado com referencias de origem e hashes do inventario. DataSheet privado e evento `STATUS` no SQLite MCE; revisar `pid_integration_review[]` antes de `mce_workflow.py understand`. Sem fonte real e host autorizado, marcar NOT_RUN.

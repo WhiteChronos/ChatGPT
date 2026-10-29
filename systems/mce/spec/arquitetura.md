@@ -7,3 +7,5 @@
 5. Edição OOXML controlada de cópia do arquivo Excel, seguida por auditoria e revisão técnica.
 
 Este sistema é autônomo e não contém servidor MCP, ferramentas de engenharia reversa ou dependência de outros produtos.
+
+6. Orquestrador `matriz-causa-efeito`: importa tres formatos GitHub pelas APIs locais `mce_system.py`/`pid_bridge.py`, gera DataSheet privado, escreve evento no SQLite MCE, mantem aprovacao humana como gate e preserva um unico editor OOXML.

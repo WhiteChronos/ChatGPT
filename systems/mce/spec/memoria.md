@@ -121,3 +121,13 @@ Partida: b73a4f14a602599a0c7fe30a1ecd535b5762e573. Corrigidos bloqueio de hardli
 | PEND-MCE-011 | Instalacao/descoberta efetiva da nova Skill no ChatGPT Web e Codex, homologacao do modelo XLSX real, contrato e autorizacoes de engenharia ainda carecem de evidencia propria. | USER_ACTION_REQUIRED |
 
 O modelo Excel mestre nao foi alterado, nenhum documento industrial foi publicado, nenhum merge ou deploy autorizado. A nova Skill mantem `ANALISADO_AGUARDANDO_DECISAO` antes de qualquer edicao e `PRODUCTION_COMPLETE=NO`.
+
+---
+### 2026-10-29 — DEC-MCE-017: ferramenta executavel, DataSheet e memoria por escopo MCE
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-MCE-017 | Manter `matriz-causa-efeito` como uma unica Skill de interface, com `scripts/matriz_causa_efeito_tool.py` usando os adaptadores existentes para Azure, Houston e Industrial-Control. Reutilizar o DataCenter SQLite e a memoria canonica GitHub MCE, gerar DataSheet JSON privado por execucao e NUNCA inventar relacao de seguranca a partir de exportacoes/benchmark. | IMPLEMENTADO_SUJEITO_CI |
+| PEND-MCE-012 | Comprovar no host autorizado os dados reais, modelo Excel mestre oficial, inventario e revisoes, banco SQLite, contract/whitelist e `AUTORIZO_ELABORACAO_MCE` para qualquer edicao e aceite FAT/SAT quando cabivel. A CI nao prova instalacao no Codex/ChatGPT Web. | USER_ACTION_REQUIRED |
+
+Arquivos: `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`; `systems/mce/datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json`; `.github/workflows/mce-matriz-tool-qa.yml`. Sem merge, implantacao ou alteracao do mestre, `PRODUCTION_COMPLETE=NO`.

@@ -42,3 +42,10 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Skill orquestradora: `systems/mce/.agents/skills/matriz-causa-efeito/SKILL.md`, espelhada identicamente em `.agents/skills/matriz-causa-efeito/SKILL.md` para descoberta no Codex/ChatGPT.
 - Usar apenas para matriz causa→efeito de automacao industrial. Compor as Skills antigas `engenharia-mce-projeto`, `padronizacao-mce` e `mce-fechamento-operacional`; preservar o editor existente e todos os gates humanos.
 - Consultar Issue #120, memoria.md e PR #118 antes de agir; catalogo de repos GitHub externos e pesquisa auxiliar, nao fonte contratual de intertravamentos. Nenhum dado industrial e enviado ao GitHub publico.
+
+## Ferramenta matriz-causa-efeito: memoria e DataCenter do proprio MCE
+
+- Uma unica Skill de entrada `matriz-causa-efeito` utiliza os tres motores de apoio MCE existentes, nao um segundo motor/editor nem outra base SQL.
+- Executor de pre-analise `systems/mce/scripts/matriz_causa_efeito_tool.py`, detalhes em `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`, DataSheet sob `datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json`.
+- Os tres repositorios GitHub (Azure, Houston, Industrial-Control) sao formatos de exportacao para adaptadores proprios. Nao clonar/executar terceiros nem transformar benchmark/OCR/grafo em comando de seguranca.
+- `plan` nao escreve; `run` exige inventario SHA, SQLite existente e devolve estado PRE_ANALISE_PENDENTE_REVISAO, nao autorizacao para Excel. Sem host autorizado: NOT_RUN.

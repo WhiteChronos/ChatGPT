@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TOP = ROOT.parents[1]
 LOCAL = ROOT / ".agents" / "skills" / "matriz-causa-efeito"
 GLOBAL = TOP / ".agents" / "skills" / "matriz-causa-efeito"
-MUST = ("SKILL.md", "agents/openai.yaml", "references/repositorios-github.md", "references/metodo-e-saidas.md")
+MUST = ("SKILL.md", "agents/openai.yaml", "references/repositorios-github.md", "references/metodo-e-saidas.md", "references/operacao-ferramenta.md")
 
 def test_skill_files_and_metadata():
     for name in MUST:
@@ -22,6 +22,8 @@ def test_skill_files_and_metadata():
     assert "ANALISADO_AGUARDANDO_DECISAO" in content
     assert "AUTORIZO_ELABORACAO_MCE" in content
     assert "D9D9D9" in content
+    assert "matriz_causa_efeito_tool.py" in content
+    assert "MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json" in content
 
 def test_no_independent_xlsx_editor_or_unsafe_references():
     paths=[p.relative_to(LOCAL).as_posix() for p in LOCAL.rglob("*") if p.is_file()]

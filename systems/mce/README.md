@@ -92,3 +92,7 @@ O Issue #120 e uma caixa de entrada persistente: https://github.com/WhiteChronos
 ## Skill Matriz de Causa e Efeito — entrada MCE exclusiva
 
 A nova [`matriz-causa-efeito`](.agents/skills/matriz-causa-efeito/SKILL.md) e o ponto de entrada especializado para elaborar e revisar MCE a partir de P&IDs, lista I/O, narrativas e modelo mestre. Coordena as 3 Skills existentes, usa catalogo GitHub auxiliar revisado, nao duplica a edicao OOXML e para em `ANALISADO_AGUARDANDO_DECISAO`. So edita copia derivada com modelo oficial, contrato e `AUTORIZO_ELABORACAO_MCE` comprovados. Instalacao no ChatGPT Web e Codex precisa ser feita/verificada na plataforma correspondente.
+
+## Ferramenta operacional da Skill matriz-causa-efeito
+
+A Skill é a interface. O script `scripts/matriz_causa_efeito_tool.py` usa os tres adaptadores P&ID locais, o mesmo SQLite `mce_memory.py` e gera o DataSheet privado `derived/MCE_<run_id>_DATASHEET.json`. Ver `docs/MATRIZ_CAUSA_EFEITO_TOOL.md` para manifesto e comandos `plan` / `run`. O motor de Excel existente continua o unico editor, e o estado de pre-analise nao modifica XLSX nem concede aprovacao.
