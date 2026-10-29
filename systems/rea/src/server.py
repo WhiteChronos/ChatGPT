@@ -50,10 +50,10 @@ def create_server(root: Path, application_root: Path, host: str, port: int, toke
                 return self._reply(404, {'error': 'not found'})
             got = self.headers.get('Authorization', '')
             if not hmac.compare_digest(got, secret):
-                return self._reply(401, {'error': 'unauthorized'})
+                return self._deny(401, {'error': 'unauthorized'})
             origin = self.headers.get('Origin', '')
             if origin and origin not in ('https://chatgpt.com', 'http://127.0.0.1', 'http://localhost'):
-                return self._reply(403, {'error': 'origin denied'})
+                return self._deny(403, {'error': 'origin denied'})
             try:
                 n = int(self.headers.get('Content-Length', '0'))
                 if not 0 < n <= MAX_BODY:
@@ -67,6 +67,24 @@ def create_server(root: Path, application_root: Path, host: str, port: int, toke
                 return self._reply(200, response)
             except (ValueError, UnicodeError, json.JSONDecodeError):
                 return self._reply(400, {'error': 'invalid JSON-RPC request'})
+
+        def _deny(self, status: int, obj):
+            # Closing a Windows socket with unread request bytes can reset the
+            # connection before the client receives the 401/403. Drain only a
+            # bounded declared body, without parsing or dispatching it. A slow
+            # rejected sender cannot hold this handler indefinitely.
+            self.close_connection = True
+            original_timeout = self.connection.gettimeout()
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if 0 < length <= MAX_BODY:
+                    self.connection.settimeout(1.0)
+                    self.rfile.read(length)
+            except (ValueError, OSError):
+                pass
+            finally:
+                self.connection.settimeout(original_timeout)
+            return self._reply(status, obj)
 
         def do_GET(self):
             return self._reply(405, {'error': 'POST required'})

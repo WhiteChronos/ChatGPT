@@ -43,7 +43,7 @@ def _path(raw: str | Path) -> Path:
             raise ValueError("Symlink paths are forbidden")
     if path.exists() and not path.is_file():
         raise ValueError("Expected a regular file")
-    if path.exists() and os.name == "posix" and path.stat().st_nlink != 1:
+    if path.exists() and path.stat().st_nlink != 1:
         raise ValueError("Hardlinked operational files are forbidden")
     return path
 

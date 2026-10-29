@@ -91,7 +91,7 @@ def test_history_detects_late_memory_after_unrecorded_code(tmp_path):
     (root / "systems" / "rea" / "change.py").write_text("changed=True\n")
     cmd("add", ".")
     cmd("commit", "-qm", "code without memory")
-    memory.write_text(memory.read_text() + "\n2026-10-29 - late repair\n")
+    memory.write_text(memory.read_text(encoding="utf-8") + "\n2026-10-29 - late repair\n", encoding="utf-8")
     cmd("add", ".")
     cmd("commit", "-qm", "late memory")
     with pytest.raises(GATE.MemoryGateError, match="same commit"):
@@ -100,7 +100,7 @@ def test_history_detects_late_memory_after_unrecorded_code(tmp_path):
 def test_history_accepts_atomic_code_and_memory(tmp_path):
     root, memory, cmd, baseline = _git_fixture(tmp_path)
     (root / "systems" / "rea" / "change.py").write_text("changed=True\n")
-    memory.write_text(memory.read_text() + "\n2026-10-29 - atomic record\n")
+    memory.write_text(memory.read_text(encoding="utf-8") + "\n2026-10-29 - atomic record\n", encoding="utf-8")
     cmd("add", ".")
     cmd("commit", "-qm", "atomic")
     assert GATE.audit_commit_range(root, baseline, cmd("rev-parse", "HEAD")) == 1

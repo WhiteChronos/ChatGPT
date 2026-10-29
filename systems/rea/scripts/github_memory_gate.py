@@ -63,7 +63,7 @@ def verify_document(current: str, previous: str | None, changed_files: list[str]
 
 def git(root: Path, *args: str, allow_error: bool = False) -> subprocess.CompletedProcess[str]:
     p = subprocess.run(["git", "-C", str(root), *args], capture_output=True,
-                       text=True, timeout=30, check=False)
+                       text=True, encoding="utf-8", timeout=30, check=False)
     if p.returncode and not allow_error:
         raise MemoryGateError("Git parent history missing: " + " ".join(args[:2]))
     return p

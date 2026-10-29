@@ -59,7 +59,12 @@ def test_blocks_secret_or_parent_path(tmp_path,raw):
 def test_denies_symlink(tmp_path):
     outside=tmp_path.parent/'rea-outside-private.py'
     outside.write_text('PASSWORD="SECRET"')
-    (tmp_path/'linked.py').symlink_to(outside)
+    try:
+        (tmp_path/'linked.py').symlink_to(outside)
+    except OSError as exc:
+        if getattr(exc, 'winerror', None) == 1314:
+            pytest.skip('Windows host does not grant symlink creation; exercised on Linux CI')
+        raise
     assert ReaBridge(tmp_path,ROOT).handle(tool('rea_source_inspect',{'file':'linked.py'}))['result']['isError']
 
 

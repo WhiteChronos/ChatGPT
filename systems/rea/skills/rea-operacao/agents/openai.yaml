@@ -1,3 +1,5 @@
 interface:
   display_name: "REA Operacao"
   short_description: "Analisar codigo autorizado pelo motor REA somente leitura"
+policy:
+  allow_implicit_invocation: true

@@ -97,3 +97,14 @@ Gate independente: systems/rea/scripts/github_memory_gate.py; workflow: .github/
 | PEND-REA-009 | Nao existe exportacao nativa automatica de todas as mensagens do ChatGPT para este repositorio. Captura exige acao GitHub autorizada. Seguranca ECC integral, configuracao de check obrigatorio e comprovacao MCP no host continuam pendentes. | EXTERNAL_GATE |
 
 O gate audita todos os commits desde 88413a907366512169b6b0812296c64a8ee11ee5; um commit tardio de memoria nao pode ocultar codigo anterior sem registro. Sem merge, deploy nem ativacao remota do REA. PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-29 - DEC-REA-015: integracao seletiva entre conversas e correcao Windows
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-REA-015 | Manter REA independente, com tres Skills do plugin 0.1.1 e a entrada de investigacao existente; adicionar fechamento operacional que coordena scripts existentes, sem outro motor. Integracao no indice central e roteamento entre conversas respeitam alvo autorizado e disponibilidade real. | VIGENTE |
+| PEND-REA-010 | Tunel privado e cliente preparados no host, mas chave runtime segura, doctor, descoberta no Codex/Web, aceite e revisao de seguranca externa continuam dependencias verificaveis. Nao declarar producao ou captura automatica de chats. | EXTERNAL_GATE |
+
+Partida: ba1d3301522cbed6e5d71f5683057d6728f7de9e. Corrigidos bloqueio de hardlinks tambem no Windows, decodificacao UTF-8 do historico e entrega HTTP 401/403 no Windows por descarte limitado de corpo rejeitado, sem processar o payload. Regressao local: 74 PASS, 2 SKIP por privilégio de symlink ausente; seis testes SDK/protocolo passaram com SDK 2.3.0. Scanner Bandit 1.8.6 sobre src/scripts/skills: sem achados medios/altos. Novo workflow de seguranca do produto e matriz QA Windows/Linux. Ver docs/CODEX_GLOBAL_ROUTING.md. Comentarios ECC antigos nao sao encerrados por esta memoria; nova revisao externa continua necessaria. Sem merge/deploy; PRODUCTION_COMPLETE=NO.

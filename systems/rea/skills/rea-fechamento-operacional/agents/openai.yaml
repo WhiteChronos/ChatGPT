@@ -1,0 +1,5 @@
+interface:
+  display_name: "REA Fechamento Operacional"
+  short_description: "Verificar gates REA e pendencias por ambiente"
+policy:
+  allow_implicit_invocation: true
