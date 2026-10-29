@@ -37,7 +37,7 @@ def test_github_sources_are_references_not_engineering_authority():
     catalog=(LOCAL/"references/repositorios-github.md").read_text()
     for fragment in ("Azure-Samples/digitization-of-piping-and-instrument-diagrams","S-Houston/digitised-pid-mlops","process-intelligence-research/pyDEXPI","WhiteChronos/ChatGPT"):
         assert fragment in catalog
-    assert "AGPL-3.0" in catalog and "nao" in catalog.lower()
+    assert "AGPL-3.0" in catalog and ("nao" in catalog.lower() or "não" in catalog.lower())
 
 def test_mce_onboarding_and_memory():
     manifest=json.loads((ROOT/"plugin.json").read_text(encoding="utf-8"))

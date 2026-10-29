@@ -131,3 +131,5 @@ O modelo Excel mestre nao foi alterado, nenhum documento industrial foi publicad
 | PEND-MCE-012 | Comprovar no host autorizado os dados reais, modelo Excel mestre oficial, inventario e revisoes, banco SQLite, contract/whitelist e `AUTORIZO_ELABORACAO_MCE` para qualquer edicao e aceite FAT/SAT quando cabivel. A CI nao prova instalacao no Codex/ChatGPT Web. | USER_ACTION_REQUIRED |
 
 Arquivos: `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`; `systems/mce/datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json`; `.github/workflows/mce-matriz-tool-qa.yml`. Sem merge, implantacao ou alteracao do mestre, `PRODUCTION_COMPLETE=NO`.
+
+2026-10-29 — QA-RETIFICACAO-MCE-001: suite MCE confirmou 19 novos testes do orquestrador, porem teste antigo de catalogo exigia grafia sem acento (nao) enquanto a referencia agora usa portugues correto (não). Ajustada apenas a assercao para aceitar ambas as grafias mantendo a verificacao da restricao AGPL-3.0. Os dados, Excel mestre e gates de engenharia nao foram alterados. Reavaliar CI do novo HEAD; PRODUCTION_COMPLETE=NO.
