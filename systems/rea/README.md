@@ -55,3 +55,7 @@ python src/sdk_server.py --root /CODIGO_AUTORIZADO --transport stdio
 ```
 
 A conexao ChatGPT Web precisa de permissao do workspace e de um **Secure MCP Tunnel** configurado no host real. Consulte `docs/PRIVATE_MCP_TUNNEL.md` para autenticacao do tunel, validacao por `tunnel-client doctor`, modo de falha segura e gates de aceite. Nao executar `--host 0.0.0.0`. Ter codigo no GitHub ou passar CI nao equivale a host descoberto.
+
+## Novo gate de integridade do release REA (sem depender do MCE)
+
+Antes de instalar, execute `python scripts/release_integrity.py --zip /ARQUIVO_REA.zip --expected-sha256 SHA256_FORA_DO_ZIP --expected-git-sha COMMIT40_APROVADO`. O verificador nao extrai nem executa codigo; exige cobertura exata do manifesto e recusa caminhos inseguros, links, duplicatas e divergencias de hash. `INTEGRITY_PASS` **nao significa producao homologada**. Consulte `docs/RELEASE_INTEGRITY.md`.
