@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "rea-independent",
+  "version": "0.1.1",
+  "description": "Independent read-only reverse engineering workflows with a separately authorized private MCP runtime for Codex and ChatGPT.",
+  "author": {"name": "WhiteChronos", "url": "https://github.com/WhiteChronos"},
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/systems/rea",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "keywords": ["reverse-engineering", "security", "static-analysis", "mcp", "read-only"],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/rea-setup/SKILL.md",
+      "interface": {
+        "displayName": "REA Independente",
+        "shortDescription": "Analise estatica segura, com MCP privado opcional",
+        "longDescription": "Plugin REA independente com Skills de configuracao, analise de codigo autorizada e controles de acesso. O servidor privado MCP requer conexao separada.",
+        "developerName": "WhiteChronos",
+        "category": "Developer Tools",
+        "capabilities": ["Read"],
+        "websiteURL": "https://github.com/WhiteChronos/ChatGPT"
+      }
+    }
+  }
+}

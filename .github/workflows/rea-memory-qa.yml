@@ -1,0 +1,27 @@
+name: REA memory and security QA
+on:
+  pull_request:
+    paths:
+      - 'systems/rea/datacenter/**'
+      - 'systems/rea/scripts/rea_memory.py'
+      - 'systems/rea/scripts/continuity_pipeline.py'
+      - 'systems/rea/tests/test_rea_memory_continuity.py'
+      - 'systems/rea/docs/DATACENTER_MEMORY.md'
+      - '.github/workflows/rea-memory-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  memory-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install focused scanner and test runner
+        run: python -m pip install pytest 'bandit==1.8.6'
+      - name: Scan new persistence and pipeline for medium/high severity findings
+        run: python -m bandit -q -ll -r systems/rea/scripts/rea_memory.py systems/rea/scripts/continuity_pipeline.py
+      - name: Test private memory isolation, append-only integrity and recovery
+        run: python -m pytest -q systems/rea/tests/test_rea_memory_continuity.py

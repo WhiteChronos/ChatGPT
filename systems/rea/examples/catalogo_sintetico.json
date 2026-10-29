@@ -1,0 +1,11 @@
+{
+  "captured_at": "EXEMPLO_NAO_VERIFICADO",
+  "reviewed": [
+    {
+      "repo": "example/static-analyzer",
+      "score_editorial": 78,
+      "license": "MIT",
+      "head": "EXEMPLO"
+    }
+  ]
+}
