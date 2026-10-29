@@ -74,3 +74,15 @@
 
 **Prompt para futura conversa:** "Retomar REA_INDEPENDENTE no GitHub WhiteChronos/ChatGPT, PR #119. Ler systems/rea/AGENTS.md, systems/rea/spec/memoria.md e docs/DATACENTER_MEMORY.md; conferir HEAD/CI/ECC; preservar DEC-REA e PEND-REA e não reexecutar etapas comprovadas. REA independente de MCE; sem merge, deploy ou descoberta MCP inventada."
 
+
+
+---
+
+### 2026-10-29 — DEC-REA-013: vínculo permanente da memória ao GitHub
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-REA-013 | GitHub é a fonte documental canônica do REA; Issue #121 (https://github.com/WhiteChronos/ChatGPT/issues/121) é índice estável, e systems/rea/spec/memoria.md é o histórico versionado. Alterações REA/Skills exigem atualização documental datada no mesmo commit para passar a CI de continuidade. | VIGENTE |
+| PEND-REA-008 | Não há captura automática de conversas do ChatGPT, inclusive discussões sem commit. É preciso registrar nova decisão explicitamente no GitHub. | NAO_IMPLEMENTADO |
+
+Gate independente: systems/rea/scripts/github_memory_gate.py; workflow: .github/workflows/rea-github-memory.yml. O texto anterior foi preservado. HEAD histórico de partida: 59dc18d73d758708ea9e652121bff1a17087fd59. A operação MCP remota continua condicionada a autorização e teste real. PRODUCTION_COMPLETE=NO.

@@ -71,3 +71,8 @@ Memoria operacional SQLite versionada, DataSheet, busca, backup/restauracao e pi
 ## Memória canônica e retomada de contexto
 
 Ler primeiro [`spec/memoria.md`](spec/memoria.md) e `AGENTS.md`, depois consultar `docs/DATACENTER_MEMORY.md` e o HEAD/CI do [PR #119](https://github.com/WhiteChronos/ChatGPT/pull/119). Os registros DEC-REA/PEND-REA preservam decisões, evidências e pendências. A memória é versionada no GitHub; o SQLite privado não captura conversas automaticamente.
+
+
+## Memoria GitHub sem dependencia do ChatGPT
+
+Issue indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/121. Arquivo canonico: [spec/memoria.md](spec/memoria.md). Contrato: [docs/GITHUB_MEMORY.md](docs/GITHUB_MEMORY.md). Gate: .github/workflows/rea-github-memory.yml. Decisoes precisam ser registradas no GitHub; conversas nao sao importadas automaticamente.

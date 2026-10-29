@@ -16,3 +16,11 @@ Sistema dedicado a engenharia reversa autorizada, com proteção de dados, inven
 - O banco SQLite é privado e não sincroniza automaticamente mensagens do ChatGPT; o GitHub permanece a fonte do código e do histórico documental.
 - Nunca transferir dados, segredos, conteúdo de código analisado, backup ou conversas completas ao repositório público; manter o REA independente do MCE.
 - Antes de afirmar host descoberto, MCP conectado ou `PRODUCTION_COMPLETE=YES`, exigir evidência operacional independente e aceite humano. Configuração/CI são prova insuficiente.
+
+
+## Vinculo GitHub da memoria (2026-10-29)
+
+- Indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/121
+- Consultar systems/rea/spec/memoria.md e systems/rea/docs/GITHUB_MEMORY.md antes de cada nova investigacao.
+- Toda alteracao REA/Skills REA deve incluir registro datado no mesmo commit; gate read-only: .github/workflows/rea-github-memory.yml.
+- Nao presumir captura automatica de chats, host MCP, conexao ChatGPT Web, aprovacoes ou producao.
