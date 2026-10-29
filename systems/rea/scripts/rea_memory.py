@@ -31,8 +31,11 @@ def _canonical(value: object) -> str:
 
 def _path(raw: str | Path) -> Path:
     path = Path(raw).expanduser().absolute()
-    if path.is_relative_to(ROOT.resolve()):
-        raise ValueError("Operational storage inside source checkout is forbidden")
+    checkout = ROOT.parents[1]
+    # Standalone extracted product packages are not falsely identified as a monorepo.
+    boundary = checkout if (checkout / '.git').exists() or (checkout / 'AGENTS.md').is_file() else ROOT
+    if path.is_relative_to(boundary.resolve()):
+        raise ValueError("Operational storage anywhere inside source checkout is forbidden")
     if not path.parent.is_dir():
         raise ValueError("An existing private destination directory is required")
     for part in (path, *path.parents):
@@ -40,6 +43,8 @@ def _path(raw: str | Path) -> Path:
             raise ValueError("Symlink paths are forbidden")
     if path.exists() and not path.is_file():
         raise ValueError("Expected a regular file")
+    if path.exists() and os.name == "posix" and path.stat().st_nlink != 1:
+        raise ValueError("Hardlinked operational files are forbidden")
     return path
 
 

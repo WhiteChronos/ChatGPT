@@ -12,7 +12,7 @@ Produto: `REA_INDEPENDENTE`. Este sistema nunca compartilha banco, script ou dep
 
 ## Inicializacao privada, leitura, backup e restauracao
 
-A pasta `/DADOS_PRIVADOS` representa um volume real preexistente, criptografado e com permissoes restritas, nao um caminho configurado automaticamente. Nunca enviar banco ou exportacao com dados de projeto/engenharia para GitHub, ChatGPT ou CI.
+A pasta `/DADOS_PRIVADOS` representa um volume real preexistente, criptografado e com permissoes restritas, nao um caminho configurado automaticamente. Nunca enviar banco ou exportacao com dados de projeto/engenharia para GitHub, ChatGPT ou CI. Em um checkout GitHub o verificador bloqueia caminhos em qualquer ponto da raiz do repositorio.
 
 ```bash
 python systems/rea/scripts/rea_memory.py --db /DADOS_PRIVADOS/rea.sqlite3 init
