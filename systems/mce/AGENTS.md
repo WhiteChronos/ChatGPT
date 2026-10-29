@@ -27,3 +27,11 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Consultar systems/mce/spec/memoria.md e systems/mce/docs/GITHUB_MEMORY.md antes de atuar.
 - Alteracoes MCE devem acrescentar registro datado na memoria no mesmo commit. Validacao: .github/workflows/mce-github-memory.yml. Nao contornar falhas da CI.
 - A memoria nao captura chats automaticamente; registrar decisoes verificadas no GitHub sem dados confidenciais.
+
+
+## Vinculo com registro imediato GitHub
+
+- Ler tambem os comentarios do Issue #120 no inicio de cada tarefa, nao apenas memoria.md.
+- Quando uma decisao tecnica explicitamente publicavel for estabelecida e o GitHub conectado estiver autorizado, registrar evento estruturado WC_MEMORY_EVENT_V1 no Issue #120 e verificar o URL; nao esperar a proxima conversa.
+- Nunca copiar conversas completas, P&IDs, Excel mestre, dados pessoais ou credenciais. Comentarios sao historico, nao aprovacao de engenharia. Se a ferramenta nao estiver disponivel, informar que nao houve gravacao.
+- A CI inspeciona todos os commits posteriores ao checkpoint de ativacao, nao somente o HEAD.

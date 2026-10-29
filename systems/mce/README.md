@@ -82,3 +82,8 @@ A memoria operacional SQLite versionada, DataSheet, busca de registros, backup/r
 ## Memoria GitHub sem dependencia do ChatGPT
 
 Indice permanente: https://github.com/WhiteChronos/ChatGPT/issues/120. Memoria canonica: [spec/memoria.md](spec/memoria.md). Contrato: [docs/GITHUB_MEMORY.md](docs/GITHUB_MEMORY.md). CI: .github/workflows/mce-github-memory.yml. Para atualizar o sistema, adicionar registro datado da decisao no mesmo commit. Nao ha captura automatica dos chats.
+
+
+## Captura imediata de decisoes
+
+O Issue #120 e uma caixa de entrada persistente: https://github.com/WhiteChronos/ChatGPT/issues/120 . Consulte scripts/github_memory_inbox.py para eventos ainda nao consolidados no spec/memoria.md. A CI audita todo o historico recente. O ChatGPT nao oferece captura nativa automatica de cada mensagem no GitHub.

@@ -88,3 +88,14 @@ Continuam pendentes o Excel mestre oficial, os documentos contratuais do projeto
 | PEND-MCE-008 | Sincronização automática de conversas ChatGPT com o GitHub não foi implementada. Decisões somente discutidas no chat exigem registro explícito no GitHub. | NAO_IMPLEMENTADO |
 
 Gate: systems/mce/scripts/github_memory_gate.py; workflow: .github/workflows/mce-github-memory.yml. A memória anterior foi preservada integralmente. Referência de origem antes deste registro: afc81270a7b9ef29315c52019c617bd8ec5bfefd. Nenhum Excel mestre foi alterado, nenhum merge autorizado e PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-29 - DEC-MCE-014: Evento de memoria diretamente no GitHub
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-MCE-014 | Issue #120 recebe eventos publicaveis estruturados de decisao sem commit manual inicial. Evento: https://github.com/WhiteChronos/ChatGPT/issues/120#issuecomment-6506916337 . O leitor github_memory_inbox.py recupera eventos ainda nao espelhados no Markdown. Nenhum evento significa aprovacao de engenharia. | VIGENTE |
+| PEND-MCE-009 | Nao existe leitura nativa automatica de todas as mensagens do ChatGPT por este repositorio. Captura exige acao autorizada no GitHub. Seguranca ECC integral e configuracao de check obrigatorio tambem permanecem gates. | EXTERNAL_GATE |
+
+O gate verifica todos os commits apos bb4a7b43084da406f4a7d78685068c827d301300, evitando omissao de memoria encoberta por commit posterior. Sem merge, deploy ou alteracao de Excel mestre. PRODUCTION_COMPLETE=NO.

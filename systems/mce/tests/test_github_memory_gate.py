@@ -67,3 +67,45 @@ def test_entrypoints_are_on_github():
     for name in ("AGENTS.md", "README.md"):
         assert "spec/memoria.md" in (ROOT / name).read_text(encoding="utf-8")
     assert "https://github.com/WhiteChronos/ChatGPT/issues/120" in text()
+
+
+def _git_fixture(tmp_path):
+    import subprocess
+    root = tmp_path / "git-history"
+    root.mkdir()
+    memory = root / "systems" / "mce" / "spec" / "memoria.md"
+    memory.parent.mkdir(parents=True)
+    memory.write_text(text(), encoding="utf-8")
+    def cmd(*args):
+        return subprocess.run(["git", "-C", str(root), *args], check=True,
+                              text=True, capture_output=True).stdout.strip()
+    cmd("init", "-q")
+    cmd("config", "user.name", "Test")
+    cmd("config", "user.email", "test@example.invalid")
+    cmd("add", ".")
+    cmd("commit", "-qm", "baseline")
+    return root, memory, cmd, cmd("rev-parse", "HEAD")
+
+def test_history_detects_late_memory_after_unrecorded_code(tmp_path):
+    root, memory, cmd, baseline = _git_fixture(tmp_path)
+    (root / "systems" / "mce" / "change.py").write_text("changed=True\n")
+    cmd("add", ".")
+    cmd("commit", "-qm", "code without memory")
+    memory.write_text(memory.read_text() + "\n2026-10-29 - late repair\n")
+    cmd("add", ".")
+    cmd("commit", "-qm", "late memory")
+    with pytest.raises(GATE.MemoryGateError, match="same commit"):
+        GATE.audit_commit_range(root, baseline, cmd("rev-parse", "HEAD"))
+
+def test_history_accepts_atomic_code_and_memory(tmp_path):
+    root, memory, cmd, baseline = _git_fixture(tmp_path)
+    (root / "systems" / "mce" / "change.py").write_text("changed=True\n")
+    memory.write_text(memory.read_text() + "\n2026-10-29 - atomic record\n")
+    cmd("add", ".")
+    cmd("commit", "-qm", "atomic")
+    assert GATE.audit_commit_range(root, baseline, cmd("rev-parse", "HEAD")) == 1
+
+def test_missing_baseline_is_blocked(tmp_path):
+    root, memory, cmd, baseline = _git_fixture(tmp_path)
+    with pytest.raises(GATE.MemoryGateError, match="baseline"):
+        GATE.audit_commit_range(root, "0" * 40, cmd("rev-parse", "HEAD"))

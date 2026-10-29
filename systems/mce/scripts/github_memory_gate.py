@@ -71,6 +71,33 @@ def git(root: Path, *args: str, allow_error: bool = False) -> subprocess.Complet
     return p
 
 
+
+ENFORCEMENT_BASELINE_SHA = "bb4a7b43084da406f4a7d78685068c827d301300"
+
+def audit_commit_range(root: Path, baseline: str, head: str) -> int:
+    """Audit every commit since the first canonical-memory gate, not only HEAD."""
+    if not re.fullmatch(r"[0-9a-f]{40}", baseline) or not re.fullmatch(r"[0-9a-f]{40}", head):
+        raise MemoryGateError("Invalid Git commit identifier")
+    if git(root, "merge-base", "--is-ancestor", baseline, head, allow_error=True).returncode:
+        raise MemoryGateError("Memory baseline missing or shallow history")
+    commits = git(root, "rev-list", "--reverse", "--first-parent", baseline + ".." + head).stdout.splitlines()
+    if len(commits) > 250:
+        raise MemoryGateError("History audit limit exceeded")
+    for commit in commits:
+        parents = git(root, "rev-list", "--parents", "-n", "1", commit).stdout.strip().split()
+        if len(parents) != 2 or parents[0] != commit:
+            raise MemoryGateError("Nonlinear history requires human review")
+        parent = parents[1]
+        old = git(root, "show", parent + ":" + MEMORY_PATH).stdout
+        new = git(root, "show", commit + ":" + MEMORY_PATH).stdout
+        changed = [x for x in git(root, "diff", "--name-only", "-z", parent, commit).stdout.split("\0") if x]
+        try:
+            verify_document(new, old, changed)
+        except MemoryGateError as exc:
+            raise MemoryGateError("Commit " + commit[:12] + ": " + str(exc)) from exc
+    return len(commits)
+
+
 def audit(root: Path) -> dict:
     root = root.resolve()
     memory = root / MEMORY_PATH
@@ -83,11 +110,12 @@ def audit(root: Path) -> dict:
     previous = git(root, "show", "HEAD^:" + MEMORY_PATH).stdout if present else None
     changed = [p for p in git(root, "diff", "--name-only", "-z", "HEAD^", "HEAD").stdout.split("\0") if p]
     result = verify_document(current, previous, changed)
+    audited = audit_commit_range(root, ENFORCEMENT_BASELINE_SHA, head)
     for entry in ("AGENTS.md", "README.md"):
         p = root / "systems" / SLUG / entry
         if p.is_symlink() or not p.is_file() or "spec/memoria.md" not in p.read_text(encoding="utf-8"):
             raise MemoryGateError("Missing entrypoint: " + entry)
-    result.update({"head_sha": head, "parent_sha": parent,
+    result.update({"audited_commits": audited, "head_sha": head, "parent_sha": parent,
                    "canonical_path": MEMORY_PATH,
                    "github_issue": "https://github.com/WhiteChronos/ChatGPT/issues/120"})
     return result

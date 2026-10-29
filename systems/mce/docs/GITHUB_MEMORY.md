@@ -19,3 +19,10 @@ Registro oficial: systems/mce/spec/memoria.md, com historico recuperavel por Git
 
 ## Gate de aceitação
 PASS da memoria indica preservacao de contexto versionado, nao execucao no Codex, autenticidade de aprovador, ausencia universal de segredo, homologacao de engenharia ou PRODUCTION_COMPLETE. O operador deve verificar backup, controle de acesso, revisao e autorizacoes humanas externamente.
+
+
+## Inbox estruturado do GitHub Issue #120
+
+Decisoes tecnicas publicaveis podem ser registradas no Issue #120 como comentario com marcador WC_MEMORY_EVENT_V1 e um bloco JSON contendo schema=1, system=MCE_INDEPENDENTE, kind=DECISION, id=DEC-MCE-014 (novo ID a cada evento), date, title, summary, origin=USER_REQUEST e approval=NOT_ENG_APPROVED. Exemplo verificado: https://github.com/WhiteChronos/ChatGPT/issues/120#issuecomment-6506916337. Nao enviar transcricoes inteiras, dados industriais ou segredos. Github salva o comentario imediatamente, sem commit manual.
+
+Leitura somente consulta: python systems/mce/scripts/github_memory_inbox.py; o token GITHUB_TOKEN e opcional na API. O leitor distingue MIRRORED_IN_GIT de ISSUE_ONLY_PENDING_MIRROR; o segundo exige posterior revisao e consolidacao no arquivo canonico. O gate de continuidade passa a auditar todos os commits depois de bb4a7b43084da406f4a7d78685068c827d301300 com historico Git completo (fetch-depth: 0), sem auto-merge ou aprovacoes.
