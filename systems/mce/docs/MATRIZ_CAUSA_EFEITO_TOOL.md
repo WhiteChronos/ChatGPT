@@ -16,12 +16,9 @@ Os adaptadores são próprios do MCE, originalmente implementados em `engenharia
 
 O workspace real, DataSheet e SQLite devem ficar em um volume privado autorizado, com backups e controle de acesso. Arquivos sintéticos do CI **não são** modelo homologado. Execute a inicialização do MCE, com modelo `.xlsx` não alterado e todas as exportações incluídas no inventário SHA-256:
 
-```bash
-python systems/mce/.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py init \
-  --workspace /DADOS_PRIVADOS/PROJETO_MCE \
-  --master /FONTES_AUTORIZADAS/MODELO_MESTRE.xlsx \
-  --sources /FONTES_AUTORIZADAS/pid.json /FONTES_AUTORIZADAS/ocr.csv /FONTES_AUTORIZADAS/exemplo.json /FONTES_AUTORIZADAS/io.csv
-python systems/mce/scripts/mce_memory.py --db /DADOS_PRIVADOS/mce.sqlite3 init
+```powershell
+python .\systems\mce\.agents\skills\engenharia-mce-projeto\scripts\mce_workflow.py init --workspace "C:\MCE_DADOS\PROJETO_MCE" --master "C:\MCE_FONTES\MODELO_MESTRE.xlsx" --sources "C:\MCE_FONTES\pid.json" "C:\MCE_FONTES\ocr.csv" "C:\MCE_FONTES\exemplo.json" "C:\MCE_FONTES\io.csv"
+python .\systems\mce\scripts\mce_memory.py --db "C:\MCE_DADOS\mce.sqlite3" init
 ```
 
 Inicializar não aprova o modelo: a classificação padrão é `MODELO_FORNECIDO_NAO_VERIFICADO` e o contrato inicial bloqueia todas as células.
@@ -45,11 +42,11 @@ Todos os arquivos devem estar no inventário. O terceiro adaptador é **facultat
 
 ## 3. Planejar, executar e auditar
 
-```bash
-python systems/mce/scripts/matriz_causa_efeito_tool.py plan --workspace /DADOS_PRIVADOS/PROJETO_MCE --manifest /DADOS_PRIVADOS/manifest.json --db /DADOS_PRIVADOS/mce.sqlite3
-python systems/mce/scripts/matriz_causa_efeito_tool.py run  --workspace /DADOS_PRIVADOS/PROJETO_MCE --manifest /DADOS_PRIVADOS/manifest.json --db /DADOS_PRIVADOS/mce.sqlite3
-python systems/mce/scripts/mce_memory.py --db /DADOS_PRIVADOS/mce.sqlite3 verify
-python systems/mce/scripts/mce_memory.py --db /DADOS_PRIVADOS/mce.sqlite3 search --text MCE_TOOL_MATRIZ_CAUSA_EFEITO
+```powershell
+python .\systems\mce\scripts\matriz_causa_efeito_tool.py plan --workspace "C:\MCE_DADOS\PROJETO_MCE" --manifest "C:\MCE_DADOS\manifest.json" --db "C:\MCE_DADOS\mce.sqlite3"
+python .\systems\mce\scripts\matriz_causa_efeito_tool.py run --workspace "C:\MCE_DADOS\PROJETO_MCE" --manifest "C:\MCE_DADOS\manifest.json" --db "C:\MCE_DADOS\mce.sqlite3"
+python .\systems\mce\scripts\mce_memory.py --db "C:\MCE_DADOS\mce.sqlite3" verify
+python .\systems\mce\scripts\mce_memory.py --db "C:\MCE_DADOS\mce.sqlite3" search --text MCE_TOOL_MATRIZ_CAUSA_EFEITO
 ```
 
 `plan` **não grava** estado; `run` pré-valida todos os formatos, exige SQLite existente/verificado e depois usa `scripts/mce_system.py pid-import` e `compare-io` para criar derivados registrados em `state.json`. O DataSheet é `workspace/derived/MCE_<run_id>_DATASHEET.json`, validável contra `datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json`. Contém hashes, referência do repositório, contagem de observações e estado **pendente de revisão**, sem texto OCR/TAGs ou lógica automática. Um evento `STATUS` com `tool=matriz-causa-efeito` é anexado **ao DataCenter MCE existente**, com SHA-256 do DataSheet; o JSON DataSheet não é publicado em GitHub.
@@ -62,7 +59,13 @@ O engenheiro deve conferir os derivados, fontes literais, revisões e hashes; co
 
 ### Limites e gates
 
-- A CI testa dados sintéticos nos três formatos em Linux e Windows, mas não aprova intertravamentos nem executa o host Codex/ChatGPT Web.
+- A CI testa dados sintéticos nos três formatos **exclusivamente em Windows**. Os testes não aprovam intertravamentos nem executam o host Codex/ChatGPT Web.
 - Banco, documentos, modelos, DataSheets completos, backups e transcrições privadas **não** entram no GitHub público.
 - O histórico de decisões públicas fica no Issue #120 e `spec/memoria.md`; eventos operacionais privados ficam no banco MCE.
 - `PRODUCTION_COMPLETE=NO` até segurança, revisão humana, host, release, modelo mestre e aceite comprovados.
+
+## Plataforma única Windows
+
+A ferramenta só pode ser criada, desenvolvida, testada e operada em **Windows nativo**, com PowerShell 7 e Python 3.12+. Não usar Linux, WSL, Bash ou contêiner Linux. Os caminhos `C:\MCE_DADOS` e `C:\MCE_FONTES` são exemplos de pastas privadas já existentes, fora do checkout GitHub.
+
+A CI `.github/workflows/mce-matriz-tool-qa.yml` executa apenas `windows-latest`, testa os três adaptadores sintéticos, valida todos os espelhos das Skills e gera `dist/skill.zip` usando `Compress-Archive`. O ZIP fica no artefato `matriz-causa-efeito-windows-skill`. Os checks globais compartilhados não são modificados por esta decisão MCE.

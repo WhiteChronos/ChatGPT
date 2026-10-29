@@ -29,3 +29,7 @@ Adicionar `matriz-causa-efeito` como quarta Skill, ponto de entrada para pedido 
 ## Execucao do orquestrador matriz-causa-efeito
 
 `plan` e `run` do script `systems/mce/scripts/matriz_causa_efeito_tool.py` usam os adaptadores existentes sem novo editor ou banco. Manifesto privado com referencias de origem e hashes do inventario. DataSheet privado e evento `STATUS` no SQLite MCE; revisar `pid_integration_review[]` antes de `mce_workflow.py understand`. Sem fonte real e host autorizado, marcar NOT_RUN.
+
+## Plataforma para Codex — Windows exclusivo
+
+A Skill `matriz-causa-efeito` só deve ser executada no Codex em Windows nativo (PowerShell/Python 3.12+). Não usar Linux, WSL ou Bash. Os três repositórios continuam como referências de formato, sem executar código de terceiros. O checkout GitHub não prova descoberta no host; validar na sessão real antes da utilização.

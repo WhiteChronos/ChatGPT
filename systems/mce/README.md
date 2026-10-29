@@ -96,3 +96,15 @@ A nova [`matriz-causa-efeito`](.agents/skills/matriz-causa-efeito/SKILL.md) e o 
 ## Ferramenta operacional da Skill matriz-causa-efeito
 
 A Skill é a interface. O script `scripts/matriz_causa_efeito_tool.py` usa os tres adaptadores P&ID locais, o mesmo SQLite `mce_memory.py` e gera o DataSheet privado `derived/MCE_<run_id>_DATASHEET.json`. Ver `docs/MATRIZ_CAUSA_EFEITO_TOOL.md` para manifesto e comandos `plan` / `run`. O motor de Excel existente continua o unico editor, e o estado de pre-analise nao modifica XLSX nem concede aprovacao.
+
+
+## Matriz de Causa e Efeito em Windows nativo — 2026-10-29
+
+O desenvolvimento, testes e uso da ferramenta são **Windows-only**, com PowerShell e Python 3.12+. Linux, WSL, Bash e contêiner Linux são proibidos. Os cinco workflows exclusivos do MCE usam `windows-latest`, sem alterar a governança global compartilhada.
+
+```powershell
+python .\systems\mce\scripts\verify_mce_skill_mirrors.py
+python -m pytest -q systems/mce/tests/test_windows_only_mce_tool.py systems/mce/tests/test_matriz_causa_efeito_tool.py
+```
+
+A Skill única continua a utilizar os três adaptadores GitHub e a memória/SQLite do próprio MCE. O workflow Windows publica o pacote `skill.zip` como artefato de CI, sem instalar a Skill automaticamente no Codex/ChatGPT Web.

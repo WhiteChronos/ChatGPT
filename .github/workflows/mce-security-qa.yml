@@ -7,7 +7,10 @@ permissions:
   contents: read
 jobs:
   security:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,4 +26,4 @@ jobs:
       - name: Verify four canonical skills
         run: python systems/mce/scripts/validate_skills.py
       - name: Evidence boundary
-        run: echo 'Full MCE product Python scope and regression passed; no real template or engineering approval is inferred.' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'Full MCE product Python scope and regression passed; no real template or engineering approval is inferred.' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append

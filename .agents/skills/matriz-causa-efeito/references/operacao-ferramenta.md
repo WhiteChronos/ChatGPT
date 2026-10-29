@@ -24,3 +24,15 @@ O script `systems/mce/scripts/matriz_causa_efeito_tool.py` produz derivados priv
 A etapa permanece `INVENTARIADO` no estado canônico do workflow até o responsável revisar as integrações e executar `mce_workflow.py understand`; então para em `ANALISADO_AGUARDANDO_DECISAO`. Revisões, contrato de células, homologação do modelo, autorização `AUTORIZO_ELABORACAO_MCE` e FAT/SAT quando aplicável são requisitos separados.
 
 Em nova conversa, ler GitHub Issue #120, `systems/mce/spec/memoria.md`, `systems/mce/AGENTS.md` e checks atuais do PR #118. A Skill não sincroniza conversas automaticamente.
+
+## Windows-only: comandos e contrato de execução
+
+A ferramenta é exclusiva do Windows nativo, com PowerShell e Python 3.12+. Linux, WSL, Bash e contêiner Linux não são permitidos. Os caminhos de exemplo `C:\MCE_DADOS` são volumes privados preexistentes fora do checkout GitHub:
+
+```powershell
+python .\systems\mce\scripts\mce_memory.py --db "C:\MCE_DADOS\mce.sqlite3" verify
+python .\systems\mce\scripts\matriz_causa_efeito_tool.py plan --workspace "C:\MCE_DADOS\PROJETO" --manifest "C:\MCE_DADOS\manifest.json" --db "C:\MCE_DADOS\mce.sqlite3"
+python .\systems\mce\scripts\matriz_causa_efeito_tool.py run --workspace "C:\MCE_DADOS\PROJETO" --manifest "C:\MCE_DADOS\manifest.json" --db "C:\MCE_DADOS\mce.sqlite3"
+```
+
+No GitHub, a CI exclusiva MCE deve usar `windows-latest` e empacotar a Skill no Windows com `Compress-Archive`. O pacote de Skill nunca equivale a aprovação técnica ou instalação real em host.

@@ -226,3 +226,8 @@ def test_duplicate_manifest_json_key_is_rejected(tmp_path):
     manifest.write_text(original.replace('"schema":', '"schema": "wrong", "schema":', 1))
     cli(TOOL_PATH, "run", "--workspace", workspace, "--manifest", manifest, "--db", db, expected=2)
     assert not (workspace / "derived").exists()
+def test_native_windows_platform_enforced():
+    for platform in ("linux", "darwin", "cygwin", "freebsd"):
+        with pytest.raises(ValueError, match="WINDOWS_ONLY"):
+            tool._require_windows(platform)
+    assert tool._require_windows("win32") is None

@@ -135,3 +135,15 @@ Arquivos: `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`; `systems/mce/datacente
 2026-10-29 — QA-RETIFICACAO-MCE-001: suite MCE confirmou 19 novos testes do orquestrador, porem teste antigo de catalogo exigia grafia sem acento (nao) enquanto a referencia agora usa portugues correto (não). Ajustada apenas a assercao para aceitar ambas as grafias mantendo a verificacao da restricao AGPL-3.0. Os dados, Excel mestre e gates de engenharia nao foram alterados. Reavaliar CI do novo HEAD; PRODUCTION_COMPLETE=NO.
 
 2026-10-29 — QA-RETIFICACAO-MCE-002: runner Windows reapresentou falha na verificacao cosmetica de acento/encoding de catalogo de terceiros, enquanto 40 testes operacionais do novo executor passaram no Linux. O teste foi atualizado para verificar referencias e licencas pelo identificador ASCII estavel de cada repo, sem permitir uso de fonte nao licenciada ou alterar as restricoes documentadas na Skill. Reexecutar CI integral no SHA atual. PRODUCTION_COMPLETE=NO.
+
+
+---
+
+### 2026-10-29 — DEC-MCE-018: Windows exclusivo na ferramenta matriz-causa-efeito
+
+| ID | Decisao e fonte | Estado |
+| --- | --- | --- |
+| DEC-MCE-018 | Instrução expressa do usuário: nunca utilizar Linux para criar, desenvolver, testar ou executar a ferramenta `matriz-causa-efeito`. A plataforma única passa a ser Windows nativo, PowerShell e Python 3.12+. Os cinco workflows exclusivos MCE executam em `windows-latest` e um teste de regressão impede voltar a usar runners Linux. Preservados os três adaptadores Azure-Samples, S-Houston e ZzzJjt, sem execução de código de terceiros. | VIGENTE |
+| PEND-MCE-013 | Comprovar no novo HEAD a execução Windows de todos os checks, o ZIP de Skill produzido em Windows e a descoberta no host Codex/ChatGPT Web. Uso de projeto real depende de documentos, contrato Excel e aceite humano. Workflows globais compartilhados permanecem fora do escopo MCE. | USER_ACTION_REQUIRED |
+
+A Skill é uma ferramenta subordinada ao MCE, reutilizando o DataCenter SQLite e memória GitHub existentes. Nenhuma edição no Excel mestre, merge, deploy ou aprovação de engenharia. PRODUCTION_COMPLETE=NO.

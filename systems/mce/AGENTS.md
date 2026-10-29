@@ -49,3 +49,10 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Executor de pre-analise `systems/mce/scripts/matriz_causa_efeito_tool.py`, detalhes em `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`, DataSheet sob `datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json`.
 - Os tres repositorios GitHub (Azure, Houston, Industrial-Control) sao formatos de exportacao para adaptadores proprios. Nao clonar/executar terceiros nem transformar benchmark/OCR/grafo em comando de seguranca.
 - `plan` nao escreve; `run` exige inventario SHA, SQLite existente e devolve estado PRE_ANALISE_PENDENTE_REVISAO, nao autorizacao para Excel. Sem host autorizado: NOT_RUN.
+
+
+## Restrição Windows-only para a ferramenta (2026-10-29)
+
+- Desenvolver, criar, executar e testar `matriz-causa-efeito` somente em Windows nativo (PowerShell, Python 3.12+). Não usar Linux, WSL ou Bash.
+- Todos os cinco workflows específicos MCE devem usar `windows-latest`. Não modificar controles globais compartilhados do GitHub, nem REA.
+- Continuam obrigatórios GitHub como fonte de verdade, o banco SQLite MCE, as três Skills auxiliares do MCE, os três adaptadores de exportação GitHub e as autorizações antes de editar Excel mestre.

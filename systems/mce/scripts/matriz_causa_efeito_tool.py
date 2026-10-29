@@ -146,7 +146,15 @@ def _safe_workspace(workspace: Path) -> Path:
     return w
 
 
+def _require_windows(platform: str | None = None) -> None:
+    """Fail closed outside native Windows for cause-effect tool execution."""
+    selected = sys.platform if platform is None else platform
+    if selected != "win32":
+        raise ValueError("WINDOWS_ONLY: ferramenta matriz-causa-efeito exige Windows nativo")
+
+
 def prepare(workspace: Path, manifest_path: Path, db: Path | None = None) -> dict:
+    _require_windows()
     w = _safe_workspace(workspace)
     raw = _json(manifest_path)
     run_id, sources, io_name = _parse_manifest(raw)
@@ -203,6 +211,7 @@ def _save_exclusive(path: Path, payload: dict) -> None:
 
 
 def run(workspace: Path, manifest_path: Path, db: Path) -> dict:
+    _require_windows()
     context = prepare(workspace, manifest_path, db)
     w, targets = context["workspace"], context["targets"]
     derived = w / "derived"

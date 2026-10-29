@@ -45,13 +45,21 @@ Se houver atualização de código/Skill autorizada, registrar no **mesmo commit
 2. Preparar `manifest.json` com `schema=mce.matriz-tool.manifest.v1`, `run_id` único, lista `sources[]` (um registro por adaptador contendo `source_name`, `document`, `revision`, `location`) e `io_source_name` opcional. **Nenhum** dado industrial entra no GitHub.
 3. Em host autorizado com checkout MCE e SQLite privado previamente inicializado, executar o script canônico **sem criar executor duplicado**:
 
-   ```bash
-   python systems/mce/scripts/matriz_causa_efeito_tool.py plan --workspace /DADOS_PRIVADOS/PROJETO --manifest /DADOS_PRIVADOS/manifest.json --db /DADOS_PRIVADOS/mce.sqlite3
-   python systems/mce/scripts/matriz_causa_efeito_tool.py run --workspace /DADOS_PRIVADOS/PROJETO --manifest /DADOS_PRIVADOS/manifest.json --db /DADOS_PRIVADOS/mce.sqlite3
-   ```
+   ```powershell
+python .\systems\mce\scripts\matriz_causa_efeito_tool.py plan --workspace "C:\MCE_DADOS\PROJETO" --manifest "C:\MCE_DADOS\manifest.json" --db "C:\MCE_DADOS\mce.sqlite3"
+python .\systems\mce\scripts\matriz_causa_efeito_tool.py run --workspace "C:\MCE_DADOS\PROJETO" --manifest "C:\MCE_DADOS\manifest.json" --db "C:\MCE_DADOS\mce.sqlite3"
+```
 
 4. Confirmar `PRE_ANALISE_PENDENTE_REVISAO`, `human_review_required=true`, `cause_effect_relations_approved=0` no `MCE_<run_id>_DATASHEET.json` e evento `MCE_TOOL_MATRIZ_CAUSA_EFEITO` no SQLite MCE. O DataSheet segue `systems/mce/datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json` e é privado. A memória pública do MCE continua `systems/mce/spec/memoria.md` + GitHub Issue #120.
 5. Exigir uma `pid_integration_review[]` humana para **cada** derivado no `analise.json`; acionar o executor anterior `mce_workflow.py understand` para chegar a `ANALISADO_AGUARDANDO_DECISAO`. Nem o DataSheet nem o SQLite podem emitir `AUTORIZO_ELABORACAO_MCE` ou liberar edição no Excel.
-6. Validação de desenvolvimento por `.github/workflows/mce-matriz-tool-qa.yml` e regressões MCE Linux/Windows. Os testes usam somente fontes sintéticas. **Nao usar** o sistema REA, execução de código de repositórios de terceiros ou entrada automática do chat. **Sem merge/deploy** e `PRODUCTION_COMPLETE=YES` sem aceite real.
+6. Validação exclusiva em Windows, PowerShell e Python 3.12, por `.github/workflows/mce-matriz-tool-qa.yml` e demais workflows MCE. Não executar ou testar em Linux/WSL. Os testes usam somente fontes sintéticas. **Nao usar** o sistema REA, execução de código de repositórios de terceiros ou entrada automática do chat. **Sem merge/deploy** e `PRODUCTION_COMPLETE=YES` sem aceite real.
 
 Se o ChatGPT Web não expuser execução local, limitar-se à análise documental e apresentar **NOT_RUN** para esses comandos. A presença da Skill instalada não comprova o runtime do script ou o modelo mestre aprovado.
+
+## Windows como unica plataforma de desenvolvimento
+
+- Criar, testar e operar `matriz-causa-efeito` **apenas em Windows nativo** com PowerShell e Python 3.12+. Não usar Linux, WSL, Bash nem contêiner Linux. A CLI recusa sistema operacional não Windows.
+- Uma só Skill MCE coordena `engenharia-mce-projeto`, `padronizacao-mce` e `mce-fechamento-operacional`; não cria banco, executor OOXML nem serviço paralelo.
+- Usar os três repositórios GitHub como contratos **auxiliares** de exportação, por adaptadores locais: Azure-Samples (grafo P&ID), S-Houston (OCR CSV) e ZzzJjt/Industrial-Control (benchmark didático, sem validade de trip ou SIF). Não executar fontes de terceiros.
+- Os workflows **exclusivos do MCE** usam `windows-latest`. Workflows globais compartilhados permanecem sob governança própria e não são modificados por esta Skill.
+- O workflow Windows cria o pacote `skill.zip` com `Compress-Archive` e publica o artefato `matriz-causa-efeito-windows-skill`. Instalação real no Codex/ChatGPT Web depende de teste separado.
