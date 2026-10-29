@@ -58,3 +58,7 @@ Ver `docs/PRODUCTION_ACCEPTANCE.md` para a lista de evidencias obrigatorias e ve
 ## Novo gate de integridade do pacote independente
 
 Antes de instalar qualquer release MCE, executar `python scripts/release_integrity.py --zip /RELEASE_APROVADO.zip` e conferir `INTEGRITY_PASS`, incluindo verificacao SHA-256 de todos os membros. Consulte `docs/RELEASE_INTEGRITY.md`. Esse gate **nao** dispensa autorizacao documental, verificacao do workbook mestre, revisao e aceite de engenharia. Nenhuma dependencia com REA foi adicionada.
+
+### Verificacao adicional de procedencia
+
+Para um candidato aprovado, informe tambem `--expected-sha256 SHA256_DO_CANAL_CONFIAVEL` e `--expected-git-sha COMMIT40_REVISADO`. Consulte `docs/RELEASE_INTEGRITY.md`: hashes internos nao comprovam origem, e nenhuma flag comprova engenharia ou producao automaticamente.

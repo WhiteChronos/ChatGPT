@@ -16,13 +16,16 @@ MAX_MEMBERS = 512
 MAX_MEMBER = 32 * 1024 * 1024
 MAX_TOTAL = 160 * 1024 * 1024
 HEX_SHA = re.compile(r'^[0-9a-fA-F]{64}$')
+HEX_GIT_SHA = re.compile(r'^[0-9a-fA-F]{40}$')
 PREFIX = 'MCE_INDEPENDENTE/'
 
 
-def assess_archive(filename: Path) -> dict:
+def assess_archive(filename: Path, *, expected_sha256: str | None = None,
+                   expected_git_sha: str | None = None) -> dict:
     """Verify exact manifest coverage, paths and payload hashes without extraction."""
     report = {'product': 'MCE_INDEPENDENTE', 'status': 'BLOCKED',
               'checked_files': 0, 'archive_sha256': None, 'production_complete': False,
+              'trusted_digest_match': False, 'trusted_commit_match': False, 'source_git_sha': None,
               'reason': 'Archive evidence has not been verified'}
     try:
         file = Path(filename)
@@ -33,6 +36,12 @@ def assess_archive(filename: Path) -> dict:
             for block in iter(lambda: handle.read(262144), b''):
                 digest.update(block)
         report['archive_sha256'] = digest.hexdigest()
+        if expected_sha256 is not None:
+            if not isinstance(expected_sha256, str) or not HEX_SHA.fullmatch(expected_sha256):
+                raise ValueError('Invalid external expected SHA-256')
+            if report['archive_sha256'].lower() != expected_sha256.lower():
+                raise ValueError('External expected SHA-256 does not match archive')
+            report['trusted_digest_match'] = True
         with zipfile.ZipFile(file, 'r') as zipped:
             members = zipped.infolist()
             if not (2 <= len(members) <= MAX_MEMBERS):
@@ -64,6 +73,17 @@ def assess_archive(filename: Path) -> dict:
             manifest = json.loads(zipped.read(key).decode('utf-8'))
             if not isinstance(manifest, dict) or manifest.get('system') != 'MCE_INDEPENDENTE':
                 raise ValueError('Unexpected release identity')
+            claimed_commit = manifest.get('git_sha')
+            if claimed_commit is not None and (not isinstance(claimed_commit, str) or
+                                               not HEX_GIT_SHA.fullmatch(claimed_commit)):
+                raise ValueError('Invalid claimed source commit')
+            report['source_git_sha'] = claimed_commit
+            if expected_git_sha is not None:
+                if not isinstance(expected_git_sha, str) or not HEX_GIT_SHA.fullmatch(expected_git_sha):
+                    raise ValueError('Invalid trusted source commit')
+                if claimed_commit is None or claimed_commit.lower() != expected_git_sha.lower():
+                    raise ValueError('Release commit does not match trusted external reference')
+                report['trusted_commit_match'] = True
             files = manifest.get('files')
             if not isinstance(files, dict) or not files:
                 raise ValueError('Missing file hashes')
@@ -88,8 +108,11 @@ def assess_archive(filename: Path) -> dict:
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--zip', required=True, type=Path)
+    p.add_argument('--expected-sha256', help='Independent trusted release SHA-256 from approved channel')
+    p.add_argument('--expected-git-sha', help='Expected Git commit from approved repository')
     args = p.parse_args()
-    report = assess_archive(args.zip)
+    report = assess_archive(args.zip, expected_sha256=args.expected_sha256,
+                            expected_git_sha=args.expected_git_sha)
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if report['status'] == 'INTEGRITY_PASS' else 2
 
