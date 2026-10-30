@@ -124,3 +124,8 @@ python -m pytest -q systems/mce/tests/test_windows_only_mce_tool.py systems/mce/
 ```
 
 A Skill única continua a utilizar os três adaptadores GitHub e a memória/SQLite do próprio MCE. O workflow Windows publica o pacote `skill.zip` como artefato de CI, sem instalar a Skill automaticamente no Codex/ChatGPT Web.
+
+
+## Continuidade recuperavel em novos chats (30/10/2026)
+
+Digitar **retomar MCE** e consultar [o procedimento de retomada](docs/RETOMADA_ENTRE_CHATS.md) com HEAD/PR #118, Issue #120, `spec/memoria.md`, Skills e evidencias atuais. O script Windows `scripts/mce_context_bridge.py` gera checkpoint sanitizado `mce.context-handoff.v1`, com referencias GitHub e metadados opcionais do unico DataCenter SQLite privado. Isso **nao** copia mensagens automaticamente, nao sincroniza documentos industriais ao GitHub e nao substitui backups, revisoes de engenharia ou instalacao da Skill na conta.

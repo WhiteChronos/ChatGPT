@@ -26,3 +26,10 @@ PASS da memoria indica preservacao de contexto versionado, nao execucao no Codex
 Decisoes tecnicas publicaveis podem ser registradas no Issue #120 como comentario com marcador WC_MEMORY_EVENT_V1 e um bloco JSON contendo schema=1, system=MCE_INDEPENDENTE, kind=DECISION, id=DEC-MCE-014 (novo ID a cada evento), date, title, summary, origin=USER_REQUEST e approval=NOT_ENG_APPROVED. Exemplo verificado: https://github.com/WhiteChronos/ChatGPT/issues/120#issuecomment-6506916337. Nao enviar transcricoes inteiras, dados industriais ou segredos. Github salva o comentario imediatamente, sem commit manual.
 
 Leitura somente consulta: python systems/mce/scripts/github_memory_inbox.py; o token GITHUB_TOKEN e opcional na API. O leitor distingue MIRRORED_IN_GIT de ISSUE_ONLY_PENDING_MIRROR; o segundo exige posterior revisao e consolidacao no arquivo canonico. O gate de continuidade passa a auditar todos os commits depois de bb4a7b43084da406f4a7d78685068c827d301300 com historico Git completo (fetch-depth: 0), sem auto-merge ou aprovacoes.
+
+
+## Integração cross-chat e revisao de eventos (30/10/2026)
+
+O roteiro oficial de recuperação de estado entre chats agora e `docs/RETOMADA_ENTRE_CHATS.md`. O checkpoint gerado por `scripts/mce_context_bridge.py` (Windows) apenas aponta para GitHub e, se fornecido, resume a integridade do SQLite privado. O gate de memoria continua append-only em cada commit; Issue #120 é inbox publico sob escrita autorizada, sem captura automatica de conversas.
+
+**Alerta de semantica:** `PEND-MCE-014` tem assuntos diferentes no Issue e na memoria.md. O estado `MIRRORED_IN_GIT` calculado somente pelo ID nao prova conteudo correspondente: preservar ambos e exigir revisao humana antes de conciliacao.

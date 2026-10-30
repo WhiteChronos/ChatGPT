@@ -63,3 +63,12 @@ Se o ChatGPT Web não expuser execução local, limitar-se à análise documenta
 - Usar os três repositórios GitHub como contratos **auxiliares** de exportação, por adaptadores locais: Azure-Samples (grafo P&ID), S-Houston (OCR CSV) e ZzzJjt/Industrial-Control (benchmark didático, sem validade de trip ou SIF). Não executar fontes de terceiros.
 - Os workflows **exclusivos do MCE** usam `windows-latest`. Workflows globais compartilhados permanecem sob governança própria e não são modificados por esta Skill.
 - O workflow Windows cria o pacote `skill.zip` com `Compress-Archive` e publica o artefato `matriz-causa-efeito-windows-skill`. Instalação real no Codex/ChatGPT Web depende de teste separado.
+
+
+## Memoria ligada a GitHub, DataCenter e novas conversas
+
+Ao receber **"retomar MCE"** ou iniciar tarefa MCE em outro chat, seguir `systems/mce/docs/RETOMADA_ENTRE_CHATS.md` e consultar primeiro a memoria GitHub, Issue #120, PR #118 com HEAD/CI atual e as Skill/MCE AGENTS. Nao presumir que a versao instalada no ChatGPT Web iguala a do GitHub. Recuperar tambem eventos pendentes no Issue, sem tratar o mesmo ID como prova de semantica igual.
+
+A unica ponte `systems/mce/scripts/mce_context_bridge.py` gera em **Windows nativo** checkpoint `mce.context-handoff.v1` somente com ponteiros GitHub, IDs e SHA-256 do Markdown e, opcionalmente, integridade/hash/contagens do **mesmo** DataCenter SQLite. Sem conexao autorizada, registrar `PRIVATE_NOT_CONNECTED`; nunca transmitir documentos, eventos privados, anexos, banco ou backup ao GitHub.
+
+Evolucao continua **por eventos explicitamente capturados**, nao em segundo plano: decisao publicavel -> Issue #120 pelo GitHub autorizado; mudanca de codigo ou Skill -> `spec/memoria.md` no mesmo commit e CI Windows; evento operacional privado -> ledger SQLite/MCE. Novos fatos corrigem historico por adicao, nao o apagam. Alerta 30/10/2026: `PEND-MCE-014` no Issue e no Markdown têm assuntos divergentes; exigir conciliacao humana. Nao prometer retencao literal de todas as conversas, aprendizagem nativa permanente, autoaprovacao, edicao Excel sem autorizacao ou `PRODUCTION_COMPLETE=YES`.

@@ -56,3 +56,11 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Desenvolver, criar, executar e testar `matriz-causa-efeito` somente em Windows nativo (PowerShell, Python 3.12+). Não usar Linux, WSL ou Bash.
 - Todos os cinco workflows específicos MCE devem usar `windows-latest`. Não modificar controles globais compartilhados do GitHub, nem REA.
 - Continuam obrigatórios GitHub como fonte de verdade, o banco SQLite MCE, as três Skills auxiliares do MCE, os três adaptadores de exportação GitHub e as autorizações antes de editar Excel mestre.
+
+
+## Regra de retomada de contexto MCE (2026-10-30)
+
+- Em cada conversa nova de MCE ou comando `retomar MCE`, ler `systems/mce/docs/RETOMADA_ENTRE_CHATS.md`, `spec/memoria.md`, o Issue #120 e o HEAD/CI atuais do PR #118, antes de concluir que algum passo foi feito.
+- `scripts/mce_context_bridge.py` roda somente em Windows nativo e produz um checkpoint read-only com referencias GitHub e, quando autorizado, integridade/contagem do unico SQLite; nunca ler automaticamente todos os chats ou exportar eventos/arquivos privados.
+- Atualizacao relevante: registrar no Issue #120 ou no `spec/memoria.md` de forma verificavel, obedecendo commit atomicamente versionado e CI; nao converter a existencia da Skill em comprovacao de instalacao atual ou de host.
+- `PEND-MCE-014` no Issue #120 e no Markdown tem semanticas distintas: requer conciliacao humana, preservando os dois registros. Nao usar correspondencia de ID como comprovacao de conteudo identico.

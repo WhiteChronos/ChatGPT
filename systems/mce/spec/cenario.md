@@ -10,3 +10,8 @@
 - Verificar diferença OOXML e original preservado após edição de fixture.
 
 Evidencia automatizada: `python -m pytest -q tests`; evidência humana de projeto real: ainda pendente.
+
+
+- Em um novo chat, `retomar MCE` recupera estado com HEAD/CI atual e Issue #120, sem confundir mensagem de chat nao registrada com memoria persistente.
+- No Windows, checkpoint `mce.context-handoff.v1` funciona sem banco (PRIVATE_NOT_CONNECTED), com SQLite integro (resumo), bloqueia corrupcao e impede sobrescrita ou vazamento de conteudo privado.
+- Ao encontrar ID igual e assuntos diferentes (PEND-MCE-014), sinalizar conflito para conciliacao humana; nunca descartar registros silenciosamente.

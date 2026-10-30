@@ -42,3 +42,8 @@ Nao criar banco isolado. O mesmo `mce_memory.py` armazena eventos `STATUS` com `
 ## Plataforma Windows para a ferramenta
 
 A Skill matriz-causa-efeito e o conjunto de workflows próprios do MCE são exclusivos de Windows com Python 3.12+ e PowerShell. Não usar Linux, WSL ou Bash para desenvolver ou operar esta ferramenta. Banco SQLite e DataSheets operacionais continuam em volume privado Windows, sem criar outra base.
+
+
+## Ponte read-only de retomada para ChatGPT e Codex (30/10/2026)
+
+`scripts/mce_context_bridge.py`, restrito a Windows nativo, produz somente `mce.context-handoff.v1` com SHA/IDs publicos GitHub e `status`, `event_count`, `head_sha256` e `by_kind` do **mesmo** SQLite quando fornecido explicitamente. Nao cria outro banco nem publica detalhes de eventos, documentos, paths privados ou backups. O script bloqueia DB corrompido e nao sobrescreve arquivos. Ver `docs/RETOMADA_ENTRE_CHATS.md`; nao tomar checkpoint por prova de restore real, autenticação de aprovador ou captura de chats.
