@@ -33,3 +33,11 @@ Adicionar `matriz-causa-efeito` como quarta Skill, ponto de entrada para pedido 
 ## Plataforma para Codex — Windows exclusivo
 
 A Skill `matriz-causa-efeito` só deve ser executada no Codex em Windows nativo (PowerShell/Python 3.12+). Não usar Linux, WSL ou Bash. Os três repositórios continuam como referências de formato, sem executar código de terceiros. O checkout GitHub não prova descoberta no host; validar na sessão real antes da utilização.
+# Transporte privado opcional 0.2.0
+
+A entrada continua matriz-causa-efeito. A quinta Skill mce-operacao-web orienta
+somente o uso das sete ferramentas do adaptador MCP MCE, independente de REA.
+Operacao e testes do produto permanecem Windows nativo. Ler WEB_MCP.md antes de
+configurar raiz, pasta de aprovacoes e chave publica do operador; nao passar chave
+privada ao servidor. Sem assinatura externa valida, nao aplicar alteracoes.
+Instalacao, descoberta e chamada real no ChatGPT sao evidencias separadas.

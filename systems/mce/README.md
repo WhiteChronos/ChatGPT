@@ -2,7 +2,23 @@
 
 **Sistema próprio de engenharia industrial; não depende de REA, MCP ou serviços Web externos.**
 
-Contém duas Skills locais `padronizacao-mce` e `engenharia-mce-projeto`, editor OOXML de texto controlado, inventário SHA-256, prévia P&ID via adaptadores de formato JSON/CSV, verificação humana e testes.
+Contém a entrada `matriz-causa-efeito`, três Skills de engenharia/padronização/
+fechamento e a Skill de transporte `mce-operacao-web`, com um único editor OOXML,
+inventário SHA-256, prévia P&ID JSON/CSV, verificação humana e testes.
+
+## Conexao privada opcional e elaboracao controlada
+
+O plugin 0.2.0 acrescenta sete ferramentas MCP em Windows nativo, mantendo
+matriz-causa-efeito como entrada única e os adaptadores/SQLite existentes.
+Consulta skills, inspeciona modelos, cria baseline e registra entendimento.
+A elaboração exige aprovação externa assinada, vinculada aos hashes de todas as
+entradas, modelo, contrato e alterações. O servidor recebe somente chave pública;
+não pode assinar a própria operação. Usa o editor existente em cópia congelada
+e entrega apenas preliminar auditada. Ver [WEB_MCP.md](docs/WEB_MCP.md).
+
+O motor local continua sem depender de MCP. Para o adaptador e a regressão completa,
+instalar `requirements-web.txt` em ambiente MCE isolado. Pacote, instalação, túnel,
+descoberta e chamada real são evidências distintas, sem ativação automática.
 
 ## Instalar e verificar
 

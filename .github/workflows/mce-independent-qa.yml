@@ -7,6 +7,7 @@ on:
       - '.agents/skills/engenharia-mce-projeto/**'
       - '.agents/skills/mce-fechamento-operacional/**'
       - '.agents/skills/matriz-causa-efeito/**'
+      - '.agents/skills/mce-operacao-web/**'
       - '.github/workflows/mce-independent-qa.yml'
   workflow_dispatch:
 permissions:
@@ -28,7 +29,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r systems/mce/requirements.txt
+      - run: python -m pip install -r systems/mce/requirements-web.txt
       - run: python systems/mce/scripts/validate_skills.py
       - name: Verify all MCE mirrors with Python
         run: python systems/mce/scripts/verify_mce_skill_mirrors.py

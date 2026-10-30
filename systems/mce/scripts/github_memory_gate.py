@@ -14,7 +14,8 @@ MEMORY_PATH = "systems/mce/spec/memoria.md"
 EXTRA_PATHS = (".agents/skills/padronizacao-mce/",
                ".agents/skills/engenharia-mce-projeto/",
                ".agents/skills/mce-fechamento-operacional/",
-               ".agents/skills/matriz-causa-efeito/")
+               ".agents/skills/matriz-causa-efeito/",
+               ".agents/skills/mce-operacao-web/")
 SECRET = re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{24,}|Authorization:\s*Bearer\s+\S+", re.I)
 
 

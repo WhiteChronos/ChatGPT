@@ -149,3 +149,14 @@ Arquivos: `systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md`; `systems/mce/datacente
 A Skill é uma ferramenta subordinada ao MCE, reutilizando o DataCenter SQLite e memória GitHub existentes. Nenhuma edição no Excel mestre, merge, deploy ou aprovação de engenharia. PRODUCTION_COMPLETE=NO.
 
 2026-10-29 — QA-RETIFICACAO-MCE-003: o runner Windows gerou arquivos temporarios `__pycache__/*.pyc` ao executar os tres adaptadores. O verificador de espelhos da Skill foi corrigido para ignorar exclusivamente caches Python gerados (nao versionados) e continuar comparando todos os arquivos-fonte MCE. Os 41 testes funcionais haviam passado antes do erro de comparacao. Revisar novo SHA e CI antes de declarar sucesso; PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-29 — DEC-MCE-019: interface privada com elaboracao mediante aprovacao externa
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-MCE-019 | Acrescentar interface MCP stdio opcional em Windows nativo, reutilizando o unico editor MCE. Manter matriz-causa-efeito como entrada; mce-operacao-web e somente transporte. O usuario aprovou consulta e elaboracao controlada e o desenho publicado em docs/superpowers/specs/2026-10-29-mce-private-web.md. O servidor nao cria sua aprovacao: exige assinatura externa Ed25519 vinculada ao modelo, fontes, estado, analise, contrato e alteracoes exatas, com prazo limitado e consumo da solicitacao. | IMPLEMENTADO_SUJEITO_CI |
+| PEND-MCE-014 | Conexao propria no ChatGPT requer tunel/credencial e acesso expressamente autorizados, descoberta e chamada real. Modelo oficial, chave do operador controlada fora da raiz remota, fontes/revisoes, projeto/SS, whitelist, revisao multidisciplinar e aceite continuam externos. Pacote/SDK e teste sintetico nao comprovam operacao industrial. | USER_ACTION_REQUIRED |
+
+Consolidado o HEAD concorrente 42e0b6485c30a5e8de80c89542afc0485af6f538, preservando DEC-MCE-016/017/018, os tres adaptadores, SQLite e todos os workflows exclusivos Windows. Plugin 0.2.0 com cinco Skills canonicas (uma entrada, tres disciplinas de apoio e transporte); sete ferramentas por SDK oficial. Regressoes falharam antes da implementacao e passaram apos: travessia/links, hardlinks, ZIP/XML/dimensoes, assinatura ausente/adulterada/expirada, replay, mudanca de entradas, preservacao de mestre/formula/cinza e SDK stdio. Regressao Windows consolidada: 154 PASS, 2 SKIP por restricoes de symlink/POSIX; 23 testes da interface incluidos. Bandit 1.8.6 em scripts e Skills do produto: zero achados medios/altos. O motor local mantem dependencias base; MCP/criptografia ficam em requirements-web.txt. Nenhum documento industrial ou chave foi publicado, sem merge/deploy. PRODUCTION_COMPLETE=NO.
