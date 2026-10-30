@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "mce-independent",
+  "version": "0.2.0",
+  "description": "Workflow independente de Matriz de Causa e Efeito com preservacao do Excel mestre, pendencias e gates humanos.",
+  "author": {
+    "name": "WhiteChronos",
+    "url": "https://github.com/WhiteChronos"
+  },
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/feat/mce-independent-system-20261028/systems/mce",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./.agents/skills/matriz-causa-efeito/SKILL.md",
+      "interface": {
+        "displayName": "MCE Independente",
+        "shortDescription": "MCE com evidencias e aprovacao",
+        "developerName": "WhiteChronos",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ]
+      }
+    }
+  }
+}

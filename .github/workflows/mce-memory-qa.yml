@@ -1,0 +1,33 @@
+name: MCE memory and security QA
+on:
+  pull_request:
+    paths:
+      - 'systems/mce/datacenter/**'
+      - 'systems/mce/scripts/mce_memory.py'
+      - 'systems/mce/scripts/continuity_pipeline.py'
+      - 'systems/mce/tests/test_mce_memory_continuity.py'
+      - 'systems/mce/scripts/mce_context_bridge.py'
+      - 'systems/mce/tests/test_mce_context_bridge.py'
+      - 'systems/mce/docs/RETOMADA_ENTRE_CHATS.md'
+      - 'systems/mce/docs/DATACENTER_MEMORY.md'
+      - '.github/workflows/mce-memory-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  memory-security:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install focused scanner and test runner
+        run: python -m pip install pytest 'bandit==1.8.6'
+      - name: Scan new persistence and pipeline for medium/high severity findings
+        run: python -m bandit -q -ll -r systems/mce/scripts/mce_memory.py systems/mce/scripts/continuity_pipeline.py systems/mce/scripts/mce_context_bridge.py
+      - name: Test private memory isolation, append-only integrity and recovery
+        run: python -m pytest -q systems/mce/tests/test_mce_memory_continuity.py systems/mce/tests/test_mce_context_bridge.py

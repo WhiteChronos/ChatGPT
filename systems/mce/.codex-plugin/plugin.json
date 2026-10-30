@@ -1,0 +1,13 @@
+{
+  "name": "mce-independent",
+  "version": "0.2.0",
+  "description": "MCE independente, somente em tarefas de Matriz de Causa e Efeito.",
+  "skills": "./.agents/skills/",
+  "interface": {
+    "displayName": "MCE Independente",
+    "shortDescription": "MCE com evidencias e aprovacao",
+    "developerName": "WhiteChronos",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"]
+  }
+}
