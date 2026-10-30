@@ -42,7 +42,7 @@ def test_public_handoff_identifies_sources_without_claiming_private_data():
     assert data["chat_capture"] == "NOT_AUTOMATIC"
     assert data["engineering_authorized"] is False
     assert data["production_complete"] is False
-    assert "retomar MCE" in data["recovery_phrase"].lower()
+    assert "retomar mce" in data["recovery_phrase"].lower()
 
 
 def test_private_datacenter_integrity_uses_only_redacted_metadata(tmp_path):
