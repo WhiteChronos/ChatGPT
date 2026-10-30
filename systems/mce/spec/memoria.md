@@ -160,3 +160,14 @@ A Skill é uma ferramenta subordinada ao MCE, reutilizando o DataCenter SQLite e
 | PEND-MCE-014 | Conexao propria no ChatGPT requer tunel/credencial e acesso expressamente autorizados, descoberta e chamada real. Modelo oficial, chave do operador controlada fora da raiz remota, fontes/revisoes, projeto/SS, whitelist, revisao multidisciplinar e aceite continuam externos. Pacote/SDK e teste sintetico nao comprovam operacao industrial. | USER_ACTION_REQUIRED |
 
 Consolidado o HEAD concorrente 42e0b6485c30a5e8de80c89542afc0485af6f538, preservando DEC-MCE-016/017/018, os tres adaptadores, SQLite e todos os workflows exclusivos Windows. Plugin 0.2.0 com cinco Skills canonicas (uma entrada, tres disciplinas de apoio e transporte); sete ferramentas por SDK oficial. Regressoes falharam antes da implementacao e passaram apos: travessia/links, hardlinks, ZIP/XML/dimensoes, assinatura ausente/adulterada/expirada, replay, mudanca de entradas, preservacao de mestre/formula/cinza e SDK stdio. Regressao Windows consolidada: 154 PASS, 2 SKIP por restricoes de symlink/POSIX; 23 testes da interface incluidos. Bandit 1.8.6 em scripts e Skills do produto: zero achados medios/altos. O motor local mantem dependencias base; MCP/criptografia ficam em requirements-web.txt. Nenhum documento industrial ou chave foi publicado, sem merge/deploy. PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-10-30 — DEC-MCE-020: continuidade entre chats + DataCenter, fase TDD
+
+| ID | Decisao e evidencia | Estado |
+| --- | --- | --- |
+| DEC-MCE-020 | A pedido do usuario, o MCE deve reconstruir o contexto em novos chats lendo primeiro GitHub Issue #120, memoria canonica, PR/HEAD e Skills, e opcionalmente verificar o unico SQLite privado em Windows com resumo exclusivamente de metadados. Uma nova interface read-only `mce_context_bridge.py` produzirá checkpoint `mce.context-handoff.v1` sem documento, detalhe operacional, segredo, aprovacao automatica, segunda base ou captura nativa de conversas. Usar os tres adaptadores ja existentes, sem misturar produtos. | TEST_FIRST_A_VALIDAR |
+| PEND-MCE-015 | Transferencia integral e automatica de conversas/anexos e acesso web direto ao SQLite privado nao sao capacidades verificadas do ChatGPT; exigem integracao e autorizacao proprias. Instalar/descobrir Skill atualizada, conferir backup/restauracao real, host Windows, fontes privadas e aceite externo. | USER_ACTION_REQUIRED |
+
+A memoria evolui por eventos explicitamente registrados em GitHub e pelo gate no mesmo commit, nunca por leitura invisivel de todos os chats. Os testes de contrato estao sendo introduzidos antes do executor (TDD). Nao divulgar dados industriais, nao editar XLSX mestre, nao fazer merge/deploy. PRODUCTION_COMPLETE=NO.
