@@ -2,8 +2,8 @@
   "upstream": {
     "repository": "mattpocock/skills",
     "ref": "main",
-    "observed_sha": "d81f3a183412e71a5b1e84ca21bc1a35eea03a60",
-    "observed_version": "1.2.3",
+    "observed_sha": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+    "observed_version": "1.3.2",
     "stable_skill_count": 27,
     "license": "MIT"
   },
