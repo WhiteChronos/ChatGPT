@@ -1,0 +1,508 @@
+{
+  "schema": "windows-diagnostics-hub/1",
+  "version": "1.0.0",
+  "research": {
+    "date": "2026-11-04",
+    "discovered": 235,
+    "screened": 100,
+    "deepReviewed": 12,
+    "selected": 10,
+    "scope": "DOCUMENTARY_SCREENING_NOT_HOST_BENCHMARK"
+  },
+  "tools": [
+    {
+      "id": "perfview",
+      "role": "Análise de CPU e ETW",
+      "upstream": {
+        "repository": "microsoft/perfview",
+        "url": "https://github.com/microsoft/perfview",
+        "reviewedSha": "9f071a5cb2e70cdfee13abc510344ab1e8840c90",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/microsoft/perfview/9f071a5cb2e70cdfee13abc510344ab1e8840c90/README.md",
+            "sha256": "a314f7ee1e36c45e89e4783149723a4b5c5399f10432ff05d4ce1f5b4782a9e2"
+          },
+          {
+            "path": "LICENSE.TXT",
+            "url": "https://raw.githubusercontent.com/microsoft/perfview/9f071a5cb2e70cdfee13abc510344ab1e8840c90/LICENSE.TXT",
+            "sha256": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/perfview",
+        "url": "https://github.com/WhiteChronos/perfview",
+        "parent": "microsoft/perfview",
+        "headSha": "9f071a5cb2e70cdfee13abc510344ab1e8840c90",
+        "verifiedAt": "2026-11-04T13:52:33.3149562Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/microsoft/perfview/9f071a5cb2e70cdfee13abc510344ab1e8840c90/LICENSE.TXT"
+      },
+      "risk": "Resolução de símbolos pode acessar rede; coleta e análise têm sobrecarga. Licença do código não substitui EULA do binário.",
+      "benchmark": "Analisar uma cópia ETL, medir tempo e memória e registrar símbolos ausentes. Validar o formato de exportação antes de calcular percentuais.",
+      "rollback": "Encerrar somente a análise criada; restaurar variáveis do processo e preservar ETL original.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "profile-explorer",
+      "role": "Analisador alternativo de CPU",
+      "upstream": {
+        "repository": "microsoft/profile-explorer",
+        "url": "https://github.com/microsoft/profile-explorer",
+        "reviewedSha": "7502ca8b1eb97960f4d11fc13ed99aaf85f915a4",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/microsoft/profile-explorer/7502ca8b1eb97960f4d11fc13ed99aaf85f915a4/README.md",
+            "sha256": "fb992e58d0bad5206e676b42d01ef0714648d307adaa6845e818e6adb7612e62"
+          },
+          {
+            "path": "LICENSE.TXT",
+            "url": "https://raw.githubusercontent.com/microsoft/profile-explorer/7502ca8b1eb97960f4d11fc13ed99aaf85f915a4/LICENSE.TXT",
+            "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/profile-explorer",
+        "url": "https://github.com/WhiteChronos/profile-explorer",
+        "parent": "microsoft/profile-explorer",
+        "headSha": "7502ca8b1eb97960f4d11fc13ed99aaf85f915a4",
+        "verifiedAt": "2026-11-04T13:52:38.7014606Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/microsoft/profile-explorer/7502ca8b1eb97960f4d11fc13ed99aaf85f915a4/LICENSE.TXT"
+      },
+      "risk": "Novo executável e eventual instalação precisam de autorização; símbolos incompletos limitam atribuição.",
+      "benchmark": "Abrir cópia do mesmo ETL; comparar principais processos e funções com PerfView/WPA, tempo de abertura e memória. Não exige nova carga no processador.",
+      "rollback": "Fechar o analisador; se instalação tiver sido aprovada, usar desinstalador oficial; manter a captura.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "systeminformer",
+      "role": "Inspeção de processos",
+      "upstream": {
+        "repository": "winsiderss/systeminformer",
+        "url": "https://github.com/winsiderss/systeminformer",
+        "reviewedSha": "cf5c4c28ec1ea63faa993241ca643091cf4e7bc0",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/winsiderss/systeminformer/cf5c4c28ec1ea63faa993241ca643091cf4e7bc0/README.md",
+            "sha256": "76e8255bd931009997fed220bc4eba0472309f30ec8c90d589a0d5b627463ad2"
+          },
+          {
+            "path": "LICENSE.txt",
+            "url": "https://raw.githubusercontent.com/winsiderss/systeminformer/cf5c4c28ec1ea63faa993241ca643091cf4e7bc0/LICENSE.txt",
+            "sha256": "e2a4557d2c4e70276b0ddaa31f35e2ce075281dac7e60ac07ca32c7cf58c1820"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/systeminformer",
+        "url": "https://github.com/WhiteChronos/systeminformer",
+        "parent": "winsiderss/systeminformer",
+        "headSha": "cf5c4c28ec1ea63faa993241ca643091cf4e7bc0",
+        "verifiedAt": "2026-11-04T13:52:44.1440884Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/winsiderss/systeminformer/cf5c4c28ec1ea63faa993241ca643091cf4e7bc0/LICENSE.txt"
+      },
+      "risk": "Contém funções para encerrar processos e acesso por driver; limitar a inspeção, sem ações de controle nem driver novo nesta fase.",
+      "benchmark": "Comparar PIDs, horários e CPU por intervalo com o coletor nativo; medir sobrecarga da própria interface. Assinatura do binário deve ser conferida antes do uso.",
+      "rollback": "Fechar a instância criada; componentes persistentes só com plano de remoção aprovado. Não encerrar programas do usuário.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "windows-diagnostics-toolkit",
+      "role": "Triagem PowerShell",
+      "upstream": {
+        "repository": "0x0bug/windows-diagnostics-toolkit",
+        "url": "https://github.com/0x0bug/windows-diagnostics-toolkit",
+        "reviewedSha": "9906ec49697c7b9eadccb9cc6f42bf593bbf7838",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/0x0bug/windows-diagnostics-toolkit/9906ec49697c7b9eadccb9cc6f42bf593bbf7838/README.md",
+            "sha256": "a9e492e03dcd2f693b538c82d3c028b8516adc0f9a555f30faed88f316b9d8a8"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/0x0bug/windows-diagnostics-toolkit/9906ec49697c7b9eadccb9cc6f42bf593bbf7838/LICENSE",
+            "sha256": "2c16f0d26b850237922e723ef5695bbbd3e5dab02e786236ec5f449859f34a86"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/windows-diagnostics-toolkit",
+        "url": "https://github.com/WhiteChronos/windows-diagnostics-toolkit",
+        "parent": "0x0bug/windows-diagnostics-toolkit",
+        "headSha": "9906ec49697c7b9eadccb9cc6f42bf593bbf7838",
+        "verifiedAt": "2026-11-04T13:52:49.2468991Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/0x0bug/windows-diagnostics-toolkit/9906ec49697c7b9eadccb9cc6f42bf593bbf7838/LICENSE"
+      },
+      "risk": "Projeto beta; declaração de somente leitura não é auditoria integral. Foi lido o módulo performance, que diferencia CPU por intervalo de tempo acumulado. Outras dependências continuam pendentes.",
+      "benchmark": "Antes do host: revisar launcher e módulos selecionados; analisar sintaxe em PowerShell 5.1. Depois, comparar amostra curta com GetSystemTimes e registrar falhas separadas dos achados.",
+      "rollback": "Interromper somente o coletor iniciado; preservar relatórios. Nenhuma alteração de energia/serviço/registro autorizada por este catálogo.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "librehardwaremonitor",
+      "role": "Sensores de hardware",
+      "upstream": {
+        "repository": "LibreHardwareMonitor/LibreHardwareMonitor",
+        "url": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+        "reviewedSha": "2808d80564b6761e1b01f42fabfd966ed695fcbc",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/2808d80564b6761e1b01f42fabfd966ed695fcbc/README.md",
+            "sha256": "8208546a460c418adc79a76372b1ab9abe95073be26e02690032d9363663d846"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/2808d80564b6761e1b01f42fabfd966ed695fcbc/LICENSE",
+            "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/LibreHardwareMonitor",
+        "url": "https://github.com/WhiteChronos/LibreHardwareMonitor",
+        "parent": "LibreHardwareMonitor/LibreHardwareMonitor",
+        "headSha": "2808d80564b6761e1b01f42fabfd966ed695fcbc",
+        "verifiedAt": "2026-11-04T13:52:54.6748637Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MPL-2.0",
+        "evidenceUrl": "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/2808d80564b6761e1b01f42fabfd966ed695fcbc/LICENSE"
+      },
+      "risk": "Leitura de baixo nível pode carregar driver e exigir administrador. Cobertura do A70i não foi comprovada; não usar controles de ventoinha ou tensão.",
+      "benchmark": "Comparar CPU Package e sensores equivalentes com Avell, sincronizando horário e carga por três janelas sem stress; registrar sensores ausentes e divergências.",
+      "rollback": "Fechar ferramenta; remover serviço/driver somente se previamente instalado com autorização e procedimento confirmado.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "psutil",
+      "role": "Biblioteca de processos",
+      "upstream": {
+        "repository": "giampaolo/psutil",
+        "url": "https://github.com/giampaolo/psutil",
+        "reviewedSha": "1186ee265daba1d6f57139c2e39a0daf5e0cdb66",
+        "sources": [
+          {
+            "path": "README.rst",
+            "url": "https://raw.githubusercontent.com/giampaolo/psutil/1186ee265daba1d6f57139c2e39a0daf5e0cdb66/README.rst",
+            "sha256": "4170da026f489fafd70bc20e5f4a3ae41760fb2f1b2eccf32b59cf7217594c60"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/giampaolo/psutil/1186ee265daba1d6f57139c2e39a0daf5e0cdb66/LICENSE",
+            "sha256": "b89c063b3786e28e0c0a38f1931db61fed35e69dd2a2966fbecffee0f46c8d10"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/psutil",
+        "url": "https://github.com/WhiteChronos/psutil",
+        "parent": "giampaolo/psutil",
+        "headSha": "1186ee265daba1d6f57139c2e39a0daf5e0cdb66",
+        "verifiedAt": "2026-11-04T13:52:59.7136568Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "BSD-3-Clause",
+        "evidenceUrl": "https://raw.githubusercontent.com/giampaolo/psutil/1186ee265daba1d6f57139c2e39a0daf5e0cdb66/LICENSE"
+      },
+      "risk": "Requer Python e pacote, que não foram instalados. Temperaturas via psutil não devem ser presumidas no Windows.",
+      "benchmark": "Em ambiente isolado autorizado, comparar deltas de tempo CPU com coletor nativo, normalização pelo número de processadores lógicos observado e tratamento de PID reutilizado; medir custo da coleta.",
+      "rollback": "Usar ambiente virtual isolado e encerrá-lo; nenhuma modificação global. Preservar evidências.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "osquery",
+      "role": "Inventário e investigação local",
+      "upstream": {
+        "repository": "osquery/osquery",
+        "url": "https://github.com/osquery/osquery",
+        "reviewedSha": "981c4d3831aa8a27d21052e96f50e243d8f65ede",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/osquery/osquery/981c4d3831aa8a27d21052e96f50e243d8f65ede/README.md",
+            "sha256": "3ec209a28fbed220070320ab760371dcefee4f3e5ab02087e76ef083d0707ea3"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/osquery/osquery/981c4d3831aa8a27d21052e96f50e243d8f65ede/LICENSE",
+            "sha256": "8412c04ff027b7c95c9f9f44b4feb321a0416b1c0124f69637d31d0a0de8df3a"
+          },
+          {
+            "path": "LICENSE-Apache-2.0",
+            "url": "https://raw.githubusercontent.com/osquery/osquery/981c4d3831aa8a27d21052e96f50e243d8f65ede/LICENSE-Apache-2.0",
+            "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+          },
+          {
+            "path": "LICENSE-GPL-2.0",
+            "url": "https://raw.githubusercontent.com/osquery/osquery/981c4d3831aa8a27d21052e96f50e243d8f65ede/LICENSE-GPL-2.0",
+            "sha256": "640d90f6ee401241ff62834d0d1b33f83049e99b8bfdfa04ed1b0a1635dde3e7"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/osquery",
+        "url": "https://github.com/WhiteChronos/osquery",
+        "parent": "osquery/osquery",
+        "headSha": "981c4d3831aa8a27d21052e96f50e243d8f65ede",
+        "verifiedAt": "2026-11-04T13:53:04.632325Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "Apache-2.0 OR GPL-2.0-only",
+        "evidenceUrl": "https://raw.githubusercontent.com/osquery/osquery/981c4d3831aa8a27d21052e96f50e243d8f65ede/LICENSE"
+      },
+      "risk": "Metadado GitHub NOASSERTION; arquivo LICENSE permite Apache-2.0 OR GPL-2.0-only. Ambos os textos foram conferidos. Consultas podem expor dados privados e ter custo; não instalar daemon nem agentes.",
+      "benchmark": "Confirmar esquema Windows e consultas exatas; testar somente SELECT em modo interativo autorizado, comparando resultados com CIM. Limitar duração e abrangência.",
+      "rollback": "Encerrar a sessão interativa; não criar serviço, agendamento ou envio de resultados.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": []
+    },
+    {
+      "id": "performance-skill",
+      "role": "Skill dotnet-performance",
+      "upstream": {
+        "repository": "wieslawsoltes/Performance-Skill",
+        "url": "https://github.com/wieslawsoltes/Performance-Skill",
+        "reviewedSha": "cef013dc2cadc48f29457172c6f5a5daf6cd0791",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/wieslawsoltes/Performance-Skill/cef013dc2cadc48f29457172c6f5a5daf6cd0791/README.md",
+            "sha256": "6d38d49c5f93861c5ee94b261a95b0d595876e6581c6aa8622195eb9f83711dd"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/wieslawsoltes/Performance-Skill/cef013dc2cadc48f29457172c6f5a5daf6cd0791/LICENSE",
+            "sha256": "17797a1c3f504e8a5ed4f4b80fea05f824f9210221b60c644186af80cd0fded5"
+          },
+          {
+            "path": "SKILL.md",
+            "url": "https://raw.githubusercontent.com/wieslawsoltes/Performance-Skill/cef013dc2cadc48f29457172c6f5a5daf6cd0791/SKILL.md",
+            "sha256": "6c4e526db11ca6cd47f0e6d76d031b7084d596e05a8ae89db1008db3014a1db9"
+          },
+          {
+            "path": "references/platforms/windows.md",
+            "url": "https://raw.githubusercontent.com/wieslawsoltes/Performance-Skill/cef013dc2cadc48f29457172c6f5a5daf6cd0791/references/platforms/windows.md",
+            "sha256": "17826207a1853f2d60cfa8a34d48581d1d3d43d01c9406c3fc70606f60863a7c"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/Performance-Skill",
+        "url": "https://github.com/WhiteChronos/Performance-Skill",
+        "parent": "wieslawsoltes/Performance-Skill",
+        "headSha": "cef013dc2cadc48f29457172c6f5a5daf6cd0791",
+        "verifiedAt": "2026-11-04T13:53:09.6251246Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/wieslawsoltes/Performance-Skill/cef013dc2cadc48f29457172c6f5a5daf6cd0791/LICENSE"
+      },
+      "risk": "Exemplos incluem coleta, aceite de licença e benchmarks; são dados a revisar, não comandos autorizados. Não executar testes de carga com suspeita térmica.",
+      "benchmark": "Frontmatter e referência Windows lidos no SHA; avaliar num caso já coletado se separa CPU atual de histórica, overhead, símbolos faltantes e inferências.",
+      "rollback": "Usar como referência desta tarefa; sem instalação global. Se futuramente adotada, remover somente o adaptador criado.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": [
+        {
+          "path": "SKILL.md",
+          "url": "https://raw.githubusercontent.com/wieslawsoltes/Performance-Skill/cef013dc2cadc48f29457172c6f5a5daf6cd0791/SKILL.md"
+        }
+      ]
+    },
+    {
+      "id": "windows-powershell-agent-skill",
+      "role": "Skill windows-powershell-terminal",
+      "upstream": {
+        "repository": "LukeTsengTW/windows-powershell-agent-skill",
+        "url": "https://github.com/LukeTsengTW/windows-powershell-agent-skill",
+        "reviewedSha": "13080479f23249ab180dfd2c1520ae6d288fa11f",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/LukeTsengTW/windows-powershell-agent-skill/13080479f23249ab180dfd2c1520ae6d288fa11f/README.md",
+            "sha256": "5fb36ec4516d39ee9a3fa7916417d84558a711dce8f49c8591379de4322a11cb"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/LukeTsengTW/windows-powershell-agent-skill/13080479f23249ab180dfd2c1520ae6d288fa11f/LICENSE",
+            "sha256": "84b79c567bb9e1408b9e044d8233552ebbad374761fe1d5da0487bb59a555989"
+          },
+          {
+            "path": "SKILL.md",
+            "url": "https://raw.githubusercontent.com/LukeTsengTW/windows-powershell-agent-skill/13080479f23249ab180dfd2c1520ae6d288fa11f/SKILL.md",
+            "sha256": "95feb302a680e60df75643f1c5ab2cb361c970ab49f18a9621be6205162685a8"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/windows-powershell-agent-skill",
+        "url": "https://github.com/WhiteChronos/windows-powershell-agent-skill",
+        "parent": "LukeTsengTW/windows-powershell-agent-skill",
+        "headSha": "13080479f23249ab180dfd2c1520ae6d288fa11f",
+        "verifiedAt": "2026-11-04T13:53:15.3626542Z",
+        "action": "CREATED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/LukeTsengTW/windows-powershell-agent-skill/13080479f23249ab180dfd2c1520ae6d288fa11f/LICENSE"
+      },
+      "risk": "É orientação para agente, não antivírus nem módulo de reparação. Comandos de execução ainda precisam de revisão e autorização aplicável.",
+      "benchmark": "Frontmatter e regras lidos no SHA; comparar comandos de diagnóstico em 5.1/7, quoting de caminhos e preservação de variáveis; não executar exemplos destrutivos.",
+      "rollback": "Referência documental sem instalação; manter instruções existentes como prioridade.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": [
+        {
+          "path": "SKILL.md",
+          "url": "https://raw.githubusercontent.com/LukeTsengTW/windows-powershell-agent-skill/13080479f23249ab180dfd2c1520ae6d288fa11f/SKILL.md"
+        }
+      ]
+    },
+    {
+      "id": "superpowers",
+      "role": "Skills de investigação e verificação",
+      "upstream": {
+        "repository": "obra/superpowers",
+        "url": "https://github.com/obra/superpowers",
+        "reviewedSha": "22f0b463e7a5e579904dd6211a520321035526f7",
+        "sources": [
+          {
+            "path": "README.md",
+            "url": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/README.md",
+            "sha256": "79f29f50c735862d2e304ea547b4c9aa67d9db6909ff6fb7b5ea922d7bcbc3e7"
+          },
+          {
+            "path": "LICENSE",
+            "url": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/LICENSE",
+            "sha256": "a37e0e9697144819e1d965176ac4ae5bc3fa02d11e7812036bbcadf6dafe2400"
+          },
+          {
+            "path": "skills/systematic-debugging/SKILL.md",
+            "url": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/skills/systematic-debugging/SKILL.md",
+            "sha256": "51c6435d98c83c42c96ba7c35725a0b2c376cd487fb1a4e6bd0ddbe7e33ef202"
+          },
+          {
+            "path": "skills/verification-before-completion/SKILL.md",
+            "url": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/skills/verification-before-completion/SKILL.md",
+            "sha256": "2befe7fc55bcadaa3d97dd9e8efeb633d2561c0ebe74c5a8b17c4d9e7e4520b3"
+          }
+        ]
+      },
+      "fork": {
+        "repository": "WhiteChronos/superpowers",
+        "url": "https://github.com/WhiteChronos/superpowers",
+        "parent": "obra/superpowers",
+        "headSha": "8ca22dba9a94f28898bbce59f2537ff4d87c747d",
+        "verifiedAt": "2026-11-04T13:53:17.020227Z",
+        "action": "REUSED"
+      },
+      "license": {
+        "expression": "MIT",
+        "evidenceUrl": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/LICENSE"
+      },
+      "risk": "Metodologia de desenvolvimento; não fornece sensores nem remove malware. Não ativar automaticamente agentes, branches ou testes de carga.",
+      "benchmark": "Aplicar a um diagnóstico: fato versus hipótese, causa suportada, comparação equivalente e resultados incompletos declarados. Fontes remotas e caminhos locais verificados separadamente.",
+      "rollback": "Não duplicar a instalação existente; apenas encerrar o fluxo da tarefa, sem serviços persistentes.",
+      "states": {
+        "fork": "VERIFIED",
+        "review": "DOCUMENTARY_REVIEWED",
+        "installation": "NOT_PERFORMED_BY_HUB",
+        "execution": "NOT_RUN"
+      },
+      "adoption": "REFERENCE_ONLY",
+      "skills": [
+        {
+          "path": "skills/systematic-debugging/SKILL.md",
+          "url": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/skills/systematic-debugging/SKILL.md"
+        },
+        {
+          "path": "skills/verification-before-completion/SKILL.md",
+          "url": "https://raw.githubusercontent.com/obra/superpowers/22f0b463e7a5e579904dd6211a520321035526f7/skills/verification-before-completion/SKILL.md"
+        }
+      ]
+    }
+  ]
+}
