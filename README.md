@@ -2,6 +2,10 @@
 
 Repositório de governança, memória técnica e validação para documentação de automação, instrumentação, HVAC, processo, tubulação, elétrica e desenhos funcionais.
 
+## Diagnóstico Windows por skills e forks
+
+O [Windows Diagnostics Hub](systems/windows-diagnostics/README.md) reúne dez forks com origem, commit, licença e critérios de adoção. A [skill de roteamento](.agents/skills/windows-diagnostics-hub/SKILL.md) e o controlador offline permitem consultar, validar e planejar o uso, sem instalar ou alterar o Windows automaticamente.
+
 ## Princípios
 
 - Regra técnica antes de estética.
