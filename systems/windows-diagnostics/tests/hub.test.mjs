@@ -65,3 +65,23 @@ test('skill entry point and linked system documentation exist in checkout',async
  const docs=await fs.readFile(new URL('../README.md',import.meta.url),'utf8');
  assert.match(docs,/Não é um otimizador/);
 });
+test('licence evidence must refer to a hashed source actually present in registry',()=>{
+ const bad=structuredClone(registry),t=bad.tools[0];
+ t.license.evidenceUrl=`https://raw.githubusercontent.com/${t.upstream.repository}/${t.upstream.reviewedSha}/MISSING-LICENSE.txt`;
+ assert.ok(validateRegistry(bad).some(e=>e.includes('licence')));
+});
+test('hexadecimal commit IDs compare case-insensitively in plan and catalog',()=>{
+ const copy=structuredClone(registry),t=copy.tools[0];
+ t.fork.headSha=t.upstream.reviewedSha.toUpperCase();
+ assert.deepEqual(validateRegistry(copy),[]);
+ assert.equal(planFor(copy,t.id).forkDiffersFromReviewedCommit,false);
+});
+test('fork observation requires a valid unambiguous UTC timestamp',()=>{
+ for(const value of ['0','12/11/10','2026-02-30T10:00:00Z','2026-11-04T25:00:00Z','2026-11-04T10:00:00+00:00']){
+  const bad=structuredClone(registry);bad.tools[0].fork.verifiedAt=value;
+  assert.ok(validateRegistry(bad).some(e=>e.includes('observation date')),value);
+ }
+ for(const value of ['2026-11-04T10:00:00Z','2026-11-04T10:00:00.1234567Z']){
+  const copy=structuredClone(registry);copy.tools[0].fork.verifiedAt=value;assert.deepEqual(validateRegistry(copy),[]);
+ }
+});

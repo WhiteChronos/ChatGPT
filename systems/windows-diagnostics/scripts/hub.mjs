@@ -6,6 +6,12 @@ const sha=/^[a-f0-9]{40}$/i;
 const digest=/^[a-f0-9]{64}$/i;
 const text=x=>typeof x==='string'&&x.trim().length>0;
 const repoUrl=(url,repo)=>url===`https://github.com/${repo}`;
+const sameCommit=(a,b)=>text(a)&&text(b)&&a.toLowerCase()===b.toLowerCase();
+function validObservationDate(value){
+ if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,7})?Z$/.test(value))return false;
+ const date=new Date(value);
+ return Number.isFinite(date.getTime())&&date.toISOString().slice(0,19)===value.slice(0,19);
+}
 function pinned(url,repo,commit){
  if(typeof url!=='string')return false;
  try{
@@ -37,10 +43,10 @@ export function validateRegistry(data){
   if(forks.has(forkKey))errors.push(`${prefix}: duplicate fork`);forks.add(forkKey);
   if(f.parent!==u.repository)errors.push(`${prefix}: fork parent mismatch`);
   if(!sha.test(f.headSha??''))errors.push(`${prefix}: invalid fork head SHA`);
-  if(!text(f.verifiedAt)||!Number.isFinite(Date.parse(f.verifiedAt)))errors.push(`${prefix}: invalid fork observation date`);
+  if(!validObservationDate(f.verifiedAt))errors.push(`${prefix}: invalid fork observation date`);
   if(!Array.isArray(u.sources)||u.sources.length<2)errors.push(`${prefix}: missing source evidence`);
   else for(const s of u.sources){if(!s||!text(s.path)||!digest.test(s.sha256??'')||!pinned(s.url,u.repository,u.reviewedSha))errors.push(`${prefix}: source must be SHA-pinned and hashed`);}
-  if(!text(t.license?.expression)||['UNKNOWN','NOASSERTION'].includes(t.license?.expression)||!pinned(t.license?.evidenceUrl,u.repository,u.reviewedSha))errors.push(`${prefix}: missing licence evidence`);
+  if(!text(t.license?.expression)||['UNKNOWN','NOASSERTION'].includes(t.license?.expression)||!pinned(t.license?.evidenceUrl,u.repository,u.reviewedSha)||!(Array.isArray(u.sources)&&u.sources.some(s=>s?.url===t.license?.evidenceUrl&&digest.test(s?.sha256??''))))errors.push(`${prefix}: missing licence evidence in hashed sources`);
   for(const field of ['role','risk','benchmark','rollback'])if(!text(t[field]))errors.push(`${prefix}: missing ${field}`);
   if(t.adoption!=='REFERENCE_ONLY'||t.states?.execution!=='NOT_RUN'||t.states?.installation!=='NOT_PERFORMED_BY_HUB'||t.states?.review!=='DOCUMENTARY_REVIEWED'||t.states?.fork!=='VERIFIED')errors.push(`${prefix}: invalid adoption/execution state`);
   if(!Array.isArray(t.skills)||t.skills.some(s=>!s||!text(s.path)||!s.path.endsWith('SKILL.md')||!pinned(s.url,u.repository,u.reviewedSha)))errors.push(`${prefix}: invalid skill reference`);
@@ -51,7 +57,7 @@ export function validateRegistry(data){
 export function planFor(data,id){
  const t=data.tools.find(t=>t.id===id||t.upstream.repository===id);if(!t)return null;
  return {id:t.id,role:t.role,upstream:t.upstream,fork:t.fork,license:t.license,
-  forkDiffersFromReviewedCommit:t.fork.headSha!==t.upstream.reviewedSha,
+  forkDiffersFromReviewedCommit:!sameCommit(t.fork.headSha,t.upstream.reviewedSha),
   risk:t.risk,benchmark:t.benchmark,rollback:t.rollback,skills:t.skills,
   nextSteps:['Conferir tarefa, ferramenta já disponível e revisão do commit pretendido.','Revisar licença do binário, assinatura, dependências e sobrecarga.','Propor escopo, medição equivalente e rollback para aprovação aplicável.'],
   installationApproved:false,hostChanged:false,upstreamExecuted:false};
@@ -64,7 +70,7 @@ export async function runCLI(args){
  const errors=validateRegistry(data);
  if(errors.length){console.error(JSON.stringify({status:'FAIL',errors},null,2));return 1;}
  if(command==='validate')console.log(JSON.stringify({status:'PASS',tools:data.tools.length,scope:'LOCAL_STRUCTURAL_VALIDATION_NOT_LIVE_FORK_OR_HOST_TEST',networkUsed:false,hostChanged:false},null,2));
- if(command==='catalog')console.log(JSON.stringify(data.tools.map(t=>({id:t.id,role:t.role,upstream:t.upstream.repository,fork:t.fork.url,license:t.license.expression,states:t.states,forkDiffersFromReviewedCommit:t.fork.headSha!==t.upstream.reviewedSha})),null,2));
+ if(command==='catalog')console.log(JSON.stringify(data.tools.map(t=>({id:t.id,role:t.role,upstream:t.upstream.repository,fork:t.fork.url,license:t.license.expression,states:t.states,forkDiffersFromReviewedCommit:!sameCommit(t.fork.headSha,t.upstream.reviewedSha)})),null,2));
  if(command==='plan'){const result=planFor(data,id);if(!result){console.error('Ferramenta não encontrada.');return 2;}console.log(JSON.stringify(result,null,2));}
  return 0;
 }
