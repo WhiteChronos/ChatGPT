@@ -329,17 +329,26 @@ export class SubagentBroker {
     if (!current) return;
     if (current.state === 'CANCEL_REQUESTED' || current.state === 'TIMED_OUT' || current.state === 'CANCELLED') return;
     if (TERMINAL_STATES.has(current.state)) return;
-    const next = backendResult?.exit_code === 0 ? 'COMPLETED' : 'FAILED';
+    let next = backendResult?.exit_code === 0 ? 'COMPLETED' : 'FAILED';
+    let finalizationError = null;
     let workspaceStatus = { dirty:false, porcelain:'', commits:[], diff_stat:'' };
     const ws = workspaceFromRecord(current);
     if (ws) {
-      try { workspaceStatus = await this.workspaceManager.statusWorkspace(ws); } catch {}
+      try {
+        workspaceStatus = await this.workspaceManager.statusWorkspace(ws);
+        if (next === 'COMPLETED' && ws.mode === 'worktree_write' && workspaceStatus.dirty) {
+          workspaceStatus = await this.workspaceManager.commitWorkspaceChanges(ws, { message: `chore: apply subagent ${agentId} changes` });
+        }
+      } catch (error) {
+        finalizationError = `workspace finalization failed: ${String(error?.message ?? error)}`;
+        next = 'FAILED';
+      }
     }
     const updated = await this.stateStore.update(agentId, {
       ended_at: now(),
       session_id: backendResult?.session_id ?? current.session_id ?? null,
       exit_code: backendResult?.exit_code ?? 1,
-      terminal_reason: next === 'FAILED' ? (backendResult?.stderr_tail || backendResult?.signal || 'codex child failed') : null,
+      terminal_reason: next === 'FAILED' ? (finalizationError || backendResult?.stderr_tail || backendResult?.signal || 'codex child failed') : null,
     }, next);
     const result = this.#resultPayload(updated, ws, { ...backendResult, ...workspaceStatus });
     await this.stateStore.writeResult(agentId, result, backendResult?.final_text ?? '');

@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {AGENT_STATES,TERMINAL_STATES,assertTransition,brokerError} from './protocol.mjs';
-import {readLinuxProcessIdentity,isSameProcessIdentity} from './process_identity.mjs';
+import {readProcessIdentity,isSameProcessIdentity} from './process_identity.mjs';
 
 function now(){return new Date().toISOString();}
 function safeId(id){if(typeof id!=='string'||!/^sa_[A-Za-z0-9_-]+$/.test(id))throw brokerError('INVALID_ARGUMENT','invalid agent id');return id;}
@@ -58,7 +58,7 @@ export class StateStore {
   async appendStderr(id,text){await writePrivate(path.join(this.agentDir(id),'stderr.log'),text,{append:true});}
   async writeResult(id,result,finalText=''){await atomicJson(path.join(this.agentDir(id),'result.json'),result);await writePrivate(path.join(this.agentDir(id),'result.txt'),finalText);}
   async readResult(id){try{return JSON.parse(await fs.readFile(path.join(this.agentDir(id),'result.json'),'utf8'));}catch(e){if(e?.code==='ENOENT')return null;throw e;}}
-  async reconcileNonterminal(processProbe=readLinuxProcessIdentity){
+  async reconcileNonterminal(processProbe=readProcessIdentity){
     const records=await this.list();const out=[];
     for(let record of records){
       if(TERMINAL_STATES.has(record.state)||record.state==='QUEUED'){out.push(record);continue;}
