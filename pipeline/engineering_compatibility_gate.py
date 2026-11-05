@@ -273,9 +273,169 @@ def _round9_errors(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     return errors
 
 
+REFERENCE_REGISTRY = Path("datacenter/ENGINEERING_REFERENCE_REGISTRY.json")
+HYPERFOCUS_STAGES = {
+    "PROCESS_REQUIREMENT",
+    "EQUIPMENT_TAG",
+    "POWER",
+    "COMMAND_FEEDBACK",
+    "IO",
+    "PLC_RTU",
+    "CONTROL_LOGIC",
+    "NETWORK_PROTOCOL",
+    "DATA_QUALITY",
+    "HMI_SCADA",
+    "ALARM_HISTORY",
+    "FAT_SAT",
+}
+
+
+def _source_governance_errors(data: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    try:
+        registry = _impl.load_json(REFERENCE_REGISTRY)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return [f"engineering reference registry load error: {exc}"]
+
+    authority_ids = {
+        item.get("id")
+        for item in registry.get("authoritative_sources", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    repository_ids = {
+        item.get("id")
+        for item in registry.get("open_source_repositories", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+
+    context = data.get("reference_context")
+    if not isinstance(context, dict):
+        return ["reference_context is required"]
+    if context.get("registry_id") != registry.get("registry_id"):
+        _impl.fail(
+            "reference_context.registry_id must match the canonical engineering reference registry",
+            errors,
+        )
+
+    try:
+        canonical_config = _impl.load_json(_impl.DEFAULT_CONFIG)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return errors + [f"canonical source profile load error: {exc}"]
+    profiles = canonical_config.get("reference_profiles", {})
+    profile_id = context.get("profile_id")
+    if not isinstance(profiles, dict) or profile_id not in profiles:
+        _impl.fail(
+            f"reference_context.profile_id {profile_id!r} is not a repository-pinned reference profile",
+            errors,
+        )
+
+    declared_authorities = context.get("authoritative_source_ids", [])
+    declared_repositories = context.get("open_source_repository_ids", [])
+    if not isinstance(declared_authorities, list):
+        declared_authorities = []
+    if not isinstance(declared_repositories, list):
+        declared_repositories = []
+
+    unknown_authorities = sorted(set(declared_authorities) - authority_ids)
+    if unknown_authorities:
+        _impl.fail(
+            f"reference_context contains unknown authoritative source ids: {unknown_authorities}",
+            errors,
+        )
+    unknown_repositories = sorted(set(declared_repositories) - repository_ids)
+    if unknown_repositories:
+        _impl.fail(
+            f"reference_context contains unknown open-source repository ids: {unknown_repositories}",
+            errors,
+        )
+
+    for record in data.get("assessment_records", []):
+        if not isinstance(record, dict):
+            continue
+        rid = record.get("id", "UNKNOWN")
+        refs = record.get("reference_ids", [])
+        if not isinstance(refs, list):
+            continue
+        invalid = sorted(set(refs) - authority_ids)
+        if invalid:
+            _impl.fail(
+                f"assessment {rid} reference_ids must resolve to authoritative registry entries; unknown={invalid}",
+                errors,
+            )
+        undeclared = sorted(set(refs) - set(declared_authorities))
+        if undeclared:
+            _impl.fail(
+                f"assessment {rid} uses authoritative references not declared in reference_context: {undeclared}",
+                errors,
+            )
+
+    for finding in data.get("findings", []):
+        if not isinstance(finding, dict):
+            continue
+        fid = finding.get("id", "UNKNOWN")
+        refs = finding.get("external_reference_ids", [])
+        if not isinstance(refs, list):
+            refs = []
+        invalid = sorted(set(refs) - authority_ids)
+        if invalid:
+            _impl.fail(
+                f"{fid}: external_reference_ids must resolve to authoritative registry entries; unknown={invalid}",
+                errors,
+            )
+        undeclared = sorted(set(refs) - set(declared_authorities))
+        if undeclared:
+            _impl.fail(
+                f"{fid}: external references must be declared in reference_context: {undeclared}",
+                errors,
+            )
+        claim_basis = finding.get("claim_basis", {})
+        if isinstance(claim_basis, dict) and "EXTERNAL_KNOWLEDGE" in claim_basis.values() and not refs:
+            _impl.fail(
+                f"{fid}: EXTERNAL_KNOWLEDGE claim basis requires at least one authoritative external_reference_id",
+                errors,
+            )
+
+    profile = data.get("analysis_profile", {})
+    checks = profile.get("hyperfocus_checks", []) if isinstance(profile, dict) else []
+    stages = [item.get("stage") for item in checks if isinstance(item, dict)]
+    if set(stages) != HYPERFOCUS_STAGES or len(stages) != len(HYPERFOCUS_STAGES):
+        missing = sorted(HYPERFOCUS_STAGES - set(stages))
+        duplicate = sorted({stage for stage in stages if stages.count(stage) > 1})
+        _impl.fail(
+            f"analysis_profile.hyperfocus_checks must cover each canonical stage exactly once; missing={missing}, duplicate={duplicate}",
+            errors,
+        )
+    for item in checks:
+        if not isinstance(item, dict):
+            continue
+        if not isinstance(item.get("evidence"), str) or not item.get("evidence", "").strip():
+            _impl.fail(
+                f"hyperfocus stage {item.get('stage', 'UNKNOWN')} requires nonblank evidence",
+                errors,
+            )
+        stage_refs = item.get("reference_ids", [])
+        if not isinstance(stage_refs, list):
+            stage_refs = []
+        invalid_stage_refs = sorted(set(stage_refs) - authority_ids)
+        if invalid_stage_refs:
+            _impl.fail(
+                f"hyperfocus stage {item.get('stage', 'UNKNOWN')} contains unknown authoritative reference ids: {invalid_stage_refs}",
+                errors,
+            )
+        undeclared_stage_refs = sorted(set(stage_refs) - set(declared_authorities))
+        if undeclared_stage_refs:
+            _impl.fail(
+                f"hyperfocus stage {item.get('stage', 'UNKNOWN')} uses references not declared in reference_context: {undeclared_stage_refs}",
+                errors,
+            )
+
+    return errors
+
+
 def validate_semantics(data: dict[str, Any], config: dict[str, Any]) -> list[str]:
     errors = _original_validate_semantics(data, config)
     errors.extend(_round9_errors(data, config))
+    errors.extend(_source_governance_errors(data))
     return errors
 
 

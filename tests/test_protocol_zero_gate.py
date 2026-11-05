@@ -19,6 +19,7 @@ def base():
                     "answer": "",
                     "status": "UNANSWERED",
                     "promotes_to_finding": False,
+                    "finding_ids": [],
                 }
             ],
         },
@@ -44,3 +45,41 @@ def test_answered_question_requires_answer():
     q["answer"] = ""
     data["protocol_zero"]["unresolved_count"] = 0
     assert any("requires a nonblank answer" in e for e in validate_protocol_zero(data))
+
+
+def test_finding_requires_answered_linked_question():
+    data = base()
+    data["findings"] = [
+        {
+            "id": "F-01",
+            "protocol_question_id": "Q-01",
+        }
+    ]
+    data["protocol_zero"]["questions"][0]["finding_ids"] = ["F-01"]
+    errors = validate_protocol_zero(data)
+    assert any("linked Protocol Zero question must be ANSWERED" in e for e in errors)
+
+
+def test_answered_question_and_finding_link_must_be_bidirectional():
+    data = base()
+    q = data["protocol_zero"]["questions"][0]
+    q["status"] = "ANSWERED"
+    q["answer"] = "The approved control philosophy applies."
+    q["promotes_to_finding"] = True
+    q["finding_ids"] = ["F-01"]
+    data["protocol_zero"]["unresolved_count"] = 0
+    data["findings"] = [{"id": "F-01", "protocol_question_id": "Q-OTHER"}]
+    errors = validate_protocol_zero(data)
+    assert any("protocol_question_id must reference an existing" in e or "points to a different" in e for e in errors)
+
+
+def test_answered_question_and_finding_link_passes():
+    data = base()
+    q = data["protocol_zero"]["questions"][0]
+    q["status"] = "ANSWERED"
+    q["answer"] = "The approved control philosophy applies."
+    q["promotes_to_finding"] = True
+    q["finding_ids"] = ["F-01"]
+    data["protocol_zero"]["unresolved_count"] = 0
+    data["findings"] = [{"id": "F-01", "protocol_question_id": "Q-01"}]
+    assert validate_protocol_zero(data) == []
