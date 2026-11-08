@@ -108,3 +108,15 @@ O gate audita todos os commits desde 88413a907366512169b6b0812296c64a8ee11ee5; u
 | PEND-REA-010 | Tunel privado e cliente preparados no host, mas chave runtime segura, doctor, descoberta no Codex/Web, aceite e revisao de seguranca externa continuam dependencias verificaveis. Nao declarar producao ou captura automatica de chats. | EXTERNAL_GATE |
 
 Partida: ba1d3301522cbed6e5d71f5683057d6728f7de9e. Corrigidos bloqueio de hardlinks tambem no Windows, decodificacao UTF-8 do historico e entrega HTTP 401/403 no Windows por descarte limitado de corpo rejeitado, sem processar o payload. Regressao local: 74 PASS, 2 SKIP por privilégio de symlink ausente; seis testes SDK/protocolo passaram com SDK 2.3.0. Scanner Bandit 1.8.6 sobre src/scripts/skills: sem achados medios/altos. Novo workflow de seguranca do produto e matriz QA Windows/Linux. Ver docs/CODEX_GLOBAL_ROUTING.md. Comentarios ECC antigos nao sao encerrados por esta memoria; nova revisao externa continua necessaria. Sem merge/deploy; PRODUCTION_COMPLETE=NO.
+
+---
+
+### 2026-11-08 - Fechamento interno e corpus sintetico (DEC-REA-016/017)
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-REA-016 | O usuario decidiu pelo fechamento interno sem deploy externo. O motor REA e o MCP stdio podem operar localmente em root expressamente autorizado; uso por Codex ou ChatGPT Web e opcional, separado, sem alegar conexao. Evidencia de validacao Windows recebida: 76/76 testes da suite e 3/3 testes focados MCP no SHA 4dd0c90fefd3b788cae22225394c5390568283df. Registro de origem: https://github.com/WhiteChronos/ChatGPT/issues/121#issuecomment-6721603060. | VIGENTE_SEM_HOMOLOGACAO |
+| DEC-REA-017 | Acrescentar corpus de referencia sintetico, reproduzivel e sem codigo privado: arestas Python/JS, candidatos de risco, hashes, ocultacao de literal, bloqueio de caminhos e sinalizacao de cobertura parcial. Estender teste de embalagem para a Skill rea-fechamento-operacional. Nao adicionar manifesto ECC artificial ou alterar o motor sem diagnostico. | IMPLEMENTADO_PENDENTE_CI |
+| PEND-REA-011 | ECC: aviso de manifesto/harness para a Skill deve ser validado com o mantenedor ECC; manifestos reais ja existem em systems/rea/plugin.json e .agents/plugins/marketplace.json. Testar corpus no CI do novo HEAD, obter revisao humana da PR #119, comprovar operacao no root autorizado e DataCenter privado somente se utilizado. Nao fazer merge antes de todos os gates e autorizacao especifica do novo SHA. | REVIEW_REQUIRED |
+
+Esta revisao nao instala Codex, nao cria cliente tunel, nao analisa codigo de terceiros, nao altera a operacao privada e nao concede aprovacao. PRODUCTION_COMPLETE=NO.

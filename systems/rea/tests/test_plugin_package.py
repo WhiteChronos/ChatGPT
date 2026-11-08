@@ -11,7 +11,7 @@ def test_portable_plugin_identity_and_skills():
     assert plugin['version']
     assert plugin['extensions']['com.openai']['interface']['capabilities'] == ['Read']
     assert plugin['extensions']['com.openai']['onboardingSkill'] == './skills/rea-setup/SKILL.md'
-    for name in ('rea-setup','rea-operacao'):
+    for name in ('rea-setup','rea-operacao','rea-fechamento-operacional'):
         skill = ROOT / 'skills' / name / 'SKILL.md'
         assert skill.is_file()
         assert skill.read_text(encoding='utf-8').startswith('---\nname: ' + name + '\n')
