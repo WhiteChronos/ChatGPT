@@ -51,3 +51,8 @@ Linhas de cabeçalho 1:7; causas em 8:50 = 43 posições; H8:H50 em sequência 1
 A revisão pode ser reconstruída sem herança da anterior: a base funcional deve ser somente a documentação atual aprovada; identificadores antigos e marcações X/I não são transferidos por padrão. A autorização formal AUTORIZO_ELABORACAO_MCE, o SHA do master aprovado, whitelist e revisão de engenharia continuam indispensáveis; o teto geral de 50 causas não é confundido com as 43 vagas deste perfil.
 
 Testes sintéticos (no Windows nativo): python -m pytest -q systems/mce/tests/test_mce_workflow.py. Verificar também preview/impressão do Excel Windows; CI não constitui aceite do host ou validação funcional.
+
+
+## Perfil L50 sem notas em colunas
+
+Quando o responsavel solicitar matriz limpa, registrar annotation_policy=EXTERNAL_ONLY no contrato aprovado. Para essa opcao o workflow impede notas preenchidas em AR8:AR50, comentarios/notas anexadas a celulas e novas edicoes autorizadas nesse intervalo. Preservar o cabecalho original AR7 e as bordas, fontes, indices, mesclas, X/I e impressão A1:AR50. Fonte, revisao e pendencias permanecem rastreadas externamente e privadamente; formato sem notas nao libera logica de engenharia.

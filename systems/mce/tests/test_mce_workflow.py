@@ -236,3 +236,21 @@ def test_p09_l50_profile_boundaries(tmp_path):
     book['FOLHA 1']['I5'].alignment=Alignment(textRotation=0)
     book.save(model)
     with pytest.raises(ValueError,match='rotacao 90'):mod.verify_p09_l50_model(model,c)
+
+def test_p09_l50_no_notes_policy(tmp_path):
+    from openpyxl.comments import Comment
+    model = tmp_path/'synthetic_clean_l50.xlsx'
+    book = _synthetic_p09_l50(model)
+    c = {'layout_profile':mod.P09_L50_PROFILE, 'annotation_policy':'EXTERNAL_ONLY',
+         'matrix_ranges':[{'sheet':f'FOLHA {i}', 'first_data_row':8, 'last_data_row':50} for i in range(1,4)]}
+    mod.verify_p09_l50_model(model, c)
+    book['FOLHA 1']['AR20']='NOTA'
+    book.save(model)
+    with pytest.raises(ValueError, match='notas na coluna AR'): mod.verify_p09_l50_model(model, c)
+    book['FOLHA 1']['AR20']=None
+    book['FOLHA 1']['C12'].comment=Comment('temporary','tester')
+    book.save(model)
+    with pytest.raises(ValueError, match='comentarios nas celulas'): mod.verify_p09_l50_model(model, c)
+    book['FOLHA 1']['C12'].comment=None
+    book.save(model)
+    mod.verify_p09_l50_model(model, c)

@@ -23,6 +23,9 @@ description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de aut
 5. Apresentar inventário, relatório de entendimento, causas/efeitos candidatos e pendências; **parar em `ANALISADO_AGUARDANDO_DECISAO`** antes de alterar qualquer matriz. Não simular autorização.
 
 
+### Exibição sem notas em coluna (opcional)
+Quando a entrega pedir uma matriz limpa, manter a geometria e o cabeçalho da coluna AR, mas deixar AR8:AR50 vazio e não anexar notas/comentários a células. Preservar causas, TAGs, efeitos, X/I, impressão, mesclas e fontes. Registrar evidências em inventário privado separado; não publicar documentos industriais. Para o perfil L50 de modelo aprovado, indicar annotation_policy=EXTERNAL_ONLY no contrato para validação antes da autorização. Não impor este parâmetro a outros projetos sem pedido expresso.
+
 ## Perfil de paginação P09 com grade até a linha 50 (decisão visual por documento)
 
 - A linha 50 refere-se à linha física do Excel; o cabeçalho ocupa as linhas 1:7 e cada folha comporta 43 posições de causa nas linhas 8:50, não 50 causas ou 50 efeitos.

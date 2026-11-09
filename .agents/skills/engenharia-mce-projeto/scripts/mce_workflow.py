@@ -215,6 +215,9 @@ def verify_p09_l50_model(master, contract):
         return
     if profile != P09_L50_PROFILE:
         fail('STOP: perfil de layout desconhecido: '+str(profile))
+    annotation_policy = contract.get('annotation_policy')
+    if annotation_policy not in (None, 'EXTERNAL_ONLY'):
+        fail('STOP: politica de notas desconhecida: '+str(annotation_policy))
     book = load_workbook(master, read_only=False, keep_links=True)
     ranges = contract.get('matrix_ranges', [])
     if not book.worksheets or len(ranges) != len(book.worksheets) or set(x['sheet'] for x in ranges) != set(book.sheetnames):
@@ -226,6 +229,11 @@ def verify_p09_l50_model(master, contract):
             fail('STOP: perfil L50 exige area A1:AR50 em '+ws.title)
         if len(ws.merged_cells.ranges) != 46:
             fail('STOP: perfil L50 exige 46 mesclagens em '+ws.title)
+        if annotation_policy == 'EXTERNAL_ONLY':
+            if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
+                fail('STOP: notas na coluna AR nao permitidas em '+ws.title)
+            if any(c.comment is not None for row in ws.iter_rows(min_row=1, max_row=50, min_col=1, max_col=44) for c in row):
+                fail('STOP: comentarios nas celulas nao permitidos em '+ws.title)
         for entry in ranges:
             if entry['sheet'] == ws.title and (entry['first_data_row'],entry['last_data_row']) != (8,50):
                 fail('STOP: faixa contratual de causas diferente de 8:50 em '+ws.title)
@@ -425,6 +433,8 @@ def preflight(w,s,c,changes):
         if (sn,coord) in seen:fail('Alteracao duplicada: '+sn+'!'+coord)
         seen.add((sn,coord))
         if sn not in whitelist or coord not in whitelist[sn]:fail('Celula nao autorizada: '+sn+'!'+coord)
+        if c.get('annotation_policy') == 'EXTERNAL_ONLY' and re.fullmatch(r'AR(?:[8-9]|[1-4][0-9]|50)', coord):
+            fail('STOP: coluna AR sem notas por contrato: '+sn+'!'+coord)
         row=int(re.search(r'[0-9]+$',coord).group()) if re.search(r'[0-9]+$',coord) else 0
         if sn in c['frozen_sheets'] or any(lo<=row<=hi for lo,hi in c['protected_rows_by_sheet'][sn]):
             fail('Cabecalho ou aba protegida por contrato: '+sn+'!'+coord)
