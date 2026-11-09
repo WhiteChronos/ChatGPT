@@ -185,3 +185,54 @@ def test_unverified_evidence_rejected_at_apply(tmp_path):
     dump(changes,ch)
     r=command('apply','--workspace',ws,'--changes',changes,ok=False)
     assert 'nao confere' in r.stderr
+
+
+
+def _synthetic_p09_l50(path):
+    from openpyxl.styles import Font, Alignment
+    book=Workbook()
+    for n in range(1,4):
+        ws=book.active if n==1 else book.create_sheet()
+        ws.title=f'FOLHA {n}'
+        ws.print_area='A1:AR50'
+        for r in range(8,51):
+            ws[f'H{r}']=(n-1)*43+r-7
+            ws[f'H{r}'].font=Font(name='Arial',size=8)
+            ws[f'C{r}'].font=Font(name='Arial',size=8)
+            ws[f'C{r}'].alignment=Alignment(wrap_text=True)
+            ws.row_dimensions[r].height=20
+            ws.merge_cells(start_row=r,start_column=6,end_row=r,end_column=7)
+        for r in (2,3,4):
+            ws.merge_cells(start_row=r,start_column=6,end_row=r,end_column=7)
+        for col in range(9,44):
+            ws.cell(7,col).value=col-8
+            ws.cell(7,col).font=Font(name='Arial',size=8)
+            ws.cell(5,col).font=Font(name='Arial',size=8)
+            ws.cell(5,col).alignment=Alignment(textRotation=90)
+        for coord, value in (('G1','EFEITO'),('H1','Interface'),('A6','CAUSA')):
+            ws[coord].value=value
+            ws[coord].font=Font(name='Arial',size=10)
+        ws['AR50'].font=Font(name='Arial',size=8)
+    book.save(path)
+    return book
+
+
+def test_p09_l50_profile_boundaries(tmp_path):
+    from openpyxl.styles import Alignment
+    model=tmp_path/'synthetic_p09_l50.xlsx'
+    book=_synthetic_p09_l50(model)
+    c={'layout_profile':mod.P09_L50_PROFILE,
+       'matrix_ranges':[{'sheet':f'FOLHA {i}', 'first_data_row':8, 'last_data_row':50} for i in range(1,4)]}
+    mod.verify_p09_l50_model(model,c)
+    book['FOLHA 2'].print_area='A1:AR57';book.save(model)
+    with pytest.raises(ValueError,match='A1:AR50'):mod.verify_p09_l50_model(model,c)
+    book['FOLHA 2'].print_area='A1:AR50'
+    book['FOLHA 2']['H50']=50;book.save(model)
+    with pytest.raises(ValueError,match='H8:H50'):mod.verify_p09_l50_model(model,c)
+    book['FOLHA 2']['H50']=86
+    book['FOLHA 2']['C51']='OVERFLOW';book.save(model)
+    with pytest.raises(ValueError,match='abaixo da linha 50'):mod.verify_p09_l50_model(model,c)
+    book['FOLHA 2']['C51']=None
+    book['FOLHA 1']['I5'].alignment=Alignment(textRotation=0)
+    book.save(model)
+    with pytest.raises(ValueError,match='rotacao 90'):mod.verify_p09_l50_model(model,c)

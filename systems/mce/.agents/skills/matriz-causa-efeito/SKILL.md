@@ -22,6 +22,16 @@ description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de aut
 4. Se houver executor Python autorizado com fontes locais, seguir `systems/mce/docs/EXECUCAO.md` e usar **somente** o executor canônico `systems/mce/.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py` (`init`, `understand`). Se não houver acesso ao executor, elaborar só relatório documental e informar `NOT_RUN` para comandos.
 5. Apresentar inventário, relatório de entendimento, causas/efeitos candidatos e pendências; **parar em `ANALISADO_AGUARDANDO_DECISAO`** antes de alterar qualquer matriz. Não simular autorização.
 
+
+## Perfil de paginação P09 com grade até a linha 50 (decisão visual por documento)
+
+- A linha 50 refere-se à linha física do Excel; o cabeçalho ocupa as linhas 1:7 e cada folha comporta 43 posições de causa nas linhas 8:50, não 50 causas ou 50 efeitos.
+- A numeração de vagas na coluna H progride 1..43, 44..86, 87..129, inclusive quando a última folha tem vagas sem descrição. Abas sequenciais FOLHA 1, FOLHA 2 etc.
+- São 35 efeitos por folha em I:AQ, descrições giradas para cima em I5:AQ5 (90 graus), área de impressão A1:AR50, 46 mesclagens no layout derivado, Arial 10 pt nos títulos, Arial 8 pt no restante, alturas 20/30 pt e bordas thin.
+- Identificador opcional no contrato: P09_L50_APROVADO_VISUALMENTE. O perfil P09 original L57 permanece intacto e não é alterado automaticamente em outros projetos.
+- Em revisão reconstruída sem herança, não transportar TAGs, causas, efeitos ou X/I da revisão antiga; trabalhar somente com as fontes documentais atuais verificadas.
+- O executor canônico confere o perfil declarado contra o próprio modelo antes de autorizar. Layout aceito visualmente não homologa engenharia nem dispensa modelo mestre aprovado, contrato de células, autorização humana, QA Excel Windows e auditoria OOXML.
+
 ## Fase 2 — elaborar SOMENTE após gate humano
 
 1. Exigir modelo XLSX mestre **homologado e rastreado** (o exemplo local não é oficial), contrato `contract.json` aprovado com `editable_cells` exatas, `max_causes_per_sheet=50` (ou menos pela área real), projeto e SS documentados, fontes identificadas, e autorização humana verificável `AUTORIZO_ELABORACAO_MCE` vinculada ao baseline e aos hashes das fontes.

@@ -40,3 +40,14 @@ A falta de Projeto/SS, ausência de original oficial, liberação de celula de c
 A extensao usa `scripts/mce_system.py` para orquestrar `pid_bridge.py` sem modificar `mce_workflow.py` no que se refere aos gates de autorizacao de MCE. Depois do inventario e antes do relatorio de entendimento, registrar as exportacoes de P&ID como fontes no init. Importar com `pid-import`, comparar com lista I/O com `compare-io` e exigir `pid_integration_review` para cada SHA derivado. Nao executar o modelo de terceiros; somente converter JSON/CSV entregue pelo usuario. Ver `README.md` e `research/top10_verificados.json`.
 
 **Falha de seguranca detectada:** o exemplo didatico Industrial-Control tem sombreamento de parametro em `validate_coverage`, impedindo reconhecer efeitos ausentes; foi reimplementado em validador proprio com teste adversarial. **Licencas:** S-Houston e Industrial-Control sem licenca identificada; pyDEXPI AGPL-3.0 (nao incorporado). Nenhum dado de projeto publicado.
+
+
+## Perfil opcional de paginação com última linha 50 — P09_L50_APROVADO_VISUALMENTE
+
+Este perfil é uma derivação de formato aprovada visualmente pelo usuário, sem substituir automaticamente o modelo mestre P09 L57. Para selecioná-lo, o contrato de uma cópia de modelo efetivamente homologada deve declarar layout_profile = P09_L50_APROVADO_VISUALMENTE. O contrato inicial permanece bloqueado, com model_approved=false e editable_cells vazias.
+
+Linhas de cabeçalho 1:7; causas em 8:50 = 43 posições; H8:H50 em sequência 1..43, 44..86, 87..129; 35 efeitos nas colunas I:AQ, descrição na linha 5 girada em 90 graus; área de impressão A1:AR50; 46 mesclagens na variante visual; Arial 10 títulos e 8 restante; alturas 20/30 pt e bordas thin. Nenhum dado abaixo da linha 50. O executor chama verify_p09_l50_model durante verify_contract, sem escrever no Excel, e rejeita qualquer inconformidade.
+
+A revisão pode ser reconstruída sem herança da anterior: a base funcional deve ser somente a documentação atual aprovada; identificadores antigos e marcações X/I não são transferidos por padrão. A autorização formal AUTORIZO_ELABORACAO_MCE, o SHA do master aprovado, whitelist e revisão de engenharia continuam indispensáveis; o teto geral de 50 causas não é confundido com as 43 vagas deste perfil.
+
+Testes sintéticos (no Windows nativo): python -m pytest -q systems/mce/tests/test_mce_workflow.py. Verificar também preview/impressão do Excel Windows; CI não constitui aceite do host ou validação funcional.

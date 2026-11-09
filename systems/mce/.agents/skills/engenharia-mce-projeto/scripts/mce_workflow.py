@@ -114,7 +114,7 @@ def run_init(args):
     writejson(w/'state.json',s)
     writejson(w/'contract.json',{'template_sha256':s['template_sha256'],
         'model_approved':False,'max_causes_per_sheet':50,
-        'matrix_ranges':[],'editable_cells':{},
+        'matrix_ranges':[],'editable_cells':{},'layout_profile':None,
         'protected_rows_by_sheet':{},'frozen_sheets':[]})
     print(json.dumps({'status':s['status'],'workspace':str(w),'master_sha256':s['template_sha256'],
           'documents':len(docs)},ensure_ascii=False))
@@ -203,6 +203,59 @@ def run_understand(args):
         'gaps':len(a['gaps'])},ensure_ascii=False))
 
 
+
+P09_L50_PROFILE = 'P09_L50_APROVADO_VISUALMENTE'
+P09_L50_TITLES = {'B1','C1','G1','H1','H2','H3','H4','H5','A6','A7','B7','C7','D7','E7','F7','AR7'}
+
+
+def verify_p09_l50_model(master, contract):
+    """Read-only validation of approved visual pagination; no engineering approval."""
+    profile = contract.get('layout_profile')
+    if profile is None:
+        return
+    if profile != P09_L50_PROFILE:
+        fail('STOP: perfil de layout desconhecido: '+str(profile))
+    book = load_workbook(master, read_only=False, keep_links=True)
+    ranges = contract.get('matrix_ranges', [])
+    if not book.worksheets or len(ranges) != len(book.worksheets) or set(x['sheet'] for x in ranges) != set(book.sheetnames):
+        fail('STOP: perfil L50 exige exatamente uma faixa 8:50 por folha')
+    for n, ws in enumerate(book.worksheets, 1):
+        if ws.title != f'FOLHA {n}':
+            fail('STOP: ordem/nome das folhas incorretos')
+        if '$A$1:$AR$50' not in str(ws.print_area):
+            fail('STOP: perfil L50 exige area A1:AR50 em '+ws.title)
+        if len(ws.merged_cells.ranges) != 46:
+            fail('STOP: perfil L50 exige 46 mesclagens em '+ws.title)
+        for entry in ranges:
+            if entry['sheet'] == ws.title and (entry['first_data_row'],entry['last_data_row']) != (8,50):
+                fail('STOP: faixa contratual de causas diferente de 8:50 em '+ws.title)
+        for row in range(8,51):
+            expected = (n-1)*43+row-7
+            if ws[f'H{row}'].value != expected:
+                fail('STOP: numeracao H8:H50 invalida em '+ws.title)
+            c = ws[f'C{row}']
+            if c.font.name != 'Arial' or c.font.sz != 8 or c.alignment.wrap_text is not True:
+                fail('STOP: descricoes de causas sem Arial 8/wrap em '+ws.title)
+            if ws.row_dimensions[row].height not in (20,30):
+                fail('STOP: altura fora de 20/30 pt em '+ws.title)
+        for col in range(9,44):
+            if ws.cell(7,col).value != col-8:
+                fail('STOP: numero de efeito invalido em '+ws.title)
+            cell = ws.cell(5,col)
+            if cell.alignment.textRotation != 90 or cell.font.name != 'Arial' or cell.font.sz != 8:
+                fail('STOP: efeitos sem rotacao 90/Arial 8 em '+ws.title)
+        for row in ws.iter_rows(min_row=1,max_row=50,min_col=1,max_col=44):
+            for c in row:
+                if c.__class__.__name__ == 'MergedCell' or (not c.has_style and c.value is None):
+                    continue
+                pt = 10 if c.coordinate in P09_L50_TITLES else 8
+                if c.font.name != 'Arial' or c.font.sz != pt:
+                    fail('STOP: fonte fora do padrao em '+ws.title+'!'+c.coordinate)
+        if ws.max_row > 50:
+            for row in ws.iter_rows(min_row=51,max_row=ws.max_row,min_col=1,max_col=44):
+                if any(c.value is not None for c in row):
+                    fail('STOP: dados abaixo da linha 50 em '+ws.title)
+
 def verify_contract(w, s):
     c=readjson(w/'contract.json')
     if c['template_sha256']!=s['template_sha256']:fail('Contrato nao corresponde ao modelo mestre.')
@@ -234,6 +287,7 @@ def verify_contract(w, s):
             if n in rows:fail('Intervalos de causas sobrepostos na folha '+sheet)
             rows.add(n)
         if len(rows)>50:fail('Mais de 50 itens de causa na folha '+sheet)
+    verify_p09_l50_model(master_path(w), c)
     return c
 
 
