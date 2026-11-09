@@ -185,3 +185,21 @@ destino SQLite reproduziram handle aberto na limpeza; backup/restore agora usam
 _session tambem para o destino. O writer do backup privado verifica ACL de
 diretorios e dos arquivos novos antes de gravar material sensivel. Registrar
 resultados finais e hash do pacote local; esses reparos nao estao no HEAD da PR.
+
+### 2026-11-09 - Atualizacao do sistema existente para 0.1.2
+
+Por novo pedido explicito do usuario, consolidar a revisao ja testada na instalacao
+existente e no ramo de desenvolvimento do REA. Atualizar o mesmo plugin local
+rea-independent, com versao 0.1.2 nos dois manifestos, preservando a versao anterior
+para rollback. O motor e o DataCenter continuam independentes; nao criar outro banco,
+nao ampliar o root nem alterar credenciais ou componentes de outros sistemas.
+
+Base tecnica local f9e88db1914aea6fd30592767cfd674019a94014: 88 testes aprovados e
+dois skips na suite integrada; helper de restauracao posteriormente com sete testes
+aprovados. Dois revisores independentes de IA emitiram parecer favoravel ao piloto.
+O usuario escolheu piloto nesta maquina, sem garantia de recuperacao apos perda total
+do volume da chave. Essas evidencias sao locais e datadas, nao prova de todos os hosts.
+
+Este registro atualiza a identidade da mesma instalacao; a disponibilidade deve ser
+confirmada pelo gerenciador, hashes e chamada real. Atualizar a PR nao autoriza merge
+ou deploy. Preservar PRODUCTION_COMPLETE=NO e o aviso ECC externo sem falso manifesto.
