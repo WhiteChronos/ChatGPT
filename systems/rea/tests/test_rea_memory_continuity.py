@@ -29,6 +29,30 @@ def test_initialize_and_empty_verify(tmp_path):
     assert m.init(db)['product'] == m.PRODUCT
     assert m.verify(db)['status'] == 'INTEGRITY_PASS'
 
+
+def test_operational_memory_denies_parent_traversal(tmp_path):
+    m = load()
+    (tmp_path/'safe').mkdir()
+    with pytest.raises(ValueError, match='traversal'):
+        m.init(tmp_path/'safe'/'..'/'escaped.sqlite3')
+    assert not (tmp_path/'escaped.sqlite3').exists()
+
+
+@pytest.mark.parametrize('operation', ['backup', 'restore'])
+def test_failed_destination_verification_closes_connection_and_removes_file(tmp_path, monkeypatch, operation):
+    m, db = fresh(tmp_path)
+    destination = tmp_path/(operation+'-failed.sqlite3')
+    verify = m._verify
+    def reject_destination(con):
+        filename=con.execute('PRAGMA database_list').fetchone()[2]
+        if Path(filename) == destination:
+            raise sqlite3.DatabaseError('Synthetic target verification failure')
+        return verify(con)
+    monkeypatch.setattr(m, '_verify', reject_destination)
+    with pytest.raises(sqlite3.DatabaseError, match='Synthetic target verification failure'):
+        getattr(m, operation)(db, destination)
+    assert not destination.exists()
+
 def test_persistent_history_and_linked_events(tmp_path):
     m, db = fresh(tmp_path)
     one = m.append(db, 'DECISION', 'Revisao pendente', {'approved': False})

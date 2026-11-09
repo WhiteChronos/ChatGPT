@@ -31,6 +31,12 @@ def _canonical(value: object) -> str:
 
 def _path(raw: str | Path) -> Path:
     path = Path(raw).expanduser().absolute()
+    if '..' in path.parts:
+        raise ValueError("Parent traversal is forbidden")
+    for part in (path, *path.parents):
+        if part.is_symlink() or getattr(part, 'is_junction', lambda: False)():
+            raise ValueError("Symlink or junction paths are forbidden")
+    path = path.resolve(strict=False)
     checkout = ROOT.parents[1]
     # Standalone extracted product packages are not falsely identified as a monorepo.
     boundary = checkout if (checkout / '.git').exists() or (checkout / 'AGENTS.md').is_file() else ROOT
@@ -38,9 +44,6 @@ def _path(raw: str | Path) -> Path:
         raise ValueError("Operational storage anywhere inside source checkout is forbidden")
     if not path.parent.is_dir():
         raise ValueError("An existing private destination directory is required")
-    for part in (path, *path.parents):
-        if part.is_symlink():
-            raise ValueError("Symlink paths are forbidden")
     if path.exists() and not path.is_file():
         raise ValueError("Expected a regular file")
     if path.exists() and path.stat().st_nlink != 1:
@@ -236,7 +239,7 @@ def backup(db: str | Path, output: str | Path) -> dict:
     source, dest = _path(db), _path(output)
     _new_file(dest)
     try:
-        with _session(source) as con, _connect(dest) as target:
+        with _session(source) as con, _session(dest) as target:
             _verify(con)
             con.backup(target)
             result = _verify(target)
@@ -256,7 +259,7 @@ def restore(source: str | Path, db: str | Path) -> dict:
         _verify(con)
     _new_file(dest)
     try:
-        with _session(backup_path) as con, _connect(dest) as target:
+        with _session(backup_path) as con, _session(dest) as target:
             con.backup(target)
             return _verify(target)
     except Exception:

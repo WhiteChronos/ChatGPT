@@ -117,8 +117,8 @@ class ReaBridge:
         point = self.root
         for x in rel.parts:
             point = point / x
-            if point.is_symlink():
-                raise ValueError('Symlink denied')
+            if point.is_symlink() or getattr(point, 'is_junction', lambda: False)():
+                raise ValueError('Symlink or junction denied')
         resolved = point.resolve(strict=True)
         if not resolved.is_relative_to(self.root):
             raise ValueError('Path escapes permitted root')
@@ -126,6 +126,8 @@ class ReaBridge:
             raise ValueError('Directory required')
         if not allow_dir and not resolved.is_file():
             raise ValueError('File required')
+        if not allow_dir and resolved.stat().st_nlink != 1:
+            raise ValueError('Hardlink denied')
         return resolved
 
     def _read_text(self, path: Path, size_limit: int = MAX_SOURCE_BYTES) -> str:
@@ -177,13 +179,25 @@ class ReaBridge:
             raise ValueError('Invalid inventory limit')
         found = []
         for current, dirs, files in os.walk(basedir, followlinks=False):
-            dirs[:] = sorted(d for d in dirs if d.lower() not in BLOCKED_PARTS and
-                             not d.startswith('.') and not (Path(current) / d).is_symlink())
+            safe_dirs = []
+            for name in dirs:
+                if name.startswith('.'):
+                    continue
+                try:
+                    self._resolve((Path(current)/name).relative_to(self.root).as_posix(), allow_dir=True)
+                except (ValueError, OSError):
+                    continue
+                safe_dirs.append(name)
+            dirs[:] = sorted(safe_dirs)
             for name in sorted(files):
                 p = Path(current) / name
-                if (name.startswith('.') or name.lower() in BLOCKED_PARTS or p.is_symlink() or
-                    p.suffix.lower() in BLOCKED_SUFFIXES or not p.is_file() or
-                    p.stat().st_size > MAX_SOURCE_BYTES):
+                if name.startswith('.'):
+                    continue
+                try:
+                    p = self._resolve(p.relative_to(self.root).as_posix())
+                except (ValueError, OSError):
+                    continue
+                if p.stat().st_size > MAX_SOURCE_BYTES:
                     continue
                 if p.suffix.lower() not in SOURCE_SUFFIXES:
                     continue

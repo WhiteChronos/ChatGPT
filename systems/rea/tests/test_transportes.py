@@ -68,6 +68,40 @@ def test_denies_symlink(tmp_path):
     assert ReaBridge(tmp_path,ROOT).handle(tool('rea_source_inspect',{'file':'linked.py'}))['result']['isError']
 
 
+def test_inventory_does_not_follow_windows_junction(tmp_path):
+    if sys.platform != 'win32':
+        pytest.skip('Windows junction regression')
+    allowed = tmp_path/'allowed'
+    outside = tmp_path/'outside'
+    allowed.mkdir()
+    outside.mkdir()
+    (outside/'external.py').write_text('def synthetic_external(): return 1\n')
+    junction = allowed/'alias'
+    made = subprocess.run(['cmd.exe','/d','/c','mklink','/J',str(junction),str(outside)],capture_output=True)
+    if made.returncode:
+        pytest.skip('Owned fixture junction creation unavailable')
+    try:
+        response = result(ReaBridge(allowed,ROOT).handle(tool('rea_project_inventory',{'directory':'.'})))
+        assert response['files'] == []
+    finally:
+        junction.rmdir()  # Removes only this owned junction, never its target.
+
+
+def test_source_hardlink_cannot_alias_external_file(tmp_path):
+    import os
+    allowed=tmp_path/'allowed'
+    allowed.mkdir()
+    outside=tmp_path/'external.py'
+    outside.write_text('def synthetic_external(): return 1\n')
+    try:
+        os.link(outside,allowed/'alias.py')
+    except OSError:
+        pytest.skip('Owned fixture hardlink creation unavailable')
+    bridge=ReaBridge(allowed,ROOT)
+    assert bridge.handle(tool('rea_source_inspect',{'file':'alias.py'}))['result']['isError']
+    assert result(bridge.handle(tool('rea_project_inventory',{'directory':'.'})))['files'] == []
+
+
 def test_http_token_and_origin(tmp_path):
     token='t'*42
     srv=create_server(tmp_path,ROOT,'127.0.0.1',0,token)

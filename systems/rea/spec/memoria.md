@@ -120,3 +120,68 @@ Partida: ba1d3301522cbed6e5d71f5683057d6728f7de9e. Corrigidos bloqueio de hardli
 | PEND-REA-011 | ECC: aviso de manifesto/harness para a Skill deve ser validado com o mantenedor ECC; manifestos reais ja existem em systems/rea/plugin.json e .agents/plugins/marketplace.json. Testar corpus no CI do novo HEAD, obter revisao humana da PR #119, comprovar operacao no root autorizado e DataCenter privado somente se utilizado. Nao fazer merge antes de todos os gates e autorizacao especifica do novo SHA. | REVIEW_REQUIRED |
 
 Esta revisao nao instala Codex, nao cria cliente tunel, nao analisa codigo de terceiros, nao altera a operacao privada e nao concede aprovacao. PRODUCTION_COMPLETE=NO.
+
+---
+
+### 2026-11-09 - Evidencia local de retomada e DataCenter piloto
+
+Registro local para revisao; ainda nao publicado no GitHub nem homologado.
+Base de codigo: a8f13140655c1e35a487d288fd25f468147bce24 (PR #119 draft).
+Preservados DEC-REA-016/017: fechamento interno sem deploy; Web opcional.
+
+- Suite Windows/Python 3.12.14: 77 PASS, 2 SKIP por indisponibilidade de symlink.
+  Bandit no src/scripts/skills: zero resultados medios/altos selecionados, sem erros.
+- SDK MCP 2.3.0 no SHA atual: initialize, sete ferramentas, status, inventario,
+  leitura, analise estatica, SHA e recusas de parent/oculto comprovados em fixture
+  autorizada, sem alterar fonte. Chamadas nativas tambem responderam neste chat.
+  Checkout configurado no host permanece 4dd0c90; cinco arquivos Python de src
+  conferem byte a byte com a base atual. Nao alegar atualizacao do pacote completo.
+- Por pedido atual do usuario, criado DataCenter piloto exclusivo fora de Git,
+  banco vazio e ACL restrita ao usuario proprietario e SYSTEM. Backup inicial e
+  restauracao verificados; ensaio separado com dois eventos sinteticos confirmou
+  cadeia, digest, bloqueio de sobrescrita e de alteracao append-only.
+- Criptografia do volume nao verificada, recuperacao em outro volume nao testada,
+  revogacao MCP nao exercitada, revisao humana e aceite permanecem pendentes.
+  Nenhum dado privado importado. Nao ha captura automatica de conversas.
+- Consulta atual: 13 checks GitHub com success, nenhum review registrado;
+  protecao de branch retornou 403 ao conector. Aviso ECC/harness neutral permanece
+  para decisao do mantenedor, sem manifesto ficticio. Indice central acessivel na
+  branch codex/documentation-system-20261027; nao presumir incorporacao na main.
+
+PRODUCTION_COMPLETE=NO. Sem merge, deploy, mudanca de credenciais ou publicacao.
+
+### 2026-11-09 - Complemento: protecao, revisao por IA e regressao de caminhos
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-REA-018 | O usuario dispensou revisao humana para o fechamento tecnico interno e solicitou revisores por IA. Claude sem login foi substituido por revisor Codex com autorizacao expressa. Nao chamar o resultado de parecer humano. Nao altera gates de merge/deploy nem concede autorizacao por SHA. | VIGENTE_NO_ESCOPO_INTERNO |
+| PEND-REA-012 | Custodia independente da chave de backup, disposicao externa do alerta ECC e confirmacao do resultado da solicitacao Cloud devem permanecer explicitas; nao declarar desastre recuperavel nem revisao remota executada sem prova. | LIMITES_OPERACIONAIS |
+
+BitLocker confirmado por diagnostico administrativo somente leitura: volume do
+DataCenter 100% criptografado, protecao ativa. Backup cifrado em disco distinto
+restaurado com cadeia integra; adulteracao recusada. Chave mantida separada do
+backup, sem revelar conteudo. Nao houve alteracao de BitLocker ou credenciais.
+Ensaio de revogacao/reinicio restringiu-se a subprocesso stdio proprio; registro
+nativo preservado. Ruleset Chronos ativo, PR e control-plane check obrigatorios,
+sem bypass; nenhum merge autorizado.
+
+Revisao independente por IA encontrou fuga lexical por '..' na restauracao e
+ausencia de verificacao previa de ACL no helper. Tres testes de regressao
+falharam antes da correcao em fixtures sinteticas. Corrigidos helper de entrega
+e _path canonico para recusar traversal, symlink/junction e resolver caminhos.
+O helper verifica ACL antes de descriptografar e confere staging/destino; seus
+gates de backup nao dependem de assert removivel por Python -O. Regressao
+adicional reproduziu handle aberto em falha de ACL; corrigida limpeza Windows.
+Os detalhes locais, caminhos privados e chaves nao sao copiados a esta memoria.
+
+Esta e uma revisao local posterior ao HEAD a8f13140655c1e35a487d288fd25f468147bce24,
+sem publicacao no GitHub. Preservar fonte, novo hash local, logs e pareceres.
+PRODUCTION_COMPLETE=NO ate resolver limites restantes; nao alegar 100% universal.
+
+Segunda revisao por IA: reproduzidos em fixtures Windows inventario atravessando
+junction e alias hardlink de arquivo externo; bloqueados ambos e revalidado cada
+descendente por _resolve antes de ler/hash. Falhas sinteticas de verificacao de
+destino SQLite reproduziram handle aberto na limpeza; backup/restore agora usam
+_session tambem para o destino. O writer do backup privado verifica ACL de
+diretorios e dos arquivos novos antes de gravar material sensivel. Registrar
+resultados finais e hash do pacote local; esses reparos nao estao no HEAD da PR.
