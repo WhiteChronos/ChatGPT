@@ -167,3 +167,17 @@ def test_ar_ninety_six_exception_persists_in_mce_rules():
         assert '2.7109375' in doc
         assert 'G:AQ' in doc
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
+
+
+def test_mce_adm_sp_percent_only_presentation_policy():
+    """DEC-MCE-042: do not append 'LIE' to SP percentage cells in ADM."""
+    source=(LOCAL/'SKILL.md').read_text(encoding='utf-8')
+    execdoc=(ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8')
+    agents=(ROOT/'AGENTS.md').read_text(encoding='utf-8')
+    for document in (source,execdoc,agents):
+        assert 'DEC-MCE-042' in document
+        assert '10% LIE' in document and '10%' in document
+        assert '20% LIE' in document and '20%' in document
+        assert 'coluna' in document.lower()
+    assert 'FOLHA 1!D22' in execdoc
+    assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()

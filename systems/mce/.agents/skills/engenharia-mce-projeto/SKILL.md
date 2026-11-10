@@ -51,3 +51,7 @@ A regra de largura `P09_L50_G_AR_DISPLAY_2` usa `width=2.7109375` armazenado (MD
 
 ## DEC-MCE-041 — AR como excecao visivel 96
 Validar o contrato `column_width_profile=P09_L50_G_AQ_DISPLAY_2_AR_96` por coluna em cada aba: G:AQ armazenar `2.7109375` para display `2.00`, AR armazenar `96.7109375` para display `96.00` sob MDW7, sem sobreposicoes. Nao aceitar no ADM o perfil `G:AR=2`, pois AR e excecao. Este gate e somente de layout; 6 abas, 218 causas/documentais e 175 X preservados, Excel/Windows NOT_RUN e gates de engenharia intocados.
+
+
+## DEC-MCE-042 — convencao de visualizacao SP da MCE ADM
+Para os dois alarmes H2 documentados do ADM, `FOLHA 1!D22` deve ser `10%` e `D23` deve ser `20%`, sem `LIE` no SP. A referencia `% LIE` deve permanecer na descricao da condicao, quando a fonte a utiliza. Nao mudar setpoint fisico, ppm, intervalo, latch, reset nem saídas PLC. A edicao documental permitida e apenas o texto do SP, sujeita a controle de fontes, sem alegar autorizacao de implantacao. Nao extrapolar formato para grandezas nao percentuais.

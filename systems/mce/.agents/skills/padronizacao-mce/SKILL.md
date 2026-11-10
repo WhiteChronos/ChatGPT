@@ -46,3 +46,7 @@ Em P09 L50, nao subtrair registros da grade durante correção de largura ou alt
 
 ## DEC-MCE-041 — AR largura exibida 96,00 e G:AQ 2,00
 No ADM P09 L50, preservar A:F, manter **G:AQ width interno 2.7109375 (GUI 2.00)** e **AR width interno 96.7109375 (GUI 96.00)**, com fonte Normal MDW7. Aplicar nas 6 folhas, verificando `min=max` individual, sem ranges sobrepostos ou largura AR=2. O perfil `P09_L50_G_AQ_DISPLAY_2_AR_96` substitui o perfil G:AR 2 da DEC-MCE-040 no caso ADM. Preservar todos valores, X, fontes, bordas thin, mesclas e alturas; nao aplicar no mestre homologado sem autorizacao.
+
+
+## DEC-MCE-042 — coluna SP em percentual puro para ADM
+Em `P09_L50` do ADM Gamboa, os SPs percentuais documentados devem aparecer sem o texto `LIE` na coluna D: `10%`, `20%`; a coluna C pode conservar `10% LIE`, `20% LIE` na descricao tecnica. Alterar somente os dois textos SP comprovados, nao o numero nem a logica; nao preencher valores de SP ausentes nem remover outras unidades de outros projetos por inferencia. Auditoria OOXML diferencial obrigatoria, preservando mesclagens, 6 folhas, 218 registros, 175 X e layout vigente G:AQ 2 / AR 96. Matrizes continuam preliminares ate autorizacao humana.

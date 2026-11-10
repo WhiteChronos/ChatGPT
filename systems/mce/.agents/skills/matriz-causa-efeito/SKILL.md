@@ -112,6 +112,16 @@ O usuário constatou **largura aparente 1,29**, embora a MCE ADM anterior declar
 - **Ajuste estritamente visual:** partir da ultima matriz de **6 abas, 218 registros, 175 X**, preservar os 76 registros sem X como pendencias documentais, sem adicionar X, sem alterar a cardinalidade de causas, alturas, fontes, bordas thin, mesclas 46/aba, impressao A1:AR50 ou qualquer valor. O XLSX de 4 abas nao e baseline de formatacao.
 - A auditoria deve comparar os demais elementos e partes do pacote OOXML byte-semanticamente antes/depois, com unica diferenca no atributo `width` de AR em cada aba. Nenhuma automacao no Windows nem homologacao de engenharia decorre desta mudanca.
 
+
+## DEC-MCE-042 — SP somente com percentual no ADM, sem sufixo LIE (2026-11-10)
+
+Na **MCE ADM Gamboa P09 L50**, a coluna `D` titulada **SP** (setpoint) deve apresentar **somente o valor percentual**, por exemplo `10%` e `20%`, **nunca `10% LIE` nem `20% LIE` no campo SP**. A grandeza `% LIE` pode e deve permanecer explicitada na **descricao tecnica da causa** (coluna C), quando documentada. Isso e uma **regra de apresentacao**, nao altera o limite ou unidade fisica de deteccao.
+
+- Converter **apenas** SPs textuais ja documentados no formato `<numero>% LIE` para `<numero>%`, mantendo cada numero e sinal; nao aplicar se percentual for desconhecido, nao converter ppm ou outras unidades automaticamente, nem preencher SP vazio.
+- Na copia documental ADM de 6 folhas, ocorrencias aprovadas para correcao estritamente visual: `FOLHA 1!D22` `10% LIE`→`10%`, `FOLHA 1!D23` `20% LIE`→`20%`. Nao remover `LIE` de `C22`/`C23`, que identificam a condicao tecnica.
+- Controle de regressao: auditar toda coluna SP `D8:D50` em todas as folhas; nenhuma celula SP pode conservar a cadeia `LIE` nesse perfil. Confirmar diferenca de valores limitada a D22 e D23; mesmos 6 separadores de folha, 218 registros, 175 X, larguras G:AQ exibidas 2 e AR exibida 96, heights, bordas e demais componentes OOXML sem alteracao.
+- Preservar status `PRELIMINAR_NAO_HOMOLOGADA`: edicao de formatacao nao concede `AUTORIZO_ELABORACAO_MCE` nem aprova riscos de incendio/explosao ou sua implementacao.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

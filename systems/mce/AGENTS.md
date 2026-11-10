@@ -110,3 +110,6 @@ No ADM, o usuário exige **SEIS abas P09 L50** (218 registros, 175 X) e proibiu 
 
 ## DEC-MCE-041 — coluna AR visivel 96.00
 No P09 L50 de ADM, colunas A:F devem manter as larguras de origem; **G:AQ devem exibir 2,00**, **AR deve exibir 96,00** (nao 2). No OOXML Normal MDW7, exigir G:AQ `width=2.7109375` e AR `width=96.7109375`, com um elemento col sem sobreposicao por indice. Usar perfil `P09_L50_G_AQ_DISPLAY_2_AR_96` para impedir regressao; preserve 6 folhas, 218 entradas documentais, 175 X, alturas 20/30+ pt e bordas thin, sem mudar lógica, aprovar matriz ou copiar arquivo ao DataCenter sem recibo.
+
+## DEC-MCE-042 — evitar sufixo LIE dentro do SP do ADM
+Na MCE ADM P09 L50, SP da coluna D expressa apenas porcentagem (`10%`, `20%`), nao `10% LIE` nem `20% LIE`. A notacao `% LIE` fica na descricao tecnica da causa C quando documentada, sem alterar o significado do nivel de H2. Preservar todos os outros dados, seis folhas/218 registros/175 X, G:AQ largura exibida 2 e AR largura exibida 96. Verificar todos SP D8:D50 antes de emitir candidato; sem homologaçao de engenharia automatica.
