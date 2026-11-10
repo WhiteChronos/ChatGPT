@@ -43,3 +43,7 @@ Revogada a regra `DEC-MCE-036` de aplicar `medium` nas bordas. Preservar `thin` 
 
 ## DEC-MCE-039 — integridade física OOXML de largura G:AR
 Em `column_width_profile=P09_L50_G_AR_2`, cada G..AR deve ter `width=2.0`, `min=max=indice_da_coluna` e nenhuma outra faixa de dimensão de coluna pode interceptar a mesma posição. Colunas com `width=2` mas com `min`/`max` abrangendo mais de uma coluna FAIL, mesmo quando openpyxl mostra 2. Registrar QA de conversão/visualizador separadamente. A:F e bordas thin intactas, sem mudança em valores, causas, X, efeitos ou autorização.
+
+
+## DEC-MCE-040 — recuperar seis folhas, largura visivel 2 e heights 20/30
+A regra de largura `P09_L50_G_AR_DISPLAY_2` usa `width=2.7109375` armazenado (MDW7, 19px), **exibido 2,00**; valor armazenado 2.000 resulta em 1,29 visivel. Teste de no-overlap isolado de DEC-MCE-039 nao garante 2,00 exibido. Quando a tarefa for so visual, preservar numero de causas/folhas e X em vez de eliminar as 76 pendencias do caso ADM. Height textual: 1=20pt 2=30pt 3=40pt etc; verificação independente e Excel visual nao simulado. Documento industrial nao entra no GitHub.

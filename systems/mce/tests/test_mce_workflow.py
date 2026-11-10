@@ -369,3 +369,29 @@ def test_p09_l50_no_overlapping_two_width_ranges(tmp_path):
     wb['FOLHA 1'].column_dimensions['G'].width=2.0
     wb.save(model)
     mod.verify_p09_l50_model(model,contract)
+
+
+def test_p09_l50_ui_two_requires_ooxml_2p7109375_and_unique_spans(tmp_path):
+    """DEC-MCE-040: raw width 2 displays 1.29, stored 2.7109375 displays 2.00."""
+    from openpyxl.utils import get_column_letter
+    assert mod.p09_l50_gui_width_from_ooxml(2.0) == 1.29
+    assert mod.p09_l50_gui_width_from_ooxml(2.7109375) == 2.0
+    path=tmp_path/'display_width_2.xlsx'
+    wb=_synthetic_p09_l50(path)
+    for ws in wb:
+        for col in range(7,45):
+            ws.column_dimensions[get_column_letter(col)].width=2.7109375
+    wb.save(path)
+    contract={'layout_profile':mod.P09_L50_PROFILE,
+        'column_width_profile':mod.P09_L50_G_AR_DISPLAY_2,
+        'matrix_ranges':[{'sheet':f'FOLHA {n}','first_data_row':8,'last_data_row':50} for n in range(1,4)]}
+    mod.verify_p09_l50_model(path,contract)
+    wb['FOLHA 1'].column_dimensions['G'].width=2.0
+    wb.save(path)
+    with pytest.raises(ValueError,match='largura EXIBIDA G:AR diferente de 2'):
+        mod.verify_p09_l50_model(path,contract)
+    wb['FOLHA 1'].column_dimensions['G'].width=2.7109375
+    wb['FOLHA 2'].column_dimensions['I'].max=38
+    wb.save(path)
+    with pytest.raises(ValueError,match='faixas de colunas sobrepostas'):
+        mod.verify_p09_l50_model(path,contract)

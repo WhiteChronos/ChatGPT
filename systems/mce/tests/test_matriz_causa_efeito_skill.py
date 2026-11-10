@@ -138,3 +138,18 @@ def test_p09_l50_width_two_requires_unambiguous_ooxml_profile():
         assert 'sobrepo' in s.lower()  # matches sobreposta, sobrepoem, sobreposicao
         assert 'G:AR' in s
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
+
+
+def test_visual_width2_six_sheet_p09_l50_policy_persisted():
+    """DEC-MCE-040: preserve six pages, no X invented, raw width != GUI width."""
+    paths=[LOCAL/'SKILL.md',ROOT/'AGENTS.md',ROOT/'docs/EXECUCAO.md',
+           ROOT/'.agents/skills/padronizacao-mce/SKILL.md',
+           ROOT/'.agents/skills/engenharia-mce-projeto/SKILL.md']
+    for path in paths:
+        text=path.read_text(encoding='utf-8')
+        assert 'DEC-MCE-040' in text
+        assert '2.7109375' in text
+        assert '1,29' in text
+        assert 'G:AR' in text
+        assert '6' in text
+    assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()

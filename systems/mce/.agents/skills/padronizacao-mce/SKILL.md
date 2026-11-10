@@ -38,3 +38,7 @@ A:MCE P09 L50 com `column_width_profile=P09_L50_G_AR_2`: preservar A:F da copia 
 
 ## DEC-MCE-039 — larguras de coluna sem intervalos sobrepostos
 A MCE P09 L50 adota largura exata `2,00` em G:AR. Validação deve examinar a estrutura OOXML: cada coluna G..AR recebe uma definição separada `<col min="N" max="N" width="2" customWidth="1"/>`. **Não usar agrupamentos `min=9,max=38` sobrepostos com J..AL**; tais conflitos podem tornar a largura aparente inferior ao valor armazenado. Exigir ausência de outras faixas que cubram a mesma coluna. A:F, bordas thin e lógica X preservados. Essa regra é visual, sem liberação de engenharia, sem QA Excel Windows presumido.
+
+
+## DEC-MCE-040 — formato fisico versus largura EXIBIDA 2,00 / folhas invariantes
+Em P09 L50, nao subtrair registros da grade durante correção de largura ou altura: baseline ADM `218 = 142 com X + 76 sem X`; 6 folhas de 43 slots, 175 X preservados. Inventario pendente sem X fica rastreado em relatório externo (e simultaneamente preservado na cópia documental de seis folhas), sem X inventado ou aprovaçao industrial. Perfil `P09_L50_G_AR_DISPLAY_2`: para fonte Normal com MDW7, usar OOXML `width=2.7109375` para exibir 2,00 no Excel; `width=2` exibe 1,29. Cada G:AR min=max unico, A:F intocadas e borders thin. Alturas por linhas visuais 20/30/40+; o wrap é estimado e tem QA visual NOT_RUN quando nao conferido. Nao tocar no modelo mestre.

@@ -89,6 +89,19 @@ O usuário constatou **largura aparente 1,29**, embora a MCE ADM anterior declar
 - Nenhum editor deve afirmar que um viewer exibirá exatamente 2,00 sem abrir nesse aplicativo. `QA_EXCEL_NATIVO=NOT_RUN` quando só OOXML/openpyxl foram usados.
 - Esta correção é visual e não altera os 142 registros com X, 175 cruzamentos, 4 folhas e 76 itens pendentes externos da MCE ADM. Preservar gates de engenharia, não instalar no Windows nem enviar documentos industriais ao GitHub.
 
+
+## DEC-MCE-040 — Arena/Superpowers: 6 folhas e largura EXIBIDA 2,00 (2026-11-10)
+
+**Origem do erro 4 vs 6:** no ADM a MCE documental possuia 218 registros, dos quais 142 com X e 76 sem X (inventario/pendencias). Um refatoramento REMOVEU os 76 da grade e paginou 142/43 em 4 folhas sem aprovacao. **Correcao de formatacao nao pode alterar a cardinalidade de causas ou numero de abas**. Com 218 registros, manter **6 folhas** (43/43/43/43/43/3), efeitos X existentes 175, folhas 8:50, pendencias 76 relatadas EXTERNAMENTE, sem inventar X, intertravamentos ou comandos. Se for solicitada matriz funcional somente com causas vinculadas, isso e outra revisao de engenharia, nao revisao visual, e exige decisao humana especifica.
+
+**Origem matematica do 1,29:** pela especificacao OOXML da Microsoft (font de referencia com Maximum Digit Width `MDW=7` pixels e padding 5), `<col width="2"/>` produz aproximadamente **14 px** e aparece como **1,29 caracteres** na interface Excel. Para o usuário ver **2,00**, o valor fisico é `width="2.7109375"` (19px = 2.00 caracteres exibidos no Excel com MDW7). A decisao anterior DEC-MCE-039 que exigia `width="2"` em G:AR era INSUFICIENTE PARA O PEDIDO DE TELA. Perfil novo `column_width_profile=P09_L50_G_AR_DISPLAY_2` exige em cada aba **G:AR** (38 colunas) com `min=max=N, width=2.7109375, customWidth=1`, sem ranges sobrepostos, e **A:F inalteradas**. Borda fina `thin` de origem. Nao chamar o atributo interno `width=2.71` de largura 2.71 na interface: a exibicao correta alvo e **2,00**. Outros aplicativos/fontes/zoom exigem conferencia visual separada e nao podem ser alegados aprovados apenas por OOXML.
+
+**Alturas:** per-causa avaliar as quebras visuais em B/C/F:G a Arial 8pt usando larguras REAIS de A:F, contando quebras explicitas e possivel wrap. `altura=20+10*(n_linhas-1)` pt; 1 linha=20, 2=30, 3=40, etc. O primeiro algoritmo que atribuiu 30 sem evidência inflou alturas; a correção seguinte que forçou tudo a 20 gerou texto quebrado. Para o exemplo documental ADM, medicao conservadora (Arimo metrico Arial com margen de 7px) indicou 12 linhas de 30 pt, concentradas FOLHA 2 (8) e FOLHA 3 (4). Essa é **estimativa**; Microsoft Excel nativo NAO foi executado e a prova definitiva de wrap permanece aberta.
+
+**Gate de regressao independente:** reconstruir o workbook de 6 folhas da ultima copia **6-folhas** preexistente, nunca a variante 4-folhas; comparar 218 registros, 175 X e cada associação por titulo de efeito, 46 mesclas/aba, Arial10/8, area A1:AR50, border thin e hashes. Editar somente `<cols>` e alturas `row@ht` em copia derivada. Usar 4 estrategias GitHub Arena, Superpowers inline quando plugin oficial ou agentes verdadeiros nao estiverem expostos; nao chamar personas ou analises sequenciais de subagentes independentes.
+
+**Fonte tecnica largura:** https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.column?view=openxml-3.0.1 . Estado de engenharia sempre `PRELIMINAR_NAO_HOMOLOGADO`, DataCenter `COPY_PENDING` ate recibo fisico, sem publicar XLSX industrial.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

@@ -217,6 +217,42 @@ P09_L50_ALL_COLUMNS_2 = 'P09_L50_ALL_COLUMNS_2'
 P09_L50_G_AR_2 = 'P09_L50_G_AR_2'
 
 
+P09_L50_G_AR_DISPLAY_2 = 'P09_L50_G_AR_DISPLAY_2'
+P09_L50_DISPLAY2_OOXML_WIDTH_MDW7 = 2.7109375
+
+
+def p09_l50_gui_width_from_ooxml(stored_width, mdw=7):
+    """ISO 29500 width-to-GUI-character conversion (Normal style MDW=7)."""
+    from math import trunc
+    if type(stored_width) not in (int, float) or stored_width <= 0 or mdw <= 0:
+        fail('STOP: largura OOXML/font invalida')
+    pixels = trunc(((256 * stored_width + trunc(128 / mdw)) / 256) * mdw)
+    return trunc(((pixels - 5) / mdw) * 100 + 0.5) / 100
+
+
+def p09_l50_require_display_two_width(ws, first_col=7, last_col=44):
+    """Visible Excel width=2.00; 38 unique physical column definitions G:AR."""
+    from openpyxl.utils import get_column_letter
+    dimensional = list(ws.column_dimensions.items())
+    for col_index in range(first_col, last_col + 1):
+        name = get_column_letter(col_index)
+        dim = ws.column_dimensions.get(name)
+        if (dim is None or dim.width is None
+                or abs(dim.width - P09_L50_DISPLAY2_OOXML_WIDTH_MDW7) > 0.000001
+                or p09_l50_gui_width_from_ooxml(dim.width) != 2.00):
+            fail('STOP: largura EXIBIDA G:AR diferente de 2 em '+ws.title+':'+name)
+        if dim.min != col_index or dim.max != col_index:
+            fail('STOP: faixas de colunas sobrepostas em '+ws.title+':'+name)
+        for other_name, other in dimensional:
+            if other_name == name or other.min is None or other.max is None:
+                continue
+            if other.min <= col_index <= other.max:
+                fail('STOP: faixas de colunas sobrepostas em '+ws.title+':'+name)
+
+
+
+
+
 def p09_l50_require_unambiguous_two_width(ws, start_col, stop_col, label):
     """Validate explicit one-column OOXML definitions; reject overlapping spans."""
     from openpyxl.utils import get_column_letter
@@ -270,7 +306,7 @@ def verify_p09_l50_model(master, contract):
     if annotation_policy not in (None, 'EXTERNAL_ONLY'):
         fail('STOP: politica de notas desconhecida: '+str(annotation_policy))
     width_profile = contract.get('column_width_profile')
-    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2, P09_L50_G_AR_2):
+    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2, P09_L50_G_AR_2, P09_L50_G_AR_DISPLAY_2):
         fail('STOP: perfil de larguras desconhecido: '+str(width_profile))
     require_effect_links = contract.get('require_effect_per_cause', False)
     if type(require_effect_links) is not bool:
@@ -295,6 +331,8 @@ def verify_p09_l50_model(master, contract):
             p09_l50_require_unambiguous_two_width(ws, 1, 44, 'A:AR')
         elif width_profile == P09_L50_G_AR_2:
             p09_l50_require_unambiguous_two_width(ws, 7, 44, 'G:AR')
+        elif width_profile == P09_L50_G_AR_DISPLAY_2:
+            p09_l50_require_display_two_width(ws, 7, 44)
         if annotation_policy == 'EXTERNAL_ONLY':
             if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
                 fail('STOP: notas na coluna AR nao permitidas em '+ws.title)
