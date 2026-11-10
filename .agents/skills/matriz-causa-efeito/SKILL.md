@@ -29,7 +29,7 @@ description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de aut
 Esta decisao nao remove os gates humanos ou exige outros documentos do responsavel quando o conjunto de fontes foi declarado encerrado. Apenas fixa o contrato de formato e de classificacao do entregavel. Consultar Issue #120 e memoria canonica.
 
 
-## Perfil de legibilidade e paginacao P09 L50 — DEC-MCE-033/034 (2026-11-10)
+## Perfil de legibilidade e paginacao P09 L50 — DEC-MCE-033 / DEC-MCE-034 (2026-11-10)
 
 **Aplicar por padrao quando o projeto selecionar o perfil `P09_L50_APROVADO_VISUALMENTE`**; nao propagar para P09 L57 ou outros modelos sem perfil contratado.
 
