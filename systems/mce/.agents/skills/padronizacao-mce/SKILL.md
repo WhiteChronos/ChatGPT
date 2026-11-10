@@ -30,3 +30,7 @@ description: Controlar e preservar rigorosamente o modelo Excel mestre da Matriz
 
 ## DEC-MCE-037: largura A:AR=2 e bordas thin originais
 A interpretacao `DEC-MCE-036` (borda media) foi REVOGADA. A largura solicitada pelo usuario e de COLUNA Excel=2. Perfil `P09_L50_ALL_COLUMNS_2` exige largura 2.0 em A:AR, 44 colunas em todas as FOLHA N, mantendo integralmente bordas `thin`. Excel nao ajusta largura somente no cabecalho, portanto B/C/F tambem estreitam e podem tornar descricoes ilegíveis. Variante visual alternativa I:AQ width 2 preserva descrições B/C/F; distinguir claramente os dois arquivos. Comparar antes/depois apenas larguras, todos X, mesclagens, fontes, alturas, cabecalhos, area A1:AR50. Sem autorizacao nao editar mestre nem lógica.
+
+
+## DEC-MCE-038 — Perfil G:AR=2 e separacao de registros sem X
+A:MCE P09 L50 com `column_width_profile=P09_L50_G_AR_2`: preservar A:F da copia aprovada, e ajustar G:AR=2 em todas as FOLHA N, bordas thin de origem e 35 efeitos I:AQ. Nenhum equipamento/sinal sem relacao documental pode ser transformado em causa com X inventado. A grade final deve ter ao menos um X associado a efeito nomeado (linha 5) para cada causa preenchida; mover cadastro/supervisao sem efeito demonstrado para pendencias XLSX **externas**, nunca como aba auxiliar. Paginar a cada 43 causas (8:50), repontando X pelo titulo de efeito e preservando integridade, fonte, mesclas e impressao. O contrato opcional `require_effect_per_cause` habilita este gate no validador canonico. Nao editar mestre nem autorizar engenharia tacitamente.

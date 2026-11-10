@@ -214,6 +214,7 @@ P09_L50_HEIGHT_MAX_PT = 400  # Excel limita altura a 409.5pt
 P09_L50_WIDTH_PROFILE = 'P09_L50_20261110'
 P09_L50_COLUMN_WIDTHS = {'B': 25.0, 'C': 56.0, 'F': 34.0}
 P09_L50_ALL_COLUMNS_2 = 'P09_L50_ALL_COLUMNS_2'
+P09_L50_G_AR_2 = 'P09_L50_G_AR_2'
 
 
 def p09_l50_height_for_lines(lines):
@@ -246,8 +247,11 @@ def verify_p09_l50_model(master, contract):
     if annotation_policy not in (None, 'EXTERNAL_ONLY'):
         fail('STOP: politica de notas desconhecida: '+str(annotation_policy))
     width_profile = contract.get('column_width_profile')
-    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2):
+    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2, P09_L50_G_AR_2):
         fail('STOP: perfil de larguras desconhecido: '+str(width_profile))
+    require_effect_links = contract.get('require_effect_per_cause', False)
+    if type(require_effect_links) is not bool:
+        fail('STOP: require_effect_per_cause deve ser booleano')
     book = load_workbook(master, read_only=False, keep_links=True)
     ranges = contract.get('matrix_ranges', [])
     if not book.worksheets or len(ranges) != len(book.worksheets) or set(x['sheet'] for x in ranges) != set(book.sheetnames):
@@ -271,6 +275,13 @@ def verify_p09_l50_model(master, contract):
                 val = ws.column_dimensions[col].width
                 if val is None or abs(val - 2.0) > 0.03:
                     fail('STOP: largura A:AR diferente de 2 na coluna '+col+' em '+ws.title)
+        elif width_profile == P09_L50_G_AR_2:
+            from openpyxl.utils import get_column_letter
+            for col_index in range(7,45):
+                col = get_column_letter(col_index)
+                val = ws.column_dimensions[col].width
+                if val is None or abs(val - 2.0) > 0.03:
+                    fail('STOP: largura G:AR diferente de 2 na coluna '+col+' em '+ws.title)
         if annotation_policy == 'EXTERNAL_ONLY':
             if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
                 fail('STOP: notas na coluna AR nao permitidas em '+ws.title)
@@ -281,8 +292,29 @@ def verify_p09_l50_model(master, contract):
                 fail('STOP: faixa contratual de causas diferente de 8:50 em '+ws.title)
         for row in range(8,51):
             expected = (n-1)*43+row-7
-            if ws[f'H{row}'].value != expected:
+            populated = any(str(ws.cell(row, col).value or '').strip() for col in (2,3,6))
+            h_number = ws[f'H{row}'].value
+            blank_last = (require_effect_links and n == len(book.worksheets)
+                          and not populated and h_number is None)
+            if h_number != expected and not blank_last:
                 fail('STOP: numeracao H8:H50 invalida em '+ws.title)
+            if require_effect_links:
+                x_cols=[]
+                for effect_col in range(9,44):
+                    marker = ws.cell(row,effect_col).value
+                    if marker is None or not str(marker).strip():
+                        continue
+                    if str(marker).strip().upper()!='X':
+                        fail('STOP: marcacao de efeito nao e X em '+ws.title)
+                    x_cols.append(effect_col)
+                    if not str(ws.cell(5,effect_col).value or '').strip():
+                        fail('STOP: X sem titulo de efeito em '+ws.title)
+                if populated and not x_cols:
+                    fail('STOP: causa sem efeito/X em '+ws.title+' linha '+str(row))
+                if not populated and x_cols:
+                    fail('STOP: X sem causa em '+ws.title+' linha '+str(row))
+                if n < len(book.worksheets) and not populated:
+                    fail('STOP: folha intermediaria com causa vazia em '+ws.title+' linha '+str(row))
             c = ws[f'C{row}']
             if c.font.name != 'Arial' or c.font.sz != 8 or c.alignment.wrap_text is not True:
                 fail('STOP: descricoes de causas sem Arial 8/wrap em '+ws.title)

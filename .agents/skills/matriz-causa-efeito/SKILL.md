@@ -64,6 +64,19 @@ O usuario corrigiu a interpretacao da imagem da grade: **tamanho 2 significa lar
 - Variante separada para legibilidade, caso aceita pelo responsavel: **somente I:AQ=2** (35 colunas dos efeitos), preservando B=25, C=56, F=34 e as demais larguras de origem; nao confundir com o pedido literal A:AR.
 - Revisao visual: editar apenas larguras solicitadas em copia XLSX derivada; auditar valores, TAGs, X, bordas thin, 46 mesclas/aba, alturas, fontes, impressao A1:AR50, 43 causas/folha e 35 efeitos. Nao promover candidato documental a matriz homologada, nao mudar o modelo mestre nem dispensar gates de engenharia.
 
+
+## DEC-MCE-038 — Largura G:AR = 2 e consistencia de causa->efeito (2026-11-10)
+
+**Instrucao expressa e vigente do responsavel:** na MCE **P09 L50**, colunas **A:F mantem exatamente as larguras da copia de origem**, e **G:AR (38 colunas, incluindo H e as 35 I:AQ dos efeitos) tem `width=2.0`** em todas as `FOLHA N`. Bordas finas originais `thin` nao devem mudar. Este perfil `P09_L50_G_AR_2` **substitui a preferencia geral A:AR=2 da DEC-MCE-037 para o ADM**; nao alterar os perfis L57 nem modelos mestres sem aprovacao. A largura Excel vale para a coluna inteira, nao apenas para o cabecalho.
+
+**Gate obrigatorio de cobertura funcional da grade:** se a coluna C (ou B/F) indicar uma causa/condicao preenchida, a linha deve ter **pelo menos um X vinculado a titulo de efeito existente na linha 5**. Linha com zero X nao pode ser apresentada como causa valida. Equipamento, switch, painel, UTR, instrumento passivo, interface externa ou divergencia documental **nao deve ganhar X inventado** para passar no gate. Esses itens sao registrados em **relatorio externo de pendencias/rastreabilidade**, sem aba auxiliar na MCE, ate que sua relacao de efeito tenha evidencia documental e revisao da engenharia. Distinguir monitoramento e indicacao de trip e comando; um X de aquisicao pode ser observacao, nao acao de seguranca.
+
+**Reprocessamento sequencial:** compactar somente linhas com efeitos documentais, mantendo ordem relativa, limite de **43 causas por folha (linhas 8:50)**, ate 35 efeitos I:AQ, remapeando cada X pelo **texto completo do efeito na linha 5** (nunca copiar coluna I: AQ cegamente entre folhas com cabecalhos distintos). Validar 46 mesclagens, rotacao 90, Arial 10/8, alturas 20/30/40+, bordas finas, A1:AR50 e todas as larguras. Nao deixar folhas intermediarias parcialmente vazias; ultima pode ficar parcialmente vazia sem numero H fantasma. Nunca inserir X novo por inferencia.
+
+**Historico de incidente (apenas ADM, nao contagens globais):** 218 registros e 175 X no XLSX anterior, sendo 76 registros **sem X**. Gerado candidato revisado com 142 causas/condicoes com X em 4 folhas (43/43/43/13), mantendo os 175 vinculos; os 76 sem X foram conservados em XLSX externo de pendencias e suas TAGs. `NAO_HOMOLOGADO`, Excel Windows/host `NOT_RUN`, DataCenter real `COPY_PENDING`, gates humanos originais preservados.
+
+**Validador canonico:** `column_width_profile=P09_L50_G_AR_2` verifica G:AR=2 e contrato de campos descritivos A:F por diff contra copia aprovada; `require_effect_per_cause=true` verifica X+cabecalho por causa preenchida e paginacao continua, tolerando H vazio em linhas realmente vazias da ultima folha. Nenhuma dessas verificacoes equivale a aprovacao de intertravamento.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

@@ -305,3 +305,37 @@ def test_p09_l50_all_columns_width_two_contract(tmp_path):
         mod.verify_p09_l50_model(path,c)
     c.pop('column_width_profile')
     mod.verify_p09_l50_model(path,c)
+
+
+def test_p09_l50_g_ar_two_with_effect_link_gate(tmp_path):
+    """DEC-MCE-038: every populated cause must have a sourced effect heading and an X."""
+    from openpyxl.utils import get_column_letter
+    path=tmp_path/'g_ar_effects.xlsx'
+    wb=_synthetic_p09_l50(path)
+    for extra in list(wb.worksheets[1:]): wb.remove(extra)
+    ws=wb.active
+    for i in range(7,45): ws.column_dimensions[get_column_letter(i)].width=2.0
+    ws['C8']='Detector H2 10%'
+    ws['I5']='Alarme H2 local'
+    ws['I8']='X'
+    for j in range(9,51): ws[f'H{j}']=None
+    wb.save(path)
+    c={'layout_profile':mod.P09_L50_PROFILE,
+       'column_width_profile':mod.P09_L50_G_AR_2,
+       'require_effect_per_cause':True,
+       'matrix_ranges':[{'sheet':'FOLHA 1','first_data_row':8,'last_data_row':50}]}
+    mod.verify_p09_l50_model(path,c)
+    ws['I8']=None;wb.save(path)
+    with pytest.raises(ValueError,match='causa sem efeito/X'):
+        mod.verify_p09_l50_model(path,c)
+    ws['I8']='X';ws['I5']=None;wb.save(path)
+    with pytest.raises(ValueError,match='X sem titulo'):
+        mod.verify_p09_l50_model(path,c)
+    ws['I5']='Alarme H2 local';ws.column_dimensions['G'].width=3.0;wb.save(path)
+    with pytest.raises(ValueError,match='largura G:AR diferente de 2'):
+        mod.verify_p09_l50_model(path,c)
+    ws.column_dimensions['G'].width=2.0
+    ws['C9']='Interface sem efeito'
+    wb.save(path)
+    with pytest.raises(ValueError,match='causa sem efeito/X'):
+        mod.verify_p09_l50_model(path,c)

@@ -109,3 +109,19 @@ def test_column_width_2_correction_reverts_medium_borders():
         assert 'thin' in s
     assert 'I:AQ' in documents[0] and 'A:AR' in documents[0]
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
+
+
+def test_mce_g_ar_column_and_no_empty_effect_policy():
+    """DEC-MCE-038: preserve original A:F; pending records remain outside the MCE."""
+    main=(LOCAL/'SKILL.md').read_text(encoding='utf-8')
+    execution=(ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8')
+    agents=(ROOT/'AGENTS.md').read_text(encoding='utf-8')
+    standard=(ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8')
+    for document in (main,execution,agents,standard):
+        assert 'DEC-MCE-038' in document
+        assert 'P09_L50_G_AR_2' in document
+        assert 'G:AR' in document
+        assert 'thin' in document
+        assert 'X' in document
+    assert '76' in main and '142' in main and '175' in main
+    assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
