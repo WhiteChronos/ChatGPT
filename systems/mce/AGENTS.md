@@ -81,3 +81,11 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Se faltar qualquer gate de aprovacao, contrato de celulas, modelo ou executor Windows, responder `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`; nao entregar quadro PDF como matriz nem XLSX generico vazio como MCE concluida. Preservar as fontes recebidas, nao solicitar outras inexistentes como bloqueio artificial.
 - Antes de entrega, validar extensao XLSX, integridade OOXML, paginas P09, colunas de efeitos, mesclas, fontes, rotacao, modelo e status de auditoria. Falha gera `FAIL_FORMAT_CONTRACT`.
 - Essa regra complementa os gates humanos existentes, nunca autoriza editar um Excel antes do contrato e `AUTORIZO_ELABORACAO_MCE`. Detalhe na Skill `matriz-causa-efeito`.
+
+
+## Regras da MCE P09 L50 para paginas, larguras e alturas — DEC-MCE-033/034
+
+- L50 = 43 causas/folha (linhas 8:50) e 35 efeitos I:AQ. Abrir proxima `FOLHA N` SOMENTE apos preencher todas as 43 vagas da anterior; numero de paginas do desenho de origem nao define abas de MCE.
+- DEC-MCE-034: altura por maior numero de linhas visuais em B/C/F:G `20 + 10*(n-1)` pt (1=20, 2=30, 3=40, 4=50 etc) para linhas de causa; limite 400 por Excel. Texto nao pode ser cortado; contagem automatica exige verificacao visual.
+- Perfil de largura `P09_L50_20261110`: colunas B=25, C=56, F=34; preservar G e todas I:AQ, AR, bordas, mesclas, area de impressao e cabecalhos. Nao alterar globalmente P09 L57 nem homologar com base no proprio chat.
+- Antes de liberar modelo editar, validar na Skill/contrato canônico `mce_workflow.py`; nunca mudar o mestre original, inserir X sem fonte, tratar candidato documental como FAT/SAT, alegar QA Windows/backup quando nao executado.

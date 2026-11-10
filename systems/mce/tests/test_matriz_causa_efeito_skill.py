@@ -67,3 +67,16 @@ def test_mce_excel_is_only_primary_output_regression():
     assert "PDF" in skill and "Markdown" in skill
     assert "AUTORIZO_ELABORACAO_MCE" in skill
     assert (LOCAL / "SKILL.md").read_bytes() == (GLOBAL / "SKILL.md").read_bytes()
+
+
+def test_p09_l50_progressive_layout_rule_persists_in_all_mce_skills():
+    main=(LOCAL/'SKILL.md').read_text(encoding='utf-8')
+    engineering=(ROOT/'.agents/skills/engenharia-mce-projeto/SKILL.md').read_text(encoding='utf-8')
+    standard=(ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8')
+    execution=(ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8')
+    agents=(ROOT/'AGENTS.md').read_text(encoding='utf-8')
+    for content in (main,engineering,standard,execution,agents):
+        assert 'DEC-MCE-034' in content
+        assert '40' in content and '50' in content and '20' in content
+        assert 'P09_L50_20261110' in content
+    assert '43' in main and 'B=25' in main and 'C=56' in main and 'F=34' in main

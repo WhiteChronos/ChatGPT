@@ -65,3 +65,12 @@ Quando o responsavel solicitar matriz limpa, registrar annotation_policy=EXTERNA
 - Gate de verificacao: saida Excel abre como XLSX, somente abas `FOLHA N`, assinatura de layout P09, 43 causas/folha, 35 efeitos, fonte 10/8, sem notas; auditoria OOXML obrigatoria. O PDF, mesmo que preliminar, nao e "a matriz".
 
 - Violacao de formato, inclusive substituir o Excel solicitado por PDF/Markdown ou entregar XLSX vazio como MCE preenchida: `FAIL_FORMAT_CONTRACT`. Nao reinterpretar `FAIL_FORMAT_CONTRACT` como autorizacao para gerar relacoes funcionais fora do fluxo homologado.
+
+
+## Politica DEC-MCE-034: altura progressiva e colunas P09 L50 (2026-11-10)
+
+- Perfil `P09_L50_APROVADO_VISUALMENTE`: cada folha termina na **linha fisica 50**, com 43 posicoes de causa entre 8 e 50. Paginacao sequencial por causa preenchida, nao por folha de documento de arquitetura. Somente a ultima folha pode ficar parcialmente vazia.
+- Regra de legibilidade: considerar o maximo de linhas visuais das descricoes B/C/F:G mesclado, com quebra de texto. `altura_pt=20+10*(n_linhas-1)`: 1=20, 2=30, 3=40, 4=50, 5=60, ... ate 400 pontos. Se o calculo resultar acima do limite Excel, bloquear e revisar texto/colunas.
+- Perfil de largura `P09_L50_20261110` para novas derivacoes aprovadas: B=25, C=56, F=34; F:G permanece mesclado. Nao redimensionar I:AQ, G, D/E/H/AR nem cabecalhos. O validador canonico aceita alturas em passos de 10 e, se `column_width_profile` for declarado, valida essas tres larguras.
+- A altura computada pela metrica de wrapping e **estimativa** sem Microsoft Excel: registrar `QA_VISUAL_WINDOWS=NOT_RUN` quando nao abrir o arquivo no Excel real. Esta orientacao nao altera modelo mestre nem se sobrepoe ao `AUTORIZO_ELABORACAO_MCE`.
+- Comparar antes/depois valores, 175 X e 218 registros somente no caso ADM de 10/11/2026 (e nao como contagens globais). Preservar 35 efeitos, Arial10/8, 46 merges, print A1:AR50 e notas EXTERNAL_ONLY.

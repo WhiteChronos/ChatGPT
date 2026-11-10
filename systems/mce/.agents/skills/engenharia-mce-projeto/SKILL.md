@@ -28,3 +28,10 @@ description: Analisar projetos de automacao, P&IDs, memoriais, narrativas, lista
 - Consultar `references/metodo-causa-efeito.md`; prioridade as fontes contratuais do projeto e normas oficiais de aplicacao comprovada.
 - Os scripts de engenharia sao ferramentas deterministas de **controle documental e edicao**, nao substituem o raciocinio de engenharia nem validam automaticamente lógicas de seguranca.
 - A skill `padronizacao-mce` rege contrato e inviolabilidade do modelo.
+
+
+## Perfil derivado P09 L50 — DEC-MCE-034
+
+- Depois de validar o perfil P09 L50 e **somente sobre copia derivada sob gates humanos**, aplicar a politica de alturas da entrada `matriz-causa-efeito`: `20 + 10*(n_linhas_visuais - 1)` pt, de 20 a 400 em passos de 10. N=3 exige 40 pt, N=4 exige 50 pt; nao bloquear automaticamente textos de tres linhas.
+- Para o perfil de larguras `P09_L50_20261110`, usar B=25, C=56, F=34 (F:G mesclado). Preservar todas as colunas de efeito I:AQ, titulo girado, print A1:AR50, 46 mesclagens e limite de 43 causas por folha; paginar continuamente a cada linha 50, sem usar as paginas dos desenhos como divisores.
+- A rotina de estimar linhas pode sobrecontar/subcontar o Excel; conferir por visualizacao quando disponivel e manter status `QA_VISUAL_WINDOWS=NOT_RUN` caso nao realizado. A Skill nao altera master, nao inventa X, nao chama outro editor nem substitui o gate de `AUTORIZO_ELABORACAO_MCE`.

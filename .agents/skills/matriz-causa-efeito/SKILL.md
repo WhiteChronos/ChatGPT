@@ -28,6 +28,20 @@ description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de aut
 
 Esta decisao nao remove os gates humanos ou exige outros documentos do responsavel quando o conjunto de fontes foi declarado encerrado. Apenas fixa o contrato de formato e de classificacao do entregavel. Consultar Issue #120 e memoria canonica.
 
+
+## Perfil de legibilidade e paginacao P09 L50 — DEC-MCE-033/034 (2026-11-10)
+
+**Aplicar por padrao quando o projeto selecionar o perfil `P09_L50_APROVADO_VISUALMENTE`**; nao propagar para P09 L57 ou outros modelos sem perfil contratado.
+
+1. Paginar **pela contagem de causas efetivamente preenchidas**, jamais pelo numero de paginas das fontes. Cada aba `FOLHA N` comporta 43 causas nas linhas fisicas 8:50, cabeçalhos 1:7; FOLHA 2 inicia causa 44, FOLHA 3 inicia 87 etc. Não inserir linhas abaixo da 50 e não deixar folhas intermediarias parcialmente vazias.
+2. Ajustar altura **de cada linha de causa** pelo maior numero de linhas visuais entre as celulas descritivas B, C e F:G mesclado, considerando quebras explicitas e quebra de linha causada pela largura/fonte. Formula `altura_pt = 20 + 10 * (n_linhas_visuais - 1)`, com n >= 1: 1=20 pt, 2=30 pt, 3=40 pt, 4=50 pt, 5=60 pt etc. Linhas de causa vazias ficam com 20 pt. Nao truncar. Limite Excel 409,5 pt: a partir de 40 linhas visuais, **STOP**, revisar descricao/largura.
+3. No perfil de larguras **`P09_L50_20261110`**: B=25, C=56, F=34 (unidades de largura Excel; F:G e mesclada e G original nao e alterada). Nao redimensionar D/E/H, efeitos I:AQ, AR, margens ou cabecalhos. Revisar comprimento dos titulos de efeitos girados e quebra de linha; preferir ajuste da altura de causa a perder o padrao da grade.
+4. A contagem de linhas calculada por largura/fonte e **estimativa**, nao prova do layout final do Excel. Registrar `LINHAS_ESTIMADAS` e validar manualmente quando possivel; sem Excel Windows, `QA_VISUAL_WINDOWS=NOT_RUN` e nunca afirmar ausencia de clipping.
+5. Manter Arial 10 nos titulos e Arial 8 no restante, 35 efeitos I:AQ, 46 mesclagens por folha, girar texto para cima I5:AQ5 em 90 graus, A1:AR50, bordas thin, AR8:AR50 sem notas, sem novos X ou TAGs. Preservar toda associacao causa/efeito ao repaginar; auditar antes/depois.
+6. A progressao de alturas e as larguras sao **politica visual**, nao autorizacao de engenharia. Modelo mestre, fonte, contrato `editable_cells`, `AUTORIZO_ELABORACAO_MCE` e editor unico permanecem condicionantes de uma MCE de projeto homologavel.
+
+**Regressao obrigatoria:** rejeitar altura 10, 25, 35 ou 410 pt; aceitar 20, 30, 40, 50 ... ate 400 pt; rejeitar mudanca de efeitos ou X, colunas fora de B/C/F, mais que 43 causas por folha e quebra da continuacao de H.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

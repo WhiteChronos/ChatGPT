@@ -208,6 +208,32 @@ P09_L50_PROFILE = 'P09_L50_APROVADO_VISUALMENTE'
 P09_L50_TITLES = {'B1','C1','G1','H1','H2','H3','H4','H5','A6','A7','B7','C7','D7','E7','F7','AR7'}
 
 
+P09_L50_HEIGHT_MIN_PT = 20
+P09_L50_HEIGHT_STEP_PT = 10
+P09_L50_HEIGHT_MAX_PT = 400  # Excel limita altura a 409.5pt
+P09_L50_WIDTH_PROFILE = 'P09_L50_20261110'
+P09_L50_COLUMN_WIDTHS = {'B': 25.0, 'C': 56.0, 'F': 34.0}
+
+
+def p09_l50_height_for_lines(lines):
+    """Deriva altura da quantidade de linhas visuais avaliada sob contrato."""
+    if type(lines) is not int or lines < 1:
+        fail('STOP: numero de linhas visuais invalido para P09 L50')
+    height = P09_L50_HEIGHT_MIN_PT + P09_L50_HEIGHT_STEP_PT * (lines - 1)
+    if height > P09_L50_HEIGHT_MAX_PT:
+        fail('STOP: excedida altura maxima 400 pt P09 L50; revisar texto/colunas')
+    return height
+
+
+def p09_l50_valid_row_height(height):
+    """Validador de progressao; nao infere o real wrapping do Excel."""
+    return (type(height) in (int, float)
+            and P09_L50_HEIGHT_MIN_PT <= height <= P09_L50_HEIGHT_MAX_PT
+            and ((height - P09_L50_HEIGHT_MIN_PT) % P09_L50_HEIGHT_STEP_PT) == 0)
+
+
+
+
 def verify_p09_l50_model(master, contract):
     """Read-only validation of approved visual pagination; no engineering approval."""
     profile = contract.get('layout_profile')
@@ -218,6 +244,9 @@ def verify_p09_l50_model(master, contract):
     annotation_policy = contract.get('annotation_policy')
     if annotation_policy not in (None, 'EXTERNAL_ONLY'):
         fail('STOP: politica de notas desconhecida: '+str(annotation_policy))
+    width_profile = contract.get('column_width_profile')
+    if width_profile not in (None, P09_L50_WIDTH_PROFILE):
+        fail('STOP: perfil de larguras desconhecido: '+str(width_profile))
     book = load_workbook(master, read_only=False, keep_links=True)
     ranges = contract.get('matrix_ranges', [])
     if not book.worksheets or len(ranges) != len(book.worksheets) or set(x['sheet'] for x in ranges) != set(book.sheetnames):
@@ -229,6 +258,11 @@ def verify_p09_l50_model(master, contract):
             fail('STOP: perfil L50 exige area A1:AR50 em '+ws.title)
         if len(ws.merged_cells.ranges) != 46:
             fail('STOP: perfil L50 exige 46 mesclagens em '+ws.title)
+        if width_profile == P09_L50_WIDTH_PROFILE:
+            for column, expected_width in P09_L50_COLUMN_WIDTHS.items():
+                actual_width = ws.column_dimensions[column].width
+                if actual_width is None or abs(actual_width - expected_width) > 0.03:
+                    fail('STOP: largura P09 L50 invalida para coluna '+column+' em '+ws.title)
         if annotation_policy == 'EXTERNAL_ONLY':
             if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
                 fail('STOP: notas na coluna AR nao permitidas em '+ws.title)
@@ -244,8 +278,8 @@ def verify_p09_l50_model(master, contract):
             c = ws[f'C{row}']
             if c.font.name != 'Arial' or c.font.sz != 8 or c.alignment.wrap_text is not True:
                 fail('STOP: descricoes de causas sem Arial 8/wrap em '+ws.title)
-            if ws.row_dimensions[row].height not in (20,30):
-                fail('STOP: altura fora de 20/30 pt em '+ws.title)
+            if not p09_l50_valid_row_height(ws.row_dimensions[row].height):
+                fail('STOP: altura P09 L50 fora de 20..400 pt em passos de 10 em '+ws.title)
         for col in range(9,44):
             if ws.cell(7,col).value != col-8:
                 fail('STOP: numero de efeito invalido em '+ws.title)

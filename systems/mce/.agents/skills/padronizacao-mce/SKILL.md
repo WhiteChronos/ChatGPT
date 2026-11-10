@@ -18,3 +18,11 @@ description: Controlar e preservar rigorosamente o modelo Excel mestre da Matriz
 - A skill `engenharia-mce-projeto` implementa a orquestracao e o gate humano; esta skill define o contrato, nao inventa logica.
 - Editor automatizado suporta **somente `.xlsx`** atualmente. XLSM e planilhas com recursos incompatíveis exigem fluxo especial e nao devem ser convertidos silenciosamente.
 - O workflow local nao implica instalacao automatica no catalogo de Skills do ChatGPT nem ativacao remota.
+
+
+## Perfil de paginação e altura progressiva P09 L50 — DEC-MCE-034
+
+- Para `P09_L50_APROVADO_VISUALMENTE` nao confundir a linha fisica 50 com 50 causas: 43 posicoes em 8:50; folha seguinte quando a anterior estiver preenchida. A arquitetura com sete folhas nao gera automaticamente sete abas de MCE.
+- Cada linha de causa adota `20 + 10*(n-1)` pontos para `n` linhas visuais: 20/30/40/50/60 etc, ate 400; vazio 20. Ler a ocupacao conjunta de B/C/F:G, as larguras e `wrap_text`. A contagem de linhas antes da revisao no Excel e preliminar.
+- Para novo perfil de larguras `P09_L50_20261110`: B=25, C=56, F=34, sem tocar G (mesclado), D/E/H, I:AQ ou AR; preservar a geometria de cada aba, bordas, fontes 10/8, mesclagens e numero de causa. Divergencia gera STOP/documentacao, nunca reformatar silenciosamente um mestre oficial.
+- A Skill de padronizacao apenas define e verifica contrato; o executor de engenharia continua unico e autoriza edicao apenas apos aprovacao humana. Revisao documental de workbook na conversa nao e homologacao nem prova de backup no DataCenter.

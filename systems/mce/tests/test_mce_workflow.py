@@ -254,3 +254,35 @@ def test_p09_l50_no_notes_policy(tmp_path):
     book['FOLHA 1']['C12'].comment=None
     book.save(model)
     mod.verify_p09_l50_model(model, c)
+
+
+def test_p09_l50_progressive_height_policy_and_width_profile(tmp_path):
+    """DEC-MCE-034: 3 linhas=40 pt, 4 linhas=50 pt, sem tolerar 25/410 pt."""
+    assert [mod.p09_l50_height_for_lines(n) for n in (1, 2, 3, 4, 5)] == [20, 30, 40, 50, 60]
+    for bad in (0, -1, 1.5, True, 40):
+        with pytest.raises(ValueError, match='linhas visuais|400 pt'):
+            mod.p09_l50_height_for_lines(bad)
+    for good in (20, 30.0, 40, 50, 400):
+        assert mod.p09_l50_valid_row_height(good)
+    for bad in (None, False, 10, 25, 35, 409.5, 410):
+        assert not mod.p09_l50_valid_row_height(bad)
+
+    model = tmp_path / 'p09_l50_progressive.xlsx'
+    book = _synthetic_p09_l50(model)
+    for ws in book:
+        for col, value in mod.P09_L50_COLUMN_WIDTHS.items():
+            ws.column_dimensions[col].width = value
+        ws.row_dimensions[8].height = 40
+        ws.row_dimensions[9].height = 50
+    contract = {'layout_profile': mod.P09_L50_PROFILE,
+                'column_width_profile': mod.P09_L50_WIDTH_PROFILE,
+                'matrix_ranges':[{'sheet':f'FOLHA {i}', 'first_data_row':8, 'last_data_row':50} for i in range(1,4)]}
+    book.save(model)
+    mod.verify_p09_l50_model(model, contract)
+    book['FOLHA 2'].row_dimensions[8].height = 25
+    book.save(model)
+    with pytest.raises(ValueError,match='20..400'):mod.verify_p09_l50_model(model, contract)
+    book['FOLHA 2'].row_dimensions[8].height = 40
+    book['FOLHA 2'].column_dimensions['C'].width = 55
+    book.save(model)
+    with pytest.raises(ValueError,match='largura P09 L50'):mod.verify_p09_l50_model(model,contract)
