@@ -154,3 +154,58 @@ def test_backup_no_overwrite_and_no_mirror_overlap(tmp_path):
                          "--document", "S", mirror=mirror)
     assert code == 2 and payload["status"] == "ARCHIVE_BLOCKED"
     assert mem.verify(db)["event_count"] == 2
+
+
+def test_catalogue_readonly_recovers_existing_project_and_secondary_proof(tmp_path):
+    inbox, vault, mirror, db, mem = setup(tmp_path)
+    original = b"synthetic MCE data"
+    (inbox / "mce.xlsx").write_bytes(original)
+    sha = hashlib.sha256(original).hexdigest()
+    assert call(inbox, vault, db, "ingest", "--filename", "mce.xlsx",
+                "--document", "MCE", mirror=mirror)[0] == 0
+    before = mem.verify(db)["event_count"]
+    code, report = call(inbox, vault, db, "catalog", mirror=mirror)
+    assert code == 0 and report["status"] == "CATALOG_VERIFIED"
+    assert report["items"] == [{
+        "document": "MCE", "revision": "REV_A", "sha256": sha,
+        "size_bytes": len(original),
+        "backup_status": "SECONDARY_COPY_VERIFIED_FAILURE_DOMAIN_UNVERIFIED",
+    }]
+    assert mem.verify(db)["event_count"] == before
+    target = tmp_path / "recovered.xlsx"
+    code, result = call(inbox, vault, db, "restore", "--document", "MCE",
+                        "--sha", report["items"][0]["sha256"],
+                        "--output", str(target))
+    assert code == 0 and result["status"] == "RESTORE_VERIFIED"
+    assert target.read_bytes() == original
+
+
+def test_catalogue_fails_closed_on_corruption_and_missing_ledger(tmp_path):
+    inbox, vault, mirror, db, mem = setup(tmp_path)
+    code, result = call(inbox, vault, db, "catalog", mirror=mirror)
+    assert code == 0 and result["status"] == "CATALOG_EMPTY"
+    (inbox / "md.pdf").write_bytes(b"document")
+    code, result = call(inbox, vault, db, "ingest", "--filename", "md.pdf",
+                        "--document", "MD", mirror=mirror)
+    assert code == 0
+    sha = result["sha256"]
+    secondary = mirror / "objects" / sha[:2] / sha
+    secondary.write_bytes(b"corrupt")
+    code, result = call(inbox, vault, db, "catalog", mirror=mirror)
+    assert code == 2 and result["status"] == "ARCHIVE_BLOCKED"
+    secondary.write_bytes(b"document")
+    receipt = vault / "receipts" / "ADM_GAMBOA" / "MD" / "REV_A" / (sha + ".json")
+    receipt.write_text('{"product":"MCE_INDEPENDENTE","project":"ADM_GAMBOA","document":"MD","revision":"REV_A","sha256":"broken","size_bytes":8}', encoding="utf-8")
+    code, result = call(inbox, vault, db, "catalog", mirror=mirror)
+    assert code == 2 and result["status"] == "ARCHIVE_BLOCKED"
+
+
+def test_catalogue_requires_initialized_sqlite_and_rejects_invalid_scope(tmp_path):
+    inbox, vault, mirror, db, mem = setup(tmp_path)
+    assert call(inbox, vault, tmp_path / "missing.sqlite3", "catalog")[0] == 2
+    cmd = [sys.executable, str(SCRIPT), "--inbox", str(inbox),
+           "--vault", str(vault), "--db", str(db), "--project", "../OTHER",
+           "catalog"]
+    attempt = subprocess.run(cmd, capture_output=True, text=True, timeout=40)
+    assert attempt.returncode == 2
+    assert json.loads(attempt.stdout)["status"] == "ARCHIVE_BLOCKED"

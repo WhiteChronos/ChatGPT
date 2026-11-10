@@ -91,3 +91,18 @@ O servidor \`mce_sdk_server.py\` aceita flags opcionais \`--archive-vault\`, \`-
 ### Skills auxiliares versionadas para o backup MCE
 
 As tres Skills `mce-restic-backup` (https://github.com/WhiteChronos/restic, `main`), `mce-kopia-backup` (https://github.com/WhiteChronos/kopia, `main`) e `mce-watchdog-ingest` (https://github.com/WhiteChronos/watchdog, `main`) orientam recursos de backup/restauracao e deteccao, permanecendo subordinadas a `matriz-causa-efeito` e ao mesmo DataCenter/SQLite. As bibliotecas upstream usam branch `master` e necessitam de revisao para cada sincronizacao; nao fazer merge automatico. A introducao de Skill nao comprova instalacao de ferramenta, ativacao do host ou copia de documentos no DataCenter.
+
+
+### Recuperacao deterministica por inventario (DEC-MCE-043, candidato)
+
+O comando Windows `catalog` fornece uma lista **privada** de versoes realmente arquivadas, por projeto, a partir de recibos imutaveis, objetos SHA-256, evento correspondente no unico SQLite e, quando `--mirror` e informado, integridade da segunda copia. Nao consulta nem copia conversas do ChatGPT. Nao cria recibos, eventos ou arquivos; em corrupcao retorna `ARCHIVE_BLOCKED`. `CATALOG_EMPTY` significa que nao foram encontrados recibos naquele projeto, nao que o chat ou outro computador nao possuam o arquivo.
+
+Executar somente em host Windows nativo autorizado, com pastas e SQLite existentes, sem transmitir a saida do catalogo a repositorios publicos:
+
+```powershell
+py -3.12 .\systems\mce\scripts\mce_document_archive.py --inbox "C:\MCE_DADOS\inbox" --vault "C:\MCE_DADOS\vault" --db "C:\MCE_DADOS\mce.sqlite3" --project "ADM_GAMBOA" --revision "AS_RECEIVED" --mirror "D:\MCE_BACKUP\mce-vault" catalog
+```
+
+Usar a versao `document/revision/sha256` recuperada do catalogo para `verify` e `restore --output` a **destino novo**; conferir hash antes de usá-la. O mesmo SHA registrado no Issue #120 somente pode ser restaurado se os bytes correspondentes estiverem no vault privado e o recibo/ledger forem validos. Para arquivo ainda nao arquivado, operador deve transferir explicitamente bytes ao inbox autorizado e realizar `ingest` com espelho; anexo no ChatGPT nao chega ao Windows por esta implementacao. Arquivo sem recibo verificado continua `COPY_PENDING`. Um mirror no mesmo dominio de falha nao assegura backup independente; restore de desastre continua gate humano.
+
+Este comando e implementacao candidata para CI Windows, nao prova `HOST_DISCOVERED`, `LIVE_VERIFIED`, backup offsite, transferencia automatica de anexo ou homologacao da MCE. A abertura do Issue #125 rastreia esses gates.

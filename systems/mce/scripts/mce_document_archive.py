@@ -288,6 +288,84 @@ def restore_one(vault, db, project, document, revision, sha, output):
             "size_bytes": data["size_bytes"], "production_complete": False}
 
 
+
+def catalogue(vault, db, project, mirror=None):
+    """Read-only, fail-closed recovery inventory of a private project's receipts."""
+    require_windows()
+    project = safe_id(project)
+    vault = safe_path(vault, "dir")
+    db = memory._path(db)
+    memory.verify(db)
+    if mirror is not None:
+        mirror = safe_path(mirror, "dir")
+        if mirror == vault or mirror.is_relative_to(vault) or vault.is_relative_to(mirror):
+            raise ValueError("Secondary archive overlaps primary")
+    root = vault / "receipts" / project
+    if not root.exists():
+        return {"product": PRODUCT, "status": "CATALOG_EMPTY", "items": [],
+                "production_complete": False}
+    safe_path(root, "dir")
+    items = []
+    with memory._session(db) as connection:
+        for docroot in sorted(root.iterdir()):
+            document = safe_id(docroot.name)
+            safe_path(docroot, "dir")
+            for revroot in sorted(docroot.iterdir()):
+                revision = safe_id(revroot.name)
+                safe_path(revroot, "dir")
+                for receipt in sorted(revroot.iterdir()):
+                    if receipt.suffix != ".json":
+                        raise ValueError("Unexpected receipt file")
+                    sha = receipt.stem
+                    if not re.fullmatch(r"[0-9a-f]{64}", sha):
+                        raise ValueError("Malformed receipt digest")
+                    safe_path(receipt, "file")
+                    if receipt.stat().st_size > 4096:
+                        raise ValueError("Oversized receipt")
+                    data = json.loads(receipt.read_text(encoding="utf-8"))
+                    identity = {"product": PRODUCT, "project": project,
+                                "document": document, "revision": revision, "sha256": sha}
+                    if any(data.get(key) != value for key, value in identity.items()):
+                        raise ValueError("Invalid receipt identity")
+                    size = data.get("size_bytes")
+                    if type(size) is not int or size < 0 or size > MAX_FILE_BYTES:
+                        raise ValueError("Invalid receipt size")
+                    blob = safe_path(vault / "objects" / sha[:2] / sha, "file")
+                    if sha_file(blob) != (sha, size):
+                        raise ValueError("Primary archive integrity failure")
+                    recorded = False
+                    for (encoded,) in connection.execute(
+                        "SELECT detail_json FROM memory_events "
+                        "WHERE kind='EVIDENCE' AND subject='DOCUMENT_ARCHIVED' AND source_sha256=?",
+                        (sha,),
+                    ):
+                        try:
+                            detail = json.loads(encoded)
+                        except json.JSONDecodeError as exc:
+                            raise ValueError("Invalid evidence ledger") from exc
+                        if detail == {"project": project, "document": document,
+                                      "revision": revision, "size_bytes": size, "sha256": sha}:
+                            recorded = True
+                            break
+                    if not recorded:
+                        raise ValueError("Receipt lacks matching SQLite evidence")
+                    backup = "BACKUP_NOT_VERIFIED"
+                    if mirror is not None:
+                        other_receipt = safe_path(
+                            mirror / "receipts" / project / document / revision / (sha + ".json"),
+                            "file")
+                        other_blob = safe_path(mirror / "objects" / sha[:2] / sha, "file")
+                        if other_receipt.read_bytes() != receipt.read_bytes() or sha_file(other_blob) != (sha, size):
+                            raise ValueError("Secondary archive integrity failure")
+                        backup = "SECONDARY_COPY_VERIFIED_FAILURE_DOMAIN_UNVERIFIED"
+                    items.append({"document": document, "revision": revision,
+                                  "sha256": sha, "size_bytes": size, "backup_status": backup})
+                    if len(items) > 10000:
+                        raise ValueError("Recovery catalogue budget exceeded")
+    return {"product": PRODUCT, "status": "CATALOG_VERIFIED",
+            "items": items, "production_complete": False}
+
+
 def scan(inbox, vault, db, project, revision, mirror=None, min_age=3):
     require_windows()
     inbox, vault, db, mirror = require_roots(inbox, vault, db, mirror)
@@ -327,6 +405,7 @@ def main(argv=None):
     watch = sub.add_parser("watch")
     watch.add_argument("--interval", type=float, default=10)
     watch.add_argument("--min-age", type=float, default=3)
+    sub.add_parser("catalog")
     check = sub.add_parser("verify")
     check.add_argument("--document", required=True)
     check.add_argument("--sha", required=True)
@@ -356,6 +435,8 @@ def main(argv=None):
                     time.sleep(args.interval)
             except KeyboardInterrupt:
                 return 0
+        elif args.operation == "catalog":
+            result = catalogue(args.vault, args.db, args.project, args.mirror)
         elif args.operation == "verify":
             result = verify_one(args.vault, args.db, args.project,
                                 args.document, args.revision, args.sha)
