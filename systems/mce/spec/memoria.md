@@ -201,3 +201,12 @@ Apos reclamacão de entrega de XLSX vazio, a auditoria de retomada constatou que
 **Origem:** solicitacao explicita do usuario em conversa MCE, apos incidente de recuperacao de contexto. **Decisao de requisito:** toda fonte/saida MCE em bytes acessiveis e autorizados devera ser copiada integralmente em armazenamento privado versionado, com SHA-256 origem/destino, manifest, indice no mesmo SQLite MCE e recibo verificavel ANTES de ser considerada arquivada. Nao sobrescrever versoes; diferenciar arquivo original, derivado e copia de seguranca. Nao publicar documentos industriais, anexos, transcricoes ou bancos em GitHub publico. Regra adicionada a `systems/mce/AGENTS.md` e detalhada em `systems/mce/docs/DATACENTER_MEMORY.md`.
 
 **PEND-MCE-017 — GATE TECNICO:** implementar e testar no host Windows autorizado a integracao de recepcao/transferencia de anexos ChatGPT e fontes externas para o DataCenter, copia atomica, indice SQLite MCE, redundancia independente e restore. Sem bytes do arquivo ou tunel conectado, registrar `COPY_PENDING`; sem evidencia de hash + recibo + teste de recuperacao, nao declarar backup completo, persistencia infalivel ou automacao entre chats. Esta alteracao de GitHub **nao** copiou nenhum documento e **nao** escreveu no SQLite. Nao cria segundo banco/editor. `PRODUCTION_COMPLETE=NO`.
+
+
+---
+
+### 2026-11-10 — IMP-MCE-030A: arquivador Windows privado com regressao sintetica
+
+Acrescentado candidato de motor de ingestao \`scripts/mce_document_archive.py\`, usando o **mesmo** SQLite append-only \`mce_memory.py\` e armazenamento privado preexistente. Entrada exclusiva de inbox autorizado; copia em objetos por SHA-256, recibos imutaveis por projeto/documento/revisao, rejeicao de links, conflitos e overwrite, verificacao fonte/copia, varredura e modo watch, copia secundaria opcional com validacao e restauracao para destino novo. Nenhum documento real foi transmitido, nenhuma chave instalada nem host ativado. O sistema continua com transferencia de anexos ChatGPT -> inbox e configuracao de agendamento **pendentes**, nao garantidos pela existencia do script.
+
+**Evidencia esperada:** Windows GitHub Actions no novo HEAD executa \`test_mce_document_archive.py\`, memoria regressiva e Bandit focalizado. Testes sinteticos nao comprovam backup/restore real em segundo dominio de falha nem conexao ao DataCenter. O \`MceWeb.initialize\` ainda necessita gate integrado antes de impedir uso sem recibo: \`PEND-MCE-017\` permanece em aberto. \`PRODUCTION_COMPLETE=NO\`.

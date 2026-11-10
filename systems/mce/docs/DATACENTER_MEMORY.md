@@ -68,3 +68,16 @@ A Skill matriz-causa-efeito e o conjunto de workflows próprios do MCE são excl
 **Cenarios obrigatorios para QA Windows:** original legivel/copia igual; upload repetido e idempotente; mesmo nome com bytes diferentes gera nova versao; alteracao durante copia falha; ausencia de host/bytes falha fechada; links/traversal bloqueados; autorizacao de acesso por projeto; backup secundario e restauracao conferidos. Validar fluxo real de anexo ChatGPT -> host antes de anunciar ingestao automatica. Inexistencia de segunda copia/restore impede declarar a promessa de nao perder informacao cumprida.
 
 **Estado na data:** `REQUIREMENT_REGISTERED`; `AUTO_INGEST=NOT_IMPLEMENTED_OR_NOT_VERIFIED`; `PRIVATE_SQLITE_WRITE=NOT_RUN`; `BACKUP_RESTORE=NOT_VERIFIED`. O conector MCE foi descoberto mas seu tunel estava indisponivel. Nao tratar esta secao como comprovacao de copia de qualquer arquivo.
+
+
+### Candidato executavel de ingestao Windows, ainda nao implantado
+
+\`scripts/mce_document_archive.py\` aceita \`--inbox\` (pasta autorizada preexistente), \`--vault\` (DataCenter privado preexistente), \`--db\` (unico SQLite MCE inicializado), \`--project\`, \`--revision\` e \`--mirror\` (segunda pasta privada preexistente). Comandos:
+
+- \`ingest --filename ARQUIVO --document IDENTIFICADOR\`: original intocado, copia por SHA, recibo imutavel, evento no SQLite, segunda copia quando configurada.
+- \`scan --min-age 3\`: reconcilia arquivos ja entregues ao inbox e ignora arquivos temporarios; reaplicar e idempotente.
+- \`watch --interval 10 --min-age 3\`: reexecuta reconciliação enquanto o processo estiver ativo; requer operacao/servico no **host real** e nao e inicializado automaticamente pelo ChatGPT.
+- \`verify --document DOC --sha SHA\` e \`restore --document DOC --sha SHA --output DESTINO_NOVO\`: verificacao e restauracao de arquivo especifico (nunca sobrescreve).
+- Toda saida inclui status e \`production_complete=false\`. \`SECONDARY_COPY_VERIFIED_FAILURE_DOMAIN_UNVERIFIED\` nao prova que a segunda pasta esta em outro disco/host. Um backup robusto deve configurar destino realmente independente e manter snapshots com Restic/Kopia aprovados pelo operador.
+
+**IMPORTANTE:** plugin MCE continua com sete ferramentas de inbox e nao transfere anexos de conversa, e o host/tunel pode estar indisponivel; somente o operador instala/ativa a observacao de inbox em Windows. Rotina criptografada e verificacao offsite com Restic/Kopia dependem de instalacao, credencial, retencao e teste real de restauracao aprovados. O script nao instala ferramentas nem cria volume, nao substitui gates MCE/engenharia.
