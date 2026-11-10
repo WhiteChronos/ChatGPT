@@ -192,3 +192,12 @@ Apos reclamacão de entrega de XLSX vazio, a auditoria de retomada constatou que
 **Regra de prevencao:** antes de responder a pedidos de MCE, reconciliar todo o inbox estruturado do Issue #120 com a memoria.md e a configuracao da Skill/host; verificar fonte vigente, perfil visual e tipo MATRIZ_NOVA/MATRIZ_REVISAO. Se o usuario pediu MCE funcional, nunca apresentar um template vazio como equivalente ou solucao do pedido. Sem modelo homologado, fontes vigentes e gates externos, manter STOP e oferecer somente pre-analise, sem inventar TAG, X/I, causa ou efeito. Arquivos de engenharia, conversas e resultados privados nao devem ser publicados neste repositorio.
 
 **Limites de persistencia:** foi criado casefile de continuidade em area **privada** do sistema documental, sem anexos/transcricoes completos. A base SQLite operacional do MCE nao foi acessada: o tunel do conector estava indisponivel nesta sessao. Nao houve gravacao ou validacao de DataCenter, edicao de Excel mestre, homologacao, merge ou deploy. `PRODUCTION_COMPLETE=NO`.
+
+
+---
+
+### 2026-11-10 — DEC-MCE-030: copia obrigatoria de todo documento recebido/gerado no DataCenter privado
+
+**Origem:** solicitacao explicita do usuario em conversa MCE, apos incidente de recuperacao de contexto. **Decisao de requisito:** toda fonte/saida MCE em bytes acessiveis e autorizados devera ser copiada integralmente em armazenamento privado versionado, com SHA-256 origem/destino, manifest, indice no mesmo SQLite MCE e recibo verificavel ANTES de ser considerada arquivada. Nao sobrescrever versoes; diferenciar arquivo original, derivado e copia de seguranca. Nao publicar documentos industriais, anexos, transcricoes ou bancos em GitHub publico. Regra adicionada a `systems/mce/AGENTS.md` e detalhada em `systems/mce/docs/DATACENTER_MEMORY.md`.
+
+**PEND-MCE-017 — GATE TECNICO:** implementar e testar no host Windows autorizado a integracao de recepcao/transferencia de anexos ChatGPT e fontes externas para o DataCenter, copia atomica, indice SQLite MCE, redundancia independente e restore. Sem bytes do arquivo ou tunel conectado, registrar `COPY_PENDING`; sem evidencia de hash + recibo + teste de recuperacao, nao declarar backup completo, persistencia infalivel ou automacao entre chats. Esta alteracao de GitHub **nao** copiou nenhum documento e **nao** escreveu no SQLite. Nao cria segundo banco/editor. `PRODUCTION_COMPLETE=NO`.
