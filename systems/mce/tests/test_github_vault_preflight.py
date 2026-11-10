@@ -138,3 +138,36 @@ def test_http_404_is_inaccessible_not_confirmed_nonexistent(mod, monkeypatch):
     assert mod.check_vault(EXPECTED, "a-secret") == {
         "status": "BLOCKED", "reason": "VAULT_NOT_ACCESSIBLE"
     }
+
+def test_read_only_mode_does_not_infer_write_permission(mod):
+    # GitHub Actions GITHUB_TOKEN can omit permissions.push from GET /repos.
+    data = _metadata(permissions=None)
+    assert mod.check_vault(
+        EXPECTED, "ephemeral", fetcher=lambda *_: data, require_write=False
+    ) == {"status": "PASS", "reason": "PRIVATE_REPO_METADATA_ACCESSIBLE"}
+    assert mod.check_vault(
+        EXPECTED, "ephemeral", fetcher=lambda *_: data, require_write=True
+    ) == {"status": "BLOCKED", "reason": "NO_WRITE_PERMISSION"}
+
+
+@pytest.mark.parametrize("data,reason", [
+    (_metadata(private=False), "REPO_NOT_PRIVATE"),
+    (_metadata(full_name="WhiteChronos/ChatGPT"), "WRONG_REPOSITORY"),
+    (_metadata(default_branch=""), "NO_DEFAULT_BRANCH"),
+])
+def test_read_only_mode_fails_closed_for_bad_metadata(mod, data, reason):
+    assert mod.evaluate_repository(data, EXPECTED, require_write=False) == {
+        "status": "BLOCKED", "reason": reason
+    }
+
+
+def test_cli_read_only_flag_requests_metadata_only_without_write_claim(mod, monkeypatch, capsys):
+    monkeypatch.setenv("MCE_VAULT_GITHUB_TOKEN", "hidden")
+    checks = []
+    def fake_check(repo, token, require_write=True):
+        checks.append((repo, token, require_write))
+        return {"status": "PASS", "reason": "PRIVATE_REPO_METADATA_ACCESSIBLE"}
+    monkeypatch.setattr(mod, "check_vault", fake_check)
+    assert mod.main(["--read-only"]) == 0
+    assert checks == [(EXPECTED, "hidden", False)]
+    assert "hidden" not in capsys.readouterr().out
