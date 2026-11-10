@@ -153,3 +153,17 @@ def test_visual_width2_six_sheet_p09_l50_policy_persisted():
         assert 'G:AR' in text
         assert '6' in text
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
+
+
+def test_ar_ninety_six_exception_persists_in_mce_rules():
+    """DEC-MCE-041 prevents the last column from being reset to width 2."""
+    docs=[(LOCAL/'SKILL.md').read_text(encoding='utf-8'),
+          (ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8'),
+          (ROOT/'AGENTS.md').read_text(encoding='utf-8'),
+          (ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8')]
+    for doc in docs:
+        assert 'DEC-MCE-041' in doc
+        assert '96.7109375' in doc
+        assert '2.7109375' in doc
+        assert 'G:AQ' in doc
+    assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()

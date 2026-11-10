@@ -42,3 +42,7 @@ A MCE P09 L50 adota largura exata `2,00` em G:AR. Validação deve examinar a es
 
 ## DEC-MCE-040 — formato fisico versus largura EXIBIDA 2,00 / folhas invariantes
 Em P09 L50, nao subtrair registros da grade durante correção de largura ou altura: baseline ADM `218 = 142 com X + 76 sem X`; 6 folhas de 43 slots, 175 X preservados. Inventario pendente sem X fica rastreado em relatório externo (e simultaneamente preservado na cópia documental de seis folhas), sem X inventado ou aprovaçao industrial. Perfil `P09_L50_G_AR_DISPLAY_2`: para fonte Normal com MDW7, usar OOXML `width=2.7109375` para exibir 2,00 no Excel; `width=2` exibe 1,29. Cada G:AR min=max unico, A:F intocadas e borders thin. Alturas por linhas visuais 20/30/40+; o wrap é estimado e tem QA visual NOT_RUN quando nao conferido. Nao tocar no modelo mestre.
+
+
+## DEC-MCE-041 — AR largura exibida 96,00 e G:AQ 2,00
+No ADM P09 L50, preservar A:F, manter **G:AQ width interno 2.7109375 (GUI 2.00)** e **AR width interno 96.7109375 (GUI 96.00)**, com fonte Normal MDW7. Aplicar nas 6 folhas, verificando `min=max` individual, sem ranges sobrepostos ou largura AR=2. O perfil `P09_L50_G_AQ_DISPLAY_2_AR_96` substitui o perfil G:AR 2 da DEC-MCE-040 no caso ADM. Preservar todos valores, X, fontes, bordas thin, mesclas e alturas; nao aplicar no mestre homologado sem autorizacao.

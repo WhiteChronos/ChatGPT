@@ -218,6 +218,8 @@ P09_L50_G_AR_2 = 'P09_L50_G_AR_2'
 
 
 P09_L50_G_AR_DISPLAY_2 = 'P09_L50_G_AR_DISPLAY_2'
+P09_L50_G_AQ_DISPLAY_2_AR_96 = 'P09_L50_G_AQ_DISPLAY_2_AR_96'
+P09_L50_DISPLAY96_OOXML_WIDTH_MDW7 = 96.7109375
 P09_L50_DISPLAY2_OOXML_WIDTH_MDW7 = 2.7109375
 
 
@@ -228,6 +230,24 @@ def p09_l50_gui_width_from_ooxml(stored_width, mdw=7):
         fail('STOP: largura OOXML/font invalida')
     pixels = trunc(((256 * stored_width + trunc(128 / mdw)) / 256) * mdw)
     return trunc(((pixels - 5) / mdw) * 100 + 0.5) / 100
+
+
+
+def p09_l50_require_g_aq_two_ar_ninety_six(ws):
+    """Verify 37 G:AQ columns display 2 and AR displays 96, preserving unique spans."""
+    p09_l50_require_display_two_width(ws, 7, 43)
+    ar = ws.column_dimensions.get('AR')
+    if (ar is None or ar.width is None
+            or abs(ar.width - P09_L50_DISPLAY96_OOXML_WIDTH_MDW7) > 0.000001
+            or p09_l50_gui_width_from_ooxml(ar.width) != 96.00):
+        fail('STOP: largura EXIBIDA AR diferente de 96 em '+ws.title)
+    if ar.min != 44 or ar.max != 44:
+        fail('STOP: faixa AR sobreposta em '+ws.title)
+    for name, other in ws.column_dimensions.items():
+        if name=='AR' or other.min is None or other.max is None:
+            continue
+        if other.min <= 44 <= other.max:
+            fail('STOP: faixa AR sobreposta em '+ws.title)
 
 
 def p09_l50_require_display_two_width(ws, first_col=7, last_col=44):
@@ -306,7 +326,7 @@ def verify_p09_l50_model(master, contract):
     if annotation_policy not in (None, 'EXTERNAL_ONLY'):
         fail('STOP: politica de notas desconhecida: '+str(annotation_policy))
     width_profile = contract.get('column_width_profile')
-    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2, P09_L50_G_AR_2, P09_L50_G_AR_DISPLAY_2):
+    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2, P09_L50_G_AR_2, P09_L50_G_AR_DISPLAY_2, P09_L50_G_AQ_DISPLAY_2_AR_96):
         fail('STOP: perfil de larguras desconhecido: '+str(width_profile))
     require_effect_links = contract.get('require_effect_per_cause', False)
     if type(require_effect_links) is not bool:
@@ -333,6 +353,8 @@ def verify_p09_l50_model(master, contract):
             p09_l50_require_unambiguous_two_width(ws, 7, 44, 'G:AR')
         elif width_profile == P09_L50_G_AR_DISPLAY_2:
             p09_l50_require_display_two_width(ws, 7, 44)
+        elif width_profile == P09_L50_G_AQ_DISPLAY_2_AR_96:
+            p09_l50_require_g_aq_two_ar_ninety_six(ws)
         if annotation_policy == 'EXTERNAL_ONLY':
             if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
                 fail('STOP: notas na coluna AR nao permitidas em '+ws.title)

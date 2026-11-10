@@ -102,6 +102,16 @@ O usuário constatou **largura aparente 1,29**, embora a MCE ADM anterior declar
 
 **Fonte tecnica largura:** https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.column?view=openxml-3.0.1 . Estado de engenharia sempre `PRELIMINAR_NAO_HOMOLOGADO`, DataCenter `COPY_PENDING` ate recibo fisico, sem publicar XLSX industrial.
 
+
+## DEC-MCE-041 — Excecao da coluna AR: exibida 96,00; G:AQ = 2,00 (2026-11-10)
+
+**Retificacao expressa da DEC-MCE-040:** o responsavel confirmou que as colunas **G ate AQ**, inclusive H, devem ter **largura exibida 2,00**, mas **AR (Observacao) deve ter largura exibida 96,00**, e **nao 2,00**. Preservar as larguras A:F. Esta e a configuracao vigente da copia documental ADM P09 L50 de 6 abas.
+
+- Para a fonte Normal com Maximum Digit Width (MDW) de 7 px, o perfil `P09_L50_G_AQ_DISPLAY_2_AR_96` exige armazenar em cada `FOLHA N`: **G:AQ = OOXML width=2.7109375** (valor exibido 2,00) e **AR = OOXML width=96.7109375** (valor exibido 96,00). `width=96` no XML nao equivale automaticamente a 96,00 na interface Excel. Valores dependentes do MDW/font e precisam de QA no aplicativo; sem Excel nativo, `QA_EXCEL_WINDOWS=NOT_RUN`.
+- Uma unica definicao `<col min=N max=N>` por coluna G:AR, `customWidth=1`, sem sobreposicoes ou dimensoes implícitas. Validar G:AQ (N=7..43) e AR (N=44) separadamente; os perfis G:AR=2 historicos não representam mais o solicitado para ADM.
+- **Ajuste estritamente visual:** partir da ultima matriz de **6 abas, 218 registros, 175 X**, preservar os 76 registros sem X como pendencias documentais, sem adicionar X, sem alterar a cardinalidade de causas, alturas, fontes, bordas thin, mesclas 46/aba, impressao A1:AR50 ou qualquer valor. O XLSX de 4 abas nao e baseline de formatacao.
+- A auditoria deve comparar os demais elementos e partes do pacote OOXML byte-semanticamente antes/depois, com unica diferenca no atributo `width` de AR em cada aba. Nenhuma automacao no Windows nem homologacao de engenharia decorre desta mudanca.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

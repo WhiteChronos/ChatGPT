@@ -396,3 +396,27 @@ def test_p09_l50_ui_two_requires_ooxml_2p7109375_and_unique_spans(tmp_path):
     wb.save(path)
     with pytest.raises(ValueError,match='faixas de colunas sobrepostas'):
         mod.verify_p09_l50_model(path,contract)
+
+
+def test_p09_l50_g_aq_display_two_ar_display_ninety_six(tmp_path):
+    """DEC-MCE-041: AR is 96.00 in GUI, not width 2; G:AQ remain GUI 2.00."""
+    from openpyxl.utils import get_column_letter
+    assert mod.p09_l50_gui_width_from_ooxml(96.7109375) == 96.0
+    book=_synthetic_p09_l50(tmp_path/'ar96.xlsx')
+    for ws in book:
+        for i in range(7,44): ws.column_dimensions[get_column_letter(i)].width=2.7109375
+        ws.column_dimensions['AR'].width=96.7109375
+    path=tmp_path/'ar96.xlsx';book.save(path)
+    contract={'layout_profile':mod.P09_L50_PROFILE,
+       'column_width_profile':mod.P09_L50_G_AQ_DISPLAY_2_AR_96,
+       'matrix_ranges':[{'sheet':f'FOLHA {n}', 'first_data_row':8,'last_data_row':50} for n in range(1,4)]}
+    mod.verify_p09_l50_model(path,contract)
+    book['FOLHA 1'].column_dimensions['AR'].width=2.7109375
+    book.save(path)
+    with pytest.raises(ValueError,match='largura EXIBIDA AR diferente de 96'):
+        mod.verify_p09_l50_model(path,contract)
+    book['FOLHA 1'].column_dimensions['AR'].width=96.7109375
+    book['FOLHA 2'].column_dimensions['AQ'].width=96.7109375
+    book.save(path)
+    with pytest.raises(ValueError,match='largura EXIBIDA G:AR diferente de 2'):
+        mod.verify_p09_l50_model(path,contract)

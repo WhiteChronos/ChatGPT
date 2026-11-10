@@ -47,3 +47,7 @@ Em `column_width_profile=P09_L50_G_AR_2`, cada G..AR deve ter `width=2.0`, `min=
 
 ## DEC-MCE-040 — recuperar seis folhas, largura visivel 2 e heights 20/30
 A regra de largura `P09_L50_G_AR_DISPLAY_2` usa `width=2.7109375` armazenado (MDW7, 19px), **exibido 2,00**; valor armazenado 2.000 resulta em 1,29 visivel. Teste de no-overlap isolado de DEC-MCE-039 nao garante 2,00 exibido. Quando a tarefa for so visual, preservar numero de causas/folhas e X em vez de eliminar as 76 pendencias do caso ADM. Height textual: 1=20pt 2=30pt 3=40pt etc; verificação independente e Excel visual nao simulado. Documento industrial nao entra no GitHub.
+
+
+## DEC-MCE-041 — AR como excecao visivel 96
+Validar o contrato `column_width_profile=P09_L50_G_AQ_DISPLAY_2_AR_96` por coluna em cada aba: G:AQ armazenar `2.7109375` para display `2.00`, AR armazenar `96.7109375` para display `96.00` sob MDW7, sem sobreposicoes. Nao aceitar no ADM o perfil `G:AR=2`, pois AR e excecao. Este gate e somente de layout; 6 abas, 218 causas/documentais e 175 X preservados, Excel/Windows NOT_RUN e gates de engenharia intocados.
