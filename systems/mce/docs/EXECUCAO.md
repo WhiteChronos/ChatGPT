@@ -63,3 +63,5 @@ Quando o responsavel solicitar matriz limpa, registrar annotation_policy=EXTERNA
 - `RELATORIO_ENTENDIMENTO` e `PENDENCIAS` podem ser PDF/Markdown, sempre entregaveis complementares separados; nunca substituir o arquivo `.xlsx`.
 - Sem `AUTORIZO_ELABORACAO_MCE`, modelo mestre aprovado, `editable_cells`, fontes e runtime Windows disponivel, manter `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`; nenhuma MCE em PDF/MD e nenhuma planilha generica vazia representando MCE concluida.
 - Gate de verificacao: saida Excel abre como XLSX, somente abas `FOLHA N`, assinatura de layout P09, 43 causas/folha, 35 efeitos, fonte 10/8, sem notas; auditoria OOXML obrigatoria. O PDF, mesmo que preliminar, nao e "a matriz".
+
+- Violacao de formato, inclusive substituir o Excel solicitado por PDF/Markdown ou entregar XLSX vazio como MCE preenchida: `FAIL_FORMAT_CONTRACT`. Nao reinterpretar `FAIL_FORMAT_CONTRACT` como autorizacao para gerar relacoes funcionais fora do fluxo homologado.
