@@ -109,11 +109,12 @@ def test_fixed_https_origin_and_reject_redirect_without_following(mod, monkeypat
         "status": "PASS", "reason": "PRIVATE_REPO_ACCESSIBLE"
     }
     assert len(observed) == 1
-    observed[0].response.status = 302
+    Response.status = 302  # next HTTPSConnection receives a redirect response
     assert mod.check_vault(EXPECTED, "a-secret") == {
         "status": "BLOCKED", "reason": "VAULT_CHECK_FAILED"
     }
     assert len(observed) == 2
+    assert observed[1].response.status == 302
 
 
 def test_http_404_is_inaccessible_not_confirmed_nonexistent(mod, monkeypatch):
