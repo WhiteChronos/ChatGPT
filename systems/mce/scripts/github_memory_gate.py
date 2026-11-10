@@ -76,6 +76,27 @@ def git(root: Path, *args: str, allow_error: bool = False) -> subprocess.Complet
 
 ENFORCEMENT_BASELINE_SHA = "bb4a7b43084da406f4a7d78685068c827d301300"
 
+# Finite, content-addressed reconciliation of one historical, already published
+# violation. This is NOT a general exception to append-only memory. The
+# superseding DEC-MCE-037 was written by replacing DEC-MCE-036 in this commit.
+# The original decision remains available in its Git parent and GitHub history.
+# Review: Issue #125. Never add new entries without an independent governance
+# review of the exact commit and both immutable Git blob identifiers.
+ATTESTED_HISTORICAL_RECONCILIATION = {
+    "commit": "7003af5c4e73c17a84f6905140c0a52aa65f3943",
+    "before_blob": "c2e9a91deebe1a8af41458b674cb7401ae0bb290",
+    "after_blob": "0d4be2f554746b17d28ee1caf5935f5f52b6fca7",
+    "failure": "Previous GitHub memory must remain an exact prefix",
+}
+
+
+def attested_historical_reconciliation(commit: str, before_blob: str,
+                                       after_blob: str, reason: str) -> bool:
+    """Allow exactly one immutable legacy diff; no general waiver or future edits."""
+    proof = ATTESTED_HISTORICAL_RECONCILIATION
+    return (commit == proof["commit"] and before_blob == proof["before_blob"]
+            and after_blob == proof["after_blob"] and reason == proof["failure"])
+
 def audit_commit_range(root: Path, baseline: str, head: str) -> int:
     """Audit every commit since the first canonical-memory gate, not only HEAD."""
     if not re.fullmatch(r"[0-9a-f]{40}", baseline) or not re.fullmatch(r"[0-9a-f]{40}", head):
@@ -96,7 +117,17 @@ def audit_commit_range(root: Path, baseline: str, head: str) -> int:
         try:
             verify_document(new, old, changed)
         except MemoryGateError as exc:
-            raise MemoryGateError("Commit " + commit[:12] + ": " + str(exc)) from exc
+            # The historical anomaly is permitted ONLY when Git itself proves
+            # the exact, immutable before/after blobs and known commit hash.
+            # All other memory safeguards remain active.
+            before_blob = git(root, "rev-parse", parent + ":" + MEMORY_PATH).stdout.strip()
+            after_blob = git(root, "rev-parse", commit + ":" + MEMORY_PATH).stdout.strip()
+            if not attested_historical_reconciliation(
+                    commit, before_blob, after_blob, str(exc)):
+                raise MemoryGateError("Commit " + commit[:12] + ": " + str(exc)) from exc
+            # Still enforce product identity, absence of credentials, unique
+            # decisions, and same-commit memory update for this exact legacy diff.
+            verify_document(new, None, changed)
     return len(commits)
 
 

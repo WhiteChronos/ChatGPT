@@ -33,3 +33,12 @@ Leitura somente consulta: python systems/mce/scripts/github_memory_inbox.py; o t
 O roteiro oficial de recuperação de estado entre chats agora e `docs/RETOMADA_ENTRE_CHATS.md`. O checkpoint gerado por `scripts/mce_context_bridge.py` (Windows) apenas aponta para GitHub e, se fornecido, resume a integridade do SQLite privado. O gate de memoria continua append-only em cada commit; Issue #120 é inbox publico sob escrita autorizada, sem captura automatica de conversas.
 
 **Alerta de semantica:** `PEND-MCE-014` tem assuntos diferentes no Issue e na memoria.md. O estado `MIRRORED_IN_GIT` calculado somente pelo ID nao prova conteudo correspondente: preservar ambos e exigir revisao humana antes de conciliacao.
+
+
+## Reconciliacao fechada por hash de falha historica (DEC-MCE-044)
+
+O audit de todos os commits revelou a excecao **historica unica**, no commit `7003af5c4e73c17a84f6905140c0a52aa65f3943`: DEC-MCE-036 foi removida do texto corrente ao substituir a interpretacao incorreta de bordas pela DEC-MCE-037. As duas versoes anteriores permanecem preservadas pelo proprio Git, com blobs `c2e9a91deebe1a8af41458b674cb7401ae0bb290` e `0d4be2f554746b17d28ee1caf5935f5f52b6fca7`.
+
+O verificador historico so aceita essa anomalia mediante correspondencia **simultanea** de SHA completo do commit, blobs antigo/novo e motivo da falha, aferidos no repositório Git real. Nessa unica transicao, ainda verifica identidade MCE, IDs, protecao contra segredos e mudanca de memoria no mesmo commit. Todas as demais transicoes continuam exigindo prefixo textual identico e atualizacao datada; nenhuma permissao generica de reescrita foi adicionada. Qualquer novo desvio requer processo separado, nunca inclusao automatica em lista de excecoes.
+
+Essa reconciliacao documental nao repara bytes inexistentes, nao confirma host/restore, e nao autoriza merge/deploy. Issue #125 mantem gates de anexos e DataCenter em aberto; somente CI Windows do SHA exato pode declarar auditoria PASS.

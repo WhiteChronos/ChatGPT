@@ -109,3 +109,30 @@ def test_missing_baseline_is_blocked(tmp_path):
     root, memory, cmd, baseline = _git_fixture(tmp_path)
     with pytest.raises(GATE.MemoryGateError, match="baseline"):
         GATE.audit_commit_range(root, "0" * 40, cmd("rev-parse", "HEAD"))
+
+
+def test_attested_historical_reconciliation_is_exact_and_finite():
+    """Only the known Git commit AND both exact Git blobs are eligible."""
+    proof = GATE.ATTESTED_HISTORICAL_RECONCILIATION
+    assert GATE.attested_historical_reconciliation(
+        proof["commit"], proof["before_blob"], proof["after_blob"], proof["failure"])
+    for key in ("commit", "before_blob", "after_blob", "failure"):
+        altered = dict(proof)
+        altered[key] = ("0" * 40 if key != "failure" else "not-the-same-error")
+        assert not GATE.attested_historical_reconciliation(
+            altered["commit"], altered["before_blob"], altered["after_blob"],
+            altered["failure"])
+
+
+def test_historical_reconciliation_does_not_weaken_general_append_only():
+    # Even if someone copied the old decision text into a new commit, the
+    # existing gate must still reject deletion or replacement.
+    original = text()
+    assert not GATE.attested_historical_reconciliation(
+        "f" * 40,
+        GATE.ATTESTED_HISTORICAL_RECONCILIATION["before_blob"],
+        GATE.ATTESTED_HISTORICAL_RECONCILIATION["after_blob"],
+        GATE.ATTESTED_HISTORICAL_RECONCILIATION["failure"])
+    with pytest.raises(GATE.MemoryGateError, match="exact prefix"):
+        GATE.verify_document(original.replace("PRODUCTION_COMPLETE=NO",
+                     "PRODUCTION_COMPLETE=NO MODIFIED", 1), original, [MEM])
