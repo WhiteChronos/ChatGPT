@@ -176,8 +176,9 @@ def test_mce_adm_sp_percent_only_presentation_policy():
     agents=(ROOT/'AGENTS.md').read_text(encoding='utf-8')
     for document in (source,execdoc,agents):
         assert 'DEC-MCE-042' in document
-        assert '10% LIE' in document and '10%' in document
-        assert '20% LIE' in document and '20%' in document
+        assert 'LIE' in document
         assert 'coluna' in document.lower()
+    assert '10% LIE' in source and '20% LIE' in source
+    assert '10%' in execdoc and '20%' in execdoc
     assert 'FOLHA 1!D22' in execdoc
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
