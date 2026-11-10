@@ -220,3 +220,6 @@ O adapter \`mce_web.py\` passou a exigir configuracao conjunta de vault, SQLite 
 
 
 2026-11-10 — QA-RETIFICACAO-MCE-006: CI Windows RED em verify/restore apos commit f9e0500. Runner de memoria: 28 PASS e 2 FAIL nos testes sinteticos de `verify` e `restore`, com retorno vazio do subprocesso. Revisao identificou `ledged()` repassando caminho de banco de dados em string a `memory._session`, que exige objeto `Path`. Foi adicionada normalizacao controlada com `memory._path(db)` antes de abrir a sessao. Os testes adversariais preexistentes continuam no workflow Windows; revalidar CI do novo HEAD. Nenhum arquivo industrial ou banco real foi acessado. `PRODUCTION_COMPLETE=NO`.
+
+
+2026-11-10 — IMP-MCE-030C: documentacao da Skill canonica atualizada em dois espelhos com a politica DEC-MCE-030, o arquivador Windows privado, gate de copia antes do workflow, e referencia Restic/Kopia/Watchdog sem incorporar codigo terceiro. Habilitacao efetiva de host, check do segundo dominio de falha e CI do novo HEAD continuam pendentes. Sem merge, deploy, arquivo real, chave ou documento industrial. PRODUCTION_COMPLETE=NO.
