@@ -6,12 +6,11 @@ GitHub Actions after the private destination exists and is approved.
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import os
 import re
 import sys
-import urllib.error
-import urllib.request
 
 _REPO_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,99}/[A-Za-z0-9][A-Za-z0-9_.-]{0,99}\Z")
 DEFAULT_REPOSITORY = "WhiteChronos/mce-document-vault"
@@ -37,20 +36,28 @@ def evaluate_repository(data: object, expected_repository: str) -> dict[str, str
 
 
 def _fetch_repository(repository: str, token: str) -> object:
-    request = urllib.request.Request(
-        "https://api.github.com/repos/" + repository,
-        headers={
-            "Authorization": "Bearer " + token,
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "MCE-GitHub-vault-preflight",
-        },
-        method="GET",
-    )
-    with urllib.request.urlopen(request, timeout=15) as response:
-        # GitHub repository metadata is small. A malformed or huge payload
-        # must not be printed and must not accidentally authorize access.
+    """GET only on a pinned HTTPS origin; never follow redirects or file URLs."""
+    connection = http.client.HTTPSConnection("api.github.com", timeout=15)
+    try:
+        connection.request(
+            "GET",
+            "/repos/" + repository,
+            headers={
+                "Authorization": "Bearer " + token,
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "User-Agent": "MCE-GitHub-vault-preflight",
+            },
+        )
+        response = connection.getresponse()
+        if response.status in (401, 403, 404):
+            raise FileNotFoundError("Private repository is not accessible")
+        if response.status != 200:
+            # Explicitly reject redirects; no second destination is trusted.
+            raise RuntimeError("GitHub returned an unexpected status")
         return json.loads(response.read(524288).decode("utf-8"))
+    finally:
+        connection.close()
 
 
 def check_vault(
@@ -65,11 +72,7 @@ def check_vault(
         data = (fetcher or _fetch_repository)(repository, token)
     except FileNotFoundError:
         return _outcome("BLOCKED", "VAULT_NOT_ACCESSIBLE")
-    except urllib.error.HTTPError as exc:
-        if exc.code in (401, 403, 404):
-            return _outcome("BLOCKED", "VAULT_NOT_ACCESSIBLE")
-        return _outcome("BLOCKED", "VAULT_CHECK_FAILED")
-    except (OSError, ValueError, TypeError, RuntimeError):
+    except (OSError, ValueError, TypeError, RuntimeError, http.client.HTTPException):
         # Do not emit exception messages: some can contain auth headers.
         return _outcome("BLOCKED", "VAULT_CHECK_FAILED")
     return evaluate_repository(data, repository)

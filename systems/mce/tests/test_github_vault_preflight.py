@@ -70,3 +70,70 @@ def test_fetch_exception_fails_closed_without_secrets(mod):
     result = mod.check_vault(EXPECTED, "secret-never-print", fetcher=broken)
     assert result == {"status": "BLOCKED", "reason": "VAULT_CHECK_FAILED"}
     assert "secret-never-print" not in str(result)
+
+def test_fixed_https_origin_and_reject_redirect_without_following(mod, monkeypatch):
+    import json
+
+    observed = []
+
+    class Response:
+        status = 200
+
+        def read(self, max_bytes):
+            assert max_bytes <= 524288
+            return json.dumps(_metadata()).encode("utf-8")
+
+    class Connection:
+        def __init__(self, host, timeout):
+            assert host == "api.github.com"
+            assert timeout == 15
+            self.requested = False
+            self.response = Response()
+            observed.append(self)
+
+        def request(self, method, path, headers):
+            assert method == "GET"
+            assert path == "/repos/" + EXPECTED
+            assert headers["Authorization"] == "Bearer a-secret"
+            self.requested = True
+
+        def getresponse(self):
+            assert self.requested
+            return self.response
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(mod.http.client, "HTTPSConnection", Connection)
+    assert mod.check_vault(EXPECTED, "a-secret") == {
+        "status": "PASS", "reason": "PRIVATE_REPO_ACCESSIBLE"
+    }
+    assert len(observed) == 1
+    observed[0].response.status = 302
+    assert mod.check_vault(EXPECTED, "a-secret") == {
+        "status": "BLOCKED", "reason": "VAULT_CHECK_FAILED"
+    }
+    assert len(observed) == 2
+
+
+def test_http_404_is_inaccessible_not_confirmed_nonexistent(mod, monkeypatch):
+    class Response:
+        status = 404
+
+    class Connection:
+        def __init__(self, host, timeout):
+            pass
+
+        def request(self, method, path, headers):
+            pass
+
+        def getresponse(self):
+            return Response()
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(mod.http.client, "HTTPSConnection", Connection)
+    assert mod.check_vault(EXPECTED, "a-secret") == {
+        "status": "BLOCKED", "reason": "VAULT_NOT_ACCESSIBLE"
+    }
