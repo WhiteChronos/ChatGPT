@@ -187,6 +187,7 @@ def object_path(vault, sha):
 
 def ledged(db, subject, detail, sha):
     """Use only the existing append-only SQLite event ledger; no second database."""
+    db = memory._path(db)
     memory.verify(db)
     with memory._session(db) as con:
         for (encoded,) in con.execute(
