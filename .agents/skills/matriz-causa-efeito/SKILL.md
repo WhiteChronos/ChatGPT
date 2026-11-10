@@ -14,6 +14,20 @@ description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de aut
 3. Para P&ID digital e integração GitHub, consultar [references/repositorios-github.md](references/repositorios-github.md). Repositórios de pesquisa só ajudam a extrair/conferir topologia e texto; não fornecem lógica operacional aprovada.
 4. Carregar/seguir as Skills do mesmo sistema `engenharia-mce-projeto`, `padronizacao-mce` e, no fechamento, `mce-fechamento-operacional`. Não as substituir por um segundo editor de Excel.
 
+
+## Contrato INVARIAVEL de entrega da Matriz — DEC-MCE-032 (2026-11-10)
+
+**REGRA NAO NEGOCIAVEL:** toda Matriz de Causa e Efeito (MCE) produzida por este sistema e **exclusivamente arquivo Microsoft Excel `.xlsx` no modelo P09 vigente**. O tipo `MCE_XLSX` nunca e substituido por PDF, Markdown, DOCX, CSV, ODS, imagem, quadro em texto ou aplicativo. Esses formatos podem existir apenas como **documentos auxiliares separados**, claramente nomeados RELATORIO ou PENDENCIAS, e nunca ser oferecidos como "a matriz". Uma previa PDF, se solicitada expressamente, e apenas copia para visualizacao, nao o entregavel principal.
+
+**Preflight antes de qualquer resposta "gerar a matriz":**
+1. Classificar o pedido como `MCE_XLSX`; consultar o perfil P09 aprovado para o projeto. Para ADM Gamboa: `P09_L50_APROVADO_VISUALMENTE`, abas apenas `FOLHA N`, grade 8:50 (43 causas), efeitos I:AQ (35), Arial 10 titulos / 8 restante, 46 mesclagens, impressao A1:AR50, sem notas nas colunas (EXTERNAL_ONLY).
+2. Exigir que o arquivo principal tenha extensao real `.xlsx`, abra como workbook XLSX valido, e mantenha exatamente as abas, estrutura, fontes, bordas, merges e area de impressao do perfil aplicavel. Nao chamar relatorio tabular de matriz.
+3. **Se nao houver modelo mestre homologado, contrato de celulas, fontes vinculadas, autorizacao `AUTORIZO_ELABORACAO_MCE`, host Windows e QA exigidos:** aplicar **STOP**. Nao fabricar MCE preenchida, nao transformar PDF/Markdown em "entrega da matriz" e nao encaminhar template P09 vazio como se resolvesse o pedido. Relatorio separado pode explicitar evidencias e bloqueios, mas o item `MCE_XLSX` deve permanecer `NAO_EMITIDO_BLOQUEADO`.
+4. Uma matriz aprovada para emissao preliminar deve ser `MCE_PRELIMINAR_PARA_REVISAO.xlsx` (ou numero/revisao documental coerente), criada apenas pelo executor unico, com auditoria OOXML e fonte; nunca por novo editor nao autorizado.
+5. **Teste de regressao:** ao pedir "gerar a matriz", qualquer resposta que ofereca **somente** PDF/MD como matriz, qualquer arquivo `.pdf` denominado MCE principal, ou XLSX vazio anunciado como matriz preenchida recebe `FAIL_FORMAT_CONTRACT`. Corrigir antes de entregar. Relatorios/pendencias jamais entram como abas auxiliares do arquivo principal.
+
+Esta decisao nao remove os gates humanos ou exige outros documentos do responsavel quando o conjunto de fontes foi declarado encerrado. Apenas fixa o contrato de formato e de classificacao do entregavel. Consultar Issue #120 e memoria canonica.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

@@ -73,3 +73,11 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - **Gate antes de processar:** exigir `ARCHIVED_VERIFIED` com recibo de integridade. Se DataCenter/host/tunel ou bytes da origem indisponiveis, marcar `COPY_PENDING`/`HOST_UNAVAILABLE`, informar o usuario e bloquear afirmacoes de backup concluido ou emissao que dependa das fontes; nao copiar silenciosamente para GitHub ou criar SQLite alternativo.
 - A copia de ingesta nao substitui backup: manter segunda copia independente, protecao contra exclusao, criptografia/ACL, retencao versionada, verificação periodica e teste de restauracao. Nunca prometer perda zero ou captura automatica do ChatGPT entre conversas sem integracao verificada.
 - Esta regra e requisito documentado e pendencia de integracao; por si so nao instala um watcher, nao transfere anexos da interface e nao prova execucao no Windows. Ver `docs/DATACENTER_MEMORY.md` e DEC-MCE-030. Nao alterar gate de elaboracao `AUTORIZO_ELABORACAO_MCE`, whitelist, ou exclusividade Windows.
+
+
+## Gate permanente de formato da Matriz — DEC-MCE-032 (2026-11-10)
+- Ao pedido de "gerar matriz MCE", o unico artefato principal admissivel e `.xlsx` (Excel), no perfil P09 aplicavel ao projeto. Para ADM Gamboa, P09 L50 com 43 causas/folha, 35 efeitos, Arial 10/8, sem notas nas colunas; abas `FOLHA N`. Nunca trocar por PDF, Markdown, Word, CSV ou imagens.
+- Arquivos PDF/MD/DOCX sao apenas relatorios auxiliares EXTERNOS ao workbook. Nao os denominar "Matriz" nem apresenta-los como substituto de Excel.
+- Se faltar qualquer gate de aprovacao, contrato de celulas, modelo ou executor Windows, responder `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`; nao entregar quadro PDF como matriz nem XLSX generico vazio como MCE concluida. Preservar as fontes recebidas, nao solicitar outras inexistentes como bloqueio artificial.
+- Antes de entrega, validar extensao XLSX, integridade OOXML, paginas P09, colunas de efeitos, mesclas, fontes, rotacao, modelo e status de auditoria. Falha gera `FAIL_FORMAT_CONTRACT`.
+- Essa regra complementa os gates humanos existentes, nunca autoriza editar um Excel antes do contrato e `AUTORIZO_ELABORACAO_MCE`. Detalhe na Skill `matriz-causa-efeito`.

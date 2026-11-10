@@ -56,3 +56,10 @@ Testes sintéticos (no Windows nativo): python -m pytest -q systems/mce/tests/te
 ## Perfil L50 sem notas em colunas
 
 Quando o responsavel solicitar matriz limpa, registrar annotation_policy=EXTERNAL_ONLY no contrato aprovado. Para essa opcao o workflow impede notas preenchidas em AR8:AR50, comentarios/notas anexadas a celulas e novas edicoes autorizadas nesse intervalo. Preservar o cabecalho original AR7 e as bordas, fontes, indices, mesclas, X/I e impressão A1:AR50. Fonte, revisao e pendencias permanecem rastreadas externamente e privadamente; formato sem notas nao libera logica de engenharia.
+
+
+## Contrato de saida MCE — formato imutavel DEC-MCE-032
+- `MCE_XLSX` = **somente Microsoft Excel .xlsx, P09 validado**; projeto ADM Gamboa usa perfil L50 de DEC-MCE-027 e anotacoes EXTERNAL_ONLY de DEC-MCE-028.
+- `RELATORIO_ENTENDIMENTO` e `PENDENCIAS` podem ser PDF/Markdown, sempre entregaveis complementares separados; nunca substituir o arquivo `.xlsx`.
+- Sem `AUTORIZO_ELABORACAO_MCE`, modelo mestre aprovado, `editable_cells`, fontes e runtime Windows disponivel, manter `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`; nenhuma MCE em PDF/MD e nenhuma planilha generica vazia representando MCE concluida.
+- Gate de verificacao: saida Excel abre como XLSX, somente abas `FOLHA N`, assinatura de layout P09, 43 causas/folha, 35 efeitos, fonte 10/8, sem notas; auditoria OOXML obrigatoria. O PDF, mesmo que preliminar, nao e "a matriz".

@@ -233,3 +233,7 @@ Skills `mce-restic-backup`, `mce-kopia-backup`, `mce-watchdog-ingest` integradas
 
 
 2026-11-10 — QA-PACKAGE-MCE-031: workflow Windows `mce-matriz-tool-qa.yml` atualizado para validar e empacotar as tres novas Skills auxiliares em arquivos individuais `skill.zip` (pasta de artefatos por nome), mantendo o pacote da Skill principal. Artifacts CI nao instalam as Skills em ChatGPT/Codex; validacao CI no SHA final ainda exigida, sem merge. `PRODUCTION_COMPLETE=NO`.
+
+
+
+2026-11-10 — DEC-MCE-032 / QA-RETIFICACAO-MCE-007: **Matriz de Causa e Efeito obrigatoriamente Excel XLSX P09**, nunca PDF/Markdown como substituto. Incidente comprovado: apos pedido "Gerar a Matriz" ADM Gamboa, resposta indevidamente intitulou um quadro PDF/Markdown de pre-analise como entrega da MCE em vez do workbook XLSX padronizado. Reclamacao do responsavel exige que o formato **NUNCA seja mudado**, independente de falha do host ou falta de autorizacao de preenchimento. Regra de formato adicionada em dois espelhos da Skill `matriz-causa-efeito`, em `systems/mce/AGENTS.md`, em `docs/EXECUCAO.md` e em teste de regressao. Para ADM Gamboa, perfil P09 L50, folhas FOLHA N, 43 causas e 35 efeitos, Arial 10/8, sem notas nas colunas. Relatorios podem ser externos e auxiliares; quando gates faltarem, item `MCE_XLSX` = `NAO_EMITIDO_BLOQUEADO`, nunca substituido por PDF nem XLSX vazio anunciado como preenchido. Correcao de formato nao confere aprovacao de engenharia e nao implica trabalho no host, DataCenter, Excel mestre, merge ou deploy. `PRODUCTION_COMPLETE=NO`.

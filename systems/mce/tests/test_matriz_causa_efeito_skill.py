@@ -48,3 +48,22 @@ def test_mce_onboarding_and_memory():
     assert "DEC-MCE-016" in memory
     assert "PEND-MCE-011" in memory
     assert "DEC-MCE-015" in memory
+
+
+def test_mce_excel_is_only_primary_output_regression():
+    """Incident regression: PDF/MD must never replace the P09 Excel MCE."""
+    skill = (LOCAL / "SKILL.md").read_text(encoding="utf-8")
+    rules = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    execution = (ROOT / "docs" / "EXECUCAO.md").read_text(encoding="utf-8")
+    for content in (skill, rules, execution):
+        assert "DEC-MCE-032" in content
+        assert "MCE_XLSX" in content
+        assert "NAO_EMITIDO_BLOQUEADO" in content
+        assert "FAIL_FORMAT_CONTRACT" in content
+    assert "P09_L50_APROVADO_VISUALMENTE" in skill
+    assert "FOLHA N" in skill
+    assert "43 causas" in skill
+    assert "35" in skill
+    assert "PDF" in skill and "Markdown" in skill
+    assert "AUTORIZO_ELABORACAO_MCE" in skill
+    assert (LOCAL / "SKILL.md").read_bytes() == (GLOBAL / "SKILL.md").read_bytes()
