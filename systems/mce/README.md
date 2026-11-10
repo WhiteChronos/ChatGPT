@@ -8,7 +8,7 @@ inventário SHA-256, prévia P&ID JSON/CSV, verificação humana e testes.
 
 ## Conexao privada opcional e elaboracao controlada
 
-O plugin 0.2.0 acrescenta sete ferramentas MCP em Windows nativo, mantendo
+O plugin 0.2.0 acrescenta dez ferramentas MCP em Windows nativo, mantendo
 matriz-causa-efeito como entrada única e os adaptadores/SQLite existentes.
 Consulta skills, inspeciona modelos, cria baseline e registra entendimento.
 A elaboração exige aprovação externa assinada, vinculada aos hashes de todas as

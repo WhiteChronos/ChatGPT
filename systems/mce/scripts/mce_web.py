@@ -264,6 +264,82 @@ class MceWeb:
             raise ValueError('ARCHIVE_BLOCKED: source changed after archive')
         return proof
 
+
+    def archive_inbox(self, project_id, filename, document_id, revision):
+        """Archive a selected authorized inbox source, without matrix editing."""
+        with self.lock:
+            self._archive_ready()
+            project_id, document_id, revision = map(name, (project_id, document_id, revision))
+            path = self.input(filename)
+            if path.suffix.lower() == '.xlsx':
+                inspect_zip(path)
+            proof = self._archive_input(project_id, path, revision=revision, document=document_id)
+            return {'product': 'MCE_INDEPENDENTE', 'status': 'ARCHIVED_VERIFIED',
+                    'sha256': proof['sha256'], 'size_bytes': proof['size_bytes'],
+                    'backup_status': proof['backup_status'], 'production_complete': False}
+
+    def archive_lookup(self, project_id, sha256):
+        """Only disclose metadata for an exact, previously known SHA-256."""
+        with self.lock:
+            self._archive_ready()
+            project_id = name(project_id)
+            if not isinstance(sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', sha256):
+                raise ValueError('Exact SHA-256 required')
+            cmd = [sys.executable, str(PRODUCT / 'scripts/mce_document_archive.py'),
+                   '--inbox', str(self.root / 'inbox'), '--vault', str(self.archive_vault),
+                   '--db', str(self.archive_db), '--project', project_id,
+                   '--mirror', str(self.archive_mirror), 'catalog']
+            result = subprocess.run(cmd, capture_output=True, check=False, timeout=75,
+                                    text=True, encoding='utf-8', errors='replace')
+            if result.returncode != 0 or len(result.stdout) > 2 * 1024 * 1024:
+                raise ValueError('ARCHIVE_BLOCKED: catalogue unavailable')
+            report = json.loads(result.stdout)
+            if report.get('status') not in ('CATALOG_VERIFIED', 'CATALOG_EMPTY'):
+                raise ValueError('ARCHIVE_BLOCKED: invalid catalogue')
+            found = [item for item in report.get('items', []) if item.get('sha256') == sha256]
+            if not found:
+                return {'product': 'MCE_INDEPENDENTE', 'status': 'NOT_ARCHIVED',
+                        'sha256': sha256, 'production_complete': False}
+            return {'product': 'MCE_INDEPENDENTE', 'status': 'ARCHIVED_VERIFIED',
+                    'sha256': sha256,
+                    'matches': [{'document': name(item['document']),
+                                 'revision': name(item['revision']),
+                                 'size_bytes': item['size_bytes'],
+                                 'backup_status': item['backup_status']}
+                                for item in found], 'production_complete': False}
+
+    def restore_archived_inbox(self, project_id, document_id, revision, sha256, filename):
+        """Restore attested secondary copy to a new file in the authorized inbox."""
+        with self.lock:
+            self._archive_ready()
+            project_id, document_id, revision = map(name, (project_id, document_id, revision))
+            if not isinstance(sha256, str) or not re.fullmatch(r'[0-9a-f]{64}', sha256):
+                raise ValueError('Exact SHA-256 required')
+            dest = self.root / 'inbox' / name(filename)
+            regular(dest.parent, directory=True)
+            if dest.exists() or dest.is_symlink():
+                raise ValueError('Existing files cannot be overwritten')
+            cmd = [sys.executable, str(PRODUCT / 'scripts/mce_document_archive.py'),
+                   '--inbox', str(dest.parent), '--vault', str(self.archive_vault),
+                   '--db', str(self.archive_db), '--project', project_id,
+                   '--revision', revision, '--mirror', str(self.archive_mirror),
+                   'restore-secondary', '--document', document_id,
+                   '--sha', sha256, '--output', str(dest)]
+            result = subprocess.run(cmd, capture_output=True, check=False, timeout=75,
+                                    text=True, encoding='utf-8', errors='replace')
+            if result.returncode != 0:
+                raise ValueError('RESTORE_BLOCKED: backup not verified')
+            report = json.loads(result.stdout)
+            if report.get('status') != 'RESTORE_VERIFIED_FROM_SECONDARY':
+                raise ValueError('RESTORE_BLOCKED: invalid receipt')
+            if digest(read(dest)) != sha256:
+                raise ValueError('RESTORE_BLOCKED: restored bytes mismatch')
+            if dest.suffix.lower() == '.xlsx':
+                inspect_zip(dest)
+            return {'product': 'MCE_INDEPENDENTE', 'status': 'RESTORE_VERIFIED_FROM_SECONDARY',
+                    'sha256': sha256, 'size_bytes': report['size_bytes'],
+                    'production_complete': False}
+
     def initialize(self, project_id, master, sources):
         with self.lock:
             destination = self.root / 'projects' / name(project_id)

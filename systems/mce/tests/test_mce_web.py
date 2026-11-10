@@ -283,3 +283,54 @@ def test_archiving_failure_blocks_new_workspace_without_losing_source(tmp_path):
         app.initialize('demo', 'model.xlsx', ['missing.txt'])
     assert source.read_bytes() == b'not an xlsx'
     assert not (app.root / 'projects/demo').exists()
+
+
+
+def test_mcp_archive_inbox_and_sha_lookup(tmp_path):
+    _, app, _ = instance(tmp_path)
+    path = app.root / 'inbox/document.pdf'
+    data = b'synthetic content'
+    path.write_bytes(data)
+    saved = app.archive_inbox('ADM_GAMBOA', path.name, 'MD', 'REV_A')
+    sha = hashlib.sha256(data).hexdigest()
+    assert saved['sha256'] == sha and saved['status'] == 'ARCHIVED_VERIFIED'
+    assert path.read_bytes() == data
+    found = app.archive_lookup('ADM_GAMBOA', sha)
+    assert found['status'] == 'ARCHIVED_VERIFIED'
+    assert found['matches'][0]['document'] == 'MD'
+    assert found['matches'][0]['revision'] == 'REV_A'
+    assert app.archive_lookup('ADM_GAMBOA', '0' * 64)['status'] == 'NOT_ARCHIVED'
+    assert app.archive_lookup('OTHER', sha)['status'] == 'NOT_ARCHIVED'
+
+
+def test_mcp_restore_secondary_to_new_inbox_file(tmp_path):
+    _, app, _ = instance(tmp_path)
+    (app.root / 'inbox/source.txt').write_bytes(b'synthetic')
+    saved = app.archive_inbox('ADM_GAMBOA', 'source.txt', 'ET', 'REV_A')
+    sha = saved['sha256']
+    got = app.restore_archived_inbox('ADM_GAMBOA', 'ET', 'REV_A', sha, 'recovered.txt')
+    assert got['status'] == 'RESTORE_VERIFIED_FROM_SECONDARY'
+    assert (app.root / 'inbox/recovered.txt').read_bytes() == b'synthetic'
+    with pytest.raises(ValueError, match='overwritten'):
+        app.restore_archived_inbox('ADM_GAMBOA', 'ET', 'REV_A', sha, 'recovered.txt')
+    with pytest.raises(ValueError):
+        app.restore_archived_inbox('ADM_GAMBOA', 'WRONG', 'REV_A', sha, 'blocked.txt')
+    assert not (app.root / 'inbox/blocked.txt').exists()
+
+
+def test_mcp_archive_operations_fail_closed(tmp_path):
+    mod, app, key = instance(tmp_path)
+    no_archive = mod.MceWeb(app.root, app.approvals, key.public_key())
+    (app.root / 'inbox/in.pdf').write_bytes(b'synthetic')
+    with pytest.raises(ValueError, match='ARCHIVE_REQUIRED'):
+        no_archive.archive_inbox('ADM_GAMBOA', 'in.pdf', 'MD', 'R1')
+    with pytest.raises(ValueError, match='ARCHIVE_REQUIRED'):
+        no_archive.archive_lookup('ADM_GAMBOA', 'a' * 64)
+    with pytest.raises(ValueError, match='ARCHIVE_REQUIRED'):
+        no_archive.restore_archived_inbox('ADM_GAMBOA', 'MD', 'R1', 'a' * 64, 'out.pdf')
+    with pytest.raises(ValueError):
+        app.archive_inbox('ADM_GAMBOA', '../in.pdf', 'MD', 'R1')
+    with pytest.raises(ValueError):
+        app.archive_lookup('ADM_GAMBOA', 'bad hash')
+    with pytest.raises(ValueError):
+        app.restore_archived_inbox('../OTHER', 'MD', 'R1', 'a' * 64, 'out.pdf')

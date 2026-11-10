@@ -45,6 +45,26 @@ def build_server(root, approvals, public_key=None, archive_vault=None, archive_d
         """Inspect an authorized XLSX inbox file without approving or changing it."""
         return invoke('inspect_model', filename=filename)
 
+
+    @server.tool(annotations=writes)
+    def mce_archive_inbox(project_id: str, filename: str, document_id: str, revision: str) -> dict:
+        """Archive one existing authorized inbox file with verified SHA and mirror."""
+        return invoke('archive_inbox', project_id=project_id, filename=filename,
+                      document_id=document_id, revision=revision)
+
+    @server.tool(annotations=readonly)
+    def mce_archive_lookup(project_id: str, sha256: str) -> dict:
+        """Find only an exact known SHA in the private project archive."""
+        return invoke('archive_lookup', project_id=project_id, sha256=sha256)
+
+    @server.tool(annotations=writes)
+    def mce_restore_archived_inbox(project_id: str, document_id: str, revision: str,
+                                   sha256: str, filename: str) -> dict:
+        """Restore attested secondary bytes into one new authorized inbox file."""
+        return invoke('restore_archived_inbox', project_id=project_id,
+                      document_id=document_id, revision=revision,
+                      sha256=sha256, filename=filename)
+
     @server.tool(annotations=writes)
     def mce_initialize(project_id: str, master: str, sources: list[str]) -> dict:
         """Create a new isolated MCE baseline copy from authorized inbox files."""

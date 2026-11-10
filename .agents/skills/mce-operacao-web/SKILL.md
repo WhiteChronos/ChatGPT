@@ -31,3 +31,7 @@ description: Usar o MCE independente por MCP privado no ChatGPT ou Codex para co
 
 REA, banco de outro sistema, shell arbitrario, portas publicas e aprovacao remota
 nao fazem parte deste adaptador. Merge/deploy exigem autorizacao do SHA especifico.
+
+## Arquivo e recuperacao por projeto (DEC-MCE-046)
+
+Usar somente quando MCP real conectado ao Windows autorizado: mce_archive_inbox(project_id, filename, document_id, revision) arquiva arquivo previamente presente no inbox e confirma recibo/espelho. mce_archive_lookup(project_id, sha256) consulta versao apenas por hash exato conhecido. mce_restore_archived_inbox(project_id, document_id, revision, sha256, filename) recupera copia secundaria para novo arquivo no inbox, sem sobrescrever. Nenhuma operacao importa automaticamente anexo do ChatGPT, aprova a matriz ou prova independência fisica de backup. Se host inacessivel, relatar HOST_UNAVAILABLE e nao declarar salvamento.

@@ -1,7 +1,7 @@
 # MCE privado no Codex e ChatGPT
 
 O adaptador `scripts/mce_sdk_server.py` executa somente em Windows nativo
-(PowerShell, Python 3.12+) e oferece sete ferramentas stdio pelo SDK
+(PowerShell, Python 3.12+) e oferece dez ferramentas stdio pelo SDK
 oficial. Reutiliza o workflow canônico; MCP é dependência **opcional**, não do
 motor local. Instalar `requirements-web.txt` somente no ambiente MCE isolado.
 
@@ -28,12 +28,15 @@ Credenciais do transporte não fazem parte do pacote nem aprovam engenharia.
 | mce_status | Identidade, cinco skills e limites de aprovação |
 | mce_read_skill | Consulta uma skill canônica pelo nome |
 | mce_inspect_model | Inventário e SHA de XLSX autorizado; não aprova modelo |
+| mce_archive_inbox | Arquiva um arquivo de inbox existente, com recibo e segunda cópia verificados |
+| mce_archive_lookup | Procura somente um SHA-256 exato no inventário privado do projeto |
+| mce_restore_archived_inbox | Restaura do espelho para arquivo novo em inbox, sem sobrescrever |
 | mce_initialize | Cria baseline nova e preserva originais |
 | mce_understand | Registra análise/contrato revisados e para aguardando decisão |
 | mce_approval_request | Hashes exatos para revisão externa, sem autorizar |
 | mce_apply | Exige assinatura externa válida e gera job/cópia preliminar auditada |
 
-As três operações de criação têm read_only_hint=false e não são idempotentes.
+As cinco operações de escrita têm read_only_hint=false e não são idempotentes.
 Não existe ferramenta authorize, shell, assinador remoto ou gravação arbitrária.
 A entrada de engenharia continua sendo matriz-causa-efeito, com seus três
 adaptadores, DataSheet e SQLite já existentes. mce-operacao-web só rege transporte.
@@ -72,3 +75,7 @@ O editor existente mantém <=50 causas por folha, texto em cinza, fórmulas e pa
 OOXML preservadas. Saída: MCE_PRELIMINAR_PARA_REVISAO, nunca homologação automática.
 Revisão multidisciplinar, FAT/SAT aplicável, rollback e aceite seguem externos.
 Instalação, SDK local, descoberta no host e chamada ChatGPT são evidências distintas.
+
+## Recuperação de projeto já iniciado
+
+Após transferência explícita e autorizada de um arquivo ao inbox Windows, usar mce_archive_inbox para registrar sua cópia no DataCenter privado sem criar uma matriz. Com SHA-256 já conhecido, mce_archive_lookup confere a existência da versão e suas identidades; mce_restore_archived_inbox exige documento, revisão e hash exatos e cria arquivo novo no inbox a partir do espelho verificado. Dados e caminhos privados não são enviados ao GitHub. A conexão MCP não transfere automaticamente anexos do ChatGPT; a transferência precisa ser disponibilizada por canal autorizado, com ACL e autenticação do host. A segunda pasta não comprova domínio de falha independente. Sem host, status HOST_UNAVAILABLE. Não implica homologação de engenharia.
