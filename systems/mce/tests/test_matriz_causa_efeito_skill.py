@@ -135,6 +135,6 @@ def test_p09_l50_width_two_requires_unambiguous_ooxml_profile():
       (ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8')]
     for s in docs:
         assert 'DEC-MCE-039' in s
-        assert 'sobrepost' in s.lower()
+        assert 'sobrepo' in s.lower()  # matches sobreposta, sobrepoem, sobreposicao
         assert 'G:AR' in s
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
