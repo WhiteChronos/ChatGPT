@@ -336,6 +336,7 @@ def test_p09_l50_g_ar_two_with_effect_link_gate(tmp_path):
         mod.verify_p09_l50_model(path,c)
     ws.column_dimensions['G'].width=2.0
     ws['C9']='Interface sem efeito'
+    ws['H9']=2
     wb.save(path)
     with pytest.raises(ValueError,match='causa sem efeito/X'):
         mod.verify_p09_l50_model(path,c)
