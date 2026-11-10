@@ -77,6 +77,18 @@ O usuario corrigiu a interpretacao da imagem da grade: **tamanho 2 significa lar
 
 **Validador canonico:** `column_width_profile=P09_L50_G_AR_2` verifica G:AR=2 e contrato de campos descritivos A:F por diff contra copia aprovada; `require_effect_per_cause=true` verifica X+cabecalho por causa preenchida e paginacao continua, tolerando H vazio em linhas realmente vazias da ultima folha. Nenhuma dessas verificacoes equivale a aprovacao de intertravamento.
 
+
+## DEC-MCE-039 — largura G:AR 2,00 gravada SEM faixas sobrepostas (2026-11-10)
+
+O usuário constatou **largura aparente 1,29**, embora a MCE ADM anterior declarasse `width=2`. Auditoria de OOXML revelou colunas definidas com faixas sobrepostas: por exemplo, a entrada da coluna I abrangia **I:AL (min=9,max=38)** enquanto J..AL também possuíam elementos `<col>` próprios; AN abrangia AN:AQ com outras entradas individuais. Isso é inválido para uma grade determinística e pode gerar divergências de largura entre editores.
+
+**Gate de normalização obrigatória para MCE P09 L50:**
+- Em cada `FOLHA N`, gravar **exatamente uma definição física por coluna de G a AR** no `xl/worksheets/sheetN.xml`, com `min=max` igual ao índice Excel real, `width="2"` e `customWidth="1"`. Proibir qualquer faixa adicional que intercepte G:AR; não basta que `openpyxl.column_dimensions['I'].width == 2`.
+- Conservar todas as colunas A:F, bordas originais `thin`, mesclas, fonte, alturas, impressão e valores/X. Colunas fora de AR não são alteradas.
+- Perfil canônico de validação `column_width_profile=P09_L50_G_AR_2` deve **rejeitar sobreposições**, agrupamentos, dimensões ausentes e larguras diferentes de **2,00**, inclusive 1,29. Acrescentar testes sintéticos de sobreposição `I:AL` e de largura 1,29; a checagem precisa alcançar XML e não somente a largura reportada pelo wrapper.
+- Nenhum editor deve afirmar que um viewer exibirá exatamente 2,00 sem abrir nesse aplicativo. `QA_EXCEL_NATIVO=NOT_RUN` quando só OOXML/openpyxl foram usados.
+- Esta correção é visual e não altera os 142 registros com X, 175 cruzamentos, 4 folhas e 76 itens pendentes externos da MCE ADM. Preservar gates de engenharia, não instalar no Windows nem enviar documentos industriais ao GitHub.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.

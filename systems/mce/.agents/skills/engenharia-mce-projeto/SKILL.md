@@ -39,3 +39,7 @@ description: Analisar projetos de automacao, P&IDs, memoriais, narrativas, lista
 
 ## DEC-MCE-037 — retorno a borda thin e largura A:AR=2
 Revogada a regra `DEC-MCE-036` de aplicar `medium` nas bordas. Preservar `thin` original. Validador P09 L50 com `column_width_profile=P09_L50_ALL_COLUMNS_2` exige `width=2` em todas as colunas A:AR. Por coluna do Excel, a largura nao depende da linha: "somente superior" nao e configuravel. A variante I:AQ=2 com B/C/F legíveis nao substitui a saída A:AR literal. Gates de editor, contrato, whitelist e aprovacao de engenharia seguem obrigatorios para obra operacional.
+
+
+## DEC-MCE-039 — integridade física OOXML de largura G:AR
+Em `column_width_profile=P09_L50_G_AR_2`, cada G..AR deve ter `width=2.0`, `min=max=indice_da_coluna` e nenhuma outra faixa de dimensão de coluna pode interceptar a mesma posição. Colunas com `width=2` mas com `min`/`max` abrangendo mais de uma coluna FAIL, mesmo quando openpyxl mostra 2. Registrar QA de conversão/visualizador separadamente. A:F e bordas thin intactas, sem mudança em valores, causas, X, efeitos ou autorização.

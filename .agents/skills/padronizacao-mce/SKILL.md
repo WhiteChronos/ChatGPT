@@ -34,3 +34,7 @@ A interpretacao `DEC-MCE-036` (borda media) foi REVOGADA. A largura solicitada p
 
 ## DEC-MCE-038 — Perfil G:AR=2 e separacao de registros sem X
 A:MCE P09 L50 com `column_width_profile=P09_L50_G_AR_2`: preservar A:F da copia aprovada, e ajustar G:AR=2 em todas as FOLHA N, bordas thin de origem e 35 efeitos I:AQ. Nenhum equipamento/sinal sem relacao documental pode ser transformado em causa com X inventado. A grade final deve ter ao menos um X associado a efeito nomeado (linha 5) para cada causa preenchida; mover cadastro/supervisao sem efeito demonstrado para pendencias XLSX **externas**, nunca como aba auxiliar. Paginar a cada 43 causas (8:50), repontando X pelo titulo de efeito e preservando integridade, fonte, mesclas e impressao. O contrato opcional `require_effect_per_cause` habilita este gate no validador canonico. Nao editar mestre nem autorizar engenharia tacitamente.
+
+
+## DEC-MCE-039 — larguras de coluna sem intervalos sobrepostos
+A MCE P09 L50 adota largura exata `2,00` em G:AR. Validação deve examinar a estrutura OOXML: cada coluna G..AR recebe uma definição separada `<col min="N" max="N" width="2" customWidth="1"/>`. **Não usar agrupamentos `min=9,max=38` sobrepostos com J..AL**; tais conflitos podem tornar a largura aparente inferior ao valor armazenado. Exigir ausência de outras faixas que cubram a mesma coluna. A:F, bordas thin e lógica X preservados. Essa regra é visual, sem liberação de engenharia, sem QA Excel Windows presumido.

@@ -125,3 +125,16 @@ def test_mce_g_ar_column_and_no_empty_effect_policy():
         assert 'X' in document
     assert '76' in main and '142' in main and '175' in main
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()
+
+
+def test_p09_l50_width_two_requires_unambiguous_ooxml_profile():
+    """DEC-MCE-039: docs and skills must not accept overlapping column intervals."""
+    docs=[(LOCAL/'SKILL.md').read_text(encoding='utf-8'),
+      (ROOT/'AGENTS.md').read_text(encoding='utf-8'),
+      (ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8'),
+      (ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8')]
+    for s in docs:
+        assert 'DEC-MCE-039' in s
+        assert 'sobrepost' in s.lower()
+        assert 'G:AR' in s
+    assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()

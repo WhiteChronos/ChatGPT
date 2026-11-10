@@ -217,6 +217,29 @@ P09_L50_ALL_COLUMNS_2 = 'P09_L50_ALL_COLUMNS_2'
 P09_L50_G_AR_2 = 'P09_L50_G_AR_2'
 
 
+def p09_l50_require_unambiguous_two_width(ws, start_col, stop_col, label):
+    """Validate explicit one-column OOXML definitions; reject overlapping spans."""
+    from openpyxl.utils import get_column_letter
+    dimensions = list(ws.column_dimensions.items())
+    for column_index in range(start_col, stop_col + 1):
+        col = get_column_letter(column_index)
+        dimension = ws.column_dimensions.get(col)
+        if dimension is None or dimension.width is None or abs(dimension.width - 2.0) > 0.03:
+            fail('STOP: largura '+label+' diferente de 2 na coluna '+col+' em '+ws.title)
+        if dimension.min != column_index or dimension.max != column_index:
+            fail('STOP: faixas de colunas sobrepostas em '+ws.title+':'+col)
+        for other_name, other_dim in dimensions:
+            if other_name == col:
+                continue
+            if other_dim.min is None or other_dim.max is None:
+                continue
+            if other_dim.min <= column_index <= other_dim.max:
+                fail('STOP: faixas de colunas sobrepostas em '+ws.title+':'+col)
+
+
+
+
+
 def p09_l50_height_for_lines(lines):
     """Deriva altura da quantidade de linhas visuais avaliada sob contrato."""
     if type(lines) is not int or lines < 1:
@@ -269,19 +292,9 @@ def verify_p09_l50_model(master, contract):
                 if actual_width is None or abs(actual_width - expected_width) > 0.03:
                     fail('STOP: largura P09 L50 invalida para coluna '+column+' em '+ws.title)
         elif width_profile == P09_L50_ALL_COLUMNS_2:
-            from openpyxl.utils import get_column_letter
-            for col_index in range(1,45):
-                col = get_column_letter(col_index)
-                val = ws.column_dimensions[col].width
-                if val is None or abs(val - 2.0) > 0.03:
-                    fail('STOP: largura A:AR diferente de 2 na coluna '+col+' em '+ws.title)
+            p09_l50_require_unambiguous_two_width(ws, 1, 44, 'A:AR')
         elif width_profile == P09_L50_G_AR_2:
-            from openpyxl.utils import get_column_letter
-            for col_index in range(7,45):
-                col = get_column_letter(col_index)
-                val = ws.column_dimensions[col].width
-                if val is None or abs(val - 2.0) > 0.03:
-                    fail('STOP: largura G:AR diferente de 2 na coluna '+col+' em '+ws.title)
+            p09_l50_require_unambiguous_two_width(ws, 7, 44, 'G:AR')
         if annotation_policy == 'EXTERNAL_ONLY':
             if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
                 fail('STOP: notas na coluna AR nao permitidas em '+ws.title)

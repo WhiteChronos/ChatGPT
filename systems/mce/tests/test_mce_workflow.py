@@ -340,3 +340,32 @@ def test_p09_l50_g_ar_two_with_effect_link_gate(tmp_path):
     wb.save(path)
     with pytest.raises(ValueError,match='causa sem efeito/X'):
         mod.verify_p09_l50_model(path,c)
+
+
+
+def test_p09_l50_no_overlapping_two_width_ranges(tmp_path):
+    """DEC-MCE-039 regression: value=2 alone cannot hide OOXML overlapping spans."""
+    from openpyxl.utils import get_column_letter
+    model=tmp_path/'p09_l50_G_AR_2_exact.xlsx'
+    wb=_synthetic_p09_l50(model)
+    for ws in wb:
+        for col in range(7,45):
+            ws.column_dimensions[get_column_letter(col)].width=2.0
+    wb.save(model)
+    contract={'layout_profile':mod.P09_L50_PROFILE,'column_width_profile':mod.P09_L50_G_AR_2,
+      'matrix_ranges':[{'sheet':f'FOLHA {n}','first_data_row':8,'last_data_row':50} for n in range(1,4)]}
+    mod.verify_p09_l50_model(model,contract)
+    wb['FOLHA 1'].column_dimensions['I'].min=9
+    wb['FOLHA 1'].column_dimensions['I'].max=38
+    wb.save(model)
+    with pytest.raises(ValueError,match='faixas de colunas sobrepostas'):
+        mod.verify_p09_l50_model(model,contract)
+    wb['FOLHA 1'].column_dimensions['I'].min=9
+    wb['FOLHA 1'].column_dimensions['I'].max=9
+    wb['FOLHA 1'].column_dimensions['G'].width=1.29
+    wb.save(model)
+    with pytest.raises(ValueError,match='largura G:AR diferente de 2'):
+        mod.verify_p09_l50_model(model,contract)
+    wb['FOLHA 1'].column_dimensions['G'].width=2.0
+    wb.save(model)
+    mod.verify_p09_l50_model(model,contract)
