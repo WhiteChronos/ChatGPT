@@ -50,5 +50,24 @@ jobs:
           name: matriz-causa-efeito-windows-skill
           path: dist/skill.zip
           if-no-files-found: error
+      - name: Package three backup helper Skills on native Windows
+        run: |
+          $names = @('mce-restic-backup', 'mce-kopia-backup', 'mce-watchdog-ingest')
+          foreach ($name in $names) {
+            $folder = "dist/$name"
+            New-Item -ItemType Directory -Path $folder -Force | Out-Null
+            Compress-Archive -Path "systems/mce/.agents/skills/$name" -DestinationPath "$folder/skill.zip" -CompressionLevel Optimal
+            $env:MCE_SKILL_NAME = $name
+            python -c 'import os, zipfile; s=os.environ["MCE_SKILL_NAME"]; z=zipfile.ZipFile(f"dist/{s}/skill.zip"); assert f"{s}/SKILL.md" in z.namelist() and f"{s}/agents/openai.yaml" in z.namelist()'
+          }
+      - name: Upload three Windows helper skill packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: mce-datacenter-helper-skills-windows
+          path: |
+            dist/mce-restic-backup/skill.zip
+            dist/mce-kopia-backup/skill.zip
+            dist/mce-watchdog-ingest/skill.zip
+          if-no-files-found: error
       - name: Evidence boundary
         run: echo 'MCE pre-analysis synthetic gate only; no industrial source, engineering approval, Excel master editing or live Codex installation verified.' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
