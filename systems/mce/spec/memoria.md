@@ -182,3 +182,13 @@ A memoria evolui por eventos explicitamente registrados em GitHub e pelo gate no
 
 
 2026-11-09 - DEC-MCE-028: Pedido do usuario para nao colocar notas nas colunas da MCE. Adotado perfil opcional annotation_policy=EXTERNAL_ONLY na apresentacao L50: AR8:AR50 vazia, sem comentarios/notas nas celulas, cabecalho AR7 e estrutura mantidos; rastreabilidade fora do XLSX. Validador read-only do workflow, preflight e teste sintetico integrados na branch da PR #118. Nenhuma relacao de engenharia, documento de projeto, modelo mestre, SQLite, autorizacao ou merge alterado. PRODUCTION_COMPLETE=NO.
+
+
+---
+### 2026-11-10 — QA-RETIFICACAO-MCE-005: recuperar decisoes antigas antes de emitir XLSX
+
+Apos reclamacão de entrega de XLSX vazio, a auditoria de retomada constatou que o arquivo entregue foi uma copia **binaria e sem logica** da asset P09 sanitizada, embora o usuario esperasse uma matriz funcional. A resposta anterior ignorou decisoes do Issue #120: DEC-MCE-023..029, notadamente a variante visual L50 (DEC-027), fonte Arial 10/8 (DEC-025), anotacoes externas (DEC-028) e exclusao expressa de fonte obsoleta (DEC-029). O erro e de recuperacao/precedencia de contexto e de selecao de artefato, nao evidencia de aprovacão de engenharia.
+
+**Regra de prevencao:** antes de responder a pedidos de MCE, reconciliar todo o inbox estruturado do Issue #120 com a memoria.md e a configuracao da Skill/host; verificar fonte vigente, perfil visual e tipo MATRIZ_NOVA/MATRIZ_REVISAO. Se o usuario pediu MCE funcional, nunca apresentar um template vazio como equivalente ou solucao do pedido. Sem modelo homologado, fontes vigentes e gates externos, manter STOP e oferecer somente pre-analise, sem inventar TAG, X/I, causa ou efeito. Arquivos de engenharia, conversas e resultados privados nao devem ser publicados neste repositorio.
+
+**Limites de persistencia:** foi criado casefile de continuidade em area **privada** do sistema documental, sem anexos/transcricoes completos. A base SQLite operacional do MCE nao foi acessada: o tunel do conector estava indisponivel nesta sessao. Nao houve gravacao ou validacao de DataCenter, edicao de Excel mestre, homologacao, merge ou deploy. `PRODUCTION_COMPLETE=NO`.
