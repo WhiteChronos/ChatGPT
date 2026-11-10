@@ -86,3 +86,8 @@ A Skill matriz-causa-efeito e o conjunto de workflows próprios do MCE são excl
 ### Gate de integracao do plugin MCP (candidato)
 
 O servidor \`mce_sdk_server.py\` aceita flags opcionais \`--archive-vault\`, \`--archive-db\` e \`--archive-mirror\`. Elas devem apontar para pastas privadas existentes e o unico SQLite inicializado, fora do checkout, configuradas somente pelo operador no Windows. Sem as tres flags, o servidor ainda permite status e leitura, mas \`initialize\`, \`understand\` e \`apply\` nao devem processar projetos sem copia validada. Ao habilitar, a operacao arquiva origem, contrato, analise e saida preliminar em duas pastas, conferindo SHA. O backup secundario no mesmo disco nao comprova independencia fisica; validar dominio de falha e restore real. Nenhum fluxo captura automaticamente bytes do ChatGPT para o host sem integracao adicional.
+
+
+### Skills auxiliares versionadas para o backup MCE
+
+As tres Skills `mce-restic-backup` (https://github.com/WhiteChronos/restic, `main`), `mce-kopia-backup` (https://github.com/WhiteChronos/kopia, `main`) e `mce-watchdog-ingest` (https://github.com/WhiteChronos/watchdog, `main`) orientam recursos de backup/restauracao e deteccao, permanecendo subordinadas a `matriz-causa-efeito` e ao mesmo DataCenter/SQLite. As bibliotecas upstream usam branch `master` e necessitam de revisao para cada sincronizacao; nao fazer merge automatico. A introducao de Skill nao comprova instalacao de ferramenta, ativacao do host ou copia de documentos no DataCenter.

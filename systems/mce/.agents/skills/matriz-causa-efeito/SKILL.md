@@ -94,3 +94,13 @@ Evolucao continua **por eventos explicitamente capturados**, nao em segundo plan
 - No adapter MCP, \`initialize\` precisa arquivar fonte e modelo antes de criar projeto; \`understand\` precisa arquivar arquivos de analise/contrato e \`apply\` arquiva a MCE preliminar. Escrever sem vault/SQLite/espelho configurados deve falhar fechado. Status \`ARCHIVED_VERIFIED\` e \`SECONDARY_COPY_VERIFIED_FAILURE_DOMAIN_UNVERIFIED\` so garantem copia verificada, nao dominio independente, criptografia, retencao, restauracao no host ou aceite de engenharia.
 - Para segunda protecao fora do dominio de falha, avaliar Restic (\`restic/restic\`) ou Kopia (\`kopia/kopia\`) mediante decisao do operador; testar backup/snapshot/check/restore em host Windows autorizado com dados privados. \`watchdog\` (\`gorakhargosh/watchdog\`) e somente opcional para eventos de pasta; a varredura periodica corrige eventos perdidos. Nenhuma ferramenta externa e instalada automaticamente pelo ChatGPT.
 - Se host/tunel desconectado, arquivo no ChatGPT/Library sem bytes transferidos, caminho nao aprovado ou recibo ausente, marcar \`COPY_PENDING\` e nao declarar que o documento esta arquivado. A permanencia ilimitada nao e comprovavel. Preservar gates humanos da MCE, P09, FAT/SAT, politica Windows-only, originais e assinaturas.
+
+## Auxiliares de arquivo e recuperacao — forks WhiteChronos
+
+Recuperar as tres Skills **somente quando a funcao for pertinente**; estas referencias nao adicionam outro banco, editor ou interface de engenharia:
+
+- `mce-restic-backup`: snapshots criptografados, verificacao, retencao e restore (https://github.com/WhiteChronos/restic, `main`; upstream `restic/restic:master`).
+- `mce-kopia-backup`: alternativa de backup com CLI/GUI, jamais requisito cumulativo a Restic (https://github.com/WhiteChronos/kopia, `main`; upstream `kopia/kopia:master`).
+- `mce-watchdog-ingest`: eventos do inbox privado; varredura/reconciliacao do arquivador MCE continua obrigatoria (https://github.com/WhiteChronos/watchdog, `main`; upstream `gorakhargosh/watchdog:master`).
+
+**Governanca:** usar `mce_document_archive.py` e `mce_memory.py` como fluxo canonico; so aplicar backup/monitoramento no host Windows conectado mediante autorizacao. Os forks sao referencias de origem, nao instalacoes locais. A inclusao de arquivos no GitHub nao equivale a instalacao da Skill no ChatGPT Web. Os SHAs de fork e upstream precisam ser auditados antes de cada atualizacao. Sem tunel, acesso ao documento, credenciais, RESTORE e dupla verificacao reais: `NOT_RUN` ou `COPY_PENDING`. Nao publicar arquivos industriais.

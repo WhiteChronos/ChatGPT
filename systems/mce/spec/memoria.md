@@ -223,3 +223,10 @@ O adapter \`mce_web.py\` passou a exigir configuracao conjunta de vault, SQLite 
 
 
 2026-11-10 — IMP-MCE-030C: documentacao da Skill canonica atualizada em dois espelhos com a politica DEC-MCE-030, o arquivador Windows privado, gate de copia antes do workflow, e referencia Restic/Kopia/Watchdog sem incorporar codigo terceiro. Habilitacao efetiva de host, check do segundo dominio de falha e CI do novo HEAD continuam pendentes. Sem merge, deploy, arquivo real, chave ou documento industrial. PRODUCTION_COMPLETE=NO.
+
+
+2026-11-10 — DEC-MCE-031: forks oficiais referenciados e tres Skills auxiliares de preservacao
+
+Por solicitacao do usuario, criados forks `WhiteChronos/restic`, `WhiteChronos/kopia` e `WhiteChronos/watchdog` como referencias externas. Seus upstreams oficiais usam `master`; os forks mantem `master` original e adotaram `main` como branch padrao, inicialmente no mesmo SHA do upstream: restic `c734245fd3ae9bcac8ab3aaafb4482d4b5d0ae92` (BSD-2-Clause), kopia `7498348d3cfb52c6ffd46bd2cdfef42987fcdf11` (Apache-2.0), watchdog `8d9cf3d73e89c1421ae39289d1a522c5f5465f07` (Apache-2.0). Nao houve alteracao de codigo upstream, merge nem deploy.
+
+Skills `mce-restic-backup`, `mce-kopia-backup`, `mce-watchdog-ingest` integradas como auxiliares de `matriz-causa-efeito`, espelhadas em `systems/mce/.agents/skills` e `.agents/skills`, e descobraveis via `mce_read_skill` quando o host Windows estiver conectado. Restic e Kopia sao alternativas de backup, watchdog e apenas observacao opcional; `mce_document_archive.py` e `mce_memory.py` permanecem donos do arquivamento e registro no SQLite unico. Integracao sem instalar executaveis, ativar tarefas ou copiar anexos privados. CI Windows no SHA final, instalacao/descoberta no host, sincronizacao futura dos forks, backup em dominio de falha independente e testes de restauração ainda devem ser comprovados. `PRODUCTION_COMPLETE=NO`.

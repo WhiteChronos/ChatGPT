@@ -19,7 +19,7 @@ from defusedxml import ElementTree as SafeET
 
 PRODUCT = Path(__file__).resolve().parents[1]
 ENGINE = PRODUCT / '.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py'
-SKILLS = ('matriz-causa-efeito', 'engenharia-mce-projeto', 'padronizacao-mce', 'mce-fechamento-operacional', 'mce-operacao-web')
+SKILLS = ('matriz-causa-efeito', 'engenharia-mce-projeto', 'padronizacao-mce', 'mce-fechamento-operacional', 'mce-operacao-web', 'mce-restic-backup', 'mce-kopia-backup', 'mce-watchdog-ingest')
 MAX_FILE = 20 * 1024 * 1024
 MAX_XML = 4 * 1024 * 1024
 
