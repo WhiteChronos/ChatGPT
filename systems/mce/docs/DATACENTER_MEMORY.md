@@ -1,3 +1,5 @@
+> **Estado real verificado em 2026-11-10:** NAO EXISTE DATACENTER WINDOWS LOCAL DO MCE. Os caminhos `C:\\MCE_DADOS`, SQLite, vault, mirror e MCP descritos nesta pagina representam um **contrato de software nao implantado**, nao infraestrutura descoberta. Nao pedir para ligar um servidor inexistente nem interpretar erro de tunnel-client como prova de sua existencia. O usuario escolheu estudar operacao GitHub-only; o plano e os gates estao em [GITHUB_ONLY_STORAGE.md](GITHUB_ONLY_STORAGE.md). Ate a migracao aprovada/implementada, as interfaces atuais sao legado de desenvolvimento com testes sinteticos; `CLOUD_VAULT=NOT_VERIFIED`, `DOCUMENT_RESTORE=NOT_VERIFIED`, `PRODUCTION_COMPLETE=NO`.
+
 # MCE — DataCenter, memoria persistente e DataSheet
 
 Produto: `MCE_INDEPENDENTE`. Este sistema nunca compartilha banco, script ou dependencia com o outro produto. O GitHub e fonte do codigo e CI; o SQLite **privado e local** e a fonte das anotacoes operacionais do host autorizado.
