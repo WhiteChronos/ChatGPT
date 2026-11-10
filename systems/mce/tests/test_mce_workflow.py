@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from defusedxml.common import EntitiesForbidden
 from openpyxl import Workbook, load_workbook
-from openpyxl.styles import PatternFill
+from openpyxl.styles import PatternFill, Font
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = ROOT/'.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py'
@@ -318,6 +318,7 @@ def test_p09_l50_g_ar_two_with_effect_link_gate(tmp_path):
     ws['C8']='Detector H2 10%'
     ws['I5']='Alarme H2 local'
     ws['I8']='X'
+    ws['I8'].font=Font(name='Arial',size=8)
     for j in range(9,51): ws[f'H{j}']=None
     wb.save(path)
     c={'layout_profile':mod.P09_L50_PROFILE,
