@@ -47,3 +47,17 @@ Nao declarar `PRODUCTION_COMPLETE=YES` pela CI do repositorio publico. Nem merge
 - Git LFS: https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage
 - Actions artifacts e retencao: https://docs.github.com/en/actions/managing-workflow-runs/downloading-workflow-artifacts
 - Referencia interna: `systems/mce/AGENTS.md`, `systems/mce/spec/memoria.md`, `systems/mce/docs/DATACENTER_MEMORY.md`, Issue #125.
+
+## Ferramenta GH-01 implementada no repositorio publico (somente metadados)
+
+O script `systems/mce/scripts/github_vault_preflight.py` pode ser executado com **Python 3.12+ em GitHub Actions Windows** depois que o repositorio privado tiver sido criado e aprovado. Nao e mecanismo de armazenamento, nao utiliza Windows local, nao instala dependencias e nunca recebe bytes industriais. O operador/workflow privado fornece o token temporario via variavel de ambiente `MCE_VAULT_GITHUB_TOKEN`, com permissoes minimas suficientes. A API exige o nome exato do repositorio, `private=true`, `permissions.push=true` e `default_branch` nao vazio. Resposta PASS indica apenas que o destino privado esta acessivel para possivel ingestao; NAO prova upload, criptografia, backup ou restauração.
+
+Exemplo para workflow privado autorizado (nao colar token em argumentos/linha de comando/logs):
+
+```powershell
+python .\\systems\\mce\\scripts\\github_vault_preflight.py --repo WhiteChronos/mce-document-vault
+```
+
+Variavel no step do workflow privado: `MCE_VAULT_GITHUB_TOKEN: ${{ github.token }}`. O script retorna exit code 2 em bloqueio e apenas JSON sanitizado. Um token apenas de leitura pode retornar `NO_WRITE_PERMISSION`, **sem** induzir ampliacao automatica de privilegios. Nunca executar teste privado na CI do repositorio publico com tokens do cofre.
+
+**Validacao CI publica:** os testes sintéticos no Windows em `systems/mce/tests/test_github_vault_preflight.py` verificam metadata publica/incorreta, token ausente, identificador invalido, 404 e excecao contaminada por texto de segredo. Eles nao provam GH-01 no vault real. Depois do provisionamento e aprovacao humanos, executar este script no runner **do repositorio privado** e anexar o link de run ao gate GH-01.
