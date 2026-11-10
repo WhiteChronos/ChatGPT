@@ -213,8 +213,7 @@ P09_L50_HEIGHT_STEP_PT = 10
 P09_L50_HEIGHT_MAX_PT = 400  # Excel limita altura a 409.5pt
 P09_L50_WIDTH_PROFILE = 'P09_L50_20261110'
 P09_L50_COLUMN_WIDTHS = {'B': 25.0, 'C': 56.0, 'F': 34.0}
-P09_L50_BORDER_PROFILE = 'P09_L50_MEDIUM_2PX'
-P09_L50_BORDER_SIDES = ('left', 'right', 'top', 'bottom', 'diagonal', 'vertical', 'horizontal', 'start', 'end')
+P09_L50_ALL_COLUMNS_2 = 'P09_L50_ALL_COLUMNS_2'
 
 
 def p09_l50_height_for_lines(lines):
@@ -247,11 +246,8 @@ def verify_p09_l50_model(master, contract):
     if annotation_policy not in (None, 'EXTERNAL_ONLY'):
         fail('STOP: politica de notas desconhecida: '+str(annotation_policy))
     width_profile = contract.get('column_width_profile')
-    if width_profile not in (None, P09_L50_WIDTH_PROFILE):
+    if width_profile not in (None, P09_L50_WIDTH_PROFILE, P09_L50_ALL_COLUMNS_2):
         fail('STOP: perfil de larguras desconhecido: '+str(width_profile))
-    border_profile = contract.get('border_profile')
-    if border_profile not in (None, P09_L50_BORDER_PROFILE):
-        fail('STOP: perfil de borda desconhecido: '+str(border_profile))
     book = load_workbook(master, read_only=False, keep_links=True)
     ranges = contract.get('matrix_ranges', [])
     if not book.worksheets or len(ranges) != len(book.worksheets) or set(x['sheet'] for x in ranges) != set(book.sheetnames):
@@ -263,24 +259,18 @@ def verify_p09_l50_model(master, contract):
             fail('STOP: perfil L50 exige area A1:AR50 em '+ws.title)
         if len(ws.merged_cells.ranges) != 46:
             fail('STOP: perfil L50 exige 46 mesclagens em '+ws.title)
-        if border_profile == P09_L50_BORDER_PROFILE:
-            found_medium = False
-            for cells in ws.iter_rows(min_row=1, max_row=50, min_col=1, max_col=44):
-                for cell in cells:
-                    for side_name in P09_L50_BORDER_SIDES:
-                        border_side = getattr(cell.border, side_name, None)
-                        if border_side is None or border_side.style is None:
-                            continue
-                        if border_side.style != 'medium':
-                            fail('STOP: estilo de borda P09 L50 diferente de medium em '+ws.title+'!'+cell.coordinate)
-                        found_medium = True
-            if not found_medium:
-                fail('STOP: perfil P09 L50 medium exige grade com bordas em '+ws.title)
         if width_profile == P09_L50_WIDTH_PROFILE:
             for column, expected_width in P09_L50_COLUMN_WIDTHS.items():
                 actual_width = ws.column_dimensions[column].width
                 if actual_width is None or abs(actual_width - expected_width) > 0.03:
                     fail('STOP: largura P09 L50 invalida para coluna '+column+' em '+ws.title)
+        elif width_profile == P09_L50_ALL_COLUMNS_2:
+            from openpyxl.utils import get_column_letter
+            for col_index in range(1,45):
+                col = get_column_letter(col_index)
+                val = ws.column_dimensions[col].width
+                if val is None or abs(val - 2.0) > 0.03:
+                    fail('STOP: largura A:AR diferente de 2 na coluna '+col+' em '+ws.title)
         if annotation_policy == 'EXTERNAL_ONLY':
             if any(ws[f'AR{r}'].value is not None for r in range(8, 51)):
                 fail('STOP: notas na coluna AR nao permitidas em '+ws.title)

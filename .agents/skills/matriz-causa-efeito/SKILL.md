@@ -56,13 +56,13 @@ Ao aplicar o perfil **P09 L50** de DEC-MCE-034, **uma linha VISUAL = 20 pt**, me
 Esta verificacao corrige estimativa tipografica de candidata **NAO HOMOLOGADA**, nao altera a obrigatoriedade de aprovacao de engenharia, editor unico/whitelist para alteracoes operacionais nem permite afirmar um QA Excel Windows nao executado.
 
 
-## Perfil de bordas 2 no P09 L50 — DEC-MCE-036 (2026-11-10)
+## DEC-MCE-037: largura de COLUNA 2, nao borda 2 (2026-11-10)
 
-**Padrão de bordas específico da MCE P09 L50 solicitado por imagem:** todas as bordas **existentes** na grade `A1:AR50` de cada `FOLHA N` devem usar **`medium` no Excel OOXML**, em preto ou na cor existente. Isso corresponde visualmente a cerca de **2 pixels em zoom de referência**, mas **não é medida física exata de 2 pt** (a API Excel/openpyxl representa bordas por categorias). Nunca preencher novas divisórias internas de regiões mescladas; trocar apenas o estilo das faces de borda **já presentes**, inclusive diagonais quando existentes, mantendo mesclas e todas as células.
-- Aplicar a todas as abas, com 43 causas por aba, linhas 8:50, efeitos I:AQ (35), 46 mesclagens, área impressa A1:AR50, fontes Arial 10/8, larguras B25/C56/F34 e alturas 20/30/40... conforme DEC-MCE-034/035.
-- Perfil técnico de verificação: `border_profile=P09_L50_MEDIUM_2PX`. O validador MCE bloqueia `thin`, `thick`, `hair` ou mistura de espessuras sob esse perfil, e exige presença de bordas `medium`; não altera outros perfis nem o P09 L57 antigo por inferência.
-- Em correção **estritamente visual** de uma cópia documental preliminar, comparar antes/depois os conteúdos, TAGs, X, mesclas, fontes, larguras, alturas e impressão; **somente o estilo das bordas preexistentes muda**. Sem autorização mestre/whitelist e gate humano, não classificar essa cópia como matriz homologada.
-- Aplique essa regra na Skill principal/espelhos, no contrato e nos testes; o perfil fica versionado no GitHub, não é instalado automaticamente no ChatGPT Web. QA nativo Windows e arquivo DataCenter físico só podem ser declarados mediante prova real.
+O usuario corrigiu a interpretacao da imagem da grade: **tamanho 2 significa largura das colunas na barra superior A, B ... AR**. DEC-MCE-036, que determinou bordas `medium`, foi REVOGADA por erro de entendimento. Voltar as **bordas originais `thin`**, sem mudar espessura, inserir ou remover divisorias.
+
+- Pedido literal: aplicar `width=2.0` para as **44 colunas A:AR de cada aba FOLHA N**. O Excel aplica largura a coluna inteira, nao apenas nas primeiras linhas. Isso estreita tambem B, C e F, prejudicando a legibilidade dos textos; registrar a limitacao sem prometer layout legivel. Perfil contratual opcional: `column_width_profile=P09_L50_ALL_COLUMNS_2`.
+- Variante separada para legibilidade, caso aceita pelo responsavel: **somente I:AQ=2** (35 colunas dos efeitos), preservando B=25, C=56, F=34 e as demais larguras de origem; nao confundir com o pedido literal A:AR.
+- Revisao visual: editar apenas larguras solicitadas em copia XLSX derivada; auditar valores, TAGs, X, bordas thin, 46 mesclas/aba, alturas, fontes, impressao A1:AR50, 43 causas/folha e 35 efeitos. Nao promover candidato documental a matriz homologada, nao mudar o modelo mestre nem dispensar gates de engenharia.
 
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 

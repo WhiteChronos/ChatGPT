@@ -37,7 +37,5 @@ description: Analisar projetos de automacao, P&IDs, memoriais, narrativas, lista
 - A rotina de estimar linhas pode sobrecontar/subcontar o Excel; conferir por visualizacao quando disponivel e manter status `QA_VISUAL_WINDOWS=NOT_RUN` caso nao realizado. A Skill nao altera master, nao inventa X, nao chama outro editor nem substitui o gate de `AUTORIZO_ELABORACAO_MCE`.
 
 
-## Perfil P09 L50 de espessura de grade — DEC-MCE-036
-- Para o perfil de apresentação `P09_L50_MEDIUM_2PX`, manter estilo `medium` uniformemente nas bordas já existentes das 6 abas de referência ADM ou de toda a futura MCE L50; nunca inferir que "2" seja largura de coluna nem sobrescrever merged cells.
-- Ao verificar um workbook com contrato explícito `border_profile=P09_L50_MEDIUM_2PX`, o validador canônico deve rejeitar lados com estilo diferente de medium e arquivos sem nenhuma borda. Sem perfil, preservar contratos legados; não aplicar automaticamente border em master aprovado.
-- Esta atualização é de QA/layout, não libera novos X, TAG, comando, edição canônica ou engenharia sem gates.
+## DEC-MCE-037 — retorno a borda thin e largura A:AR=2
+Revogada a regra `DEC-MCE-036` de aplicar `medium` nas bordas. Preservar `thin` original. Validador P09 L50 com `column_width_profile=P09_L50_ALL_COLUMNS_2` exige `width=2` em todas as colunas A:AR. Por coluna do Excel, a largura nao depende da linha: "somente superior" nao e configuravel. A variante I:AQ=2 com B/C/F legíveis nao substitui a saída A:AR literal. Gates de editor, contrato, whitelist e aprovacao de engenharia seguem obrigatorios para obra operacional.

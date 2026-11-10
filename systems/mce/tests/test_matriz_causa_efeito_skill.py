@@ -96,17 +96,16 @@ def test_p09_l50_single_visual_line_must_stay_20pt_policy():
     assert "sem spawn" in primary  # real agent requires verified lifecycle evidence
 
 
-
-def test_p09_l50_border_medium_2px_policy_persisted():
-    """DEC-MCE-036: require uniform medium style for explicitly selected L50 profile."""
-    main=(LOCAL/'SKILL.md').read_text(encoding='utf-8')
-    execution=(ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8')
-    rules=(ROOT/'AGENTS.md').read_text(encoding='utf-8')
-    standard=(ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8')
-    engineering=(ROOT/'.agents/skills/engenharia-mce-projeto/SKILL.md').read_text(encoding='utf-8')
-    for content in (main, execution, rules, standard, engineering):
-        assert 'DEC-MCE-036' in content
-        assert 'P09_L50_MEDIUM_2PX' in content
-        assert 'medium' in content
-    assert 'mescladas' in main
+def test_column_width_2_correction_reverts_medium_borders():
+    """DEC-MCE-037 supersedes DEC-MCE-036: border thin preserved."""
+    documents=[(LOCAL/'SKILL.md').read_text(encoding='utf-8'),
+       (ROOT/'AGENTS.md').read_text(encoding='utf-8'),
+       (ROOT/'docs/EXECUCAO.md').read_text(encoding='utf-8'),
+       (ROOT/'.agents/skills/padronizacao-mce/SKILL.md').read_text(encoding='utf-8'),
+       (ROOT/'.agents/skills/engenharia-mce-projeto/SKILL.md').read_text(encoding='utf-8')]
+    for s in documents:
+        assert 'DEC-MCE-037' in s
+        assert 'P09_L50_ALL_COLUMNS_2' in s
+        assert 'thin' in s
+    assert 'I:AQ' in documents[0] and 'A:AR' in documents[0]
     assert (LOCAL/'SKILL.md').read_bytes()==(GLOBAL/'SKILL.md').read_bytes()

@@ -96,9 +96,5 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - Em auditoria apenas de altura, alterar exclusivamente `row height` em copia XLSX derivada, preservando bytes logicos de valores, 35 colunas de efeito I:AQ, X, 46 mesclas por aba, larguras B/C/F e area A1:AR50. Se o solicitante mencionar agente, exigir evidencia de lifecycle e não inventar subagentes.
 - Esta regra nao homologa engenharia, nao altera o mestre, nao autoriza comandos ou merges e nao supre a whitelist/contrato do MCE.
 
-
-## DEC-MCE-036 — Espessura uniforme da grade P09 L50 (referencia visual 2)
-
-A partir da solicitacao visual do responsavel de 2026-11-10, `P09_L50_MEDIUM_2PX` passa a ser o perfil a contratar para **novas derivacoes L50**: todas as bordas **existentes** da area A1:AR50 em cada `FOLHA N` usam estilo OOXML `medium` uniforme (aproximadamente 2 px, sujeito ao zoom). Nao alterar larguras das colunas, especialmente I:AQ; nao recriar linhas em mesclagens; cores existentes preservadas. A norma antiga `thin` do P09 L57 permanece separada e nao substitui o perfil L50.
-- Verificar por auditoria todas as abas, cada lado de borda, 46 mesclagens, 43 causas por folha, 35 efeitos, area impressa A1:AR50, heights progressivas, X e valores originais. Perfil faltante em contrato antigo nao e autorizacao de alteracao. Emissāo funcional continua dependente do master/whitelist/autorizaçao aprovados.
-- User pediu refazer o XLSX ADM exclusivamente em copia documental: registro de layout nao torna essa matriz homologada. Host Windows nao foi executado nem backup fisico feito.
+## DEC-MCE-037 — correcao da largura solicitada pelo responsavel
+**Bordas continuam thin**: a regra DEC-MCE-036 de bordas medium foi REVOGADA por mal-entendido. O tamanho 2 refere-se a largura de COLUNAS Excel A:AR. `column_width_profile=P09_L50_ALL_COLUMNS_2`: width 2 em todas as 44 colunas de cada aba; nao e possivel largura diferente apenas nas linhas superiores. Isso compromete descricao B/C/F; alternativa I:AQ=2 preserva B/C/F e deve ser indicada separadamente. Validar valores, X, merges, alturas, fontes e impressao; nao permitir edicao funcional do master.
