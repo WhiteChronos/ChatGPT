@@ -89,3 +89,9 @@ Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor
 - DEC-MCE-034: altura por maior numero de linhas visuais em B/C/F:G `20 + 10*(n-1)` pt (1=20, 2=30, 3=40, 4=50 etc) para linhas de causa; limite 400 por Excel. Texto nao pode ser cortado; contagem automatica exige verificacao visual.
 - Perfil de largura `P09_L50_20261110`: colunas B=25, C=56, F=34; preservar G e todas I:AQ, AR, bordas, mesclas, area de impressao e cabecalhos. Nao alterar globalmente P09 L57 nem homologar com base no proprio chat.
 - Antes de liberar modelo editar, validar na Skill/contrato canônico `mce_workflow.py`; nunca mudar o mestre original, inserir X sem fonte, tratar candidato documental como FAT/SAT, alegar QA Windows/backup quando nao executado.
+
+
+## Revisao anti-falso-positivo de altura (DEC-MCE-035)
+- Perfil P09 L50: altura 20 pt se todos os textos de B/C/F:G couberem em uma linha visual; 30 pt quando existir 2 linhas, 40 para 3 etc. Detectar falso 30 pt causado por margem pixel excessiva ou fonte arredondada; medir Arial 8 pt e larguras reais no XLSX, incluindo mescla F:G. Sem QA visual Excel nativo, classificar contagem como ESTIMATIVA.
+- Em auditoria apenas de altura, alterar exclusivamente `row height` em copia XLSX derivada, preservando bytes logicos de valores, 35 colunas de efeito I:AQ, X, 46 mesclas por aba, larguras B/C/F e area A1:AR50. Se o solicitante mencionar agente, exigir evidencia de lifecycle e não inventar subagentes.
+- Esta regra nao homologa engenharia, nao altera o mestre, nao autoriza comandos ou merges e nao supre a whitelist/contrato do MCE.

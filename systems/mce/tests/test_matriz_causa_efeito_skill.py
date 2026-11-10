@@ -80,3 +80,17 @@ def test_p09_l50_progressive_layout_rule_persists_in_all_mce_skills():
         assert '40' in content and '50' in content and '20' in content
         assert 'P09_L50_20261110' in content
     assert '43' in main and 'B=25' in main and 'C=56' in main and 'F=34' in main
+
+
+def test_p09_l50_single_visual_line_must_stay_20pt_policy():
+    """DEC-MCE-035: prevent an oversized 30pt row for single-line text."""
+    primary=(LOCAL / "SKILL.md").read_text(encoding="utf-8")
+    main_rules=(ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    execution=(ROOT / "docs" / "EXECUCAO.md").read_text(encoding="utf-8")
+    for doc in (primary,main_rules,execution):
+        assert "DEC-MCE-035" in doc
+        assert "20 pt" in doc and "30 pt" in doc
+        assert "F:G" in doc
+    assert "18 pixels" in primary
+    assert "QA_VISUAL_WINDOWS=NOT_RUN" in primary
+    assert "sem spawn" not in primary  # avoid claiming fake agent evidence

@@ -74,3 +74,8 @@ Quando o responsavel solicitar matriz limpa, registrar annotation_policy=EXTERNA
 - Perfil de largura `P09_L50_20261110` para novas derivacoes aprovadas: B=25, C=56, F=34; F:G permanece mesclado. Nao redimensionar I:AQ, G, D/E/H/AR nem cabecalhos. O validador canonico aceita alturas em passos de 10 e, se `column_width_profile` for declarado, valida essas tres larguras.
 - A altura computada pela metrica de wrapping e **estimativa** sem Microsoft Excel: registrar `QA_VISUAL_WINDOWS=NOT_RUN` quando nao abrir o arquivo no Excel real. Esta orientacao nao altera modelo mestre nem se sobrepoe ao `AUTORIZO_ELABORACAO_MCE`.
 - Comparar antes/depois valores, 175 X e 218 registros somente no caso ADM de 10/11/2026 (e nao como contagens globais). Preservar 35 efeitos, Arial10/8, 46 merges, print A1:AR50 e notas EXTERNAL_ONLY.
+
+
+## DEC-MCE-035 — Verificação de alturas em uma linha visual
+
+Para MCE P09 L50, fazer POSTFLIGHT de todas as abas contra a regra `20+10*(linhas_visuais-1)`. Não aumentar para 30 pt se o texto completo ocupar uma unica linha no tamanho real Arial 8 pt com colunas B=25, C=56, F=34 (F:G mesclado). O incidente de 10/11/2026 revelou erro da contagem visual por subtrair **18 px arbitrarios** da largura útil da coluna C, transformando 34 textos de uma linha em falsos 30 pt. Usar métrica de texto proporcional a 8 pt (aprox. 10,67 px a 96 DPI), as larguras reais do workbook e quebras explicitas; registrar fonte substituta e riscos perto do limite. Entregar copia XLSX corrigida somente com alturas modificadas, mais prova de diff dos valores, X e geometria. Não afirmar QA nativo Windows ou subagente independente sem evidencias.

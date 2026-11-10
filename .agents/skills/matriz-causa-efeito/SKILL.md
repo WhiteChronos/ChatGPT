@@ -42,6 +42,19 @@ Esta decisao nao remove os gates humanos ou exige outros documentos do responsav
 
 **Regressao obrigatoria:** rejeitar altura 10, 25, 35 ou 410 pt; aceitar 20, 30, 40, 50 ... ate 400 pt; rejeitar mudanca de efeitos ou X, colunas fora de B/C/F, mais que 43 causas por folha e quebra da continuacao de H.
 
+
+## Revisao anti-falso-positivo de altura — DEC-MCE-035 (2026-11-10)
+
+Ao aplicar o perfil **P09 L50** de DEC-MCE-034, **uma linha VISUAL = 20 pt**, mesmo que um calculo anterior tenha atribuido 30 pt. O texto que cabe realmente numa unica linha na largura vigente nao justifica altura maior. O caso ADM revelou 34 falsas quebras (30 pt) porque o algoritmo de pre-visualizacao subtraiu margem arbitraria de 18 pixels e mediu Arial 8 pt arredondado para 11 px, em vez de calcular o tamanho a 8 pt (aprox. 10,67 px para 96 DPI).
+
+**Postflight visual obrigatorio para candidatos documentais:**
+1. Para cada causa, conferir B, C e F:G mesclado. Medir a largura de coluna **a partir do XLSX** com a fonte e tamanho efetivos, quebras `\\n` e `wrap_text`; nao somar margem arbitraria ao calculo, nao assumir coluna F sozinha quando estiver mesclada com G. A conversao caractere→pixel e a fonte substituta devem ser registradas como **estimativa**.
+2. Se as tres descricoes ocupam uma linha visual, altura **20 pt**, independentemente de altura anterior de 30 pt. Duas linhas = 30, tres = 40 etc. Nao inferir a contagem apenas pelo numero de caracteres; texto perto do limite de coluna requer inspeção ampliada e `QA_VISUAL_WINDOWS=NOT_RUN` se nao houver Excel Windows.
+3. Examinar TODAS as abas `FOLHA N` e alturas 8:50; identificar explicitamente linhas de 30+ pt cujo texto ocupa so uma linha. Emitir arquivo XLSX derivado corrigindo **somente altura de linha** quando a tarefa for auditoria de altura, sem reformular conteudo, largura, formulas, cabecalhos, merges, fontes, TAGs ou X.
+4. Exigir auditoria independente de valores, marcas X, mesclas, colunas, area de impressao, fontes e integridade ZIP antes/depois. Nao declarar que um agente/subagente real fez a revisao sem spawn, ID, status e resultado verificados.
+
+Esta verificacao corrige estimativa tipografica de candidata **NAO HOMOLOGADA**, nao altera a obrigatoriedade de aprovacao de engenharia, editor unico/whitelist para alteracoes operacionais nem permite afirmar um QA Excel Windows nao executado.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.
