@@ -1,3 +1,5 @@
+> **CORRECAO DE CONTEXTO (2026-11-10):** O usuario confirmou que NAO EXISTE DataCenter Windows local MCE instalado. As referencias posteriores a pastas `C:\\MCE_DADOS`, SQLite privado, espelho e tunel MCP sao especificacoes e componentes de codigo legado, NAO evidencias de runtime real. NAO pedir para ligar ou reconectar servidor inexistente, nem declarar persistencia a partir da CI. A arquitetura alvo requisitada e GitHub-only: fonte de codigo publica, cofre documental privado ainda nao acessivel, GitHub Actions `windows-latest` efemero no contexto PRIVADO, com upload autorizado, SHA-256 e restore real. Ver `systems/mce/docs/GITHUB_ONLY_STORAGE.md`, PR #118, Issue #125. Os gates de engenharia, seguranca, autorizacao e protecao do Excel mestre permanecem integrais. `PRODUCTION_COMPLETE=NO` ate validacao real.
+
 # Sistema MCE — regras locais exclusivas
 
 Escopo: sistema de engenharia de Matriz de Causa e Efeito, independente de motor de engenharia reversa, MCP e interface Web.
