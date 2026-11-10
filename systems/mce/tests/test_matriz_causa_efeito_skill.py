@@ -93,4 +93,4 @@ def test_p09_l50_single_visual_line_must_stay_20pt_policy():
         assert "F:G" in doc
     assert "18 pixels" in primary
     assert "QA_VISUAL_WINDOWS=NOT_RUN" in primary
-    assert "sem spawn" not in primary  # avoid claiming fake agent evidence
+    assert "sem spawn" in primary  # real agent requires verified lifecycle evidence
