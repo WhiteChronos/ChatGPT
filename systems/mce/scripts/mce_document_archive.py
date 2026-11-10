@@ -366,6 +366,61 @@ def catalogue(vault, db, project, mirror=None):
             "items": items, "production_complete": False}
 
 
+
+def restore_secondary(vault, mirror, db, project, document, revision, sha, output):
+    """Recover a missing primary object only from a previously verified mirror.
+
+    Never creates archive evidence or overwrites an existing destination.
+    Requires two matching preexisting evidence records in the sole MCE SQLite.
+    """
+    require_windows()
+    project, document, revision = map(safe_id, (project, document, revision))
+    if not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{64}", sha):
+        raise ValueError("Invalid archive digest")
+    if mirror is None:
+        raise ValueError("Secondary archive must be explicitly configured")
+    vault, mirror = safe_path(vault, "dir"), safe_path(mirror, "dir")
+    if mirror == vault or mirror.is_relative_to(vault) or vault.is_relative_to(mirror):
+        raise ValueError("Mirror overlaps the primary archive")
+    db = memory._path(db)
+    memory.verify(db)
+    receipt = safe_path(
+        mirror / "receipts" / project / document / revision / (sha + ".json"), "file")
+    if receipt.stat().st_size > 4096:
+        raise ValueError("Oversized backup receipt")
+    data = json.loads(receipt.read_text(encoding="utf-8"))
+    identity = {"product": PRODUCT, "project": project, "document": document,
+                "revision": revision, "sha256": sha}
+    if any(data.get(k) != v for k, v in identity.items()):
+        raise ValueError("Backup receipt identity mismatch")
+    size = data.get("size_bytes")
+    if type(size) is not int or size < 0 or size > MAX_FILE_BYTES:
+        raise ValueError("Invalid backup size")
+    blob = safe_path(mirror / "objects" / sha[:2] / sha, "file")
+    if sha_file(blob) != (sha, size):
+        raise ValueError("Secondary object digest mismatch")
+    evidence = (
+        ("DOCUMENT_ARCHIVED", {"project": project, "document": document,
+                               "revision": revision, "size_bytes": size, "sha256": sha}),
+        ("DOCUMENT_BACKUP_VERIFIED", {"project": project, "document": document,
+                                      "revision": revision, "sha256": sha}),
+    )
+    with memory._session(db) as connection:
+        for subject, expected in evidence:
+            rows = connection.execute(
+                "SELECT detail_json FROM memory_events "
+                "WHERE kind='EVIDENCE' AND subject=? AND source_sha256=?",
+                (subject, sha))
+            if not any(json.loads(encoded) == expected for (encoded,) in rows):
+                raise ValueError("Missing verified primary or backup evidence")
+    dest = memory._path(output)
+    if dest.exists() or dest.is_relative_to(mirror) or dest.is_relative_to(vault):
+        raise ValueError("Use new destination outside both archives")
+    copy_immutable(blob, dest, sha)
+    return {"product": PRODUCT, "status": "RESTORE_VERIFIED_FROM_SECONDARY",
+            "sha256": sha, "size_bytes": size, "production_complete": False}
+
+
 def scan(inbox, vault, db, project, revision, mirror=None, min_age=3):
     require_windows()
     inbox, vault, db, mirror = require_roots(inbox, vault, db, mirror)
@@ -413,6 +468,10 @@ def main(argv=None):
     recover.add_argument("--document", required=True)
     recover.add_argument("--sha", required=True)
     recover.add_argument("--output", required=True)
+    backup_recover = sub.add_parser("restore-secondary")
+    backup_recover.add_argument("--document", required=True)
+    backup_recover.add_argument("--sha", required=True)
+    backup_recover.add_argument("--output", required=True)
     args = parser.parse_args(argv)
     try:
         require_windows()
@@ -440,6 +499,10 @@ def main(argv=None):
         elif args.operation == "verify":
             result = verify_one(args.vault, args.db, args.project,
                                 args.document, args.revision, args.sha)
+        elif args.operation == "restore-secondary":
+            result = restore_secondary(args.vault, args.mirror, args.db,
+                                       args.project, args.document, args.revision,
+                                       args.sha, args.output)
         else:
             result = restore_one(args.vault, args.db, args.project,
                                  args.document, args.revision, args.sha, args.output)

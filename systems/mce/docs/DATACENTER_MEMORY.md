@@ -106,3 +106,14 @@ py -3.12 .\systems\mce\scripts\mce_document_archive.py --inbox "C:\MCE_DADOS\inb
 Usar a versao `document/revision/sha256` recuperada do catalogo para `verify` e `restore --output` a **destino novo**; conferir hash antes de usá-la. O mesmo SHA registrado no Issue #120 somente pode ser restaurado se os bytes correspondentes estiverem no vault privado e o recibo/ledger forem validos. Para arquivo ainda nao arquivado, operador deve transferir explicitamente bytes ao inbox autorizado e realizar `ingest` com espelho; anexo no ChatGPT nao chega ao Windows por esta implementacao. Arquivo sem recibo verificado continua `COPY_PENDING`. Um mirror no mesmo dominio de falha nao assegura backup independente; restore de desastre continua gate humano.
 
 Este comando e implementacao candidata para CI Windows, nao prova `HOST_DISCOVERED`, `LIVE_VERIFIED`, backup offsite, transferencia automatica de anexo ou homologacao da MCE. A abertura do Issue #125 rastreia esses gates.
+
+
+### Restaurar documento apos perda da copia primaria (DEC-MCE-045)
+
+No Windows autorizado, com arquivos e banco SQLite MCE existentes, o operador pode executar `restore-secondary` para restaurar uma nova copia a partir do espelho verificado. O comando requer `--mirror`, projeto/documento/revisao, hash SHA-256, recibo correspondente e eventos `DOCUMENT_ARCHIVED` + `DOCUMENT_BACKUP_VERIFIED` ja persistidos. Se a origem primaria tiver sido apagada, o espelho pode ser usado sem recriar o vault primario. Nunca sobrescreve destino, nao escreve no SQLite e nao modifica o mestre.
+
+```powershell
+py -3.12 .\systems\mce\scripts\mce_document_archive.py --inbox "C:\MCE_DADOS\inbox" --vault "C:\MCE_DADOS\vault" --db "C:\MCE_DADOS\mce.sqlite3" --project "ADM_GAMBOA" --revision "AS_RECEIVED" --mirror "D:\MCE_BACKUP\mce-vault" restore-secondary --document "MCE" --sha "SHA256_DO_RECIBO" --output "C:\MCE_DADOS\recuperados\matriz-restaurada.xlsx"
+```
+
+A pasta pai do destino deve existir e o arquivo ainda nao pode existir. Se o unico SQLite tambem se perder, recuperar primeiro sua copia autenticada pelo `mce_memory.py restore` para destino novo e verificar integridade. O sucesso de testes sinteticos nao certifica independencia fisica do backup, disponibilidade de anexos de chats nem funcionamento do host MCE. O teste de desastre exige apagar somente copia sintetica isolada e comparar hash apos restauracao; nao apagar dados reais para testar.

@@ -209,3 +209,67 @@ def test_catalogue_requires_initialized_sqlite_and_rejects_invalid_scope(tmp_pat
     attempt = subprocess.run(cmd, capture_output=True, text=True, timeout=40)
     assert attempt.returncode == 2
     assert json.loads(attempt.stdout)["status"] == "ARCHIVE_BLOCKED"
+
+
+def test_restore_secondary_after_primary_is_lost(tmp_path):
+    inbox, vault, mirror, db, mem = setup(tmp_path)
+    original = b"synthetic matrix"
+    (inbox / "matrix.xlsx").write_bytes(original)
+    code, saved = call(inbox, vault, db, "ingest", "--filename", "matrix.xlsx",
+                       "--document", "MCE", mirror=mirror)
+    assert code == 0
+    sha = saved["sha256"]
+    primary = vault / "objects" / sha[:2] / sha
+    primary.unlink()
+    target = tmp_path / "recovered.xlsx"
+    initial_events = mem.verify(db)["event_count"]
+    code, result = call(inbox, vault, db, "restore-secondary",
+                        "--document", "MCE", "--sha", sha,
+                        "--output", str(target), mirror=mirror)
+    assert code == 0 and result["status"] == "RESTORE_VERIFIED_FROM_SECONDARY"
+    assert target.read_bytes() == original
+    assert not primary.exists()
+    assert mem.verify(db)["event_count"] == initial_events
+    assert call(inbox, vault, db, "restore-secondary",
+                "--document", "MCE", "--sha", sha,
+                "--output", str(target), mirror=mirror)[0] == 2
+
+
+def test_restore_secondary_rejects_unverified_copy(tmp_path):
+    inbox, vault, mirror, db, mem = setup(tmp_path)
+    (inbox / "md.pdf").write_bytes(b"mock document")
+    code, result = call(inbox, vault, db, "ingest", "--filename", "md.pdf",
+                        "--document", "MD")
+    assert code == 0
+    sha = result["sha256"]
+    (mirror / "objects" / sha[:2]).mkdir(parents=True)
+    (mirror / "objects" / sha[:2] / sha).write_bytes(b"mock document")
+    receipt = mirror / "receipts" / "ADM_GAMBOA" / "MD" / "REV_A"
+    receipt.mkdir(parents=True)
+    original_receipt = vault / "receipts" / "ADM_GAMBOA" / "MD" / "REV_A" / (sha + ".json")
+    (receipt / (sha + ".json")).write_bytes(original_receipt.read_bytes())
+    target = tmp_path / "denied.pdf"
+    code, result = call(inbox, vault, db, "restore-secondary",
+                        "--document", "MD", "--sha", sha,
+                        "--output", str(target), mirror=mirror)
+    assert code == 2 and result["status"] == "ARCHIVE_BLOCKED"
+    assert not target.exists()
+
+
+def test_restore_secondary_rejects_corrupt_mirror_or_overlapping_roots(tmp_path):
+    inbox, vault, mirror, db, mem = setup(tmp_path)
+    (inbox / "source.pdf").write_bytes(b"good document")
+    code, result = call(inbox, vault, db, "ingest", "--filename", "source.pdf",
+                        "--document", "ET", mirror=mirror)
+    assert code == 0
+    sha = result["sha256"]
+    (mirror / "objects" / sha[:2] / sha).write_bytes(b"corruption")
+    target = tmp_path / "untouched.pdf"
+    code, payload = call(inbox, vault, db, "restore-secondary",
+                         "--document", "ET", "--sha", sha,
+                         "--output", str(target), mirror=mirror)
+    assert code == 2 and payload["status"] == "ARCHIVE_BLOCKED"
+    assert call(inbox, vault, db, "restore-secondary",
+                "--document", "ET", "--sha", sha,
+                "--output", str(target), mirror=vault)[0] == 2
+    assert not target.exists()
