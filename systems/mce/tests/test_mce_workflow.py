@@ -286,3 +286,29 @@ def test_p09_l50_progressive_height_policy_and_width_profile(tmp_path):
     book['FOLHA 2'].column_dimensions['C'].width = 55
     book.save(model)
     with pytest.raises(ValueError,match='largura P09 L50'):mod.verify_p09_l50_model(model,contract)
+
+
+
+def test_p09_l50_medium_border_profile(tmp_path):
+    """DEC-MCE-036: uniform medium borders, without affecting legacy profiles."""
+    from openpyxl.styles import Side, Border
+    model = tmp_path/'p09_l50_medium.xlsx'
+    book = _synthetic_p09_l50(model)
+    for ws in book:
+        ws['C8'].border = Border(left=Side(style='medium'), right=Side(style='medium'),
+                                 top=Side(style='medium'), bottom=Side(style='medium'))
+    book.save(model)
+    contract = {'layout_profile':mod.P09_L50_PROFILE,
+       'border_profile':mod.P09_L50_BORDER_PROFILE,
+       'matrix_ranges':[{'sheet':f'FOLHA {n}', 'first_data_row':8,'last_data_row':50}
+                         for n in range(1,4)]}
+    mod.verify_p09_l50_model(model,contract)
+    book['FOLHA 2']['C8'].border = Border(left=Side(style='thin'),right=Side(style='medium'))
+    book.save(model)
+    with pytest.raises(ValueError, match='diferente de medium'):
+        mod.verify_p09_l50_model(model,contract)
+    contract.pop('border_profile')
+    mod.verify_p09_l50_model(model,contract)  # preserve compatibility of older P09 L50
+    contract['border_profile']='nao_autorizado'
+    with pytest.raises(ValueError,match='perfil de borda desconhecido'):
+        mod.verify_p09_l50_model(model,contract)

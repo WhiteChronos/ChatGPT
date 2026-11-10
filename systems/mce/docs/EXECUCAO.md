@@ -79,3 +79,10 @@ Quando o responsavel solicitar matriz limpa, registrar annotation_policy=EXTERNA
 ## DEC-MCE-035 — Verificação de alturas em uma linha visual
 
 Para MCE P09 L50, fazer POSTFLIGHT de todas as abas contra a regra `20+10*(linhas_visuais-1)`. Regra legível de saída: **1 linha visual = 20 pt; 2 linhas = 30 pt; 3 linhas = 40 pt; 4 linhas = 50 pt**. Não aumentar para 30 pt se o texto completo ocupar uma unica linha no tamanho real Arial 8 pt com colunas B=25, C=56, F=34 (F:G mesclado). O incidente de 10/11/2026 revelou erro da contagem visual por subtrair **18 px arbitrarios** da largura útil da coluna C, transformando 34 textos de uma linha em falsos 30 pt. Usar métrica de texto proporcional a 8 pt (aprox. 10,67 px a 96 DPI), as larguras reais do workbook e quebras explicitas; registrar fonte substituta e riscos perto do limite. Entregar copia XLSX corrigida somente com alturas modificadas, mais prova de diff dos valores, X e geometria. Não afirmar QA nativo Windows ou subagente independente sem evidencias.
+
+
+## DEC-MCE-036: Borda 2 visual de toda a grade P09 L50
+
+O workbook de projeto ADM deve usar espessura visual de grade **2** em TODAS as abas. No formato Excel openpyxl/OOXML o estilo correspondente mais proximo e `Side(style='medium')`; **2 pixels e apenas aproximacao dependente do zoom**, nao espessura exata 2 pt. Perfil contratual `border_profile=P09_L50_MEDIUM_2PX`. Substituir somente lados de borda preexistentes em `A1:AR50` (incluindo cabeçalhos, causas, efeitos e diagonais quando ja presentes). Nunca criar novas divisorias em regioes mescladas ou editar dados. Verificador `verify_p09_l50_model` bloqueia bordas `thin`/misturadas e nao aceita perfil sem grade; outros perfis continuam intactos.
+- Caso ADM, validar 6 abas, 218 registros, 175 X antes/depois, 46 mesclas por aba, fontes Arial 10/8, larguras B=25 C=56 F=34, alturas 20/30/40+, efeitos 35 I:AQ, area A1:AR50. Registro ZIP/OOXML; nao confundir CI e QA em Excel nativo Windows.
+- Novos dados operacionais continuam sujeitos a master e contrato `editable_cells` e `AUTORIZO_ELABORACAO_MCE` vinculados a fontes; atualizacao de norma visual nao concede aprovacao.

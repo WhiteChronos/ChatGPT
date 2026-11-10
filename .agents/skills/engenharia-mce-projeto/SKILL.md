@@ -35,3 +35,9 @@ description: Analisar projetos de automacao, P&IDs, memoriais, narrativas, lista
 - Depois de validar o perfil P09 L50 e **somente sobre copia derivada sob gates humanos**, aplicar a politica de alturas da entrada `matriz-causa-efeito`: `20 + 10*(n_linhas_visuais - 1)` pt, de 20 a 400 em passos de 10. N=3 exige 40 pt, N=4 exige 50 pt; nao bloquear automaticamente textos de tres linhas.
 - Para o perfil de larguras `P09_L50_20261110`, usar B=25, C=56, F=34 (F:G mesclado). Preservar todas as colunas de efeito I:AQ, titulo girado, print A1:AR50, 46 mesclagens e limite de 43 causas por folha; paginar continuamente a cada linha 50, sem usar as paginas dos desenhos como divisores.
 - A rotina de estimar linhas pode sobrecontar/subcontar o Excel; conferir por visualizacao quando disponivel e manter status `QA_VISUAL_WINDOWS=NOT_RUN` caso nao realizado. A Skill nao altera master, nao inventa X, nao chama outro editor nem substitui o gate de `AUTORIZO_ELABORACAO_MCE`.
+
+
+## Perfil P09 L50 de espessura de grade — DEC-MCE-036
+- Para o perfil de apresentação `P09_L50_MEDIUM_2PX`, manter estilo `medium` uniformemente nas bordas já existentes das 6 abas de referência ADM ou de toda a futura MCE L50; nunca inferir que "2" seja largura de coluna nem sobrescrever merged cells.
+- Ao verificar um workbook com contrato explícito `border_profile=P09_L50_MEDIUM_2PX`, o validador canônico deve rejeitar lados com estilo diferente de medium e arquivos sem nenhuma borda. Sem perfil, preservar contratos legados; não aplicar automaticamente border em master aprovado.
+- Esta atualização é de QA/layout, não libera novos X, TAG, comando, edição canônica ou engenharia sem gates.

@@ -26,3 +26,9 @@ description: Controlar e preservar rigorosamente o modelo Excel mestre da Matriz
 - Cada linha de causa adota `20 + 10*(n-1)` pontos para `n` linhas visuais: 20/30/40/50/60 etc, ate 400; vazio 20. Ler a ocupacao conjunta de B/C/F:G, as larguras e `wrap_text`. A contagem de linhas antes da revisao no Excel e preliminar.
 - Para novo perfil de larguras `P09_L50_20261110`: B=25, C=56, F=34, sem tocar G (mesclado), D/E/H, I:AQ ou AR; preservar a geometria de cada aba, bordas, fontes 10/8, mesclagens e numero de causa. Divergencia gera STOP/documentacao, nunca reformatar silenciosamente um mestre oficial.
 - A Skill de padronizacao apenas define e verifica contrato; o executor de engenharia continua unico e autoriza edicao apenas apos aprovacao humana. Revisao documental de workbook na conversa nao e homologacao nem prova de backup no DataCenter.
+
+
+## Borda media uniforme para P09 L50 — DEC-MCE-036
+- O perfil `P09_L50_MEDIUM_2PX` estabelece `medium` (aproximadamente 2 pixels conforme zoom) em **todas as faces de borda existentes** do intervalo A1:AR50, inclusive regiões de cabeçalho, causas e efeitos. Não desenhar bordas onde eram ausentes nem atravessar células mescladas; respeitar cor original, diagonais, fontes e geometria. Aplicar a cada aba, nunca somente a primeira.
+- Validar explicitamente `border_profile=P09_L50_MEDIUM_2PX` em contrato de **cópia derivada**. Na ausência do perfil contratado, não retocar modelos-mestre antigos; para P09 L57 preservar o contrato L57 anterior.
+- Verificar 43 causas por folha, 35 efeitos I:AQ, 46 mesclas, cabeçalho girado, Arial 10/8, 20/30/40+ pt, colunas B25/C56/F34 e impressão A1:AR50; checar diff de valores, 175 X no caso ADM (não global), estilos exceto bordas e ZIP. O editor canônico, o gate humano e os limites de autorização continuam aplicáveis.

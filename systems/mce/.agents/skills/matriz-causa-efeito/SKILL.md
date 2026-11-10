@@ -55,6 +55,15 @@ Ao aplicar o perfil **P09 L50** de DEC-MCE-034, **uma linha VISUAL = 20 pt**, me
 
 Esta verificacao corrige estimativa tipografica de candidata **NAO HOMOLOGADA**, nao altera a obrigatoriedade de aprovacao de engenharia, editor unico/whitelist para alteracoes operacionais nem permite afirmar um QA Excel Windows nao executado.
 
+
+## Perfil de bordas 2 no P09 L50 — DEC-MCE-036 (2026-11-10)
+
+**Padrão de bordas específico da MCE P09 L50 solicitado por imagem:** todas as bordas **existentes** na grade `A1:AR50` de cada `FOLHA N` devem usar **`medium` no Excel OOXML**, em preto ou na cor existente. Isso corresponde visualmente a cerca de **2 pixels em zoom de referência**, mas **não é medida física exata de 2 pt** (a API Excel/openpyxl representa bordas por categorias). Nunca preencher novas divisórias internas de regiões mescladas; trocar apenas o estilo das faces de borda **já presentes**, inclusive diagonais quando existentes, mantendo mesclas e todas as células.
+- Aplicar a todas as abas, com 43 causas por aba, linhas 8:50, efeitos I:AQ (35), 46 mesclagens, área impressa A1:AR50, fontes Arial 10/8, larguras B25/C56/F34 e alturas 20/30/40... conforme DEC-MCE-034/035.
+- Perfil técnico de verificação: `border_profile=P09_L50_MEDIUM_2PX`. O validador MCE bloqueia `thin`, `thick`, `hair` ou mistura de espessuras sob esse perfil, e exige presença de bordas `medium`; não altera outros perfis nem o P09 L57 antigo por inferência.
+- Em correção **estritamente visual** de uma cópia documental preliminar, comparar antes/depois os conteúdos, TAGs, X, mesclas, fontes, larguras, alturas e impressão; **somente o estilo das bordas preexistentes muda**. Sem autorização mestre/whitelist e gate humano, não classificar essa cópia como matriz homologada.
+- Aplique essa regra na Skill principal/espelhos, no contrato e nos testes; o perfil fica versionado no GitHub, não é instalado automaticamente no ChatGPT Web. QA nativo Windows e arquivo DataCenter físico só podem ser declarados mediante prova real.
+
 ## Fase 1 — identificar, analisar e PARAR antes de escrever Excel
 
 1. Identificar explicitamente projeto, **SS**, sistema, documento, revisão e disciplina. Inventariar **modelo mestre real** e fontes (P&ID, lista I/O, narrativa, memorial, filosofia de controle, SRS/HAZOP/LOPA quando aplicável) com SHA-256 e localização verificável; marcar ausência como `NAO_DOCUMENTADO`.
