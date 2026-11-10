@@ -20,19 +20,19 @@ def _outcome(status: str, reason: str) -> dict[str, str]:
     return {"status": status, "reason": reason}
 
 
-def evaluate_repository(data: object, expected_repository: str) -> dict[str, str]:
-    """Validate authenticated GitHub repo metadata, never inference from a URL."""
+def evaluate_repository(data: object, expected_repository: str, require_write: bool = True) -> dict[str, str]:
+    """Validate authenticated metadata. No write claim without explicit push evidence."""
     if not isinstance(data, dict) or data.get("full_name") != expected_repository:
         return _outcome("BLOCKED", "WRONG_REPOSITORY")
     if data.get("private") is not True:
         return _outcome("BLOCKED", "REPO_NOT_PRIVATE")
     permissions = data.get("permissions")
-    if not isinstance(permissions, dict) or permissions.get("push") is not True:
+    if require_write and (not isinstance(permissions, dict) or permissions.get("push") is not True):
         return _outcome("BLOCKED", "NO_WRITE_PERMISSION")
     branch = data.get("default_branch")
     if not isinstance(branch, str) or not branch.strip():
         return _outcome("BLOCKED", "NO_DEFAULT_BRANCH")
-    return _outcome("PASS", "PRIVATE_REPO_ACCESSIBLE")
+    return _outcome("PASS", "PRIVATE_REPO_ACCESSIBLE" if require_write else "PRIVATE_REPO_METADATA_ACCESSIBLE")
 
 
 def _fetch_repository(repository: str, token: str) -> object:
@@ -61,9 +61,9 @@ def _fetch_repository(repository: str, token: str) -> object:
 
 
 def check_vault(
-    repository: str, token: str | None, fetcher=None
+    repository: str, token: str | None, fetcher=None, require_write: bool = True
 ) -> dict[str, str]:
-    """Check existence, privacy and write access without reading any files."""
+    """Check private metadata; strict write gate remains the default."""
     if not isinstance(repository, str) or _REPO_PATTERN.fullmatch(repository) is None:
         return _outcome("BLOCKED", "INVALID_REPOSITORY")
     if not isinstance(token, str) or not token.strip():
@@ -75,15 +75,16 @@ def check_vault(
     except (OSError, ValueError, TypeError, RuntimeError, http.client.HTTPException):
         # Do not emit exception messages: some can contain auth headers.
         return _outcome("BLOCKED", "VAULT_CHECK_FAILED")
-    return evaluate_repository(data, repository)
+    return evaluate_repository(data, repository, require_write=require_write)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="MCE GitHub-only private vault read-only preflight")
     parser.add_argument("--repo", default=DEFAULT_REPOSITORY)
+    parser.add_argument("--read-only", action="store_true", help="Verify private metadata only; does NOT authorize writing")
     args = parser.parse_args(argv)
     token = os.environ.get("MCE_VAULT_GITHUB_TOKEN")
-    result = check_vault(args.repo, token)
+    result = check_vault(args.repo, token, require_write=not args.read_only)
     print(json.dumps(result, sort_keys=True))
     return 0 if result["status"] == "PASS" else 2
 
