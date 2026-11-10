@@ -5,12 +5,13 @@ from pathlib import Path
 from mce_web import MceWeb, regular, read
 
 
-def build_server(root, approvals, public_key=None):
+def build_server(root, approvals, public_key=None, archive_vault=None, archive_db=None, archive_mirror=None):
     from mcp.server import MCPServer
     from mcp.server.mcpserver.exceptions import ToolError
     from mcp.types import ToolAnnotations
 
-    adapter = MceWeb(root, approvals, public_key)
+    adapter = MceWeb(root, approvals, public_key, archive_vault=archive_vault,
+                     archive_db=archive_db, archive_mirror=archive_mirror)
     server = MCPServer('MCE Independente', instructions=(
         'Use only for Matriz de Causa e Efeito. Reuse canonical MCE skills. '
         'Inputs must already exist in the explicitly authorized inbox. '
@@ -72,6 +73,9 @@ def main():
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--approvals', required=True, type=Path)
     parser.add_argument('--public-key', type=Path)
+    parser.add_argument('--archive-vault', type=Path)
+    parser.add_argument('--archive-db', type=Path)
+    parser.add_argument('--archive-mirror', type=Path)
     args = parser.parse_args()
     key = None
     if args.public_key:
@@ -83,7 +87,9 @@ def main():
         key = load_pem_public_key(read(args.public_key))
         if not isinstance(key, Ed25519PublicKey):
             raise ValueError('Ed25519 operator public key required')
-    build_server(args.root, args.approvals, key).run(transport='stdio')
+    build_server(args.root, args.approvals, key,
+                 archive_vault=args.archive_vault, archive_db=args.archive_db,
+                 archive_mirror=args.archive_mirror).run(transport='stdio')
 
 
 if __name__ == '__main__':

@@ -81,3 +81,8 @@ A Skill matriz-causa-efeito e o conjunto de workflows próprios do MCE são excl
 - Toda saida inclui status e \`production_complete=false\`. \`SECONDARY_COPY_VERIFIED_FAILURE_DOMAIN_UNVERIFIED\` nao prova que a segunda pasta esta em outro disco/host. Um backup robusto deve configurar destino realmente independente e manter snapshots com Restic/Kopia aprovados pelo operador.
 
 **IMPORTANTE:** plugin MCE continua com sete ferramentas de inbox e nao transfere anexos de conversa, e o host/tunel pode estar indisponivel; somente o operador instala/ativa a observacao de inbox em Windows. Rotina criptografada e verificacao offsite com Restic/Kopia dependem de instalacao, credencial, retencao e teste real de restauracao aprovados. O script nao instala ferramentas nem cria volume, nao substitui gates MCE/engenharia.
+
+
+### Gate de integracao do plugin MCP (candidato)
+
+O servidor \`mce_sdk_server.py\` aceita flags opcionais \`--archive-vault\`, \`--archive-db\` e \`--archive-mirror\`. Elas devem apontar para pastas privadas existentes e o unico SQLite inicializado, fora do checkout, configuradas somente pelo operador no Windows. Sem as tres flags, o servidor ainda permite status e leitura, mas \`initialize\`, \`understand\` e \`apply\` nao devem processar projetos sem copia validada. Ao habilitar, a operacao arquiva origem, contrato, analise e saida preliminar em duas pastas, conferindo SHA. O backup secundario no mesmo disco nao comprova independencia fisica; validar dominio de falha e restore real. Nenhum fluxo captura automaticamente bytes do ChatGPT para o host sem integracao adicional.

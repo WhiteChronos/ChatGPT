@@ -29,7 +29,18 @@ def instance(tmp_path):
     approvals.mkdir()
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
     key = Ed25519PrivateKey.generate()
-    return mod, mod.MceWeb(root, approvals, key.public_key()), key
+    vault = tmp_path / 'vault'
+    mirror = tmp_path / 'mirror'
+    vault.mkdir()
+    mirror.mkdir()
+    db = tmp_path / 'mce-private.sqlite3'
+    mem_spec = importlib.util.spec_from_file_location('test_archive_memory', ROOT / 'scripts/mce_memory.py')
+    memory = importlib.util.module_from_spec(mem_spec)
+    mem_spec.loader.exec_module(memory)
+    memory.init(db)
+    return mod, mod.MceWeb(root, approvals, key.public_key(),
+                           archive_vault=vault, archive_db=db,
+                           archive_mirror=mirror), key
 
 
 def test_status_is_independent_and_never_claims_acceptance(tmp_path):
@@ -253,3 +264,22 @@ def test_web_runtime_keeps_windows_only_contract(monkeypatch):
     monkeypatch.setattr(mod.sys, 'platform', 'linux')
     with pytest.raises(ValueError, match='WINDOWS_ONLY'):
         mod.require_windows()
+
+
+def test_archival_gate_requires_real_private_vault_and_secondary_root(tmp_path):
+    mod, app, key = instance(tmp_path)
+    unconfigured = mod.MceWeb(app.root, app.approvals, key.public_key())
+    assert unconfigured.status()['archive_configured'] is False
+    with pytest.raises(ValueError, match='ARCHIVE_REQUIRED'):
+        unconfigured._archive_ready()
+    assert app.status()['archive_configured'] is True
+
+
+def test_archiving_failure_blocks_new_workspace_without_losing_source(tmp_path):
+    mod, app, _ = instance(tmp_path)
+    source = app.root / 'inbox/model.xlsx'
+    source.write_bytes(b'not an xlsx')
+    with pytest.raises(ValueError):
+        app.initialize('demo', 'model.xlsx', ['missing.txt'])
+    assert source.read_bytes() == b'not an xlsx'
+    assert not (app.root / 'projects/demo').exists()

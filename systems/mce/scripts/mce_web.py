@@ -146,8 +146,14 @@ def sign_approval(request, private_key, approver, *, lifetime_seconds=3600):
 
 
 class MceWeb:
-    def __init__(self, root, approvals, public_key):
+    def __init__(self, root, approvals, public_key, archive_vault=None, archive_db=None, archive_mirror=None):
         require_windows()
+        if any(x is not None for x in (archive_vault, archive_db, archive_mirror)) and not all(
+                x is not None for x in (archive_vault, archive_db, archive_mirror)):
+            raise ValueError('Primary vault, MCE database and independent copy root must be configured together')
+        self.archive_vault = Path(archive_vault).absolute() if archive_vault is not None else None
+        self.archive_db = Path(archive_db).absolute() if archive_db is not None else None
+        self.archive_mirror = Path(archive_mirror).absolute() if archive_mirror is not None else None
         root, approvals = Path(root).absolute(), Path(approvals).absolute()
         regular(root, directory=True)
         regular(approvals, directory=True)
@@ -162,7 +168,8 @@ class MceWeb:
     def status(self):
         return {'product': 'MCE_INDEPENDENTE', 'remote_self_approval': False,
                 'production_complete': False, 'scope': 'MATRIZ_DE_CAUSA_E_EFEITO',
-                'skills': list(SKILLS), 'signing_key_available': self.public_key is not None}
+                'skills': list(SKILLS), 'signing_key_available': self.public_key is not None,
+                'archive_configured': self.archive_vault is not None}
 
     def read_skill(self, skill):
         if skill not in SKILLS:
@@ -227,6 +234,36 @@ class MceWeb:
         report = json.loads(result.stdout)
         return {key: value for key, value in report.items() if key not in ('workspace', 'output', 'approver')}
 
+    def _archive_ready(self):
+        if self.archive_vault is None or self.archive_db is None or self.archive_mirror is None:
+            raise ValueError('ARCHIVE_REQUIRED: Windows DataCenter and secondary copy not configured')
+
+    def _archive_input(self, project_id, path, *, revision='AS_RECEIVED', document=None):
+        """Call only the existing private MCE archive; never expose document bytes over MCP."""
+        self._archive_ready()
+        safe_project = name(project_id)
+        safe_revision = name(revision)
+        identifier = document or 'SRC_' + hashlib.sha256(path.name.encode('utf-8')).hexdigest()[:24]
+        cmd = [sys.executable, str(PRODUCT / 'scripts/mce_document_archive.py'),
+               '--inbox', str(path.parent), '--vault', str(self.archive_vault),
+               '--db', str(self.archive_db), '--project', safe_project,
+               '--revision', safe_revision, '--mirror', str(self.archive_mirror),
+               'ingest', '--filename', path.name, '--document', identifier]
+        result = subprocess.run(cmd, capture_output=True, check=False,
+                                timeout=75, text=True, encoding='utf-8', errors='replace')
+        if result.returncode != 0:
+            raise ValueError('ARCHIVE_BLOCKED: document preservation failed')
+        try:
+            proof = json.loads(result.stdout)
+        except (ValueError, json.JSONDecodeError) as exc:
+            raise ValueError('ARCHIVE_BLOCKED: no verified receipt') from exc
+        if (proof.get('status') != 'ARCHIVED_VERIFIED' or
+                proof.get('backup_status') != 'SECONDARY_COPY_VERIFIED_FAILURE_DOMAIN_UNVERIFIED'):
+            raise ValueError('ARCHIVE_BLOCKED: secondary copy not verified')
+        if proof.get('sha256') != digest(read(path)):
+            raise ValueError('ARCHIVE_BLOCKED: source changed after archive')
+        return proof
+
     def initialize(self, project_id, master, sources):
         with self.lock:
             destination = self.root / 'projects' / name(project_id)
@@ -236,6 +273,9 @@ class MceWeb:
             inputs = [self.input(item) for item in sources]
             for item in inputs:
                 read(item)
+            self._archive_input(project_id, self.input(master))
+            for item in inputs:
+                self._archive_input(project_id, item)
             report = self.command('init', destination, master=self.input(master), sources=inputs)
             return {**report, 'project_id': project_id, 'production_complete': False}
 
@@ -250,6 +290,8 @@ class MceWeb:
             json_file(analysis_path)
             contract_path = self.input(contract, '.json')
             json_file(contract_path)
+            self._archive_input(project_id, analysis_path)
+            self._archive_input(project_id, contract_path)
             shutil.copyfile(contract_path, project / 'contract.json')
             report = self.command('understand', project, analysis=analysis_path)
             return {**report, 'production_complete': False}
@@ -272,6 +314,7 @@ class MceWeb:
 
     def apply(self, project_id, changes, approval):
         with self.lock:
+            self._archive_ready()
             request = self.approval_request(project_id, changes)
             if self.public_key is None:
                 raise ValueError('External operator public key missing')
@@ -324,6 +367,8 @@ class MceWeb:
             self.command('authorize', job, authorization=auth_path)
             report = self.command('apply', job, changes=changes_path)
             self.command('audit', job)
+            self._archive_input(project_id, job / 'output/MCE_PRELIMINAR.xlsx',
+                                revision='PRELIMINAR', document='MCE_PRELIMINAR')
             return {**report, 'job_id': job_id, 'output': f'jobs/{job_id}/output/MCE_PRELIMINAR.xlsx',
                     'output_sha256': digest(read(job / 'output/MCE_PRELIMINAR.xlsx')),
                     'production_complete': False}
