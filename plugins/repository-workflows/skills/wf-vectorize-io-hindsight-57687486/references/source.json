@@ -1,0 +1,110 @@
+{
+  "repository": "vectorize-io/hindsight",
+  "skills": [
+    {
+      "path": ".claude/skills/triage/SKILL.md",
+      "sha": "629bb9fbccd8e82e9627930d91a01b329577311f",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/.claude/skills/triage/SKILL.md"
+    },
+    {
+      "path": "skills/hindsight-docs/SKILL.md",
+      "sha": "4e2535cfb6ebb6c89cf35550e3f91abe17b47fef",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/skills/hindsight-docs/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/figure/SKILL.md",
+      "sha": "e8ed5731b85aba46a6ccc583a74ce5fabe2849a7",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/.claude/skills/figure/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/ship-it/SKILL.md",
+      "sha": "ca3e09bf90d8f90d6a6bd69a392ed4214d7ec59b",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/.claude/skills/ship-it/SKILL.md"
+    },
+    {
+      "path": "skills/hindsight-local/SKILL.md",
+      "sha": "fa1a3f45400d4fccf46af6bd0cfc2ae00f9854ff",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/skills/hindsight-local/SKILL.md"
+    },
+    {
+      "path": "skills/hindsight-cloud/SKILL.md",
+      "sha": "91852810c9a3450199d1cbd505764968b79ecfb7",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/skills/hindsight-cloud/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/hs-release/SKILL.md",
+      "sha": "62477afecb08cf7f00e0dd1575060acea4bad679",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/.claude/skills/hs-release/SKILL.md"
+    },
+    {
+      "path": "skills/hindsight-architect/SKILL.md",
+      "sha": "ffd3c543651d701e26a8799f14016ffabda3910a",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/skills/hindsight-architect/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/code-review/SKILL.md",
+      "sha": "1ebe28d86e4a700d834e742d9cf137990dbf9ca3",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/.claude/skills/code-review/SKILL.md"
+    },
+    {
+      "path": "skills/hindsight-self-hosted/SKILL.md",
+      "sha": "dd7d1c4a4a26c8a325c7ba14cf5106302be7ef2a",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/skills/hindsight-self-hosted/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/coding-agents/skill/SKILL.md",
+      "sha": "1bf841b8469f3e4c00cae07380d67491aa41eb19",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/coding-agents/skill/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/grok-bot/skills/bot-handoff/SKILL.md",
+      "sha": "904012368b69c97f3d5e1ab20a18ecca671a5639",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/grok-bot/skills/bot-handoff/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/grok-bot/skills/memory-setup/SKILL.md",
+      "sha": "21404adc8b65a258eaa1f9b551757c227ba70c90",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/grok-bot/skills/memory-setup/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/grok-bot/skills/memory-retain/SKILL.md",
+      "sha": "55e2f213f504bab6cfd1828aad9cbc7c415b5431",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/grok-bot/skills/memory-retain/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/cursor/skills/hindsight-recall/SKILL.md",
+      "sha": "a2ba6804eb21cee92d2eac6fd71543657ea0412d",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/cursor/skills/hindsight-recall/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/grok-bot/skills/routine-memory/SKILL.md",
+      "sha": "dbff22f2c268631949b9f958b05ab1a5634ff6c7",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/grok-bot/skills/routine-memory/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/grok-bot/skills/memory-context/SKILL.md",
+      "sha": "1cd04d255e8274c7958af4aefbd62f738f66a4da",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/grok-bot/skills/memory-context/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/grok-bot/skills/memory-reflect/SKILL.md",
+      "sha": "7084c3ab438144cd85c3b06f7d1c207c0f60fd6d",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/grok-bot/skills/memory-reflect/SKILL.md"
+    },
+    {
+      "path": "hindsight-integrations/agent-plugin/skills/hindsight-memory/SKILL.md",
+      "sha": "f167edcfc43abde6f317daec5bfdfcd936d83e4b",
+      "url": "https://github.com/vectorize-io/hindsight/blob/5a672f0cdb89f4a3b841770cce2036a5b28b799d/hindsight-integrations/agent-plugin/skills/hindsight-memory/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-vectorize-io-hindsight-57687486",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/triage/SKILL.md",
+    "name": "triage",
+    "read_verified": true
+  }
+}

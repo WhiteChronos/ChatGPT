@@ -1,0 +1,357 @@
+{
+  "registry_version": "1.1.0",
+  "policy": {
+    "auto_install_forbidden": true,
+    "pin_release_or_commit_required": true,
+    "license_review_required": true,
+    "human_approval_before_activation": true,
+    "scheduled_discovery_enabled": true,
+    "core_failure_blocks_pipeline": true
+  },
+  "repositories": [
+    {
+      "full_name": "python-openxml/python-docx",
+      "category": "WORD_OOXML",
+      "status": "APPROVED_CORE",
+      "purpose": "Criar e modificar documentos Word com Python.",
+      "allowed_use": ["DOCX_TEXT_EDIT", "DOCX_TABLE_EDIT", "DOCX_METADATA_READ"],
+      "forbidden_use": ["UNCONTROLLED_TEMPLATE_REBUILD"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "LibreOffice/core",
+      "category": "RENDERING",
+      "status": "APPROVED_CORE",
+      "purpose": "Renderização e conversão de DOCX/XLSX para inspeção visual.",
+      "allowed_use": ["HEADLESS_RENDER", "PDF_EXPORT", "VISUAL_QA"],
+      "expected_license": "MPL-2.0",
+      "auto_install": false
+    },
+    {
+      "full_name": "lxml/lxml",
+      "category": "OOXML_XML",
+      "status": "APPROVED_CORE",
+      "purpose": "Leitura e alteração cirúrgica de XML/OOXML.",
+      "allowed_use": ["OOXML_PATCH", "XML_VALIDATION"],
+      "expected_license": "BSD-3-Clause",
+      "auto_install": false
+    },
+    {
+      "full_name": "python-pillow/Pillow",
+      "category": "IMAGE_QA",
+      "status": "APPROVED_CORE",
+      "purpose": "Inspeção e comparação de imagens renderizadas.",
+      "allowed_use": ["IMAGE_DIFF", "PAGE_RENDER_QA"],
+      "expected_license": "HPND",
+      "auto_install": false
+    },
+    {
+      "full_name": "py-pdf/pypdf",
+      "category": "PDF_STRUCTURE",
+      "status": "APPROVED_OPTIONAL",
+      "purpose": "Leitura e manipulação estrutural de PDF.",
+      "allowed_use": ["PDF_TEXT", "PDF_METADATA", "PDF_PAGE_OPERATIONS"],
+      "expected_license": "BSD-3-Clause",
+      "auto_install": false
+    },
+    {
+      "full_name": "pymupdf/PyMuPDF",
+      "category": "PDF_RENDERING",
+      "status": "REVIEW_REQUIRED_LICENSE",
+      "purpose": "Renderização e extração de PDF com alto desempenho.",
+      "allowed_use": ["PDF_RENDER", "PDF_INSPECTION"],
+      "expected_license": "AGPL-3.0",
+      "activation_condition": "Aprovação jurídica/licenciamento antes de uso em distribuição proprietária.",
+      "auto_install": false
+    },
+    {
+      "full_name": "docling-project/docling",
+      "category": "DOCUMENT_UNDERSTANDING",
+      "status": "APPROVED_OPTIONAL",
+      "purpose": "Conversão e entendimento estruturado de documentos.",
+      "allowed_use": ["DOCUMENT_PARSE", "TABLE_EXTRACTION", "SOURCE_INDEXING"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "docling-project/docling-mcp",
+      "category": "MCP_PLUGIN",
+      "status": "RESEARCH_ONLY",
+      "purpose": "Integração MCP para entendimento documental.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "microsoft/markitdown",
+      "category": "DOCUMENT_EXTRACTION",
+      "status": "APPROVED_OPTIONAL",
+      "purpose": "Conversão de documentos Office para Markdown pesquisável.",
+      "allowed_use": ["TEXT_EXTRACTION", "INDEXING"],
+      "forbidden_use": ["LAYOUT_AUTHORING"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "Unstructured-IO/unstructured",
+      "category": "DOCUMENT_EXTRACTION",
+      "status": "REVIEW_REQUIRED",
+      "purpose": "Particionamento e extração de conteúdo de documentos.",
+      "allowed_use": ["SOURCE_INDEXING", "DOCUMENT_PARSE"],
+      "expected_license": "Apache-2.0",
+      "auto_install": false
+    },
+    {
+      "full_name": "ericgazoni/openpyxl",
+      "category": "EXCEL_OOXML",
+      "status": "REFERENCE_ONLY",
+      "purpose": "Espelho histórico do openpyxl; não é a fonte canônica atual.",
+      "allowed_use": ["REFERENCE"],
+      "forbidden_use": ["SOURCE_INSTALL"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "jmcnamara/XlsxWriter",
+      "category": "EXCEL_GENERATION",
+      "status": "APPROVED_GENERATION_ONLY",
+      "purpose": "Geração de novas planilhas; não editar arquivos com layout bloqueado.",
+      "allowed_use": ["NEW_XLSX_GENERATION"],
+      "forbidden_use": ["LAYOUT_LOCKED_XLSX_EDIT"],
+      "expected_license": "BSD-2-Clause",
+      "auto_install": false
+    },
+    {
+      "full_name": "SheetJS/sheetjs",
+      "category": "EXCEL_PARSE",
+      "status": "RESEARCH_ONLY",
+      "purpose": "Leitura e conversão de planilhas em aplicações JavaScript.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "expected_license": "Apache-2.0",
+      "auto_install": false
+    },
+    {
+      "full_name": "4teamwork/docxcompose",
+      "category": "WORD_MERGE",
+      "status": "APPROVED_OPTIONAL",
+      "purpose": "Composição e união controlada de documentos DOCX.",
+      "allowed_use": ["CONTROLLED_DOCX_MERGE"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "elapouya/python-docx-template",
+      "category": "WORD_TEMPLATE",
+      "status": "REVIEW_REQUIRED",
+      "purpose": "Preenchimento de modelos DOCX com placeholders.",
+      "allowed_use": ["SANDBOX_TEMPLATE_TEST"],
+      "forbidden_use": ["LAYOUT_RECONSTRUCTION_WITHOUT_DIFF"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "actions/checkout",
+      "category": "GITHUB_ACTION",
+      "status": "APPROVED_CI",
+      "purpose": "Checkout do repositório em CI.",
+      "allowed_use": ["CI"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "actions/setup-python",
+      "category": "GITHUB_ACTION",
+      "status": "APPROVED_CI",
+      "purpose": "Configuração reprodutível do Python em CI.",
+      "allowed_use": ["CI"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "actions/upload-artifact",
+      "category": "GITHUB_ACTION",
+      "status": "APPROVED_CI",
+      "purpose": "Armazenamento de relatórios e evidências de QA.",
+      "allowed_use": ["CI_ARTIFACT"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "pre-commit/pre-commit",
+      "category": "QUALITY_GATE",
+      "status": "APPROVED_CI",
+      "purpose": "Verificações antes de commits.",
+      "allowed_use": ["CI", "LOCAL_QUALITY"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "pytest-dev/pytest",
+      "category": "TESTING",
+      "status": "APPROVED_CI",
+      "purpose": "Testes de regressão do pipeline documental.",
+      "allowed_use": ["CI", "REGRESSION_TEST"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "astral-sh/ruff",
+      "category": "LINT",
+      "status": "APPROVED_CI",
+      "purpose": "Lint e qualidade de código Python.",
+      "allowed_use": ["CI", "LOCAL_QUALITY"],
+      "expected_license": "MIT",
+      "auto_install": false
+    },
+    {
+      "full_name": "dotnet/Open-XML-SDK",
+      "category": "OOXML_VALIDATION",
+      "status": "EVALUATION",
+      "purpose": "Validação e manipulação OOXML em ambiente .NET.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "jsvine/pdfplumber",
+      "category": "PDF_TABLE_EXTRACTION",
+      "status": "EVALUATION",
+      "purpose": "Extração de texto e tabelas de PDF.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "mozman/ezdxf",
+      "category": "CAD_DXF",
+      "status": "EVALUATION",
+      "purpose": "Leitura e análise de arquivos DXF para cruzamento com desenhos.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "nolze/msoffcrypto-tool",
+      "category": "OFFICE_SECURITY",
+      "status": "EVALUATION",
+      "purpose": "Detecção e abertura controlada de documentos Office criptografados.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "decalage2/oletools",
+      "category": "OFFICE_SECURITY",
+      "status": "EVALUATION",
+      "purpose": "Inspeção de OLE, macros e conteúdo ativo em documentos Office.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "unoconv/unoserver",
+      "category": "RENDERING_SERVICE",
+      "status": "EVALUATION",
+      "purpose": "Serviço controlado de conversão baseado em LibreOffice.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "gotenberg/gotenberg",
+      "category": "DOCUMENT_CONVERSION_SERVICE",
+      "status": "EVALUATION",
+      "purpose": "Conversão isolada de documentos para PDF em serviço/container.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "pymupdf/pymupdf4llm",
+      "category": "DOCUMENT_EXTRACTION",
+      "status": "REVIEW_REQUIRED_LICENSE",
+      "purpose": "Extração estruturada de PDF; exige revisão de licença.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "ShayHill/docx2python",
+      "category": "WORD_EXTRACTION",
+      "status": "EVALUATION",
+      "purpose": "Extração estruturada de conteúdo DOCX.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "ArtifexSoftware/pdf2docx",
+      "category": "PDF_TO_DOCX",
+      "status": "REVIEW_REQUIRED_LICENSE",
+      "purpose": "Conversão PDF para DOCX; não usar para reconstruir template controlado.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "Shoobx/xmldiff",
+      "category": "XML_DIFF",
+      "status": "EVALUATION",
+      "purpose": "Comparação estrutural de XML/OOXML.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "jgm/pandoc",
+      "category": "DOCUMENT_CONVERSION",
+      "status": "EVALUATION",
+      "purpose": "Conversão documental para formatos intermediários; não é autor do layout controlado.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    },
+    {
+      "full_name": "xlwings/xlwings",
+      "category": "EXCEL_AUTOMATION",
+      "status": "EVALUATION",
+      "purpose": "Automação do Excel quando houver ambiente Microsoft Excel autorizado.",
+      "allowed_use": ["SANDBOX_EVALUATION"],
+      "forbidden_use": ["AUTO_INSTALL", "UNREVIEWED_PRODUCTION_USE"],
+      "expected_license": null,
+      "auto_install": false
+    }
+  ],
+  "discovery_queries": [
+    "cad dxf document cross reference",
+    "document comments extraction",
+    "document conversion libreoffice server",
+    "docx xlsx layout validation",
+    "engineering document control",
+    "excel template preservation",
+    "github action office document qa",
+    "github action office documents",
+    "mcp document processing",
+    "office document processing ooxml",
+    "office macro security analysis",
+    "office ooxml document processing",
+    "pdf annotations comments extraction",
+    "pdf rendering document qa",
+    "pdf rendering document visual qa",
+    "spreadsheet formula validation"
+  ],
+  "scope_statement": "Catálogo curado e extensível de ferramentas públicas do GitHub. Não pretende representar todos os repositórios existentes; o workflow mensal procura novas candidatas."
+}

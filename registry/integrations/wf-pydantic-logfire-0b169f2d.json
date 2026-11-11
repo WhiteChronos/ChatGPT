@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-pydantic-logfire-0b169f2d",
+  "display_name": "pydantic/logfire Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-pydantic-logfire-0b169f2d",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-pydantic-logfire-0b169f2d",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-pydantic-logfire-0b169f2d/skills/wf-pydantic-logfire-0b169f2d/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

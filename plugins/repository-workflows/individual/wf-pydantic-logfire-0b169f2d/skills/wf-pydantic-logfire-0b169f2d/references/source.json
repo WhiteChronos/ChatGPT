@@ -1,0 +1,45 @@
+{
+  "repository": "pydantic/logfire",
+  "skills": [
+    {
+      "path": ".agents/skills/update-deps/SKILL.md",
+      "sha": "84c22c39de75e6c40b1f5eb12ec8745ca82fee60",
+      "url": "https://github.com/pydantic/logfire/blob/b511701deb25bc9c537a20c0ccd0d3b1e6ae227c/.agents/skills/update-deps/SKILL.md"
+    },
+    {
+      "path": "logfire-sdk/logfire/.agents/skills/logfire-setup/SKILL.md",
+      "sha": "860579c99734a0f3060da0b2a4bdfc61c6dfaf62",
+      "url": "https://github.com/pydantic/logfire/blob/b511701deb25bc9c537a20c0ccd0d3b1e6ae227c/logfire-sdk/logfire/.agents/skills/logfire-setup/SKILL.md"
+    },
+    {
+      "path": "logfire-sdk/logfire/.agents/skills/logfire-evals/SKILL.md",
+      "sha": "e73d1e6f0df1097cdbf2f6bfcf4bc013a9a20d55",
+      "url": "https://github.com/pydantic/logfire/blob/b511701deb25bc9c537a20c0ccd0d3b1e6ae227c/logfire-sdk/logfire/.agents/skills/logfire-evals/SKILL.md"
+    },
+    {
+      "path": "logfire-sdk/logfire/.agents/skills/logfire-gateway/SKILL.md",
+      "sha": "3360ab0391c0084a06d4b47a34ff5e12bfdffc5a",
+      "url": "https://github.com/pydantic/logfire/blob/b511701deb25bc9c537a20c0ccd0d3b1e6ae227c/logfire-sdk/logfire/.agents/skills/logfire-gateway/SKILL.md"
+    },
+    {
+      "path": "logfire-sdk/logfire/.agents/skills/logfire-infrastructure/SKILL.md",
+      "sha": "a266b17847d4cdb914e2263df172e9cec21d01b7",
+      "url": "https://github.com/pydantic/logfire/blob/b511701deb25bc9c537a20c0ccd0d3b1e6ae227c/logfire-sdk/logfire/.agents/skills/logfire-infrastructure/SKILL.md"
+    },
+    {
+      "path": "logfire-sdk/logfire/.agents/skills/logfire-instrumentation/SKILL.md",
+      "sha": "49c7c13cef789f977f585a4a6b71f85cab071ea6",
+      "url": "https://github.com/pydantic/logfire/blob/b511701deb25bc9c537a20c0ccd0d3b1e6ae227c/logfire-sdk/logfire/.agents/skills/logfire-instrumentation/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-pydantic-logfire-0b169f2d",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/update-deps/SKILL.md",
+    "name": "update-deps",
+    "read_verified": true
+  }
+}

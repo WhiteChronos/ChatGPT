@@ -1,0 +1,3 @@
+interface:
+  display_name: "Awesome LLM Apps Controller"
+  short_description: "Route agent, RAG, MCP, voice, UI, and framework examples safely."

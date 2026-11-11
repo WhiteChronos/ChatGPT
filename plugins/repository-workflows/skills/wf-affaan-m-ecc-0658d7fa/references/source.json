@@ -1,0 +1,526 @@
+{
+  "repository": "affaan-m/ECC",
+  "skills": [
+    {
+      "path": "skills/ck/SKILL.md",
+      "sha": "12e191050d00516076cf5da23e43a6d828363868",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ck/SKILL.md"
+    },
+    {
+      "path": "skills/seo/SKILL.md",
+      "sha": "a4032a5b5a98c4b09eabf4e4f8971ed664887496",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/seo/SKILL.md"
+    },
+    {
+      "path": "skills/taste/SKILL.md",
+      "sha": "1b307d33af748841382842a6e79b80f7972507fd",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/taste/SKILL.md"
+    },
+    {
+      "path": "skills/x-api/SKILL.md",
+      "sha": "70fa8396e7d3ef3a3c09f537d5a662f4d96e5775",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/x-api/SKILL.md"
+    },
+    {
+      "path": "skills/videodb/SKILL.md",
+      "sha": "e1290296ab5277274bc04ca6856544c0e6aca816",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/videodb/SKILL.md"
+    },
+    {
+      "path": "skills/ui-demo/SKILL.md",
+      "sha": "b90b7fe6834de3fc7950c0bab28922e9d1534f2d",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ui-demo/SKILL.md"
+    },
+    {
+      "path": "skills/council/SKILL.md",
+      "sha": "89cbd962863623354742a9b176be1aaa976936f3",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/council/SKILL.md"
+    },
+    {
+      "path": "skills/uncloud/SKILL.md",
+      "sha": "e4e98126deb6348ac09e5756362a19274845363a",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/uncloud/SKILL.md"
+    },
+    {
+      "path": "skills/dev-team/SKILL.md",
+      "sha": "a6a7340dbde4f58713811fe945ae86f6cca5f074",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/dev-team/SKILL.md"
+    },
+    {
+      "path": "skills/code-tour/SKILL.md",
+      "sha": "d66b7e008287833ac592550f9b0941feaea52443",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/code-tour/SKILL.md"
+    },
+    {
+      "path": "skills/crosspost/SKILL.md",
+      "sha": "b9bbafbd945f734c4dd779321ed2ca7b4ba18bab",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/crosspost/SKILL.md"
+    },
+    {
+      "path": "skills/email-ops/SKILL.md",
+      "sha": "f0126efa6c79d0e56bac2049e47a9f062e9ae111",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/email-ops/SKILL.md"
+    },
+    {
+      "path": "skills/gateguard/SKILL.md",
+      "sha": "208174601bc8387f8efa55e8a8e4945526f7960b",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/gateguard/SKILL.md"
+    },
+    {
+      "path": "skills/benchmark/SKILL.md",
+      "sha": "3020088b5932d0db9275e19c7c0047c92abf84d3",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/benchmark/SKILL.md"
+    },
+    {
+      "path": "skills/repo-scan/SKILL.md",
+      "sha": "c2f40eee7ae20da55f5b9e60b658d0574e5cf18d",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/repo-scan/SKILL.md"
+    },
+    {
+      "path": "skills/config-gc/SKILL.md",
+      "sha": "0583e2c8555e476d1d8d4484a35980dacf256cd6",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/config-gc/SKILL.md"
+    },
+    {
+      "path": "skills/ecc-guide/SKILL.md",
+      "sha": "b794250fc7dd1c24f768961ffccd8d1684a219e4",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ecc-guide/SKILL.md"
+    },
+    {
+      "path": "skills/i18n-sync/SKILL.md",
+      "sha": "91e0436803310f58e6929c7a53ae85c7d4ed9802",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/i18n-sync/SKILL.md"
+    },
+    {
+      "path": "skills/ui-to-vue/SKILL.md",
+      "sha": "83bf5e912be65860c79c18cf1f8be7a77a5cf6da",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ui-to-vue/SKILL.md"
+    },
+    {
+      "path": "skills/blueprint/SKILL.md",
+      "sha": "4c27da2fa537afeeb7c7a452c73960508615f686",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/blueprint/SKILL.md"
+    },
+    {
+      "path": "skills/exa-search/SKILL.md",
+      "sha": "ec3428386cf362b59902370de2f049d0143e09cd",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/exa-search/SKILL.md"
+    },
+    {
+      "path": "skills/browser-qa/SKILL.md",
+      "sha": "f6358d6ac8b43edb7cb894481de56c53e19b3cf2",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/browser-qa/SKILL.md"
+    },
+    {
+      "path": "skills/django-tdd/SKILL.md",
+      "sha": "aaa2cd87ff9f74203f3dc97353019cf270bf83c0",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/django-tdd/SKILL.md"
+    },
+    {
+      "path": "skills/github-ops/SKILL.md",
+      "sha": "dbbe7b129d9d722e8f0e622c3d8f045fc97bd855",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/github-ops/SKILL.md"
+    },
+    {
+      "path": "skills/agent-eval/SKILL.md",
+      "sha": "c082704f19ad58e8f0aa986a25f1da0b29809922",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/agent-eval/SKILL.md"
+    },
+    {
+      "path": "skills/growth-log/SKILL.md",
+      "sha": "80c7d75a3b551eb3e723c6c71a4aa1cdfc1da589",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/growth-log/SKILL.md"
+    },
+    {
+      "path": "skills/api-design/SKILL.md",
+      "sha": "655d730e64492b997bded91038c52f75398c5563",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/api-design/SKILL.md"
+    },
+    {
+      "path": "skills/token-card/SKILL.md",
+      "sha": "978fb57d3017ba28906bc986da058b340a23f7b0",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/token-card/SKILL.md"
+    },
+    {
+      "path": "skills/agent-sort/SKILL.md",
+      "sha": "f07eb28ba7aaefe346c6688799143988b28aa950",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/agent-sort/SKILL.md"
+    },
+    {
+      "path": "skills/agentic-os/SKILL.md",
+      "sha": "4ec8cfd914430a58dd68042fd68cba87f559e905",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/agentic-os/SKILL.md"
+    },
+    {
+      "path": "skills/skill-scout/SKILL.md",
+      "sha": "8a55c548ccd47e4f5adf738cf5becf0b8b9ad9e7",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/skill-scout/SKILL.md"
+    },
+    {
+      "path": "skills/ecc-recipes/SKILL.md",
+      "sha": "e0e6cddef4cb3033f264f966a04267a1bf0731da",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ecc-recipes/SKILL.md"
+    },
+    {
+      "path": "skills/e2e-testing/SKILL.md",
+      "sha": "f9ca797a1badc3a85352e14d31e6262dfde535bc",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/e2e-testing/SKILL.md"
+    },
+    {
+      "path": "skills/quarkus-tdd/SKILL.md",
+      "sha": "1c4d52441554f0470660e4c090f7533c236e2dc3",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/quarkus-tdd/SKILL.md"
+    },
+    {
+      "path": "skills/ito-compute/SKILL.md",
+      "sha": "4970a757b6075d1ce12043ba3c73e0bdea52f1ed",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ito-compute/SKILL.md"
+    },
+    {
+      "path": "skills/ito-baskets/SKILL.md",
+      "sha": "74313290283a9fedfdf7bf6a0047ec7f06845b92",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ito-baskets/SKILL.md"
+    },
+    {
+      "path": "skills/brand-voice/SKILL.md",
+      "sha": "a70421076f3aba4f2d1a0886888b839095b50380",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/brand-voice/SKILL.md"
+    },
+    {
+      "path": "skills/plan-canvas/SKILL.md",
+      "sha": "7c87e18752df8d6788353fbf51d8bc793b9eda6f",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/plan-canvas/SKILL.md"
+    },
+    {
+      "path": "skills/manim-video/SKILL.md",
+      "sha": "2e2121a14b513634fa2fde71aba48f614408ad82",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/manim-video/SKILL.md"
+    },
+    {
+      "path": "skills/laravel-tdd/SKILL.md",
+      "sha": "15ccea11b7ef975901fa7816517261de75364ffb",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/laravel-tdd/SKILL.md"
+    },
+    {
+      "path": "skills/bengali-nlp/SKILL.md",
+      "sha": "74a81067fc16e01e92846b5741e5fd60fe361135",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/bengali-nlp/SKILL.md"
+    },
+    {
+      "path": "skills/cpp-testing/SKILL.md",
+      "sha": "a996a23059b5d055964ec7877167812b8fb6f20d",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/cpp-testing/SKILL.md"
+    },
+    {
+      "path": "skills/bun-runtime/SKILL.md",
+      "sha": "999f71dfed6d2155daddbfdaece4a2fa412c8329",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/bun-runtime/SKILL.md"
+    },
+    {
+      "path": "skills/git-workflow/SKILL.md",
+      "sha": "81a858d3a79344a6879fa60322b5a36cdf758206",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/git-workflow/SKILL.md"
+    },
+    {
+      "path": "skills/canary-watch/SKILL.md",
+      "sha": "8397ab540ccf7516fa7194622ea2909a1f98b8af",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/canary-watch/SKILL.md"
+    },
+    {
+      "path": "skills/mle-workflow/SKILL.md",
+      "sha": "b81aa08306c0cc451180418edf591ec507ac9d8d",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/mle-workflow/SKILL.md"
+    },
+    {
+      "path": "skills/product-lens/SKILL.md",
+      "sha": "af5149d1c692b0919d4337160c6cde5cca43c836",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/product-lens/SKILL.md"
+    },
+    {
+      "path": "skills/messages-ops/SKILL.md",
+      "sha": "65e59b1cc8c4c74386aafac1d8f95d2ab5d63448",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/messages-ops/SKILL.md"
+    },
+    {
+      "path": "skills/eval-harness/SKILL.md",
+      "sha": "133193446a3116e96648081aabcf4f2ea863b0e0",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/eval-harness/SKILL.md"
+    },
+    {
+      "path": "skills/fal-ai-media/SKILL.md",
+      "sha": "b1e837bbb771d94f37e5e47e396b6c7dc84f57ae",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/fal-ai-media/SKILL.md"
+    },
+    {
+      "path": "skills/search-first/SKILL.md",
+      "sha": "3d2669e71ba54afba95defb05080253058190600",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/search-first/SKILL.md"
+    },
+    {
+      "path": "skills/safety-guard/SKILL.md",
+      "sha": "935bb69f6546920ca102fd1b372eea20110ef382",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/safety-guard/SKILL.md"
+    },
+    {
+      "path": "skills/research-ops/SKILL.md",
+      "sha": "449ddc95ef7efeb01883955070d44ad2be83e817",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/research-ops/SKILL.md"
+    },
+    {
+      "path": "skills/rust-testing/SKILL.md",
+      "sha": "464555b45ce646ea9396f63277be08f40d2ce49b",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/rust-testing/SKILL.md"
+    },
+    {
+      "path": "skills/skill-comply/SKILL.md",
+      "sha": "303863e302fe9ff340197fc7442a86bacbb7f425",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/skill-comply/SKILL.md"
+    },
+    {
+      "path": "skills/vue-patterns/SKILL.md",
+      "sha": "978381a60a4c76de4a6ff85c8affe4f48ab8f67d",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/vue-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/santa-method/SKILL.md",
+      "sha": "add4a3f734dd62201a68504964155ea85e316f97",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/santa-method/SKILL.md"
+    },
+    {
+      "path": "skills/ios-icon-gen/SKILL.md",
+      "sha": "a2f25322986a59341a3817f577847af47bf03894",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ios-icon-gen/SKILL.md"
+    },
+    {
+      "path": "skills/ito-training/SKILL.md",
+      "sha": "f28e2e6b0064205a9b6a8e22431496adc48eb5c4",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ito-training/SKILL.md"
+    },
+    {
+      "path": "skills/terminal-ops/SKILL.md",
+      "sha": "22aecd4198c90476495d5449eb2e20d0b0605cfe",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/terminal-ops/SKILL.md"
+    },
+    {
+      "path": "skills/team-builder/SKILL.md",
+      "sha": "2de7d028b6af3e67fb88ab54b631b10fb3e779a8",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/team-builder/SKILL.md"
+    },
+    {
+      "path": "skills/jpa-patterns/SKILL.md",
+      "sha": "5c2f6425dd6f299f6ceb918f56673ad9fbeee8a8",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/jpa-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/tdd-workflow/SKILL.md",
+      "sha": "ad6517386574e623d954c5e9fec74a3f0e36803a",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/tdd-workflow/SKILL.md"
+    },
+    {
+      "path": "skills/perl-testing/SKILL.md",
+      "sha": "c170c19f9897838ab4d2fd17a974b6e27641e510",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/perl-testing/SKILL.md"
+    },
+    {
+      "path": "skills/delivery-gate/SKILL.md",
+      "sha": "bfd4e254257bc39d486b36d0efd051fb2cc407e0",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/delivery-gate/SKILL.md"
+    },
+    {
+      "path": "skills/design-system/SKILL.md",
+      "sha": "c041ed8ab627ebad68c00d062603963fc179fae9",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/design-system/SKILL.md"
+    },
+    {
+      "path": "skills/accessibility/SKILL.md",
+      "sha": "0685394eef10a1bf1e5c02f67a3a8b06ae210cc4",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/accessibility/SKILL.md"
+    },
+    {
+      "path": "skills/vite-patterns/SKILL.md",
+      "sha": "98db326bd2e4f1d38fa539b84c0c0ab059848ea4",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/vite-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/rules-distill/SKILL.md",
+      "sha": "9f76d3fe0c36af92c15607a006ba9b99d18559ef",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/rules-distill/SKILL.md"
+    },
+    {
+      "path": "skills/knowledge-ops/SKILL.md",
+      "sha": "298449d70858abe1c44a667bc182d52a1a13916e",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/knowledge-ops/SKILL.md"
+    },
+    {
+      "path": "skills/frontend-a11y/SKILL.md",
+      "sha": "a39419935900b1ac1003827d83c896610350b619",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/frontend-a11y/SKILL.md"
+    },
+    {
+      "path": "skills/deep-research/SKILL.md",
+      "sha": "75371ee0ec6e627b1246154f28587da19c81581f",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/deep-research/SKILL.md"
+    },
+    {
+      "path": "skills/video-editing/SKILL.md",
+      "sha": "524f075989aff50a74ca3b3159b6a9200eee82fa",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/video-editing/SKILL.md"
+    },
+    {
+      "path": "docs/zh-CN/skills/ck/SKILL.md",
+      "sha": "7bc5299822ac81e5fdb400efdfa747c90bdf8c0c",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/docs/zh-CN/skills/ck/SKILL.md"
+    },
+    {
+      "path": "skills/security-scan/SKILL.md",
+      "sha": "9026c08e024ce2a9ffcb1db0b999b9957cee6bf0",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/security-scan/SKILL.md"
+    },
+    {
+      "path": "skills/react-testing/SKILL.md",
+      "sha": "babaf6ebef80f1e6ba66ef5242372dd175870a40",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/react-testing/SKILL.md"
+    },
+    {
+      "path": "skills/django-celery/SKILL.md",
+      "sha": "0ae9877559d4c4b64ad124621f33480e2abb2e12",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/django-celery/SKILL.md"
+    },
+    {
+      "path": "docs/ja-JP/skills/ck/SKILL.md",
+      "sha": "dab818e2ce3646b08425429849421832b5edd922",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/docs/ja-JP/skills/ck/SKILL.md"
+    },
+    {
+      "path": "skills/nanoclaw-repl/SKILL.md",
+      "sha": "f7d91a6902df66d24470756d9765897e3605ffdc",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/nanoclaw-repl/SKILL.md"
+    },
+    {
+      "path": "skills/change-impact/SKILL.md",
+      "sha": "b220205a5cb783df3acd5bddba46624ada473637",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/change-impact/SKILL.md"
+    },
+    {
+      "path": "skills/rust-patterns/SKILL.md",
+      "sha": "b87afe5eb81cff8c22e9c71cedc5f29688736c0d",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/rust-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/perl-security/SKILL.md",
+      "sha": "df4dddce54cc04234a72f3b5e705f30b958a1af3",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/perl-security/SKILL.md"
+    },
+    {
+      "path": "skills/orch-pipeline/SKILL.md",
+      "sha": "86dab2fdef704134d2d868949d235646cfa57a4f",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/orch-pipeline/SKILL.md"
+    },
+    {
+      "path": "skills/ito-inference/SKILL.md",
+      "sha": "4a95b6c36bc3cc8228985a4aab8acdeec7b5189a",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/ito-inference/SKILL.md"
+    },
+    {
+      "path": "skills/clickhouse-io/SKILL.md",
+      "sha": "5a97ddc66b31ebd715a07a87a7e60dc5fbff580e",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/clickhouse-io/SKILL.md"
+    },
+    {
+      "path": "skills/cost-tracking/SKILL.md",
+      "sha": "d21a401b45442e7db6427da0bf8d8e2800d7909f",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/cost-tracking/SKILL.md"
+    },
+    {
+      "path": "skills/configure-ecc/SKILL.md",
+      "sha": "532eedd8bc5203b6f193626768f8976e07b9375f",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/configure-ecc/SKILL.md"
+    },
+    {
+      "path": "skills/perl-patterns/SKILL.md",
+      "sha": "a2aaa8621df3c175783ee49053f505d1e7fc8b92",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/perl-patterns/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/x-api/SKILL.md",
+      "sha": "40d1a84025015b5e93f3d9def49f01db9100ddca",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/.agents/skills/x-api/SKILL.md"
+    },
+    {
+      "path": "skills/hookify-rules/SKILL.md",
+      "sha": "b0e5d70e60944a15a4b163abc67685c3c7f11183",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/hookify-rules/SKILL.md"
+    },
+    {
+      "path": "skills/content-engine/SKILL.md",
+      "sha": "28ddd4e1676f4ea67d34a9d244a94164e088b80e",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/content-engine/SKILL.md"
+    },
+    {
+      "path": "skills/rails-patterns/SKILL.md",
+      "sha": "876df985a7c773870093f50f362626142bbb29ab",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/rails-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/fsharp-testing/SKILL.md",
+      "sha": "9440ec6742c4ea3eeddc7530b29f7ca77b7f87cb",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/fsharp-testing/SKILL.md"
+    },
+    {
+      "path": "skills/react-patterns/SKILL.md",
+      "sha": "66acd2a6c84eb0bbcf72eaeb43ba4be37e8dddff",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/react-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/golang-testing/SKILL.md",
+      "sha": "45ca4871b2e5c46891bead7f23efd094a66cb6b7",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/golang-testing/SKILL.md"
+    },
+    {
+      "path": "skills/csharp-testing/SKILL.md",
+      "sha": "e307bbe36e0ae176b7fa1559c690b23bad945e36",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/csharp-testing/SKILL.md"
+    },
+    {
+      "path": "skills/redis-patterns/SKILL.md",
+      "sha": "463e7dd4ff6babdeb25b603eed0dc754cf2f9554",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/redis-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/unified-memory/SKILL.md",
+      "sha": "2eb70c775d90ed081530f9eeb419cc5ba81be147",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/unified-memory/SKILL.md"
+    },
+    {
+      "path": "docs/zh-CN/skills/seo/SKILL.md",
+      "sha": "7755c43a46ac6f98ef0b1b3d526028d79cb3defb",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/docs/zh-CN/skills/seo/SKILL.md"
+    },
+    {
+      "path": "skills/hermes-imports/SKILL.md",
+      "sha": "38c08ccc6ba4f36a6993908a955838feb0f7799c",
+      "url": "https://github.com/affaan-m/ECC/blob/25278e7d7b6cf6e6a4e7a6c8e10f14ff22f0eb5b/skills/hermes-imports/SKILL.md"
+    }
+  ],
+  "local_evidence": [
+    {
+      "commit": "72db60cfa2f82e74a596e58ea03e0e9b15f2c5e5",
+      "skills_observed": 1062,
+      "dirty": true
+    },
+    {
+      "commit": "76aaa77df6adc5b889e689007bf99b9a4f74af34",
+      "skills_observed": 1062,
+      "dirty": true
+    }
+  ],
+  "skill_name": "wf-affaan-m-ecc-0658d7fa",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/ck/SKILL.md",
+    "name": "ck",
+    "read_verified": true
+  }
+}

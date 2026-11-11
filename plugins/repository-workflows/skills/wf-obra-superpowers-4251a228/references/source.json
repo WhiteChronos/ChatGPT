@@ -1,0 +1,96 @@
+{
+  "repository": "obra/superpowers",
+  "skills": [
+    {
+      "path": "skills/writing-plans/SKILL.md",
+      "sha": "4cf0275d88d67aa4ef09f4bbca9970ed6ff74a00",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-plans/SKILL.md"
+    },
+    {
+      "path": "skills/brainstorming/SKILL.md",
+      "sha": "7f5eef02f894c4f24cea313660c0465ce9c084ed",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/brainstorming/SKILL.md"
+    },
+    {
+      "path": "skills/writing-skills/SKILL.md",
+      "sha": "09d76b79dd4080fe4dcc9bfb3c54d05dbff8a563",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-skills/SKILL.md"
+    },
+    {
+      "path": "skills/executing-plans/SKILL.md",
+      "sha": "ac77129d7c695734105004b6da10169de8d13df3",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/executing-plans/SKILL.md"
+    },
+    {
+      "path": "skills/using-superpowers/SKILL.md",
+      "sha": "069d578445805a28b8dacbf70cdf045e1673def0",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/using-superpowers/SKILL.md"
+    },
+    {
+      "path": "skills/using-git-worktrees/SKILL.md",
+      "sha": "1381dacb3516b94382dd6ec736ede21ee8ede2b3",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/using-git-worktrees/SKILL.md"
+    },
+    {
+      "path": "skills/systematic-debugging/SKILL.md",
+      "sha": "62fc752aaef59a8bbed5d305f4cadc60f8ae07ed",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/systematic-debugging/SKILL.md"
+    },
+    {
+      "path": "skills/receiving-code-review/SKILL.md",
+      "sha": "950da7b74bf6dbed6b8726d12ddadd65a9f5fda7",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/receiving-code-review/SKILL.md"
+    },
+    {
+      "path": "skills/requesting-code-review/SKILL.md",
+      "sha": "68d338a58ecdd8b77bfbb519b781ef223dbbb842",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/requesting-code-review/SKILL.md"
+    },
+    {
+      "path": "skills/diagnosing-superpowers/SKILL.md",
+      "sha": "dda2692d528574c410b118a6de545d6afc7eb047",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/diagnosing-superpowers/SKILL.md"
+    },
+    {
+      "path": "skills/dispatching-parallel-agents/SKILL.md",
+      "sha": "3fa091b348bbe0a18eaa0e17e9092c97f7005cbe",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/dispatching-parallel-agents/SKILL.md"
+    },
+    {
+      "path": "skills/subagent-driven-development/SKILL.md",
+      "sha": "ea170ed101d61a52fdee0ade8368ec0723980a5c",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/subagent-driven-development/SKILL.md"
+    },
+    {
+      "path": "skills/finishing-a-development-branch/SKILL.md",
+      "sha": "fa8aecaf8813f1b19d19996f7957d1b0121f2d9c",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/finishing-a-development-branch/SKILL.md"
+    },
+    {
+      "path": "skills/verification-before-completion/SKILL.md",
+      "sha": "7d45333cc4a49c57a80df6c1fe2fa777a207afbc",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/verification-before-completion/SKILL.md"
+    },
+    {
+      "path": "skills/test-driven-development/SKILL.md",
+      "sha": "46838cc9e893c06259e3bdad0fc2425b36242f15",
+      "url": "https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/test-driven-development/SKILL.md"
+    }
+  ],
+  "local_evidence": [
+    {
+      "commit": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "skills_observed": 15,
+      "dirty": false
+    }
+  ],
+  "skill_name": "wf-obra-superpowers-4251a228",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skills/writing-plans/SKILL.md",
+    "name": "writing-plans",
+    "read_verified": true
+  }
+}

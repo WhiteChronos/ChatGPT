@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "template_id": "GLOSSARY_ENTRY_DATA_SHEET_V1_0",
+  "required": [
+    "id",
+    "term",
+    "discipline",
+    "object_type",
+    "definition_pt",
+    "source_refs",
+    "evidence_class",
+    "status"
+  ],
+  "fields": {
+    "id": "Unique canonical glossary identifier",
+    "term": "Canonical term/tag/acronym",
+    "aliases": [],
+    "discipline": [],
+    "object_type": "instrument|function|equipment|signal|line|document|system|other",
+    "definition_pt": "",
+    "definition_en": "",
+    "function": "",
+    "symbol_family": "",
+    "location": "",
+    "tag_pattern": "",
+    "relationships": [],
+    "related_documents": [],
+    "source_refs": [],
+    "evidence_class": "E0_NO_EVIDENCE",
+    "status": "TBD",
+    "project_specific": false,
+    "normative_warning": "GitHub sources are non-normative unless corroborated by an official/project source.",
+    "last_reviewed_at": "",
+    "review_notes": ""
+  }
+}

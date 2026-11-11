@@ -1,0 +1,20 @@
+{
+  "repository": "jamesmoore24/treegpt",
+  "skills": [
+    {
+      "path": ".claude/skills/deploy/SKILL.md",
+      "sha": "3df7f2a04b789ad9bee34978420907a885bd255f",
+      "url": "https://github.com/jamesmoore24/treegpt/blob/d821ebc6fa24204b0745c639b65f009da3512e74/.claude/skills/deploy/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-jamesmoore24-treegpt-6a43b665",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/deploy/SKILL.md",
+    "name": "deploy",
+    "read_verified": true
+  }
+}

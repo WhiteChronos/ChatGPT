@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whitechronos.example/schemas/deks_config_v1.schema.json",
+  "title": "Digital Engineering Knowledge System Configuration",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "system_id",
+    "name",
+    "version",
+    "source_of_truth",
+    "documentation",
+    "governance",
+    "publication"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "system_id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "language_default": {"type": "string"},
+    "source_of_truth": {
+      "type": "object",
+      "required": ["glossary", "sources", "datasheet"],
+      "additionalProperties": false,
+      "properties": {
+        "glossary": {"type": "string"},
+        "sources": {"type": "string"},
+        "datasheet": {"type": "string"}
+      }
+    },
+    "documentation": {
+      "type": "object",
+      "required": ["engine", "config", "docs_dir", "generated_dir", "site_dir"],
+      "properties": {
+        "engine": {"const": "mkdocs-material"},
+        "config": {"type": "string"},
+        "docs_dir": {"type": "string"},
+        "generated_dir": {"type": "string"},
+        "site_dir": {"type": "string"},
+        "interactive_search": {"type": "boolean"},
+        "client_side_filters": {"type": "boolean"},
+        "mermaid_explanatory_diagrams": {"type": "boolean"},
+        "normative_symbols_as_svg": {"type": "boolean"}
+      }
+    },
+    "reading_levels": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "knowledge_domains": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "github_is_normative_authority",
+        "auto_promote_technical_content",
+        "require_source_traceability",
+        "require_evidence_class",
+        "require_review_for_normative_change"
+      ],
+      "properties": {
+        "github_is_normative_authority": {"const": false},
+        "auto_promote_technical_content": {"const": false},
+        "require_source_traceability": {"const": true},
+        "require_evidence_class": {"const": true},
+        "require_review_for_normative_change": {"const": true},
+        "block_orphan_internal_relationships": {"type": "boolean"}
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": ["build_artifact", "github_pages_ready", "auto_deploy_pages", "publish_only_after_ci_pass"],
+      "properties": {
+        "build_artifact": {"type": "boolean"},
+        "github_pages_ready": {"type": "boolean"},
+        "auto_deploy_pages": {"type": "boolean"},
+        "publish_only_after_ci_pass": {"const": true}
+      }
+    }
+  },
+  "additionalProperties": false
+}

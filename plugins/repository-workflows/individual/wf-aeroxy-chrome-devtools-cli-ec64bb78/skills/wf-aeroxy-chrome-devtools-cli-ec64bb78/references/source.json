@@ -1,0 +1,20 @@
+{
+  "repository": "aeroxy/chrome-devtools-cli",
+  "skills": [
+    {
+      "path": "skill/chrome-devtools/SKILL.md",
+      "sha": "49f1d6afaa793ed3213d43fb54253a9ea5eba9e0",
+      "url": "https://github.com/aeroxy/chrome-devtools-cli/blob/746d5d634577d9baf50c5a9944d5db4c0e2e15ad/skill/chrome-devtools/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-aeroxy-chrome-devtools-cli-ec64bb78",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "skill/chrome-devtools/SKILL.md",
+    "name": "chrome-devtools",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "matt-pocock-controller",
+  "version": "1.0.0",
+  "description": "WhiteChronos controller for Matt Pocock's engineering skills, project-scoped Codex projection, provenance, and mirror synchronization.",
+  "author": {
+    "name": "WhiteChronos",
+    "url": "https://github.com/WhiteChronos"
+  },
+  "homepage": "https://github.com/WhiteChronos/ChatGPT/tree/main/plugins/matt-pocock-controller",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "license": "MIT",
+  "keywords": ["matt-pocock", "codex", "skills", "engineering", "tdd", "debugging", "domain-modeling", "code-review"],
+  "skills": "./skills/",
+  "hooks": {},
+  "interface": {
+    "displayName": "Matt Pocock Controller",
+    "shortDescription": "Route specialized engineering work through Matt Pocock's stable skills.",
+    "longDescription": "Adds WhiteChronos routing, provenance, update tracking, and project-scoped Codex discovery for the promoted stable skills from mattpocock/skills while preserving Superpowers as the primary development-process layer.",
+    "developerName": "WhiteChronos",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read"],
+    "websiteURL": "https://github.com/mattpocock/skills"
+  }
+}

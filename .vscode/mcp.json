@@ -1,0 +1,17 @@
+{
+  "inputs": [
+    {
+      "id": "toolkitPython",
+      "type": "promptString",
+      "description": "Python com mcp==1.30.0; pode reutilizar o Python do toolkit global",
+      "default": "python"
+    }
+  ],
+  "servers": {
+    "vibe_coding_toolkit_repo": {
+      "type": "stdio",
+      "command": "${input:toolkitPython}",
+      "args": ["${workspaceFolder}/plugins/vibe-coding-toolkit/launch_mcp.py"]
+    }
+  }
+}

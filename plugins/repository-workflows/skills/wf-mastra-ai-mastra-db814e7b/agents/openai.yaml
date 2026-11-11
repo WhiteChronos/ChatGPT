@@ -1,0 +1,6 @@
+interface:
+  display_name: "mastra-ai/mastra"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-mastra-ai-mastra-db814e7b para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

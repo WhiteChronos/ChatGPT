@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "wf-lobehub-lobehub-273e910e",
+  "version": "1.0.3",
+  "description": "Workflow individual para lobehub/lobehub",
+  "author": {
+    "name": "WhiteChronos"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/WhiteChronos/ChatGPT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "lobehub/lobehub Workflow",
+        "shortDescription": "Workflows por repositório",
+        "longDescription": "Workflow individual para lobehub/lobehub Usa somente recursos disponíveis no host; instalação e execução requerem comprovação própria.",
+        "developerName": "WhiteChronos",
+        "category": "Developer Tools",
+        "defaultPrompt": [
+          "Use este workflow na tarefa e no repositório que eu indicar."
+        ]
+      }
+    }
+  }
+}

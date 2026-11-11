@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "arena-2.0",
+  "display_name": "ARENA 2.0 Research Curriculum",
+  "source_type": "external_reference",
+  "source": "https://github.com/callummcdougall/ARENA_2.0.git",
+  "license_status": "UNVERIFIED",
+  "execution_class": "REFERENCE_ONLY",
+  "status": "ACTIVATION_GATED",
+  "controller_plugin": null,
+  "skill_paths": [],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

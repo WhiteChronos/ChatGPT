@@ -1,0 +1,300 @@
+{
+  "repository": "lobehub/lobehub",
+  "skills": [
+    {
+      "path": ".agents/skills/ux/SKILL.md",
+      "sha": "b54aecd16ef91ee5bdeb56003df681857221a237",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/ux/SKILL.md"
+    },
+    {
+      "path": "public/acceptance/skill.md",
+      "sha": "9f2edc062ea54bc2ce27f5e2dd5c62f0538e6b6e",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/public/acceptance/skill.md"
+    },
+    {
+      "path": ".agents/skills/pr/SKILL.md",
+      "sha": "ef6167bad0da7bfca3bbe7bb6940c4381328e1be",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/pr/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/cli/SKILL.md",
+      "sha": "b597568f22cff0e3cd47158c274f9b517fc4f2d9",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/cli/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/i18n/SKILL.md",
+      "sha": "f4dedd7fad3a4d36fbb044ff1339304f0612fc1b",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/i18n/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/react/SKILL.md",
+      "sha": "e1a84155328dbcdd2f0ad401e82675df8cf29345",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/react/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/modal/SKILL.md",
+      "sha": "31c34a70feac1d38a85c0ab1e049b1912155d0b7",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/modal/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/linear/SKILL.md",
+      "sha": "56fab53fbfb5521ea2ab48adcd63a1d2d81cb5da",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/linear/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/hotkey/SKILL.md",
+      "sha": "441655f3451add5aad7488407cc41df0a0530380",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/hotkey/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/desktop/SKILL.md",
+      "sha": "9222c32068563669bfb9a9b22bdf78e8f7cab874",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/desktop/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/testing/SKILL.md",
+      "sha": "93cacb6a2fbd82aa230cc43e5f4ec866e4c6a4f5",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/testing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/drizzle/SKILL.md",
+      "sha": "c5deda0e44db9520ea6ebf44f4538045ed130fff",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/drizzle/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/zustand/SKILL.md",
+      "sha": "938c1c875080482df963717991ba45a9291d60c8",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/zustand/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/ux-audit/SKILL.md",
+      "sha": "362c65baeafa30711e7f78573b04078c4c80f8f3",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/ux-audit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/chat-sdk/SKILL.md",
+      "sha": "02e8bce47553f7edb41868f496c36efa1f742771",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/chat-sdk/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/spa-routes/SKILL.md",
+      "sha": "3bb0aef5f4394ab3c25ebc23d4a118d042ba12cd",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/spa-routes/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/acceptance/SKILL.md",
+      "sha": "cc7703b41a06552a3427c1d82e98be8773f3caee",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/acceptance/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/agent-work/SKILL.md",
+      "sha": "80b88863eb490f7fba57ad1515127cc4ba76c298",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/agent-work/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/typescript/SKILL.md",
+      "sha": "877855574580739a40c45caeaaceb0c21672d0c8",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/typescript/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/trpc-router/SKILL.md",
+      "sha": "61fb0a6a85876b11047a37b7dd9951a99c5ceb7b",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/trpc-router/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/deep-review/SKILL.md",
+      "sha": "576bbefaf238bdd22d0b8d53509b9cb5c8353f14",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/deep-review/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/lobe-design/SKILL.md",
+      "sha": "c90216d2353b3c73335c1a30186a0528be731538",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/lobe-design/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/agent-signal/SKILL.md",
+      "sha": "2c18d2262ccd4e89d0346ed035c74438da7adc33",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/agent-signal/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/skills-audit/SKILL.md",
+      "sha": "6dc2924fde71c17d17f7cee6b4963d617c27c2c5",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/skills-audit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/builtin-tool/SKILL.md",
+      "sha": "400a71d70b8460552433ec8b3baff63fc1d6beb5",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/builtin-tool/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/debug-package/SKILL.md",
+      "sha": "036a22ba3728553710b23f8611db7d1987614ee6",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/debug-package/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/alint-ruleset/SKILL.md",
+      "sha": "630a5019780ccff6053b435d23a008e3caf0b17d",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/alint-ruleset/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/source-layout/SKILL.md",
+      "sha": "8653d5824beb1b14b9f47c81172e79dd7f09452f",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/source-layout/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/db-migrations/SKILL.md",
+      "sha": "f1153e01220945df3f8f7560978430830f958451",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/db-migrations/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/compose-atoms/SKILL.md",
+      "sha": "7b29c5675dda1427f4be23e06435de57be7f6294",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/compose-atoms/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/agent-tracing/SKILL.md",
+      "sha": "9b4d343943fe1e92b710740bb254cd6e98fe2f98",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/agent-tracing/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/llm-generation/SKILL.md",
+      "sha": "e1dcd16effe7319dafdd9456a9e096368447671d",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/llm-generation/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/product-design/SKILL.md",
+      "sha": "f292d86762e00706acf128e7ecf22f91a31604bc",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/product-design/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/docs-changelog/SKILL.md",
+      "sha": "d69aa11f72858374dade8bdda3907012c5c77b2e",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/docs-changelog/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/add-setting-env/SKILL.md",
+      "sha": "511d7e26797215e390bd9aa1cc54f038099a9e95",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/add-setting-env/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/split-micro-app/SKILL.md",
+      "sha": "577c5aa0bb7506854d0d21471accc9733d6addc4",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/split-micro-app/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/version-release/SKILL.md",
+      "sha": "4f586a6c1e49962c3c9fa3a2fe37668d894109f7",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/version-release/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/run-eval-harbor/SKILL.md",
+      "sha": "183f953de47bc9e5cc043b902dcb7554b9767f8d",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/run-eval-harbor/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/design-prototype/SKILL.md",
+      "sha": "15246a3b4aae4d7afa1b86deb901db99051655ac",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/design-prototype/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/upstash-workflow/SKILL.md",
+      "sha": "2a5c22d655906d28a685c9119e07f5d8a9d26908",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/upstash-workflow/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/full-text-search/SKILL.md",
+      "sha": "c8a6e33e1c3f2c9a36586b12e72ce0a341873e81",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/full-text-search/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/split-large-file/SKILL.md",
+      "sha": "48addcd4f674ec6affce23eb2c9bf6eab82fd16b",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/split-large-file/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/project-overview/SKILL.md",
+      "sha": "717eb12868b0b2defc6128698b32eacf5779435b",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/project-overview/SKILL.md"
+    },
+    {
+      "path": "packages/builtin-skills/src/task/SKILL.md",
+      "sha": "7e052d9e325a219e1821375d1bddf0deac6c5e06",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/packages/builtin-skills/src/task/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/agent-testing-bot/SKILL.md",
+      "sha": "0d51c3756d27e27a40dda6c220f92c6bf4e6015c",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/agent-testing-bot/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/add-model-provider/SKILL.md",
+      "sha": "cb9f59deec869114ebf7850bb52aecf115025a02",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/add-model-provider/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/write-landing-docs/SKILL.md",
+      "sha": "27f9ffb805341aeb73f6e23b17633d3a4711dc38",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/write-landing-docs/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/heterogeneous-agent/SKILL.md",
+      "sha": "0dfa5f1b9359bb5edd508672ac1491be7f7cee6b",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/heterogeneous-agent/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/response-compliance/SKILL.md",
+      "sha": "962449f4cc98142adc90f3cc963e2a1597d7eb9a",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/response-compliance/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/model-bank-metadata/SKILL.md",
+      "sha": "e816fc2cbcf47d11e72694c55bc06ed129e2202c",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/model-bank-metadata/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/agent-runtime-hooks/SKILL.md",
+      "sha": "c4902fb7377703e31938859cf9209ad580ba315d",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/agent-runtime-hooks/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/store-data-structures/SKILL.md",
+      "sha": "0ca8afae167df267defd1ad2735e1e718bc3d371",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/store-data-structures/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/cleanup-git-worktrees/SKILL.md",
+      "sha": "ae7067122f09f45d5fa012c7f5b7aaf7da02fe7c",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/cleanup-git-worktrees/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/desktop-security-update/SKILL.md",
+      "sha": "e0bdc04e75d274a039692a6d48e40efe400a5367",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/desktop-security-update/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/data-fetching-architecture/SKILL.md",
+      "sha": "7ab4b90a5fd357cc7d045a52f26f8a3fe6d24191",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/data-fetching-architecture/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/debug-frontend-with-browser/SKILL.md",
+      "sha": "e933fee3907eaeccc62ff3982365b1d4b0bc9587",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/debug-frontend-with-browser/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/testing-heterogeneous-agents/SKILL.md",
+      "sha": "c6e0582b808e26e486da613b28dc1826ecdbbdd6",
+      "url": "https://github.com/lobehub/lobehub/blob/ab57dc331efa16903acc1e97d60319d2643a8e8f/.agents/skills/testing-heterogeneous-agents/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-lobehub-lobehub-273e910e",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/ux/SKILL.md",
+    "name": "ux",
+    "read_verified": true
+  }
+}

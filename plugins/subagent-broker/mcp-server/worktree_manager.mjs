@@ -1,0 +1,158 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+
+function sanitizedGitEnv() {
+  const env = { ...process.env };
+  for (const key of Object.keys(env)) {
+    if (key.startsWith('GIT_')) delete env[key];
+  }
+  return env;
+}
+
+function execFile(command, args, { cwd, allowFailure = false } = {}) {
+  return new Promise((resolve, reject) => {
+    const effectiveArgs = command === 'git' && cwd
+      ? ['-c', `safe.directory=${path.resolve(cwd)}`, ...args]
+      : args;
+    const child = spawn(command, effectiveArgs, { cwd, env: sanitizedGitEnv(), shell: false, stdio: ['ignore','pipe','pipe'] });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', d => stdout += d);
+    child.stderr.on('data', d => stderr += d);
+    child.on('error', reject);
+    child.on('close', code => {
+      const result = { code, stdout: stdout.trim(), stderr: stderr.trim() };
+      if (code === 0 || allowFailure) resolve(result);
+      else reject(new Error(stderr.trim() || `${command} ${effectiveArgs.join(' ')} failed with ${code}`));
+    });
+  });
+}
+
+function assertSafeAgentId(agentId) {
+  if (typeof agentId !== 'string' || !/^sa_[A-Za-z0-9_-]+$/.test(agentId)) {
+    throw new Error('invalid agent id');
+  }
+}
+
+function allowedWorktreeRoot(repoRoot) {
+  return path.resolve(repoRoot, '.worktrees', 'subagents');
+}
+
+function assertInsideWorktreeNamespace(repoRoot, candidate) {
+  const base = allowedWorktreeRoot(repoRoot);
+  const resolved = path.resolve(candidate);
+  if (resolved === base || !resolved.startsWith(base + path.sep)) {
+    throw new Error('worktree path is outside .worktrees/subagents namespace');
+  }
+  return resolved;
+}
+
+export async function resolveConfiguredRepoRoot(env = process.env) {
+  const configured = env?.SUBAGENT_BROKER_REPO_ROOT;
+  if (typeof configured !== 'string' || !configured.trim()) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT is required');
+  }
+  if (!path.isAbsolute(configured)) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must be an absolute path');
+  }
+  let root;
+  try {
+    root = await fs.realpath(configured);
+  } catch {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
+  }
+  const result = await execFile('git', ['rev-parse', '--show-toplevel'], { cwd: root, allowFailure: true });
+  if (result.code !== 0 || !result.stdout) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root');
+  }
+  let gitRoot;
+  try { gitRoot = await fs.realpath(result.stdout); }
+  catch { throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify a git repository root'); }
+  if (gitRoot !== root) {
+    throw new Error('SUBAGENT_BROKER_REPO_ROOT must identify the git repository root exactly');
+  }
+  return root;
+}
+
+export async function discoverRepoRoot(startCwd) {
+  const result = await execFile('git', ['rev-parse', '--show-toplevel'], { cwd: startCwd, allowFailure: true });
+  if (result.code !== 0 || !result.stdout) throw new Error('repository root could not be discovered');
+  const root = path.resolve(result.stdout);
+  const pluginPath = path.join(root, 'plugins', 'subagent-broker');
+  try {
+    const stat = await fs.stat(pluginPath);
+    if (!stat.isDirectory()) throw new Error();
+  } catch {
+    throw new Error('repository root does not contain plugins/subagent-broker');
+  }
+  return root;
+}
+
+export async function resolveBase(repoRoot, baseRef = 'HEAD') {
+  const ref = baseRef == null ? 'HEAD' : String(baseRef);
+  if (!ref.trim() || /[\0\r\n]/.test(ref)) throw new Error('invalid base ref');
+  const result = await execFile('git', ['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`], { cwd: repoRoot, allowFailure: true });
+  if (result.code !== 0 || !/^[0-9a-f]{40}$/i.test(result.stdout)) throw new Error(`base ref does not resolve to a commit: ${ref}`);
+  return result.stdout.toLowerCase();
+}
+
+export async function createWorkspace({ repoRoot, agentId, baseSha, mode }) {
+  assertSafeAgentId(agentId);
+  if (!['read_only','worktree_write'].includes(mode)) throw new Error('invalid workspace mode');
+  if (!/^[0-9a-f]{40}$/i.test(String(baseSha))) throw new Error('baseSha must be an exact commit SHA');
+  const root = path.resolve(repoRoot);
+  const workspacePath = assertInsideWorktreeNamespace(root, path.join(allowedWorktreeRoot(root), agentId));
+  await fs.mkdir(path.dirname(workspacePath), { recursive: true });
+  try { await fs.access(workspacePath); throw new Error('worktree path already exists'); }
+  catch (e) { if (e?.message === 'worktree path already exists') throw e; }
+
+  let branch = null;
+  if (mode === 'read_only') {
+    await execFile('git', ['worktree', 'add', '--detach', workspacePath, baseSha], { cwd: root });
+  } else {
+    branch = `subagent/${agentId}`;
+    await execFile('git', ['worktree', 'add', '-b', branch, workspacePath, baseSha], { cwd: root });
+  }
+  return { agent_id: agentId, repo_root: root, path: workspacePath, mode, base_sha: String(baseSha).toLowerCase(), branch };
+}
+
+export async function statusWorkspace(workspace) {
+  const workspacePath = assertInsideWorktreeNamespace(workspace.repo_root, workspace.path);
+  const status = await execFile('git', ['status', '--porcelain=v1'], { cwd: workspacePath });
+  const log = await execFile('git', ['log', '--format=%H', `${workspace.base_sha}..HEAD`], { cwd: workspacePath });
+  const diff = await execFile('git', ['diff', '--stat', `${workspace.base_sha}...HEAD`], { cwd: workspacePath });
+  return {
+    dirty: Boolean(status.stdout),
+    porcelain: status.stdout,
+    commits: log.stdout ? log.stdout.split(/\r?\n/).filter(Boolean) : [],
+    diff_stat: diff.stdout,
+  };
+}
+
+export async function cleanupWorkspace(workspace, { purgeBranch = false } = {}) {
+  const root = path.resolve(workspace.repo_root);
+  const workspacePath = assertInsideWorktreeNamespace(root, workspace.path);
+  const agentId = workspace.agent_id;
+  assertSafeAgentId(agentId);
+  const expectedPath = path.join(allowedWorktreeRoot(root), agentId);
+  if (workspacePath !== expectedPath) {
+    throw new Error(`worktree identity mismatch for agent ${agentId}`);
+  }
+  if (purgeBranch && workspace.branch) {
+    const expectedBranch = `subagent/${agentId}`;
+    if (workspace.branch !== expectedBranch) {
+      throw new Error(`branch identity mismatch for workspace: expected ${expectedBranch}, observed ${workspace.branch}`);
+    }
+    const current = await execFile('git', ['branch', '--show-current'], { cwd: workspacePath, allowFailure: true });
+    if (current.code !== 0 || current.stdout !== expectedBranch) {
+      throw new Error(`workspace ownership mismatch: expected branch ${expectedBranch}`);
+    }
+  }
+  const status = await statusWorkspace(workspace);
+  if (status.dirty) throw new Error(`refusing cleanup of dirty worktree: ${status.porcelain}`);
+  await execFile('git', ['worktree', 'remove', workspacePath], { cwd: root });
+  if (purgeBranch && workspace.branch) {
+    await execFile('git', ['branch', '-D', workspace.branch], { cwd: root });
+  }
+}

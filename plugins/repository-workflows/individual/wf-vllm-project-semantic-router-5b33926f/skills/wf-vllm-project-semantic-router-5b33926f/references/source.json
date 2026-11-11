@@ -1,0 +1,40 @@
+{
+  "repository": "vllm-project/semantic-router",
+  "skills": [
+    {
+      "path": "tools/agent/skills/maintainer-ops/SKILL.md",
+      "sha": "c6c750d7c0b4d4fad66ae6686182a620d2cd62ac",
+      "url": "https://github.com/vllm-project/semantic-router/blob/b85ad127888c107adc19b2ce3449bd99ce7bab66/tools/agent/skills/maintainer-ops/SKILL.md"
+    },
+    {
+      "path": "website/static/install/agent/vllm-sr/SKILL.md",
+      "sha": "aaf2f46c70a167aeec6a449c0812b145715a1725",
+      "url": "https://github.com/vllm-project/semantic-router/blob/b85ad127888c107adc19b2ce3449bd99ce7bab66/website/static/install/agent/vllm-sr/SKILL.md"
+    },
+    {
+      "path": "tools/agent/skills/routing-calibration/SKILL.md",
+      "sha": "fee83ad5a9ee14f9ce1ab952259fc2f474d5dd19",
+      "url": "https://github.com/vllm-project/semantic-router/blob/b85ad127888c107adc19b2ce3449bd99ce7bab66/tools/agent/skills/routing-calibration/SKILL.md"
+    },
+    {
+      "path": "tools/agent/skills/router-contract-change/SKILL.md",
+      "sha": "7757b4af0b6bf65fc48fdd77988786754f76f14b",
+      "url": "https://github.com/vllm-project/semantic-router/blob/b85ad127888c107adc19b2ce3449bd99ce7bab66/tools/agent/skills/router-contract-change/SKILL.md"
+    },
+    {
+      "path": "tools/agent/skills/vllm-sr-agent-operations/SKILL.md",
+      "sha": "3f7b5cb492ffd1f9814c67b584b8a43c10b2ebab",
+      "url": "https://github.com/vllm-project/semantic-router/blob/b85ad127888c107adc19b2ce3449bd99ce7bab66/tools/agent/skills/vllm-sr-agent-operations/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-vllm-project-semantic-router-5b33926f",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "tools/agent/skills/maintainer-ops/SKILL.md",
+    "name": "maintainer-ops",
+    "read_verified": true
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whitechronos.example/schemas/ingestion_source_registry_v1.schema.json",
+  "title": "DEKS Ingestion Source Registry",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "auto_approval", "sources"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "registry_id": {"type": "string", "minLength": 1},
+    "auto_approval": {"const": false},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "name",
+          "source_type",
+          "authority_tier",
+          "default_evidence_class",
+          "allowed_formats",
+          "allowed_entity_types",
+          "enabled",
+          "status"
+        ],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "source_type": {
+            "enum": [
+              "project_drawing",
+              "project_document",
+              "project_standard",
+              "project_table",
+              "official_standard",
+              "manufacturer",
+              "academic",
+              "github_open_source",
+              "test_fixture"
+            ]
+          },
+          "authority_tier": {"type": "integer", "minimum": 1, "maximum": 7},
+          "default_evidence_class": {
+            "enum": [
+              "E1_PROJECT_DRAWING",
+              "E2_PROJECT_DOCUMENT",
+              "E3_FORMAL_CONFIRMATION",
+              "E4_OFFICIAL_STANDARD",
+              "E5_MANUFACTURER",
+              "E6_ACADEMIC_BOOK_PAPER",
+              "E7_GITHUB_OPEN_SOURCE",
+              "E0_NO_EVIDENCE"
+            ]
+          },
+          "allowed_formats": {
+            "type": "array",
+            "items": {"enum": ["json", "csv"]},
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "allowed_entity_types": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "glossary_entry",
+                "tag",
+                "symbol",
+                "pid_object",
+                "instrument_index_item",
+                "io_item",
+                "cause_effect",
+                "datasheet",
+                "source"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "enabled": {"type": "boolean"},
+          "status": {"enum": ["ACTIVE", "REGISTERED_PENDING_FILE", "DISABLED"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

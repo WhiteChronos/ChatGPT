@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whitechronos.example/schemas/deks_config_v1_1.schema.json",
+  "title": "Digital Engineering Knowledge System Configuration v1.1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "system_id",
+    "name",
+    "version",
+    "source_of_truth",
+    "documentation",
+    "governance",
+    "ingestion",
+    "publication"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.1"},
+    "system_id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "language_default": {"type": "string"},
+    "source_of_truth": {
+      "type": "object",
+      "required": [
+        "glossary",
+        "sources",
+        "datasheet",
+        "ingestion_sources",
+        "ingestion_review_queue"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "glossary": {"type": "string"},
+        "sources": {"type": "string"},
+        "datasheet": {"type": "string"},
+        "ingestion_sources": {"type": "string"},
+        "ingestion_review_queue": {"type": "string"}
+      }
+    },
+    "documentation": {
+      "type": "object",
+      "required": ["engine", "config", "docs_dir", "generated_dir", "site_dir"],
+      "properties": {
+        "engine": {"const": "mkdocs-material"},
+        "config": {"type": "string"},
+        "docs_dir": {"type": "string"},
+        "generated_dir": {"type": "string"},
+        "site_dir": {"type": "string"},
+        "interactive_search": {"type": "boolean"},
+        "client_side_filters": {"type": "boolean"},
+        "mermaid_explanatory_diagrams": {"type": "boolean"},
+        "normative_symbols_as_svg": {"type": "boolean"}
+      }
+    },
+    "reading_levels": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "knowledge_domains": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "github_is_normative_authority",
+        "auto_promote_technical_content",
+        "require_source_traceability",
+        "require_evidence_class",
+        "require_review_for_normative_change"
+      ],
+      "properties": {
+        "github_is_normative_authority": {"const": false},
+        "auto_promote_technical_content": {"const": false},
+        "require_source_traceability": {"const": true},
+        "require_evidence_class": {"const": true},
+        "require_review_for_normative_change": {"const": true},
+        "block_orphan_internal_relationships": {"type": "boolean"}
+      }
+    },
+    "ingestion": {
+      "type": "object",
+      "required": [
+        "engine",
+        "batch_schema",
+        "source_registry_schema",
+        "supported_formats",
+        "supported_entity_types",
+        "auto_approve",
+        "staging_required",
+        "review_required"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "engine": {"const": "pipeline/knowledge_ingestion.py"},
+        "batch_schema": {"const": "schemas/ingestion_batch_v1.schema.json"},
+        "source_registry_schema": {"const": "schemas/ingestion_source_registry_v1.schema.json"},
+        "supported_formats": {
+          "type": "array",
+          "items": {"enum": ["json", "csv"]},
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "supported_entity_types": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "glossary_entry",
+              "tag",
+              "symbol",
+              "pid_object",
+              "instrument_index_item",
+              "io_item",
+              "cause_effect",
+              "datasheet",
+              "source"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "auto_approve": {"const": false},
+        "staging_required": {"const": true},
+        "review_required": {"const": true}
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": ["build_artifact", "github_pages_ready", "auto_deploy_pages", "publish_only_after_ci_pass"],
+      "properties": {
+        "build_artifact": {"type": "boolean"},
+        "github_pages_ready": {"type": "boolean"},
+        "auto_deploy_pages": {"type": "boolean"},
+        "publish_only_after_ci_pass": {"const": true}
+      }
+    }
+  },
+  "additionalProperties": false
+}

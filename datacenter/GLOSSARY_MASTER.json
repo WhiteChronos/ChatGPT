@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-28",
+  "entries": [
+    {
+      "id": "TAG-PT",
+      "term": "PT",
+      "aliases": ["Pressure Transmitter"],
+      "discipline": ["instrumentation", "automation"],
+      "object_type": "instrument",
+      "definition_pt": "Transmissor de pressão.",
+      "definition_en": "Pressure transmitter.",
+      "function": "Mede pressão e transmite o valor ao sistema conforme a arquitetura do projeto.",
+      "symbol_family": "project_or_standard_defined",
+      "location": "project_defined",
+      "tag_pattern": "PT-<loop>",
+      "relationships": ["PI", "PIC", "PSH", "PDT", "PV"],
+      "related_documents": ["P&ID", "Instrument Index", "I/O List", "Loop Diagram", "Datasheet"],
+      "source_refs": ["PROJECT_GLOSSARY_REV4_2"],
+      "evidence_class": "E2_PROJECT_DOCUMENT",
+      "status": "CONFIRMADO_PROJETO",
+      "project_specific": false,
+      "normative_warning": "Validar identificação final pela legenda e critério do projeto.",
+      "last_reviewed_at": "2026-08-28"
+    },
+    {
+      "id": "MODEL-DEXPI",
+      "term": "DEXPI",
+      "aliases": ["Data Exchange in the Process Industry"],
+      "discipline": ["process", "instrumentation", "digital_engineering"],
+      "object_type": "data_model",
+      "definition_pt": "Referência de modelo e intercâmbio de dados para informação de engenharia de processo/P&ID.",
+      "definition_en": "Reference data/interchange model for process engineering/P&ID information.",
+      "function": "Apoiar representação estruturada e intercâmbio de objetos do P&ID.",
+      "symbol_family": "not_applicable",
+      "location": "not_applicable",
+      "tag_pattern": "not_applicable",
+      "relationships": ["P&ID inteligente", "IEC 62424", "pyDEXPI"],
+      "related_documents": ["Data Model", "P&ID", "Engineering Database"],
+      "source_refs": ["GH-DEXPI-SPEC"],
+      "evidence_class": "E7_GITHUB_OPEN_SOURCE",
+      "status": "SUPORTADO_GITHUB",
+      "project_specific": false,
+      "normative_warning": "Fonte GitHub usada como referência de modelo/software; não substitui norma oficial nem critério do projeto.",
+      "last_reviewed_at": "2026-08-28"
+    }
+  ]
+}

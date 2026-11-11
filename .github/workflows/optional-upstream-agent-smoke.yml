@@ -1,0 +1,83 @@
+name: Optional upstream agent smoke (Dependency Doctor)
+
+on:
+  pull_request:
+    paths:
+      - "plugins/awesome-llm-apps-controller/**"
+      - "registry/awesome-llm-apps/**"
+      - ".github/workflows/optional-upstream-agent-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-doctor-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout WhiteChronos
+        uses: actions/checkout@v4
+
+      - name: Verify upstream lock and select catalog entry
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          lock=json.loads(Path("plugins/awesome-llm-apps-controller/upstream.lock.json").read_text())
+          entries=json.loads(Path("registry/awesome-llm-apps/catalog.json").read_text())["entries"]
+          e=next(x for x in entries if x["id"]=="upstream-internal:agent-skills-dependency-doctor-scripts")
+          assert e["execution_class"]=="LOCAL_READ_ONLY", e
+          assert e["credentials_required"] is False, e
+          assert e["network_required"] is False, e
+          assert e["upstream_commit"]==lock["commit"], e
+          assert lock["upstream_repository"]=="Shubhamsaboo/awesome-llm-apps"
+          print("WHITECHRONOS_SHA:", __import__("os").environ["GITHUB_SHA"])
+          print("UPSTREAM_SHA:", lock["commit"])
+          print("SELECTED_ID:", e["id"])
+          PY
+
+      - name: Checkout approved upstream commit in separate workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA="$(python -c 'import json; print(json.load(open("plugins/awesome-llm-apps-controller/upstream.lock.json"))["commit"])')"
+          mkdir -p "$RUNNER_TEMP/external-agent"
+          git -C "$RUNNER_TEMP/external-agent" init -q
+          git -C "$RUNNER_TEMP/external-agent" remote add origin https://github.com/Shubhamsaboo/awesome-llm-apps.git
+          git -C "$RUNNER_TEMP/external-agent" fetch -q --depth 1 origin "$SHA"
+          git -C "$RUNNER_TEMP/external-agent" checkout -q --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/external-agent" rev-parse HEAD)" = "$SHA"
+          test -f "$RUNNER_TEMP/external-agent/LICENSE"
+          grep -q "Apache License" "$RUNNER_TEMP/external-agent/LICENSE"
+
+      - name: Run selected external tool offline on bounded fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'requests==2.31.0\nrequests==2.30.0\n' > "$RUNNER_TEMP/dependency-fixture.txt"
+          python "$RUNNER_TEMP/external-agent/agent_skills/dependency-doctor/scripts/dep_doctor.py" \
+            "$RUNNER_TEMP/dependency-fixture.txt" --json > "$RUNNER_TEMP/dependency-report.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report=json.loads((Path(os.environ["RUNNER_TEMP"])/"dependency-report.json").read_text())
+          kinds={x["kind"] for x in report["findings"]}
+          assert "conflicting-constraints" in kinds, report
+          assert report["summary"]["online"] is False, report
+          print("RESULT: PASS — real upstream dependency-doctor script executed offline")
+          print("FINDINGS:", report["summary"])
+          PY
+
+      - name: Summarize evidence
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Optional agent smoke"
+            echo "Selected: Dependency Doctor upstream script (isolated, offline)"
+            echo "WhiteChronos SHA: \`$GITHUB_SHA\`"
+            echo "Upstream SHA pinned in upstream.lock.json"
+            echo "This verifies an external utility script, NOT native Codex host discovery or independent subagent lifecycle."
+          } >> "$GITHUB_STEP_SUMMARY"

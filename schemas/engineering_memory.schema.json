@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/engineering_memory.schema.json",
+  "title": "Engineering Memory Record",
+  "type": "object",
+  "required": [
+    "id",
+    "timestamp",
+    "category",
+    "title",
+    "description",
+    "status",
+    "source_type",
+    "impact",
+    "app_version"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 3},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "category": {
+      "type": "string",
+      "enum": ["DECISION", "LESSON", "RULE", "CONFLICT", "PENDING", "SOURCE", "REGRESSION"]
+    },
+    "title": {"type": "string", "minLength": 3},
+    "description": {"type": "string", "minLength": 3},
+    "status": {
+      "type": "string",
+      "enum": ["CONFIRMADO", "CONFIRMADO_COM_RESSALVA", "PROPOSTO", "CONFLITANTE", "TBD", "NÃO_APLICÁVEL"]
+    },
+    "source_type": {"type": "string"},
+    "source_document": {"type": ["string", "null"]},
+    "source_revision": {"type": ["string", "null"]},
+    "evidence": {"type": ["string", "null"]},
+    "impact": {"type": "string"},
+    "prevention_rule": {"type": ["string", "null"]},
+    "regression_test": {"type": ["string", "null"]},
+    "app_version": {"type": "string"},
+    "supersedes": {"type": ["string", "null"]},
+    "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  },
+  "additionalProperties": false
+}

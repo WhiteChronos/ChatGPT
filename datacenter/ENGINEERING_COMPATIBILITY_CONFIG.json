@@ -1,0 +1,186 @@
+{
+  "model_id": "ENGINEERING_COMPATIBILITY_VISUALIZE_V1_1",
+  "status": "MANDATORY",
+  "mode": "BLOCK_ON_FAILURE",
+  "golden_rule": "governance/VISUALIZE_GOLDEN_RULE_v1_0.md",
+  "schema": "schemas/engineering_compatibility.schema.json",
+  "datasheet": "datasheet/ENGINEERING_COMPATIBILITY_DATA_SHEET.json",
+  "codex_contract": "AGENTS.md",
+  "source_policy": {
+    "raw_immutable": true,
+    "retain_sha256": true,
+    "retain_document_id": true,
+    "retain_revision": true,
+    "retain_location": true,
+    "allow_silent_reconciliation": false
+  },
+  "baseline_policy": {
+    "eligible_required_document_statuses": [
+      "CURRENT",
+      "APPROVED"
+    ]
+  },
+  "criterion_inventories": {
+    "Example Project": [
+      {
+        "criterion_id": "CRIT-HVAC-BASELINE",
+        "criterion": "HVAC baseline compatibility",
+        "disciplines": [
+          "HVAC"
+        ],
+        "document_ids": [
+          "EX-HVAC-001"
+        ],
+        "interface": false
+      },
+      {
+        "criterion_id": "CRIT-ELE-BASELINE",
+        "criterion": "Electrical baseline compatibility",
+        "disciplines": [
+          "ELECTRICAL"
+        ],
+        "document_ids": [
+          "EX-ELE-001"
+        ],
+        "interface": false
+      },
+      {
+        "criterion_id": "CRIT-AUT-BASELINE",
+        "criterion": "Automation baseline compatibility",
+        "disciplines": [
+          "AUTOMATION"
+        ],
+        "document_ids": [
+          "EX-AUT-001"
+        ],
+        "interface": false
+      },
+      {
+        "criterion_id": "CRIT-IF-HVAC-AUT",
+        "criterion": "HVAC to automation interface compatibility",
+        "disciplines": [
+          "HVAC",
+          "AUTOMATION"
+        ],
+        "document_ids": [
+          "EX-HVAC-001",
+          "EX-AUT-001"
+        ],
+        "interface": true
+      }
+    ]
+  },
+  "waiver_authorization": {
+    "require_external_approval_record": true,
+    "trusted_approval_records": {}
+  },
+  "analysis_stack": [
+    "/factcheck",
+    "/thenvsnow",
+    "/comparison",
+    "/deepdive",
+    "/rootcause",
+    "/fivewhys",
+    "/audit",
+    "/redteam",
+    "/premortem",
+    "/viability",
+    "/actionplan",
+    "/visualize"
+  ],
+  "classifications": [
+    "VERIFIED",
+    "PARTIAL",
+    "DIVERGENT",
+    "NOT_VERIFIABLE",
+    "NOT_APPLICABLE"
+  ],
+  "severity": {
+    "CRITICAL": "red",
+    "HIGH": "orange",
+    "MEDIUM": "yellow",
+    "LOW": "blue",
+    "NOT_VERIFIABLE": "blue",
+    "VERIFIED": "green",
+    "NOT_APPLICABLE": "gray"
+  },
+  "thresholds": {
+    "minimum_coverage_percent": 85,
+    "minimum_global_compatibility_percent": 80,
+    "minimum_interface_compatibility_percent": 80,
+    "metric_tolerance_percent": 0.05,
+    "block_on_open_critical": true,
+    "block_on_missing_mandatory_document": true,
+    "block_on_unreconciled_baseline": true,
+    "require_baseline_documents": true,
+    "require_provenance_hash": true,
+    "require_waiver_metadata": true,
+    "require_document_scores": true,
+    "require_discipline_scores": true,
+    "require_architecture_viability": true
+  },
+  "compatibility": {
+    "exclude_not_applicable_from_denominator": true,
+    "exclude_not_verifiable_from_compatibility_denominator": true,
+    "not_verifiable_reduces_coverage": true,
+    "require_method_disclosure": true,
+    "required_status_weights": {
+      "VERIFIED": 1,
+      "PARTIAL": 0.5,
+      "DIVERGENT": 0
+    }
+  },
+  "visualization": {
+    "complete_not_summary": true,
+    "mandatory_sections": [
+      "executive_gate",
+      "baseline_map",
+      "compatibility_by_discipline",
+      "compatibility_by_document",
+      "interfaces",
+      "complete_findings",
+      "feasibility",
+      "missing_evidence",
+      "action_plan",
+      "release_gate"
+    ]
+  },
+  "datacenter_layout": {
+    "raw": "datacenter/raw/<project>/<discipline>/<document>/<revision>/",
+    "normalized": "datacenter/normalized/<project>/",
+    "reports": "reports/<project>/",
+    "datasheets": "datasheet/projects/<project>/"
+  },
+  "automation_hyperfocus_rule": "governance/AUTOMATION_HYPERFOCUS_GOLDEN_RULE_v1_0.md",
+  "protocol_zero_gate": "pipeline/protocol_zero_gate.py",
+  "repository_memory": "memory/ENGINEERING_COMPATIBILITY_MEMORY.md",
+  "assistance_catalog": "docs/OPEN_SOURCE_AND_PLUGIN_CATALOG.md",
+  "github_agent": ".github/agents/automation-hyperfocus-reviewer.agent.md",
+  "protocol_zero": {
+    "policy": "QUESTION_BEFORE_FINDING",
+    "unanswered_classification": "NOT_VERIFIABLE",
+    "forbid_unanswered_promotion_to_finding": true,
+    "block_pass_with_unanswered_questions": true,
+    "simple_answer_field": true
+  },
+  "hyperfocus_automation_data": {
+    "enabled": true,
+    "chain": [
+      "PROCESS_REQUIREMENT",
+      "EQUIPMENT_TAG",
+      "POWER",
+      "COMMAND_FEEDBACK",
+      "IO",
+      "PLC_RTU",
+      "CONTROL_LOGIC",
+      "NETWORK_PROTOCOL",
+      "DATA_QUALITY",
+      "HMI_SCADA",
+      "ALARM_HISTORY",
+      "FAT_SAT"
+    ],
+    "require_failure_mode_review": true,
+    "require_data_lineage": true,
+    "require_master_discipline_authority": true
+  }
+}

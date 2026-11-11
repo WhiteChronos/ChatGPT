@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "BATCH-9b569f7c07625955",
+  "source_id": "PROJECT_GLOSSARY_REV4_2",
+  "source_revision": "4.2",
+  "created_at": "2026-08-28T18:00:00+00:00",
+  "records": [
+    {
+      "ingestion_id": "ING-9d8db1c687d9051381b0",
+      "entity_type": "source",
+      "external_id": "GLOSSARIO-REV4.2",
+      "payload": {
+        "document_title": "Glossário Mestre Multidisciplinar de Fluxogramas de Engenharia",
+        "edition": "4.2",
+        "edition_date": "2026-07",
+        "normative_base_date": "2026-07-22",
+        "scope": ["process","piping","instrumentation","automation","electrical","functional_safety","hvac","mechanical","hydraulic","pneumatic","fire_gas","telecom_ot","software","interlocks","control_strategies","tags_functions"],
+        "governance": {
+          "project_legend_and_approved_documents_precede_generic_interpretation": true,
+          "conflict_hierarchy": ["law_regulation","contract_client","corporate_standard","national_international_standard","project_criteria_specification","drawing_legend_notes","engineering_practice"]
+        }
+      },
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":2,"section":"Controle e finalidade do documento","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT",
+      "review_status": "REVIEW_REQUIRED",
+      "auto_promoted": false
+    },
+    {
+      "ingestion_id": "ING-bf45652c623c7913925a",
+      "entity_type": "glossary_entry",
+      "external_id": "P&ID",
+      "payload": {"term":"P&ID","en":"Piping and Instrumentation Diagram","definition_pt":"Documento detalhado de equipamentos, tubulações, válvulas, acessórios, instrumentos e funções de controle.","application":"Base multidisciplinar de projeto, HAZOP, operação e manutenção."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":10,"section":"Tipos de fluxogramas e documentos de engenharia","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-bf2b65466afae0c7f67b",
+      "entity_type": "glossary_entry",
+      "external_id": "P&ID_INTELIGENTE",
+      "payload": {"term":"P&ID inteligente","en":"Data-centric P&ID","definition_pt":"P&ID associado a objetos e atributos de banco de dados para validação e troca de informações entre ferramentas.","application":"Engenharia digital e integração PCE-CAE."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":10,"section":"Tipos de fluxogramas e documentos de engenharia","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-96d7f9aa1cea4087b660",
+      "entity_type": "glossary_entry",
+      "external_id": "SIMBOLO_GRAFICO",
+      "payload": {"term":"Símbolo gráfico","definition_pt":"Representação visual normalizada ou definida pela legenda para objeto, equipamento, instrumento ou função.","governance":"A legenda do desenho específico deve ser consultada antes de atribuir significado definitivo."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":13,"section":"Elementos gráficos, linhas, fronteiras e leitura","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-28629a28af5925f5f7ee",
+      "entity_type": "glossary_entry",
+      "external_id": "LEGENDA",
+      "payload": {"term":"Legenda","definition_pt":"Conjunto de convenções gráficas e significados aplicáveis ao documento.","governance":"Primeira referência para interpretar símbolos e linhas do desenho específico."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":13,"section":"Elementos gráficos, linhas, fronteiras e leitura","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-3668d719f786e1137be0",
+      "entity_type": "glossary_entry",
+      "external_id": "TAG",
+      "payload": {"term":"Tag","definition_pt":"Código controlado que identifica objeto, função, equipamento ou documento.","caution":"Não confundir tag funcional ISA com reference designation IEC 81346."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":13,"section":"Elementos gráficos, linhas, fronteiras e leitura","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-dc3eeec222b229ace100",
+      "entity_type": "glossary_entry",
+      "external_id": "INSTRUMENT_INDEX",
+      "payload": {"term":"Lista de instrumentos","en":"Instrument index","definition_pt":"Cadastro mestre de tags, serviços, tipos, documentos e dados de instrumentos.","consistency":"Deve permanecer coerente com P&ID e I/O."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":33,"section":"Documentos de engenharia","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-fe43f1fedeb995400a9e",
+      "entity_type": "glossary_entry",
+      "external_id": "IO_LIST",
+      "payload": {"term":"Lista de I/O","en":"I/O list","definition_pt":"Cadastro de entradas e saídas dos sistemas de controle relacionando tag, canal, tipo de sinal e sistema.","consistency":"P&ID x I/O deve confirmar canais, tipos, sistemas e interfaces dos objetos com sinais."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":34,"section":"Matriz de consistência entre documentos","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-7140c42d024c0b5bd853",
+      "entity_type": "glossary_entry",
+      "external_id": "CAUSE_EFFECT",
+      "payload": {"term":"Matriz de causa e efeito","en":"Cause & Effect","definition_pt":"Matriz que relaciona causas iniciadoras a efeitos automáticos, alarmes, paradas e outras ações.","consistency":"P&ID x C&E deve manter causas, setpoints, efeitos, prioridades e estados seguros coerentes."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":11,"section":"Tipos de fluxogramas e documentos de engenharia","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-4fa844eb4609a239704a",
+      "entity_type": "glossary_entry",
+      "external_id": "DATASHEET",
+      "payload": {"term":"Data sheet","pt":"Folha de dados","definition_pt":"Documento estruturado com requisitos e características de um item.","application":"Compra, fabricação e validação."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":33,"section":"Documentos de engenharia","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-6b98c70bb4276b78f4d9",
+      "entity_type": "tag",
+      "external_id": "TAG_CAUTION_TC",
+      "payload": {"code":"TC","interpretation_pt":"Controlador de temperatura","caution":"Não usar TC para deduzir tecnologia de termopar."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":35,"section":"Nota técnica sobre TC, KQR, XY, UY e CLP","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-d5fa867b48d44031440c",
+      "entity_type": "tag",
+      "external_id": "TAG_CAUTION_KQR",
+      "payload": {"code":"KQR","interpretation_pt":"Combinação pouco usual dependente da legenda","caution":"Não classificar como telerruptor sem definição formal do projeto."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":35,"section":"Nota técnica sobre TC, KQR, XY, UY e CLP","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-37f6d1d42213ad93d985",
+      "entity_type": "tag",
+      "external_id": "TAG_CAUTION_XY",
+      "payload": {"code":"XY","interpretation_pt":"Função auxiliar não classificada ou definida pelo usuário","caution":"A legenda deve indicar hardware ou função."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":35,"section":"Nota técnica sobre TC, KQR, XY, UY e CLP","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-353a0e95e91369b544c9",
+      "entity_type": "tag",
+      "external_id": "TAG_CAUTION_UY",
+      "payload": {"code":"UY","interpretation_pt":"Função auxiliar/multifuncional associada a variável multivariável","caution":"Não é tag universal para o CLP físico."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":35,"section":"Nota técnica sobre TC, KQR, XY, UY e CLP","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-a7879b14802b8c7dab65",
+      "entity_type": "tag",
+      "external_id": "TAG_CAUTION_CLP001",
+      "payload": {"code":"CLP-001","interpretation_pt":"Identificação de equipamento/sistema por acrônimo","caution":"Funções internas podem ter tags próprias; validade depende do critério do empreendimento."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":35,"section":"Nota técnica sobre TC, KQR, XY, UY e CLP","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-7f94b3b3dfe7d726352e",
+      "entity_type": "tag",
+      "external_id": "CONTROL_PERMISSIVE",
+      "payload": {"code":"PERMISSIVE","class":"logic_function","meaning_pt":"Condição necessária para autorizar uma ação","requirement":"Distinguir permissivo de partida e de operação."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":151,"section":"Glossário Mestre de Tags e Funções","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-3aa1c5cf268895feb2d8",
+      "entity_type": "tag",
+      "external_id": "CONTROL_TRIP",
+      "payload": {"code":"TRIP","class":"protection_function","meaning_pt":"Ação automática de parada ou bloqueio","requirement":"Definir first-out, reset e estado seguro."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":151,"section":"Glossário Mestre de Tags e Funções","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-cdea6e53ab35f74f00cf",
+      "entity_type": "tag",
+      "external_id": "CONTROL_BYPASS",
+      "payload": {"code":"BYPASS","class":"temporary_function","meaning_pt":"Inibição controlada de canal ou função","requirement":"Requer autorização, alarme, registro e prazo."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":151,"section":"Glossário Mestre de Tags e Funções","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-28d8ff2e8994c1afa81e",
+      "entity_type": "tag",
+      "external_id": "CONTROL_RESET",
+      "payload": {"code":"RESET","class":"logic_function","meaning_pt":"Liberação de estado retentivo","requirement":"Somente após causa normalizada e permissivos atendidos."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":151,"section":"Glossário Mestre de Tags e Funções","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    },
+    {
+      "ingestion_id": "ING-9282e8775de389eca22b",
+      "entity_type": "tag",
+      "external_id": "CONTROL_FIRST_OUT",
+      "payload": {"code":"FIRST-OUT","class":"diagnostic","meaning_pt":"Registro da primeira causa de trip","requirement":"Preservar causas individuais."},
+      "provenance": {"document":"Glossario_Mestre_Instrumentacao_Automacao_Rev4_2.pdf","page":151,"section":"Glossário Mestre de Tags e Funções","source_id":"PROJECT_GLOSSARY_REV4_2"},
+      "evidence_class": "E2_PROJECT_DOCUMENT","review_status":"REVIEW_REQUIRED","auto_promoted":false
+    }
+  ]
+}

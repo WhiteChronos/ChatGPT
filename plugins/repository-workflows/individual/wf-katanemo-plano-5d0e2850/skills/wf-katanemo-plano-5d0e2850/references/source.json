@@ -1,0 +1,100 @@
+{
+  "repository": "katanemo/plano",
+  "skills": [
+    {
+      "path": ".claude/skills/pr/SKILL.md",
+      "sha": "43e4b46fd7a6ffca311ec17b72bd3ac848cd82bd",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/pr/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/check/SKILL.md",
+      "sha": "4d2427e2ca57d3deff9bdfc6a1a7d32323319d0f",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/check/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/release/SKILL.md",
+      "sha": "ba101bd3771a4a49f70adb545ec89f4f6fe3c4ce",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/release/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/build-cli/SKILL.md",
+      "sha": "0e2aec7f98fd5b1225ecc1d08251834d4266d562",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/build-cli/SKILL.md"
+    },
+    {
+      "path": "skills/plano-agent-skills/SKILL.md",
+      "sha": "e6ecbb2032109c6fcece7c707e34e14430345443",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-agent-skills/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/build-wasm/SKILL.md",
+      "sha": "dffff78387ab981bd1b9b6697a676a0ba957e757",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/build-wasm/SKILL.md"
+    },
+    {
+      "path": "skills/plano-cli-operations/SKILL.md",
+      "sha": "f9c374982b350806b6c5f90ee40102e1b2093b4d",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-cli-operations/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/new-provider/SKILL.md",
+      "sha": "74ba0f6d44a591cf67332fb994931d2a6ae4178b",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/new-provider/SKILL.md"
+    },
+    {
+      "path": "skills/plano-advanced-patterns/SKILL.md",
+      "sha": "7e2f1b007d5e44d310b7ccc169eea1747820a8ca",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-advanced-patterns/SKILL.md"
+    },
+    {
+      "path": "skills/plano-filter-guardrails/SKILL.md",
+      "sha": "2f19e67b6825b2cc881676ebde5923c527f3f672",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-filter-guardrails/SKILL.md"
+    },
+    {
+      "path": "skills/plano-config-fundamentals/SKILL.md",
+      "sha": "87b7fbdd9b3a1a2402442a22871f6d35f185cbe6",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-config-fundamentals/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/build-brightstaff/SKILL.md",
+      "sha": "6fc97b19218faee30c137f32f81ef04370938597",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/build-brightstaff/SKILL.md"
+    },
+    {
+      "path": "skills/plano-deployment-security/SKILL.md",
+      "sha": "48256777dfeee7cc233b04db7ea08bbbdecf96f6",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-deployment-security/SKILL.md"
+    },
+    {
+      "path": "skills/plano-agent-orchestration/SKILL.md",
+      "sha": "90f25bebe2ec0b17611f404ac5049a3176a1c232",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-agent-orchestration/SKILL.md"
+    },
+    {
+      "path": "skills/plano-observability-debugging/SKILL.md",
+      "sha": "c4039a7f52ef1e57c4f272f21d09a7a7630632ce",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-observability-debugging/SKILL.md"
+    },
+    {
+      "path": "skills/plano-routing-model-selection/SKILL.md",
+      "sha": "083f21c8f3387bd71c43e1832737f58f98ca81f4",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/skills/plano-routing-model-selection/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/test-python/SKILL.md",
+      "sha": "2aa40ded45afc58cd2be280cbd6b1ca59644efb5",
+      "url": "https://github.com/katanemo/plano/blob/b13ddd632bde1fea7678386c345665ea5fa671af/.claude/skills/test-python/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-katanemo-plano-5d0e2850",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/pr/SKILL.md",
+    "name": "pr",
+    "read_verified": true
+  }
+}

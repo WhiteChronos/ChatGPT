@@ -1,0 +1,97 @@
+{
+  "id": "MD_AUTOMATION_DATA_SHEET_V1_0",
+  "document_type": "MD",
+  "model_id": "MD_AUTOMATION_PETROBRAS_V1_0",
+  "required_document_metadata": [
+    "document_code",
+    "revision",
+    "title",
+    "client",
+    "program",
+    "area",
+    "ss",
+    "in",
+    "project_phase",
+    "final_page_count"
+  ],
+  "required_technical_sections": [
+    "introduction",
+    "objective",
+    "location_when_applicable",
+    "documentation_and_references",
+    "process_description",
+    "automation_scope",
+    "control_architecture",
+    "field_instrumentation_and_signals",
+    "operational_philosophy_and_control_logic",
+    "process_safety_and_interlocks",
+    "supervision_and_operation_interfaces",
+    "electrical_interface_limits_when_applicable",
+    "reliability_infrastructure_and_reserves",
+    "final_considerations"
+  ],
+  "technical_entities": {
+    "equipment": ["tag", "service", "function", "source_document", "status"],
+    "controller_panel": ["tag", "role", "location", "interfaces", "source_document"],
+    "network_interface": ["origin", "destination", "protocol", "medium", "purpose", "source_document"],
+    "signal": ["origin", "destination", "type", "direction", "purpose", "source_document"],
+    "interlock": ["cause", "condition", "affected_equipment", "effect", "feedback", "reset", "safe_state", "evidence"],
+    "alarm_event": ["condition", "priority_when_defined", "operator_action_when_defined", "evidence"]
+  },
+  "cross_document_validation": {
+    "required": true,
+    "sources": ["DE", "ET", "LI", "FD", "PROCESS_FLOW", "NETWORK_ARCHITECTURE", "CLIENT_COMMENTS"],
+    "do_not_invent_missing_requirements": true,
+    "full_document_codes_required": true,
+    "tags_and_quantities_must_be_consistent": true,
+    "protocol_interface_level_must_be_explicit": true,
+    "electrical_automation_scope_boundary_must_be_explicit": true
+  },
+  "revision_traceability": {
+    "current_revision_change_map_required": true,
+    "fields": [
+      "comment_id",
+      "severity",
+      "page",
+      "anchor_excerpt",
+      "authoritative_comment_text",
+      "requested_action",
+      "affected_sections",
+      "replacement_text",
+      "technical_evidence",
+      "status"
+    ],
+    "legacy_gray_must_be_cleared": true,
+    "current_revision_gray_color": "D9D9D9",
+    "current_revision_gray_only": true,
+    "continuous_gray_across_runs": true,
+    "toc_marking_for_changed_sections": true
+  },
+  "layout_contract": {
+    "text_only": true,
+    "paragraph_spacing_immutable": true,
+    "line_spacing_immutable": true,
+    "indentation_immutable": true,
+    "tabs_immutable": true,
+    "font_immutable": true,
+    "font_size_immutable": true,
+    "style_immutable": true,
+    "table_geometry_immutable": true,
+    "headers_footers_immutable": true,
+    "images_geometry_immutable": true,
+    "section_geometry_immutable": true,
+    "pagination_dynamic": true,
+    "toc_page_references_dynamic": true
+  },
+  "release_evidence": [
+    "source_template_sha256",
+    "output_sha256",
+    "layout_fingerprint",
+    "changed_text_map",
+    "current_gray_paragraph_map",
+    "final_page_count",
+    "rendered_page_inventory",
+    "visual_inspection_status"
+  ],
+  "release_policy": "BLOCK_ON_ANY_CRITICAL_FAILURE"
+}

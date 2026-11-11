@@ -1,0 +1,71 @@
+{
+  "repository": "Jakeschincariol/replica-skill",
+  "skills": [
+    {
+      "path": "replica-architect/SKILL.md",
+      "sha256": "08eb22e27a2d4dab559d6df8bca057b3a27b2f2c41e2e689f0bde36399eda5d2",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-backend/SKILL.md",
+      "sha256": "be648f761b72498b3020c658eeecaefe8ffd15cdda8ec01721d58ade0c399f5f",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-brand/SKILL.md",
+      "sha256": "dea6a4c05562d71ccc296f90721e113898af81ac426f92806fc0c307c5b79a98",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-build/SKILL.md",
+      "sha256": "bc8853c94c0b95df903fba665994f9372e410a97704e92260967ef1f8d70cd6a",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-deploy/SKILL.md",
+      "sha256": "75d958b8dd260b1f35bab247dcf8277ae4389cc3663b95af3f5817f1d4552804",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-design/SKILL.md",
+      "sha256": "ca904fd9c5bd1f4df68f28cd2d23907b6e219aae69e56999439eddb907c506f5",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-diff/SKILL.md",
+      "sha256": "99393ca59fc97a264ac6f8288635c7f11508e1d34e6b956b0fe49d0306d3d299",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-entrepreneur/SKILL.md",
+      "sha256": "ce8007f61c97254d2955636e6cc009dfcb26c29ce4bc17121c92ed9f55763dcf",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-launch/SKILL.md",
+      "sha256": "f7169a026eea93cca8ba34589bc41c01c194ce9ded6e2fddcca352f233ef2317",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-recon/SKILL.md",
+      "sha256": "3cf2c24334e9a396d120dbe246f554e8b033f7bea883c4c39704717a787ffd38",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    },
+    {
+      "path": "replica-test/SKILL.md",
+      "sha256": "d2a3fa23862c746da201537fa14ed2e870c4a58a8e8adcc0884ed68e0a4a370c",
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51"
+    }
+  ],
+  "local_evidence": [
+    {
+      "commit": "77c9436fb3d18c3d58169efb8caf4fe906b0dc51",
+      "skills_observed": 11,
+      "dirty": false
+    }
+  ],
+  "skill_name": "wf-jakeschincariol-replica-skill-a44b40b4",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED"
+}

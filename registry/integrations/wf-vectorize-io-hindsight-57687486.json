@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-vectorize-io-hindsight-57687486",
+  "display_name": "vectorize-io/hindsight Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-vectorize-io-hindsight-57687486",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-vectorize-io-hindsight-57687486",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-vectorize-io-hindsight-57687486/skills/wf-vectorize-io-hindsight-57687486/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

@@ -1,0 +1,128 @@
+{
+  "manifest_version": "1.0.0",
+  "standard_id": "LI_IO_PETROBRAS_AUTOMACAO_V1_0",
+  "status": "ACTIVE",
+  "document_family": "LI",
+  "document_subtype": "ENTRADAS_E_SAIDAS",
+  "governance_version": "4.6",
+  "private_asset_alias": "LI_IO_CANONICAL_PRIVATE_ASSET_V1_0",
+  "canonical_sha256": "e75b2344296d503cb243c5865cfd9378f9d6df9b909f0091c354ee143006833d",
+  "canonical_size_bytes": 313721,
+  "layout_fingerprint_sha256": "496bb86c4c7d5da228e6f3ef0a1d57c5096c0f08738ec5705425af0d438d2d4d",
+  "lineage": {
+    "visual_reference_private_alias": "LI_IO_VISUAL_REFERENCE_PRIVATE_ASSET",
+    "visual_reference_sha256": "a164428b873b4f4ca1fa3764f09db056de772701deb9e85047cb3bd07580f532",
+    "approved_canonical_private_alias": "LI_IO_CANONICAL_PRIVATE_ASSET_V1_0",
+    "approved_canonical_sha256": "e75b2344296d503cb243c5865cfd9378f9d6df9b909f0091c354ee143006833d"
+  },
+  "canonical_archetype_count": 4,
+  "canonical_archetype_order": [
+    "COVER",
+    "POINT_LIST",
+    "NOTES_SUMMARY_REFERENCES",
+    "MEMORY_MAP"
+  ],
+  "canonical_sheet_count_is_not_target_constraint": true,
+  "sheet_count_policy": "TARGET_DOCUMENT_DRIVEN",
+  "template_sheet_count_forced": false,
+  "pagination_policy": "DYNAMIC_TOTAL_EQUALS_FINAL_SHEET_COUNT",
+  "layout_lock": "TEXT_ONLY",
+  "quality_gate": "BLOCK_ON_ANY_FAILURE",
+  "binary_storage_policy": "PRIVATE_DATACENTER_ONLY",
+  "public_repository_policy": "REDACTED_MANIFEST_HASH_RULES_TESTS_ONLY",
+  "pagination_cells": {
+    "cover": {
+      "current": "N2",
+      "separator": "O2",
+      "total": "P2"
+    },
+    "internal": {
+      "current": "AQ2",
+      "separator": "AR2",
+      "total": "AS2"
+    }
+  },
+  "sheet_archetypes": {
+    "COVER": {
+      "required": true,
+      "repeatable": false
+    },
+    "POINT_LIST": {
+      "required": true,
+      "repeatable": true
+    },
+    "NOTES_SUMMARY_REFERENCES": {
+      "required": true,
+      "repeatable": false
+    },
+    "MEMORY_MAP": {
+      "required": false,
+      "repeatable": true
+    }
+  },
+  "archetype_signatures": [
+    {
+      "sheet_key": "CAPA",
+      "archetype": "COVER",
+      "structural_signature_sha256": "fd98d7383c353dc4e31668c4c68adbd1260e546047975c07f0706addd543598b",
+      "style_signature_sha256": "7571c32f3462e01bf43d3365448c728838d4fb0e8d2bd65c417b5887a840b669"
+    },
+    {
+      "sheet_key": "2",
+      "archetype": "POINT_LIST",
+      "structural_signature_sha256": "a5ea40d352dfaa4c99fb1f2add0a66288450362460edd601a7e5490f9bb40c76",
+      "style_signature_sha256": "2f1123fc732dcd73a11ed708a81f32ed1e5598b34dfc5d0e34aabb5eec2e389d"
+    },
+    {
+      "sheet_key": "3",
+      "archetype": "NOTES_SUMMARY_REFERENCES",
+      "structural_signature_sha256": "05ef0c283c64a342b1cb69c510092c0d14b7827cfc00bb7bfaed16c0a2170443",
+      "style_signature_sha256": "c9cc5ec4cf8c589872b4594b723df7e8204d987b861c1e28715b55b9a5280a22"
+    },
+    {
+      "sheet_key": "4",
+      "archetype": "MEMORY_MAP",
+      "structural_signature_sha256": "7d718e1ba321a232038b7eef640eaa4e9c0d362cd962b8505b0a2523e1c2a6c2",
+      "style_signature_sha256": "81045c34482615f33bc273d01ae505d35b40bb0d2d9685470af5906bb649e797"
+    }
+  ],
+  "allowed_mutations": [
+    "CELL_TEXT",
+    "CELL_VALUE",
+    "AUTHORIZED_FORMULA",
+    "PAGE_NUMBER",
+    "TOTAL_PAGES",
+    "REVISION_TEXT",
+    "APPROVED_TECHNICAL_IMAGE"
+  ],
+  "forbidden_mutations": [
+    "ROW_HEIGHT",
+    "COLUMN_WIDTH",
+    "MERGED_CELLS",
+    "BORDERS",
+    "FILLS",
+    "FONTS",
+    "FONT_SIZE",
+    "ALIGNMENT",
+    "NUMBER_FORMAT",
+    "PAGE_MARGINS",
+    "PRINT_AREA",
+    "PAGE_ORIENTATION",
+    "PAGE_SCALE",
+    "LOGO",
+    "HEADER_GEOMETRY",
+    "FOOTER_GEOMETRY",
+    "COPY_TEMPLATE_SHEET_COUNT"
+  ],
+  "notes_placement_policy": "ARCHITECTURE_AND_PROTOCOL_NOTES_ONLY_ON_NOTES_SHEET",
+  "private_datacenter_required_fields": [
+    "binary_path",
+    "source_fingerprint",
+    "output_fingerprint",
+    "full_structural_manifest",
+    "changed_cells",
+    "render_evidence",
+    "visual_inspection_result",
+    "approval_record"
+  ]
+}

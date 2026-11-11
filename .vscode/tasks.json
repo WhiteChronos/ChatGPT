@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Toolkit: pesquisar Graphify offline",
+      "type": "process",
+      "command": "python",
+      "args": ["${workspaceFolder}/plugins/vibe-coding-toolkit/reference.py", "search", "Graphify"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Toolkit: testar consulta portatil",
+      "type": "process",
+      "command": "python",
+      "args": ["-m", "unittest", "discover", "-s", "tests", "-p", "test_vibe_toolkit_portable.py"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    }
+  ]
+}

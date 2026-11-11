@@ -1,0 +1,69 @@
+name: Sync obra superpowers mirror
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/sync-superpowers-mirror.yml"
+      - "plugins/superpowers-controller/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-superpowers-mirror
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WhiteChronos repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror upstream bytes without executing upstream code
+        run: |
+          chmod +x plugins/superpowers-controller/scripts/sync_mirror.sh
+          plugins/superpowers-controller/scripts/sync_mirror.sh "$GITHUB_WORKSPACE"
+
+      - name: Detect mirror changes
+        id: diff
+        shell: bash
+        run: |
+          if git diff --quiet -- vendor/obra-superpowers plugins/superpowers-controller/upstream.lock.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or refresh synchronization pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          SHA="$(python -c 'import json; print(json.load(open("vendor/obra-superpowers/.whitechronos-mirror.json"))["commit"])')"
+          VERSION="$(python -c 'import json; print(json.load(open("vendor/obra-superpowers/.whitechronos-mirror.json"))["version"])')"
+          SHORT_SHA="${SHA:0:12}"
+          BRANCH="chore/sync-superpowers-${SHORT_SHA}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add vendor/obra-superpowers plugins/superpowers-controller/upstream.lock.json
+          git commit -m "chore: sync obra/superpowers ${VERSION} (${SHORT_SHA})"
+          git push --force origin "$BRANCH"
+
+          EXISTING="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [[ -z "$EXISTING" ]]; then
+            gh pr create               --base main               --head "$BRANCH"               --title "chore: sync obra/superpowers ${VERSION} (${SHORT_SHA})"               --body "Automated read-only mirror refresh from https://github.com/obra/superpowers at commit \`${SHA}\`. Runtime continues to use the official Superpowers plugin; mirrored files are for audit, search, provenance, and recovery."
+          else
+            echo "Synchronization PR #$EXISTING already exists."
+          fi

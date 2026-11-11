@@ -1,0 +1,80 @@
+{
+  "repository": "tma1-ai/tma1",
+  "skills": [
+    {
+      "path": "clawhub-skill/tma1/SKILL.md",
+      "sha": "6ff0050cc87cbd069086fa46acb6b5e6784a4cce",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/clawhub-skill/tma1/SKILL.md"
+    },
+    {
+      "path": "claude-plugin/skills/tma1/SKILL.md",
+      "sha": "25351f9e4ce43d829fd0cca21b396c684c4ce4bc",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/claude-plugin/skills/tma1/SKILL.md"
+    },
+    {
+      "path": "claude-plugin/skills/tma1-peer/SKILL.md",
+      "sha": "832c253ae17f58780a0c0d658985c7fbe8bfd48e",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/claude-plugin/skills/tma1-peer/SKILL.md"
+    },
+    {
+      "path": "claude-plugin/skills/tma1-setup/SKILL.md",
+      "sha": "f64f0038d492e5aa98533dc265798152b0df99c6",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/claude-plugin/skills/tma1-setup/SKILL.md"
+    },
+    {
+      "path": "claude-plugin/skills/tma1-search/SKILL.md",
+      "sha": "d59bb5cb43fe7e4b2357af0964e3bbd558a0b832",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/claude-plugin/skills/tma1-search/SKILL.md"
+    },
+    {
+      "path": "server/internal/hooks/skills/tma1/SKILL.md",
+      "sha": "25351f9e4ce43d829fd0cca21b396c684c4ce4bc",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/server/internal/hooks/skills/tma1/SKILL.md"
+    },
+    {
+      "path": "claude-plugin/codex-skills/tma1-peer/SKILL.md",
+      "sha": "c01f13c46d43fdf23ca8a86740fbecfe478ea34d",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/claude-plugin/codex-skills/tma1-peer/SKILL.md"
+    },
+    {
+      "path": "server/internal/hooks/skills/tma1-peer/SKILL.md",
+      "sha": "832c253ae17f58780a0c0d658985c7fbe8bfd48e",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/server/internal/hooks/skills/tma1-peer/SKILL.md"
+    },
+    {
+      "path": "claude-plugin/codex-skills/tma1-search/SKILL.md",
+      "sha": "5e7a8936ae7aedad2c0a726692a4ed3c23cf0163",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/claude-plugin/codex-skills/tma1-search/SKILL.md"
+    },
+    {
+      "path": "server/internal/hooks/skills/tma1-setup/SKILL.md",
+      "sha": "f64f0038d492e5aa98533dc265798152b0df99c6",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/server/internal/hooks/skills/tma1-setup/SKILL.md"
+    },
+    {
+      "path": "server/internal/hooks/skills/tma1-search/SKILL.md",
+      "sha": "d59bb5cb43fe7e4b2357af0964e3bbd558a0b832",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/server/internal/hooks/skills/tma1-search/SKILL.md"
+    },
+    {
+      "path": "server/internal/hooks/codex-skills/tma1-peer/SKILL.md",
+      "sha": "c01f13c46d43fdf23ca8a86740fbecfe478ea34d",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/server/internal/hooks/codex-skills/tma1-peer/SKILL.md"
+    },
+    {
+      "path": "server/internal/hooks/codex-skills/tma1-search/SKILL.md",
+      "sha": "5e7a8936ae7aedad2c0a726692a4ed3c23cf0163",
+      "url": "https://github.com/tma1-ai/tma1/blob/f3dfed8dd81a325f82cd94c093442df34cd9e45c/server/internal/hooks/codex-skills/tma1-search/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-tma1-ai-tma1-0b591684",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": "clawhub-skill/tma1/SKILL.md",
+    "name": "tma1",
+    "read_verified": true
+  }
+}

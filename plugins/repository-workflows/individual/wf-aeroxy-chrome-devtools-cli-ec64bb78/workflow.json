@@ -1,0 +1,38 @@
+{
+  "repository": "aeroxy/chrome-devtools-cli",
+  "skill": "wf-aeroxy-chrome-devtools-cli-ec64bb78",
+  "default_mode": "individual",
+  "individual": {
+    "steps": [
+      "wf-aeroxy-chrome-devtools-cli-ec64bb78"
+    ],
+    "executed": false,
+    "depends_on_other_systems": false
+  },
+  "integrations": {
+    "rea": {
+      "skill": "whitechronos-lab",
+      "when": "static-analysis-requested"
+    },
+    "superpowers": {
+      "skill": "superpowers-workflow",
+      "when": "development-or-debugging"
+    },
+    "replica": {
+      "skill": "replica-workflow",
+      "when": "reconstruction-or-parity"
+    },
+    "arena": {
+      "skill": "arena-workflow",
+      "when": "review-requested"
+    },
+    "vibe": {
+      "skill": "vibe-coding-toolkit",
+      "when": "project-setup-or-guidance"
+    }
+  },
+  "execution_owner": "current host agent",
+  "background_enabled": false,
+  "web_account_installation": "NOT_VERIFIED",
+  "host_discovery": "NOT_VERIFIED"
+}

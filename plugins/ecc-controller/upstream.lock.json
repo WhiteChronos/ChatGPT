@@ -1,0 +1,25 @@
+{
+  "upstream": {
+    "repository": "affaan-m/ECC",
+    "ref": "main",
+    "observed_sha": "ef648e01899ba3e8dc6371642deaaf64b4477775",
+    "observed_version": "2.2.3",
+    "skill_count": 293,
+    "agent_count": 68,
+    "command_count": 94,
+    "license": "MIT",
+    "native_codex_plugin": true
+  },
+  "runtime": {
+    "strategy": "official-upstream-plugin",
+    "marketplace_entry": "ecc@whitechronos-repo",
+    "controller_entry": "ecc-controller@whitechronos-repo",
+    "duplicate_hooks": false,
+    "mirror_executable": false
+  },
+  "mirror": {
+    "path": "vendor/affaan-m-ecc",
+    "mode": "read-only",
+    "sync_workflow": ".github/workflows/sync-ecc-mirror.yml"
+  }
+}

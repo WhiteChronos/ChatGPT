@@ -1,0 +1,6 @@
+interface:
+  display_name: "monoscope-tech/monoscope"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-monoscope-tech-monoscope-66266baf para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

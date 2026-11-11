@@ -1,0 +1,6 @@
+interface:
+  display_name: "ChromeDevTools/chrome-devtools-mcp"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-chromedevtools-chrome-devtools-mcp-c68b4f26 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

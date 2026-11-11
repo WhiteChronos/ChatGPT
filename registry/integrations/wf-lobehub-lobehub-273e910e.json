@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-lobehub-lobehub-273e910e",
+  "display_name": "lobehub/lobehub Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-lobehub-lobehub-273e910e",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-lobehub-lobehub-273e910e",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-lobehub-lobehub-273e910e/skills/wf-lobehub-lobehub-273e910e/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

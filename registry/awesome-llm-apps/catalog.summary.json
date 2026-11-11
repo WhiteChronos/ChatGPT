@@ -1,0 +1,21 @@
+{
+  "by_category": {
+    "agent_app": 424,
+    "skill": 10
+  },
+  "by_execution_class": {
+    "BACKGROUND_AUTONOMOUS": 4,
+    "CREDENTIALLED": 62,
+    "LOCAL_READ_ONLY": 309,
+    "MCP_OR_CONNECTOR": 51,
+    "REFERENCE_ONLY": 2,
+    "SELF_MODIFYING": 6
+  },
+  "by_source_type": {
+    "external_reference": 2,
+    "upstream_internal": 432
+  },
+  "entries": 434,
+  "schema_version": 1,
+  "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+}

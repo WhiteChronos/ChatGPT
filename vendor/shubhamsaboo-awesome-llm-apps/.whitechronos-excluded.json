@@ -1,0 +1,160 @@
+{
+  "excluded": [
+    {
+      "action": "exclude",
+      "git_sha": "a0891f264cc731f43cc748d14724f3bb17b66c20",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/android-chrome-192x192.png",
+      "reason": "generated_or_dependency_dir",
+      "size": 16697,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "8a66562ea78cef205f88be754730245ca9018621",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/android-chrome-512x512.png",
+      "reason": "generated_or_dependency_dir",
+      "size": 46977,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "e3cf715023702a18daaf740e46e2799ccbe18628",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/apple-touch-icon.png",
+      "reason": "generated_or_dependency_dir",
+      "size": 14867,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "5ef6a259c99eb2379cc17b3e0d8df79070f5df06",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/asset-manifest.json",
+      "reason": "generated_or_dependency_dir",
+      "size": 517,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "ae46ef17d73a680a975d99562c5caace2bd6b449",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/favicon-16x16.png",
+      "reason": "generated_or_dependency_dir",
+      "size": 773,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "19852fd67c72985d694385859b6c9e12678e6c9b",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/favicon-32x32.png",
+      "reason": "generated_or_dependency_dir",
+      "size": 1904,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "9e902772f104507d1203af5ba98e233728b70baf",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/favicon.ico",
+      "reason": "generated_or_dependency_dir",
+      "size": 15406,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "bb813bb4df785649d2846443b03727ec064bafbd",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/index.html",
+      "reason": "generated_or_dependency_dir",
+      "size": 726,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "040c7e4f59c4fcbd311f14484acd1c94bb1a1d96",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/manifest.json",
+      "reason": "generated_or_dependency_dir",
+      "size": 518,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "e9e57dc4d41b9b46e05112e9f45b7ea6ac0ba15e",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/robots.txt",
+      "reason": "generated_or_dependency_dir",
+      "size": 67,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "50410fa4beb15cb375392a6dfc7e87346e414fb2",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/css/main.e6c13ad2.css",
+      "reason": "generated_or_dependency_dir",
+      "size": 337,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "b5b49c95e8482b4c8b9ac54918d8024205058b22",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/css/main.e6c13ad2.css.map",
+      "reason": "generated_or_dependency_dir",
+      "size": 582,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "11faff56c68532fae08682353c57845ebe750f77",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/js/453.258b012d.chunk.js",
+      "reason": "generated_or_dependency_dir",
+      "size": 4513,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "a65bcb8dc94388a6cb2ee4a6994b46aeccfb2f15",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/js/453.258b012d.chunk.js.map",
+      "reason": "generated_or_dependency_dir",
+      "size": 10597,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "9720ce700b36aa26f5058a9682834444d4a59da4",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/js/main.5073a5c8.js",
+      "reason": "generated_or_dependency_dir",
+      "size": 1142973,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "52082a5505afbdaa5b027a67d796d8beacb117e5",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/js/main.5073a5c8.js.LICENSE.txt",
+      "reason": "generated_or_dependency_dir",
+      "size": 1709,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "f606f1e846bef8750e49030cf68167791a41d52a",
+      "path": "advanced_ai_agents/multi_agent_apps/ai_news_and_podcast_agents/web/build/static/js/main.5073a5c8.js.map",
+      "reason": "generated_or_dependency_dir",
+      "size": 4475113,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "3b01147d61d7f5f01b0ef993d1971f3ad9737415",
+      "path": "advanced_llm_apps/chat_with_X_tutorials/streaming_ai_chatbot/docs/images/streaming-ai-chatbot.gif",
+      "reason": "large_demo_media",
+      "size": 24904054,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    },
+    {
+      "action": "exclude",
+      "git_sha": "7902d2f0b7aaf09ca47fd2b4a57c1f42f74d0714",
+      "path": "advanced_llm_apps/thinkpath_chatbot_app/github thinkpath video.mp4",
+      "reason": "large_demo_media",
+      "size": 20010694,
+      "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2"
+    }
+  ],
+  "ref": "main",
+  "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+  "upstream_repository": "Shubhamsaboo/awesome-llm-apps",
+  "upstream_url": "https://github.com/Shubhamsaboo/awesome-llm-apps.git"
+}

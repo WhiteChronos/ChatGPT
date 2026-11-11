@@ -1,0 +1,140 @@
+{
+  "repository": "vercel/next.js",
+  "skills": [
+    {
+      "path": ".agents/skills/flags/SKILL.md",
+      "sha": "bf2e09d84a74353c66ceb2633e40de9a779218a9",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/flags/SKILL.md"
+    },
+    {
+      "path": "skills/next-dev-loop/SKILL.md",
+      "sha": "c47aa648d77710c0288cd3ed6b93f771ae489bf2",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/skills/next-dev-loop/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/v8-jit/SKILL.md",
+      "sha": "7d87c95d8211391417586f95144565a10c417c8f",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/v8-jit/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/dce-edge/SKILL.md",
+      "sha": "f28f3c37ceba4e04b1a2e240f6b94d08644d85cb",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/dce-edge/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/gh-stack/SKILL.md",
+      "sha": "d3c8d9bb7210c5a9edf8e9cb0f48c1a19db69d3e",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/gh-stack/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/create-pr/SKILL.md",
+      "sha": "5a23b3bef6175add6bf60609f5774ddf1b8b134e",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/create-pr/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/react-sync/SKILL.md",
+      "sha": "164fda289a9fd38893cb83945434fd2c4d014817",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/react-sync/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/router-act/SKILL.md",
+      "sha": "d09bea29a5a61124724d56b16dafead2d91b20cb",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/router-act/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/next-rspack/SKILL.md",
+      "sha": "d971d7fdc1f39fc4759c1d5b1f0b6c8a3da4f4df",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/next-rspack/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/update-docs/SKILL.md",
+      "sha": "c4c5afea6e0a51168d9a6a9e8b340d2e41ab3b4b",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/update-docs/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/backport-pr/SKILL.md",
+      "sha": "ade97a8c929d1bfeddab47a7fd31550f7e1c254f",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/backport-pr/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/write-guide/SKILL.md",
+      "sha": "789cc023b8b1fa4ced12beb6958b3a7428cd83ed",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/write-guide/SKILL.md"
+    },
+    {
+      "path": "skills/next-bundle-optimizer/SKILL.md",
+      "sha": "7ed81add1a6452acb6f7894fef73d30bfa04684f",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/skills/next-bundle-optimizer/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/runtime-debug/SKILL.md",
+      "sha": "52361836c0314a09fe0b87fe7002e1412e2aba67",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/runtime-debug/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/docs-diagrams/SKILL.md",
+      "sha": "8ec734b444acfa18a13aa086454a9bbc9f498cfb",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/docs-diagrams/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/sandbox-bench/SKILL.md",
+      "sha": "3aa7c4ac92305ce114c57e0dd80b3f70c96b12e3",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/sandbox-bench/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/react-vendoring/SKILL.md",
+      "sha": "b5d530cd975e31276cc9f4bba1c7924db7ff8984",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/react-vendoring/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/pr-status-triage/SKILL.md",
+      "sha": "7dfec162c3d02284ef6a42062f1bbc20d67363d6",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/pr-status-triage/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/authoring-skills/SKILL.md",
+      "sha": "761ebce27eaeb3a269adff758c1ae61210b2f634",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/authoring-skills/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/insight-error-page/SKILL.md",
+      "sha": "fac3b8415be521f706e5795c4e260b27b5afee70",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/insight-error-page/SKILL.md"
+    },
+    {
+      "path": ".agents/skills/write-api-reference/SKILL.md",
+      "sha": "ee43c9eb4c910a505ee7b7401155e91849d361e4",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/.agents/skills/write-api-reference/SKILL.md"
+    },
+    {
+      "path": "skills/next-cache-components-adoption/SKILL.md",
+      "sha": "a03551523fbcb3be1890438e2b25312ca8959a33",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/skills/next-cache-components-adoption/SKILL.md"
+    },
+    {
+      "path": "skills/next-cache-components-optimizer/SKILL.md",
+      "sha": "fd7d0b4ee64d6e6b9478b17a93e27697a4a5a627",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/skills/next-cache-components-optimizer/SKILL.md"
+    },
+    {
+      "path": "skills/next-partial-prefetching-adoption/SKILL.md",
+      "sha": "c11a16e4eafa5abc0dc84136821feb4be3b8ac6d",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/skills/next-partial-prefetching-adoption/SKILL.md"
+    },
+    {
+      "path": "skills/next-partial-prefetching-optimizer/SKILL.md",
+      "sha": "21fc6c464217097bc5cba30dafe12fde430f8d4e",
+      "url": "https://github.com/vercel/next.js/blob/8e47c2ef831e2241c0566b95bde207119acb4de8/skills/next-partial-prefetching-optimizer/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-vercel-next-js-079c0319",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/flags/SKILL.md",
+    "name": "flags",
+    "read_verified": true
+  }
+}

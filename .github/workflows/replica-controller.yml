@@ -1,0 +1,31 @@
+name: Replica Controller
+on:
+  pull_request:
+    paths:
+      - 'plugins/replica-controller/**'
+      - 'registry/integrations/replica-controller.json'
+      - '.github/workflows/replica-controller.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify pinned package
+        run: python plugins/replica-controller/scripts/replica.py verify
+      - name: Controller regressions
+        run: python -B -m unittest discover -s plugins/replica-controller/tests -v
+      - uses: actions/checkout@v4
+        with:
+          repository: Jakeschincariol/replica-skill
+          ref: 77c9436fb3d18c3d58169efb8caf4fe906b0dc51
+          path: replica-upstream-test
+          persist-credentials: false
+      - name: Pinned upstream tests
+        working-directory: replica-upstream-test
+        run: python -B -m unittest discover -s tests -v

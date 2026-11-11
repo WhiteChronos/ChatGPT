@@ -1,0 +1,10 @@
+{
+  "excluded_bytes": 50649024,
+  "excluded_files": 19,
+  "included_bytes": 39430805,
+  "included_files": 1957,
+  "ref": "main",
+  "upstream_commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+  "upstream_repository": "Shubhamsaboo/awesome-llm-apps",
+  "upstream_url": "https://github.com/Shubhamsaboo/awesome-llm-apps.git"
+}

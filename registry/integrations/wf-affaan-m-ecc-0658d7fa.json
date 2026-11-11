@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-affaan-m-ecc-0658d7fa",
+  "display_name": "affaan-m/ECC Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-affaan-m-ecc-0658d7fa",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-affaan-m-ecc-0658d7fa",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-affaan-m-ecc-0658d7fa/skills/wf-affaan-m-ecc-0658d7fa/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

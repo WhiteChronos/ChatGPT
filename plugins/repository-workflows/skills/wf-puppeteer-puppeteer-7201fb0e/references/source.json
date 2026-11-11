@@ -1,0 +1,20 @@
+{
+  "repository": "puppeteer/puppeteer",
+  "skills": [
+    {
+      "path": ".agents/skills/puppeteer-verification/SKILL.md",
+      "sha": "5f8cdc398bb47ea575ae100e828a23153a162ac6",
+      "url": "https://github.com/puppeteer/puppeteer/blob/15816772ad01431b976ff1bb052456a0aa9ecd0b/.agents/skills/puppeteer-verification/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-puppeteer-puppeteer-7201fb0e",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".agents/skills/puppeteer-verification/SKILL.md",
+    "name": "puppeteer-verification",
+    "read_verified": true
+  }
+}

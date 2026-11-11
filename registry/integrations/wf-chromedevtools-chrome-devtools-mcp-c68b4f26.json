@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-chromedevtools-chrome-devtools-mcp-c68b4f26",
+  "display_name": "ChromeDevTools/chrome-devtools-mcp Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-chromedevtools-chrome-devtools-mcp-c68b4f26",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-chromedevtools-chrome-devtools-mcp-c68b4f26",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-chromedevtools-chrome-devtools-mcp-c68b4f26/skills/wf-chromedevtools-chrome-devtools-mcp-c68b4f26/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

@@ -1,0 +1,10 @@
+{
+  "name": "awesome-llm-apps-controller",
+  "version": "1.0.0",
+  "description": "Route AI-agent, RAG, MCP, voice, always-on, Generative UI, and framework-example work through the WhiteChronos Awesome LLM Apps catalog.",
+  "author": {"name": "WhiteChronos"},
+  "license": "Apache-2.0",
+  "skills": "./skills/",
+  "hooks": {},
+  "capabilities": ["Interactive", "Read"]
+}

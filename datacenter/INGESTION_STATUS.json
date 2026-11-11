@@ -1,0 +1,8 @@
+{
+  "engine": "DEKS_KNOWLEDGE_INGESTION_V1_1",
+  "ok": true,
+  "error_count": 0,
+  "errors": [],
+  "auto_approval": false,
+  "note": "Ingestão prepara staging e revisão; não promove automaticamente conteúdo canônico."
+}

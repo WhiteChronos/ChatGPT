@@ -1,0 +1,11 @@
+rank,repo,score_editorial,licenca,integracao,link
+1,hkoziolek/DiagEx-Repro,92,Apache-2.0,BENCHMARK_OFFLINE_PLANEJADO,https://github.com/hkoziolek/DiagEx-Repro
+2,Azure-Samples/digitization-of-piping-and-instrument-diagrams,88,MIT,ADAPTADOR_JSON_TESTADO,https://github.com/Azure-Samples/digitization-of-piping-and-instrument-diagrams
+3,mgupta70/PIDQA,81,CC0-1.0,BENCHMARK_PLANEJADO,https://github.com/mgupta70/PIDQA
+4,process-intelligence-research/pyDEXPI,80,AGPL-3.0,CONTRATO_FUTURO_OPCIONAL,https://github.com/process-intelligence-research/pyDEXPI
+5,aws-solutions-library-samples/guidance-for-piping-and-instrumentation-diagrams-digitization-on-aws,79,MIT-0,REFERENCIA_ARQUITETURAL,https://github.com/aws-solutions-library-samples/guidance-for-piping-and-instrumentation-diagrams-digitization-on-aws
+6,Maria-Antony/PID-Digitization-using-Neo4j,75,MIT,REFERENCIA_ARQUITETURAL,https://github.com/Maria-Antony/PID-Digitization-using-Neo4j
+7,javvi51/eDOCr,73,MIT,REFERENCIA_OCR,https://github.com/javvi51/eDOCr
+8,sad123-yx/PIDCon,63,NAO_IDENTIFICADA,REFERENCIA_METRICAS_NAO_EXECUTADA,https://github.com/sad123-yx/PIDCon
+9,S-Houston/digitised-pid-mlops,56,NAO_IDENTIFICADA,ADAPTADOR_CSV_TESTADO_SEM_COPIAR_CODIGO,https://github.com/S-Houston/digitised-pid-mlops
+10,ZzzJjt/Industrial-Control,46,NAO_IDENTIFICADA,VALIDADOR_REFERENCIA_NAO_NORMATIVA,https://github.com/ZzzJjt/Industrial-Control

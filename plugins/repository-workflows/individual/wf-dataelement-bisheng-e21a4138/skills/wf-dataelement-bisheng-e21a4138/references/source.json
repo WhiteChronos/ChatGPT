@@ -1,0 +1,120 @@
+{
+  "repository": "dataelement/bisheng",
+  "skills": [
+    {
+      "path": ".claude/skills/sdd-review/SKILL.md",
+      "sha": "7c55026d6e79bde14de1b0a334e3b219cb63c162",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/sdd-review/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/sdd-review/SKILL.md",
+      "sha": "7c55026d6e79bde14de1b0a334e3b219cb63c162",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/sdd-review/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/task-review/SKILL.md",
+      "sha": "305ffdf04394b161662ff337a57356832234d1e7",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/task-review/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/task-review/SKILL.md",
+      "sha": "305ffdf04394b161662ff337a57356832234d1e7",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/task-review/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/code-review/SKILL.md",
+      "sha": "f8c5668569443d12d464b95abde403fd698021bf",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/code-review/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/code-review/SKILL.md",
+      "sha": "325f7dd14273090f159a0e73f29d61a3d219c261",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/code-review/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/i18n-localizer/SKILL.md",
+      "sha": "5b607884412d51478f31322decdda0d2f260fa06",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/i18n-localizer/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/i18n-localizer/SKILL.md",
+      "sha": "5b607884412d51478f31322decdda0d2f260fa06",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/i18n-localizer/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/approval-module/SKILL.md",
+      "sha": "00fc280ab9f87d46e6fa2e94856887e5d165219b",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/approval-module/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/approval-module/SKILL.md",
+      "sha": "8ced79991cd288275ef8168c9dca893d263707d9",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/approval-module/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/react-component-refactor/SKILL.md",
+      "sha": "06b10a2405d2cc98ab5acea2b7fd6faa8670a834",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/react-component-refactor/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/react-component-refactor/SKILL.md",
+      "sha": "06b10a2405d2cc98ab5acea2b7fd6faa8670a834",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/react-component-refactor/SKILL.md"
+    },
+    {
+      "path": "src/backend/.agents/skills/coding_guidelines/SKILL.md",
+      "sha": "7413e018b5afe566334656c942fbe00d77026abb",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/backend/.agents/skills/coding_guidelines/SKILL.md"
+    },
+    {
+      "path": "src/frontend/client/.agents/skills/i18n-localizer/SKILL.md",
+      "sha": "5b607884412d51478f31322decdda0d2f260fa06",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/frontend/client/.agents/skills/i18n-localizer/SKILL.md"
+    },
+    {
+      "path": "src/backend/bisheng/linsight/builtin_skills/bisheng-xlsx/SKILL.md",
+      "sha": "5daf8bd8bb0455945374cce3f9b3ee4076aac63e",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/backend/bisheng/linsight/builtin_skills/bisheng-xlsx/SKILL.md"
+    },
+    {
+      "path": "src/backend/bisheng/linsight/builtin_skills/bisheng-pptx/SKILL.md",
+      "sha": "d8f088c5b4e41c9f49592ffc332886252c93b65b",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/backend/bisheng/linsight/builtin_skills/bisheng-pptx/SKILL.md"
+    },
+    {
+      "path": "src/backend/bisheng/linsight/builtin_skills/bisheng-docx/SKILL.md",
+      "sha": "d1d9332ad452cf1f272bb3494150468748aa059e",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/backend/bisheng/linsight/builtin_skills/bisheng-docx/SKILL.md"
+    },
+    {
+      "path": "src/backend/bisheng/open_api/skill_packs/knowledge-search/SKILL.md",
+      "sha": "2162cd470f89fc334ebff36a21d64a66509a02e4",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/backend/bisheng/open_api/skill_packs/knowledge-search/SKILL.md"
+    },
+    {
+      "path": "src/frontend/client/.agents/skills/react-component-refactor/SKILL.md",
+      "sha": "06b10a2405d2cc98ab5acea2b7fd6faa8670a834",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/src/frontend/client/.agents/skills/react-component-refactor/SKILL.md"
+    },
+    {
+      "path": ".cursor/skills/e2e-test/SKILL.md",
+      "sha": "683f45616982a2f7f2f922f486665a7dcb27e0e1",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.cursor/skills/e2e-test/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/e2e-test/SKILL.md",
+      "sha": "683f45616982a2f7f2f922f486665a7dcb27e0e1",
+      "url": "https://github.com/dataelement/bisheng/blob/83aa354034c14c913800f821074bad8f0c29e1e0/.claude/skills/e2e-test/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-dataelement-bisheng-e21a4138",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/sdd-review/SKILL.md",
+    "name": "sdd-review",
+    "read_verified": true
+  }
+}

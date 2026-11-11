@@ -1,0 +1,6 @@
+interface:
+  display_name: "LogneBudo/llmxray"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-lognebudo-llmxray-26c34ef4 para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true

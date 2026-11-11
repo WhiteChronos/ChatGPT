@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-1337hero-faster-chat-11cb6c69",
+  "display_name": "1337hero/faster-chat Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-1337hero-faster-chat-11cb6c69",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-1337hero-faster-chat-11cb6c69",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-1337hero-faster-chat-11cb6c69/skills/wf-1337hero-faster-chat-11cb6c69/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

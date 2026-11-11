@@ -1,0 +1,25 @@
+{
+  "repository": "LibreChat-AI/LibreChat",
+  "skills": [
+    {
+      "path": ".claude/skills/codebase-design/SKILL.md",
+      "sha": "16620c24528b737408e78d95dd6a0e01a98d3d63",
+      "url": "https://github.com/LibreChat-AI/LibreChat/blob/a378657583567310c841d652b0f6b00c83e2bd6b/.claude/skills/codebase-design/SKILL.md"
+    },
+    {
+      "path": ".claude/skills/improve-codebase-architecture/SKILL.md",
+      "sha": "529761a3a01d35996018f27530b3c3cc0ab18d41",
+      "url": "https://github.com/LibreChat-AI/LibreChat/blob/a378657583567310c841d652b0f6b00c83e2bd6b/.claude/skills/improve-codebase-architecture/SKILL.md"
+    }
+  ],
+  "local_evidence": [],
+  "skill_name": "wf-librechat-ai-librechat-438ddea7",
+  "search_coverage": "PRESENCE_CONFIRMED_NOT_EXHAUSTIVE",
+  "runtime": "NOT_VERIFIED",
+  "web_account": "NOT_UPDATED",
+  "representative": {
+    "path": ".claude/skills/codebase-design/SKILL.md",
+    "name": "codebase-design",
+    "read_verified": true
+  }
+}

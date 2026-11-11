@@ -1,0 +1,10 @@
+{
+  "source": "https://github.com/affaan-m/ECC",
+  "ref": "main",
+  "commit": "ef648e01899ba3e8dc6371642deaaf64b4477775",
+  "version": "2.2.3",
+  "skill_count": 293,
+  "agent_count": 68,
+  "command_count": 94,
+  "policy": "read-only byte mirror; runtime uses the upstream-native ECC Codex plugin"
+}

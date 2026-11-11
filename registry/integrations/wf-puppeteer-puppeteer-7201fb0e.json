@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "wf-puppeteer-puppeteer-7201fb0e",
+  "display_name": "puppeteer/puppeteer Workflow",
+  "source_type": "local",
+  "source": "plugins/repository-workflows/individual/wf-puppeteer-puppeteer-7201fb0e",
+  "license_status": "MIT",
+  "execution_class": "LOCAL_MUTATING",
+  "status": "PACKAGED",
+  "controller_plugin": "wf-puppeteer-puppeteer-7201fb0e",
+  "skill_paths": [
+    "plugins/repository-workflows/individual/wf-puppeteer-puppeteer-7201fb0e/skills/wf-puppeteer-puppeteer-7201fb0e/SKILL.md"
+  ],
+  "mcp_servers": [],
+  "runtime_probe": null
+}

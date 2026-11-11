@@ -1,0 +1,97 @@
+name: Sync ECC mirror
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "19 7 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/sync-ecc-mirror.yml"
+      - "plugins/ecc-controller/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-ecc-mirror
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WhiteChronos repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Test ECC synchronization behavior
+        run: |
+          chmod +x plugins/ecc-controller/scripts/sync_mirror.sh
+          chmod +x plugins/ecc-controller/tests/test_sync_mirror.sh
+          plugins/ecc-controller/tests/test_sync_mirror.sh
+
+      - name: Mirror official ECC upstream
+        run: |
+          plugins/ecc-controller/scripts/sync_mirror.sh "$GITHUB_WORKSPACE"
+
+      - name: Detect synchronized changes
+        id: diff
+        shell: bash
+        run: |
+          if git diff --quiet -- vendor/affaan-m-ecc plugins/ecc-controller/upstream.lock.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push synchronization branch and open PR when permitted
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          SHA="$(python -c 'import json; print(json.load(open("vendor/affaan-m-ecc/.whitechronos-mirror.json"))["commit"])')"
+          VERSION="$(python -c 'import json; print(json.load(open("vendor/affaan-m-ecc/.whitechronos-mirror.json"))["version"])')"
+          SKILLS="$(python -c 'import json; print(json.load(open("vendor/affaan-m-ecc/.whitechronos-mirror.json"))["skill_count"])')"
+          AGENTS="$(python -c 'import json; print(json.load(open("vendor/affaan-m-ecc/.whitechronos-mirror.json"))["agent_count"])')"
+          COMMANDS="$(python -c 'import json; print(json.load(open("vendor/affaan-m-ecc/.whitechronos-mirror.json"))["command_count"])')"
+          SHORT_SHA="${SHA:0:12}"
+          BRANCH="chore/sync-ecc-${SHORT_SHA}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add vendor/affaan-m-ecc plugins/ecc-controller/upstream.lock.json
+          git commit -m "chore: sync affaan-m/ECC ${VERSION} (${SHORT_SHA})"
+          git push --force origin "$BRANCH"
+
+          EXISTING="$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')"
+          if [[ -z "$EXISTING" ]]; then
+            if PR_URL="$(gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore: sync affaan-m/ECC ${VERSION} (${SHORT_SHA})" \
+              --body "Automated read-only mirror refresh from https://github.com/affaan-m/ECC at commit \`${SHA}\`. Snapshot: ${SKILLS} Skills, ${AGENTS} agents, ${COMMANDS} command shims. Upstream code is copied but not executed during synchronization; runtime remains the official upstream-native ECC Codex plugin." 2>&1)"; then
+              echo "Created synchronization PR: $PR_URL"
+            else
+              echo "::warning::Synchronization branch was pushed, but repository policy blocked GitHub Actions from creating the PR."
+              {
+                echo "## ECC sync branch ready"
+                echo
+                echo "GitHub Actions pushed \`$BRANCH\`, but repository policy prevented the workflow token from creating a pull request."
+                echo
+                echo "Open a PR manually (or through the connected GitHub app) from \`$BRANCH\` to \`main\`."
+                echo
+                echo "gh output:"
+                echo '~~~text'
+                echo "$PR_URL"
+                echo '~~~'
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "Synchronization PR #$EXISTING already exists."
+          fi

@@ -1,0 +1,6 @@
+interface:
+  display_name: "gbasin/dejank"
+  short_description: "Workflow específico com fontes e evidências"
+  default_prompt: "Use $wf-gbasin-dejank-5a6ba81e para trabalhar neste repositório."
+policy:
+  allow_implicit_invocation: true
