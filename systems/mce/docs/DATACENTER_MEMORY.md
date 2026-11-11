@@ -130,3 +130,7 @@ Quando o DataCenter MCE real estiver disponivel em ambiente PRIVADO autorizado, 
 Aprendizado continuo: armazenar eventos da licao e teste validado no mesmo ledger MCE quando acesso for comprovado, e registrar no memoria.md somente a decisao sanitizada. Sem autoaprovacao, alteracao de pesos, alteracao de excel ou execucao entre chats sem acionamento.
 
 **DEC-MCE-079 — Correção de nome PV:** identificar cada matriz pelo codigo documental e revisao documentada, seguido de ` - PV NN.xlsx`. Uma correcao de nome sem mudanca dos bytes nao consome PV adicional. Preservar o ledger de nomenclatura historico, gerar registro de retificacao separado em ambiente privado e atualizar as referencias do indice autorizado, sem reescrever eventos anteriores ou afirmar arquivamento automatico.
+
+
+## DEC-MCE-081 — política DataCenter e aprendizado contínuo
+O processo do MCE passa a consultar o arquivo de política `datacenter/MCE_LAYOUT_LEARNING_POLICY.json` em cada execução explicitamente solicitada. O perfil `P09_L50_H_DISPLAY_3` é novo contrato candidato, para seleção por projeto, não altera automaticamente modelos históricos. Registrar lição revisada no mesmo ledger `memory_events` apenas quando o host autorizado estiver disponível e seu recibo puder ser relido. `datacenter_host=NOT_VERIFIED` até comprovação; não criar outro banco, não instalar watchdog/serviço nem afirmar que tarefas são feitas entre chats. Para checkpoint privado local: registrar hashes de versões de Excel/Word e o relatório de auditoria sem enviar os bytes para GitHub público.

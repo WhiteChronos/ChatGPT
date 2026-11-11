@@ -155,3 +155,7 @@ Preservar por PV: identificador do documento, PV, SHA-256 entrada/saida, digest 
 Contrato detalhado e fluxo: systems/mce/docs/PV_VERSION_WORKFLOW.md; schema publico SOMENTE de metadados: systems/mce/datacenter/PV_VERSION_MANIFEST.schema.json. Nenhuma aprovacao de trabalho anterior equivale a aprovacao funcional ou do modelo.
 
 **DEC-MCE-079:** revisao documental (ex.: `-B`) e parte obrigatoria da identidade no nome; nao acrescentar nome da unidade ou parenteses PRELIMINAR VERSÃO. A renomeacao corretiva de PV 01 do mesmo SHA e metadado, nao alteracao de causa/efeito e nao cria PV 02. Manter registro de migracao do nome historico e nunca sobrescrever arquivo ou ledger original. Ver docs/PV_VERSION_WORKFLOW.md.
+
+
+## DEC-MCE-081 — layout H=3 por perfil e perguntas úteis à MCE
+Quando o perfil contratual aplicável for `P09_L50_H_DISPLAY_3`, conferir a largura EXIBIDA H=3.00, OOXML width=3.7109375 para MDW7, e nunca alterar as demais larguras ou dados por consequência dessa decisão. Como é alteração de layout, separar dos gates de engenharia: a comparação ZIP não comprova homologação nem substitui Excel Windows nativo. Questions Word: apenas Localização/Folha/Pergunta, de modo didático, sem repetir a mesma decisão por TAG; não omitir divergências individuais. Aprendizado testado em cada ciclo explícito, sem serviço em background ou persistência DataCenter sem recibo.

@@ -58,3 +58,7 @@ O workflow atualizado esta em docs/PV_VERSION_WORKFLOW.md e o sequenciador de no
 mce-verificacao-cruzamentos e mce-verificacao-documental sao Skills privadas complementares; acionar em hosts que comprovem descoberta/execucao, com interface JSON e sem copiar seu codigo para este repositorio publico. GitHub-only alvo nao significa DataCenter privado real ou sincronizacao entre chats.
 
 **DEC-MCE-079 (2026-11-11):** a nomenclatura que substitui DEC-MCE-078 e `CODIGO_DOCUMENTO-REVISAO - PV NN.xlsx` (sem parenteses PRELIMINAR VERSÃO e sem nome inventado do projeto). O estado PV e contagem continuam independentes da revisao do documento. O historico de DEC-MCE-078 fica preservado; o procedimento corrigido e o unico aplicavel a novas entregas.
+
+
+## DEC-MCE-081 — continuidade de layout, perguntas e QA
+Nova regra de fluxo da MCE: opção contratual `P09_L50_H_DISPLAY_3` (exibição 3.00; OOXML 3.7109375 MDW7), outras colunas inalteradas. Perguntas repetidas são consolidadas por decisão funcional, mantendo três colunas no Word; matriz somente com amarelo, sem anotações. A melhoria contínua deve ser executada como checklist a cada novo trabalho MCE solicitado, com prova, teste e revisão antes de aprovação. O sistema não mantém agente rodando continuamente nem memória operacional no DataCenter sem host comprovado. Fonte em `docs/MCE_LAYOUT_LEARNING_CONTINUITY.md` e evento DEC-MCE-081, Issue #120.

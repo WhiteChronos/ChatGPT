@@ -8,6 +8,9 @@ on:
       - 'systems/mce/tests/test_mce_pv_controller.py'
       - 'systems/mce/scripts/mce_pv_controller.py'
       - 'systems/mce/datacenter/PV_VERSION_MANIFEST.schema.json'
+      - 'systems/mce/datacenter/MCE_LAYOUT_LEARNING_POLICY.json'
+      - 'systems/mce/tests/test_mce_layout_learning_policy.py'
+      - 'systems/mce/docs/MCE_LAYOUT_LEARNING_CONTINUITY.md'
       - 'systems/mce/docs/PV_VERSION_WORKFLOW.md'
       - 'systems/mce/docs/EXECUCAO.md'
       - 'systems/mce/scripts/mce_delivery_contract.py'
@@ -39,7 +42,7 @@ jobs:
       - name: Scan deterministic tool (no third-party execution)
         run: python -m bandit -q -ll systems/mce/scripts/matriz_causa_efeito_tool.py systems/mce/scripts/mce_pv_controller.py
       - name: Run real three-adapter synthetic integration and adversarial tests
-        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py systems/mce/tests/test_mce_delivery_contract.py systems/mce/tests/test_mce_pv_controller.py
+        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py systems/mce/tests/test_mce_delivery_contract.py systems/mce/tests/test_mce_pv_controller.py systems/mce/tests/test_mce_layout_learning_policy.py
       - name: Validate MCE Skills and global mirrors
         run: |
           python systems/mce/scripts/validate_skills.py
