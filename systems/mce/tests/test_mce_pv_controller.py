@@ -22,8 +22,8 @@ def fixture(tmp_path):
 def test_pv01_copy_only(tmp_path):
     source = fixture(tmp_path)
     digest = mod.sha256(source)
-    record = mod.stage(tmp_path, 'mce.xlsx', 'DE-001_MCE_TESTE', digest)
-    assert record['filename'] == 'DE-001_MCE_TESTE (PRELIMINAR VERS\u00c3O 01) PV 01.xlsx'
+    record = mod.stage(tmp_path, 'mce.xlsx', 'DE-000.00-0000-000-ABC-001-B', digest)
+    assert record['filename'] == 'DE-000.00-0000-000-ABC-001-B - PV 01.xlsx'
     assert record['pv_number'] == 1
     assert record['engineering_approved'] is False
     assert Path(record['file']).read_bytes() == source.read_bytes()
@@ -38,7 +38,7 @@ def test_next_pv_requires_change_and_has_chain(tmp_path):
     wb = Workbook(); wb.active.title='FOLHA 1';wb.active['A1']='updated';wb.save(source)
     r=mod.stage(tmp_path,'mce.xlsx','MCE_ALFA',mod.sha256(source))
     assert r['pv_number']==2
-    assert '(PRELIMINAR VERS\u00c3O 02) PV 02.xlsx' in r['filename']
+    assert ' - PV 02.xlsx' in r['filename']
     assert len(mod.read_ledger(tmp_path/'pv'/'pv_versions.jsonl',tmp_path/'pv')) == 2
 
 
@@ -77,6 +77,14 @@ def test_detect_tampered_xlsx(tmp_path):
 
 
 def test_pv_filename_parser():
-    assert mod.parse_pv_filename('MCE_ADM (PRELIMINAR VERS\u00c3O 01) PV 01.xlsx') == ('MCE_ADM',1)
-    with pytest.raises(mod.PVBlocked):mod.parse_pv_filename('MCE_ADM (PRELIMINAR VERS\u00c3O 01) PV 02.xlsx')
-    with pytest.raises(mod.PVBlocked):mod.parse_pv_filename('MCE_ADM (PRELIMINAR VERS\u00c3O 00) PV 00.xlsx')
+    assert mod.parse_pv_filename('DE-000.00-0000-000-ABC-001-B - PV 01.xlsx') == ('DE-000.00-0000-000-ABC-001-B',1)
+    with pytest.raises(mod.PVBlocked):mod.parse_pv_filename('DE-000.00-0000-000-ABC-001-B - PV 00.xlsx')
+    with pytest.raises(mod.PVBlocked):mod.parse_pv_filename('DE-000.00-0000-000-ABC-001-B (PRELIMINAR VERS\u00c3O 01) PV 01.xlsx')
+
+
+def test_code_revision_suffix_is_part_of_document_identity():
+    assert mod.pv_filename('DE-000.00-0000-000-ABC-001-B', 1) == 'DE-000.00-0000-000-ABC-001-B - PV 01.xlsx'
+    assert mod.pv_filename('DE-000.00-0000-000-ABC-001-B', 2) == 'DE-000.00-0000-000-ABC-001-B - PV 02.xlsx'
+    assert mod.parse_pv_filename('DE-000.00-0000-000-ABC-001-B - PV 02.xlsx') == ('DE-000.00-0000-000-ABC-001-B', 2)
+    with pytest.raises(mod.PVBlocked):
+        mod.parse_pv_filename('DE-000.00-0000-000-ABC-001 (PRELIMINAR VERSÃO 01) PV 01.xlsx')

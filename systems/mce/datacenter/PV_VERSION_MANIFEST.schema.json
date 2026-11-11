@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "MCE PV append-only version metadata (private workspace)",
-  "description": "Schema for one private version record, never an engineering approval or data-content archive.",
+  "description": "Private immutable PV document metadata. Filename is CODIGO_DOCUMENTO-REVISAO - PV NN.xlsx. Correction of legacy filename does not consume a new PV.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -26,12 +26,14 @@
     "document_name": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 160
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._=-]{0,159}$"
     },
     "filename": {
       "type": "string",
       "minLength": 15,
-      "maxLength": 230
+      "maxLength": 230,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._=-]{0,159} - PV (?:0[1-9]|[1-9][0-9]+)\\.xlsx$"
     },
     "pv_number": {
       "type": "integer",

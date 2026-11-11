@@ -2,9 +2,9 @@
 Data da regra: 2026-11-11. Decisao publica DEC-MCE-078. Este arquivo registra PROCESSO e nao contem arquivos, TAGs, trechos ou memoria industrial privada.
 
 ## 1. Nome e identidade
-Nome exato: NOME_DO_DOCUMENTO + espaco + (PRELIMINAR VERSAO NN) PV NN + extensao .xlsx.
-O texto grafado no arquivo deve usar acento portugues: PRELIMINAR VERSÃO.
-Exemplo sintetico: MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx.
+Nome exato: CODIGO_COMPLETO_DO_DOCUMENTO_COM_REVISAO + " - PV " + NN + ".xlsx".
+O codigo documental real e sua revisao fazem parte do nome. Nao gerar nome descritivo, sigla do projeto nem a expressao PRELIMINAR VERSÃO.
+Exemplo sintetico: DE-000.00-0000-000-ABC-001-B - PV 01.xlsx.
 PV 02, PV 03 e seguintes sao sequenciais POR DOCUMENTO; cada novo documento com identidade propria inicia em PV 01.
 Nao reutilizar numero, nao sobrescrever, nao promover PV a revisao aprovada.
 A regra se aplica tambem ao nome do PDF espelho, quando requisitado, com mesma raiz e mesmo PV.
@@ -18,7 +18,7 @@ Anexos de auditoria sao AUXILIARES, nunca arquivo principal da matriz.
 5. Resolver contradicoes MD/ET/Arquitetura por responsavel; diferenciar topologia e supervisao de comando hardwired, logica de CLP, SIS/F&G e permissivos. Na falta de prova, PENDENTE, sem inventar.
 6. Preparar contrato candidato com mce_workflow.py propose-contract, depois revisar e aprovar whitelist e modelo homologado; nao repetir solicitacao geral de trabalho ja recebida, mas nao fingir aceite tecnico.
 7. Somente com gates, executor MCE canonico faz authorize, apply --changes e audit sobre copia derivada. Nao editar XLSX pelas skills de auditoria. Testar preservacao P09, formulas, mesclas, X historicos, observacoes, SP, legendas, 35 posicoes de efeitos e SHA/OOXML.
-8. Se houver XLSX derivado valido, executar mce_pv_controller.py no root PRIVADO: --source relativo --document-name SEM SUFIXO PV --sha256 da fonte. O comando copia bytes para pv/<documento> (PRELIMINAR VERSÃO NN) PV NN.xlsx e anexa uma entrada encadeada em pv/pv_versions.jsonl. O mesmo SHA nao cria outra PV do mesmo documento. Conferir XLSX/PDF pelo mce_delivery_contract.py antes de declarar entrega tecnica.
+8. Se houver XLSX derivado valido, executar mce_pv_controller.py no root PRIVADO: --source relativo --document-name SEM SUFIXO PV --sha256 da fonte. O comando copia bytes para pv/<codigo-documento-e-revisao> - PV NN.xlsx e anexa uma entrada encadeada em pv/pv_versions.jsonl. O mesmo SHA nao cria outra PV do mesmo documento. Conferir XLSX/PDF pelo mce_delivery_contract.py antes de declarar entrega tecnica.
 9. Gerar relatorio de pendencias separado, nunca abas CONTROLE ou AUDITORIA na MCE P09. Status MCE_PRELIMINAR_PARA_REVISAO sem homologacao automatica.
 10. Apos compatibilizacao, aprovacao multidisciplinar, QA Excel Windows, requisitos de teste e aceite, registrar evento EXTERNO de fechamento. A PV permanece historica; o documento final segue codigo/revisao aprovados, sem renomear PV como final automaticamente. Proximo documento: nova identidade, ledger proprio, PV 01.
 
@@ -39,3 +39,6 @@ Anexos de auditoria sao AUXILIARES, nunca arquivo principal da matriz.
 
 ## 5. Evidencia e testes
 Fonte de verdade: systems/mce/scripts/mce_pv_controller.py, systems/mce/scripts/mce_delivery_contract.py e respectivas suites sinteticas. Auditoria independente usa arquivos privados so em escopo autorizado. O recibo PV nao concede permissao para editar dados ou executar conteudo de fonte.
+
+## Correcao de nomenclatura - DEC-MCE-079 (2026-11-11)
+O proprietario corrigiu a regra anterior: usar CODIGO_DOCUMENTO-REVISAO - PV NN.xlsx, ex.: DE-000.00-0000-000-ABC-001-B - PV 01.xlsx. `-B` representa a revisao documental e nao pode ser omitido ou substituido por texto de projeto. Nao usar sufixo `(PRELIMINAR VERSÃO NN)`. Trata-se de correcao de metadata, nao de revisao funcional: se o conteudo XLSX for binariamente igual, preservar PV 01 e seu SHA; registrar vinculo com o nome incorreto historico sem sobrescrever ledger antigo, sem criar PV 02 artificial. O documento codigo/revisao deve ser confirmado no controle documental antes de futuras emissoes; nao inferir revisao a partir do nome de arquivo de origem.

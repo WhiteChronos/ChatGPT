@@ -164,10 +164,12 @@ A saida \`contract.proposed.json\` e SOMENTE PROPOSTA: lista \`matrix_ranges\`, 
 
 ## DEC-MCE-078 - Nomenclatura PV, auditoria cruzada e aprendizado rastreavel
 
-Para entrega de cada Matriz MCE, usar NOME_DO_DOCUMENTO (PRELIMINAR VERSÃO NN) PV NN.xlsx, com PV 01, PV 02, PV 03 e assim sucessivamente POR documento. Nao sobrescrever PV, nao saltar versao, nao gerar nova PV quando bytes permanecem identicos; documento seguinte tem identidade independente e inicia PV 01. PDF opcional usa a mesma raiz e numero. MCE_PRELIMINAR.xlsx no executor e somente arquivo intermediario, nao nome de entrega.
+Para entrega de cada Matriz MCE, usar CODIGO_DOCUMENTO-REVISAO - PV NN.xlsx, com PV 01, PV 02, PV 03 e assim sucessivamente POR documento. Nao sobrescrever PV, nao saltar versao, nao gerar nova PV quando bytes permanecem identicos; documento seguinte tem identidade independente e inicia PV 01. PDF opcional usa a mesma raiz e numero. MCE_PRELIMINAR.xlsx no executor e somente arquivo intermediario, nao nome de entrega.
 
 Ordem: inventario/revisoes/hash -> Skill mce-verificacao-cruzamentos -> Skill mce-verificacao-documental -> reauditoria com handoff de evidencias -> contrato e aprovacoes -> UNICO editor MCE canonico -> audit de OOXML/Excel Windows -> copia PV imutavel mce_pv_controller.py -> preflight de entrega mce_delivery_contract.py -> aceite externo de fechamento e proximo documento. Coluna sem X nao gera X arbitrario. Repeticoes de titulo exigem verificacao local e fonte. Nenhuma Skill de verificacao modifica XLSX nem concede aceites.
 
 O DataCenter usa o mesmo ledger MCE existente quando houver host real verificado; a entrada privada PV e metadado append-only por SHA, sem novo banco. O DataCenter local Windows MCE foi declarado inexistente; nao reportar runtime, cofre ou restore sem evidencia. As Skills novas sao privadas e entram por interface apenas quando descobertas; nao publicar codigo/arquivos industriais sem autorizacao especifica.
 
 Aprendizado continuo = falha comprovada, licao, teste de regressao, aprovacao humana da evolucao, commit com memoria e CI no SHA exato; nao alterar pesos de modelo nem operar em segundo plano. Ver systems/mce/docs/PV_VERSION_WORKFLOW.md e datacenter/PV_VERSION_MANIFEST.schema.json. Sem merge/deploy, sem homologacao inferida.
+
+**DEC-MCE-079 — Correcao de nome:** a regra atual prevalece sobre qualquer referencia historica a `(PRELIMINAR VERSÃO NN) PV NN`. A revisao do documento integra o codigo; sem alteracao dos bytes do Excel, corrigir apenas o nome/manifesto, mantendo a mesma PV. Testar o caso sintetico DE-000.00-0000-000-ABC-001-B - PV 01.xlsx e rejeitar a forma historica.

@@ -25,14 +25,14 @@ def preliminary(root):
     workbook = Workbook()
     workbook.active.title = "FOLHA 1"
     workbook.active["C8"] = "Synthetic documented cause"
-    path = root / "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx"
+    path = root / "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx"
     workbook.save(path)
     return {
         "schema": "mce.delivery.v1", "request_kind": "MCE_XLSX",
         "state": GATE.PRELIMINARY,
-        "artifacts": [{"role": "PRIMARY_MCE", "path": "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx",
+        "artifacts": [{"role": "PRIMARY_MCE", "path": "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx",
                        "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}],
-        "preliminary_version": {"document_name": "MCE_TESTE", "number": 1},
+        "preliminary_version": {"document_name": "DE-000.00-0000-000-ABC-001-B", "number": 1},
         "approved_layout_profile": "P09_L50_APROVADO_VISUALMENTE",
         "gates": {key: True for key in GATE.REQUIRED_GATES},
         "coverage": {"causes_total": 1, "causes_reviewed": 1,
@@ -98,11 +98,11 @@ def test_generic_sheet_and_corrupted_xlsx_rejected(tmp_path):
     data = preliminary(tmp_path)
     wb = Workbook()
     wb.active.title = "CONTROLE"
-    wb.save(tmp_path / "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx")
-    data["artifacts"][0]["sha256"] = hashlib.sha256((tmp_path / "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx").read_bytes()).hexdigest()
+    wb.save(tmp_path / "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx")
+    data["artifacts"][0]["sha256"] = hashlib.sha256((tmp_path / "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx").read_bytes()).hexdigest()
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)
-    (tmp_path / "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx").write_bytes(b"bogus")
+    (tmp_path / "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx").write_bytes(b"bogus")
     data["artifacts"][0]["sha256"] = hashlib.sha256(b"bogus").hexdigest()
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)
@@ -113,8 +113,8 @@ def test_requested_pdf_must_be_preview_and_equivalent(tmp_path):
     data["pdf_requested"] = True
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)
-    (tmp_path / "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.pdf").write_bytes(b"%PDF-1.7\nsynthetic")
-    data["artifacts"].append({"role": "PDF_PREVIEW", "path": "MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.pdf"})
+    (tmp_path / "DE-000.00-0000-000-ABC-001-B - PV 01.pdf").write_bytes(b"%PDF-1.7\nsynthetic")
+    data["artifacts"].append({"role": "PDF_PREVIEW", "path": "DE-000.00-0000-000-ABC-001-B - PV 01.pdf"})
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
         GATE.validate(data, tmp_path)
     data["gates"]["pdf_equivalence_verified"] = True
@@ -156,5 +156,21 @@ def test_pdf_must_match_pv_filename(tmp_path):
     other = tmp_path / "outro_nome.pdf"
     other.write_bytes(b"%PDF-1.7\nsynthetic")
     data["artifacts"].append({"role": "PDF_PREVIEW", "path": other.name})
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+def test_legacy_preliminary_version_name_is_rejected(tmp_path):
+    data = preliminary(tmp_path)
+    original = tmp_path / data["artifacts"][0]["path"]
+    legacy = tmp_path / "DE-000.00-0000-000-ABC-001-B (PRELIMINAR VERSÃO 01) PV 01.xlsx"
+    legacy.write_bytes(original.read_bytes())
+    data["artifacts"][0]["path"] = legacy.name
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+
+def test_document_revision_must_match_filename(tmp_path):
+    data = preliminary(tmp_path)
+    data["preliminary_version"]["document_name"] = "DE-000.00-0000-000-ABC-001-A"
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)

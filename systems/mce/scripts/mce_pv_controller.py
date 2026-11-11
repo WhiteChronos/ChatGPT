@@ -16,10 +16,9 @@ import sys
 import zipfile
 from pathlib import Path
 
-LABEL = 'PRELIMINAR VERS\u00c3O'
 LEDGER = 'pv_versions.jsonl'
-NAME_RE = re.compile(r'^([A-Za-z0-9][A-Za-z0-9_. -]{0,159}) \(' + LABEL + r' ([0-9]{2,})\) PV \2\.xlsx$')
-DOCUMENT_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_. -]{0,159}$')
+NAME_RE = re.compile(r'^([A-Za-z0-9][A-Za-z0-9._=-]{0,159}) - PV ([0-9]{2,})\.xlsx$')
+DOCUMENT_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._=-]{0,159}$')
 GENESIS = '0' * 64
 
 
@@ -37,8 +36,7 @@ def sha256(path: Path) -> str:
 
 def document_name(name: str) -> str:
     if (not isinstance(name, str) or not DOCUMENT_RE.fullmatch(name)
-            or name.endswith((' ', '.')) or 'PV ' in name
-            or LABEL in name):
+            or name.endswith((' ', '.')) or 'PV ' in name):
         raise PVBlocked('Nome do documento invalido ou ja versionado')
     return name
 
@@ -48,7 +46,7 @@ def pv_filename(name: str, number: int) -> str:
     if type(number) is not int or not 1 <= number <= 9999:
         raise PVBlocked('PV deve ser inteiro positivo de 1 a 9999')
     marker = f'{number:02d}'
-    return f'{name} ({LABEL} {marker}) PV {marker}.xlsx'
+    return f'{name} - PV {marker}.xlsx'
 
 
 def parse_pv_filename(value: str) -> tuple[str, int]:

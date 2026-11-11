@@ -110,11 +110,11 @@ def validate(manifest: object, root: Path) -> str:
     p = private_file(root, primary[0].get("path"))
     # DEC-MCE-078: PV is the mandatory document name; it is not homologation.
     pat = re.fullmatch(
-        r"(?P<doc>[A-Za-z0-9][A-Za-z0-9_. -]{0,159}) "
-        r"\(PRELIMINAR VERSÃO (?P<ver>[0-9]{2,})\) PV (?P=ver)\.xlsx", p.name
+        r"(?P<doc>[A-Za-z0-9][A-Za-z0-9._=-]{0,159}) - PV "
+        r"(?P<ver>[0-9]{2,})\.xlsx", p.name
     )
     if pat is None:
-        fail("FAIL_FORMAT_CONTRACT", "primary filename must use (PRELIMINAR VERSAO NN) PV NN")
+        fail("FAIL_FORMAT_CONTRACT", "primary filename must use CODIGO-REVISAO - PV NN")
     version_number = int(pat.group("ver"))
     if version_number < 1 or pat.group("ver") != f"{version_number:02d}":
         fail("FAIL_FORMAT_CONTRACT", "PV number must be canonical and positive")

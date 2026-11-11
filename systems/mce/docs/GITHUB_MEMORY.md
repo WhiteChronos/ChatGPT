@@ -56,3 +56,5 @@ A conciliacao do acervo de 43 eventos detectou excecoes de tipo/ID somente em DE
 
 O workflow atualizado esta em docs/PV_VERSION_WORKFLOW.md e o sequenciador de nome/copia em scripts/mce_pv_controller.py. O numero PV e por identidade documental, nao por projeto inteiro; finais homologados exigem gates externos. O Issue #120 e memoria.md preservam metadata publicavel, sem armazenar fontes/arquivos industriais.
 mce-verificacao-cruzamentos e mce-verificacao-documental sao Skills privadas complementares; acionar em hosts que comprovem descoberta/execucao, com interface JSON e sem copiar seu codigo para este repositorio publico. GitHub-only alvo nao significa DataCenter privado real ou sincronizacao entre chats.
+
+**DEC-MCE-079 (2026-11-11):** a nomenclatura que substitui DEC-MCE-078 e `CODIGO_DOCUMENTO-REVISAO - PV NN.xlsx` (sem parenteses PRELIMINAR VERSÃO e sem nome inventado do projeto). O estado PV e contagem continuam independentes da revisao do documento. O historico de DEC-MCE-078 fica preservado; o procedimento corrigido e o unico aplicavel a novas entregas.
