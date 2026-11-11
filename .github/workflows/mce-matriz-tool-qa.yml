@@ -4,6 +4,8 @@ on:
     paths:
       - 'systems/mce/scripts/matriz_causa_efeito_tool.py'
       - 'systems/mce/tests/test_matriz_causa_efeito_tool.py'
+      - 'systems/mce/tests/test_mce_delivery_contract.py'
+      - 'systems/mce/scripts/mce_delivery_contract.py'
       - 'systems/mce/datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json'
       - 'systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md'
       - 'systems/mce/.agents/skills/matriz-causa-efeito/**'
@@ -32,7 +34,7 @@ jobs:
       - name: Scan deterministic tool (no third-party execution)
         run: python -m bandit -q -ll systems/mce/scripts/matriz_causa_efeito_tool.py
       - name: Run real three-adapter synthetic integration and adversarial tests
-        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py
+        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py systems/mce/tests/test_mce_delivery_contract.py
       - name: Validate four Skills and global mirrors
         run: |
           python systems/mce/scripts/validate_skills.py
