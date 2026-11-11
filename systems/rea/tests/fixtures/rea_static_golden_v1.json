@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "name": "REA_SYNTHETIC_STATIC_GOLDEN_V1",
+  "source_by_path": {
+    "helper.py": "def ready():\n    return True\n",
+    "main.py": "import helper\n\ndef entry():\n    return helper.ready()\n",
+    "lib.js": "export function ready() { return true; }\n",
+    "ui.js": "import { ready } from './lib.js';\nexport function run() { return ready(); }\n",
+    "probe.py": "import pickle\nvalue = eval('SYNTHETIC_LITERAL_NEVER_EXPOSE')\n"
+  },
+  "expected_edges": [
+    {
+      "source": "main.py",
+      "target": "helper.py"
+    },
+    {
+      "source": "ui.js",
+      "target": "lib.js"
+    }
+  ],
+  "expected_findings": [
+    {
+      "file": "probe.py",
+      "rule_id": "PY_DYNAMIC_EXECUTION",
+      "severity": "HIGH",
+      "classification": "REVIEW_REQUIRED_NOT_CONFIRMED"
+    }
+  ],
+  "sentinel_not_to_disclose": "SYNTHETIC_LITERAL_NEVER_EXPOSE"
+}

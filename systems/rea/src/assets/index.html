@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>REA Independente | Centro de Evidencias</title>
+  <link rel="stylesheet" href="/assets/app.css">
+  <script defer src="/assets/app.js"></script>
+</head>
+<body>
+<main class="shell">
+  <div class="masthead">
+    <div class="mark">R</div>
+    <div><span class="eyebrow">ENGENHARIA REVERSA / ANALISE ESTATICA</span><h1>REA <span>INDEPENDENTE</span></h1>
+    <p>Centro de evidencias e revisao tecnica | Modo leitura</p></div>
+    <div class="indicator"><span class="dot"></span> LOCAL / PRIVADO</div>
+  </div>
+  <section class="hero"><div class="hero-copy">
+    <span class="eyebrow">ANALISE RASTREAVEL</span>
+    <h2>Inspecao de codigo e evidencias rastreaveis, sem dependencias de outros sistemas.</h2>
+    <p>Motor de analise estatica local. Complementa o REA oficial sem o substituir; nao executa decompilacao nativa.</p>
+    </div>
+    <div class="metric"><b id="status">AGUARDANDO TOKEN</b><span>Estado da sessao</span></div>
+  </section>
+  <section class="auth panel">
+    <label for="token">Token local de acesso (somente nesta aba; nao armazenado)</label>
+    <div class="auth-row"><input type="password" id="token" autocomplete="off" placeholder="REA_MCP_TOKEN">
+      <button id="connect">Conectar</button><button id="disconnect" class="secondary">Encerrar</button></div>
+    <p id="notice" role="status">Sem dados liberados. Informe o token configurado no servidor.</p>
+  </section>
+  <div class="section-head"><span class="eyebrow">FERRAMENTAS OPERACIONAIS</span><h2>Inspecionar e comparar</h2></div>
+  <section class="cards">
+    <div class="panel action-card"><div class="num">01 / RUNTIME</div><h3>REA nativo</h3>
+      <p>Confirme a versao Node, o comando REA instalado e o gate tecnico.</p>
+      <button data-tool="rea_bridge_status">Diagnosticar</button></div>
+    <div class="panel action-card"><div class="num">02 / STATIC</div><h3>Grafo do codigo</h3>
+      <p>Modulo, importacoes, hashes e candidatos a revisao sem expor o codigo.</p>
+      <label for="directory">Pasta relativa</label><input id="directory" value=".">
+      <button data-tool="rea_internal_analyze">Analisar codigo</button></div>
+    <div class="panel action-card"><div class="num">03 / ARENA</div><h3>Decisao tecnica</h3>
+      <p>Quatro estrategias, criterios explicitados e limites de confidencialidade.</p>
+      <button data-tool="rea_arena_compare">Comparar estrategias</button></div>
+    <div class="panel action-card"><div class="num">04 / CATALOGO</div><h3>Ranking local</h3>
+      <p>Compara ate 100 candidatos do JSON revisado pelo usuario, sem consultas externas.</p>
+      <label for="catalog">Catalogo relativo</label><input id="catalog" placeholder="catalogo.json">
+      <button data-tool="rea_repositories_top10">Revisar top 10</button></div>
+  </section>
+  <div class="section-head"><span class="eyebrow">SAIDA AUDITAVEL</span><h2>Resultado da operacao</h2></div>
+  <section class="panel output-panel"><pre id="output" aria-live="polite">Selecione uma operacao. Nenhum arquivo foi alterado.</pre></section>
+  <footer><span>REA INDEPENDENTE / Acoes read-only / SHA-256</span><span>REA upstream executado somente apos verificacao real</span></footer>
+</main>
+</body>
+</html>

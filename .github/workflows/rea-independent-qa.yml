@@ -1,0 +1,32 @@
+name: REA independent system QA
+on:
+  pull_request:
+    paths:
+      - 'systems/rea/**'
+      - '.agents/skills/rea-engenharia-reversa-evolutiva/**'
+      - '.github/workflows/rea-independent-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rea-regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            systems/rea
+            .agents/skills
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r systems/rea/requirements-mcp.txt
+      - name: Verify official SDK protocol across in-process, stdio and Streamable HTTP
+        run: python -m pytest -q systems/rea/tests
+      - name: Inspect independent REA runtime status
+        run: python systems/rea/scripts/rea_native_doctor.py
