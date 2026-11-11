@@ -55,3 +55,6 @@ Validar o contrato `column_width_profile=P09_L50_G_AQ_DISPLAY_2_AR_96` por colun
 
 ## DEC-MCE-042 — convencao de visualizacao SP da MCE ADM
 Para os dois alarmes H2 documentados do ADM, `FOLHA 1!D22` deve ser `10%` e `D23` deve ser `20%`, sem `LIE` no SP. A referencia `% LIE` deve permanecer na descricao da condicao, quando a fonte a utiliza. Nao mudar setpoint fisico, ppm, intervalo, latch, reset nem saídas PLC. A edicao documental permitida e apenas o texto do SP, sujeita a controle de fontes, sem alegar autorizacao de implantacao. Nao extrapolar formato para grandezas nao percentuais.
+
+## Gate de completude metodologica DEC-MCE-068
+Antes de concluir o entendimento e antes de qualquer emissao, seguir o Contrato de completude funcional em `../../matriz-causa-efeito/references/metodo-e-saidas.md`: observacao individual por causa, avaliacao de TODOS os efeitos aplicaveis e justificativa de cada X/ausencia de X; SP somente conforme contrato do projeto, preservando coluna do modelo. Caso nao exista prova ou autorizacao de celulas, STOP; nao usar texto generico para preencher observacao nem converter supervisao automaticamente em comando. A fonte de verdade continua sendo `systems/mce/docs/EXECUCAO.md`.
