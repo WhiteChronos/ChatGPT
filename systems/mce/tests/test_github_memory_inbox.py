@@ -77,3 +77,14 @@ def test_issue_061_keeps_append_only_pending_until_mirrored():
             origin="USER_EXPLICIT_REQUEST",approval="NOT_ENGINEERING_APPROVED",
             production_complete=False)
     assert INBOX.inspect([e],"not yet mirrored")["pending_mirror"] == 1
+
+def test_historical_kind_id_mismatch_only_allowlisted():
+    for kind, identifier in [
+        ("CORRECTION","DEC-MCE-039"), ("CORRECTION","DEC-MCE-040"),
+        ("EVIDENCE","DEC-MCE-057"), ("EVIDENCE","DEC-MCE-058"),
+    ]:
+        assert INBOX.parse_comment(event(kind=kind,id=identifier))["id"] == identifier
+    with pytest.raises(INBOX.IntakeError, match="kind"):
+        INBOX.parse_comment(event(kind="CORRECTION",id="DEC-MCE-062"))
+    with pytest.raises(INBOX.IntakeError, match="ID"):
+        INBOX.parse_comment(event(kind="EVIDENCE",id="DEC-MCE-062"))

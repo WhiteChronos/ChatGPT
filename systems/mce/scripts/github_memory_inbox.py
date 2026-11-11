@@ -15,6 +15,11 @@ ISSUE = 120
 MARKER = "<!-- WC_MEMORY_EVENT_V1 -->"
 FENCE = chr(96) * 3
 KINDS = {"DECISION": "DEC", "PENDENCY": "PEND", "EVIDENCE": "EVID"}
+# Only these four historically published ID/kind mismatches are grandfathered.
+HISTORICAL_KIND_IDS = {
+    ("CORRECTION", "DEC-MCE-039"), ("CORRECTION", "DEC-MCE-040"),
+    ("EVIDENCE", "DEC-MCE-057"), ("EVIDENCE", "DEC-MCE-058"),
+}
 FIELDS = {"schema", "system", "kind", "id", "date", "title", "summary", "origin", "approval"}
 OPTIONAL_FIELDS = {"commit", "branch", "production_complete", "state", "comment", "supersedes", "supersedes_scope"}
 ORIGINS = {
@@ -77,9 +82,9 @@ def parse_comment(comment):
     if type(e["schema"]) is not int or e["schema"] != 1 or e["system"] != PRODUCT:
         raise IntakeError("Wrong product or schema")
     kind = e["kind"]
-    if not isinstance(kind, str) or kind not in KINDS:
+    if not isinstance(kind, str) or kind not in KINDS and (kind, e["id"]) not in HISTORICAL_KIND_IDS:
         raise IntakeError("Invalid kind")
-    if not isinstance(e["id"], str) or not re.fullmatch(KINDS[kind] + "-" + PREFIX + r"-[0-9]{3,6}", e["id"]):
+    if not isinstance(e["id"], str) or not (kind in KINDS and re.fullmatch(KINDS[kind] + "-" + PREFIX + r"-[0-9]{3,6}", e["id"]) or (kind, e["id"]) in HISTORICAL_KIND_IDS):
         raise IntakeError("Invalid event ID")
     stamp = e["date"]
     if not isinstance(stamp, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", stamp):
