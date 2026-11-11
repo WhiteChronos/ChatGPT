@@ -203,3 +203,13 @@ do volume da chave. Essas evidencias sao locais e datadas, nao prova de todos os
 Este registro atualiza a identidade da mesma instalacao; a disponibilidade deve ser
 confirmada pelo gerenciador, hashes e chamada real. Atualizar a PR nao autoriza merge
 ou deploy. Preservar PRODUCTION_COMPLETE=NO e o aviso ECC externo sem falso manifesto.
+
+
+### 2026-11-11 - DEC-REA-019: persistencia do Secure MCP Tunnel
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-REA-019 | Atualizar o runbook do REA para o cliente oficial atual: runtime persistente deve preferir `tunnel-client runtimes connect` e validar `runtimes status --json`; `tunnel-client run` permanece somente para operacao manual em primeiro plano. A implementacao adiciona `scripts/recover_tunnel.ps1`, sem criar tunnel, chave ou ampliar root. Fonte externa: OpenAI Secure MCP Tunnel e openai/tunnel-client v0.0.20. | IMPLEMENTADO_PENDENTE_CI |
+| PEND-REA-013 | O teste RED falhou pela ausencia do recovery script. A implementacao foi adicionada; falta CI do novo HEAD e, depois, execucao no host autorizado seguida de `rea_bridge_status` real. | IMPLEMENTADO_PENDENTE_CI |
+
+Sem segredo, tunnel_id, credencial ou ampliacao de root neste registro. Sem merge/deploy; PRODUCTION_COMPLETE=NO.

@@ -56,3 +56,16 @@ A recomendacao para ChatGPT Web e **Secure MCP Tunnel oficial**, que cria conexa
 ## Diferenca de escopo
 
 `src/server.py` (antigo) e `scripts/production_smoke.py` (teste HTTPS com token estatico) permanecem para testes locais e retrocompatibilidade. Eles **nao** constituem prova de conformidade com MCP Web, OAuth, integracao ao ChatGPT, nem justificam exposicao publica. Para conexao nova, usar `src/sdk_server.py` com SDK oficial e tunel privado.
+
+## Runtime persistente e recuperacao (cliente oficial atual)
+
+`tunnel-client run --profile rea-privado` continua valido apenas para operacao manual em primeiro plano. Para um REA que precisa permanecer disponivel depois do terminal atual, usar a supervisao nativa do cliente oficial:
+
+```powershell
+tunnel-client runtimes connect --alias rea-privado --tunnel-id $env:CONTROL_PLANE_TUNNEL_ID --runtime-api-key env:CONTROL_PLANE_API_KEY --mcp-command 'python C:\CAMINHO\REA\src\sdk_server.py --root C:\CODIGO_AUTORIZADO --transport stdio' --json
+tunnel-client runtimes status rea-privado --json
+```
+
+O status so pode ser tratado como recuperado quando `process_running=true`, `healthy=true` e `ready=true`. O script `scripts/recover_tunnel.ps1` automatiza esse fluxo sem gravar a chave no repositorio. Ele exige `CONTROL_PLANE_API_KEY`, `CONTROL_PLANE_TUNNEL_ID` e `REA_CODE_ROOT` no host autorizado.
+
+Depois da recuperacao local, repetir uma chamada real `rea_bridge_status` no ChatGPT antes de marcar `HOST_DISCOVERED` ou `LIVE_VERIFIED`.

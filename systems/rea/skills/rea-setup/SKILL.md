@@ -16,3 +16,14 @@ Este plugin inclui Skills e o servidor Python existente. **A instalacao das Skil
 7. Verificar monitoramento, disponibilidade, rollback, revisao do PR e aceite de seguranca antes de qualquer producao. Sem provas completas, `PRODUCTION_COMPLETE=NO`.
 
 Nao usar URL inventada, token compartilhado ou porta publica. Para Codex, usar o servidor MCP local com configuracao explicitamente autorizada no host; arquivos `.codex-plugin` sao manifestos, nao prova de carregamento no processo.
+
+## Recuperacao persistente do tunnel-client
+
+Para runtime de longa duracao, nao depender de `tunnel-client run` preso ao terminal. Preferir o caminho oficial gerenciado:
+
+```text
+tunnel-client runtimes connect ...
+tunnel-client runtimes status <alias> --json
+```
+
+Em Windows, usar `scripts/recover_tunnel.ps1` no host autorizado. O script referencia a chave como `env:CONTROL_PLANE_API_KEY`, preserva o root informado por `REA_CODE_ROOT` e somente retorna sucesso quando `process_running`, `healthy` e `ready` estiverem verdadeiros. Depois, executar `rea_bridge_status` por este conector para comprovar descoberta real.
