@@ -3,6 +3,19 @@ name: matriz-causa-efeito
 description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de automação industrial a partir de P&IDs, memoriais, narrativas, listas de I/O, filosofias de controle, HAZOP/LOPA/SRS e Excel mestre aprovado. Usar para mapear causas, efeitos, intertravamentos, alarmes, trips, votações, reset e bypass com evidências por TAG e revisão, pesquisar repositórios GitHub auxiliares e orquestrar as Skills MCE do WhiteChronos/ChatGPT. Não usar para engenharia reversa de software nem REA. Bloquear alterações do Excel sem autorização e manter histórico no GitHub.
 ---
 
+## REGRA DE OURO INVIOLAVEL — DEC-MCE-071 (2026-11-10)
+
+**Contrato de entrega fail-closed do MCE.** Pedido de "criar/elaborar/corrigir/entregar a Matriz" = `MCE_XLSX`. O unico arquivo principal e Microsoft Excel `.xlsx` no perfil P09 **efetivamente contratado e homologado** para o projeto (L50, L57 ou outro aprovado). PDF e somente espelho fiel opcional do XLSX; PDF de auditoria, JSON, MD, CSV, planilha generica, template vazio e relatorio de pre-analise nunca substituem a Matriz.
+
+1. **Antes de comecar e antes de responder:** classificar `MCE_XLSX` e conferir baseline por SHA, fontes revisadas, layout contratado, modelo mestre aprovado, lista exata de celulas, autorizacao formal `AUTORIZO_ELABORACAO_MCE`, observacao por causa, efeitos identificados, cada X/ausencia justificado, SP conforme contrato, QA OOXML, Excel Windows e PDF se solicitado. Consulta a fontes privadas somente por acesso autorizado.
+2. **Gate faltando = STOP.** Dizer literalmente `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`, identificar bloqueios objetivos e proximo gate; nao anunciar "elaboracao entregue" e nao apresentar PDF/JSON ou o XLSX historico como substituto do arquivo atualizado. Se houver relatorio explicitamente pedido, rotular `AUXILIAR_NAO_E_MATRIZ`, nunca principal.
+3. **Gate completo = copia derivada pelo unico executor canonico.** Verificar `FOLHA N`, geometria especifica do modelo homologado, texto, observacoes, X seletivos com evidencia, SP do projeto, formulas/mesclas/estilos, audit OOXML, Excel Windows e equivalencia PDF. Estado final do arquivo: `MCE_PRELIMINAR_PARA_REVISAO`, sem homologacao automatica de engenharia.
+4. **Preflight de formato por ferramenta:** antes de declarar MCE entregue, executar no Windows `python systems/mce/scripts/mce_delivery_contract.py --manifest MANIFESTO_PRIVADO.json --root WORKSPACE_PRIVADO`. `FAIL_FORMAT_CONTRACT` e `FAIL_ENGINEERING_GATE` bloqueiam entrega. `PASS_BLOCKED_DECLARED` so confirma que o bloqueio foi comunicado, e `PASS_MCE_DELIVERY_PREFLIGHT_ONLY` nao substitui auditoria independente de engenharia.
+5. **Falha de Skill espelhada = STOP:** atualizar `systems/mce/.agents/skills` E `.agents/skills` em mesmo commit. Testar igualdade binaria pelo `systems/mce/scripts/verify_mce_skill_mirrors.py` na CI Windows antes de considerar a mudanca validada.
+
+Esta regra prevalece em novas emissoes sobre exemplos historicos de saida conflitantes, SEM apagar registros anteriores ou inventar logica. CI verde e testes sintéticos nao constituem autorizacao de engenharia. Nao fazer merge, deploy, editar master ou publicar documentos industriais sem autorizacoes proprias.
+
+
 # Matriz de Causa e Efeito — orquestração MCE independente
 
 **Escopo exclusivo:** `MCE_INDEPENDENTE`. Conduzir apenas elaboração, revisão, consistência, evidências, padronização e fechamento de MCE. Não usar motor, código, banco ou ferramentas REA; não utilizar Desktop Commander.
@@ -212,3 +225,20 @@ Recuperar as tres Skills **somente quando a funcao for pertinente**; estas refer
 - `mce-watchdog-ingest`: eventos do inbox privado; varredura/reconciliacao do arquivador MCE continua obrigatoria (https://github.com/WhiteChronos/watchdog, `main`; upstream `gorakhargosh/watchdog:master`).
 
 **Governanca:** usar `mce_document_archive.py` e `mce_memory.py` como fluxo canonico; so aplicar backup/monitoramento no host Windows conectado mediante autorizacao. Os forks sao referencias de origem, nao instalacoes locais. A inclusao de arquivos no GitHub nao equivale a instalacao da Skill no ChatGPT Web. Os SHAs de fork e upstream precisam ser auditados antes de cada atualizacao. Sem tunel, acesso ao documento, credenciais, RESTORE e dupla verificacao reais: `NOT_RUN` ou `COPY_PENDING`. Nao publicar arquivos industriais.
+
+
+## Contrato de completude funcional — DEC-MCE-068 (2026-11-10)
+
+**Aplicacao:** toda elaboracao, revisao e emissao de Matriz de Causa e Efeito. A referencia privada de apresentacao registrada por DEC-MCE-066 orienta forma e detalhamento; nao autoriza replicar TAGs, setpoints, logicas ou cruzamentos de outro projeto.
+
+1. **Inventario integral:** para cada causa/linha candidata registrar ID, TAG, descricao da condicao e revisao da fonte. Distinguir EVENTO_CAUSAL, SUPERVISAO_SEM_ATUACAO, INTERFACE e ITEM_FORA_ESCOPO; nunca contar apenas X existentes como prova de completude.
+2. **Efeitos completos:** descrever todas as funcoes aplicaveis do projeto, sem preencher artificialmente as posicoes disponiveis; cada efeito deve ter identidade funcional clara, responsavel e evidencia por documento, revisao, folha/pagina e SHA no relatorio PRIVADO.
+3. **X seletivo e auditavel:** avaliar para cada linha TODAS as colunas de efeitos aplicaveis. Registrar em relatorio privado a decisao X, NAO_APLICAVEL_COM_JUSTIFICATIVA ou PENDENTE_DE_EVIDENCIA para cada par candidato. Cada X existente requer revalidacao; ausencia de X nao prova ausencia de efeito. Proibido aplicar X em todas as colunas para aparentar completude.
+4. **Observacao por causa:** cada linha mantida da MCE deve ter observacao especifica, util e documental, descrevendo a atuacao, indicacao ou ausencia justificada de atuacao, fronteira de responsabilidade e condicoes de falha/rearme quando documentadas. Se faltar evidencia, redigir rascunho no relatorio de PENDENCIAS e bloquear a emissao; nunca inventar uma observacao afirmativa para eliminar celulas vazias.
+5. **SP condicionado ao contrato:** preservar fisicamente a coluna se pertence ao modelo, mas nao assumir seu preenchimento. Quando o usuario/projeto determinar "SP nao utilizado", manter as celulas SP vazias SOMENTE na copia derivada aprovada; valores tecnicos documentados podem figurar na descricao/observacao conforme convencao aprovada, sem perder unidade fisica. Uma decisao de uso de SP e escopo projeto/revisao, nao padrao universal; nao apagar SP historico sem autorizacao de celula.
+6. **Confronto documental:** reconciliar MD, ET, P&ID, arquitetura, lista I/O e manuais aplicaveis para alarme, comandos hardwired, falha de UTR, HVAC, exaustao, UPS, bypass, reset e interface SCADA. Distinguir divergencia de revisoes de requisito valido. Nao promover recomendacoes ou legenda de P&ID a logica de intertravamento.
+7. **Preflight antes da emissao:** relatorio privado deve comprovar 100% das linhas revisadas, 100% das observacoes tecnicamente resolvidas, todos os X validados, todos os candidatos a pares causa/efeito classificados, SP conforme contrato e nenhuma divergencia funcional impeditiva. Se nao houver prova, STOP em ANALISADO_AGUARDANDO_DECISAO, sem XLSX/PDF "final".
+8. **Entrega controlada:** arquivo principal XLSX P09 vigente em copia derivada, PDF somente representacao fiel se solicitado, QA OOXML/Excel Windows e cotejo entre as paginas. Nao editar mestre nem logica funcional sem modelo homologado, whitelist de celulas, AUTORIZO_ELABORACAO_MCE vinculado a hashes e revisao multidisciplinar.
+
+**Anti-regressao:** o perfil de arquivo historico sem observacoes ou com SP preenchido nao substitui esta verificacao de completude para novas emissoes. Decisoes antigas de layout sao preservadas como historico, e eventual conflito exige revisao explicita do contrato, nao alteracao silenciosa do modelo.
+

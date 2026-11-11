@@ -1,3 +1,15 @@
+## REGRA DE OURO INVIOLAVEL — DEC-MCE-071 (2026-11-10)
+
+**Contrato de entrega fail-closed do MCE.** Pedido de "criar/elaborar/corrigir/entregar a Matriz" = `MCE_XLSX`. O unico arquivo principal e Microsoft Excel `.xlsx` no perfil P09 **efetivamente contratado e homologado** para o projeto (L50, L57 ou outro aprovado). PDF e somente espelho fiel opcional do XLSX; PDF de auditoria, JSON, MD, CSV, planilha generica, template vazio e relatorio de pre-analise nunca substituem a Matriz.
+
+1. **Antes de comecar e antes de responder:** classificar `MCE_XLSX` e conferir baseline por SHA, fontes revisadas, layout contratado, modelo mestre aprovado, lista exata de celulas, autorizacao formal `AUTORIZO_ELABORACAO_MCE`, observacao por causa, efeitos identificados, cada X/ausencia justificado, SP conforme contrato, QA OOXML, Excel Windows e PDF se solicitado. Consulta a fontes privadas somente por acesso autorizado.
+2. **Gate faltando = STOP.** Dizer literalmente `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`, identificar bloqueios objetivos e proximo gate; nao anunciar "elaboracao entregue" e nao apresentar PDF/JSON ou o XLSX historico como substituto do arquivo atualizado. Se houver relatorio explicitamente pedido, rotular `AUXILIAR_NAO_E_MATRIZ`, nunca principal.
+3. **Gate completo = copia derivada pelo unico executor canonico.** Verificar `FOLHA N`, geometria especifica do modelo homologado, texto, observacoes, X seletivos com evidencia, SP do projeto, formulas/mesclas/estilos, audit OOXML, Excel Windows e equivalencia PDF. Estado final do arquivo: `MCE_PRELIMINAR_PARA_REVISAO`, sem homologacao automatica de engenharia.
+4. **Preflight de formato por ferramenta:** antes de declarar MCE entregue, executar no Windows `python systems/mce/scripts/mce_delivery_contract.py --manifest MANIFESTO_PRIVADO.json --root WORKSPACE_PRIVADO`. `FAIL_FORMAT_CONTRACT` e `FAIL_ENGINEERING_GATE` bloqueiam entrega. `PASS_BLOCKED_DECLARED` so confirma que o bloqueio foi comunicado, e `PASS_MCE_DELIVERY_PREFLIGHT_ONLY` nao substitui auditoria independente de engenharia.
+5. **Falha de Skill espelhada = STOP:** atualizar `systems/mce/.agents/skills` E `.agents/skills` em mesmo commit. Testar igualdade binaria pelo `systems/mce/scripts/verify_mce_skill_mirrors.py` na CI Windows antes de considerar a mudanca validada.
+
+Esta regra prevalece em novas emissoes sobre exemplos historicos de saida conflitantes, SEM apagar registros anteriores ou inventar logica. CI verde e testes sintéticos nao constituem autorizacao de engenharia. Nao fazer merge, deploy, editar master ou publicar documentos industriais sem autorizacoes proprias.
+
 # Contratos de entrada, saida e autorizacao
 
 ## `analise.json` (fase A)
