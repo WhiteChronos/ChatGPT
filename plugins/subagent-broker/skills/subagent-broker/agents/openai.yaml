@@ -1,3 +1,0 @@
-interface:
-  display_name: "Subagent Broker"
-  short_description: "Route real independent Codex subagents with a native-first fallback."

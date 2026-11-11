@@ -1,5 +1,0 @@
-interface:
-  display_name: "MCE Restic Backup"
-  short_description: "Suporte documentado ao DataCenter MCE em Windows"
-policy:
-  allow_implicit_invocation: true

@@ -1,1 +1,0 @@
-"""WhiteChronos Runtime Foundation primitives."""
