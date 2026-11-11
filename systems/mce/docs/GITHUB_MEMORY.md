@@ -50,3 +50,9 @@ O conector GitHub so registra um checkpoint apos chamada de escrita confirmada n
 A rotina read-only github_memory_inbox.py aceita os campos opcionais historicos commit, branch, production_complete=false, state, comment, supersedes e supersedes_scope e as origens/aprovacoes NAO-HOMOLOGADAS observadas no Issue historico. Rejeita campos desconhecidos, producao aprovada, tokens, duplicatas e autores nao confiaveis; a lista de origens nao concede novos acessos. O estado de espelhamento por ID e heuristico, nao prova equivalencia semantica (PEND-MCE-014). Nenhuma captura universal de chats, sincronizacao em background, webhook ou alteracao de Skills fica ativa por esta documentacao.
 
 A conciliacao do acervo de 43 eventos detectou excecoes de tipo/ID somente em DEC-MCE-039/040 (CORRECTION) e DEC-MCE-057/058 (EVIDENCE). Essas quatro combinacoes sao autorizadas exclusivamente como legado verificavel. Novos eventos devem manter tipo e prefixo canonicos; nao converter correcoes ou evidencias passadas em aprovacao.
+
+
+## DEC-MCE-078 — continuidade dos PV e Skills complementares
+
+O workflow atualizado esta em docs/PV_VERSION_WORKFLOW.md e o sequenciador de nome/copia em scripts/mce_pv_controller.py. O numero PV e por identidade documental, nao por projeto inteiro; finais homologados exigem gates externos. O Issue #120 e memoria.md preservam metadata publicavel, sem armazenar fontes/arquivos industriais.
+mce-verificacao-cruzamentos e mce-verificacao-documental sao Skills privadas complementares; acionar em hosts que comprovem descoberta/execucao, com interface JSON e sem copiar seu codigo para este repositorio publico. GitHub-only alvo nao significa DataCenter privado real ou sincronizacao entre chats.

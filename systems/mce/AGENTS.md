@@ -160,3 +160,14 @@ A saida \`contract.proposed.json\` e SOMENTE PROPOSTA: lista \`matrix_ranges\`, 
 
 **Sem novos bloqueios burocraticos:** quando a autorizacao de TRABALHO ja foi registrada (ADM: DEC-MCE-074), nao a solicitar novamente; preparar automaticamente dados, contrato candidato e pendencias. **Sem bypass de seguranca:** somente o gate de elaboracao documentado e modelo homologado permitem alterar matriz industrial; preparacao != emissao/revisao/aceite. Nao usar progresso de CI, modelo visual ou rascunho como homologacao de intertravamentos.
 
+
+
+## DEC-MCE-078 - Nomenclatura PV, auditoria cruzada e aprendizado rastreavel
+
+Para entrega de cada Matriz MCE, usar NOME_DO_DOCUMENTO (PRELIMINAR VERSÃO NN) PV NN.xlsx, com PV 01, PV 02, PV 03 e assim sucessivamente POR documento. Nao sobrescrever PV, nao saltar versao, nao gerar nova PV quando bytes permanecem identicos; documento seguinte tem identidade independente e inicia PV 01. PDF opcional usa a mesma raiz e numero. MCE_PRELIMINAR.xlsx no executor e somente arquivo intermediario, nao nome de entrega.
+
+Ordem: inventario/revisoes/hash -> Skill mce-verificacao-cruzamentos -> Skill mce-verificacao-documental -> reauditoria com handoff de evidencias -> contrato e aprovacoes -> UNICO editor MCE canonico -> audit de OOXML/Excel Windows -> copia PV imutavel mce_pv_controller.py -> preflight de entrega mce_delivery_contract.py -> aceite externo de fechamento e proximo documento. Coluna sem X nao gera X arbitrario. Repeticoes de titulo exigem verificacao local e fonte. Nenhuma Skill de verificacao modifica XLSX nem concede aceites.
+
+O DataCenter usa o mesmo ledger MCE existente quando houver host real verificado; a entrada privada PV e metadado append-only por SHA, sem novo banco. O DataCenter local Windows MCE foi declarado inexistente; nao reportar runtime, cofre ou restore sem evidencia. As Skills novas sao privadas e entram por interface apenas quando descobertas; nao publicar codigo/arquivos industriais sem autorizacao especifica.
+
+Aprendizado continuo = falha comprovada, licao, teste de regressao, aprovacao humana da evolucao, commit com memoria e CI no SHA exato; nao alterar pesos de modelo nem operar em segundo plano. Ver systems/mce/docs/PV_VERSION_WORKFLOW.md e datacenter/PV_VERSION_MANIFEST.schema.json. Sem merge/deploy, sem homologacao inferida.

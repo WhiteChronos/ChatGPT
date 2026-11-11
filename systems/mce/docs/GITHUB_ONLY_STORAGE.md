@@ -63,3 +63,8 @@ python .\\systems\\mce\\scripts\\github_vault_preflight.py --repo WhiteChronos/m
 Variavel no step do workflow privado: `MCE_VAULT_GITHUB_TOKEN: ${{ github.token }}`. O script retorna exit code 2 em bloqueio e apenas JSON sanitizado. Um token apenas de leitura pode retornar `NO_WRITE_PERMISSION`, **sem** induzir ampliacao automatica de privilegios. Nunca executar teste privado na CI do repositorio publico com tokens do cofre.
 
 **Validacao CI publica:** os testes sintéticos no Windows em `systems/mce/tests/test_github_vault_preflight.py` verificam metadata publica/incorreta, token ausente, identificador invalido, 404 e excecao contaminada por texto de segredo. Eles nao provam GH-01 no vault real. Depois do provisionamento e aprovacao humanos, executar este script no runner **do repositorio privado** e anexar o link de run ao gate GH-01.
+
+
+## Versoes PV e cofre privado — DEC-MCE-078
+
+A nomenclatura NOME (PRELIMINAR VERSÃO NN) PV NN.xlsx aplica-se a COPIAS DERIVADAS no ciclo privado. O ledger por documento mantem sequencia, SHA-256 e recibo de status NAO_HOMOLOGADO; publicar PV requer cofre privado realmente disponivel, autorizacao de upload e recibo de restore. Nenhuma matriz, TAG, revisao de processo, hash de documentos privados, SQLite, Skill privada ou documento de engenharia sera enviada ao checkout PUBLICO. PR/CI publicos apenas testam motor com dados sinteticos. Essa secao nao muda GH-01...GH-08 nem atesta host real.

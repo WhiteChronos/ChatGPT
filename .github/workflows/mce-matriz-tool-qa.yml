@@ -5,6 +5,11 @@ on:
       - 'systems/mce/scripts/matriz_causa_efeito_tool.py'
       - 'systems/mce/tests/test_matriz_causa_efeito_tool.py'
       - 'systems/mce/tests/test_mce_delivery_contract.py'
+      - 'systems/mce/tests/test_mce_pv_controller.py'
+      - 'systems/mce/scripts/mce_pv_controller.py'
+      - 'systems/mce/datacenter/PV_VERSION_MANIFEST.schema.json'
+      - 'systems/mce/docs/PV_VERSION_WORKFLOW.md'
+      - 'systems/mce/docs/EXECUCAO.md'
       - 'systems/mce/scripts/mce_delivery_contract.py'
       - 'systems/mce/datacenter/MATRIZ_CAUSA_EFEITO_DATASHEET.schema.json'
       - 'systems/mce/docs/MATRIZ_CAUSA_EFEITO_TOOL.md'
@@ -32,10 +37,10 @@ jobs:
       - name: Install MCE test dependencies
         run: python -m pip install -r systems/mce/requirements.txt 'bandit==1.8.6'
       - name: Scan deterministic tool (no third-party execution)
-        run: python -m bandit -q -ll systems/mce/scripts/matriz_causa_efeito_tool.py
+        run: python -m bandit -q -ll systems/mce/scripts/matriz_causa_efeito_tool.py systems/mce/scripts/mce_pv_controller.py
       - name: Run real three-adapter synthetic integration and adversarial tests
-        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py systems/mce/tests/test_mce_delivery_contract.py
-      - name: Validate four Skills and global mirrors
+        run: python -m pytest -q systems/mce/tests/test_matriz_causa_efeito_tool.py systems/mce/tests/test_pid_bridge.py systems/mce/tests/test_matriz_causa_efeito_skill.py systems/mce/tests/test_mce_delivery_contract.py systems/mce/tests/test_mce_pv_controller.py
+      - name: Validate MCE Skills and global mirrors
         run: |
           python systems/mce/scripts/validate_skills.py
           python systems/mce/scripts/verify_mce_skill_mirrors.py
@@ -72,4 +77,4 @@ jobs:
             dist/mce-watchdog-ingest/skill.zip
           if-no-files-found: error
       - name: Evidence boundary
-        run: echo 'MCE pre-analysis synthetic gate only; no industrial source, engineering approval, Excel master editing or live Codex installation verified.' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+        run: echo 'MCE PV naming and pre-analysis synthetic gate only; no industrial source, engineering approval, Excel master editing or live Codex installation verified.' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append

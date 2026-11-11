@@ -250,3 +250,10 @@ Recuperar as tres Skills **somente quando a funcao for pertinente**; estas refer
 
 **Anti-regressao:** o perfil de arquivo historico sem observacoes ou com SP preenchido nao substitui esta verificacao de completude para novas emissoes. Decisoes antigas de layout sao preservadas como historico, e eventual conflito exige revisao explicita do contrato, nao alteracao silenciosa do modelo.
 
+
+
+## DEC-MCE-078 — Entregaveis PV e verificador documental
+
+Para revisoes da MESMA matriz, usar NOME_DO_DOCUMENTO (PRELIMINAR VERSÃO NN) PV NN.xlsx, sequencial, sem overwrite, ate fechamento comprovado por aceite externo; proxima matriz inicia PV 01. O arquivo MCE_PRELIMINAR.xlsx do executor e apenas intermediario. Apos auditoria OOXML e gates humanos, usar o sequenciador de copia privada systems/mce/scripts/mce_pv_controller.py e verificar com systems/mce/scripts/mce_delivery_contract.py. O sequenciador nao edita workbook nem concede engenharia aprovada.
+
+Quando disponiveis no catalogo PRIVADO: executar mce-verificacao-cruzamentos -> mce-verificacao-documental -> mce-verificacao-cruzamentos com ledger de handoff. Auditar cada X, relacao condicao/TAG/celula/revisao, repeticoes e nao-aplicabilidade. Nunca preencher colunas por contagem. Nao copiar/publicar codigo privado dessas Skills ao repositorio publico sem autorizacao especifica. Retomar memoria GitHub, checar projeto/SS/fontes e registrar aprendizagem como regra + teste revisado; nenhuma sincronizacao automatica com host ou DataCenter.

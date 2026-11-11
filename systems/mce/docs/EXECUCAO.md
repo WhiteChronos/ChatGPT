@@ -142,3 +142,14 @@ A saida \`contract.proposed.json\` e SOMENTE PROPOSTA: lista \`matrix_ranges\`, 
 
 **Sem novos bloqueios burocraticos:** quando a autorizacao de TRABALHO ja foi registrada (ADM: DEC-MCE-074), nao a solicitar novamente; preparar automaticamente dados, contrato candidato e pendencias. **Sem bypass de seguranca:** somente o gate de elaboracao documentado e modelo homologado permitem alterar matriz industrial; preparacao != emissao/revisao/aceite. Nao usar progresso de CI, modelo visual ou rascunho como homologacao de intertravamentos.
 
+
+
+## DEC-MCE-078 — Versionamento preliminar PV 01, 02, ... e integracao documental
+
+Em toda matriz MCE derivada, o ARQUIVO ENTREGAVEL deve chamar-se NOME_DO_DOCUMENTO + " (PRELIMINAR VERSÃO NN) PV NN.xlsx", por exemplo MCE_TESTE (PRELIMINAR VERSÃO 01) PV 01.xlsx. Numeracao crescente POR DOCUMENTO, inicial PV 01; sem pular, sobrescrever ou criar nova PV de bytes identicos. PDF espelho, se autorizado, segue mesmo nome base/PV e extensao .pdf. MCE_PRELIMINAR.xlsx e somente saida interna do editor canonico, nao nome de entrega.
+
+Ordem obrigatoria: fontes e SHA -> auditoria mce-verificacao-cruzamentos -> verificacao de fonte/CLAIMS por mce-verificacao-documental -> reauditoria de X e classificacao de nao aplicavel -> proposta de contrato -> gates humanos e executor canonico init/understand/authorize/apply/audit -> mce_pv_controller.py copia binaria com ledger append-only privado -> mce_delivery_contract.py confere nome PV e gates -> aceite e fechamento externo -> PROXIMO DOCUMENTO PV 01. Skills verificadoras nao editam Excel e nao produzem X por inferencia; repeticao de efeito entre folhas nao valida X. As duas skills complementares estao no catalogo privado do usuario e nao sao instaladas/publicadas no GitHub publico automaticamente. Ausencia do runtime = NOT_RUN.
+
+Preservar por PV: identificador do documento, PV, SHA-256 entrada/saida, digest encadeado, data, relatorio de alteracoes e pendencias, criterios de fechamento e elo com fontes/revisoes. Guarda de bytes industriais e banco somente em cofre PRIVADO comprovado. MCE DataCenter operacional Windows nao existe nesta fase; evento NOTA/STATUS no unico ledger de memoria MCE apenas se host privado conectado e autorizado. Aprendizado continuo: feedback -> falha comprovada -> regra candidata -> teste sintetico/adversarial -> revisao -> memoria + CI do mesmo commit; jamais autohomologar ou modificar pesos/modelo.
+
+Contrato detalhado e fluxo: systems/mce/docs/PV_VERSION_WORKFLOW.md; schema publico SOMENTE de metadados: systems/mce/datacenter/PV_VERSION_MANIFEST.schema.json. Nenhuma aprovacao de trabalho anterior equivale a aprovacao funcional ou do modelo.

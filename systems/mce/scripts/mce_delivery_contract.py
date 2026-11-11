@@ -108,12 +108,27 @@ def validate(manifest: object, root: Path) -> str:
     if coverage.get("all_applicable_effects_reviewed") is not True or type(coverage.get("pending_relations")) is not int or coverage["pending_relations"] != 0:
         fail("FAIL_ENGINEERING_GATE", "pending cause/effect relationships")
     p = private_file(root, primary[0].get("path"))
+    # DEC-MCE-078: PV is the mandatory document name; it is not homologation.
+    pat = re.fullmatch(
+        r"(?P<doc>[A-Za-z0-9][A-Za-z0-9_. -]{0,159}) "
+        r"\(PRELIMINAR VERSÃO (?P<ver>[0-9]{2,})\) PV (?P=ver)\.xlsx", p.name
+    )
+    if pat is None:
+        fail("FAIL_FORMAT_CONTRACT", "primary filename must use (PRELIMINAR VERSAO NN) PV NN")
+    version_number = int(pat.group("ver"))
+    if version_number < 1 or pat.group("ver") != f"{version_number:02d}":
+        fail("FAIL_FORMAT_CONTRACT", "PV number must be canonical and positive")
+    version = manifest.get("preliminary_version")
+    if (not isinstance(version, dict)
+            or version.get("document_name") != pat.group("doc")
+            or type(version.get("number")) is not int or version["number"] != version_number):
+        fail("FAIL_FORMAT_CONTRACT", "PV document identity/number not recorded consistently")
     inspect_xlsx(p, primary[0].get("sha256"))
     if manifest.get("pdf_requested") is True and not previews:
         fail("FAIL_FORMAT_CONTRACT", "requested PDF is not attached as a preview")
     if previews:
         preview = private_file(root, previews[0].get("path"))
-        if preview.suffix.lower() != ".pdf" or preview.read_bytes()[:5] != b"%PDF-":
+        if preview.name != p.with_suffix(".pdf").name or preview.read_bytes()[:5] != b"%PDF-":
             fail("FAIL_FORMAT_CONTRACT", "invalid PDF preview")
         if gates.get("pdf_equivalence_verified") is not True:
             fail("FAIL_ENGINEERING_GATE", "PDF/XLSX equivalence not verified")

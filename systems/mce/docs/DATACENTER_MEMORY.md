@@ -119,3 +119,12 @@ py -3.12 .\systems\mce\scripts\mce_document_archive.py --inbox "C:\MCE_DADOS\inb
 ```
 
 A pasta pai do destino deve existir e o arquivo ainda nao pode existir. Se o unico SQLite tambem se perder, recuperar primeiro sua copia autenticada pelo `mce_memory.py restore` para destino novo e verificar integridade. O sucesso de testes sinteticos nao certifica independencia fisica do backup, disponibilidade de anexos de chats nem funcionamento do host MCE. O teste de desastre exige apagar somente copia sintetica isolada e comparar hash apos restauracao; nao apagar dados reais para testar.
+
+
+## DEC-MCE-078 — PV no DataCenter MCE (esquema, NAO implantacao)
+
+Cada documento preliminar recebe versao imutavel PV 01/PV 02/... gerada pelo mce_pv_controller.py. O ledger privado pv/pv_versions.jsonl armazena metadata append-only (sha256 de entrada e arquivo, prev_digest, digest, timestamp, document_name e numero) conforme datacenter/PV_VERSION_MANIFEST.schema.json. Arquivos de engenharia jamais sao gravados no repositorio PUBLICO e nao sao dados de exemplo de CI.
+
+Quando o DataCenter MCE real estiver disponivel em ambiente PRIVADO autorizado, registrar a versao na tabela existente memory_events com kind=NOTE ou STATUS, subject=MCE_PV_VERSION e detail_json contendo APENAS referencias privadas e metadados consentidos; nao criar segundo SQLite ou inserir sem host. Antes de declarar persistencia: reler bytes/manifest, restaurar em ambiente independente, verificar SHA. Atualmente NAO EXISTE DATACENTER WINDOWS LOCAL MCE; GitHub-only vault permanece condicionado a gates do cofre privado. O resultado de CI nao prova arquivamento, restore ou rotina autonoma.
+
+Aprendizado continuo: armazenar eventos da licao e teste validado no mesmo ledger MCE quando acesso for comprovado, e registrar no memoria.md somente a decisao sanitizada. Sem autoaprovacao, alteracao de pesos, alteracao de excel ou execucao entre chats sem acionamento.
