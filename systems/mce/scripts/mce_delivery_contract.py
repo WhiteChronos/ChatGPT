@@ -123,6 +123,15 @@ def validate(manifest: object, root: Path) -> str:
             or version.get("document_name") != pat.group("doc")
             or type(version.get("number")) is not int or version["number"] != version_number):
         fail("FAIL_FORMAT_CONTRACT", "PV document identity/number not recorded consistently")
+    # Independent on-disk baseline is mandatory: a self-declared boolean gate
+    # cannot prove that the original industrial workbook is available.
+    baseline = manifest.get("baseline")
+    if not isinstance(baseline, dict):
+        fail("FAIL_ENGINEERING_GATE", "baseline XLSX bytes and SHA-256 are missing")
+    original = private_file(root, baseline.get("path"))
+    if original.resolve() == p.resolve():
+        fail("FAIL_ENGINEERING_GATE", "baseline must be distinct from derived PV")
+    inspect_xlsx(original, baseline.get("sha256"))
     inspect_xlsx(p, primary[0].get("sha256"))
     if manifest.get("pdf_requested") is True and not previews:
         fail("FAIL_FORMAT_CONTRACT", "requested PDF is not attached as a preview")
