@@ -1,0 +1,6 @@
+interface:
+  display_name: "MCE pela conexao privada"
+  short_description: "Operar MCE com aprovacao externa verificavel"
+  default_prompt: "Use $mce-operacao-web para verificar o ambiente e iniciar o entendimento da Matriz de Causa e Efeito."
+policy:
+  allow_implicit_invocation: true
