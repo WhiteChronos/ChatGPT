@@ -19,6 +19,7 @@ from pathlib import Path
 LEDGER = 'pv_versions.jsonl'
 NAME_RE = re.compile(r'^([A-Za-z0-9][A-Za-z0-9._=-]{0,159}) - PV ([0-9]{2,})\.xlsx$')
 DOCUMENT_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._=-]{0,159}$')
+DELIVERABLE_RE = re.compile(r'^([A-Za-z0-9][A-Za-z0-9._=-]{0,159}) - PV ([0-9]{2,})\.(xlsx|docx|pdf)$')
 GENESIS = '0' * 64
 
 
@@ -59,6 +60,19 @@ def parse_pv_filename(value: str) -> tuple[str, int]:
         raise PVBlocked('Numeracao PV nao canonica')
     document_name(name)
     return name, parsed
+
+
+def parse_deliverable_filename(value: str) -> tuple[str, int, str]:
+    """Check strict external document name; no content editing or engineering approval."""
+    match = DELIVERABLE_RE.fullmatch(value or '')
+    if not match:
+        raise PVBlocked('Nome externo deve ser CODIGO-REVISAO - PV NN.ext')
+    name, version, extension = match.groups()
+    number = int(version)
+    if number < 1 or version != f'{number:02d}':
+        raise PVBlocked('Numeracao PV nao canonica')
+    document_name(name)
+    return name, number, extension
 
 
 def bounded_file(root: Path, relative: str) -> Path:

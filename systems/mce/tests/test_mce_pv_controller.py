@@ -88,3 +88,13 @@ def test_code_revision_suffix_is_part_of_document_identity():
     assert mod.parse_pv_filename('DE-000.00-0000-000-ABC-001-B - PV 02.xlsx') == ('DE-000.00-0000-000-ABC-001-B', 2)
     with pytest.raises(mod.PVBlocked):
         mod.parse_pv_filename('DE-000.00-0000-000-ABC-001 (PRELIMINAR VERSÃO 01) PV 01.xlsx')
+
+def test_all_deliverables_forbid_suffix_after_pv():
+    code = 'DE-000.00-0000-000-ABC-001-B'
+    for ext in ('docx', 'xlsx', 'pdf'):
+        assert mod.parse_deliverable_filename(f'{code} - PV 03.{ext}') == (code, 3, ext)
+    for bad in (' - PV 03 - PERGUNTAS_PENDENCIAS.docx',
+                ' - PV 03 FINAL.docx', ' - PV 00.docx',
+                ' - PV 3.docx', ' - PV 03.txt'):
+        with pytest.raises(mod.PVBlocked):
+            mod.parse_deliverable_filename(code + bad)

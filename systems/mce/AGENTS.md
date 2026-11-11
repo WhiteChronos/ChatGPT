@@ -173,3 +173,7 @@ O DataCenter usa o mesmo ledger MCE existente quando houver host real verificado
 Aprendizado continuo = falha comprovada, licao, teste de regressao, aprovacao humana da evolucao, commit com memoria e CI no SHA exato; nao alterar pesos de modelo nem operar em segundo plano. Ver systems/mce/docs/PV_VERSION_WORKFLOW.md e datacenter/PV_VERSION_MANIFEST.schema.json. Sem merge/deploy, sem homologacao inferida.
 
 **DEC-MCE-079 — Correcao de nome:** a regra atual prevalece sobre qualquer referencia historica a `(PRELIMINAR VERSÃO NN) PV NN`. A revisao do documento integra o codigo; sem alteracao dos bytes do Excel, corrigir apenas o nome/manifesto, mantendo a mesma PV. Testar o caso sintetico DE-000.00-0000-000-ABC-001-B - PV 01.xlsx e rejeitar a forma historica.
+
+
+## DEC-MCE-080 — Regra de nomeacao em Excel, Word e PDF
+Todas as entregas do mesmo sistema seguem CODIGO_DOCUMENTO-REVISAO - PV NN.ext. Extensoes: .xlsx, .docx e .pdf conforme o artefato. NUNCA anexar titulo, comentario ou sufixo depois de PV NN ou antes da extensao, como PERGUNTAS_PENDENCIAS, RELATORIO, QUESTIONARIO ou FINAL. A finalidade fica dentro do documento e em metadados privados. Word do questionario permanece apenas com Localizacao, Folha e Pergunta. A PV do Word avanca conforme solicitacao; Excel e outros documentos nao sao renomeados automaticamente. Testar nome externamente por parse_deliverable_filename antes de entregar. Nenhuma mudanca de nome concede homologacao, modifica cruzamentos X ou dispensa gates de engenharia.

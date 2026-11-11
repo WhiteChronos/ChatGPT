@@ -42,3 +42,7 @@ Fonte de verdade: systems/mce/scripts/mce_pv_controller.py, systems/mce/scripts/
 
 ## Correcao de nomenclatura - DEC-MCE-079 (2026-11-11)
 O proprietario corrigiu a regra anterior: usar CODIGO_DOCUMENTO-REVISAO - PV NN.xlsx, ex.: DE-000.00-0000-000-ABC-001-B - PV 01.xlsx. `-B` representa a revisao documental e nao pode ser omitido ou substituido por texto de projeto. Nao usar sufixo `(PRELIMINAR VERSÃO NN)`. Trata-se de correcao de metadata, nao de revisao funcional: se o conteudo XLSX for binariamente igual, preservar PV 01 e seu SHA; registrar vinculo com o nome incorreto historico sem sobrescrever ledger antigo, sem criar PV 02 artificial. O documento codigo/revisao deve ser confirmado no controle documental antes de futuras emissoes; nao inferir revisao a partir do nome de arquivo de origem.
+
+
+## DEC-MCE-080 — Regra de nomeacao em Excel, Word e PDF
+Todas as entregas do mesmo sistema seguem CODIGO_DOCUMENTO-REVISAO - PV NN.ext. Extensoes: .xlsx, .docx e .pdf conforme o artefato. NUNCA anexar titulo, comentario ou sufixo depois de PV NN ou antes da extensao, como PERGUNTAS_PENDENCIAS, RELATORIO, QUESTIONARIO ou FINAL. A finalidade fica dentro do documento e em metadados privados. Word do questionario permanece apenas com Localizacao, Folha e Pergunta. A PV do Word avanca conforme solicitacao; Excel e outros documentos nao sao renomeados automaticamente. Testar nome externamente por parse_deliverable_filename antes de entregar. Nenhuma mudanca de nome concede homologacao, modifica cruzamentos X ou dispensa gates de engenharia.
