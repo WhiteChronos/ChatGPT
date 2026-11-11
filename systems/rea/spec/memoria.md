@@ -213,3 +213,13 @@ ou deploy. Preservar PRODUCTION_COMPLETE=NO e o aviso ECC externo sem falso mani
 | PEND-REA-013 | O teste RED falhou pela ausencia do recovery script. A implementacao foi adicionada; falta CI do novo HEAD e, depois, execucao no host autorizado seguida de `rea_bridge_status` real. | IMPLEMENTADO_PENDENTE_CI |
 
 Sem segredo, tunnel_id, credencial ou ampliacao de root neste registro. Sem merge/deploy; PRODUCTION_COMPLETE=NO.
+
+
+### 2026-11-11 - DEC-REA-020: validacao do recovery persistente e evidencia CI separada
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-REA-020 | O recovery persistente baseado em `tunnel-client runtimes connect` / `runtimes status` foi validado no SHA a831cd1da3417ab4968d4ae766f5747985a2f99c: REA independent system QA, full product security evidence, canonical memory, memory/security QA e GitHub Control Plane Policy concluiram com success. O bridge real continuou offline apos os checks, confirmando que o bloqueio remanescente e de host. | VALIDADO_CI_HOST_PENDENTE |
+| PEND-REA-014 | O COMPATIBILIZACAO_SYSTEM executou o mesmo motor REA pinado em GitHub Actions contra cinco forks publicos autorizados, run 43035644109. Essa evidencia deve ser classificada INSTRUMENTAL_REA_CI e nunca HOST_DISCOVERED/LIVE_VERIFIED. O gate live continua sendo executar o recovery no host autorizado e observar `rea_bridge_status` com sucesso. | HOST_LIVE_PENDENTE |
+
+Sem segredo, credencial, tunnel_id, ampliacao de root, merge ou deploy. PRODUCTION_COMPLETE=NO.
