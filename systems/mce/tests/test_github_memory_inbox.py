@@ -51,3 +51,29 @@ def test_offline_cli(tmp_path):
     p.write_text(json.dumps([event()]))
     r=subprocess.run([sys.executable,str(SOURCE),"--comments-json",str(p)],capture_output=True,text=True)
     assert r.returncode==0 and json.loads(r.stdout)["system"]=="MCE_INDEPENDENTE"
+
+def test_real_issue_event_061_metadata_accepted():
+    e=event(id="DEC-MCE-061", date="2026-11-10",
+            origin="USER_EXPLICIT_REQUEST",
+            approval="NOT_ENGINEERING_APPROVED",
+            production_complete=False)
+    e["body"]=e["body"].replace("Metadata only", "A" * 1221)
+    assert INBOX.parse_comment(e)["id"] == "DEC-MCE-061"
+
+def test_legacy_metadata_allowed_but_production_or_unknown_rejected():
+    e=event(origin="USER_CORRECTION",
+            approval="VISUAL_LAYOUT_ONLY; ENGINEERING_NOT_APPROVED",
+            supersedes="DEC-MCE-036",commit="a" * 40,production_complete=False)
+    assert INBOX.parse_comment(e)["kind"] == "DECISION"
+    with pytest.raises(INBOX.IntakeError,match="Production"):
+        INBOX.parse_comment(event(production_complete=True))
+    with pytest.raises(INBOX.IntakeError,match="fields"):
+        INBOX.parse_comment(event(secret_payload="not allowed"))
+    with pytest.raises(INBOX.IntakeError,match="Unapproved"):
+        INBOX.parse_comment(event(approval="ENGINEERING_APPROVED"))
+
+def test_issue_061_keeps_append_only_pending_until_mirrored():
+    e=event(id="DEC-MCE-061",date="2026-11-10",
+            origin="USER_EXPLICIT_REQUEST",approval="NOT_ENGINEERING_APPROVED",
+            production_complete=False)
+    assert INBOX.inspect([e],"not yet mirrored")["pending_mirror"] == 1

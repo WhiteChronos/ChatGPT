@@ -16,6 +16,26 @@ MARKER = "<!-- WC_MEMORY_EVENT_V1 -->"
 FENCE = chr(96) * 3
 KINDS = {"DECISION": "DEC", "PENDENCY": "PEND", "EVIDENCE": "EVID"}
 FIELDS = {"schema", "system", "kind", "id", "date", "title", "summary", "origin", "approval"}
+OPTIONAL_FIELDS = {"commit", "branch", "production_complete", "state", "comment", "supersedes", "supersedes_scope"}
+ORIGINS = {
+    "USER_REQUEST", "CODEX_REVIEW", "CI_EVIDENCE", "GITHUB_PR",
+    "USER_APPROVED_DESIGN_AND_TEST_EVIDENCE", "USER_CORRECTION",
+    "USER_REPORTED_UI_DEFECT", "USER_REPORTED_REGRESSION",
+    "GITHUB_VERIFIED_SYNTHETIC_EVIDENCE",
+    "VERIFIED_GITHUB_PRIVATE_AND_MICROSOFT_GRAPH",
+    "SYNTHETIC_LOCAL_AND_MICROSOFT_GRAPH_VERIFIED",
+    "GITHUB_ACTIONS_PRIVATE_VERIFIED",
+    "USER_EXPLICIT_INSTRUCTION_AND_GITHUB_VERIFICATION",
+    "USER_DECISION_GITHUB_API_AND_OFFICIAL_DOCS",
+    "USER_EXPLICIT_REQUEST",
+}
+UNAPPROVED = {
+    "NOT_ENG_APPROVED", "NOT_ENGINEERING_APPROVED",
+    "NOT_ENGINEERING_APPROVAL", "TYPOGRAPHY_ONLY; ENGINEERING_APPROVAL_NOT_IMPLIED",
+    "VISUAL_LAYOUT_ONLY; ENGINEERING_NOT_APPROVED",
+    "VISUAL_LAYOUT_ONLY; NOT_ENG_APPROVED",
+    "SOURCE_SCOPE_ONLY; ENGINEERING_NOT_APPROVED",
+}
 SENSITIVE = re.compile(r"-----BEGIN (?:RSA |EC )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{24,}|Authorization:\s*Bearer\s+\S+", re.I)
 
 class IntakeError(ValueError):
@@ -52,7 +72,7 @@ def parse_comment(comment):
                        parse_constant=lambda value: (_ for _ in ()).throw(IntakeError("Nonstandard JSON")))
     except (json.JSONDecodeError, TypeError) as exc:
         raise IntakeError("Invalid event JSON") from exc
-    if type(e) is not dict or set(e) != FIELDS:
+    if type(e) is not dict or not FIELDS.issubset(e) or not set(e).issubset(FIELDS | OPTIONAL_FIELDS):
         raise IntakeError("Invalid event fields")
     if type(e["schema"]) is not int or e["schema"] != 1 or e["system"] != PRODUCT:
         raise IntakeError("Wrong product or schema")
@@ -71,12 +91,17 @@ def parse_comment(comment):
     title, summary = e["title"], e["summary"]
     if not isinstance(title, str) or not 1 <= len(title.strip()) <= 160 or "\n" in title:
         raise IntakeError("Invalid title")
-    if not isinstance(summary, str) or not 1 <= len(summary.strip()) <= 1200:
+    if not isinstance(summary, str) or not 1 <= len(summary.strip()) <= 2000:
         raise IntakeError("Invalid summary")
-    if e["origin"] not in ("USER_REQUEST", "CODEX_REVIEW", "CI_EVIDENCE", "GITHUB_PR") or e["approval"] != "NOT_ENG_APPROVED":
+    if type(e["origin"]) is not str or e["origin"] not in ORIGINS or type(e["approval"]) is not str or e["approval"] not in UNAPPROVED:
         raise IntakeError("Unapproved events only")
+    if "production_complete" in e and e["production_complete"] is not False:
+        raise IntakeError("Production approval forbidden")
+    for field in OPTIONAL_FIELDS - {"production_complete"}:
+        if field in e and (type(e[field]) is not str or len(e[field]) > 240 or SENSITIVE.search(e[field])):
+            raise IntakeError("Invalid optional metadata")
     return {"id": e["id"], "kind": kind, "date": stamp, "title": title.strip(),
-            "summary": summary.strip(), "approval": "NOT_ENG_APPROVED",
+            "summary": summary.strip(), "approval": e["approval"],
             "url": "https://github.com/WhiteChronos/ChatGPT/issues/" + str(ISSUE) + "#issuecomment-" + str(cid)}
 
 def inspect(comments, memory):
