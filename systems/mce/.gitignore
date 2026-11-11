@@ -1,0 +1,7 @@
+/datacenter/*.sqlite
+/datacenter/*.sqlite3
+/datacenter/*.sqlite3-*
+/datacenter/private/
+/runtime/
+**/*-datasheet-*.json
+**/*-backup-*.sqlite3
