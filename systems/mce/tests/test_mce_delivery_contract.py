@@ -27,12 +27,16 @@ def preliminary(root):
     workbook.active["C8"] = "Synthetic documented cause"
     path = root / "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx"
     workbook.save(path)
+    baseline = root / "source_approved_baseline.xlsx"
+    workbook.save(baseline)
     return {
         "schema": "mce.delivery.v1", "request_kind": "MCE_XLSX",
         "state": GATE.PRELIMINARY,
         "artifacts": [{"role": "PRIMARY_MCE", "path": "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx",
                        "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}],
         "preliminary_version": {"document_name": "DE-000.00-0000-000-ABC-001-B", "number": 1},
+        "baseline": {"path": "source_approved_baseline.xlsx",
+                     "sha256": hashlib.sha256(baseline.read_bytes()).hexdigest()},
         "approved_layout_profile": "P09_L50_APROVADO_VISUALMENTE",
         "gates": {key: True for key in GATE.REQUIRED_GATES},
         "coverage": {"causes_total": 1, "causes_reviewed": 1,
@@ -172,5 +176,44 @@ def test_legacy_preliminary_version_name_is_rejected(tmp_path):
 def test_document_revision_must_match_filename(tmp_path):
     data = preliminary(tmp_path)
     data["preliminary_version"]["document_name"] = "DE-000.00-0000-000-ABC-001-A"
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+
+def test_missing_baseline_bytes_never_delivers_pv(tmp_path):
+    data = preliminary(tmp_path)
+    del data["baseline"]
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+    data = preliminary(tmp_path)
+    (tmp_path / data["baseline"]["path"]).unlink()
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+
+def test_baseline_sha_mismatch_rejected(tmp_path):
+    data = preliminary(tmp_path)
+    data["baseline"]["sha256"] = "0" * 64
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+
+def test_pv_cannot_be_its_own_baseline(tmp_path):
+    data = preliminary(tmp_path)
+    data["baseline"] = {
+        "path": data["artifacts"][0]["path"],
+        "sha256": data["artifacts"][0]["sha256"],
+    }
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_baseline_cannot_be_generic_tabular_workbook(tmp_path):
+    data = preliminary(tmp_path)
+    base = tmp_path / data["baseline"]["path"]
+    generic = Workbook()
+    generic.active.title = "CONTROLE"
+    generic.save(base)
+    data["baseline"]["sha256"] = hashlib.sha256(base.read_bytes()).hexdigest()
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)
