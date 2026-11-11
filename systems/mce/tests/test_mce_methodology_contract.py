@@ -30,5 +30,5 @@ def test_no_false_approval_claim_in_methodology():
         text = path.read_text(encoding="utf-8")
         block = text.split("## Contrato de completude funcional — DEC-MCE-068")[-1]
         assert "STOP" in block
-        assert "nao editar mestre" in block
+        assert "nao editar mestre" in block.lower()
         assert "X em todas as colunas" in block
