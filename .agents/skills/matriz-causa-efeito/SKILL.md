@@ -3,6 +3,14 @@ name: matriz-causa-efeito
 description: Elaborar, revisar e auditar Matrizes de Causa e Efeito (MCE) de automação industrial a partir de P&IDs, memoriais, narrativas, listas de I/O, filosofias de controle, HAZOP/LOPA/SRS e Excel mestre aprovado. Usar para mapear causas, efeitos, intertravamentos, alarmes, trips, votações, reset e bypass com evidências por TAG e revisão, pesquisar repositórios GitHub auxiliares e orquestrar as Skills MCE do WhiteChronos/ChatGPT. Não usar para engenharia reversa de software nem REA. Bloquear alterações do Excel sem autorização e manter histórico no GitHub.
 ---
 
+
+## DEC-MCE-075 — Preparar automaticamente o contrato, sem repetir autorizacao
+
+Ao receber autorizacao de TRABALHO e fontes disponiveis, nao perguntar novamente pela mesma autorizacao. No workspace privado autorizado, invocar o UNICO executor MCE: \`mce_workflow.py init\` e \`mce_workflow.py propose-contract --workspace WORKSPACE --annotation-policy IN_MATRIX --sp-policy UNUSED\` quando o projeto assim determinar (ADM Gamboa). O comando somente le o XLSX e cria \`contract.proposed.json\` com linhas pela coluna H, whitelist C/AR para textos, SP historico para revisao e efeito/X para auditoria; nao altera matriz, contrato oficial ou estado.
+
+A aprovacao de modelo homologado, whitelist, efeito de seguranca, intertravamentos e QA Windows continua humana/tecnica, mas a PREPARACAO da matriz NAO deve ficar travada por uma pergunta repetida, nem pelo trabalho manual de listar centenas de coordenadas. Separar \`PREPARACAO_DOCUMENTAL\` de \`MCE_PRELIMINAR_PARA_REVISAO\` e \`ACEITE_FINAL_VERIFICADO\`; nunca declarar que proposta de contrato e matriz aprovada. Cada X/efeito novo precisa de evidencia e procedimento funcional especifico. Para ADM, observacoes na coluna AR prevalecem sobre orientacoes antigas EXTERNAL_ONLY de outras revisoes. Sempre distinguir copia de trabalho e emissao formal.
+
+
 ## REGRA DE OURO INVIOLAVEL — DEC-MCE-071 (2026-11-10)
 
 **Contrato de entrega fail-closed do MCE.** Pedido de "criar/elaborar/corrigir/entregar a Matriz" = `MCE_XLSX`. O unico arquivo principal e Microsoft Excel `.xlsx` no perfil P09 **efetivamente contratado e homologado** para o projeto (L50, L57 ou outro aprovado). PDF e somente espelho fiel opcional do XLSX; PDF de auditoria, JSON, MD, CSV, planilha generica, template vazio e relatorio de pre-analise nunca substituem a Matriz.

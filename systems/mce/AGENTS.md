@@ -146,3 +146,17 @@ Na MCE ADM P09 L50, SP da coluna D expressa apenas porcentagem (`10%`, `20%`), n
 
 **Anti-regressao:** o perfil de arquivo historico sem observacoes ou com SP preenchido nao substitui esta verificacao de completude para novas emissoes. Decisoes antigas de layout sao preservadas como historico, e eventual conflito exige revisao explicita do contrato, nao alteracao silenciosa do modelo.
 
+
+
+## DEC-MCE-075 — Preparar contrato sem pedir a mesma autorizacao repetidamente
+
+**Causa-raiz:** \`mce_workflow.py init\` cria contrato bloqueado (\`model_approved=false\`, whitelist vazia), mas nao oferecia comando para propor coordenadas do Excel real. A ferramenta tambem limita edicoes a texto e protege X e efeitos; historicos \`EXTERNAL_ONLY\` nao correspondem a decisao mais recente ADM de observar na coluna AR.
+
+**Correcao do fluxo de preparacao:** apos \`init\`, executar no host Windows privado:
+\`\`\`powershell
+python systems/mce/.agents/skills/engenharia-mce-projeto/scripts/mce_workflow.py propose-contract --workspace "C:\MCE_DADOS\ADM_GAMBOA" --annotation-policy IN_MATRIX --sp-policy UNUSED
+\`\`\`
+A saida \`contract.proposed.json\` e SOMENTE PROPOSTA: lista \`matrix_ranges\`, \`editable_cells\` de texto C/AR e SP historicos para revisao, preserva 35 efeitos, conta X existentes sem validalos e explicita os gates pendentes. Nao modifica \`contract.json\`, \`state.json\`, o XLSX original ou aprova o modelo. O responsavel revisa o contrato candidato, confirma o perfil vigente, protege cabecalhos e autoriza celulas especificas; mudancas de X/cabecalhos exigem analise e edicao funcional segregada, nunca X arbitrario.
+
+**Sem novos bloqueios burocraticos:** quando a autorizacao de TRABALHO ja foi registrada (ADM: DEC-MCE-074), nao a solicitar novamente; preparar automaticamente dados, contrato candidato e pendencias. **Sem bypass de seguranca:** somente o gate de elaboracao documentado e modelo homologado permitem alterar matriz industrial; preparacao != emissao/revisao/aceite. Nao usar progresso de CI, modelo visual ou rascunho como homologacao de intertravamentos.
+

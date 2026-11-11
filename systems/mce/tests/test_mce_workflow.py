@@ -420,3 +420,65 @@ def test_p09_l50_g_aq_display_two_ar_display_ninety_six(tmp_path):
     book.save(path)
     with pytest.raises(ValueError,match='largura EXIBIDA G:AR diferente de 2'):
         mod.verify_p09_l50_model(path,contract)
+
+
+def test_propose_contract_does_not_grant_approval(tmp_path):
+    """DEC-MCE-075: proposal is useful, but cannot approve engineering."""
+    model=tmp_path/'synthetic_proposal.xlsx'
+    book=_synthetic_p09_l50(model)
+    book['FOLHA 1']['C8']='Synthetic cause'
+    book['FOLHA 1']['AR8'].font=Font(name='Arial',size=8)
+    book['FOLHA 1']['D8']='10%'
+    book['FOLHA 1']['I8']='X'
+    book.save(model)
+    ws=tmp_path/'ws'
+    command('init','--workspace',ws,'--master',model)
+    original_sha=mod.digest(ws/'base/modelo.xlsx')
+    blocked_contract=(ws/'contract.json').read_bytes()
+    original_state=(ws/'state.json').read_bytes()
+    command('propose-contract','--workspace',ws,
+            '--annotation-policy','IN_MATRIX','--sp-policy','UNUSED')
+    proposal=mod.readjson(ws/'contract.proposed.json')
+    assert proposal['model_approved'] is False
+    assert proposal['schema']=='mce.contract.candidate.v1'
+    assert proposal['coverage']['causes']==129
+    assert proposal['coverage']['existing_x_unverified']==1
+    assert 'C8' in proposal['editable_cells']['FOLHA 1']
+    assert 'AR8' in proposal['editable_cells']['FOLHA 1']
+    assert 'D8' in proposal['editable_cells']['FOLHA 1']
+    assert 'I8' not in proposal['editable_cells']['FOLHA 1']
+    assert proposal['protected_rows_by_sheet']['FOLHA 1']==[[1,7]]
+    assert (ws/'contract.json').read_bytes()==blocked_contract
+    assert (ws/'state.json').read_bytes()==original_state
+    assert mod.digest(ws/'base/modelo.xlsx')==original_sha
+    command('propose-contract','--workspace',ws,
+            '--annotation-policy','IN_MATRIX','--sp-policy','UNUSED',ok=False)
+    r=command('apply','--workspace',ws,'--changes',dump(tmp_path/'changes.json',[]),ok=False)
+    assert 'autorizacao' in r.stderr
+
+
+def test_propose_contract_respects_annotation_and_sp_policies(tmp_path):
+    model=tmp_path/'synthetic_external.xlsx'
+    book=_synthetic_p09_l50(model)
+    book['FOLHA 1']['AR8'].font=Font(name='Arial',size=8)
+    book['FOLHA 1']['D8']='10%'
+    book.save(model)
+    ws=tmp_path/'ws'
+    command('init','--workspace',ws,'--master',model)
+    command('propose-contract','--workspace',ws,
+            '--annotation-policy','EXTERNAL_ONLY','--sp-policy','DOCUMENTED')
+    proposal=mod.readjson(ws/'contract.proposed.json')
+    assert 'AR8' not in proposal['editable_cells']['FOLHA 1']
+    assert 'D8' not in proposal['editable_cells']['FOLHA 1']
+    assert proposal['coverage']['sp_legacy_for_review']==[]
+
+
+def test_propose_contract_rejects_generic_workbook(tmp_path):
+    model=tmp_path/'generic.xlsx'
+    Workbook().save(model)
+    ws=tmp_path/'ws'
+    command('init','--workspace',ws,'--master',model)
+    r=command('propose-contract','--workspace',ws,
+              '--annotation-policy','IN_MATRIX','--sp-policy','UNUSED',ok=False)
+    assert 'FOLHA N' in r.stderr
+    assert not (ws/'contract.proposed.json').exists()

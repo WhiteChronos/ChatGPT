@@ -446,6 +446,79 @@ def verify_contract(w, s):
     return c
 
 
+
+def run_propose_contract(args):
+    """Read-only contract proposal, never an approval or edit to the workbook."""
+    w=Path(args.workspace);s=load_state(w)
+    if s['status'] not in ('INVENTARIADO','ANALISADO_AGUARDANDO_DECISAO'):
+        fail('STOP: contrato candidato so antes da fase de edicao.')
+    dest=w/'contract.proposed.json'
+    if dest.exists():fail('STOP: proposta existente; nao sobrescrever a revisao.')
+    book=load_workbook(master_path(w),read_only=False,keep_links=True)
+    if not book.sheetnames or book.sheetnames!=['FOLHA '+str(i) for i in range(1,len(book.sheetnames)+1)]:
+        fail('STOP: perfil de matriz requer abas FOLHA N consecutivas.')
+    result={
+      'schema':'mce.contract.candidate.v1',
+      'template_sha256':s['template_sha256'],
+      'source_manifest_sha256':s['source_manifest_sha256'],
+      'template_classification':s['template_classification'],
+      'model_approved':False,
+      'approval_state':'PROPOSTA_NAO_HOMOLOGADA',
+      'max_causes_per_sheet':50,
+      'layout_profile':P09_L50_PROFILE,
+      'annotation_policy':args.annotation_policy,
+      'sp_policy':args.sp_policy,
+      'matrix_ranges':[],
+      'editable_cells':{},
+      'protected_rows_by_sheet':{},
+      'frozen_sheets':[],
+      'functional_x_edit_cells_authorized':[],
+      'effect_header_edit_cells_authorized':[],
+      'coverage':{'causes':0,'existing_x_unverified':0,'rows_without_x':0,
+                  'observations_current':0,'sp_legacy_for_review':[],
+                  'effect_headers_by_sheet':{}},
+      'pending_gates':['MODELO_APROVADO','WHITELIST_REVISADA','X_E_EFEITOS_COM_FONTE',
+                       'CONFLITOS_DOCUMENTAIS_RESOLVIDOS','EXCEL_WINDOWS_QA']
+    }
+    for sh in book:
+        rows=[r for r in range(8,min(57,sh.max_row)+1) if type(sh.cell(r,8).value) is int]
+        if not rows or len(rows)>50 or rows!=list(range(8,rows[-1]+1)):
+            fail('STOP: indices H das causas inconsistentes: '+sh.title)
+        if sh.max_row!=50 or '$AR$50' not in str(sh.print_area):
+            fail('STOP: perfil L50 e impressao divergentes: '+sh.title)
+        result['matrix_ranges'].append({'sheet':sh.title,
+           'first_data_row':8,'last_data_row':rows[-1]})
+        result['protected_rows_by_sheet'][sh.title]=[[1,7]]
+        allowed=[]
+        for r in rows:
+            for col,label in ((3,'C'),(44,'AR')):
+                cell=sh._cells.get((r,col))
+                if cell is None or cell.__class__.__name__=='MergedCell' or cell.data_type=='f':
+                    continue
+                if label=='AR' and args.annotation_policy!='IN_MATRIX':
+                    continue
+                allowed.append(label+str(r))
+                if label=='AR' and cell.value not in (None,''):
+                    result['coverage']['observations_current']+=1
+            sp=sh._cells.get((r,4))
+            if args.sp_policy=='UNUSED' and sp is not None and sp.value not in (None,''):
+                if sp.__class__.__name__!='MergedCell' and sp.data_type!='f':
+                    allowed.append('D'+str(r))
+                    result['coverage']['sp_legacy_for_review'].append(
+                      {'sheet':sh.title,'cell':sp.coordinate,'old_text':str(sp.value)})
+            xs=sum(sh.cell(r,col).value=='X' for col in range(9,44))
+            result['coverage']['existing_x_unverified']+=xs
+            result['coverage']['rows_without_x']+=int(xs==0)
+            result['coverage']['causes']+=1
+        result['editable_cells'][sh.title]=allowed
+        result['coverage']['effect_headers_by_sheet'][sh.title]=sum(
+            bool(sh.cell(5,col).value) for col in range(9,44))
+    writejson(dest,result)
+    print(json.dumps({'status':'PROPOSTA_NAO_HOMOLOGADA',
+       'path':str(dest),'causes':result['coverage']['causes'],
+       'candidate_text_cells':sum(len(x) for x in result['editable_cells'].values()),
+       'original_preserved':True,'model_approved':False},ensure_ascii=False))
+
 def run_authorize(args):
     w=Path(args.workspace);s=load_state(w)
     if s['status']!='ANALISADO_AGUARDANDO_DECISAO':fail('Analise deve ser apresentada antes da aprovacao.')
@@ -698,6 +771,10 @@ def main():
         a=sub.add_parser(name);a.add_argument('--workspace',required=True)
         if arg:a.add_argument('--'+arg,required=True)
         a.set_defaults(func=fn)
+    a=sub.add_parser('propose-contract');a.add_argument('--workspace',required=True)
+    a.add_argument('--annotation-policy',choices=['IN_MATRIX','EXTERNAL_ONLY'],required=True)
+    a.add_argument('--sp-policy',choices=['UNUSED','DOCUMENTED'],required=True)
+    a.set_defaults(func=run_propose_contract)
     a=sub.add_parser('status');a.add_argument('--workspace',required=True)
     a.set_defaults(func=lambda args: print(json.dumps(load_state(Path(args.workspace)),indent=2,ensure_ascii=False)))
     args=p.parse_args()
