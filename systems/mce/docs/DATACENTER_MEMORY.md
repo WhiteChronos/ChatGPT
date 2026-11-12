@@ -159,3 +159,8 @@ Distinguir **fim da zona de causas linha 40** de **fim da folha/area impressa li
 ### DEC-MCE-088 — continuidade da grade vertical ate a linha 47
 
 A decisao L47 anterior tratou a faixa cinza e o limite de impressao, mas as colunas ficaram sem bordas apos a linha 40. **Correcao:** todas as colunas A:AR devem manter a topologia de bordas verticais e horizontais ate a linha 47, copiando o desenho das bordas da respectiva coluna na linha 40. Linhas 41:46 continuam vazias de valor mas com grade; linha 47 conserva cinza B:AR com as divisorias. Controle `grid_border_coverage` em `datacenter/MCE_LAYOUT_LEARNING_POLICY.json`. QA privado do candidato XLSX verifica exatamente A41:AR47 e invariantes de causas/X; nao ha DataCenter Windows implantado, nem byte industrial em GitHub. Perfis anteriores conservam historico e L50 nao e mudado.
+
+
+### DEC-MCE-089 — paginação correta da MCE, 40 causas/folha
+
+Retificacao final de perfil: `current_project_layout_profile=P09_C40_L47_H_DISPLAY_3` na politica `datacenter/MCE_LAYOUT_LEARNING_POLICY.json`. Coluna H visual 3,00; linhas de causas 8:47 com 40 vagas; impressao A1:AR47; **linha 47 e causa, nao faixa cinza/rodape**. Folha seguinte inicia apenas apos 40 causas existentes do MESMO grupo de efeitos; dividir 43 em 40+3. Documentar o historico DEC-MCE-086/087/088 como SUPERSEDED, nao alterar original nem o perfil legado L50 para outros projetos. Novas folhas repetem cabecalhos de efeitos do mesmo grupo; proibir inferencia/copia de X e causas nao existentes. O DataCenter aqui e indice publico declarativo, nao arquivo ou banco industrial nem replica de anexos.
