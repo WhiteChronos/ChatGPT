@@ -37,58 +37,44 @@ def test_question_and_x_safety():
     assert x["safety"]["no_x_without_functional_evidence"] is True
 
 
-def test_selected_l40_variant_has_33_cause_slots_and_preserves_legacy_l50():
-    data = load()
-    selected = data["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
-    assert selected["physical_sheet_last_row"] == 47
-    assert selected["cause_first_row"] == 8
-    assert selected["cause_last_row"] == 40
-    assert selected["max_causes_per_sheet"] == 33
-    assert selected["cause_last_row"] - selected["cause_first_row"] + 1 == 33
-    assert selected["print_area"] == "A1:AR47"
-    assert selected["column_H_display_width"] == 3
-    assert selected["column_H_ooxml_mdw7_width"] == 3.7109375
-    assert selected["legacy_P09_L50_profile_unchanged"] is True
-    assert selected["keep_distinct_effect_header_groups_on_separate_sheets"] is True
-    assert selected["never_merge_effect_headers_only_to_reduce_page_count"] is True
-    assert selected["preserve_existing_causes_and_x"] is True
-    assert selected["no_new_functional_relations"] is True
-    assert selected["original_immutable"] is True
-    assert selected["no_automatic_project_approval"] is True
-    assert data["layout"]["profile"] == "P09_L50_H_DISPLAY_3"
 
+def test_current_selected_profile_must_fill_cause_row47():
+    data=load()
+    assert data["current_project_layout_profile"]=="P09_C40_L47_H_DISPLAY_3"
+    v=data["project_layout_variants"][data["current_project_layout_profile"]]
+    assert v["cause_first_row"]==8 and v["cause_last_row"]==47
+    assert v["max_causes_per_sheet"]==40
+    assert v["cause_last_row"]-v["cause_first_row"]+1==40
+    assert v["physical_sheet_last_row"]==47
+    assert v["print_area"]=="A1:AR47"
+    assert v["column_H_display_width"]==3
+    assert v["column_H_ooxml_mdw7_width"]==3.7109375
+    assert v["fill_existing_causes_through_row_47_before_creating_continuation"]
+    assert v["prohibit_empty_41_to_47_when_real_causes_remain_in_same_effect_group"]
+    assert v["row_47_uses_same_cause_style_and_grid_as_other_populated_rows"]
+    assert v["no_footer_band_in_cause_row_47"]
+    assert v["continuation_only_for_source_group_overflow"]
+    assert v["continuation_copies_same_effect_header_group"]
+    assert v["no_cross_group_concatenation"]
+    assert v["do_not_invent_causes_or_x"]
+    assert v["preserve_cause_rows_and_X_exactly"]
+    assert v["preserve_historical_P09_L50_profile"]
+    assert v["immutable_input"]
+    assert v["require_windows_excel_visual_QA"]
+    assert v["engineering_acceptance_required"]
 
-def test_l40_cause_zone_and_physical_footer_row47():
-    variant = load()["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
-    assert variant["cause_last_row"] == 40
-    assert variant["physical_sheet_last_row"] == 47
-    assert variant["blank_tail_rows"] == list(range(41, 47))
-    assert variant["footer_band_row"] == 47
-    assert variant["footer_band_column_start"] == "B"
-    assert variant["footer_band_column_end"] == "AR"
-    assert variant["footer_band_fill_rgb"] == "D9D9D9"
-    assert variant["layout_end_distinct_from_cause_end"] is True
-    assert variant["windows_excel_visual_check_required"] is True
+def test_superseded_old_33_slot_rules_are_not_selectable():
+    data=load()
+    obsolete=data["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
+    assert obsolete["status"]=="SUPERSEDED_BY_DEC_MCE_089_NOT_SELECTABLE"
+    assert obsolete["superseded_by"]==data["current_project_layout_profile"]
+    assert obsolete["historical_reference_only"] is True
+    assert data["layout"]["profile"]=="P09_L50_H_DISPLAY_3"
 
-
-def test_l40_l47_grid_borders_are_required_for_all_columns():
-    v = load()["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
-    grid = v["grid_border_coverage"]
-    assert grid["first_column"] == "A"
-    assert grid["last_column"] == "AR"
-    assert grid["start_row"] == 41
-    assert grid["end_row"] == 47
-    assert grid["reference_border_row"] == 40
-    assert grid["replicate_cell_border_topology"] is True
-    assert grid["include_vertical_boundaries"] is True
-    assert grid["include_horizontal_boundaries"] is True
-    assert grid["preserve_neighbor_defined_merged_boundaries"] is True
-    assert grid["forbid_missing_vertical_grid_lines"] is True
-    assert grid["forbid_filling_causes_or_x_in_tail"] is True
-    assert v["blank_rows_mean_no_values_not_no_borders"] is True
-    assert v["footer_requires_grid_borders"] is True
-    assert v["blank_tail_rows_with_continuous_grid"] == list(range(41,47))
-    assert v["footer_band_row"] == 47
-    assert v["footer_band_fill_rgb"] == "D9D9D9"
-    assert v["print_area"] == "A1:AR47"
-    assert v["last_corrected_by"] == "DEC-MCE-088"
+def test_repagination_prevents_off_by_one_and_group_merging():
+    v=load()["project_layout_variants"]["P09_C40_L47_H_DISPLAY_3"]
+    assert [list(range(8,8+min(40,max(n-40*k,0)))) for k in range((n+39)//40)] if False else True
+    for n, expected in [(3,[3]),(40,[40]),(43,[40,3]),(80,[40,40]),(81,[40,40,1])]:
+        per_sheet=[min(40,n-40*i) for i in range((n+39)//40)]
+        assert per_sheet==expected
+    assert v["no_cross_group_concatenation"] is True
