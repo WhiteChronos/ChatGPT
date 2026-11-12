@@ -26,3 +26,12 @@
 - Correspondencia: ultima fase foi confrontar perguntas consolidadas com folhas, causas e X historicos antes de resolver discrepancias por documentos e circuito.
 - Historico de correcao de software: PR #130 contem mitigacao hardlink testada e revisada; e dependente da #129, sem merge comprovado nesta data.
 - `PRIVATE_VAULT_DOCUMENTS_STORED=NO`, `INDUSTRIAL_RESTORE_VERIFIED=NO`, `ENGINEERING_ACCEPTANCE=NO`, `PRODUCTION_COMPLETE=NO`.
+
+
+## DEC-MCE-085 — Arquivamento corporativo nao e gate de analise
+
+Por decisao explicita do proprietario, o **arquivamento industrial corporativo definitivo** (cofre GitHub privado com protecao paga, backup externo cifrado, restore industrial e infraestrutura Windows) e `NAO_APLICAVEL` **como pre-requisito da leitura, da auditoria somente leitura, do cruzamento documental e da atualizacao das perguntas em Word**. Esses trabalhos podem usar os **arquivos privados reais** em contexto autorizado, inclusive a Biblioteca pessoal do ChatGPT, apos confirmar disponibilidade dos bytes e hashes quando aplicavel. Em um novo chat, o checkpoint da Biblioteca pode nao estar montado; consultar o canal autorizado e nao fingir recuperacao.
+
+Esta dispensa **nao concede** homologacao de MCE, nao permite editar o XLSX mestre, e nao elimina: comprovacao de proveniencia/fonte/revisao/SS, baseline por SHA-256, whitelist, `AUTORIZO_ELABORACAO_MCE` vinculada aos documentos e alteracoes, justificativa literal de cada X, QA OOXML/Excel Windows, revisao de engenharia, integridade de copias e segregacao de original/derivado. Emissao de matriz revisada permanece bloqueada por esses gates, **nao pela ausencia de cofre industrial**. Se uma politica contratual/corporativa exigir arquivamento, tratar como requisito externo do destinatario, nao como requisito inventado do workflow atual.
+
+Para software e memoria, manter revisao por agente independente real, teste de regressao, CI no HEAD atual e memoria no mesmo commit. Nunca apagar historico GH-02/GH-08: registrar como `OPTIONAL_FOR_CURRENT_WORKFLOW` para continuidade, preservando os resultados e as lacunas de implantacao. `PRODUCTION_COMPLETE=NO` ate gates reais de engenharia/implantacao quando aplicaveis.

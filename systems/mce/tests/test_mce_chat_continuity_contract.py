@@ -33,3 +33,20 @@ def test_public_checkpoint_contains_no_industrial_payloads():
     assert all("sha256" not in artifact and "file_name" not in artifact
                for artifact in obj["reference_artifacts"])
     assert "PRIVATE_PROCESS_METADATA" not in POLICY.read_text(encoding="utf-8")
+
+
+def test_industrial_archive_is_optional_only_for_documentary_continuity():
+    obj = json.loads(POLICY.read_text(encoding="utf-8"))
+    archives = obj["archive_policy"]
+    assert archives["industrial_corporate_archive_required_for_read_only_analysis"] is False
+    assert archives["industrial_corporate_archive_required_for_questionnaire_work"] is False
+    assert archives["industrial_corporate_archive"] == "OPTIONAL_NOT_APPLICABLE_FOR_CURRENT_WORKFLOW"
+    assert archives["engineering_delivery_gates_unaffected"] is True
+    assert obj["requirements"]["require_authenticated_restore"] is False
+    assert obj["requirements"]["require_actual_private_bytes"] is True
+    assert obj["requirements"]["require_private_source_hash_verification_for_edit"] is True
+    assert obj["requirements"]["require_external_engineering_gate"] is True
+    assert obj["requirements"]["protect_original_workbook"] is True
+    assert obj["states"]["MCE_XLSX"] == "NAO_EMITIDO_BLOQUEADO"
+    assert "DEC-MCE-085" in MEMORY.read_text(encoding="utf-8")
+    assert "DEC-MCE-085" in WORKFLOW.read_text(encoding="utf-8")
