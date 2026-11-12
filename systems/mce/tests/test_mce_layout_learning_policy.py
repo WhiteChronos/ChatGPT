@@ -69,3 +69,26 @@ def test_l40_cause_zone_and_physical_footer_row47():
     assert variant["footer_band_fill_rgb"] == "D9D9D9"
     assert variant["layout_end_distinct_from_cause_end"] is True
     assert variant["windows_excel_visual_check_required"] is True
+
+
+def test_l40_l47_grid_borders_are_required_for_all_columns():
+    v = load()["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
+    grid = v["grid_border_coverage"]
+    assert grid["first_column"] == "A"
+    assert grid["last_column"] == "AR"
+    assert grid["start_row"] == 41
+    assert grid["end_row"] == 47
+    assert grid["reference_border_row"] == 40
+    assert grid["replicate_cell_border_topology"] is True
+    assert grid["include_vertical_boundaries"] is True
+    assert grid["include_horizontal_boundaries"] is True
+    assert grid["preserve_neighbor_defined_merged_boundaries"] is True
+    assert grid["forbid_missing_vertical_grid_lines"] is True
+    assert grid["forbid_filling_causes_or_x_in_tail"] is True
+    assert v["blank_rows_mean_no_values_not_no_borders"] is True
+    assert v["footer_requires_grid_borders"] is True
+    assert v["blank_tail_rows_with_continuous_grid"] == list(range(41,47))
+    assert v["footer_band_row"] == 47
+    assert v["footer_band_fill_rgb"] == "D9D9D9"
+    assert v["print_area"] == "A1:AR47"
+    assert v["last_corrected_by"] == "DEC-MCE-088"
