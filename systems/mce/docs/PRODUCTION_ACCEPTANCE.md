@@ -55,6 +55,8 @@ O verificador nao escreve no workbook ou em arquivos de estado. Ele repete a che
 
 ## Riscos adversariais
 
+- O editor exige destino XLSX novo, criado exclusivamente, e rejeita diretorio output com link/junction/reparse. Arquivo existente, inclusive hardlink para original/baseline, bloqueia antes de qualquer escrita. Nunca remover ou sobrescrever saida anterior para forcar sucesso: selecionar novo workspace autorizado e preservar a evidencia.
+
 - Manipular `state.json` ou simular o nome de um aprovador nao constitui assinatura: exige fonte externa de confianca.
 - O hash de um arquivo nao verifica a validade tecnica da logica/seguranca.
 - CI verde em dados sinteticos nao prova semantica P&ID, SIF ou equivalencia visual de todos os recursos Excel.

@@ -607,6 +607,9 @@ def update_xml_sheet(src,changes,styles,styles_cache):
 
 
 def patch_workbook(master,output,changes):
+    output=Path(output)
+    if output.exists() or output.is_symlink():
+        fail('STOP: destino de saida ja existe; nenhuma sobrescrita e permitida.')
     with zipfile.ZipFile(master,'r') as zi:
         paths=rel_sheet_paths(zi)
         if 'xl/styles.xml' not in zi.namelist():fail('Planilha sem styles.xml.')
@@ -620,9 +623,12 @@ def patch_workbook(master,output,changes):
             replacement[sheetpath]=update_xml_sheet(zi.read(sheetpath),items,styles,cache)
         ET.register_namespace('',MAIN)
         replacement['xl/styles.xml']=ET.tostring(styles,encoding='utf-8',xml_declaration=True)
-        with zipfile.ZipFile(output,'w') as zo:
-            for info in zi.infolist():
-                zo.writestr(info,replacement.get(info.filename,zi.read(info.filename)))
+        try:
+            with zipfile.ZipFile(output,'x') as zo:
+                for info in zi.infolist():
+                    zo.writestr(info,replacement.get(info.filename,zi.read(info.filename)))
+        except FileExistsError:
+            fail('STOP: destino de saida ja existe; nenhuma sobrescrita e permitida.')
     return set(replacement)
 
 
@@ -734,7 +740,12 @@ def run_apply(args):
     c=verify_contract(w,s);ch=readjson(args.changes)
     if not isinstance(ch,list):fail('Alteracoes devem formar lista JSON.')
     baseline=preflight(w,s,c,ch)
-    output=w/'output'/'MCE_PRELIMINAR.xlsx';changed=patch_workbook(baseline,output,ch)
+    output=w/'output'/'MCE_PRELIMINAR.xlsx'
+    parent=output.parent
+    if (parent.is_symlink() or getattr(parent.lstat(),'st_file_attributes',0)&0x400
+            or parent.resolve() != w.resolve()/'output'):
+        fail('STOP: diretorio de destino inseguro (link/junction/reparse).')
+    changed=patch_workbook(baseline,output,ch)
     result=audit(baseline,output,ch,c)
     writejson(w/'AUDITORIA_MCE.json',result)
     if not result['passed']:

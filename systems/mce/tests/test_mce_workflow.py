@@ -4,6 +4,7 @@ import contextlib
 import io
 from types import SimpleNamespace
 import sys
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -101,6 +102,42 @@ def test_end_to_end_preserves_unedited_ooxml(tmp_path):
     parts=mod.xml_changes(base,out)
     assert set(parts)=={'xl/styles.xml','xl/worksheets/sheet2.xml'}
     assert mod.readjson(ws/'AUDITORIA_MCE.json')['passed']
+
+
+@pytest.mark.parametrize('existing_target', ['original', 'baseline', 'regular'])
+def test_apply_refuses_existing_output_without_damaging_any_source(tmp_path, existing_target):
+    ws, model, _, approval, changes, _ = fixture(tmp_path)
+    command('authorize', '--workspace', ws, '--authorization', approval)
+    baseline = ws/'base/modelo.xlsx'
+    output = ws/'output/MCE_PRELIMINAR.xlsx'
+    if existing_target == 'regular':
+        output.write_bytes(b'previous private output must remain intact')
+    else:
+        output.hardlink_to(model if existing_target == 'original' else baseline)
+    protected = {path: path.read_bytes() for path in (model, baseline, output)}
+    result = command('apply', '--workspace', ws, '--changes', changes, ok=False)
+    assert 'destino' in result.stderr.lower() or 'exist' in result.stderr.lower()
+    for path, content in protected.items():
+        assert path.read_bytes() == content
+    assert mod.readjson(ws/'state.json')['status'] == 'AUTORIZADO'
+
+
+def test_apply_rejects_output_directory_junction(tmp_path):
+    ws, model, _, approval, changes, _ = fixture(tmp_path)
+    command('authorize', '--workspace', ws, '--authorization', approval)
+    outside = tmp_path/'outside'
+    outside.mkdir()
+    parent = ws/'output'
+    parent.rmdir()
+    linked = subprocess.run(['cmd', '/c', 'mklink', '/J', str(parent), str(outside)],
+                            capture_output=True, check=False)
+    if linked.returncode:
+        pytest.skip('Windows junction unavailable')
+    original = model.read_bytes()
+    result = command('apply', '--workspace', ws, '--changes', changes, ok=False)
+    assert 'destino inseguro' in result.stderr
+    assert model.read_bytes() == original
+    assert not list(outside.iterdir())
 
 
 def test_blocks_unauthorized_cell_and_formula(tmp_path):
