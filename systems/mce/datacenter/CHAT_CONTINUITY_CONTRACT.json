@@ -26,11 +26,14 @@
     "compare_current_sha": true,
     "do_not_request_repeat_work_authorization": true,
     "require_actual_private_bytes": true,
-    "require_authenticated_restore": true,
+    "require_authenticated_restore": false,
     "protect_original_workbook": true,
     "require_external_engineering_gate": true,
     "require_real_independent_code_reviewer": true,
-    "public_repository_metadata_only": true
+    "public_repository_metadata_only": true,
+    "require_private_source_hash_verification_for_edit": true,
+    "require_provenance_for_functional_changes": true,
+    "require_original_bytes_for_read_only_analysis": true
   },
   "runtime": {
     "windows_local_datacenter_installed": false,
@@ -40,5 +43,13 @@
     "MCE_XLSX": "NAO_EMITIDO_BLOQUEADO",
     "PRODUCTION_COMPLETE": "NO"
   },
-  "notes": "File names, hashes, TAGs, cell coordinates, source excerpts, questions and engineering records stay private. A public contract does not persist or restore attachments."
+  "notes": "Public metadata only. Authenticated industrial vault restore is not a prerequisite for read-only analysis or Word questions. A recovered private source with byte-level SHA verification is mandatory before engineering modifications, and source/SS/contract/approval gates remain enforced. Library checkpoint was verified in an earlier chat, but new-host access must be checked.",
+  "archive_policy": {
+    "industrial_corporate_archive_required_for_read_only_analysis": false,
+    "industrial_corporate_archive_required_for_questionnaire_work": false,
+    "industrial_corporate_archive": "OPTIONAL_NOT_APPLICABLE_FOR_CURRENT_WORKFLOW",
+    "archive_backup_and_restore": "RECOMMENDED_IF_CORPORATE_POLICY_REQUIRES",
+    "library_checkpoint_scope": "PRIVATE_CHATGPT_LIBRARY_RESTORATION_PREVIOUSLY_REPORTED_NOT_EQUIVALENT_TO_GITHUB_VAULT",
+    "engineering_delivery_gates_unaffected": true
+  }
 }

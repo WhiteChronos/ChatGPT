@@ -50,3 +50,8 @@ Sem modelo XLSX mestre homologado, SS e fontes revisadas, contrato `editable_cel
 ## DEC-MCE-084 — Protocolo atualizado de retomada de Matriz e questionario
 
 Antes de qualquer trabalho em chat novo, ler **`systems/mce/docs/MCE_CHAT_CONTINUITY.md`** e **`systems/mce/datacenter/CHAT_CONTINUITY_CONTRACT.json`**, alem deste roteiro, da memoria e do Issue #120. A dupla documental da ultima sessao verificada e **MCE XLSX PV 03 / questionario DOCX PV 04**; a existencia passada de anexos nao significa que seus bytes foram arquivados nem que estarao acessiveis na nova conversa. Nao recomece na PV 02, nao avance PV sem alteracoes verificadas e nao recrie MCE generica. Sem bytes reais: trabalhar com metadados/pedidos de fontes, nao emitir arquivo. O cofre privado nao possui ingestao/restore comprovados desses documentos. Proibir publicacao dos anexos no repositorio publico. Manter `MCE_XLSX=NAO_EMITIDO_BLOQUEADO` ate gates de engenharia e suporte completos.
+
+
+## DEC-MCE-085 — Retomar sem cofre industrial corporativo
+
+O checkpoint MCE XLSX PV 03 / perguntas DOCX PV 04 armazenado na Biblioteca pessoal em conversa anterior pode ser recuperado apenas mediante disponibilidade real nesta sessao. Para **ler a matriz, auditar X e evoluir questoes**, nao exigir backup cifrado externo, upgrade GitHub ou restauração de cofre industrial. Conferir os bytes privados reais (e seus hashes) e preservar a matriz original; nao inventar arquivo se ausente. A dispensa vale somente para arquivamento corporativo, nunca para fonte, revisao, SS, permissao de editar, engenharia, whitelist, QA, nem merge/deploy. Fonte canonica: `docs/MCE_CHAT_CONTINUITY.md` e `datacenter/CHAT_CONTINUITY_CONTRACT.json`.
