@@ -45,3 +45,8 @@ Nao enviar checkpoint ao ChatGPT caso politica de dados proiba compartilhar meta
 ## Gates de seguranca
 
 Sem modelo XLSX mestre homologado, SS e fontes revisadas, contrato `editable_cells`, autorizacao `AUTORIZO_ELABORACAO_MCE`, manter `ANALISADO_AGUARDANDO_DECISAO` e `PRODUCTION_COMPLETE=NO`. Os repositorios Azure, Houston e Industrial-Control sao referencias auxiliares, nao fontes de comando de seguranca. Nao usar Linux/WSL, nao publicar documentos nem credenciais, nao fazer merge/deploy sem aceite separado.
+
+
+## DEC-MCE-084 — Protocolo atualizado de retomada de Matriz e questionario
+
+Antes de qualquer trabalho em chat novo, ler **`systems/mce/docs/MCE_CHAT_CONTINUITY.md`** e **`systems/mce/datacenter/CHAT_CONTINUITY_CONTRACT.json`**, alem deste roteiro, da memoria e do Issue #120. A dupla documental da ultima sessao verificada e **MCE XLSX PV 03 / questionario DOCX PV 04**; a existencia passada de anexos nao significa que seus bytes foram arquivados nem que estarao acessiveis na nova conversa. Nao recomece na PV 02, nao avance PV sem alteracoes verificadas e nao recrie MCE generica. Sem bytes reais: trabalhar com metadados/pedidos de fontes, nao emitir arquivo. O cofre privado nao possui ingestao/restore comprovados desses documentos. Proibir publicacao dos anexos no repositorio publico. Manter `MCE_XLSX=NAO_EMITIDO_BLOQUEADO` ate gates de engenharia e suporte completos.

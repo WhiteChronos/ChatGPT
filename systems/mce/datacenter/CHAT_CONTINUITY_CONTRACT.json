@@ -1,0 +1,44 @@
+{
+  "schema": "mce.chat-continuity.v1",
+  "product": "MCE_INDEPENDENTE",
+  "classification": "PUBLIC_PROCESS_METADATA_ONLY",
+  "checkpoint_date": "2026-11-11",
+  "workflow_document": "systems/mce/docs/MCE_CHAT_CONTINUITY.md",
+  "memory_document": "systems/mce/spec/memoria.md",
+  "restart_document": "systems/mce/docs/RETOMADA_ENTRE_CHATS.md",
+  "decision_index": "https://github.com/WhiteChronos/ChatGPT/issues/120",
+  "source_repo": "WhiteChronos/ChatGPT",
+  "private_vault_repo": "WhiteChronos/mce-document-vault",
+  "reference_artifacts": [
+    {
+      "kind": "MCE_XLSX",
+      "last_observed_pv": 3,
+      "bytes_in_private_vault_verified": false
+    },
+    {
+      "kind": "QUESTIONS_DOCX",
+      "last_observed_pv": 4,
+      "bytes_in_private_vault_verified": false
+    }
+  ],
+  "requirements": {
+    "read_sources_first": true,
+    "compare_current_sha": true,
+    "do_not_request_repeat_work_authorization": true,
+    "require_actual_private_bytes": true,
+    "require_authenticated_restore": true,
+    "protect_original_workbook": true,
+    "require_external_engineering_gate": true,
+    "require_real_independent_code_reviewer": true,
+    "public_repository_metadata_only": true
+  },
+  "runtime": {
+    "windows_local_datacenter_installed": false,
+    "github_private_vault_operational_restore_verified": false
+  },
+  "states": {
+    "MCE_XLSX": "NAO_EMITIDO_BLOQUEADO",
+    "PRODUCTION_COMPLETE": "NO"
+  },
+  "notes": "File names, hashes, TAGs, cell coordinates, source excerpts, questions and engineering records stay private. A public contract does not persist or restore attachments."
+}
