@@ -1,7 +1,14 @@
 name: workflow-mce
-version: 2
+version: 3
 mode: local
 steps:
+  - id: release-qualification
+    description: Validar pacote completo do commit aprovado, checksum externo e integridade antes do projeto real
+    command: release_integrity.py
+    needs: [approved_code_sha, independently_trusted_package_sha256]
+    automated: false
+    stop: true
+    next: intake
   - id: intake
     description: Inventariar Excel mestre e fontes com SHA-256
     command: mce_workflow.py init
@@ -40,6 +47,12 @@ steps:
     description: Verificar hash, componentes OOXML, estilos, formulas e no maximo 50 causas por folha
     command: mce_workflow.py audit
     result: MCE_PRELIMINAR_PARA_REVISAO
+    next: delivery-preflight
+  - id: delivery-preflight
+    description: Verificar contrato de entrega, baseline fisicamente distinto, PV e gates documentais sem homologacao automatica
+    command: mce_delivery_contract.py
+    needs: [audit, private_delivery_manifest, approved_layout_profile, excel_windows_qa]
+    next: multidisciplinary-review
   - id: multidisciplinary-review
     description: Validacao por Processo, Instrumentacao, Automacao, Operacao e Seguranca quando aplicavel
     automated: false

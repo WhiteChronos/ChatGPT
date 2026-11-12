@@ -1,5 +1,15 @@
 # MCE independente — verificador de integridade do release
 
+## Candidato completo vinculado ao Git
+
+O workflow `MCE complete release candidate` (`.github/workflows/mce-release-candidate.yml`) qualifica o produto completo no Windows: suite MCE, memoria, Skills/espelhos, ZIP, checksum e relatorio de integridade. A origem e o HEAD exato da PR, nao o commit temporario de merge do GitHub. O job nao instala o produto em host operacional nem concede aceite de engenharia.
+
+`python systems/mce/scripts/build_release.py --repo . --expected-commit SHA40 --output DESTINO_NOVO.zip` empacota somente blobs Git versionados sob `systems/mce`. Nao inclui anexos, arquivos nao rastreados, mudancas locais, bancos ou documentos de outros diretorios. Rejeita links e sobrescrita; timestamps fixos e hashes dos blobs tornam o ZIP reproduzivel no mesmo runtime. Leitura por `git cat-file` evita conversao LF/CRLF de `git archive` no Windows.
+
+O artifact `mce-complete-candidate-SHA40` contem ZIP, SHA256SUMS.txt, build-report.json e integrity-report.json. O checksum acompanha o candidato como evidencia da execucao, mas o operador precisa autenticar repositorio/run/SHA e aprovacao externa; um manifesto gerado pelo proprio pacote nao prova confianca. Artifacts de Actions sao temporarios: nao constituem arquivo de documentos industriais ou backup permanente.
+
+Depois de extrair o pacote validado em pasta nova autorizada, `python scripts/validate_skills.py` e `python scripts/mce_system.py --help` sao smoke checks sem editar projeto. A suite integral e as verificacoes de espelhos/historico usam o checkout do repositorio na CI, pois dependem de `.github` e do historico Git. Nenhuma instalacao ou execucao de projeto real e automatica.
+
 MCE e um workflow offline de engenharia; nenhuma implantacao de servidor MCP ou Web e requisito de producao. O novo `scripts/release_integrity.py` examina um ZIP fechado, **sem extrair arquivos**, sem sobrescrever a matriz mestre, sem copiar desenhos e sem executar macros. Compara o conteudo byte a byte com `manifest.json` SHA-256, rejeita membros extras, caminhos de travessia, duplicatas, links simbolicos e ZIPs excessivamente grandes.
 
 Uso:

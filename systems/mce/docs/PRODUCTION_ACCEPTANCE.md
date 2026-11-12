@@ -1,5 +1,11 @@
 # MCE independente — aceite para producao (sem alterar o Excel mestre)
 
+## Rota operacional vigente e limite de ativacao
+
+Para a arquitetura GitHub-only solicitada, qualificar primeiro o pacote completo no workflow Windows `MCE complete release candidate`, com SHA do codigo e SHA-256 do ZIP conferidos externamente. O workflow produz candidato revisavel, sem instalar/provisionar nem declarar producao. `workflow-mce.yaml` inclui a qualificacao do release e o preflight de entrega apos auditoria.
+
+Persistencia de documentos e execucao com dados industriais pertencem ao contexto privado autorizado descrito em GITHUB_ONLY_STORAGE.md; caminhos locais historicos abaixo nao comprovam DataCenter Windows instalado. A aprovacao de codigo precisa identificar o SHA exato antes de integrar em main. A aprovacao de projeto continua separada: original XLSX, fontes/revisoes/SS, contrato/whitelist, autorizacao vinculada aos hashes, restore e backup independente, QA Excel e aceite tecnico. Nao remover esses gates para obter status verde.
+
 ## Definicao de producao
 
 O MCE e um sistema local de engenharia de causa e efeito, nao uma API publica. Producao significa a **execucao da versao aprovada** no ambiente de engenharia autorizado, sobre um modelo mestre realmente aprovado, com fontes oficiais rastreaveis, aceite multidisciplinar e evidencias FAT/SAT quando aplicavel. Nao confundir testes sinteticos/CI com homologacao operacional.

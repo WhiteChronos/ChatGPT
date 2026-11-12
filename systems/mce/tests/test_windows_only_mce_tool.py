@@ -10,6 +10,7 @@ MCE = ROOT / "systems" / "mce"
 WORKFLOWS = (
     "mce-github-memory.yml", "mce-independent-qa.yml",
     "mce-matriz-tool-qa.yml", "mce-memory-qa.yml", "mce-security-qa.yml",
+    "mce-release-candidate.yml",
 )
 
 
