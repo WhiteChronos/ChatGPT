@@ -129,7 +129,7 @@ def validate(manifest: object, root: Path) -> str:
     if not isinstance(baseline, dict):
         fail("FAIL_ENGINEERING_GATE", "baseline XLSX bytes and SHA-256 are missing")
     original = private_file(root, baseline.get("path"))
-    if original.resolve() == p.resolve():
+    if original.resolve() == p.resolve() or original.samefile(p):
         fail("FAIL_ENGINEERING_GATE", "baseline must be distinct from derived PV")
     inspect_xlsx(original, baseline.get("sha256"))
     inspect_xlsx(p, primary[0].get("sha256"))

@@ -217,3 +217,16 @@ def test_baseline_cannot_be_generic_tabular_workbook(tmp_path):
     data["baseline"]["sha256"] = hashlib.sha256(base.read_bytes()).hexdigest()
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)
+
+
+def test_baseline_cannot_be_hardlink_to_derived_pv(tmp_path):
+    data = preliminary(tmp_path)
+    primary = tmp_path / data["artifacts"][0]["path"]
+    baseline = tmp_path / data["baseline"]["path"]
+    baseline.unlink()
+    baseline.hardlink_to(primary)
+    data["baseline"]["sha256"] = data["artifacts"][0]["sha256"]
+    assert baseline.resolve() != primary.resolve()
+    assert baseline.samefile(primary)
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
