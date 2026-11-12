@@ -1,0 +1,5 @@
+interface:
+  display_name: "Engenharia MCE por Projeto"
+  short_description: "Analisa documentos e prepara causas e efeitos rastreaveis."
+policy:
+  allow_implicit_invocation: true
