@@ -23,3 +23,12 @@ DataCenter: somente o host privado real, quando conectado e verificado, pode con
 ## Gate
 
 A matriz e seu modelo mestre continuam sob autorizações de engenharia e contrato de edição; a QA do formato não homologa lógica funcional.
+
+
+## DEC-MCE-086 — variante P09 L40 / H visual 3,00 (por pedido de projeto)
+
+O proprietario solicitou corrigir o layout da matriz para **terminar fisicamente na linha 40**, nao na 50, com causas nas linhas 8:40 (33 vagas/folha), area de impressao A1:AR40 e coluna H visual 3,00 (OOXML width=3.7109375 no perfil MDW7). O perfil legado P09 L50 permanece disponivel para outros projetos e nao deve ser alterado silenciosamente. O usuario enviou uma referencia visual e o modelo real de PV anterior foi verificado em contexto privado; esta memoria publica **nao contem arquivos, TAGs, hashes nem trechos industriais**.
+
+**REGRA CRITICA DE REPAGINACAO:** nao usar `ceil(total_de_causas/33)` para misturar grupos com cabecalhos de efeitos diferentes. Cada grupo de efeitos original deve manter seu conjunto de colunas/titulos e seus X sem remapeamento funcional. Dividir uma folha cheia gera folhas de continuacao com o MESMO cabecalho daquele grupo. Preservar integralmente causas, linhas, sequencia, observacoes, rotulos e X por identidade, com manifesto privado de origem/destino e diff de invariantes; sem criar X ou aprovar logica. Emissao da PV seguinte e apenas **candidato derivado para revisao do layout** ate Excel Windows nativo, QA de impressao, contrato/revisao de engenharia e aceite.
+
+Requisitos verificaveis: todas as folhas terminam em linha 40; os 35 slots de efeito I:AQ e suas descricoes originais ficam inalterados em cada grupo; H visual=3,00; nao ha conteudo alem da linha 40; print_area=A1:AR40; X historicos e causas devem ser preservados em igualdade exata. O agente de layout nao pode diminuir folhas por renomear ou misturar grupos de efeitos. `PRODUCTION_COMPLETE=NO` sem aceite real.

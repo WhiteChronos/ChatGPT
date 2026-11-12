@@ -45,5 +45,26 @@
     "no_x_without_functional_evidence": true,
     "original_immutable": true,
     "engineering_approval_required": true
+  },
+  "project_layout_variants": {
+    "P09_L40_H_DISPLAY_3": {
+      "decision": "DEC-MCE-086",
+      "status": "CANDIDATE_LAYOUT_REQUIRES_WINDOWS_QA_AND_ENGINEERING_ACCEPTANCE",
+      "applies_only_when_explicitly_selected": true,
+      "physical_sheet_last_row": 40,
+      "cause_first_row": 8,
+      "cause_last_row": 40,
+      "max_causes_per_sheet": 33,
+      "print_area": "A1:AR40",
+      "column_H_display_width": 3,
+      "column_H_ooxml_mdw7_width": 3.7109375,
+      "legacy_P09_L50_profile_unchanged": true,
+      "keep_distinct_effect_header_groups_on_separate_sheets": true,
+      "never_merge_effect_headers_only_to_reduce_page_count": true,
+      "preserve_existing_causes_and_x": true,
+      "no_new_functional_relations": true,
+      "original_immutable": true,
+      "no_automatic_project_approval": true
+    }
   }
 }

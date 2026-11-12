@@ -35,3 +35,24 @@ def test_question_and_x_safety():
     assert x["deliverables"]["preserve_distinct_functional_decisions"] is True
     assert x["deliverables"]["word_excel_pv_independent"] is True
     assert x["safety"]["no_x_without_functional_evidence"] is True
+
+
+def test_selected_l40_variant_has_33_cause_slots_and_preserves_legacy_l50():
+    data = load()
+    selected = data["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
+    assert selected["physical_sheet_last_row"] == 40
+    assert selected["cause_first_row"] == 8
+    assert selected["cause_last_row"] == 40
+    assert selected["max_causes_per_sheet"] == 33
+    assert selected["cause_last_row"] - selected["cause_first_row"] + 1 == 33
+    assert selected["print_area"] == "A1:AR40"
+    assert selected["column_H_display_width"] == 3
+    assert selected["column_H_ooxml_mdw7_width"] == 3.7109375
+    assert selected["legacy_P09_L50_profile_unchanged"] is True
+    assert selected["keep_distinct_effect_header_groups_on_separate_sheets"] is True
+    assert selected["never_merge_effect_headers_only_to_reduce_page_count"] is True
+    assert selected["preserve_existing_causes_and_x"] is True
+    assert selected["no_new_functional_relations"] is True
+    assert selected["original_immutable"] is True
+    assert selected["no_automatic_project_approval"] is True
+    assert data["layout"]["profile"] == "P09_L50_H_DISPLAY_3"
