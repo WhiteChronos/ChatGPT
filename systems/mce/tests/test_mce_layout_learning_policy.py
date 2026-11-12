@@ -40,12 +40,12 @@ def test_question_and_x_safety():
 def test_selected_l40_variant_has_33_cause_slots_and_preserves_legacy_l50():
     data = load()
     selected = data["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
-    assert selected["physical_sheet_last_row"] == 40
+    assert selected["physical_sheet_last_row"] == 47
     assert selected["cause_first_row"] == 8
     assert selected["cause_last_row"] == 40
     assert selected["max_causes_per_sheet"] == 33
     assert selected["cause_last_row"] - selected["cause_first_row"] + 1 == 33
-    assert selected["print_area"] == "A1:AR40"
+    assert selected["print_area"] == "A1:AR47"
     assert selected["column_H_display_width"] == 3
     assert selected["column_H_ooxml_mdw7_width"] == 3.7109375
     assert selected["legacy_P09_L50_profile_unchanged"] is True
@@ -56,3 +56,16 @@ def test_selected_l40_variant_has_33_cause_slots_and_preserves_legacy_l50():
     assert selected["original_immutable"] is True
     assert selected["no_automatic_project_approval"] is True
     assert data["layout"]["profile"] == "P09_L50_H_DISPLAY_3"
+
+
+def test_l40_cause_zone_and_physical_footer_row47():
+    variant = load()["project_layout_variants"]["P09_L40_H_DISPLAY_3"]
+    assert variant["cause_last_row"] == 40
+    assert variant["physical_sheet_last_row"] == 47
+    assert variant["blank_tail_rows"] == list(range(41, 47))
+    assert variant["footer_band_row"] == 47
+    assert variant["footer_band_column_start"] == "B"
+    assert variant["footer_band_column_end"] == "AR"
+    assert variant["footer_band_fill_rgb"] == "D9D9D9"
+    assert variant["layout_end_distinct_from_cause_end"] is True
+    assert variant["windows_excel_visual_check_required"] is True

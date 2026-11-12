@@ -51,11 +51,11 @@
       "decision": "DEC-MCE-086",
       "status": "CANDIDATE_LAYOUT_REQUIRES_WINDOWS_QA_AND_ENGINEERING_ACCEPTANCE",
       "applies_only_when_explicitly_selected": true,
-      "physical_sheet_last_row": 40,
+      "physical_sheet_last_row": 47,
       "cause_first_row": 8,
       "cause_last_row": 40,
       "max_causes_per_sheet": 33,
-      "print_area": "A1:AR40",
+      "print_area": "A1:AR47",
       "column_H_display_width": 3,
       "column_H_ooxml_mdw7_width": 3.7109375,
       "legacy_P09_L50_profile_unchanged": true,
@@ -64,7 +64,23 @@
       "preserve_existing_causes_and_x": true,
       "no_new_functional_relations": true,
       "original_immutable": true,
-      "no_automatic_project_approval": true
+      "no_automatic_project_approval": true,
+      "blank_tail_rows": [
+        41,
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "footer_band_row": 47,
+      "footer_band_column_start": "B",
+      "footer_band_column_end": "AR",
+      "footer_band_fill_rgb": "D9D9D9",
+      "cause_zone_ends_at_row": 40,
+      "layout_end_distinct_from_cause_end": true,
+      "last_corrected_by": "DEC-MCE-087",
+      "windows_excel_visual_check_required": true
     }
   }
 }

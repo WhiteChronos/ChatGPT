@@ -149,3 +149,8 @@ O DataCenter Windows MCE permanece inexistente e nao deve ser implantado para cu
 ### DEC-MCE-086 — variante de layout L40, sem DataCenter Windows instalado
 
 A politica declarativa `MCE_LAYOUT_LEARNING_POLICY.json` inclui `project_layout_variants.P09_L40_H_DISPLAY_3`: causas nas linhas 8:40, print A1:AR40, H exibida 3,00 com OOXML 3.7109375 no perfil MDW7, 33 vagas por folha. Preserva o antigo perfil L50 para projetos nao contratados. Repaginar preservando cada bloco de cabecalhos de efeitos: nunca usar apenas contagem global que associe X a outros efeitos. Esta e uma variante selecionavel mediante pedido explicito, ainda submetida ao QA de Excel Windows e aceite; nao criar banco, nao declarar host privado sincronizado, nao publicar arquivos industriais.
+
+
+### DEC-MCE-087 — limite fisico da variante L40 corrigido para linha 47
+
+Distinguir **fim da zona de causas linha 40** de **fim da folha/area impressa linha 47**. Em `P09_L40_H_DISPLAY_3`, linhas 41:46 sao espaco livre e linha 47 possui barra cinza B:AR (RGB D9D9D9). Impressao A1:AR47, H visivel 3,00, 33 causas nas linhas 8:40. Retifica o campo `physical_sheet_last_row` e `print_area` da decisao DEC-MCE-086, sem alterar o perfil historico L50, sem criar segundo banco, sem instalar DataCenter e sem reproduzir arquivo industrial. Revisao de Excel Windows permanece obrigatoria.
