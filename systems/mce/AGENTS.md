@@ -1,3 +1,7 @@
+## DEC-MCE-084 — Retomada obrigatoria de Matriz e perguntas entre chats
+
+Antes de iniciar ou retomar MCE, ler `systems/mce/docs/MCE_CHAT_CONTINUITY.md`, `systems/mce/datacenter/CHAT_CONTINUITY_CONTRACT.json`, `systems/mce/docs/RETOMADA_ENTRE_CHATS.md`, memoria e Issue #120, e consultar HEAD real das PRs. Ultima dupla documental **MCE XLSX PV 03 / DOCX perguntas PV 04** constitui checkpoint de versoes, NAO backup de bytes: nenhum anexo industrial ou SHA privado pode ir ao repositorio publico. Se os bytes nao estiverem acessiveis no contexto privado autorizado, solicitar fonte e bloquear emissao; nunca reconstruir MCE a partir de metadados. Codigo exige agente revisor independente real e CI SHA-scoped; engenharia exige aprovacoes humanas e contrato. Nao fazer merge/deploy automaticamente. `PRODUCTION_COMPLETE=NO`.
+
 ## REGRA DE OURO INVIOLAVEL — DEC-MCE-071 (2026-11-10)
 
 **Contrato de entrega fail-closed do MCE.** Pedido de "criar/elaborar/corrigir/entregar a Matriz" = `MCE_XLSX`. O unico arquivo principal e Microsoft Excel `.xlsx` no perfil P09 **efetivamente contratado e homologado** para o projeto (L50, L57 ou outro aprovado). PDF e somente espelho fiel opcional do XLSX; PDF de auditoria, JSON, MD, CSV, planilha generica, template vazio e relatorio de pre-analise nunca substituem a Matriz.
