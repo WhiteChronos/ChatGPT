@@ -154,3 +154,8 @@ A politica declarativa `MCE_LAYOUT_LEARNING_POLICY.json` inclui `project_layout_
 ### DEC-MCE-087 — limite fisico da variante L40 corrigido para linha 47
 
 Distinguir **fim da zona de causas linha 40** de **fim da folha/area impressa linha 47**. Em `P09_L40_H_DISPLAY_3`, linhas 41:46 sao espaco livre e linha 47 possui barra cinza B:AR (RGB D9D9D9). Impressao A1:AR47, H visivel 3,00, 33 causas nas linhas 8:40. Retifica o campo `physical_sheet_last_row` e `print_area` da decisao DEC-MCE-086, sem alterar o perfil historico L50, sem criar segundo banco, sem instalar DataCenter e sem reproduzir arquivo industrial. Revisao de Excel Windows permanece obrigatoria.
+
+
+### DEC-MCE-088 — continuidade da grade vertical ate a linha 47
+
+A decisao L47 anterior tratou a faixa cinza e o limite de impressao, mas as colunas ficaram sem bordas apos a linha 40. **Correcao:** todas as colunas A:AR devem manter a topologia de bordas verticais e horizontais ate a linha 47, copiando o desenho das bordas da respectiva coluna na linha 40. Linhas 41:46 continuam vazias de valor mas com grade; linha 47 conserva cinza B:AR com as divisorias. Controle `grid_border_coverage` em `datacenter/MCE_LAYOUT_LEARNING_POLICY.json`. QA privado do candidato XLSX verifica exatamente A41:AR47 e invariantes de causas/X; nao ha DataCenter Windows implantado, nem byte industrial em GitHub. Perfis anteriores conservam historico e L50 nao e mudado.

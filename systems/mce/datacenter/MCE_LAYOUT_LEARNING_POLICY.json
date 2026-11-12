@@ -79,8 +79,32 @@
       "footer_band_fill_rgb": "D9D9D9",
       "cause_zone_ends_at_row": 40,
       "layout_end_distinct_from_cause_end": true,
-      "last_corrected_by": "DEC-MCE-087",
-      "windows_excel_visual_check_required": true
+      "last_corrected_by": "DEC-MCE-088",
+      "windows_excel_visual_check_required": true,
+      "blank_tail_rows_with_continuous_grid": [
+        41,
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "blank_rows_mean_no_values_not_no_borders": true,
+      "grid_border_coverage": {
+        "first_column": "A",
+        "last_column": "AR",
+        "start_row": 41,
+        "end_row": 47,
+        "reference_border_row": 40,
+        "replicate_cell_border_topology": true,
+        "include_vertical_boundaries": true,
+        "include_horizontal_boundaries": true,
+        "border_type": "thin",
+        "preserve_neighbor_defined_merged_boundaries": true,
+        "forbid_missing_vertical_grid_lines": true,
+        "forbid_filling_causes_or_x_in_tail": true
+      },
+      "footer_requires_grid_borders": true
     }
   }
 }
