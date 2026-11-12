@@ -144,3 +144,8 @@ O processo do MCE passa a consultar o arquivo de política `datacenter/MCE_LAYOU
 ## DEC-MCE-085 — DataCenter corporativo opcional na continuidade
 
 O DataCenter Windows MCE permanece inexistente e nao deve ser implantado para cumprir o objetivo de continuidade atual. A politica publica `datacenter/CHAT_CONTINUITY_CONTRACT.json` marca o arquivamento industrial corporativo como `OPTIONAL_NOT_APPLICABLE_FOR_CURRENT_WORKFLOW`, sem apagar os registros historicos dos gates GH-02/GH-06/GH-07/GH-08. A copia privada na Biblioteca ChatGPT e o manifesto SHA somente foram comprovados na conversa de origem, nao representam espelho automatico em todo chat nem substituem exigencia contratual de backup. A analise documental pode prosseguir com arquivos privados validos, independentemente do cofre GitHub; para emissao de matriz revisada, manter proveniencia por SHA, modelo P09 aprovado, contrato de celulas, fontes, autorizacao de engenharia e QA Excel Windows.
+
+
+### DEC-MCE-086 — variante de layout L40, sem DataCenter Windows instalado
+
+A politica declarativa `MCE_LAYOUT_LEARNING_POLICY.json` inclui `project_layout_variants.P09_L40_H_DISPLAY_3`: causas nas linhas 8:40, print A1:AR40, H exibida 3,00 com OOXML 3.7109375 no perfil MDW7, 33 vagas por folha. Preserva o antigo perfil L50 para projetos nao contratados. Repaginar preservando cada bloco de cabecalhos de efeitos: nunca usar apenas contagem global que associe X a outros efeitos. Esta e uma variante selecionavel mediante pedido explicito, ainda submetida ao QA de Excel Windows e aceite; nao criar banco, nao declarar host privado sincronizado, nao publicar arquivos industriais.
