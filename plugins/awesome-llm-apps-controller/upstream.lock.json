@@ -11,15 +11,15 @@
   ],
   "catalog_by_source_type": {
     "external_reference": 2,
-    "upstream_internal": 432
+    "upstream_internal": 437
   },
-  "catalog_entry_count": 434,
-  "commit": "4bf51ab704fb2c5b3803cd5191b30d7dcdb51dc2",
+  "catalog_entry_count": 439,
+  "commit": "4f40918e7f6fb90db5d736f77e91c9a80800dd7e",
   "excluded_bytes": 50649024,
   "excluded_files": 19,
   "exclusion_policy_version": 1,
-  "included_bytes": 39430805,
-  "included_files": 1957,
+  "included_bytes": 39742643,
+  "included_files": 1976,
   "inconsistencies": [
     {
       "detail": "empty_or_missing",
@@ -31,17 +31,17 @@
   "ref": "main",
   "schema_version": 1,
   "snapshot_statistics": {
-    "blobs": 1976,
+    "blobs": 1995,
     "canonical_skills": 7,
-    "code_files": 996,
+    "code_files": 1007,
     "compose_files": 1,
-    "dependency_manifests": 194,
+    "dependency_manifests": 196,
     "dockerfiles": 8,
     "env_examples": 65,
-    "mcp_related": 139,
-    "readmes": 223,
+    "mcp_related": 142,
+    "readmes": 226,
     "skill_md": 10,
-    "tree_entries": 2531
+    "tree_entries": 2555
   },
   "upstream_repository": "Shubhamsaboo/awesome-llm-apps",
   "upstream_url": "https://github.com/Shubhamsaboo/awesome-llm-apps.git"
