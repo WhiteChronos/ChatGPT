@@ -130,6 +130,17 @@ function runTests() {
     }
   })) passed++; else failed++;
 
+  if (test('every locale component is reachable through --locale', () => {
+    const aliased = new Set(Object.values(LOCALE_ALIAS_TO_COMPONENT_ID));
+
+    for (const component of listInstallComponents({ family: 'locale' })) {
+      assert.ok(
+        aliased.has(component.id),
+        `${component.id} has no --locale alias; add it to LOCALE_ALIAS_TO_COMPONENT_ID and SUPPORTED_LOCALES`
+      );
+    }
+  })) passed++; else failed++;
+
   if (test('gets install component details and validates component IDs', () => {
     const component = getInstallComponent(' lang:typescript ');
 
@@ -192,6 +203,44 @@ function runTests() {
     );
   })) passed++; else failed++;
 
+  if (test('resolves existing skill components to exact modules for Mistral Vibe', () => {
+    const plan = resolveInstallPlan({
+      includeComponentIds: ['skill:tdd-workflow'],
+      target: 'mistral-vibe',
+      projectRoot: '/workspace/app',
+    });
+
+    assert.deepStrictEqual(plan.selectedModuleIds, ['skill-tdd-workflow']);
+    assert.deepStrictEqual(plan.skippedModuleIds, []);
+    assert.deepStrictEqual(
+      plan.operations.map(operation => operation.sourceRelativePath),
+      ['skills/tdd-workflow']
+    );
+  })) passed++; else failed++;
+
+  if (test('lists existing skill components as installable for Mistral Vibe', () => {
+    const components = listInstallComponents({ family: 'skill', target: 'mistral-vibe' });
+    const tdd = components.find(component => component.id === 'skill:tdd-workflow');
+    assert.ok(tdd, 'Should expose tdd-workflow to Mistral Vibe users');
+    assert.deepStrictEqual(tdd.moduleIds, ['skill-tdd-workflow']);
+    assert.deepStrictEqual(tdd.targets, ['mistral-vibe']);
+    const detail = getInstallComponent('skill:tdd-workflow', { target: 'mistral-vibe' });
+    assert.deepStrictEqual(detail.moduleIds, ['skill-tdd-workflow']);
+    assert.deepStrictEqual(detail.targets, ['mistral-vibe']);
+  })) passed++; else failed++;
+
+  if (test('applies Mistral Vibe exclusions to the exact selected skill module', () => {
+    assert.throws(
+      () => resolveInstallPlan({
+        target: 'mistral-vibe',
+        projectRoot: '/workspace/app',
+        includeComponentIds: ['skill:tdd-workflow'],
+        excludeComponentIds: ['skill:tdd-workflow'],
+      }),
+      /Selection excludes every requested install module/
+    );
+  })) passed++; else failed++;
+
   if (test('marks unified-memory install surfaces as requiring the separate ECC runtime', () => {
     const component = getInstallComponent('skill:unified-memory');
     assert.deepStrictEqual(component.moduleIds, ['skill-unified-memory']);
@@ -249,7 +298,7 @@ function runTests() {
         && operation.destinationPath === path.join(projectRoot, '.cursor', 'hooks.json')
         && operation.strategy === 'preserve-relative-path'
       )),
-      'Should preserve non-rule Cursor platform files'
+      'Developer Cursor installs should register hooks through hooks-runtime'
     );
     assert.ok(
       plan.operations.some(operation => (
@@ -280,12 +329,15 @@ function runTests() {
         'rules-core',
         'agents-core',
         'commands-core',
+        'hooks-runtime',
         'platform-configs',
         'skill-unified-memory',
-        'workflow-quality'
+        'workflow-quality',
+        'shared-script-utils'
       ]
     );
-    assert.ok(plan.skippedModuleIds.includes('hooks-runtime'));
+    assert.ok(!plan.skippedModuleIds.includes('hooks-runtime'));
+    assert.ok(plan.operations.some(operation => operation.destinationPath === path.join(projectRoot, '.agents', 'hooks.json')));
     assert.ok(!plan.skippedModuleIds.includes('platform-configs'));
     assert.ok(!plan.skippedModuleIds.includes('workflow-quality'));
     assert.strictEqual(plan.targetAdapterId, 'antigravity-project');
@@ -307,7 +359,8 @@ function runTests() {
         'commands-core',
         'platform-configs',
         'skill-unified-memory',
-        'workflow-quality'
+        'workflow-quality',
+        'shared-script-utils'
       ]
     );
     assert.ok(!plan.selectedModuleIds.includes('hooks-runtime'),
@@ -331,7 +384,8 @@ function runTests() {
         'commands-core',
         'platform-configs',
         'skill-unified-memory',
-        'workflow-quality'
+        'workflow-quality',
+        'shared-script-utils'
       ]
     );
     assert.deepStrictEqual(plan.skippedModuleIds, []);
@@ -363,7 +417,8 @@ function runTests() {
         'commands-core',
         'platform-configs',
         'skill-unified-memory',
-        'workflow-quality'
+        'workflow-quality',
+        'shared-script-utils'
       ]
     );
     assert.deepStrictEqual(plan.skippedModuleIds, []);
@@ -404,13 +459,15 @@ function runTests() {
     )), 'Should install the MLE workflow skill');
   })) passed++; else failed++;
 
-  if (test('resolves machine-learning component on JoyCode and Qwen targets', () => {
-    for (const target of ['joycode', 'qwen']) {
+  if (test('resolves machine-learning component across native and shared harness targets', () => {
+    for (const target of ['joycode', 'qwen', 'codex', 'opencode']) {
       const plan = resolveInstallPlan({
         includeComponentIds: ['capability:machine-learning'],
         target,
         projectRoot: '/workspace/ml-app',
         homeDir: '/Users/example',
+        // This checks dependency planning independently of optional build artefacts.
+        exemptValidationCodes: ['opencode-plugin-not-built'],
       });
 
       assert.ok(plan.selectedModuleIds.includes('machine-learning'),
@@ -698,7 +755,7 @@ function runTests() {
     );
   })) passed++; else failed++;
 
-  if (test('skips a requested module when its dependency chain does not support the target', () => {
+  if (test('skips required unsupported dependencies but permits explicitly optional ones', () => {
     const repoRoot = createTestRepo();
     try {
       writeJson(path.join(repoRoot, 'manifests', 'install-modules.json'), {
@@ -735,9 +792,77 @@ function runTests() {
         }
       });
 
-      const plan = resolveInstallPlan({ repoRoot, profileId: 'core', target: 'claude' });
-      assert.deepStrictEqual(plan.selectedModuleIds, []);
-      assert.deepStrictEqual(plan.skippedModuleIds, ['parent']);
+      const requiredPlan = resolveInstallPlan({ repoRoot, profileId: 'core', target: 'claude' });
+      assert.deepStrictEqual(requiredPlan.selectedModuleIds, []);
+      assert.deepStrictEqual(requiredPlan.skippedModuleIds, ['parent', 'child']);
+
+      const modulesPath = path.join(repoRoot, 'manifests', 'install-modules.json');
+      const baseManifest = JSON.parse(fs.readFileSync(modulesPath, 'utf8'));
+      const optionalModules = baseManifest.modules.map((module, index) => (
+        index === 0 ? { ...module, optionalDependencies: ['child'] } : { ...module }
+      ));
+      writeJson(modulesPath, { ...baseManifest, modules: optionalModules });
+      const optionalPlan = resolveInstallPlan({ repoRoot, profileId: 'core', target: 'claude' });
+      assert.deepStrictEqual(optionalPlan.selectedModuleIds, ['parent']);
+      assert.deepStrictEqual(optionalPlan.skippedModuleIds, ['child']);
+
+      const supportedModules = optionalModules.map((module, index) => (
+        index === 1 ? { ...module, targets: ['claude'] } : { ...module }
+      ));
+      writeJson(modulesPath, { ...baseManifest, modules: supportedModules });
+      const supportedPlan = resolveInstallPlan({ repoRoot, profileId: 'core', target: 'claude' });
+      assert.deepStrictEqual(supportedPlan.selectedModuleIds, ['parent', 'child']);
+
+      const transitiveModules = [
+        ...supportedModules.map((module, index) => (
+          index === 1 ? { ...module, dependencies: ['grandchild'] } : { ...module }
+        )),
+        { ...supportedModules[1], id: 'grandchild', targets: ['cursor'], dependencies: [] }
+      ];
+      writeJson(modulesPath, { ...baseManifest, modules: transitiveModules });
+      const transitivePlan = resolveInstallPlan({ repoRoot, profileId: 'core', target: 'claude' });
+      assert.deepStrictEqual(transitivePlan.selectedModuleIds, []);
+      assert.deepStrictEqual(transitivePlan.skippedModuleIds, ['parent', 'child', 'grandchild']);
+
+      const invalidModules = baseManifest.modules.map((module, index) => (
+        index === 0 ? { ...module, optionalDependencies: ['missing'] } : { ...module }
+      ));
+      writeJson(modulesPath, { ...baseManifest, modules: invalidModules });
+      assert.throws(
+        () => resolveInstallPlan({ repoRoot, profileId: 'core', target: 'claude' }),
+        /optionalDependencies must be an array of declared dependency ids/
+      );
+    } finally {
+      cleanupTestRepo(repoRoot);
+    }
+  })) passed++; else failed++;
+
+  if (test('retains dependencies only when reachable from a successful request', () => {
+    const repoRoot = createTestRepo();
+    try {
+      const module = (id, dependencies = [], targets = ['claude']) => ({
+        id, kind: 'skills', description: id, paths: [id], targets,
+        dependencies, defaultInstall: false, cost: 'light', stability: 'stable'
+      });
+      writeJson(path.join(repoRoot, 'manifests', 'install-modules.json'), {
+        version: 1,
+        modules: [
+          module('parent', ['child', 'unsupported']),
+          module('child', ['leaf']),
+          module('leaf'),
+          module('unsupported', [], ['cursor']),
+          module('successful', ['child'])
+        ]
+      });
+      writeJson(path.join(repoRoot, 'manifests', 'install-profiles.json'), {
+        version: 1, profiles: { core: { description: 'Core', modules: ['parent'] } }
+      });
+      const plan = modules => resolveInstallPlan({ repoRoot, moduleIds: modules, target: 'claude' });
+      assert.deepStrictEqual(plan(['parent']).selectedModuleIds, []);
+      assert.deepStrictEqual(plan(['parent']).skippedModuleIds, ['parent', 'unsupported']);
+      assert.deepStrictEqual(plan(['parent', 'successful']).selectedModuleIds, ['child', 'leaf', 'successful']);
+      assert.deepStrictEqual(plan(['successful', 'parent']).selectedModuleIds, ['child', 'leaf', 'successful']);
+      assert.deepStrictEqual(plan(['parent', 'child']).selectedModuleIds, ['child', 'leaf']);
     } finally {
       cleanupTestRepo(repoRoot);
     }

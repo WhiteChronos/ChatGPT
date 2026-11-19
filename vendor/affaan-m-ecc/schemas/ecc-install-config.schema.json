@@ -22,7 +22,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "gemini",
         "opencode",
         "codebuddy",
@@ -32,7 +34,9 @@
         "hermes",
         "openclaw",
         "kimi",
-        "adal"
+        "grok",
+        "adal",
+        "mistral-vibe"
       ]
     },
     "profile": {
@@ -50,14 +54,14 @@
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^(baseline|lang|framework|capability):[a-z0-9-]+$"
+        "pattern": "^(baseline|lang|framework|capability|agent|skill|locale):[a-z0-9-]+$"
       }
     },
     "exclude": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^(baseline|lang|framework|capability):[a-z0-9-]+$"
+        "pattern": "^(baseline|lang|framework|capability|agent|skill|locale):[a-z0-9-]+$"
       }
     },
     "options": {

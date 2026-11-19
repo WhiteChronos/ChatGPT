@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "totalCommands": 94,
+  "totalCommands": 98,
   "commands": [
     {
       "command": "aside",
@@ -10,6 +10,15 @@
       "allAgents": [],
       "skills": [],
       "path": "commands/aside.md"
+    },
+    {
+      "command": "astra-review",
+      "description": "Send Claude-written code to GPT-6-Astra (ChatGPT, via Codex CLI) for an independent cross-provider review, then fix what it finds.",
+      "type": "orchestration",
+      "primaryAgents": [],
+      "allAgents": [],
+      "skills": [],
+      "path": "commands/astra-review.md"
     },
     {
       "command": "auto-update",
@@ -398,6 +407,18 @@
         "continuous-learning-v2"
       ],
       "path": "commands/instinct-status.md"
+    },
+    {
+      "command": "issue-review",
+      "description": "Review a GitHub issue the way /code-review reviews a PR — verify the report against the codebase, find duplicates and prior fixes, score completeness, assign severity, and draft a reply. Posting is opt-in. Pass an issue number, URL, or owner/repo#N.",
+      "type": "review",
+      "primaryAgents": [],
+      "allAgents": [],
+      "skills": [
+        "github-ops",
+        "issue-review"
+      ],
+      "path": "commands/issue-review.md"
     },
     {
       "command": "jira",
@@ -982,6 +1003,17 @@
       "path": "commands/skill-health.md"
     },
     {
+      "command": "skill-host-compat",
+      "description": "Lint ECC skills for Codex/Cursor-safe frontmatter and Claude-only substitutions before a skill PR.",
+      "type": "general",
+      "primaryAgents": [],
+      "allAgents": [],
+      "skills": [
+        "skill-host-compat"
+      ],
+      "path": "commands/skill-host-compat.md"
+    },
+    {
       "command": "test-coverage",
       "description": "Analyze coverage, identify gaps, and generate missing tests toward the target threshold.",
       "type": "testing",
@@ -989,6 +1021,17 @@
       "allAgents": [],
       "skills": [],
       "path": "commands/test-coverage.md"
+    },
+    {
+      "command": "token-card",
+      "description": "Render a token-usage stat card from local agent session logs and commit it to the repo. Invokes the token-card skill.",
+      "type": "general",
+      "primaryAgents": [],
+      "allAgents": [],
+      "skills": [
+        "token-card"
+      ],
+      "path": "commands/token-card.md"
     },
     {
       "command": "update-codemaps",
@@ -1029,11 +1072,11 @@
   "statistics": {
     "byType": {
       "build": 2,
-      "general": 10,
-      "orchestration": 11,
+      "general": 12,
+      "orchestration": 12,
       "planning": 2,
       "refactoring": 1,
-      "review": 15,
+      "review": 16,
       "testing": 53
     },
     "topAgents": [

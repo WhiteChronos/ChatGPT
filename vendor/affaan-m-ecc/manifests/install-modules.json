@@ -12,7 +12,9 @@
         "claude",
         "claude-project",
         "cursor",
+        "copilot",
         "antigravity",
+        "antigravity-home",
         "codebuddy",
         "joycode",
         "qwen",
@@ -41,7 +43,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "codebuddy",
         "joycode",
         "qwen",
@@ -62,14 +66,21 @@
       "description": "Core slash-command library and command docs.",
       "paths": [
         "commands",
+        "scripts/astra-review.js",
         "scripts/harness-audit.js",
-        "scripts/skills-health.js"
+        "scripts/skills-health.js",
+        "scripts/lib/skill-evolution",
+        "scripts/lib/astra-review",
+        "scripts/ci/validate-skill-host-compat.js",
+        "scripts/ci/validate-skills.js"
       ],
       "targets": [
         "claude",
         "claude-project",
         "cursor",
+        "copilot",
         "antigravity",
+        "antigravity-home",
         "opencode",
         "codebuddy",
         "joycode",
@@ -80,7 +91,9 @@
         "kimi",
         "adal"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "shared-script-utils"
+      ],
       "defaultInstall": true,
       "cost": "medium",
       "stability": "stable"
@@ -99,11 +112,30 @@
         "claude-project",
         "cursor",
         "opencode",
-        "codebuddy"
+        "codebuddy",
+        "antigravity",
+        "antigravity-home"
       ],
       "dependencies": [],
       "defaultInstall": true,
       "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "hermes-hooks",
+      "kind": "hooks",
+      "description": "Hermes-native guard hooks (config protection, console.log warning) plus install guide.",
+      "paths": [
+        "hooks/hermes",
+        "docs/HERMES-HOOKS.md"
+      ],
+      "targets": [
+        "hermes",
+        "openclaw"
+      ],
+      "dependencies": [],
+      "defaultInstall": true,
+      "cost": "light",
       "stability": "stable"
     },
     {
@@ -122,6 +154,7 @@
         "mcp-configs",
         "scripts/auto-update.js",
         "scripts/setup-package-manager.js",
+        "scripts/lib/package-manager.js",
         ".hermes",
         ".openclaw",
         ".kimi",
@@ -131,7 +164,9 @@
         "claude",
         "claude-project",
         "cursor",
+        "copilot",
         "antigravity",
+        "antigravity-home",
         "codex",
         "gemini",
         "opencode",
@@ -144,7 +179,9 @@
         "kimi",
         "adal"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "shared-script-utils"
+      ],
       "defaultInstall": true,
       "cost": "light",
       "stability": "stable"
@@ -158,6 +195,8 @@
         "skills/angular-developer",
         "skills/api-design",
         "skills/backend-patterns",
+        "skills/bengali-nlp",
+        "skills/yoruba-localization-testing",
         "skills/coding-standards",
         "skills/compose-multiplatform-patterns",
         "skills/contract-first",
@@ -203,9 +242,12 @@
         "skills/react-testing",
         "skills/rust-patterns",
         "skills/rust-testing",
+        "skills/godot-patterns",
+        "skills/godot-testing",
         "skills/springboot-patterns",
         "skills/springboot-tdd",
         "skills/springboot-verification",
+        "skills/typescript-patterns",
         "skills/ui-to-vue",
         "skills/vue-patterns",
         "skills/accessibility",
@@ -223,14 +265,17 @@
         "skills/nuxt4-patterns",
         "skills/react-native-patterns",
         "skills/tinystruct-patterns",
-        "skills/vite-patterns"
+        "skills/vite-patterns",
+        "skills/leanrea"
       ],
       "targets": [
         "claude",
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -242,6 +287,11 @@
         "agents-core",
         "commands-core",
         "platform-configs"
+      ],
+      "optionalDependencies": [
+        "rules-core",
+        "agents-core",
+        "commands-core"
       ],
       "defaultInstall": false,
       "cost": "medium",
@@ -255,6 +305,7 @@
         "skills/clickhouse-io",
         "skills/database-migrations",
         "skills/jpa-patterns",
+        "skills/mybatis-patterns",
         "skills/mysql-patterns",
         "skills/postgres-patterns",
         "skills/prisma-patterns",
@@ -265,7 +316,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -291,7 +344,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "gemini",
         "opencode",
         "codebuddy",
@@ -311,6 +366,37 @@
       "stability": "stable"
     },
     {
+      "id": "documentation-context",
+      "kind": "skills",
+      "description": "Optional durable domain-context and ADR handoff workflow.",
+      "paths": [
+        "skills/context-and-decisions"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "antigravity-home",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed",
+        "hermes",
+        "openclaw",
+        "kimi",
+        "adal"
+      ],
+      "dependencies": [
+        "workflow-quality"
+      ],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
+    },
+    {
       "id": "workflow-quality",
       "kind": "skills",
       "description": "Evaluation, TDD, verification, compaction, learning, and cross-harness memory skills, including the legacy continuous-learning v1 path. The unified-memory workflow requires the separately installed ecc-universal CLI runtime.",
@@ -319,6 +405,7 @@
         "skills/agent-introspection-debugging",
         "skills/ai-regression-testing",
         "skills/configure-ecc",
+        "skills/deepseek-harness-setup",
         "skills/code-tour",
         "skills/continuous-learning",
         "skills/continuous-learning-v2",
@@ -334,14 +421,17 @@
         "skills/plankton-code-quality",
         "skills/production-audit",
         "skills/skill-comply",
+        "skills/skill-host-compat",
         "skills/skill-scout",
         "skills/skill-stocktake",
+        "skills/story-lifecycle",
         "skills/strategic-compact",
         "skills/tdd-workflow",
         "skills/verification-loop",
         "skills/windows-desktop-e2e",
         "skills/agent-self-evaluation",
         "skills/architecture-decision-records",
+        "skills/brownfield-retrospective",
         "skills/browser-qa",
         "skills/ck",
         "skills/click-path-audit",
@@ -361,14 +451,17 @@
         "skills/repo-scan",
         "skills/rules-distill",
         "skills/santa-method",
-        "skills/git-workflow"
+        "skills/git-workflow",
+        "skills/conventional-commit-review"
       ],
       "targets": [
         "claude",
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -385,6 +478,37 @@
       "defaultInstall": true,
       "cost": "medium",
       "stability": "stable"
+    },
+    {
+      "id": "documentation-governance",
+      "kind": "skills",
+      "description": "Optional documentation-governance routing and deterministic read-only audits.",
+      "paths": [
+        "skills/docs-governance"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "antigravity-home",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed",
+        "hermes",
+        "openclaw",
+        "kimi",
+        "adal"
+      ],
+      "dependencies": [
+        "workflow-quality"
+      ],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
     },
     {
       "id": "optimization-workflows",
@@ -405,7 +529,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -425,15 +551,18 @@
       "kind": "skills",
       "description": "Security review and security-focused framework guidance.",
       "paths": [
+        "skills/agent-security-hardening",
         "skills/defi-amm-security",
         "skills/django-security",
         "skills/healthcare-phi-compliance",
         "skills/hipaa-compliance",
         "skills/laravel-security",
         "skills/llm-trading-agent-security",
+        "skills/mcp-dependency-review",
         "skills/nodejs-keccak256",
         "skills/perl-security",
         "skills/quarkus-security",
+        "skills/rails-security",
         "skills/security-review",
         "skills/security-scan",
         "skills/security-bounty-hunter",
@@ -444,14 +573,17 @@
         "skills/healthcare-cdss-patterns",
         "skills/healthcare-emr-patterns",
         "skills/healthcare-eval-harness",
-        "skills/safety-guard"
+        "skills/safety-guard",
+        "skills/web-perimeter-owasp-2025-audit"
       ],
       "targets": [
         "claude",
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -473,6 +605,8 @@
         "skills/deep-research",
         "skills/exa-search",
         "skills/research-ops",
+        "skills/osint-investigation",
+        "skills/scientific-db-openalex-database",
         "skills/scientific-db-pubmed-database",
         "skills/scientific-db-uspto-database",
         "skills/scientific-pkg-gget",
@@ -485,7 +619,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -524,7 +660,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -553,12 +691,14 @@
         "skills/email-ops",
         "skills/finance-billing-ops",
         "skills/github-ops",
+        "skills/issue-review",
         "skills/google-workspace-ops",
         "skills/jira-integration",
         "skills/knowledge-ops",
         "skills/messages-ops",
         "skills/project-flow-ops",
         "skills/terminal-ops",
+        "skills/token-card",
         "skills/unified-notifications-ops",
         "skills/workspace-surface-audit",
         "skills/mailtrap-email-integration"
@@ -568,7 +708,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -596,7 +738,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -627,6 +771,7 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
         "opencode",
         "codebuddy",
@@ -642,7 +787,7 @@
     {
       "id": "ito-compute",
       "kind": "skills",
-      "description": "Authenticated It\u00f4 GPU inventory, RFQ, status, device revocation, and explicitly gated node-qualification workflows through the separately installed canonical CLI.",
+      "description": "Authenticated Itô GPU inventory, RFQ, status, device revocation, and explicitly gated node-qualification workflows through the separately installed canonical CLI.",
       "paths": [
         "skills/ito-compute",
         "skills/ito-inference",
@@ -653,7 +798,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "gemini",
         "opencode",
         "codebuddy",
@@ -684,7 +831,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "gemini",
         "opencode",
         "codebuddy",
@@ -709,14 +858,17 @@
       "paths": [
         "skills/crosspost",
         "skills/x-api",
-        "skills/social-publisher"
+        "skills/social-publisher",
+        "skills/short-video-distribution"
       ],
       "targets": [
         "claude",
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -752,6 +904,7 @@
         "claude-project",
         "cursor",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -787,6 +940,9 @@
         "commands-core",
         "platform-configs"
       ],
+      "optionalDependencies": [
+        "commands-core"
+      ],
       "defaultInstall": false,
       "cost": "medium",
       "stability": "beta"
@@ -809,7 +965,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -824,6 +982,26 @@
       "stability": "stable"
     },
     {
+      "id": "config-health",
+      "kind": "skills",
+      "description": "Runtime configuration integrity monitoring for Claude Code (Claude-only; SessionStart by default, PreToolUse opt-in).",
+      "paths": [
+        "skills/config-health",
+        "scripts/config-health.py",
+        "scripts/config_health_constants.py",
+        "scripts/config_health_paths.py",
+        "scripts/config_health_scan.py"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
+    },
+    {
       "id": "agentic-patterns",
       "kind": "skills",
       "description": "Agentic engineering, autonomous loops, agent harness construction, and LLM pipeline optimization skills.",
@@ -836,7 +1014,7 @@
         "skills/ai-first-engineering",
         "skills/autonomous-loops",
         "skills/blueprint",
-        "skills/claude-devfleet",
+        "skills/devfleet",
         "skills/content-hash-cache-pattern",
         "skills/continuous-agent-loop",
         "skills/cost-aware-llm-pipeline",
@@ -844,6 +1022,7 @@
         "skills/dynamic-workflow-mode",
         "skills/enterprise-agent-ops",
         "skills/nanoclaw-repl",
+        "skills/prompt-caching-strategy",
         "skills/prompt-optimizer",
         "skills/ralphinho-rfc-pipeline",
         "skills/regex-vs-llm-structured-text",
@@ -852,9 +1031,11 @@
         "skills/token-budget-advisor",
         "skills/team-builder",
         "skills/agent-payment-x402",
+        "skills/roundhouse-x402",
         "skills/autonomous-agent-harness",
         "skills/gan-style-harness",
         "skills/hermes-imports",
+        "skills/agent-runtime-gateway-smoke-test",
         "skills/openclaw-persona-forge",
         "skills/opensource-pipeline",
         "skills/orch-add-feature",
@@ -870,7 +1051,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -905,6 +1088,8 @@
         "skills/homelab-vlan-segmentation",
         "skills/homelab-wireguard-vpn",
         "skills/kubernetes-patterns",
+        "skills/platform-factory",
+        "skills/terraform-patterns",
         "skills/uncloud"
       ],
       "targets": [
@@ -912,7 +1097,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -941,7 +1128,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -978,7 +1167,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -1005,7 +1196,9 @@
         "claude-project",
         "cursor",
         "antigravity",
+        "antigravity-home",
         "codex",
+        "copilot",
         "opencode",
         "codebuddy",
         "joycode",
@@ -1148,6 +1341,22 @@
       "stability": "stable"
     },
     {
+      "id": "docs-bn",
+      "kind": "docs",
+      "description": "Bengali (bn) translated reference documentation.",
+      "paths": [
+        "docs/bn"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
       "id": "docs-de-de",
       "kind": "docs",
       "description": "German (de-DE) translated reference docs for agents, commands, skills, and rules.",
@@ -1193,6 +1402,176 @@
       "dependencies": [],
       "defaultInstall": false,
       "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "docs-ar",
+      "kind": "docs",
+      "description": "Arabic (ar) getting-started and core-concepts guide with a terminology glossary.",
+      "paths": [
+        "docs/ar"
+      ],
+      "targets": [
+        "claude",
+        "claude-project"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "heavy",
+      "stability": "stable"
+    },
+    {
+      "id": "documentation-change-impact",
+      "kind": "skills",
+      "description": "Optional read-only change-impact analysis workflow.",
+      "paths": [
+        "skills/change-impact"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "antigravity-home",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed",
+        "hermes",
+        "openclaw",
+        "kimi",
+        "adal"
+      ],
+      "dependencies": [
+        "workflow-quality"
+      ],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
+    },
+    {
+      "id": "documentation-module-governance",
+      "kind": "skills",
+      "description": "Optional module-local instructions and documentation ownership workflow.",
+      "paths": [
+        "skills/module-governance"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed"
+      ],
+      "dependencies": [
+        "documentation-context",
+        "documentation-governance",
+        "documentation-change-impact",
+        "framework-language"
+      ],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
+    },
+    {
+      "id": "documentation-test-regression",
+      "kind": "skills",
+      "description": "Optional test-collaboration and module-regression workflow.",
+      "paths": [
+        "skills/test-collaboration",
+        "skills/module-regression"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "antigravity-home",
+        "codex",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed",
+        "hermes",
+        "openclaw",
+        "kimi",
+        "adal"
+      ],
+      "dependencies": [
+        "workflow-quality"
+      ],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
+    },
+    {
+      "id": "ecc-contribution-review",
+      "kind": "skills",
+      "description": "Optional skill contribution review packet workflow for ECC repositories.",
+      "paths": [
+        "skills/ecc-contribution-review"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "antigravity",
+        "codex",
+        "copilot",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed",
+        "hermes",
+        "openclaw",
+        "kimi",
+        "adal"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "beta"
+    },
+    {
+      "id": "shared-script-utils",
+      "kind": "platform",
+      "description": "Shared utility files required by installed commands and platform tools.",
+      "paths": [
+        "scripts/lib/utils.js",
+        "scripts/lib/agent-data-home.js",
+        "scripts/lib/path-safety.js"
+      ],
+      "targets": [
+        "claude",
+        "claude-project",
+        "cursor",
+        "copilot",
+        "antigravity",
+        "antigravity-home",
+        "opencode",
+        "codebuddy",
+        "joycode",
+        "qwen",
+        "zed",
+        "hermes",
+        "openclaw",
+        "kimi",
+        "adal",
+        "codex",
+        "gemini"
+      ],
+      "dependencies": [],
+      "defaultInstall": false,
+      "cost": "light",
       "stability": "stable"
     }
   ]

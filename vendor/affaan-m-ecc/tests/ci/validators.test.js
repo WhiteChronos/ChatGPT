@@ -260,6 +260,9 @@ function writeCatalogFixture(testDir, options = {}) {
   const {
     readmeCounts = { agents: 1, skills: 1, commands: 1 },
     readmeProjectTreeAgents = readmeCounts.agents,
+    readmeProjectTreeSkills = readmeCounts.skills,
+    readmeProjectTreeCommands = readmeCounts.commands,
+    readmeExtraTreeBlock = '',
     readmeTableCounts = readmeCounts,
     readmeParityCounts = readmeCounts,
     readmeUnrelatedSkillsCount = 16,
@@ -306,7 +309,10 @@ function writeCatalogFixture(testDir, options = {}) {
   fs.writeFileSync(path.join(testDir, 'commands', 'plan.md'), '---\ndescription: Plan\n---\n# Plan');
   fs.writeFileSync(path.join(testDir, 'skills', 'demo-skill', 'SKILL.md'), '---\nname: demo-skill\ndescription: Demo skill\norigin: ECC\n---\n# Demo Skill');
 
-  fs.writeFileSync(readmePath, `Access to ${readmeCounts.agents} agents, ${readmeCounts.skills} skills, and ${readmeCounts.commands} commands.\n- **Public surface synced to the live repo** - metadata, catalog counts, plugin manifests, and install-facing docs now match the actual OSS surface: ${readmeCounts.agents} agents, ${readmeCounts.skills} skills, and ${readmeCounts.commands} legacy command shims.\n|-- agents/           # ${readmeProjectTreeAgents} specialized subagents for delegation\n| Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode |\n|---------|------------|------------|-----------|----------|\n| Agents | PASS: ${readmeTableCounts.agents} agents | Shared | Shared | 1 |\n| Commands | PASS: ${readmeTableCounts.commands} commands | Shared | Shared | 1 |\n| Skills | PASS: ${readmeTableCounts.skills} skills | Shared | Shared | 1 |\n\n| Feature | Count | Format |\n|-----------|-------|---------|\n| Skills | ${readmeUnrelatedSkillsCount} | .agents/skills/ |\n\n## Cross-Tool Feature Parity\n\n| Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode |\n|---------|------------|------------|-----------|----------|\n| **Agents** | ${readmeParityCounts.agents} | Shared (AGENTS.md) | Shared (AGENTS.md) | 12 |\n| **Commands** | ${readmeParityCounts.commands} | Shared | Instruction-based | 31 |\n| **Skills** | ${readmeParityCounts.skills} | Shared | 10 (native format) | 37 |\n`);
+  fs.writeFileSync(readmePath, `Access to ${readmeCounts.agents} agents, ${readmeCounts.skills} skills, and ${readmeCounts.commands} commands.\n- **Public surface synced to the live repo** - metadata, catalog counts, plugin manifests, and install-facing docs now match the actual OSS surface: ${readmeCounts.agents} agents, ${readmeCounts.skills} skills, and ${readmeCounts.commands} legacy command shims.\n|-- agents/           # ${readmeProjectTreeAgents} specialized subagents for delegation
+|-- skills/           # ${readmeProjectTreeSkills} reusable workflows loaded on demand
+|-- commands/         # ${readmeProjectTreeCommands} maintained slash-command shims
+${readmeExtraTreeBlock}\n| Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode |\n|---------|------------|------------|-----------|----------|\n| Agents | PASS: ${readmeTableCounts.agents} agents | Shared | Shared | 1 |\n| Commands | PASS: ${readmeTableCounts.commands} commands | Shared | Shared | 1 |\n| Skills | PASS: ${readmeTableCounts.skills} skills | Shared | Shared | 1 |\n\n| Feature | Count | Format |\n|-----------|-------|---------|\n| Skills | ${readmeUnrelatedSkillsCount} | .agents/skills/ |\n\n## Cross-Tool Feature Parity\n\n| Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode |\n|---------|------------|------------|-----------|----------|\n| **Agents** | ${readmeParityCounts.agents} | Shared (AGENTS.md) | Shared (AGENTS.md) | 12 |\n| **Commands** | ${readmeParityCounts.commands} | Shared | Instruction-based | 31 |\n| **Skills** | ${readmeParityCounts.skills} | Shared | 10 (native format) | 37 |\n`);
   fs.writeFileSync(agentsPath, `This is a **production-ready AI coding plugin** providing ${summaryCounts.agents} specialized agents, ${summaryCounts.skills} skills, ${summaryCounts.commands} commands, and automated hook workflows for software development.\n\n\`\`\`\n${structureLines.join('\n')}\n\`\`\`\n`);
   fs.writeFileSync(zhRootReadmePath, `**完成！** 你现在可以使用 ${zhRootReadmeCounts.agents} 个代理、${zhRootReadmeCounts.skills} 个技能和 ${zhRootReadmeCounts.commands} 个命令。\n`);
   fs.writeFileSync(zhDocsReadmePath, `**搞定！** 你现在可以使用 ${zhDocsReadmeCounts.agents} 个智能体、${zhDocsReadmeCounts.skills} 项技能和 ${zhDocsReadmeCounts.commands} 个命令了。\n| 功能特性 | Claude Code | OpenCode | 状态 |\n|---------|-------------|----------|--------|\n| 智能体 | \u2705 ${zhDocsTableCounts.agents} 个 | \u2705 12 个 | **Claude Code 领先** |\n| 命令 | \u2705 ${zhDocsTableCounts.commands} 个 | \u2705 31 个 | **Claude Code 领先** |\n| 技能 | \u2705 ${zhDocsTableCounts.skills} 项 | \u2705 37 项 | **Claude Code 领先** |\n\n| 功能特性 | 数量 | 格式 |\n|-----------|-------|---------|\n| 技能 | ${zhDocsUnrelatedSkillsCount} | .agents/skills/ |\n\n## 跨工具功能对等\n\n| 功能特性 | Claude Code | Cursor IDE | Codex CLI | OpenCode |\n|---------|------------|------------|-----------|----------|\n| **智能体** | ${zhDocsParityCounts.agents} | 共享 (AGENTS.md) | 共享 (AGENTS.md) | 12 |\n| **命令** | ${zhDocsParityCounts.commands} | 共享 | 基于指令 | 31 |\n| **技能** | ${zhDocsParityCounts.skills} | 共享 | 10 (原生格式) | 37 |\n`);
@@ -842,6 +848,77 @@ function runTests() {
     cleanupTestDir(testDir);
   })) passed++; else failed++;
 
+  if (test('flags a stale count hidden in a second README project-tree block', () => {
+    const testDir = createTestDir();
+    const {
+      readmePath,
+      agentsPath,
+      zhRootReadmePath,
+      zhDocsReadmePath,
+      zhAgentsPath,
+      pluginJsonPath,
+      marketplaceJsonPath,
+    } = writeCatalogFixture(testDir, {
+      readmeExtraTreeBlock: '|-- agents/           # 9 specialized subagents for delegation',
+    });
+
+    const result = runCatalogValidator({
+      ROOT: testDir,
+      README_PATH: readmePath,
+      AGENTS_PATH: agentsPath,
+      README_ZH_CN_PATH: zhRootReadmePath,
+      DOCS_ZH_CN_README_PATH: zhDocsReadmePath,
+      DOCS_ZH_CN_AGENTS_PATH: zhAgentsPath,
+      PLUGIN_JSON_PATH: pluginJsonPath,
+      MARKETPLACE_JSON_PATH: marketplaceJsonPath,
+    });
+
+    const output = result.stdout + result.stderr;
+    assert.strictEqual(result.code, 1, `Should fail on a stale second block, got ${output}`);
+    assert.ok(
+      output.includes('README.md project tree (agents) block'),
+      `Should name the offending block, got ${output}`
+    );
+    cleanupTestDir(testDir);
+  })) passed++; else failed++;
+
+  if (test('write mode repairs a stale second README project-tree block', () => {
+    const testDir = createTestDir();
+    const {
+      readmePath,
+      agentsPath,
+      zhRootReadmePath,
+      zhDocsReadmePath,
+      zhAgentsPath,
+      pluginJsonPath,
+      marketplaceJsonPath,
+    } = writeCatalogFixture(testDir, {
+      readmeExtraTreeBlock: '|-- agents/           # 9 specialized subagents for delegation',
+    });
+
+    const result = runCatalogValidator({
+      argv: ['--write', '--text'],
+      ROOT: testDir,
+      README_PATH: readmePath,
+      AGENTS_PATH: agentsPath,
+      README_ZH_CN_PATH: zhRootReadmePath,
+      DOCS_ZH_CN_README_PATH: zhDocsReadmePath,
+      DOCS_ZH_CN_AGENTS_PATH: zhAgentsPath,
+      PLUGIN_JSON_PATH: pluginJsonPath,
+      MARKETPLACE_JSON_PATH: marketplaceJsonPath,
+    });
+
+    assert.strictEqual(result.code, 0, `Should sync every block, got ${result.stderr}`);
+    const readme = fs.readFileSync(readmePath, 'utf8');
+    assert.ok(!readme.includes('# 9 specialized subagents for delegation'), 'Should repair the second block too');
+    assert.strictEqual(
+      readme.split('# 1 specialized subagents for delegation').length - 1,
+      2,
+      'Should correct both blocks'
+    );
+    cleanupTestDir(testDir);
+  })) passed++; else failed++;
+
   if (test('exits 0 when hooks.json does not exist', () => {
     const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', '/nonexistent/hooks.json');
     assert.strictEqual(result.code, 0, 'Should skip when no hooks.json');
@@ -959,6 +1036,21 @@ function runTests() {
 
     const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', hooksFile);
     assert.strictEqual(result.code, 0, 'Should pass valid inline JS');
+    cleanupTestDir(testDir);
+  })) passed++; else failed++;
+
+  if (test('unescapes inline JS in one pass so an escaped backslash before n stays literal', () => {
+    const testDir = createTestDir();
+    const hooksFile = path.join(testDir, 'hooks.json');
+    // Shell body `console.log('\\n')` is a valid program; a sequential unescape turned it into a raw newline.
+    fs.writeFileSync(hooksFile, JSON.stringify({
+      hooks: {
+        PreToolUse: [{ id: 'test:escaped-backslash-inline-js', matcher: 'test', hooks: [{ type: 'command', command: 'node -e "console.log(\'\\\\n\')"' }] }]
+      }
+    }));
+
+    const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', hooksFile);
+    assert.strictEqual(result.code, 0, `Should pass escaped-backslash inline JS, stderr: ${result.stderr}`);
     cleanupTestDir(testDir);
   })) passed++; else failed++;
 
@@ -1105,6 +1197,20 @@ function runTests() {
     assert.strictEqual(result.code, 1, '--strict must fail CI on missing name');
     assert.ok(result.stderr.includes('missing required field: name'),
       'Should report missing name');
+    cleanupTestDir(testDir);
+  })) passed++; else failed++;
+
+  if (test('errors when a skill name contains a reserved word (strict mode)', () => {
+    const testDir = createTestDir();
+    const skillDir = path.join(testDir, 'claude-devfleet');
+    fs.mkdirSync(skillDir);
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'),
+      '---\nname: claude-devfleet\ndescription: "Multi-agent orchestration."\n---\n# Skill');
+
+    const result = runSkillsValidator(testDir, ['--strict']);
+    assert.strictEqual(result.code, 1, '--strict must reject reserved skill names');
+    assert.ok(result.stderr.includes("frontmatter 'name' contains reserved word"),
+      `Should report the reserved skill name; got stderr: ${result.stderr}`);
     cleanupTestDir(testDir);
   })) passed++; else failed++;
 
@@ -2908,6 +3014,120 @@ function runTests() {
     cleanupTestDir(testDir);
   })) passed++; else failed++;
 
+  for (const [file, eventMap] of [['hooks.json', 'hooks'], ['hooks.metadata.json', 'entries']]) {
+    if (test(`reports the second occurrence of a duplicate event in ${file}`, () => {
+      const testDir = createTestDir();
+      try {
+        const hooksFile = path.join(testDir, 'hooks.json');
+        writeJson(hooksFile, { hooks: { Stop: [] } });
+        // JSON.parse decodes both spellings as Stop and discards the first entry.
+        fs.writeFileSync(path.join(testDir, file), String.raw`{
+  "${eventMap}": {
+    "Stop": [],
+    "St\u006fp": []
+  }
+}`);
+
+        const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', hooksFile);
+        assert.strictEqual(result.code, 1, result.stdout);
+        assert.ok(result.stderr.includes(file), result.stderr);
+        assert.match(result.stderr, /duplicate/i);
+        assert.match(result.stderr, /Stop/);
+        assert.match(result.stderr, /(?:\bline\s+|:)4\b/i);
+      } finally {
+        cleanupTestDir(testDir);
+      }
+    })) passed++; else failed++;
+
+    if (test(`rejects a repeated root ${eventMap} key in ${file}`, () => {
+      const testDir = createTestDir();
+      try {
+        const hooksFile = path.join(testDir, 'hooks.json');
+        writeJson(hooksFile, { hooks: {} });
+        const firstEntry = eventMap === 'hooks'
+          ? { id: 'first', hooks: [{ type: 'command', command: 'echo first' }] }
+          : { id: 'first', fingerprint: '0123456789ab' };
+        fs.writeFileSync(path.join(testDir, file), `{"${eventMap}":
+  ${JSON.stringify({ Stop: [firstEntry] })},
+  "${eventMap}": {}
+}`);
+        const result = runValidatorWithDirs('validate-hooks', {
+          HOOKS_FILE: hooksFile,
+          HOOKS_SCHEMA_PATH: path.join(repoRoot, 'schemas', 'hooks.schema.json'),
+          METADATA_SCHEMA_PATH: path.join(repoRoot, 'schemas', 'hooks-metadata.schema.json'),
+        });
+        assert.strictEqual(result.code, 1, result.stdout);
+        const diagnostic = `${file}: line 3: duplicate root key '${eventMap}' (first on line 1)`;
+        assert.ok(result.stderr.includes(diagnostic), result.stderr);
+      } finally {
+        cleanupTestDir(testDir);
+      }
+    })) passed++; else failed++;
+  }
+
+  if (test('reports duplicate root events in a schema-free unwrapped hook map', () => {
+    const testDir = createTestDir();
+    try {
+      const hooksFile = path.join(testDir, 'hooks.json');
+      fs.writeFileSync(hooksFile, `{
+  "Stop": [{"hooks": [{"type": "command", "command": "echo first"}]}],
+  "Stop": []
+}`);
+      const result = runValidatorWithDirs('validate-hooks', {
+        HOOKS_FILE: hooksFile,
+        HOOKS_SCHEMA_PATH: path.join(testDir, 'missing-schema.json'),
+      });
+      assert.strictEqual(result.code, 1, result.stdout);
+      assert.match(result.stderr, /hooks\.json: line 3: duplicate event key 'Stop' \(first on line 2\)/);
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('checks explicit matcher ids in a schema-free unwrapped hook map', () => {
+    const testDir = createTestDir();
+    try {
+      const hooksFile = path.join(testDir, 'hooks.json');
+      const overrides = {
+        HOOKS_FILE: hooksFile,
+        HOOKS_SCHEMA_PATH: path.join(testDir, 'missing-schema.json'),
+      };
+      const entry = { hooks: [{ type: 'command', command: 'echo ok' }] };
+      writeJson(hooksFile, { Stop: [entry], UserPromptSubmit: [entry] });
+      const withoutIds = runValidatorWithDirs('validate-hooks', overrides);
+      assert.strictEqual(withoutIds.code, 0, withoutIds.stderr);
+
+      const shared = JSON.stringify({ ...entry, id: 'shared' });
+      fs.writeFileSync(hooksFile, `{
+  "Stop": [${shared}],
+  "UserPromptSubmit": [${shared}]
+}`);
+      const result = runValidatorWithDirs('validate-hooks', overrides);
+      assert.strictEqual(result.code, 1, result.stdout);
+      assert.ok(result.stderr.includes(
+        "hooks.json: line 3: UserPromptSubmit[0] has duplicate id 'shared' (already used by Stop[0] on line 2)"
+      ), result.stderr);
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('checks only the active event map when hooks is wrapped', () => {
+    const testDir = createTestDir();
+    try {
+      const hooksFile = path.join(testDir, 'hooks.json');
+      fs.writeFileSync(hooksFile, `{
+  "Stop": [{"id": "ignored"}],
+  "Stop": [{"id": "ignored"}],
+  "hooks": {"Stop": []}
+}`);
+      const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', hooksFile);
+      assert.strictEqual(result.code, 0, result.stderr);
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
   if (test('rejects duplicate wrapped matcher ids across events', () => {
     const testDir = createTestDir();
     const hooksFile = path.join(testDir, 'hooks.json');
@@ -2924,7 +3144,7 @@ function runTests() {
           hooks: [{ type: 'command', command: 'echo post' }]
         }]
       }
-    }));
+    }, null, 2));
 
     const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', hooksFile);
     assert.strictEqual(result.code, 1, 'Should reject matcher ids reused by another event');
@@ -2936,7 +3156,36 @@ function runTests() {
       result.stderr.includes('PreToolUse[0]') && result.stderr.includes('PostToolUse[0]'),
       `Should report both matcher locations, got: ${result.stderr}`
     );
+    assert.ok(result.stderr.includes('hooks.json'), result.stderr);
+    assert.match(result.stderr, /(?:\bline\s+|:)17\b/i);
     cleanupTestDir(testDir);
+  })) passed++; else failed++;
+
+  if (test('reports the source line of a duplicate sidecar id across events', () => {
+    const testDir = createTestDir();
+    try {
+      const hooksFile = path.join(testDir, 'hooks.json');
+      const entry = { hooks: [{ type: 'command', command: 'echo ok' }] };
+      writeJson(hooksFile, { hooks: { Stop: [entry], UserPromptSubmit: [entry] } });
+      const { fingerprintHookEntry } = require('../../scripts/lib/hooks-config');
+      const metadata = JSON.stringify({ id: 'shared:matcher', fingerprint: fingerprintHookEntry(entry) });
+      fs.writeFileSync(path.join(testDir, 'hooks.metadata.json'), `{
+  "entries": {
+    "Stop": [${metadata}],
+    "UserPromptSubmit": [
+      ${metadata}]
+  }
+}`);
+
+      const result = runValidatorWithDir('validate-hooks', 'HOOKS_FILE', hooksFile);
+      assert.strictEqual(result.code, 1, result.stdout);
+      assert.ok(result.stderr.includes('hooks.metadata.json'), result.stderr);
+      assert.match(result.stderr, /duplicate/i);
+      assert.match(result.stderr, /shared:matcher/);
+      assert.match(result.stderr, /(?:\bline\s+|:)5\b/i);
+    } finally {
+      cleanupTestDir(testDir);
+    }
   })) passed++; else failed++;
 
   // ── Round 79: validate-commands.js warnings count suffix in output ──
