@@ -40,7 +40,7 @@ Lazy loading ile, context window sorunu çoğunlukla çözülmüştür. Ancak to
 Oturumlar arasında memory paylaşımı için, ilerlemeyi özetleyen ve kontrol eden, ardından `.claude` klasörünüzde bir `.tmp` dosyasına kaydeden ve oturumunuz sonuna kadar ona ekleyen bir skill veya command en iyi bahistir. Ertesi gün bunu context olarak kullanabilir ve kaldığı yerden devam edebilir, her oturum için yeni bir dosya oluşturun böylece eski context'i yeni işe kirletmezsiniz.
 
 ![Session Storage File Tree](../../assets/images/longform/03-session-storage.png)
-*Oturum depolama örneği -> <https://github.com/affaan-m/ECC/tree/main/examples/sessions>*
+*Oturum depolama örneği -> <https://github.com/affaan-m/ECC/blob/main/commands/save-session.md#session-file-format>*
 
 Claude mevcut durumu özetleyen bir dosya oluşturur. İnceleyin, gerekirse düzenlemeler isteyin, ardından yeniden başlayın. Yeni konuşma için, sadece dosya yolunu sağlayın. Özellikle context limitlerini aşarken ve karmaşık işi sürdürmeniz gerektiğinde kullanışlıdır. Bu dosyalar şunları içermelidir:
 - Hangi yaklaşımların işe yaradığı (kanıtla doğrulanabilir)
@@ -56,7 +56,7 @@ Planınız hazır ve context temizlendiğinde (artık Claude Code'da plan modund
 Aldığım bir desen: her oturumu yükleyen CLAUDE.md'ye (kullanıcı kapsamı) veya `.claude/rules/`'a (proje kapsamı) her şeyi sadece koymak yerine, context'i dinamik olarak enjekte etmek için CLI flag'lerini kullanın.
 
 ```bash
-claude --system-prompt "$(cat memory.md)"
+claude --append-system-prompt-file memory.md
 ```
 
 Bu, ne zaman hangi context'in yüklendiği konusunda daha hassas olmanızı sağlar. System prompt içeriği, kullanıcı mesajlarından daha yüksek yetkiye sahiptir, kullanıcı mesajları da araç sonuçlarından daha yüksek yetkiye sahiptir.
@@ -65,13 +65,13 @@ Bu, ne zaman hangi context'in yüklendiği konusunda daha hassas olmanızı sağ
 
 ```bash
 # Günlük geliştirme
-alias claude-dev='claude --system-prompt "$(cat ~/.claude/contexts/dev.md)"'
+alias claude-dev='claude --append-system-prompt-file ~/.claude/contexts/dev.md'
 
 # PR inceleme modu
-alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
+alias claude-review='claude --append-system-prompt-file ~/.claude/contexts/review.md'
 
 # Araştırma/keşif modu
-alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
+alias claude-research='claude --append-system-prompt-file ~/.claude/contexts/research.md'
 ```
 
 **Gelişmiş: Memory Persistence Hook'ları**

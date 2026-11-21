@@ -6,6 +6,9 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { execFileSync } = require('child_process');
+const { LOCALE_ALIAS_TO_COMPONENT_ID } = require('../../scripts/lib/install-manifests');
+const { normalizeInstallRequest, parseInstallArgs } = require('../../scripts/lib/install/request');
 
 const {
   parseArgs,
@@ -16,6 +19,7 @@ const {
 } = require('../../scripts/auto-update');
 const {
   createInstallState,
+  writeInstallState,
 } = require('../../scripts/lib/install-state');
 
 function test(name, fn) {
@@ -78,6 +82,56 @@ function ensureFakeRepo(repoRoot) {
     JSON.stringify({ name: 'everything-claude-code', version: '1.10.0' }, null, 2)
   );
   fs.writeFileSync(path.join(repoRoot, 'scripts', 'install-apply.js'), '#!/usr/bin/env node\n');
+}
+
+function createBehindRemoteRepoFixture(fixture) {
+  const remoteRepo = path.join(fixture, 'remote.git');
+  const localRepo = path.join(fixture, 'local-ecc');
+  const pusherRepo = path.join(fixture, 'pusher');
+  execFileSync('git', ['init', '--bare', '-b', 'main', remoteRepo], { encoding: 'utf8' });
+  execFileSync('git', ['clone', remoteRepo, localRepo], { encoding: 'utf8' });
+  execFileSync('git', ['config', 'user.email', 'test@example.com'], { cwd: localRepo, encoding: 'utf8' });
+  execFileSync('git', ['config', 'user.name', 'Test'], { cwd: localRepo, encoding: 'utf8' });
+  ensureFakeRepo(localRepo);
+  fs.writeFileSync(
+    path.join(localRepo, 'scripts', 'install-apply.js'),
+    '#!/usr/bin/env node\nprocess.stdout.write(JSON.stringify({ dryRun: process.argv.includes("--dry-run"), plan: {} }));\n'
+  );
+  execFileSync('git', ['add', '.'], { cwd: localRepo, encoding: 'utf8' });
+  execFileSync('git', ['commit', '-m', 'initial'], { cwd: localRepo, encoding: 'utf8' });
+  execFileSync('git', ['push', '-u', 'origin', 'main'], { cwd: localRepo, encoding: 'utf8' });
+  const headBefore = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: localRepo, encoding: 'utf8' }).trim();
+  execFileSync('git', ['clone', remoteRepo, pusherRepo], { encoding: 'utf8' });
+  execFileSync('git', ['config', 'user.email', 'test@example.com'], { cwd: pusherRepo, encoding: 'utf8' });
+  execFileSync('git', ['config', 'user.name', 'Test'], { cwd: pusherRepo, encoding: 'utf8' });
+  fs.writeFileSync(path.join(pusherRepo, 'UPSTREAM.txt'), 'new commit\n');
+  execFileSync('git', ['add', 'UPSTREAM.txt'], { cwd: pusherRepo, encoding: 'utf8' });
+  execFileSync('git', ['commit', '-m', 'upstream update'], { cwd: pusherRepo, encoding: 'utf8' });
+  execFileSync('git', ['push', 'origin', 'main'], { cwd: pusherRepo, encoding: 'utf8' });
+  return { localRepo, headBefore };
+}
+
+function seedCursorInstallState(projectRoot, headBefore) {
+  const targetRoot = path.join(projectRoot, '.cursor');
+  const statePath = path.join(targetRoot, 'ecc-install-state.json');
+  fs.mkdirSync(targetRoot, { recursive: true });
+  writeInstallState(statePath, createInstallState({
+    adapter: { id: 'cursor-project', target: 'cursor', kind: 'project' },
+    targetRoot,
+    installStatePath: statePath,
+    request: {
+      profile: null,
+      modules: [],
+      includeComponents: [],
+      excludeComponents: [],
+      legacyLanguages: ['typescript'],
+      legacyMode: true,
+      hookConsent: 'declined',
+    },
+    resolution: { selectedModules: ['legacy-cursor-install'], skippedModules: [] },
+    source: { repoVersion: '1.10.0', repoCommit: headBefore, manifestVersion: 1 },
+    operations: [],
+  }));
 }
 
 function runTests() {
@@ -156,6 +210,76 @@ function runTests() {
       'python',
     ]);
   })) passed += 1; else failed += 1;
+
+  if (test('replays every locale alias with legacy languages and hook consent', () => {
+    for (const target of ['claude', 'claude-project']) {
+      for (const [alias, componentId] of Object.entries(LOCALE_ALIAS_TO_COMPONENT_ID)) {
+        const original = normalizeInstallRequest(parseInstallArgs([
+          'node', 'install-apply.js', '--target', target,
+          '--locale', alias, 'typescript', 'python', '--no-hooks',
+        ]));
+        const record = makeRecord({
+          repoRoot: '/tmp/ecc', homeDir: '/tmp/home', projectRoot: '/tmp/project',
+          adapter: { id: target, target, kind: target === 'claude' ? 'home' : 'project' },
+          request: {
+            profile: original.profileId, modules: original.moduleIds,
+            includeComponents: original.includeComponentIds,
+            excludeComponents: original.excludeComponentIds,
+            legacyLanguages: original.legacyLanguages,
+            legacyMode: true, hookConsent: original.hookConsent,
+          },
+          resolution: { selectedModules: [], skippedModules: [] }, operations: [],
+        });
+        const replay = normalizeInstallRequest(parseInstallArgs([
+          'node', 'install-apply.js', ...buildInstallApplyArgs(record),
+        ]));
+        assert.deepStrictEqual(replay, original, `${target}: ${alias} -> ${componentId}`);
+      }
+    }
+  })) passed += 1; else failed += 1;
+
+  for (const target of ['claude', 'claude-project']) {
+    if (test(`end-to-end: auto-update plans a recorded ${target} locale and language install`, () => {
+      const fixture = createTempDir('auto-update-locale-');
+      const homeDir = path.join(fixture, 'home');
+      const projectRoot = path.join(fixture, 'project');
+      const repoRoot = path.resolve(__dirname, '..', '..');
+      const env = { ...process.env, HOME: homeDir, USERPROFILE: homeDir, ECC_DRY_RUN: '0' };
+      fs.mkdirSync(homeDir);
+      fs.mkdirSync(projectRoot);
+      try {
+        const installed = JSON.parse(execFileSync(process.execPath, [
+          path.join(repoRoot, 'scripts', 'install-apply.js'),
+          '--target', target, '--locale', 'zh', 'typescript', '--no-hooks', '--json',
+        ], { cwd: projectRoot, env, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }));
+        assert.strictEqual(installed.result.applied, true);
+        const statePath = installed.result.installStatePath;
+        const stateBefore = fs.readFileSync(statePath, 'utf8');
+        const state = JSON.parse(stateBefore);
+        assert.deepStrictEqual(state.request.includeComponents, ['locale:zh-cn']);
+        assert.deepStrictEqual(state.request.legacyLanguages, ['typescript']);
+
+        const updated = JSON.parse(execFileSync(process.execPath, [
+          path.join(repoRoot, 'scripts', 'auto-update.js'), '--target', target,
+          '--repo-root', repoRoot, '--dry-run', '--json',
+        ], { cwd: projectRoot, env, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }));
+        assert.strictEqual(updated.summary.errorCount, 0);
+        assert.strictEqual(updated.summary.checkedCount, 1);
+        assert.strictEqual(updated.results[0].status, 'planned');
+        const plan = updated.results[0].payload.plan;
+        assert.strictEqual(plan.mode, 'legacy-compat');
+        assert.deepStrictEqual(plan.legacyLanguages, ['typescript']);
+        assert.deepStrictEqual(plan.includedComponentIds, ['locale:zh-cn']);
+        assert.ok(plan.selectedModuleIds.includes('docs-zh-cn'));
+        assert.ok(plan.selectedModuleIds.includes('framework-language'));
+        assert.ok(!plan.selectedModuleIds.includes('hooks-runtime'));
+        assert.strictEqual(plan.statePreview.request.hookConsent, 'declined');
+        assert.strictEqual(fs.readFileSync(statePath, 'utf8'), stateBefore);
+      } finally {
+        cleanup(fixture);
+      }
+    })) passed += 1; else failed += 1;
+  }
 
   if (test('buildInstallApplyArgs reconstructs manifest installs', () => {
     const record = {
@@ -582,6 +706,45 @@ function runTests() {
       cleanup(homeDir);
       cleanup(projectRoot);
       cleanup(repoRoot);
+    }
+  })) passed += 1; else failed += 1;
+
+  if (test('global --dry-run skips git pull and previews auto-update without mutating the repo', () => {
+    const fixture = createTempDir('auto-update-global-dry-run-');
+    const homeDir = path.join(fixture, 'home');
+    const projectRoot = path.join(fixture, 'project');
+    const realRepoRoot = path.resolve(__dirname, '..', '..');
+    fs.mkdirSync(homeDir);
+    fs.mkdirSync(projectRoot);
+
+    try {
+      const { localRepo, headBefore } = createBehindRemoteRepoFixture(fixture);
+      seedCursorInstallState(projectRoot, headBefore);
+      const inheritedEnv = Object.fromEntries(
+        Object.entries(process.env).filter(([key]) => key !== 'ECC_DRY_RUN')
+      );
+      const baseEnv = { ...inheritedEnv, HOME: homeDir, USERPROFILE: homeDir };
+      const previewRaw = execFileSync(process.execPath, [
+        path.join(realRepoRoot, 'scripts', 'ecc.js'),
+        '--dry-run', 'auto-update', '--target', 'cursor', '--repo-root', localRepo, '--json',
+      ], { cwd: projectRoot, env: baseEnv, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+      const preview = JSON.parse(previewRaw);
+
+      assert.strictEqual(preview.dryRun, true);
+      assert.strictEqual(preview.results[0].status, 'planned');
+      assert.strictEqual(preview.results[0].payload.dryRun, true);
+      const headAfter = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: localRepo, encoding: 'utf8' }).trim();
+      assert.strictEqual(headAfter, headBefore);
+      assert.strictEqual(fs.existsSync(path.join(localRepo, 'UPSTREAM.txt')), false);
+
+      assert.throws(
+        () => execFileSync(process.execPath, [
+          path.join(realRepoRoot, 'scripts', 'auto-update.js'), '--json',
+        ], { cwd: projectRoot, env: { ...baseEnv, ECC_DRY_RUN: 'yes' }, encoding: 'utf8', stdio: 'pipe' }),
+        error => /ECC_DRY_RUN must be "1" or "0"/.test(error.stderr)
+      );
+    } finally {
+      cleanup(fixture);
     }
   })) passed += 1; else failed += 1;
 

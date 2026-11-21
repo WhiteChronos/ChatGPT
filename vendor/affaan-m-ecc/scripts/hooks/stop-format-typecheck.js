@@ -6,7 +6,7 @@
  *
  * Reads the accumulator written by post-edit-accumulator.js and processes all
  * edited files in one pass: groups files by project root for a single formatter
- * invocation per root, and groups .ts/.tsx files by tsconfig dir for a single
+ * invocation per root, and groups .ts/.tsx/.mts/.cts files by tsconfig dir for a single
  * tsc --noEmit per tsconfig. The accumulator is cleared on read so repeated
  * Stop calls do not double-process files.
  *
@@ -23,10 +23,27 @@ const os = require('os');
 const path = require('path');
 
 const { findProjectRoot, detectFormatter, resolveFormatterBin } = require('../lib/resolve-formatter');
+const { resolveHookSessionId } = require('../lib/hook-session');
 
 const MAX_STDIN = 1024 * 1024;
 // Total ms budget reserved for all batches (leaves headroom below the 300s Stop timeout)
-const TOTAL_BUDGET_MS = 270_000;
+const DEFAULT_TOTAL_BUDGET_MS = 270_000;
+const MAX_TOTAL_BUDGET_MS = 270_000;
+
+function getTotalBudgetMs(env = process.env) {
+  const raw = String(env.ECC_STOP_FORMAT_TYPECHECK_BUDGET_MS || '').trim();
+  if (!/^\d+$/.test(raw)) return DEFAULT_TOTAL_BUDGET_MS;
+  const parsed = Number(raw);
+  return Number.isSafeInteger(parsed) && parsed > 0
+    ? Math.min(parsed, MAX_TOTAL_BUDGET_MS)
+    : DEFAULT_TOTAL_BUDGET_MS;
+}
+
+function getPerBatchBudgetMs(totalBudgetMs, totalBatches) {
+  return totalBatches > 0
+    ? Math.max(1, Math.floor(totalBudgetMs / totalBatches))
+    : 60_000;
+}
 
 // Characters cmd.exe treats as separators/operators when shell: true is used.
 // Includes spaces and parentheses to guard paths like "C:\Users\John Doe\...".
@@ -60,9 +77,9 @@ function isPluginClonePath(filePath, cwd = process.cwd(), homeDir = os.homedir()
   });
 }
 
-function getAccumFile() {
+function getAccumFile(rawSessionId) {
   const raw =
-    process.env.CLAUDE_SESSION_ID ||
+    rawSessionId ||
     crypto.createHash('sha1').update(process.cwd()).digest('hex').slice(0, 12);
   const sessionId = raw.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 64);
   return path.join(os.tmpdir(), `ecc-edited-${sessionId}.txt`);
@@ -111,6 +128,20 @@ function findTsConfigDir(filePath) {
   return null;
 }
 
+// tsc --pretty false starts each diagnostic with the file it is about:
+// `src/a.ts(1,14): error TS2322: ...`. Compare that path instead of looking for
+// the edited path anywhere in the line, which let a root `index.ts` claim the
+// errors of `src/index.ts`, and `src/utils.ts` those of `web/src/utils.ts`.
+function diagnosticMatchesFile(line, paths) {
+  const location = /^(.+?)\(\d+,\d+\): /.exec(line);
+  if (!location) return false;
+  const file = location[1].replace(/\\/g, '/');
+  for (const candidate of paths) {
+    if (file === candidate.replace(/\\/g, '/')) return true;
+  }
+  return false;
+}
+
 function typecheckBatch(tsConfigDir, editedFiles, timeoutMs) {
   const isWin = process.platform === 'win32';
   const npxBin = isWin ? 'npx.cmd' : 'npx';
@@ -147,7 +178,7 @@ function typecheckBatch(tsConfigDir, editedFiles, timeoutMs) {
     const relPath = path.relative(tsConfigDir, filePath);
     const candidates = new Set([filePath, relPath]);
     const relevantLines = lines
-      .filter(line => { for (const c of candidates) { if (line.includes(c)) return true; } return false; })
+      .filter(line => diagnosticMatchesFile(line, candidates))
       .slice(0, 10);
     if (relevantLines.length > 0) {
       process.stderr.write(`[Hook] TypeScript errors in ${path.basename(filePath)}:\n`);
@@ -156,8 +187,8 @@ function typecheckBatch(tsConfigDir, editedFiles, timeoutMs) {
   }
 }
 
-function main() {
-  const accumFile = getAccumFile();
+function main(sessionId) {
+  const accumFile = getAccumFile(sessionId);
 
   let raw;
   try {
@@ -173,7 +204,7 @@ function main() {
 
   const byProjectRoot = new Map();
   for (const filePath of files) {
-    if (!/\.(ts|tsx|js|jsx)$/.test(filePath)) continue;
+    if (!/\.(?:[cm]?[jt]s|[jt]sx)$/.test(filePath)) continue;
     if (isPluginClonePath(filePath)) continue;
     const resolved = path.resolve(filePath);
     if (!fs.existsSync(resolved)) continue;
@@ -184,7 +215,7 @@ function main() {
 
   const byTsConfigDir = new Map();
   for (const filePath of files) {
-    if (!/\.(ts|tsx)$/.test(filePath)) continue;
+    if (!/\.(?:[cm]?ts|tsx)$/.test(filePath)) continue;
     if (isPluginClonePath(filePath)) continue;
     const resolved = path.resolve(filePath);
     if (!fs.existsSync(resolved)) continue;
@@ -197,7 +228,8 @@ function main() {
   // Distribute the budget evenly across all batches so the cumulative total
   // stays within the Stop hook wall-clock limit even in large monorepos.
   const totalBatches = byProjectRoot.size + byTsConfigDir.size;
-  const perBatchMs = totalBatches > 0 ? Math.floor(TOTAL_BUDGET_MS / totalBatches) : 60_000;
+  const totalBudgetMs = getTotalBudgetMs();
+  const perBatchMs = getPerBatchBudgetMs(totalBudgetMs, totalBatches);
 
   for (const [root, batch] of byProjectRoot) formatBatch(root, batch, perBatchMs);
   for (const [tsDir, batch] of byTsConfigDir) typecheckBatch(tsDir, batch, perBatchMs);
@@ -212,7 +244,7 @@ function main() {
  */
 function run(rawInput) {
   try {
-    main();
+    main(resolveHookSessionId(rawInput));
   } catch (err) {
     process.stderr.write(`[Hook] stop-format-typecheck error: ${err.message}\n`);
   }
@@ -248,4 +280,11 @@ if (require.main === module) {
   });
 }
 
-module.exports = { run, parseAccumulator, isPluginClonePath };
+module.exports = {
+  diagnosticMatchesFile,
+  run,
+  parseAccumulator,
+  isPluginClonePath,
+  getTotalBudgetMs,
+  getPerBatchBudgetMs,
+};

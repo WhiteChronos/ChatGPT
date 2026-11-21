@@ -106,6 +106,56 @@ function runTests() {
     }
   })) passed++; else failed++;
 
+  if (test('accepts a Mistral Vibe skills-only install config', () => {
+    const cwd = createTempDir('install-config-vibe-');
+    try {
+      const configPath = path.join(cwd, 'ecc-install.json');
+      writeJson(configPath, {
+        version: 1,
+        target: 'mistral-vibe',
+        include: ['skill:tdd-workflow'],
+        exclude: ['skill:security-review'],
+      });
+
+      const config = loadInstallConfig(configPath);
+      assert.strictEqual(config.target, 'mistral-vibe');
+      assert.deepStrictEqual(config.includeComponentIds, ['skill:tdd-workflow']);
+      assert.deepStrictEqual(config.excludeComponentIds, ['skill:security-review']);
+    } finally {
+      cleanup(cwd);
+    }
+  })) passed++; else failed++;
+
+  for (const field of ['include', 'exclude']) {
+    if (test(`loads agent, skill, and locale selections from ${field}`, () => {
+      const cwd = createTempDir('install-config-');
+      const ids = ['agent:planner', 'skill:security-review', 'locale:ja'];
+
+      try {
+        const configPath = path.join(cwd, 'ecc-install.json');
+        writeJson(configPath, { version: 1, [field]: ids });
+        const config = loadInstallConfig(configPath);
+        assert.deepStrictEqual(config[`${field}ComponentIds`], ids);
+      } finally {
+        cleanup(cwd);
+      }
+    })) passed++; else failed++;
+
+    if (test(`rejects unknown component families and malformed IDs in ${field}`, () => {
+      const cwd = createTempDir('install-config-');
+
+      try {
+        const configPath = path.join(cwd, 'ecc-install.json');
+        for (const id of ['unknown:planner', 'skill:', 'skill:../security-review', 'skill:SecurityReview']) {
+          writeJson(configPath, { version: 1, [field]: [id] });
+          assert.throws(() => loadInstallConfig(configPath), /Invalid install config/);
+        }
+      } finally {
+        cleanup(cwd);
+      }
+    })) passed++; else failed++;
+  }
+
   if (test('loads a UTF-8 BOM config without changing its values or source bytes', () => {
     const cwd = createTempDir('install-config-');
 

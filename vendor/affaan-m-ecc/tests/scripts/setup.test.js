@@ -5,6 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { withoutShadowingClaude } = require('../lib/helpers/windows-test-env');
 const repoRoot = path.join(__dirname, '..', '..');
 const setupScript = path.join(repoRoot, 'scripts', 'setup.js');
 const eccScript = path.join(repoRoot, 'scripts', 'ecc.js');
@@ -62,7 +63,7 @@ function runSetup(fixture, args, options = {}) {
     HOME: fixture.homeDir,
     USERPROFILE: fixture.homeDir,
     CLAUDE_CONFIG_DIR: fixture.configDir,
-    PATH: options.path || `${fixture.binDir}${path.delimiter}${process.env.PATH || ''}`,
+    PATH: options.path || `${fixture.binDir}${path.delimiter}${withoutShadowingClaude(process.env.PATH)}`,
     ECC_TEST_CLAUDE_STATE: fixture.statePath,
     ECC_TEST_CLAUDE_CALLS: fixture.callsPath,
     ...options.env,
@@ -147,7 +148,7 @@ function runInteractiveEccSetup(fixture, options = {}) {
       HOME: fixture.homeDir,
       USERPROFILE: fixture.homeDir,
       CLAUDE_CONFIG_DIR: fixture.configDir,
-      PATH: `${fixture.binDir}${path.delimiter}${process.env.PATH || ''}`,
+      PATH: `${fixture.binDir}${path.delimiter}${withoutShadowingClaude(process.env.PATH)}`,
       ECC_TEST_CLAUDE_STATE: fixture.statePath,
       ECC_TEST_CLAUDE_CALLS: fixture.callsPath,
     },
@@ -297,6 +298,45 @@ test('dry-run JSON emits JSON only and reads inventory without mutation', () => 
     assert.strictEqual(payload.scope, 'local');
     assertNoSetupSpinner(`${result.stdout}${result.stderr}`);
     assert.strictEqual(hasMutation(fixture), false);
+  });
+});
+
+test('global ecc --dry-run setup previews without mutating plugins or settings', () => {
+  withFixture({}, fixture => {
+    const inheritedEnv = Object.fromEntries(
+      Object.entries(process.env).filter(([key]) => key !== 'ECC_DRY_RUN')
+    );
+    const env = {
+      ...inheritedEnv,
+      HOME: fixture.homeDir,
+      USERPROFILE: fixture.homeDir,
+      CLAUDE_CONFIG_DIR: fixture.configDir,
+      PATH: `${fixture.binDir}${path.delimiter}${withoutShadowingClaude(process.env.PATH)}`,
+      ECC_TEST_CLAUDE_STATE: fixture.statePath,
+      ECC_TEST_CLAUDE_CALLS: fixture.callsPath,
+    };
+    const result = spawnSync(process.execPath, [
+      eccScript,
+      '--dry-run',
+      'setup',
+      '--mode', 'claude-plugin',
+      '--scope', 'user',
+      '--hooks', 'standard',
+      '--yes',
+      '--json',
+    ], { cwd: fixture.projectRoot, env, encoding: 'utf8', timeout: 15000 });
+    assert.strictEqual(result.status, 0, result.stderr);
+    const payload = JSON.parse(result.stdout);
+    assert.strictEqual(payload.action, 'would-install');
+    assert.strictEqual(payload.dryRun, true);
+    assert.strictEqual(hasMutation(fixture), false);
+    assert.strictEqual(fs.existsSync(path.join(fixture.configDir, 'settings.json')), false);
+
+    const invalid = runSetup(fixture, [
+      '--mode', 'claude-plugin', '--scope', 'user', '--hooks', 'standard', '--yes',
+    ], { env: { ECC_DRY_RUN: 'yes' } });
+    assert.strictEqual(invalid.status, 1);
+    assert.match(invalid.stderr, /ECC_DRY_RUN must be "1" or "0"/);
   });
 });
 
@@ -645,6 +685,7 @@ test('migration JSON failures retain phase, scopes, and exact recovery', () => {
     assert.strictEqual(payload.error.phase, 'source-uninstall');
     assert.deepStrictEqual([...payload.error.observedScopes].sort(), ['project', 'user']);
     assert.deepStrictEqual(payload.error.recovery, [
+      'claude plugin list --json',
       'claude plugin uninstall ecc@ecc --scope user --keep-data',
       'ecc setup --mode claude-plugin --scope project --move-scope --yes',
     ]);

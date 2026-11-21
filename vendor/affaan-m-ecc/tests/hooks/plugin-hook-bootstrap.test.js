@@ -14,6 +14,7 @@ const SCRIPT = path.join(__dirname, '..', '..', 'scripts', 'hooks', 'plugin-hook
 const LIFECYCLE_SCRIPT = path.join(__dirname, '..', '..', 'scripts', 'hooks', 'lifecycle-hook-bootstrap.js');
 const { normalizePluginRootForPlatform, withComparisonInput } = require(SCRIPT);
 const { resolveTimeout } = require(LIFECYCLE_SCRIPT);
+const { resolveWindowsBashCandidates } = require('../../scripts/lib/windows-bash');
 
 function createTempDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'plugin-hook-bootstrap-'));
@@ -31,7 +32,7 @@ function writeFile(root, relativePath, content) {
 }
 
 function run(args = [], options = {}) {
-  return spawnSync(process.execPath, [SCRIPT, ...args], {
+  return spawnSync(process.execPath, [...(options.nodeArgs || []), SCRIPT, ...args], {
     input: options.input || '',
     encoding: 'utf8',
     env: {
@@ -43,6 +44,18 @@ function run(args = [], options = {}) {
     cwd: options.cwd || process.cwd(),
     timeout: 10000,
   });
+}
+
+function isolatedBootstrapEnv(root) {
+  return {
+    HOME: root, USERPROFILE: root, ECC_AGENT_DATA_HOME: path.join(root, 'agent-data'),
+    QODER_PLUGIN_ROOT: '', ECC_HOOK_DEADLINE_MS: '', NODE_OPTIONS: '',
+  };
+}
+
+function spawnDiagnostic(result) {
+  return JSON.stringify({ status: result.status, signal: result.signal,
+    error: result.error?.code || null, stderr: result.stderr });
 }
 
 function test(name, fn) {
@@ -163,6 +176,33 @@ process.stdout.write(JSON.stringify({
       assert.deepStrictEqual(parsed.args, ['one', 'two']);
       assert.strictEqual(parsed.claudeRoot, root);
       assert.strictEqual(parsed.eccRoot, root);
+    } finally {
+      cleanup(root);
+    }
+  })) passed++; else failed++;
+
+  if (test('node mode runs run-with-flags.js in-process instead of spawning a second node', () => {
+    const root = createTempDir();
+    try {
+      writeFile(root, path.join('scripts', 'hooks', 'run-with-flags.js'), `
+module.exports.runHook = async (hookId, relScriptPath, profilesCsv, input) => ({
+  stdout: JSON.stringify({ pid: process.pid, hookId, relScriptPath, profilesCsv, raw: input.raw }),
+  exitCode: 2,
+});
+`);
+
+      const result = run(
+        ['node', path.join('scripts', 'hooks', 'run-with-flags.js'), 'pre:test', 'scripts/hooks/x.js', 'standard'],
+        { root, input: 'payload' }
+      );
+      const parsed = JSON.parse(result.stdout);
+
+      assert.strictEqual(result.status, 2, result.stderr);
+      assert.strictEqual(parsed.pid, result.pid);
+      assert.deepStrictEqual(
+        [parsed.hookId, parsed.relScriptPath, parsed.profilesCsv, parsed.raw],
+        ['pre:test', 'scripts/hooks/x.js', 'standard', 'payload']
+      );
     } finally {
       cleanup(root);
     }
@@ -314,13 +354,36 @@ process.exit(7);
     const root = createTempDir();
     try {
       const result = run(['node', path.join('scripts', 'missing.js')], {
-        root,
-        input: 'raw-input',
+        root, cwd: root,
+        // No stdin is needed to observe MODULE_NOT_FOUND. Sending input can
+        // race the child's early exit and legitimately produce EPIPE instead.
+        input: '',
+        env: isolatedBootstrapEnv(root),
       });
+      const diagnostic = spawnDiagnostic(result);
+      assert.strictEqual(result.error, undefined, diagnostic);
+      assert.strictEqual(result.status, 1, diagnostic);
+      assert.strictEqual(result.stdout, '', diagnostic);
+      assert.ok(result.stderr.includes('Cannot find module'), diagnostic);
+    } finally {
+      cleanup(root);
+    }
+  })) passed++; else failed++;
 
-      assert.strictEqual(result.status, 1);
-      assert.strictEqual(result.stdout, '');
-      assert.ok(result.stderr.includes('Cannot find module'));
+  if (test('a child that exits 1 with an input EPIPE retains fail-open execution diagnostics', () => {
+    const root = createTempDir();
+    try {
+      const result = run(['node', path.join('scripts', 'missing.js')], {
+        root, cwd: root, input: 'raw-input', env: isolatedBootstrapEnv(root),
+        nodeArgs: ['--require', path.join(__dirname, '../lib/helpers/plugin-bootstrap-epipe.js')],
+      });
+      const diagnostic = spawnDiagnostic(result);
+      assert.strictEqual(result.error, undefined, diagnostic);
+      assert.strictEqual(result.status, 0, diagnostic);
+      assert.strictEqual(result.stdout, '', diagnostic);
+      assert.ok(result.stderr.includes('[TestSpawn] child exited 1 with EPIPE'), diagnostic);
+      assert.ok(result.stderr.includes('Cannot find module'), diagnostic);
+      assert.ok(result.stderr.includes('bootstrap execution failed: spawnSync node EPIPE'), diagnostic);
     } finally {
       cleanup(root);
     }
@@ -464,6 +527,43 @@ process.exit(7);
         cleanup(root);
       }
       })) passed++; else failed++;
+
+      const [nativeBash] = resolveWindowsBashCandidates(['bash.exe']);
+      if (nativeBash && process.env.SystemRoot) {
+        if (test('shell mode runs .sh with native bash when the System32 WSL launcher is earlier on PATH', () => {
+        const root = createTempDir();
+        try {
+          writeFile(root, path.join('scripts', 'hook.sh'), [
+            'input=$(cat)',
+            'printf "sh:%s:%s" "$1" "$input"',
+            '',
+          ].join('\n'));
+
+          // A bare `bash.exe` resolves to System32\bash.exe here, which starts
+          // WSL and cannot open the Windows script path (exit 127).
+          const result = run(['shell', path.join('scripts', 'hook.sh'), 'arg'], {
+            root,
+            input: 'payload',
+            env: {
+              BASH: '',
+              PATH: [
+                `${process.env.SystemRoot}\\System32\\WindowsPowerShell\\v1.0`,
+                `${process.env.SystemRoot}\\System32`,
+                path.dirname(nativeBash),
+              ].join(';'),
+            },
+          });
+
+          assert.strictEqual(result.status, 0, result.stderr);
+          assert.strictEqual(result.stdout, 'sh:arg:payload');
+        } finally {
+          cleanup(root);
+        }
+        })) passed++; else failed++;
+      } else {
+        skipped += 1;
+        console.log('  SKIP 1 Windows WSL-launcher test: no native bash.exe on PATH');
+      }
     }
   }
 

@@ -47,6 +47,12 @@ function validateLegacyTarget(target) {
   // positional syntax (which is legacy-only). Guide the user to the right mode
   // instead of implying the target is unknown (#2282).
   if (SUPPORTED_INSTALL_TARGETS.includes(target)) {
+    if (target === 'mistral-vibe') {
+      throw new Error(
+        "Target 'mistral-vibe' supports explicit Agent Skill installs only. " +
+          "Use `install.sh --target mistral-vibe --skills <id,...>`."
+      );
+    }
     throw new Error(
       `Target '${target}' is supported, but the bare-language install syntax only accepts ${LEGACY_INSTALL_TARGETS.join(', ')}. ` +
         `Install '${target}' with a component selection instead, e.g. \`install.sh --target ${target} --profile full\` ` +
@@ -201,7 +207,8 @@ function addMatchingRuleOperations(operations, options) {
         sourcePath,
         sourceRelativePath,
         destinationPath,
-        strategy: options.strategy || 'flatten-copy'
+        strategy: options.strategy || 'flatten-copy',
+        contentTransform: options.contentTransform,
       })
     );
   }
@@ -269,7 +276,7 @@ function planClaudeStyleLegacyInstall(context, { adapterId, adapterRootInput, ru
 function planClaudeLegacyInstall(context) {
   return planClaudeStyleLegacyInstall(context, {
     adapterId: 'claude',
-    adapterRootInput: { homeDir: context.homeDir },
+    adapterRootInput: { homeDir: context.homeDir, env: context.env },
     rulesDir: context.claudeRulesDir || null
   });
 }
@@ -391,7 +398,8 @@ function planAntigravityLegacyInstall(context) {
     sourceRelativeDir: path.join('rules', 'common'),
     destinationDir: path.join(targetRoot, 'rules'),
     matcher: fileName => fileName.endsWith('.md'),
-    rename: fileName => `common-${fileName}`
+    rename: fileName => `common-${fileName}`,
+    contentTransform: 'antigravity-rule-frontmatter',
   });
 
   for (const language of context.languages) {
@@ -412,7 +420,8 @@ function planAntigravityLegacyInstall(context) {
       sourceRelativeDir: path.join('rules', language),
       destinationDir: path.join(targetRoot, 'rules'),
       matcher: fileName => fileName.endsWith('.md'),
-      rename: fileName => `${language}-${fileName}`
+      rename: fileName => `${language}-${fileName}`,
+      contentTransform: 'antigravity-rule-frontmatter',
     });
   }
 
@@ -461,6 +470,7 @@ function createLegacyInstallPlan(options = {}) {
     sourceRoot,
     projectRoot,
     homeDir,
+    env: options.env || {},
     languages: Array.isArray(options.languages) ? options.languages : [],
     claudeRulesDir: options.claudeRulesDir || process.env.CLAUDE_RULES_DIR || null
   };
@@ -552,7 +562,9 @@ function createLegacyCompatInstallPlan(options = {}) {
     requestModuleIds: [],
     requestIncludeComponentIds: includeComponentIds,
     requestExcludeComponentIds: excludeComponentIds,
-    mode: 'legacy-compat'
+    mode: 'legacy-compat',
+    trust: options.trust === true,
+    consent: options.consent || {},
   });
 }
 

@@ -45,16 +45,119 @@ function normalizeOperationPath(value) {
   return String(value || '').replace(/\\/g, '/').toLowerCase();
 }
 
-function disableOpenCodeHookPluginRegistration(content, sourceRelativePath) {
+/**
+ * Parse an OpenCode config the way OpenCode itself does: comments and the
+ * trailing commas they hide are legal (JSONC). The installer only ever
+ * reads these files (the ownership guard never writes user-owned configs),
+ * so a tolerant read prevents a membership check from crashing the install
+ * on a config OpenCode accepts.
+ */
+function parseJsoncConfig(content, sourceRelativePath) {
   let config;
   try {
-    config = JSON.parse(content);
+    config = JSON.parse(stripJsonc(content));
   } catch (error) {
     throw new Error(`Failed to parse ${sourceRelativePath}: ${error.message}`);
   }
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new Error(`Invalid ${sourceRelativePath}: expected a JSON object`);
   }
+  return config;
+}
+
+function isLineBreak(ch) {
+  return ch === '\n' || ch === '\r';
+}
+
+/**
+ * Advance past whitespace and // or /* *\/ comments; returns the index of
+ * the next significant character.
+ */
+function skipJsoncTrivia(input, start) {
+  let j = start;
+  for (;;) {
+    while (j < input.length && /\s/.test(input[j])) j += 1;
+    if (input[j] === '/' && input[j + 1] === '/') {
+      while (j < input.length && !isLineBreak(input[j])) j += 1;
+      continue;
+    }
+    if (input[j] === '/' && input[j + 1] === '*') {
+      j += 2;
+      while (j < input.length && !(input[j] === '*' && input[j + 1] === '/')) j += 1;
+      if (j >= input.length) throw new Error('Unterminated block comment');
+      j += 2;
+      continue;
+    }
+    return j;
+  }
+}
+
+function isJsoncTrailingComma(input, index, previousSignificant) {
+  const next = skipJsoncTrivia(input, index + 1);
+  // Preserve commas in empty containers or after another separator so
+  // JSON.parse rejects them; it validates the remaining value syntax.
+  return (input[next] === '}' || input[next] === ']')
+    && previousSignificant !== null && !'[{,:'.includes(previousSignificant);
+}
+
+/**
+ * Strip // and /* *\/ comments and the trailing commas they hide, without
+ * touching string contents (URLs like "https://..." must survive intact).
+ */
+function stripJsonc(input) {
+  let out = '';
+  let inString = false;
+  let escaped = false;
+  let previousSignificant = null;
+  for (let i = 0; i < input.length; i += 1) {
+    const ch = input[i];
+    if (inString) {
+      out += ch;
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      out += ch;
+      previousSignificant = '"';
+      continue;
+    }
+    if (ch === '/' && input[i + 1] === '/') {
+      while (i < input.length && !isLineBreak(input[i])) i += 1;
+      out += '\n';
+      continue;
+    }
+    if (ch === '/' && input[i + 1] === '*') {
+      i += 2;
+      while (i < input.length && !(input[i] === '*' && input[i + 1] === '/')) i += 1;
+      if (i >= input.length) throw new Error('Unterminated block comment');
+      i += 1; // consume the closing '/'
+      out += ' ';
+      continue;
+    }
+    if (ch === ',') {
+      if (isJsoncTrailingComma(input, i, previousSignificant)) continue;
+    }
+    out += ch;
+    if (!/\s/.test(ch)) previousSignificant = ch;
+  }
+  return out;
+}
+
+// Registrations that point the (legacy) OpenCode plugin config at the ECC
+// hooks: the old directory form and the per-file forms some setups wrote.
+// OpenCode 2.x ignores file-path entries at runtime, but they must still be
+// stripped for a clean deactivation and to keep install verification honest.
+function isOpenCodeHookConfigRegistration(value) {
+  const entry = String(value);
+  if (entry === './plugins') return true;
+  return /(^|[\\/])plugins[\\/]+ecc-hooks\.(?:ts|[cm]?js)$/.test(entry);
+}
+
+function disableOpenCodeHookPluginRegistration(content, sourceRelativePath) {
+  const config = parseJsoncConfig(content, sourceRelativePath);
   if (config.plugin !== undefined && !Array.isArray(config.plugin)) {
     throw new Error(`Invalid ${sourceRelativePath}: plugin must be an array`);
   }
@@ -65,7 +168,7 @@ function disableOpenCodeHookPluginRegistration(content, sourceRelativePath) {
 
   return `${JSON.stringify({
     ...config,
-    plugin: config.plugin.filter(plugin => plugin !== './plugins'),
+    plugin: config.plugin.filter(plugin => !isOpenCodeHookConfigRegistration(plugin)),
   }, null, 2)}\n`;
 }
 
@@ -87,10 +190,58 @@ function isOpenCodePluginEntrypoint(operation = {}) {
   return getOpenCodeSourceActivationKind(operation) === 'plugin';
 }
 
-function getDisabledOpenCodePluginContent() {
+const DISABLED_OPENCODE_PLUGIN_STUB = 'export default { id: "ecc-hooks", setup() {} };\n';
+// OpenCode 2.x scans every top-level plugins/*.ts independently, so an inert
+// barrel that kept the `ecc-hooks` id would collide with the real plugin file
+// (live or stubbed) sitting beside it and register a red
+// "Duplicate plugin ID" entry. The top-level barrel gets its own distinct id.
+const DISABLED_OPENCODE_BARREL_STUB = 'export default { id: "ecc-hooks-entry", setup() {} };\n';
+
+function isTopLevelPluginsBarrel(sourceRelativePath) {
+  if (typeof sourceRelativePath !== 'string') return false;
+  // Same prefix stripping as getOpenCodeSourceActivationKind: plans carry
+  // '.opencode/…', built payloads 'dist/…'; compare against the bare
+  // plugins-relative path.
+  const relative = normalizeOperationPath(sourceRelativePath)
+    .replace(/^\.opencode\//, '')
+    .replace(/^dist\//, '');
+  return relative === 'plugins/index.ts' || relative === 'plugins/index.js'
+    || relative === 'plugins/index.mjs' || relative === 'plugins/index.cjs';
+}
+
+function getDisabledOpenCodePluginContent(sourceRelativePath) {
   // OpenCode discovers plugins independently of opencode.json registration.
   // Do not import the original module: even module initialization has effects.
-  return 'export default async () => ({});\n';
+  // The stub must still satisfy the V2 loader schema: the default export has to
+  // be a definition object with an id and an effect or setup function. A factory
+  // (`export default async () => ({})`) is rejected at startup with
+  // PluginModule.LoadError / SchemaError(Expected object at ["default"]), which
+  // is the same failure reported for the V1 hook plugin in issue #3537.
+  return isTopLevelPluginsBarrel(sourceRelativePath)
+    ? DISABLED_OPENCODE_BARREL_STUB
+    : DISABLED_OPENCODE_PLUGIN_STUB;
+}
+
+// Installs made before the V2 stub fix wrote this stub. It is inert either way;
+// the V2 loader merely rejects it.
+const LEGACY_DISABLED_OPENCODE_PLUGIN_CONTENT = 'export default async () => ({});\n';
+
+function isInertOpenCodePluginStub(content) {
+  const text = content.toString('utf8');
+  return text === DISABLED_OPENCODE_PLUGIN_STUB
+    || text === DISABLED_OPENCODE_BARREL_STUB
+    || text === LEGACY_DISABLED_OPENCODE_PLUGIN_CONTENT;
+}
+
+// Exact historical disabled-entrypoint payloads that earlier ECC releases
+// wrote to EVERY plugin file, barrel included. Retained copies of these are
+// migrated in place to the current expected stub before the strict
+// deactivation gate verifies the install; a rewrite is only allowed for
+// files whose managed-recorded digest still matches these bytes.
+function isLegacyDisabledOpenCodePluginStub(content) {
+  const text = content.toString('utf8');
+  return text === DISABLED_OPENCODE_PLUGIN_STUB
+    || text === LEGACY_DISABLED_OPENCODE_PLUGIN_CONTENT;
 }
 
 function isOpenCodeHookActivationOperation(operation = {}) {
@@ -123,6 +274,7 @@ function isHookRuntimeOperation(operation = {}) {
     || source.startsWith('.cursor/hooks/')
     || source === '.cursor/hooks.json'
     || destination.endsWith('/hooks/hooks.json')
+    || destination.endsWith('/hooks.json')
     || destination.endsWith('/.cursor/hooks.json')
     || destination.includes('/.cursor/hooks/')
   );
@@ -174,10 +326,6 @@ function withoutOpenCodeHookActivation(operation) {
   };
 }
 
-function transformOpenCodeHookActivationOperations(operations) {
-  return (Array.isArray(operations) ? operations : []).map(withoutOpenCodeHookActivation);
-}
-
 function planSelectsHookRuntime(plan = {}) {
   return (
     Array.isArray(plan.selectedModuleIds)
@@ -189,17 +337,26 @@ function planSelectsHookRuntime(plan = {}) {
 }
 
 function disableUnselectedOpenCodeHooks(plan) {
-  if (plan.target !== 'opencode' || planSelectsHookRuntime(plan)) {
+  if (plan.target !== 'opencode') {
     return plan;
   }
+  const runtimeSelected = planSelectsHookRuntime(plan);
+  const transformOperations = operations => (Array.isArray(operations) ? operations : []).map(operation => {
+    // The source barrel is needed by the published package, but OpenCode scans
+    // plugins/index.ts and plugins/ecc-hooks.ts independently in home installs.
+    if (!runtimeSelected || normalizeOperationPath(operation.sourceRelativePath) === '.opencode/plugins/index.ts') {
+      return withoutOpenCodeHookActivation(operation);
+    }
+    return operation;
+  });
 
   return {
     ...plan,
-    operations: transformOpenCodeHookActivationOperations(plan.operations),
+    operations: transformOperations(plan.operations),
     statePreview: plan.statePreview
       ? {
         ...plan.statePreview,
-        operations: transformOpenCodeHookActivationOperations(plan.statePreview.operations),
+        operations: transformOperations(plan.statePreview.operations),
       }
       : plan.statePreview,
   };
@@ -208,6 +365,11 @@ function disableUnselectedOpenCodeHooks(plan) {
 function shouldDisableOpenCodeHooks(plan = {}) {
   return plan.target === 'opencode'
     && (plan.hookConsent === 'declined' || !planSelectsHookRuntime(plan));
+}
+
+function shouldDisableAntigravityHooks(plan = {}) {
+  return ['antigravity', 'antigravity-home'].includes(plan.target)
+    && plan.hookConsent === 'declined';
 }
 
 function setStatePreviewHookConsent(statePreview, hookConsent) {
@@ -287,19 +449,25 @@ function stripHookRuntimeFromPlan(plan) {
   };
 }
 
+function preserveDispose(plan, nextPlan) {
+  const descriptor = Object.getOwnPropertyDescriptor(plan, 'dispose');
+  if (descriptor) Object.defineProperty(nextPlan, 'dispose', descriptor);
+  return nextPlan;
+}
+
 function withHookConsent(plan, hookConsent = null) {
   if (hookConsent !== null && !HOOK_CONSENT_DECISIONS.includes(hookConsent)) {
     throw new Error(`Unknown hook consent decision: ${hookConsent}`);
   }
   if (hookConsent === 'declined') {
-    return { ...stripHookRuntimeFromPlan(plan), hookConsent };
+    return preserveDispose(plan, { ...stripHookRuntimeFromPlan(plan), hookConsent });
   }
   const effectivePlan = disableUnselectedOpenCodeHooks(plan);
-  return {
+  return preserveDispose(plan, {
     ...effectivePlan,
     hookConsent,
     statePreview: setStatePreviewHookConsent(effectivePlan.statePreview, hookConsent),
-  };
+  });
 }
 
 function assertHookConsentReady(plan = {}) {
@@ -323,7 +491,11 @@ module.exports = {
   assertHookConsentReady,
   disableUnselectedOpenCodeHooks,
   disableOpenCodeHookPluginRegistration,
+  isOpenCodeHookConfigRegistration,
+  parseJsoncConfig,
   getDisabledOpenCodePluginContent,
+  isInertOpenCodePluginStub,
+  isLegacyDisabledOpenCodePluginStub,
   getOpenCodeActivationPathKind,
   getOpenCodeSourceActivationKind,
   formatHookCapabilityDisclosure,
@@ -334,5 +506,6 @@ module.exports = {
   planMaterializesHookRuntime,
   resolveHookConsentFlags,
   shouldDisableOpenCodeHooks,
+  shouldDisableAntigravityHooks,
   withHookConsent,
 };

@@ -4,7 +4,8 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const { ensureDir } = require('../utils');
+const { ensureDir, log } = require('../utils');
+const { acquireSettingsLock } = require('../install/claude-settings-lock');
 
 const VALID_OUTCOMES = new Set(['success', 'failure', 'partial']);
 const VALID_FEEDBACK = new Set(['accepted', 'corrected', 'rejected']);
@@ -35,8 +36,8 @@ function toNullableNumber(value, fieldName) {
   }
 
   const numericValue = Number(value);
-  if (!Number.isFinite(numericValue)) {
-    throw new Error(`${fieldName} must be a number`);
+  if (!Number.isFinite(numericValue) || numericValue < 0) {
+    throw new Error(`${fieldName} must be a number greater than or equal to zero`);
   }
 
   return numericValue;
@@ -53,6 +54,7 @@ function normalizeExecutionRecord(input, options = {}) {
   const outcome = input.outcome;
   const recordedAt = input.recorded_at || options.now || new Date().toISOString();
   const userFeedback = input.user_feedback || input.userFeedback || null;
+  const failureReasons = [input.failure_reason, input.failureReason];
 
   if (typeof skillId !== 'string' || skillId.trim().length === 0) {
     throw new Error('skill_id is required');
@@ -74,7 +76,11 @@ function normalizeExecutionRecord(input, options = {}) {
     throw new Error('user_feedback must be accepted, corrected, rejected, or null');
   }
 
-  if (Number.isNaN(Date.parse(recordedAt))) {
+  if (failureReasons.some(value => value != null && typeof value !== 'string')) {
+    throw new Error('failure_reason must be a string or null');
+  }
+
+  if (typeof recordedAt !== 'string' || Number.isNaN(Date.parse(recordedAt))) {
     throw new Error('recorded_at must be an ISO timestamp');
   }
 
@@ -102,7 +108,13 @@ function readJsonl(filePath) {
     .filter(Boolean)
     .reduce((rows, line) => {
       try {
-        rows.push(JSON.parse(line));
+        const record = JSON.parse(line);
+        if (record && typeof record === 'object' && !Array.isArray(record)
+          && typeof record.skill_id === 'string' && record.skill_id.trim().length > 0
+          && VALID_OUTCOMES.has(record.outcome)
+          && typeof record.recorded_at === 'string' && !Number.isNaN(Date.parse(record.recorded_at))) {
+          rows.push(record);
+        }
       } catch {
         // Ignore malformed rows so analytics remain best-effort.
       }
@@ -120,15 +132,29 @@ function appendRunRecord(runsFilePath, record, options = {}) {
     : MAX_RUN_RECORDS;
 
   ensureDir(path.dirname(runsFilePath));
-  fs.appendFileSync(runsFilePath, `${JSON.stringify(record)}\n`, { encoding: 'utf8', mode: RUNS_FILE_MODE });
-
+  // Append and retention must share one critical section. Otherwise a pruner
+  // can overwrite a run another process appended after its read snapshot.
+  const release = acquireSettingsLock(runsFilePath, {
+    label: 'skill run history', timeoutMs: options.lockTimeoutMs ?? 5000,
+  });
   try {
-    fs.chmodSync(runsFilePath, RUNS_FILE_MODE);
-  } catch {
-    // Windows and some mounts do not support POSIX modes; the record still lands.
-  }
+    fs.appendFileSync(runsFilePath, `${JSON.stringify(record)}\n`, { encoding: 'utf8', mode: RUNS_FILE_MODE });
 
-  pruneRunRecords(runsFilePath, maxRecords);
+    try {
+      fs.chmodSync(runsFilePath, RUNS_FILE_MODE);
+    } catch {
+      // Windows and some mounts do not support POSIX modes; the record still lands.
+    }
+
+    pruneRunRecords(runsFilePath, maxRecords);
+  } finally {
+    try {
+      release();
+    } catch (error) {
+      // Preserve the append result or its original error if cleanup fails.
+      log(`[SkillTracker] Error releasing run history lock: ${error.message}`);
+    }
+  }
 }
 
 // Keep only the newest `maxRecords` lines. Rewrites the whole file, which is

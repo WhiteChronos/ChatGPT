@@ -18,6 +18,10 @@ const fs = require('fs');
 const MAX_TRANSCRIPT_CHARS = 7000;
 const MAX_TURNS = 25;
 const LLM_TIMEOUT_MS = 90000;
+// Leave the Stop hook time to persist its mechanical fallback after a timeout.
+const HOOK_FINISH_RESERVE_MS = 1000;
+// Harness notice shown after a safety-classifier stop; it is not a user ask (#3867).
+const CLASSIFIER_NOTICE = /^Your response above was stopped by a safety classifier\s*[—–-]\s*this is not a tool or API error\.?(?:\s+The rest of it was withheld, and tool calls in it that had not finished did not run\.\s+Do not produce that content again, even reworded\.)?$/i;
 
 function getLLMModel() {
   return process.env.ECC_LLM_SUMMARY_MODEL || 'haiku';
@@ -26,6 +30,16 @@ function getLLMModel() {
 function getContextThreshold() {
   const raw = parseInt(process.env.ECC_LLM_SUMMARY_CONTEXT_THRESHOLD || '20', 10);
   return Number.isFinite(raw) && raw > 0 && raw <= 100 ? raw : 20;
+}
+
+/**
+ * True when a user-turn text is the harness notice left after a
+ * safety-classifier stop. Anchored to the whole message so user text that
+ * quotes or follows the notice is kept. Whitespace runs (including
+ * newlines) are collapsed first so every caller matches the same text.
+ */
+function isClassifierNotice(text) {
+  return CLASSIFIER_NOTICE.test(String(text).replace(/\s+/g, ' ').trim());
 }
 
 /**
@@ -41,11 +55,13 @@ function extractConversationText(transcriptPath) {
   }
 
   const lines = content.split('\n').filter(Boolean);
-  const turns = [];
+  let turns = [];
 
-  for (const line of lines) {
+  // Older records cannot change a summary once its most recent turns are full.
+  for (let index = lines.length - 1; index >= 0 && turns.length < MAX_TURNS; index--) {
+    let entryTurns = [];
     try {
-      const entry = JSON.parse(line);
+      const entry = JSON.parse(lines[index]);
       const isUser = entry.type === 'user' || entry.message?.role === 'user';
       const isAssistant = entry.type === 'assistant';
 
@@ -61,8 +77,8 @@ function extractConversationText(transcriptPath) {
                   .join(' ')
               : '';
         const cleaned = text.replace(/\n+/g, ' ').trim();
-        if (cleaned) {
-          turns.push({ role: 'User', text: cleaned.slice(0, 400) });
+        if (cleaned && !isClassifierNotice(cleaned)) {
+          entryTurns = [...entryTurns, { role: 'User', text: cleaned.slice(0, 400) }];
         }
       }
 
@@ -74,12 +90,13 @@ function extractConversationText(transcriptPath) {
           .replace(/\n+/g, ' ')
           .trim();
         if (textParts) {
-          turns.push({ role: 'Claude', text: textParts.slice(0, 600) });
+          entryTurns = [...entryTurns, { role: 'Claude', text: textParts.slice(0, 600) }];
         }
       }
     } catch {
       // Skip unparseable lines
     }
+    turns = [...entryTurns, ...turns];
   }
 
   if (turns.length === 0) return null;
@@ -90,16 +107,24 @@ function extractConversationText(transcriptPath) {
 }
 
 /**
- * Read the context remaining percentage from a transcript's latest usage record.
- * Returns null when unavailable.
+ * Read the remaining context budget percentage for summary scheduling.
+ * Use the earlier of confirmed capacity and a native compaction budget.
+ * With inferred capacity, only an explicit native budget can supply a safe
+ * scheduling boundary; otherwise return null rather than certify a guess.
  */
 function getContextRemainingPct(transcriptPath) {
   try {
-    const { readLatestContextTokens, resolveContextWindowTokens } = require('./transcript-context');
+    const { readLatestContextTokens, resolveContextWindow } = require('./transcript-context');
     const usage = readLatestContextTokens(transcriptPath);
     if (!usage) return null;
-    const windowTokens = resolveContextWindowTokens(usage.tokens, usage.model);
-    return Math.round((1 - usage.tokens / windowTokens) * 100);
+    const resolution = resolveContextWindow(usage.tokens, usage.model);
+    const nativeBudget = Number(process.env.CLAUDE_CODE_AUTO_COMPACT_WINDOW || '');
+    const hasNativeBudget = Number.isSafeInteger(nativeBudget) && nativeBudget > 0;
+    const budget = resolution.inferred
+      ? (hasNativeBudget ? nativeBudget : 0)
+      : (hasNativeBudget ? Math.min(resolution.windowTokens, nativeBudget) : resolution.windowTokens);
+    if (!Number.isSafeInteger(budget) || budget <= 0) return null;
+    return Math.round((1 - usage.tokens / budget) * 100);
   } catch {
     return null;
   }
@@ -109,11 +134,28 @@ function getContextRemainingPct(transcriptPath) {
  * Generate a session summary using `claude -p`.
  * Returns the summary string, or null on failure or when recursion guard is active.
  */
-function generateSessionSummary(transcriptPath) {
-  if (process.env.ECC_SKIP_LLM_SUMMARY) return null;
+function generateSessionSummary(transcriptPath, { onSkip = () => {} } = {}) {
+  if (process.env.ECC_SKIP_LLM_SUMMARY) {
+    onSkip('ECC_SKIP_LLM_SUMMARY');
+    return null;
+  }
 
   const conversation = extractConversationText(transcriptPath);
   if (!conversation) return null;
+
+  let timeout = LLM_TIMEOUT_MS;
+  if (process.env.ECC_HOOK_DEADLINE_MS !== undefined) {
+    const deadline = Number(process.env.ECC_HOOK_DEADLINE_MS);
+    if (!Number.isSafeInteger(deadline) || deadline <= 0) {
+      onSkip('invalid lifecycle deadline');
+      return null;
+    }
+    timeout = Math.min(timeout, deadline - Date.now() - HOOK_FINISH_RESERVE_MS);
+    if (timeout <= 0) {
+      onSkip('insufficient lifecycle time budget');
+      return null;
+    }
+  }
 
   const prompt = [
     'Below is a conversation log from a Claude Code coding session.',
@@ -159,7 +201,7 @@ function generateSessionSummary(transcriptPath) {
         ECC_SKIP_LLM_SUMMARY: '1',
         ECC_LLM_SUMMARY_SUBPROCESS: '1'
       },
-      timeout: LLM_TIMEOUT_MS,
+      timeout,
       shell: process.platform === 'win32'
     });
 
@@ -174,4 +216,4 @@ function generateSessionSummary(transcriptPath) {
   }
 }
 
-module.exports = { generateSessionSummary, extractConversationText, getContextRemainingPct, getContextThreshold, getLLMModel };
+module.exports = { generateSessionSummary, extractConversationText, isClassifierNotice, getContextRemainingPct, getContextThreshold, getLLMModel };

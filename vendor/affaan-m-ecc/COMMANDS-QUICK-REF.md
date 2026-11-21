@@ -10,6 +10,7 @@
 |---------|-------------|
 | `/plan` | Restate requirements, assess risks, write step-by-step implementation plan — **waits for your confirm before touching code** |
 | `/plan-canvas` | Open a plan or HTML artifact in the browser Plan Canvas for annotate-and-approve review |
+| `/ui-canvas` | Preview a UI component mockup in the browser UI Canvas: the user hand-edits, tests viewports, chats, and finishes with an exported design |
 | `/plan-prd` | Generate a lean, problem-first PRD and hand off to `/plan` for implementation planning |
 | `/feature-dev` | Guided feature development with codebase understanding and architecture focus |
 | `/code-review` | Code review — local uncommitted changes or GitHub PR (pass PR number/URL for PR mode) |
@@ -17,6 +18,7 @@
 | `/build-fix` | Detect and fix build errors — delegates to the right build-resolver agent automatically |
 | `/quality-gate` | Quality gate check against project standards |
 | `/santa-loop` | Adversarial dual-review convergence loop — two independent model reviewers must both approve before code ships |
+| `/astra-review` | Send Claude-written code to GPT-6-Astra (ChatGPT, via Codex CLI) for an independent cross-provider review, then fix what it finds |
 
 ---
 
@@ -39,6 +41,7 @@
 | Command | What it does |
 |---------|-------------|
 | `/code-review` | Code review — local uncommitted changes or GitHub PR (pass PR number/URL for PR mode) |
+| `/issue-review` | GitHub issue review — verify the report against the codebase, find duplicates and prior fixes, assign severity, draft a reply (posting opt-in) |
 | `/python-review` | Python — PEP 8, type hints, security, idiomatic patterns |
 | `/go-review` | Go — idiomatic patterns, concurrency safety, error handling |
 | `/kotlin-review` | Kotlin — null safety, coroutine safety, clean architecture |
@@ -180,6 +183,7 @@ These lifecycle commands are also available through the `ecc` CLI.
 | `/instinct-import` | Import instincts from a file or URL |
 | `/skill-create` | Analyse local git history → generate a reusable skill |
 | `/skill-health` | Skill portfolio health dashboard with analytics |
+| `/skill-host-compat` | Lint skills for Codex-safe frontmatter and Claude substitutions |
 
 ---
 
@@ -192,6 +196,11 @@ These lifecycle commands are also available through the `ecc` CLI.
 ---
 
 ## Docs & Research
+
+For public-source investigations starting from sparse clues, use the
+[`osint-investigation` skill](skills/osint-investigation/SKILL.md) to extract
+overlooked leads, connect fragmented evidence, and test competing explanations
+through deliberate falsification and visual verification.
 
 | Command | What it does |
 |---------|-------------|
@@ -224,6 +233,7 @@ These lifecycle commands are also available through the `ecc` CLI.
 | `/setup-pm` | Configure package manager (npm / pnpm / yarn / bun) |
 | `/auto-update` | Pull the latest ECC repo changes and reinstall the current managed targets |
 | `/cost-report` | Generate a local Claude Code cost report from a cost-tracker SQLite database |
+| `/token-card` | Render a token-usage stat card from local agent session logs and commit it to the repo |
 | `/security-scan` | Run AgentShield against agent, hook, MCP, permission, and secret surfaces |
 | `/jira` | Retrieve a Jira ticket, analyze requirements, update status, or add comments |
 | `/pr` | Create a GitHub PR from current branch with unpushed commits |
@@ -255,7 +265,7 @@ These slash commands were retired in favor of skills. The command files still ex
 | `/docs` | `documentation-lookup` |
 | `/claw` | `nanoclaw-repl` |
 | `/context-budget` | `context-budget` |
-| `/devfleet` | `claude-devfleet` |
+| `/devfleet` | `devfleet` |
 | `/orchestrate` | `dmux-workflows` and `autonomous-agent-harness` |
 | `/prompt-optimize` | `prompt-optimizer` |
 | `/rules-distill` | `rules-distill` |
@@ -268,6 +278,7 @@ These slash commands were retired in favor of skills. The command files still ex
 ```
 Starting a new feature?         → /plan first, then TDD via the tdd-workflow skill
 Code just written?              → /code-review
+Triaging a GitHub issue?        → /issue-review <number>
 Build broken?                   → /build-fix
 Need live docs?                 → the documentation-lookup skill
 Session about to end?           → /save-session or /learn-eval

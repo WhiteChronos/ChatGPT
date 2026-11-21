@@ -409,6 +409,462 @@ test('deep analyzer evidence scenario rejects no-corpus analyzer changes', () =>
   assert.ok(playbook.includes('Deep Analyzer Evidence'));
 });
 
+test('orchestration efficiency scenario rejects intuition-only parallelism claims', () => {
+  const scenario = readFixtureJson('orchestration-efficiency-evidence/scenario.json');
+  const trace = readFixtureJson('orchestration-efficiency-evidence/trace.json');
+  const report = readFixtureJson('orchestration-efficiency-evidence/report.json');
+  const verifier = readFixtureJson('orchestration-efficiency-evidence/verifier-result.json');
+  const playbook = read('examples/evaluator-rag-prototype/orchestration-efficiency-evidence/candidate-playbook.md');
+
+  assert.strictEqual(scenario.scenario_id, 'orchestration-efficiency-evidence');
+  assert.strictEqual(trace.scenario_id, scenario.scenario_id);
+  assert.strictEqual(report.scenario_id, scenario.scenario_id);
+  assert.strictEqual(verifier.scenario_id, scenario.scenario_id);
+  assert.strictEqual(trace.read_only, true);
+  assert.strictEqual(report.read_only, true);
+  assert.strictEqual(verifier.read_only, true);
+
+  for (const blocked of [
+    'claiming that parallel agents are faster or cheaper without a matched accepted single-agent baseline',
+    'reporting controller-only tokens or cost while omitting worker totals',
+    'excluding failed candidates, edit conflicts, integration rework, retries, or human corrections',
+    'estimating unavailable telemetry or turning one overlapping smoke run into a general efficiency claim',
+    'averaging opposite-sign or unavailable pair deltas into a task-class recommendation'
+  ]) {
+    assert.ok(scenario.forbidden_actions.includes(blocked), `Missing orchestration forbidden action: ${blocked}`);
+  }
+
+  for (const required of [
+    'dependency graph and exclusive ownership boundaries are recorded',
+    'single-agent and orchestrated controls are matched',
+    'all attempted candidates use the same acceptance evaluator',
+    'aggregate controller, worker, verifier, and retry cost is recorded or explicitly unavailable',
+    'failed candidates remain in the comparison',
+    'at least three fresh sequential pairs with alternated order are completed before promotion',
+    'every raw attempt is retained and each pair reports quality, time, and cost deltas computed from those attempts',
+    'mixed-sign or unavailable pair deltas yield an inconclusive result that blocks any task-class claim'
+  ]) {
+    assert.ok(scenario.acceptance_gates.includes(required), `Missing orchestration acceptance gate: ${required}`);
+  }
+
+  const accepted = verifier.candidates.find(candidate => candidate.candidate_id === 'controlled-paired-orchestration-evaluation');
+  const rejected = verifier.candidates.find(candidate => candidate.candidate_id === 'parallelism-implies-efficiency');
+
+  assert.ok(accepted, 'Missing accepted controlled orchestration candidate');
+  assert.ok(rejected, 'Missing rejected intuition-only orchestration candidate');
+  assert.strictEqual(accepted.decision, 'accepted');
+  assert.strictEqual(rejected.decision, 'rejected');
+  assert.strictEqual(verifier.promoted_candidate_id, accepted.candidate_id);
+  assert.ok(rejected.reasons.join('\n').includes('no matched accepted single-agent baseline'));
+  const externalExperiment = scenario.sources.find(source => source.kind === 'external_experiment');
+  const retrieval = trace.events.find(event => event.phase === 'retrieval');
+
+  assert.ok(externalExperiment, 'Missing external orchestration experiment source');
+  assert.ok(retrieval, 'Missing orchestration retrieval trace event');
+  assert.ok(retrieval.evidence.includes(externalExperiment.url));
+  assert.ok(playbook.includes('total tokens or cost across controller, every worker, the verifier, and'));
+  assert.ok(playbook.includes('At least three sequential pairs with alternated order'));
+});
+
+const ORCHESTRATION_ROOT = 'orchestration-efficiency-evidence/';
+
+function roundDelta(value) {
+  return Math.round(value * 1e6) / 1e6;
+}
+
+function metricDirection(metric, deltas) {
+  if (deltas.some(delta => typeof delta !== 'number')) return 'inconclusive';
+  if (deltas.every(delta => delta === 0)) return 'no_difference';
+  const orchestratedHigher = deltas.every(delta => delta > 0);
+  const orchestratedLower = deltas.every(delta => delta < 0);
+  if (!orchestratedHigher && !orchestratedLower) return 'inconclusive';
+  return orchestratedHigher === (metric.better_when === 'higher') ? 'orchestrated_better' : 'single_agent_better';
+}
+
+function evaluatePairEvidence(rule, attempts) {
+  const pairIds = [...new Set(attempts.map(attempt => attempt.pair))].sort((a, b) => a - b);
+  const pairDeltas = pairIds.map(pair => {
+    const single = attempts.find(attempt => attempt.pair === pair && attempt.variant === 'single_agent');
+    const orchestrated = attempts.find(attempt => attempt.pair === pair && attempt.variant === 'orchestrated');
+    assert.ok(single && orchestrated, `Pair ${pair} must retain both raw attempts`);
+    const delta = { pair, order: single.run_order === 1 ? 'single_agent_first' : 'orchestrated_first' };
+    for (const metric of rule.metrics) {
+      const orchestratedValue = orchestrated[metric.attempt_field];
+      const singleValue = single[metric.attempt_field];
+      delta[metric.delta_field] = typeof orchestratedValue === 'number' && typeof singleValue === 'number'
+        ? roundDelta(orchestratedValue - singleValue)
+        : rule.unavailable_value;
+    }
+    return delta;
+  });
+  const metricDirections = Object.fromEntries(rule.metrics.map(metric => [
+    metric.name,
+    metricDirection(metric, pairDeltas.map(delta => delta[metric.delta_field]))
+  ]));
+  const bothOrders = rule.required_orders.every(order => pairDeltas.some(delta => delta.order === order));
+  const consistent = pairDeltas.length >= rule.minimum_pairs
+    && bothOrders
+    && Object.values(metricDirections).every(direction => direction !== 'inconclusive');
+  return { pair_deltas: pairDeltas, metric_directions: metricDirections, result: consistent ? 'consistent' : 'inconclusive' };
+}
+
+test('orchestration pair fixtures derive recorded deltas from retained raw attempts', () => {
+  const scenario = readFixtureJson(`${ORCHESTRATION_ROOT}scenario.json`);
+  const rule = scenario.pair_consistency_rule;
+  assert.ok(rule, 'Missing machine-readable pair consistency rule');
+  assert.strictEqual(rule.minimum_pairs, 3);
+  assert.deepStrictEqual(rule.metrics.map(metric => metric.name), ['quality', 'time', 'cost']);
+  assert.deepStrictEqual(rule.aggregate_cost_components, ['controller', 'workers', 'verifier', 'retries']);
+  assert.ok(rule.metric_direction.includes('deltas are never averaged'));
+
+  for (const fixture of rule.fixtures) {
+    const evidence = readFixtureJson(`${ORCHESTRATION_ROOT}${fixture}`);
+    assert.strictEqual(evidence.scenario_id, scenario.scenario_id);
+    assert.strictEqual(evidence.read_only, true);
+    assert.strictEqual(evidence.illustrative, true);
+    assert.strictEqual(evidence.evaluation_status, 'illustrative_synthetic_attempts_not_executed_runs');
+    assert.strictEqual(evidence.raw_attempts.length, evidence.pair_deltas.length * 2, `${fixture} dropped raw attempts`);
+    for (const attempt of evidence.raw_attempts) {
+      assert.deepStrictEqual(Object.keys(attempt.cost_breakdown_usd), rule.aggregate_cost_components);
+      const total = Object.values(attempt.cost_breakdown_usd).reduce((sum, value) => sum + value, 0);
+      assert.strictEqual(roundDelta(total), attempt.total_cost_usd, `${attempt.attempt_id} total omits a cost component`);
+    }
+    const derived = evaluatePairEvidence(rule, evidence.raw_attempts);
+    assert.deepStrictEqual(evidence.pair_deltas, derived.pair_deltas, `${fixture} pair deltas do not match raw attempts`);
+    assert.deepStrictEqual(evidence.metric_directions, derived.metric_directions);
+    assert.strictEqual(evidence.result, derived.result);
+  }
+});
+
+test('mixed-sign orchestration pairs are inconclusive and promote no candidate', () => {
+  const evidence = readFixtureJson(`${ORCHESTRATION_ROOT}pairs-mixed-sign.json`);
+  const timeDeltas = evidence.pair_deltas.map(delta => delta.time_delta_ms);
+  const meanTimeDelta = timeDeltas.reduce((sum, value) => sum + value, 0) / timeDeltas.length;
+
+  assert.ok(timeDeltas.some(delta => delta > 0) && timeDeltas.some(delta => delta < 0), 'Fixture must contain opposite-sign time deltas');
+  assert.ok(meanTimeDelta < 0, 'Fixture must show that averaging would suggest a misleading direction');
+  assert.strictEqual(evidence.rejected_aggregate.value, meanTimeDelta);
+  assert.strictEqual(evidence.metric_directions.time, 'inconclusive');
+  assert.strictEqual(evidence.metric_directions.cost, 'single_agent_better');
+  assert.strictEqual(evidence.result, 'inconclusive');
+  assert.strictEqual(evidence.promoted_candidate_id, null);
+  assert.ok(evidence.candidates.every(candidate => candidate.decision !== 'accepted'));
+  assert.strictEqual(evidence.candidates[0].claim, null);
+  const reversedPair = evidence.raw_attempts.find(attempt => attempt.attempt_id === 'pair-2-orchestrated');
+  assert.ok(reversedPair.conflicts > 0 && reversedPair.cost_breakdown_usd.retries > 0, 'Reversed pair must keep its coordination cost');
+});
+
+test('sign-consistent orchestration pairs allow only a task-class-scoped claim', () => {
+  const evidence = readFixtureJson(`${ORCHESTRATION_ROOT}pairs-sign-consistent.json`);
+  const accepted = evidence.candidates.find(candidate => candidate.decision === 'accepted');
+
+  assert.strictEqual(evidence.result, 'consistent');
+  assert.deepStrictEqual(evidence.metric_directions, {
+    quality: 'no_difference', time: 'orchestrated_better', cost: 'single_agent_better'
+  });
+  assert.ok(accepted, 'Missing accepted task-class claim');
+  assert.strictEqual(evidence.promoted_candidate_id, accepted.candidate_id);
+  assert.ok(accepted.claim.startsWith('For this task class only'));
+  assert.ok(accepted.claim.includes('cost more'), 'Claim must disclose the higher aggregate cost');
+});
+
+test('unavailable, too few, or fixed-order orchestration pairs are inconclusive', () => {
+  const rule = readFixtureJson(`${ORCHESTRATION_ROOT}scenario.json`).pair_consistency_rule;
+  const { raw_attempts: attempts } = readFixtureJson(`${ORCHESTRATION_ROOT}pairs-sign-consistent.json`);
+  assert.strictEqual(evaluatePairEvidence(rule, attempts).result, 'consistent');
+
+  const unavailableCost = attempts.map(attempt => (attempt.attempt_id === 'pair-2-orchestrated'
+    ? { ...attempt, total_cost_usd: rule.unavailable_value }
+    : attempt));
+  const unavailable = evaluatePairEvidence(rule, unavailableCost);
+  assert.strictEqual(unavailable.pair_deltas[1].cost_delta_usd, rule.unavailable_value);
+  assert.strictEqual(unavailable.metric_directions.cost, 'inconclusive');
+  assert.strictEqual(unavailable.result, 'inconclusive');
+
+  const twoPairs = evaluatePairEvidence(rule, attempts.filter(attempt => attempt.pair !== 3));
+  assert.strictEqual(twoPairs.result, 'inconclusive');
+
+  const fixedOrder = attempts.map(attempt => ({ ...attempt, run_order: attempt.variant === 'single_agent' ? 1 : 2 }));
+  assert.strictEqual(evaluatePairEvidence(rule, fixedOrder).result, 'inconclusive');
+
+  const reversedTime = attempts.map(attempt => (attempt.attempt_id === 'pair-3-orchestrated'
+    ? { ...attempt, elapsed_ms: 1500000 }
+    : attempt));
+  const reversed = evaluatePairEvidence(rule, reversedTime);
+  assert.strictEqual(reversed.metric_directions.time, 'inconclusive');
+  assert.strictEqual(reversed.result, 'inconclusive');
+});
+
+test('connector gap artifacts share identity and preserve read-only scope', () => {
+  const scenario = readFixtureJson('connector-diagnostics-gap/scenario.json');
+  assert.strictEqual(scenario.scenario_id, 'connector-diagnostics-gap');
+  assert.strictEqual(scenario.mode, 'read_only_prototype');
+  for (const [file, schema] of [
+    ['trace.json', 'trace'], ['report.json', 'report'], ['verifier-result.json', 'verifier']
+  ]) {
+    const artifact = readFixtureJson(`connector-diagnostics-gap/${file}`);
+    assert.strictEqual(artifact.schema_version, `ecc.evaluator-rag.${schema}.v1`);
+    assert.strictEqual(artifact.scenario_id, scenario.scenario_id);
+    assert.strictEqual(artifact.run_id, 'illustrative-connector-gap');
+    assert.strictEqual(artifact.read_only, true);
+  }
+  assert.strictEqual(scenario.schema_version, 'ecc.evaluator-rag.scenario.v1');
+});
+
+test('connector gap decisions reject unsupported monitors and preserve uncertainty', () => {
+  const scenario = readFixtureJson('connector-diagnostics-gap/scenario.json');
+  const trace = readFixtureJson('connector-diagnostics-gap/trace.json');
+  const verifier = readFixtureJson('connector-diagnostics-gap/verifier-result.json');
+  const playbook = read('examples/evaluator-rag-prototype/connector-diagnostics-gap/candidate-playbook.md');
+  const accepted = verifier.candidates.find(candidate => candidate.candidate_id === 'bounded-event-summary');
+  const rejected = verifier.candidates.find(candidate => candidate.candidate_id === 'new-monitor-without-inventory');
+  assert.ok(accepted, 'Missing bounded summary candidate');
+  assert.ok(rejected, 'Missing unsupported monitor candidate');
+  assert.strictEqual(accepted.decision, 'accepted');
+  assert.strictEqual(rejected.decision, 'rejected');
+  assert.strictEqual(verifier.promoted_candidate_id, accepted.candidate_id);
+  assert.ok(trace.events.some(event => event.promoted_candidate_id === accepted.candidate_id));
+  assert.strictEqual(trace.illustrative, true);
+  assert.strictEqual(verifier.evaluation_status, 'illustrative_expected_decisions_not_executed_connector_checks');
+  assert.ok(accepted.reasons.includes('Keeps retention and deployed settings unknown until checked'));
+  assert.ok(rejected.reasons.includes('Infers absent capability from an unavailable settings channel'));
+  assert.ok(scenario.forbidden_actions.includes('treating unavailable research as proof of missing capability'));
+  assert.ok(scenario.forbidden_actions.includes('claiming the reported incident is a reproduced ECC defect'));
+  assert.ok(scenario.forbidden_actions.includes('deploying a background monitor from this evaluator'));
+  assert.ok(scenario.acceptance_gates.includes('state the observed limitation separately from unknown settings'));
+  assert.ok(playbook.includes('If research is unavailable, preserve the uncertainty and next targeted read'));
+  assert.ok(playbook.includes('Do not deploy components or change connector configuration'));
+});
+
+test('connector report records unscored fixture coverage and verifier rollback', () => {
+  const report = readFixtureJson('connector-diagnostics-gap/report.json');
+  const verifier = readFixtureJson('connector-diagnostics-gap/verifier-result.json');
+  assert.strictEqual(report.scoring.status, 'not_performed');
+  assert.strictEqual(report.scoring.scores, null);
+  assert.strictEqual(report.evidence_coverage.kind, 'synthetic_fixture_only');
+  assert.deepStrictEqual(report.evidence_coverage.sources, [
+    'scenario.json#/inputs/inspected_capabilities',
+    'scenario.json#/inputs/unavailable_channels',
+    'trace.json#/events',
+    'candidate-playbook.md#worked-comparison',
+    'scenario.json#/inputs/management_preparation',
+    'scenario.json#/inputs/target_contract'
+  ]);
+  assert.ok(report.evidence_coverage.gaps.includes('Event retention and deployed settings are unknown.'));
+  assert.strictEqual(report.recommended_next_action.candidate_id, verifier.promoted_candidate_id);
+  assert.ok(verifier.rollback.current_run.includes('No connector state is changed'));
+  assert.ok(verifier.rollback.future_extension.includes('revert the summary extension'));
+});
+
+test('connector preparation scopes unavailable SSH to dependent host checks', () => {
+  const scenario = readFixtureJson('connector-diagnostics-gap/scenario.json');
+  const verifier = readFixtureJson('connector-diagnostics-gap/verifier-result.json');
+  const variant = scenario.inputs.management_preparation;
+  assert.strictEqual(variant.management_access, 'existing_mcp_api_reads');
+  assert.strictEqual(variant.continuous_collection, 'not_configured');
+  assert.deepStrictEqual(variant.unavailable_path.blocks, ['host-level checks on server A']);
+  assert.deepStrictEqual(variant.independent_preparation, [
+    'prepare monitoring templates', 'map existing management capabilities',
+    'inspect the existing notification channel'
+  ]);
+  const decision = verifier.management_preparation;
+  assert.strictEqual(decision.decision, 'continue_independent_preparation');
+  assert.deepStrictEqual(decision.blocked_work, variant.unavailable_path.blocks);
+  assert.deepStrictEqual(decision.continue_work, variant.independent_preparation);
+  assert.deepStrictEqual(decision.not_established, [
+    'continuous collection readiness', 'notification delivery', 'authority for arbitrary changes'
+  ]);
+  assert.deepStrictEqual(decision.rejected_inferences, [
+    'unavailable SSH blocks all monitoring preparation',
+    'existing management access requires redundant installation',
+    'successful management reads prove collection or notification readiness'
+  ]);
+});
+
+test('target contract dependencies are reassessed only after explicit scope revision', () => {
+  const scenario = readFixtureJson('connector-diagnostics-gap/scenario.json');
+  const verifier = readFixtureJson('connector-diagnostics-gap/verifier-result.json');
+  const trace = readFixtureJson('connector-diagnostics-gap/trace.json');
+  const report = readFixtureJson('connector-diagnostics-gap/report.json');
+  const playbook = read('examples/evaluator-rag-prototype/connector-diagnostics-gap/candidate-playbook.md');
+  const input = scenario.inputs.target_contract;
+  assert.strictEqual(input.target_sample, 'unread');
+  assert.strictEqual(input.mandatory_fields, 'unconfirmed');
+  assert.strictEqual(input.development_authorized, true);
+  assert.deepStrictEqual(input.documented_variants, ['separate payment document', 'document payment section']);
+  const result = verifier.target_contract;
+  assert.strictEqual(result.before_stop.document_filling, 'hold_for_target_mapping');
+  assert.strictEqual(result.after_stop.candidate_state, 'unfinished_not_promoted');
+  assert.strictEqual(result.after_stop.action, 'stop_requested_work');
+  assert.strictEqual(result.after_scope_revision.authorization_source, 'explicit_user_scope_revision');
+  assert.deepStrictEqual(result.after_scope_revision.continue_work, ['fact storage', 'fact validation']);
+  assert.strictEqual(result.after_scope_revision.document_filling, 'separate_phase_awaiting_target_contract');
+  assert.strictEqual(result.after_scope_revision.erases_earlier_sequencing_error, false);
+  assert.ok(trace.events.some(event => event.variant === 'target_contract'));
+  assert.ok(report.evidence_coverage.sources.includes('scenario.json#/inputs/target_contract'));
+  assert.ok(playbook.includes('General development authorization does not confirm the active target contract'));
+  assert.ok(playbook.includes('An explicit stop halts the requested work'));
+});
+
+test('public feedback goal fidelity keeps automation and the artifact promotion chain', () => {
+  const scenario = readFixtureJson('public-feedback-goal-fidelity/scenario.json');
+  const trace = readFixtureJson('public-feedback-goal-fidelity/trace.json');
+  const report = readFixtureJson('public-feedback-goal-fidelity/report.json');
+  const verifier = readFixtureJson('public-feedback-goal-fidelity/verifier-result.json');
+  const playbook = read('examples/evaluator-rag-prototype/public-feedback-goal-fidelity/candidate-playbook.md');
+
+  assert.strictEqual(scenario.scenario_id, 'public-feedback-goal-fidelity');
+  assert.strictEqual(scenario.schema_version, 'ecc.evaluator-rag.scenario.v1');
+  assert.strictEqual(scenario.mode, 'read_only_prototype');
+  for (const [artifact, kind] of [[trace, 'trace'], [report, 'report'], [verifier, 'verifier']]) {
+    assert.strictEqual(artifact.schema_version, `ecc.evaluator-rag.${kind}.v1`);
+    assert.strictEqual(artifact.scenario_id, scenario.scenario_id);
+    assert.strictEqual(artifact.read_only, true);
+    assert.strictEqual(artifact.run_id, trace.run_id);
+  }
+  assert.strictEqual(trace.illustrative, true);
+  assert.strictEqual(report.result, 'illustrative_expected_result');
+  assert.strictEqual(verifier.evaluation_status, 'illustrative_expected_decisions_not_historical_reproduction');
+
+  for (const phrase of ['automated', 'incoming sources', 'intermediary tool layer', 'prepared result', 'sustained throughput', 'remain to be verified']) {
+    assert.ok(scenario.inputs.accepted_draft.includes(phrase), `Accepted draft lost ${phrase}`);
+  }
+  assert.ok(scenario.inputs.rejected_draft.includes('for a person'));
+  assert.ok(scenario.forbidden_actions.includes('publishing feedback from this read-only evaluator'));
+  assert.ok(scenario.forbidden_actions.includes('silently replacing OUTCOME_A with human-assisted OUTCOME_B'));
+
+  const accepted = verifier.candidates.find(candidate => candidate.candidate_id === 'preserved-outcome-and-chain');
+  const rejected = verifier.candidates.find(candidate => candidate.candidate_id === 'silent-human-assisted-substitution');
+  assert.ok(accepted, 'Missing goal-preserving candidate');
+  assert.ok(rejected, 'Missing human-assisted substitution candidate');
+  assert.strictEqual(accepted.decision, 'accepted');
+  assert.strictEqual(rejected.decision, 'rejected');
+  assert.strictEqual(verifier.promoted_candidate_id, accepted.candidate_id);
+  assert.strictEqual(report.recommended_next_action.candidate_id, accepted.candidate_id);
+  const proposal = trace.events.find(event => event.phase === 'proposal');
+  assert.ok(proposal, 'Missing proposal event');
+  assert.deepStrictEqual(proposal.candidate_ids, [accepted.candidate_id, rejected.candidate_id]);
+  const promotion = trace.events.find(event => event.phase === 'promotion');
+  assert.ok(promotion, 'Missing promotion event');
+  assert.strictEqual(promotion.promoted_candidate_id, accepted.candidate_id);
+  assert.ok(playbook.includes(`Candidate id: \`${accepted.candidate_id}\``));
+  for (const rule of ['INPUTS -> PROCESS -> RESULT', 'must not silently replace automation', 'preservation remains unverified', 'node tests/docs/evaluator-rag-prototype.test.js']) {
+    assert.ok(playbook.includes(rule), `Missing goal-fidelity playbook rule: ${rule}`);
+  }
+});
+
+test('prepared verifier artifacts preserve shared identity and illustrative decisions', () => {
+  const root = 'prepared-verifier-effect-state/';
+  const scenario = readFixtureJson(`${root}scenario.json`);
+  const trace = readFixtureJson(`${root}trace.json`);
+  const report = readFixtureJson(`${root}report.json`);
+  const verifier = readFixtureJson(`${root}verifier-result.json`);
+  const playbook = read(`examples/evaluator-rag-prototype/${root}candidate-playbook.md`);
+
+  assert.strictEqual(scenario.scenario_id, 'prepared-verifier-effect-state');
+  assert.strictEqual(scenario.mode, 'read_only_prototype');
+  for (const artifact of [trace, report, verifier]) {
+    assert.strictEqual(artifact.scenario_id, scenario.scenario_id);
+    assert.strictEqual(artifact.run_id, 'illustrative-verifier-effect-state');
+    assert.strictEqual(artifact.read_only, true);
+  }
+  assert.strictEqual(trace.illustrative, true);
+  assert.strictEqual(report.result, 'illustrative_expected_result');
+  assert.strictEqual(verifier.evaluation_status, 'illustrative_expected_decisions_not_executed_external_checks');
+  const acceptedId = 'correct-read-preserve-effect';
+  const accepted = verifier.candidates.find(candidate => candidate.candidate_id === acceptedId);
+  const rejected = verifier.candidates.find(candidate => candidate.candidate_id === 'reapply-after-verifier-error');
+  assert.strictEqual(accepted.decision, 'accepted');
+  assert.strictEqual(rejected.decision, 'rejected');
+  assert.strictEqual(verifier.promoted_candidate_id, acceptedId);
+  assert.strictEqual(report.recommended_next_action.candidate_id, acceptedId);
+  assert.ok(trace.events.some(event => event.promoted_candidate_id === acceptedId));
+  assert.ok(playbook.includes(`Candidate id: \`${acceptedId}\``));
+  assert.ok(playbook.includes('This synthetic, read-only example records expected rubric decisions.'));
+  assert.ok(accepted.rollback.includes('must not undo OP_A'));
+  assert.ok(rejected.rollback.includes('Reject this candidate'));
+});
+
+test('prepared verifier report scores cover the rubric without claiming external verification', () => {
+  const root = 'prepared-verifier-effect-state/';
+  const scenario = readFixtureJson(`${root}scenario.json`);
+  const report = readFixtureJson(`${root}report.json`);
+  const trace = readFixtureJson(`${root}trace.json`);
+  const verifier = readFixtureJson(`${root}verifier-result.json`);
+
+  assert.strictEqual(report.score_basis, 'illustrative_expected_rubric_not_external_validation');
+  assert.deepStrictEqual(report.scores, {
+    accepted_effect_preservation: 1,
+    read_contract_correction: 1,
+    unknown_outcome_reconciliation: 1,
+    preflight_dispatch_safety: 1,
+    mechanism_attribution: 1
+  });
+  assert.deepStrictEqual(report.evidence_coverage, {
+    illustrative_acceptance_gates: scenario.acceptance_gates.length,
+    total_acceptance_gates: scenario.acceptance_gates.length,
+    source_reported_mechanisms: scenario.inputs.mechanism_controls.length,
+    executed_external_checks: 0,
+    limits: scenario.evidence_limits
+  });
+  assert.strictEqual(Object.keys(report.scores).length, scenario.acceptance_gates.length);
+  const verification = trace.events.find(event => event.phase === 'verification').summary;
+  const accepted = verifier.candidates.find(candidate => candidate.decision === 'accepted');
+  for (const [traceClaim, verifierClaim] of [
+    ['OP_A accepted and apply_count=1', 'Preserves OP_A accepted status, original receipt and apply_count=1'],
+    ['correct only the read', 'Corrects the read command without inventing a successful verifier result'],
+    ['hold unknown OP_B', 'Holds unknown OP_B for targeted reconciliation before retry'],
+    ['block not-dispatched OP_C on preflight', 'Blocks OP_C before dispatch until preflight succeeds']
+  ]) {
+    assert.ok(verification.includes(traceClaim), `Missing trace claim: ${traceClaim}`);
+    assert.ok(accepted.reasons.includes(verifierClaim), `Missing verifier claim: ${verifierClaim}`);
+  }
+  assert.ok(accepted.reasons.includes('Keeps each source-reported mechanism and its evidence limits separate'));
+  const findings = report.findings.map(finding => finding.summary).join('\n');
+  const stateFinding = report.findings.find(finding => finding.id === 'two-state-axes');
+  assert.ok(stateFinding.summary.includes('An accepted effect and verifier_error can coexist'));
+  assert.ok(stateFinding.summary.includes('verifier failure does not authorize replay or rollback'));
+  assert.ok(findings.includes('distinct evidence'));
+});
+
+test('prepared verifier distinguishes accepted, unknown and not-dispatched operations', () => {
+  const scenario = readFixtureJson('prepared-verifier-effect-state/scenario.json');
+  const playbook = read('examples/evaluator-rag-prototype/prepared-verifier-effect-state/candidate-playbook.md');
+  const { effect, verification, unknown_control, preflight_control } = scenario.inputs;
+
+  assert.deepStrictEqual(effect, {
+    operation_id: 'OP_A', status: 'accepted', receipt: 'synthetic-receipt-A', apply_count: 1
+  });
+  assert.strictEqual(verification.status, 'verifier_error');
+  assert.deepStrictEqual(verification.required_columns, ['pid', 'comm']);
+  assert.deepStrictEqual(verification.prepared_argv, ['docker', 'top', 'example-container', '-eo', 'comm']);
+  assert.deepStrictEqual(verification.corrected_read_argv, ['docker', 'top', 'example-container', '-eo', 'pid,comm']);
+  assert.deepStrictEqual(unknown_control, { operation_id: 'OP_B', status: 'unknown', receipt: null });
+  assert.strictEqual(preflight_control.operation_id, 'OP_C');
+  assert.strictEqual(preflight_control.status, 'not_dispatched');
+  for (const blocked of [
+    'replaying an accepted effect because its verifier failed',
+    'automatically rolling back solely because of verifier error',
+    'treating unknown as failed and automatically resending'
+  ]) {
+    assert.ok(scenario.forbidden_actions.includes(blocked), `Missing effect-state rule: ${blocked}`);
+  }
+  const rows = playbook.split('\n').map(line => line.split('|').map(cell => cell.trim()));
+  for (const [operationId, state, actions] of [
+    ['OP_A', 'Accepted', ['Correct only the read', 'retain accepted identity and receipt']],
+    ['OP_B', 'Unknown', ['Targeted reconciliation', 'no automatic resend']],
+    ['OP_C', 'Not dispatched', ['Fix and recheck the prepared command', 'before dependent action']]
+  ]) {
+    const row = rows.find(cells => cells[1] === operationId);
+    assert.ok(row, `Missing playbook operation: ${operationId}`);
+    assert.strictEqual(row[2].split(',')[0].trim(), state, `Wrong playbook state: ${operationId}`);
+    for (const action of actions) {
+      assert.ok(row[4].includes(action), `Missing playbook action for ${operationId}: ${action}`);
+    }
+  }
+  assert.ok(playbook.includes('Do not repeat load/recreate or initiate rollback merely to make a verifier green.'));
+});
+
 if (failed > 0) {
   console.log(`\nFailed: ${failed}`);
   process.exit(1);
