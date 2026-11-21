@@ -66,6 +66,8 @@ tunnel-client runtimes connect --alias rea-privado --tunnel-id $env:CONTROL_PLAN
 tunnel-client runtimes status rea-privado --json
 ```
 
-O status so pode ser tratado como recuperado quando `process_running=true`, `healthy=true` e `ready=true`. O script `scripts/recover_tunnel.ps1` automatiza esse fluxo sem gravar a chave no repositorio. Ele exige `CONTROL_PLANE_API_KEY`, `CONTROL_PLANE_TUNNEL_ID` e `REA_CODE_ROOT` no host autorizado.
+O status so pode ser tratado como recuperado quando `process_running=true`, `healthy=true` e `ready=true`, e a identidade corresponde ao pedido. O script `scripts/recover_tunnel.ps1` exige `tunnel_id` e `process.tunnel_id` iguais ao tunel esperado, `process.target_kind=command` e `process.target_value` exatamente igual ao comando construido com Python, servidor e root autorizado. A comparacao integral e ordinal: comandos equivalentes com outra citacao, capitalizacao ou formato de caminho tambem sao recusados, sem tentar reinterpretar argumentos.
+
+Identidade ausente ou divergente bloqueia antes de reutilizar ou reconectar o alias, mesmo com sinais de saude positivos ou `process_running=false`; o processo existente e preservado. A mesma verificacao e repetida apos connect. Inspecionar o runtime no host autorizado e reconciliar sua identidade explicitamente; nao apagar alias/processo nem ampliar root automaticamente. O script exige `CONTROL_PLANE_API_KEY`, `CONTROL_PLANE_TUNNEL_ID` e `REA_CODE_ROOT` no host autorizado, sem gravar a chave no repositorio.
 
 Depois da recuperacao local, repetir uma chamada real `rea_bridge_status` no ChatGPT antes de marcar `HOST_DISCOVERED` ou `LIVE_VERIFIED`.

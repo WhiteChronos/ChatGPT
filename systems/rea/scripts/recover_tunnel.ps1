@@ -38,13 +38,37 @@ function Get-ReaTunnelStatus {
     try { return ($raw | Out-String | ConvertFrom-Json) } catch { return $null }
 }
 
+$mcpCommand = '"' + $pythonPath + '" "' + $serverPath + '" --root "' + $authorizedRoot + '" --transport stdio'
+
+function Assert-ReaTunnelIdentity($Status) {
+    # Missing identity is not evidence that an alias belongs to this recovery.
+    # Compare the whole command: extracting one --root can miss a later override.
+    $tunnel = $Status.PSObject.Properties['tunnel_id']
+    $process = $Status.PSObject.Properties['process']
+    if (-not $tunnel -or $tunnel.Value -isnot [string] -or
+        -not [string]::Equals($tunnel.Value, $TunnelId, [StringComparison]::Ordinal) -or
+        -not $process -or -not $process.Value) {
+        throw "REA runtime identity is missing or differs from the expected tunnel. Existing runtime preserved; inspect it on the authorized host."
+    }
+    $processTunnel = $process.Value.PSObject.Properties['tunnel_id']
+    $kind = $process.Value.PSObject.Properties['target_kind']
+    $command = $process.Value.PSObject.Properties['target_value']
+    if (-not $processTunnel -or $processTunnel.Value -isnot [string] -or
+        -not [string]::Equals($processTunnel.Value, $TunnelId, [StringComparison]::Ordinal) -or
+        -not $kind -or $kind.Value -cne 'command' -or
+        -not $command -or $command.Value -isnot [string] -or
+        -not [string]::Equals($command.Value, $mcpCommand, [StringComparison]::Ordinal)) {
+        throw "REA runtime identity does not match the expected command and authorized directory. Existing runtime preserved; inspect it on the authorized host."
+    }
+}
+
 $existing = Get-ReaTunnelStatus
+if ($existing) { Assert-ReaTunnelIdentity $existing }
 if ($existing -and $existing.process_running -eq $true -and $existing.healthy -eq $true -and $existing.ready -eq $true) {
     $existing | ConvertTo-Json -Depth 8
     exit 0
 }
 
-$mcpCommand = '"' + $pythonPath + '" "' + $serverPath + '" --root "' + $authorizedRoot + '" --transport stdio'
 $connectArgs = @(
     "runtimes", "connect",
     "--alias", $Alias,
@@ -60,6 +84,7 @@ if ($LASTEXITCODE -ne 0) {
 
 $status = Get-ReaTunnelStatus
 if (-not $status) { throw "Managed runtime was launched but status could not be read." }
+Assert-ReaTunnelIdentity $status
 if ($status.process_running -ne $true -or $status.healthy -ne $true -or $status.ready -ne $true) {
     $safe = $status | ConvertTo-Json -Depth 8
     throw "Managed REA tunnel is not fully ready. Status: $safe"

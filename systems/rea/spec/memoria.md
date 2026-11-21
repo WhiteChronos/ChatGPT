@@ -223,3 +223,12 @@ Sem segredo, tunnel_id, credencial ou ampliacao de root neste registro. Sem merg
 | PEND-REA-014 | O COMPATIBILIZACAO_SYSTEM executou o mesmo motor REA pinado em GitHub Actions contra cinco forks publicos autorizados, run 43035644109. Essa evidencia deve ser classificada INSTRUMENTAL_REA_CI e nunca HOST_DISCOVERED/LIVE_VERIFIED. O gate live continua sendo executar o recovery no host autorizado e observar `rea_bridge_status` com sucesso. | HOST_LIVE_PENDENTE |
 
 Sem segredo, credencial, tunnel_id, ampliacao de root, merge ou deploy. PRODUCTION_COMPLETE=NO.
+
+### 2026-11-21 - DEC-REA-021: vincular recuperacao a identidade esperada
+
+| ID | Registro | Estado |
+| --- | --- | --- |
+| DEC-REA-021 | Corrigir recover_tunnel.ps1 na base 55adfc7865b52c9f9293b6f5e13cf09d8e0d01dd da PR #119: saude do alias nao comprova tunel nem root. Exigir tunnel_id superior e do processo, target_kind command e comando completo exato com Python/servidor/root esperados, antes de reutilizar/reconectar e apos connect. Identidade ausente/divergente bloqueia preservando processo e credenciais. Comparacao ordinal conservadora recusa tambem comandos semanticamente equivalentes com outra formatacao. Revisao independente por IA favoravel sem bloqueadores e execucao propria de 27 casos PowerShell aprovada. | REVISADO_IA_CI_PENDENTE |
+| PEND-REA-015 | Regressao sintetica PowerShell reproduziu 12 aceites indevidos e dois controles validos antes da correcao. Os 27 casos finais cobrem identidade correta, outro tunel superior/processo, outro root, root duplicado, outro tipo e identidade ausente, antes/depois connect e com processo stale. Conferir CI no novo SHA; evidencia operacional do ChatGPT permanece separada da correcao em branch. Nao executar este script no host como efeito dos testes. | CI_PENDENTE |
+
+Registro tecnico publicavel, sem conversas completas, identidade privada do host ou dados de conexao. Sem merge/deploy; PRODUCTION_COMPLETE=NO.
