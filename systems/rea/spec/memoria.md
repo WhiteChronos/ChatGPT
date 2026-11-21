@@ -232,3 +232,7 @@ Sem segredo, credencial, tunnel_id, ampliacao de root, merge ou deploy. PRODUCTI
 | PEND-REA-015 | Regressao sintetica PowerShell reproduziu 12 aceites indevidos e dois controles validos antes da correcao. Os 27 casos finais cobrem identidade correta, outro tunel superior/processo, outro root, root duplicado, outro tipo e identidade ausente, antes/depois connect e com processo stale. Conferir CI no novo SHA; evidencia operacional do ChatGPT permanece separada da correcao em branch. Nao executar este script no host como efeito dos testes. | CI_PENDENTE |
 
 Registro tecnico publicavel, sem conversas completas, identidade privada do host ou dados de conexao. Sem merge/deploy; PRODUCTION_COMPLETE=NO.
+
+### 2026-11-21 - Evidencia final de revisao e testes da identidade
+
+Suite Windows com temporarios fora do checkout: 110 PASS e dois SKIP por capacidades locais de links; 27 casos de recuperacao aprovados tambem pelo revisor independente. Gate canonico e 15 testes de memoria aprovados. Preservados finais de linha LF da base para manter diff revisavel; sem mudanca semantica no script. CI remoto nao executado nesta branch sem PR. PRODUCTION_COMPLETE=NO; sem merge/deploy.
