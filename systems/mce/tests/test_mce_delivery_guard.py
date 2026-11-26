@@ -103,3 +103,14 @@ def test_documented_x_passes_structural_only(tmp_path):
     put_x(w, s)
     save(w, s, ch)
     assert mod.inspect(w, w / "changes.json")["status"] == "PASS_ESTRUTURAL_PRELIMINAR"
+
+
+def test_new_x_not_in_canonical_diff_must_be_blocked(tmp_path):
+    w, state, change = scenario(tmp_path)
+    put_x(w, state)
+    save(w, state, change)
+    (w / "ALTERACOES_MCE.json").write_text(json.dumps([
+        {"sheet": "FOLHA 1", "cell": "C8", "before": "old", "after": "new"}
+    ]))
+    result = mod.inspect(w, w / "changes.json")
+    assert "X_SEM_EVIDENCIA_INDIVIDUAL" in result["errors"]
