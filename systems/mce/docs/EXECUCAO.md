@@ -128,3 +128,10 @@ Para ADM `DE-2713.01-6613-847-RPJ-006`, exibir `10%` e `20%` em `FOLHA 1!D22,D23
 
 **Anti-regressao:** o perfil de arquivo historico sem observacoes ou com SP preenchido nao substitui esta verificacao de completude para novas emissoes. Decisoes antigas de layout sao preservadas como historico, e eventual conflito exige revisao explicita do contrato, nao alteracao silenciosa do modelo.
 
+
+
+## Gate de regressao para entrega de MCE com X (2026-11-25)
+
+- Antes de anunciar qualquer `MCE_XLSX`, executar `python systems/mce/scripts/mce_delivery_contract.py --manifest MANIFESTO.json --root WORKSPACE_PRIVADO` e exigir exit code 0 e `PASS_MCE_DELIVERY_PREFLIGHT_ONLY`. Os totais de causas e X no manifesto devem coincidir com as celulas reais `FOLHA N!I8:AQ57`, com efeitos titulados `I5:AQ5`, e nenhuma causa preenchida pode ficar sem X. A auditoria estrutural nao concede aprovacao de engenharia.
+- Para vinculo detalhado com evidencias e hash do output do executor, usar `python systems/mce/scripts/mce_delivery_guard.py --workspace WORKSPACE_PRIVADO --changes ALTERACOES_APROVADAS.json --profile p09-50`. O segundo verificador tambem e somente leitura e nunca insere ou inventa X.
+- Nunca entregar o artefato de um gerador de `layout` ou `pre-matriz` como MCE funcional. Se o executor `apply/audit` nao concluiu com baseline homologado e whitelist, responder `MCE_XLSX=NAO_EMITIDO_BLOQUEADO`. Nao contornar gates de seguranca para completar a grade.
