@@ -75,6 +75,7 @@ def inspect(workspace: Path, changes_path: Path, profile: str = 'p09-50') -> dic
     if output.is_file():
         try:
             wb = load_workbook(output, read_only=False, data_only=False)
+            baseline = load_workbook(master, read_only=False, data_only=False) if master.is_file() else None
             if not wb.sheetnames or wb.sheetnames != [f'FOLHA {i}' for i in range(1, len(wb.sheetnames) + 1)]:
                 err('ABAS_FORA_DO_PADRAO_MCE')
             last_row = {'p09-50': 57, 'p09-l50': 50}.get(profile)
@@ -98,6 +99,9 @@ def inspect(workspace: Path, changes_path: Path, profile: str = 'p09-50') -> dic
                         diff = by_diff.get(k)
                         change = by_change.get(k)
                         if diff is None:
+                            if (baseline is None or sheet.title not in baseline
+                                or str(baseline[sheet.title][cell.coordinate].value or '').strip().upper() != 'X'):
+                                x_untracked.append(f'{sheet.title}!{cell.coordinate}')
                             continue
                         if diff.get('after') != 'X' or change is None or change.get('new_text') != 'X':
                             x_untracked.append(f'{sheet.title}!{cell.coordinate}')
