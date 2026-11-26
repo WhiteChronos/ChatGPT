@@ -13,7 +13,8 @@ import re
 import sys
 import zipfile
 from pathlib import Path
-from xml.etree import ElementTree as ET
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
 
 SCHEMA = "mce.delivery.v1"
 BLOCKED = "NAO_EMITIDO_BLOQUEADO"
@@ -62,7 +63,7 @@ def inspect_xlsx(path: Path, digest: object) -> None:
                 fail("FAIL_FORMAT_CONTRACT", "corrupt XLSX container")
             xml = ET.fromstring(archive.read("xl/workbook.xml"))
             sheets = [e.attrib["name"] for e in xml.iter() if e.tag.rsplit("}", 1)[-1] == "sheet"]
-    except (zipfile.BadZipFile, RuntimeError, ET.ParseError, KeyError):
+    except (zipfile.BadZipFile, RuntimeError, ET.ParseError, DefusedXmlException, KeyError):
         fail("FAIL_FORMAT_CONTRACT", "invalid XLSX workbook")
     if not sheets or sheets != [f"FOLHA {n}" for n in range(1, len(sheets) + 1)]:
         fail("FAIL_FORMAT_CONTRACT", "MCE requires sequential FOLHA N sheets")

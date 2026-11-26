@@ -1,5 +1,6 @@
 """Fail-closed regression: MCE must be approved P09 XLSX, not PDF/JSON."""
 import hashlib
+import zipfile
 import importlib.util
 from pathlib import Path
 
@@ -128,5 +129,25 @@ def test_only_preliminary_status_permitted_and_workspace_bounded(tmp_path):
         GATE.validate(data, tmp_path)
     data = preliminary(tmp_path)
     data["artifacts"][0]["path"] = "../not_in_workspace.xlsx"
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+
+@pytest.mark.parametrize("entity", [
+    b'<!ENTITY injected "INTERNAL_INJECTION">',
+    b'<!ENTITY injected SYSTEM "file:///not-authorized">',
+])
+def test_xlsx_xml_entity_declarations_are_rejected(tmp_path, entity):
+    """Reject entity expansion or external references in OOXML, fail closed."""
+    data = preliminary(tmp_path)
+    path = tmp_path / "mce.xlsx"
+    malicious_workbook = (
+        b'<?xml version="1.0"?>'
+        b'<!DOCTYPE workbook [' + entity + b']>'
+        b'<workbook><sheet name="FOLHA 1"/><marker>&injected;</marker></workbook>'
+    )
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("xl/workbook.xml", malicious_workbook)
+    data["artifacts"][0]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
         GATE.validate(data, tmp_path)
