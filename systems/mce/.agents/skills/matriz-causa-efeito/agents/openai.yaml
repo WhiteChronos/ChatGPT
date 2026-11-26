@@ -1,0 +1,5 @@
+interface:
+  display_name: "Matriz de Causa e Efeito"
+  short_description: "Elaborar MCE com fontes GitHub, rastreabilidade e preservação do Excel mestre"
+policy:
+  allow_implicit_invocation: true

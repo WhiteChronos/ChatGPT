@@ -1,0 +1,1 @@
+{"assets": [{"id": "s-001", "label": "sensor", "text_associated": "PT-101", "connections": [{"id": "s-002", "label": "valve", "flow_direction": "unknown", "segments": [{"id": "l-003"}]}]}, {"id": "s-002", "label": "valve", "text_associated": "XV-101", "connections": []}]}

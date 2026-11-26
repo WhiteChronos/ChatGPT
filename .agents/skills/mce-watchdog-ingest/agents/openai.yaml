@@ -1,0 +1,5 @@
+interface:
+  display_name: "MCE Watchdog Ingest"
+  short_description: "Suporte documentado ao DataCenter MCE em Windows"
+policy:
+  allow_implicit_invocation: true

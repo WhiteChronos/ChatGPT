@@ -1,0 +1,1 @@
+{"causes": ["C_TESTE_01"], "effects": ["E_TESTE_01", "E_TESTE_02"], "interlock_matrix": {"C_TESTE_01": ["E_TESTE_01"]}}
