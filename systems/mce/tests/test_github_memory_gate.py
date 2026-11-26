@@ -136,3 +136,72 @@ def test_historical_reconciliation_does_not_weaken_general_append_only():
     with pytest.raises(GATE.MemoryGateError, match="exact prefix"):
         GATE.verify_document(original.replace("PRODUCTION_COMPLETE=NO",
                      "PRODUCTION_COMPLETE=NO MODIFIED", 1), original, [MEM])
+
+
+def _mirror_fixture():
+    proof = GATE.ATTESTED_MIRROR_SYNC
+    observed = {path: (blob, blob, blob)
+                for path, (_, blob) in proof["mirrors"].items()}
+    return proof, observed
+
+
+def test_mirror_reconciliation_requires_exact_immutable_evidence():
+    proof, observed = _mirror_fixture()
+    changes = list(proof["mirrors"])
+    assert GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], proof["failure"], changes,
+        proof["decision"], observed)
+    assert not GATE.attested_mirror_sync(
+        "0" * 40, proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], proof["failure"], changes,
+        proof["decision"], observed)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], "0" * 40, proof["memory_blob"],
+        proof["memory_blob"], proof["failure"], changes,
+        proof["decision"], observed)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], "0" * 40,
+        proof["memory_blob"], proof["failure"], changes,
+        proof["decision"], observed)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], proof["memory_blob"],
+        "0" * 40, proof["failure"], changes,
+        proof["decision"], observed)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], "different failure", changes,
+        proof["decision"], observed)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], proof["failure"], changes,
+        "no prior decision", observed)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], proof["failure"],
+        changes + ["systems/mce/scripts/undocumented.py"],
+        proof["decision"], observed)
+
+
+@pytest.mark.parametrize("index", [0, 1, 2])
+def test_mirror_reconciliation_rejects_any_source_or_mirror_drift(index):
+    proof, observed = _mirror_fixture()
+    first = next(iter(observed))
+    mutated = list(observed[first])
+    mutated[index] = "0" * 40
+    observed[first] = tuple(mutated)
+    assert not GATE.attested_mirror_sync(
+        proof["commit"], proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], proof["failure"], list(proof["mirrors"]),
+        proof["decision"], observed)
+
+
+def test_mirror_reconciliation_never_applies_to_future_undocumented_changes():
+    proof, observed = _mirror_fixture()
+    with pytest.raises(GATE.MemoryGateError, match="same commit"):
+        GATE.verify_document(text(), text(),
+                             [".agents/skills/matriz-causa-efeito/SKILL.md"])
+    assert not GATE.attested_mirror_sync(
+        "f" * 40, proof["parent"], proof["memory_blob"],
+        proof["memory_blob"], proof["failure"], list(proof["mirrors"]),
+        proof["decision"], observed)

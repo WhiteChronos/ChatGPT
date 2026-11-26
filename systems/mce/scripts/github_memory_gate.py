@@ -97,6 +97,50 @@ def attested_historical_reconciliation(commit: str, before_blob: str,
     return (commit == proof["commit"] and before_blob == proof["before_blob"]
             and after_blob == proof["after_blob"] and reason == proof["failure"])
 
+
+# Immutable reconstruction of a mirror-only sync whose functional change was
+# already documented in DEC-MCE-068 at the parent commit. No future commits or
+# other paths are granted any exception to same-commit memory.
+ATTESTED_MIRROR_SYNC = {
+    "commit": "480fd4706425749340d0ab6f6b6eb184326fa030",
+    "parent": "3fb808130d3b9f5499e25045f4fddf1879b3fec8",
+    "memory_blob": "90970f73471268725eb953faeb7fe6847ce81c4d",
+    "decision": "2026-11-10 — DEC-MCE-068:",
+    "failure": "MCE files changed without memory in same commit",
+    "mirrors": {
+        ".agents/skills/engenharia-mce-projeto/SKILL.md": (
+            "systems/mce/.agents/skills/engenharia-mce-projeto/SKILL.md",
+            "aff86e018c84debddbc3204776ad5a4c6745c29c"),
+        ".agents/skills/matriz-causa-efeito/SKILL.md": (
+            "systems/mce/.agents/skills/matriz-causa-efeito/SKILL.md",
+            "f5c0f124264b7f3d613a7c0a85aef361617991d1"),
+        ".agents/skills/matriz-causa-efeito/references/metodo-e-saidas.md": (
+            "systems/mce/.agents/skills/matriz-causa-efeito/references/metodo-e-saidas.md",
+            "f7a422765aafcc3acf2b98a5039798b632236f7e"),
+    },
+}
+
+
+def attested_mirror_sync(commit: str, parent: str, before_blob: str,
+                         after_blob: str, reason: str, changed_files: list[str],
+                         previous_memory: str, observed_blobs: dict) -> bool:
+    """Recognize only the documented byte-identical legacy mirror copy."""
+    proof = ATTESTED_MIRROR_SYNC
+    if (commit != proof["commit"] or parent != proof["parent"]
+            or before_blob != proof["memory_blob"]
+            or after_blob != proof["memory_blob"]
+            or reason != proof["failure"]
+            or set(changed_files) != set(proof["mirrors"])
+            or len(changed_files) != len(proof["mirrors"])
+            or proof["decision"] not in previous_memory):
+        return False
+    if set(observed_blobs) != set(proof["mirrors"]):
+        return False
+    return all(
+        observed_blobs.get(path) == (expected, expected, expected)
+        for path, (_, expected) in proof["mirrors"].items()
+    )
+
 def audit_commit_range(root: Path, baseline: str, head: str) -> int:
     """Audit every commit since the first canonical-memory gate, not only HEAD."""
     if not re.fullmatch(r"[0-9a-f]{40}", baseline) or not re.fullmatch(r"[0-9a-f]{40}", head):
@@ -122,11 +166,29 @@ def audit_commit_range(root: Path, baseline: str, head: str) -> int:
             # All other memory safeguards remain active.
             before_blob = git(root, "rev-parse", parent + ":" + MEMORY_PATH).stdout.strip()
             after_blob = git(root, "rev-parse", commit + ":" + MEMORY_PATH).stdout.strip()
+            # A published sync-only commit has no new functional content:
+            # three global Skill mirrors match their already documented
+            # canonical source bytes in both parent and child commits.
+            proof = ATTESTED_MIRROR_SYNC
+            if commit == proof["commit"] and str(exc) == proof["failure"]:
+                observed = {}
+                for path, (canonical, _) in proof["mirrors"].items():
+                    observed[path] = (
+                        git(root, "rev-parse", commit + ":" + path).stdout.strip(),
+                        git(root, "rev-parse", commit + ":" + canonical).stdout.strip(),
+                        git(root, "rev-parse", parent + ":" + canonical).stdout.strip(),
+                    )
+                if attested_mirror_sync(commit, parent, before_blob, after_blob,
+                                        str(exc), changed, old, observed):
+                    # Preserve every other check (identity, append-only,
+                    # credentials and stable IDs) for this immutable commit.
+                    verify_document(new, old, [])
+                    continue
             if not attested_historical_reconciliation(
                     commit, before_blob, after_blob, str(exc)):
                 raise MemoryGateError("Commit " + commit[:12] + ": " + str(exc)) from exc
-            # Still enforce product identity, absence of credentials, unique
-            # decisions, and same-commit memory update for this exact legacy diff.
+            # Preserve validation of the separately attested historical
+            # append-only anomaly; all future commits still require memory.
             verify_document(new, None, changed)
     return len(commits)
 
