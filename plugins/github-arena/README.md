@@ -47,15 +47,23 @@ python plugins/github-arena/scripts/arena_review.py rubric
 ```
 
 
-## ChatGPT Web
+## ChatGPT Web e Codex Web — sem Windows local
 
-Para usar o GitHub Arena no ChatGPT Web sem expor o Windows na internet, use o OpenAI Secure MCP Tunnel:
+O GitHub Arena opera como uma camada de revisão, enquanto o conector GitHub
+lê e modifica os arquivos autorizados do repositório. O fluxo não requer nem
+solicita PowerShell, CMD, desktop remoto, caminhos `C:\\`, serviços no PC
+do usuário ou um túnel hospedado na máquina pessoal.
 
-```powershell
-$env:CONTROL_PLANE_API_KEY = "sk-..."
-powershell -ExecutionPolicy Bypass -File .\plugins\github-arena\scripts\setup_openai_tunnel.ps1 -TunnelId "tunnel_..."
-```
+- Use somente ferramentas nativas do host conectado e integrações remotas
+  já autorizadas, com verificação de descoberta antes de alegar execução.
+- Se os métodos `arena_*` não estiverem disponíveis no host, faça revisão
+  estruturada das quatro perspectivas sem afirmar que agentes independentes
+  ou o MCP Arena executaram.
+- Não instale software, abra portas, configure túneis, crie chaves, nem
+  solicite comandos no Windows pessoal como alternativa automática.
+- O conector GitHub permanece a fonte de evidência para branch, SHA, PR,
+  proteções e checks. Nenhum merge ou deploy ocorre sem gate específico.
 
-Depois mantenha `tunnel-client run --profile github-arena` ativo e registre o tunnel em ChatGPT Plugins no modo Developer.
-
-Veja `references/chatgpt-web-tunnel.md` para o fluxo completo.
+Esta política se aplica a este fluxo WhiteChronos. Instruções de configuração
+de ambientes de terceiros vendorizadas são documentação de referência e não
+autorizam acesso ao dispositivo do usuário.
