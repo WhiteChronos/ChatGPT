@@ -6,6 +6,12 @@ on:
       - '.github/workflows/rea-mce-review-inventory.yml'
       - 'scripts/rea_mce_review_inventory.py'
       - 'tests/test_rea_mce_review_inventory.py'
+      - 'systems/mce/**'
+      - 'systems/rea/**'
+      - '.agents/skills/matriz-causa-efeito/**'
+      - '.agents/skills/engenharia-mce-projeto/**'
+      - '.agents/skills/padronizacao-mce/**'
+      - '.agents/skills/rea-engenharia-reversa-evolutiva/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
