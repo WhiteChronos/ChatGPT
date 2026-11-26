@@ -25,6 +25,8 @@ def preliminary(root):
     workbook = Workbook()
     workbook.active.title = "FOLHA 1"
     workbook.active["C8"] = "Synthetic documented cause"
+    workbook.active["I5"] = "Documented alarm effect"
+    workbook.active["I8"] = "X"
     path = root / "mce.xlsx"
     workbook.save(path)
     return {
@@ -129,4 +131,48 @@ def test_only_preliminary_status_permitted_and_workspace_bounded(tmp_path):
     data = preliminary(tmp_path)
     data["artifacts"][0]["path"] = "../not_in_workspace.xlsx"
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_FORMAT_CONTRACT"):
+        GATE.validate(data, tmp_path)
+
+
+def test_mce_without_real_x_is_rejected_even_if_manifest_claims_one(tmp_path):
+    data = preliminary(tmp_path)
+    from openpyxl import load_workbook
+    wb = load_workbook(tmp_path / "mce.xlsx")
+    wb.active["I8"] = None
+    wb.save(tmp_path / "mce.xlsx")
+    data["artifacts"][0]["sha256"] = hashlib.sha256((tmp_path / "mce.xlsx").read_bytes()).hexdigest()
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_mce_x_without_titled_effect_is_rejected(tmp_path):
+    data = preliminary(tmp_path)
+    from openpyxl import load_workbook
+    wb = load_workbook(tmp_path / "mce.xlsx")
+    wb.active["I5"] = None
+    wb.save(tmp_path / "mce.xlsx")
+    data["artifacts"][0]["sha256"] = hashlib.sha256((tmp_path / "mce.xlsx").read_bytes()).hexdigest()
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_mce_manifest_crossing_count_must_match_excel(tmp_path):
+    data = preliminary(tmp_path)
+    data["coverage"]["x_total"] = 2
+    data["coverage"]["x_verified"] = 2
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_mce_cause_without_crossing_is_rejected(tmp_path):
+    data = preliminary(tmp_path)
+    from openpyxl import load_workbook
+    wb = load_workbook(tmp_path / "mce.xlsx")
+    wb.active["C9"] = "Second documented cause"
+    wb.save(tmp_path / "mce.xlsx")
+    data["artifacts"][0]["sha256"] = hashlib.sha256((tmp_path / "mce.xlsx").read_bytes()).hexdigest()
+    data["coverage"]["causes_total"] = 2
+    data["coverage"]["causes_reviewed"] = 2
+    data["coverage"]["observations_verified"] = 2
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
         GATE.validate(data, tmp_path)

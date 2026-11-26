@@ -13,6 +13,8 @@ import re
 import sys
 import zipfile
 from pathlib import Path
+
+from openpyxl import load_workbook
 from xml.etree import ElementTree as ET
 
 SCHEMA = "mce.delivery.v1"
@@ -47,7 +49,12 @@ def private_file(root: Path, value: object) -> Path:
     return target
 
 
-def inspect_xlsx(path: Path, digest: object) -> None:
+def inspect_xlsx(path: Path, digest: object) -> tuple[int, int]:
+    """Count actual cause rows and X links, instead of trusting manifest counts.
+
+    Only titled effects I:AQ and populated cause rows 8:57 are eligible.
+    This is a structural check, NOT a substitute for engineering evidence.
+    """
     if path.suffix.lower() != ".xlsx":
         fail("FAIL_FORMAT_CONTRACT", "primary MCE must be XLSX")
     if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
@@ -66,6 +73,34 @@ def inspect_xlsx(path: Path, digest: object) -> None:
         fail("FAIL_FORMAT_CONTRACT", "invalid XLSX workbook")
     if not sheets or sheets != [f"FOLHA {n}" for n in range(1, len(sheets) + 1)]:
         fail("FAIL_FORMAT_CONTRACT", "MCE requires sequential FOLHA N sheets")
+    try:
+        workbook = load_workbook(path, read_only=False, data_only=False)
+        causes = 0
+        crosses = 0
+        for sheet in workbook.worksheets:
+            effects = {col for col in range(9, 44)
+                       if isinstance(sheet.cell(5, col).value, str)
+                       and sheet.cell(5, col).value.strip()}
+            for row in range(8, 58):
+                cause = any(sheet[f"{letter}{row}"].value is not None for letter in ("C", "F", "H"))
+                found = 0
+                for col in range(9, 44):
+                    value = sheet.cell(row, col).value
+                    if not isinstance(value, str) or value.strip().upper() != "X":
+                        continue
+                    if not cause or col not in effects:
+                        fail("FAIL_ENGINEERING_GATE", f"X without cause/effect at {sheet.title}!{sheet.cell(row, col).coordinate}")
+                    crosses += 1
+                    found += 1
+                if cause:
+                    causes += 1
+                    if not found:
+                        fail("FAIL_ENGINEERING_GATE", f"cause without X at {sheet.title}!{row}")
+    except (OSError, ValueError, KeyError, zipfile.BadZipFile):
+        fail("FAIL_FORMAT_CONTRACT", "invalid XLSX grid")
+    if causes == 0 or crosses == 0:
+        fail("FAIL_ENGINEERING_GATE", "primary MCE has no documented causes/X")
+    return causes, crosses
 
 
 def validate(manifest: object, root: Path) -> str:
@@ -108,7 +143,9 @@ def validate(manifest: object, root: Path) -> str:
     if coverage.get("all_applicable_effects_reviewed") is not True or type(coverage.get("pending_relations")) is not int or coverage["pending_relations"] != 0:
         fail("FAIL_ENGINEERING_GATE", "pending cause/effect relationships")
     p = private_file(root, primary[0].get("path"))
-    inspect_xlsx(p, primary[0].get("sha256"))
+    actual_causes, actual_crosses = inspect_xlsx(p, primary[0].get("sha256"))
+    if actual_causes != total or actual_crosses != x_total:
+        fail("FAIL_ENGINEERING_GATE", "manifest coverage differs from actual cause/X cells")
     if manifest.get("pdf_requested") is True and not previews:
         fail("FAIL_FORMAT_CONTRACT", "requested PDF is not attached as a preview")
     if previews:
