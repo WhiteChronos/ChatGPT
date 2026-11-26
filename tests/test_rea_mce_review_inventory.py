@@ -70,6 +70,23 @@ class ReviewInventoryTests(unittest.TestCase):
         fetch, _, _ = fixture(approvals=(("human", HEAD),))
         self.assertEqual(REVIEW.inspect_one(fetch, 118)["sha_bound_formal_approvals"], 1)
 
+    def test_bot_approval_does_not_count_as_human(self):
+        fetch, _, _ = fixture(approvals=(("copilot[bot]", HEAD),))
+        self.assertEqual(REVIEW.inspect_one(fetch, 118)["sha_bound_formal_approvals"], 0)
+
+    def test_head_drift_between_requests_is_rejected(self):
+        fetch, _, _ = fixture()
+        calls = [0]
+        def drifting(path):
+            result = fetch(path)
+            if path.endswith("/pulls/118"):
+                calls[0] += 1
+                if calls[0] == 2:
+                    return {"head": {"sha": "b" * 40}}
+            return result
+        with self.assertRaisesRegex(REVIEW.EvidenceError, "HEAD_CHANGED"):
+            REVIEW.inspect_one(drifting, 118)
+
     def test_draft_is_not_review_ready(self):
         fetch, _, _ = fixture(draft=True)
         self.assertFalse(REVIEW.inspect_one(fetch, 118)["pr_open_ready_for_review"])

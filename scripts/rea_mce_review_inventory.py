@@ -95,7 +95,13 @@ def inspect_one(fetch, pr_number: int) -> dict:
         and item.get("commit_id") == head
         and item.get("user", {}).get("login")
         and item.get("user", {}).get("login") != author
+        and not item.get("user", {}).get("login", "").lower().endswith("[bot]")
+        and item.get("user", {}).get("type", "User") == "User"
     ))
+    latest_pr = fetch(prefix + "/pulls/" + str(pr_number))
+    if (not isinstance(latest_pr, dict)
+            or latest_pr.get("head", {}).get("sha") != head):
+        raise EvidenceError("HEAD_CHANGED_DURING_REVIEW")
     eligible = pr.get("state") == "open" and not bool(pr.get("draft"))
     return {
         "system": product,
