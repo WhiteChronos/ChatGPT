@@ -25,6 +25,8 @@ def preliminary(root):
     workbook = Workbook()
     workbook.active.title = "FOLHA 1"
     workbook.active["C8"] = "Synthetic documented cause"
+    workbook.active["I5"] = "Synthetic titled effect"
+    workbook.active["I8"] = "X"
     path = root / "DE-000.00-0000-000-ABC-001-B - PV 01.xlsx"
     workbook.save(path)
     baseline = root / "source_approved_baseline.xlsx"
@@ -230,3 +232,53 @@ def test_baseline_cannot_be_hardlink_to_derived_pv(tmp_path):
     assert baseline.samefile(primary)
     with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
         GATE.validate(data, tmp_path)
+
+
+def _save_changed_pv(root, data, edit):
+    from openpyxl import load_workbook
+    path = root / data["artifacts"][0]["path"]
+    book = load_workbook(path)
+    edit(book.active)
+    book.save(path)
+    data["artifacts"][0]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_no_actual_x_cannot_be_declared_as_delivered(tmp_path):
+    data = preliminary(tmp_path)
+    _save_changed_pv(tmp_path, data, lambda sh: setattr(sh["I8"], "value", None))
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_x_with_missing_effect_title_is_rejected(tmp_path):
+    data = preliminary(tmp_path)
+    _save_changed_pv(tmp_path, data, lambda sh: setattr(sh["I5"], "value", None))
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_second_cause_without_x_is_rejected(tmp_path):
+    data = preliminary(tmp_path)
+    _save_changed_pv(tmp_path, data, lambda sh: setattr(sh["C9"], "value", "Second cause"))
+    data["coverage"].update(causes_total=2, causes_reviewed=2, observations_verified=2)
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_manifest_crossing_count_must_match_real_cells(tmp_path):
+    data = preliminary(tmp_path)
+    data["coverage"].update(x_total=2, x_verified=2)
+    with pytest.raises(GATE.DeliveryBlocked, match="FAIL_ENGINEERING_GATE"):
+        GATE.validate(data, tmp_path)
+
+
+def test_current_c40_l47_profile_accepts_row47_with_documented_x(tmp_path):
+    data = preliminary(tmp_path)
+    data["approved_layout_profile"] = "P09_C40_L47_H_DISPLAY_3"
+    def edit(sh):
+        sh["C47"] = "Last documented cause"
+        sh["I47"] = "X"
+    _save_changed_pv(tmp_path, data, edit)
+    data["coverage"].update(causes_total=2, causes_reviewed=2, observations_verified=2,
+                            x_total=2, x_verified=2)
+    assert GATE.validate(data, tmp_path) == "PASS_MCE_DELIVERY_PREFLIGHT_ONLY"

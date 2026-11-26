@@ -14,6 +14,7 @@ import sys
 import zipfile
 from pathlib import Path
 from defusedxml import ElementTree as ET
+from openpyxl import load_workbook
 
 SCHEMA = "mce.delivery.v1"
 BLOCKED = "NAO_EMITIDO_BLOQUEADO"
@@ -66,6 +67,49 @@ def inspect_xlsx(path: Path, digest: object) -> None:
         fail("FAIL_FORMAT_CONTRACT", "invalid XLSX workbook")
     if not sheets or sheets != [f"FOLHA {n}" for n in range(1, len(sheets) + 1)]:
         fail("FAIL_FORMAT_CONTRACT", "MCE requires sequential FOLHA N sheets")
+
+
+
+def count_real_crosses(path: Path, profile: str) -> tuple[int, int]:
+    """Read actual XLSX cells; never accept self-declared manifest X totals."""
+    last_row = (47 if profile == "P09_C40_L47_H_DISPLAY_3"
+                else 50 if profile == "P09_L50_APROVADO_VISUALMENTE"
+                else 57)
+    try:
+        book = load_workbook(path, read_only=True, data_only=False)
+        try:
+            causes = crosses = 0
+            for sheet in book.worksheets:
+                titled = {col for col in range(9, 44)
+                          if isinstance(sheet.cell(5, col).value, str)
+                          and sheet.cell(5, col).value.strip()}
+                for row in range(8, last_row + 1):
+                    cause = any(sheet.cell(row, col).value is not None
+                                for col in (3, 6, 8))
+                    links = 0
+                    for col in range(9, 44):
+                        value = sheet.cell(row, col).value
+                        if not isinstance(value, str) or value.strip().upper() != "X":
+                            continue
+                        if not cause or col not in titled:
+                            fail("FAIL_ENGINEERING_GATE",
+                                 f"X without titled effect/cause at {sheet.title}!{sheet.cell(row, col).coordinate}")
+                        links += 1
+                        crosses += 1
+                    if cause:
+                        causes += 1
+                        if links == 0:
+                            fail("FAIL_ENGINEERING_GATE",
+                                 f"cause without X at {sheet.title}!{row}")
+            if causes == 0 or crosses == 0:
+                fail("FAIL_ENGINEERING_GATE", "no real cause/X links in primary MCE")
+            return causes, crosses
+        finally:
+            book.close()
+    except DeliveryBlocked:
+        raise
+    except (OSError, ValueError, KeyError, zipfile.BadZipFile):
+        fail("FAIL_FORMAT_CONTRACT", "invalid XLSX grid")
 
 
 def validate(manifest: object, root: Path) -> str:
@@ -133,6 +177,9 @@ def validate(manifest: object, root: Path) -> str:
         fail("FAIL_ENGINEERING_GATE", "baseline must be distinct from derived PV")
     inspect_xlsx(original, baseline.get("sha256"))
     inspect_xlsx(p, primary[0].get("sha256"))
+    actual_causes, actual_crosses = count_real_crosses(p, profile)
+    if actual_causes != total or actual_crosses != x_total:
+        fail("FAIL_ENGINEERING_GATE", "manifest counts differ from real cause/X cells")
     if manifest.get("pdf_requested") is True and not previews:
         fail("FAIL_FORMAT_CONTRACT", "requested PDF is not attached as a preview")
     if previews:
