@@ -1,0 +1,14 @@
+interface:
+  display_name: MCE Verificador de Efeitos X
+  short_description: Audita cada equipamento e efeito; bloqueia X ausente ou sem evidencia
+  default_prompt: Audite a cobertura de X da MCE em modo somente leitura, preservando
+    todas as causas e classificando lacunas.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
