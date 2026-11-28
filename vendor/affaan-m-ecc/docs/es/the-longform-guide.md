@@ -40,7 +40,7 @@ Con la carga diferida (lazy loading), el problema de la ventana de contexto est�
 Para compartir memoria entre sesiones, la mejor opción es una skill o comando que resuma y verifique el progreso, luego lo guarde en un archivo `.tmp` en tu carpeta `.claude` y lo vaya añadiendo hasta el final de tu sesión. Al día siguiente puede usar eso como contexto y retomar donde lo dejaste; crea un nuevo archivo para cada sesión para no contaminar el contexto antiguo en el trabajo nuevo.
 
 ![Árbol de Archivos de Almacenamiento de Sesión](../../assets/images/longform/03-session-storage.png)
-*Ejemplo de almacenamiento de sesión -> <https://github.com/affaan-m/ECC/tree/main/examples/sessions>*
+*Ejemplo de almacenamiento de sesión -> <https://github.com/affaan-m/ECC/blob/main/commands/save-session.md#session-file-format>*
 
 Claude crea un archivo resumiendo el estado actual. Revísalo, pide ediciones si es necesario, luego empieza de nuevo. Para la nueva conversación, solo proporciona la ruta del archivo. Particularmente útil cuando estás alcanzando los límites de contexto y necesitas continuar trabajo complejo. Estos archivos deben contener:
 - Qué enfoques funcionaron (verificablemente con evidencia)
@@ -56,7 +56,7 @@ Una vez que tienes tu plan establecido y el contexto limpiado (opción predeterm
 Un patrón que adopté: en lugar de poner todo en CLAUDE.md (alcance de usuario) o `.claude/rules/` (alcance de proyecto), que carga en cada sesión, usa flags de CLI para inyectar contexto dinámicamente.
 
 ```bash
-claude --system-prompt "$(cat memory.md)"
+claude --append-system-prompt-file memory.md
 ```
 
 Esto te permite ser más quirúrgico sobre qué contexto se carga y cuándo. El contenido del system prompt tiene mayor autoridad que los mensajes del usuario, que tienen mayor autoridad que los resultados de herramientas.
@@ -65,13 +65,13 @@ Esto te permite ser más quirúrgico sobre qué contexto se carga y cuándo. El 
 
 ```bash
 # Desarrollo diario
-alias claude-dev='claude --system-prompt "$(cat ~/.claude/contexts/dev.md)"'
+alias claude-dev='claude --append-system-prompt-file ~/.claude/contexts/dev.md'
 
 # Modo de revisión de PR
-alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
+alias claude-review='claude --append-system-prompt-file ~/.claude/contexts/review.md'
 
 # Modo de investigación/exploración
-alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
+alias claude-research='claude --append-system-prompt-file ~/.claude/contexts/research.md'
 ```
 
 **Avanzado: Hooks de Persistencia de Memoria**

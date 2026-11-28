@@ -40,7 +40,7 @@
 要在会话间共享记忆，最好的方法是使用一个技能或命令来总结和检查进度，然后保存到 `.claude` 文件夹中的一个 `.tmp` 文件中，并在会话结束前不断追加内容。第二天，它可以将其用作上下文，并从中断处继续。为每个会话创建一个新文件，这样你就不会将旧的上下文污染到新的工作中。
 
 ![Session Storage File Tree](../../assets/images/longform/03-session-storage.png)
-*会话存储示例 -> <https://github.com/affaan-m/ECC/tree/main/examples/sessions>*
+*会话存储示例 -> <https://github.com/affaan-m/ECC/blob/main/commands/save-session.md#session-file-format>*
 
 Claude 创建一个总结当前状态的文件。审阅它，如果需要则要求编辑，然后重新开始。对于新的对话，只需提供文件路径。当你达到上下文限制并需要继续复杂工作时，这尤其有用。这些文件应包含：
 
@@ -57,7 +57,7 @@ Claude 创建一个总结当前状态的文件。审阅它，如果需要则要�
 我学到的一个模式是：与其将所有内容都放在 CLAUDE.md（用户作用域）或 `.claude/rules/`（项目作用域）中，让它们每次会话都加载，不如使用 CLI 标志动态注入上下文。
 
 ```bash
-claude --system-prompt "$(cat memory.md)"
+claude --append-system-prompt-file memory.md
 ```
 
 这让你可以更精确地控制何时加载哪些上下文。系统提示内容比用户消息具有更高的权威性，而用户消息又比工具结果具有更高的权威性。
@@ -66,13 +66,13 @@ claude --system-prompt "$(cat memory.md)"
 
 ```bash
 # Daily development
-alias claude-dev='claude --system-prompt "$(cat ~/.claude/contexts/dev.md)"'
+alias claude-dev='claude --append-system-prompt-file ~/.claude/contexts/dev.md'
 
 # PR review mode
-alias claude-review='claude --system-prompt "$(cat ~/.claude/contexts/review.md)"'
+alias claude-review='claude --append-system-prompt-file ~/.claude/contexts/review.md'
 
 # Research/exploration mode
-alias claude-research='claude --system-prompt "$(cat ~/.claude/contexts/research.md)"'
+alias claude-research='claude --append-system-prompt-file ~/.claude/contexts/research.md'
 ```
 
 **高级：记忆持久化钩子**

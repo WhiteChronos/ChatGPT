@@ -11,6 +11,13 @@ const { spawnSync } = require('child_process');
 const preDispatcher = path.join(__dirname, '..', '..', 'scripts', 'hooks', 'pre-bash-dispatcher.js');
 const postDispatcher = path.join(__dirname, '..', '..', 'scripts', 'hooks', 'post-bash-dispatcher.js');
 
+// The post-Bash dispatcher appends to ~/.claude/bash-commands.log and
+// ~/.claude/cost-tracker.log, so runs get an empty home instead of the
+// developer's real one unless a test passes its own HOME.
+const ISOLATED_HOME = fs.mkdtempSync(path.join(os.tmpdir(), 'ecc-bash-dispatcher-home-'));
+const ISOLATED_HOME_ENV = { HOME: ISOLATED_HOME, USERPROFILE: ISOLATED_HOME };
+process.on('exit', () => fs.rmSync(ISOLATED_HOME, { recursive: true, force: true }));
+
 function test(name, fn) {
   try {
     fn();
@@ -29,6 +36,7 @@ function runScript(scriptPath, input, env = {}) {
     encoding: 'utf8',
     env: {
       ...process.env,
+      ...ISOLATED_HOME_ENV,
       ...env,
     },
     timeout: 10000,
@@ -124,6 +132,31 @@ function runTests() {
     assert.strictEqual(disabled.status, 0);
     assert.strictEqual(disabled.stdout, '', 'Disabled hook should emit no stdout (echoing the input event fails hook-output schema validation)');
     assert.ok(!disabled.stderr.includes('Review changes before push'), 'Disabled hook should not emit reminder');
+  })) passed++; else failed++;
+
+  if (test('pre dispatcher keeps a GateGuard deny when an advisory hook also adds context', () => {
+    // In the strict profile the git-push reminder adds additionalContext for
+    // every `git push`, and GateGuard denies a force-push with a
+    // permissionDecision on stdout at exit 0. The advisory note must not
+    // replace the denial.
+    const stateDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ecc-bash-dispatcher-gateguard-'));
+    try {
+      const input = {
+        tool_name: 'Bash',
+        session_id: 'dispatcher-deny-precedence',
+        tool_input: { command: 'git push --force origin main' },
+      };
+      const result = runScript(preDispatcher, input, {
+        ECC_HOOK_PROFILE: 'strict',
+        GATEGUARD_STATE_DIR: stateDir,
+      });
+      assert.strictEqual(result.status, 0, result.stderr);
+      const output = parseHookOutput(result.stdout).hookSpecificOutput;
+      assert.strictEqual(output.permissionDecision, 'deny', `Expected GateGuard deny, got: ${result.stdout}`);
+      assert.ok(output.permissionDecisionReason.includes('Destructive command'), 'Expected the GateGuard reason');
+    } finally {
+      fs.rmSync(stateDir, { recursive: true, force: true });
+    }
   })) passed++; else failed++;
 
   if (test('pre dispatcher respects hook profiles inside the consolidated path', () => {

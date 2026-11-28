@@ -13,6 +13,7 @@ const {
   buildCatalog,
   formatExpectation,
   runCatalogCheck,
+  syncCatalogDescription,
 } = require('../../scripts/ci/catalog');
 
 function createTestDir() {
@@ -46,6 +47,9 @@ function writeEnglishReadme(root, counts, options = {}) {
   fs.writeFileSync(path.join(root, 'README.md'), `Access to ${counts.agents} agents, ${counts.skills} skills, and ${counts.commands} commands.
 - **Public surface synced to the live repo** - metadata, catalog counts, plugin manifests, and install-facing docs now match the actual OSS surface: ${counts.agents} agents, ${counts.skills} skills, and ${counts.commands} legacy command shims.
 |-- agents/           # ${counts.agents} specialized subagents for delegation
+|-- skills/           # ${counts.skills} reusable workflows loaded on demand
+|-- commands/         # ${counts.commands} maintained slash-command shims
+${options.extraTreeBlock === undefined ? `|-- agents/           # ${counts.agents + 1} specialized subagents for delegation` : options.extraTreeBlock}
 | Feature | Claude Code | Cursor IDE | Codex CLI | OpenCode |
 | --- | --- | --- | --- | --- |
 | Agents | PASS: ${tableCounts.agents} agents |
@@ -170,7 +174,7 @@ function writeCatalogFixture(root, options = {}) {
   fs.writeFileSync(path.join(root, 'commands', 'notes.txt'), 'not counted\n');
   fs.mkdirSync(path.join(root, 'skills', 'missing-skill-file'), { recursive: true });
 
-  writeEnglishReadme(root, documentedCounts, { unrelatedSkillsCount });
+  writeEnglishReadme(root, documentedCounts, { unrelatedSkillsCount, extraTreeBlock: options.extraTreeBlock });
   writeEnglishAgents(root, documentedCounts, { skillsMinimum });
   writeCrossHarnessIdentityDocs(root, documentedCounts);
   writeZhRootReadme(root, documentedCounts);
@@ -197,6 +201,24 @@ function runTests() {
   let passed = 0;
   let failed = 0;
 
+  if (test('catalog description updaters return immutable replacements', () => {
+    const original = JSON.stringify({
+      description: 'Fixture - 9 agents, 9 skills, 9 legacy command shims',
+    });
+    const updated = syncCatalogDescription(
+      original,
+      {
+        agents: { count: 1 },
+        skills: { count: 2 },
+        commands: { count: 3 },
+      },
+      'fixture description',
+      parsed => parsed.description,
+      (parsed, description) => ({ ...parsed, description })
+    );
+    assert.strictEqual(JSON.parse(updated).description, 'Fixture - 1 agents, 2 skills, 3 legacy command shims');
+  })) passed++; else failed++;
+
   if (test('builds catalog counts from a supplied root', () => {
     const testDir = createTestDir();
     try {
@@ -217,6 +239,44 @@ function runTests() {
       );
       assert.ok(catalog.agents.files.every(file => file.endsWith('.md')));
       assert.ok(catalog.skills.files.every(file => file.endsWith('/SKILL.md')));
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('rejects unmarked skill undercounts in English and Chinese agent trees', () => {
+    const testDir = createTestDir();
+    try {
+      writeCatalogFixture(testDir, { actualCounts: { agents: 1, skills: 2, commands: 1 } });
+      for (const relativePath of ['AGENTS.md', 'docs/zh-CN/AGENTS.md']) {
+        const filePath = path.join(testDir, relativePath);
+        fs.writeFileSync(filePath, fs.readFileSync(filePath, 'utf8').replace('skills/ - 2 ', 'skills/ - 1 '));
+      }
+      const result = runCatalogCheck({ root: testDir });
+      for (const source of ['AGENTS.md project structure (skills)', 'docs/zh-CN/AGENTS.md project structure (skills)']) {
+        const check = result.checks.find(entry => entry.source === source);
+        assert.ok(check, `Missing check for ${source}`);
+        assert.strictEqual(check.ok, false, `${source} must reject an exact undercount`);
+      }
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('accepts explicitly marked lower-bound skill counts in agent trees', () => {
+    const testDir = createTestDir();
+    try {
+      writeCatalogFixture(testDir, { actualCounts: { agents: 1, skills: 2, commands: 1 } });
+      for (const relativePath of ['AGENTS.md', 'docs/zh-CN/AGENTS.md']) {
+        const filePath = path.join(testDir, relativePath);
+        fs.writeFileSync(filePath, fs.readFileSync(filePath, 'utf8').replace('skills/ - 2 ', 'skills/ - 1+ '));
+      }
+      const result = runCatalogCheck({ root: testDir });
+      for (const source of ['AGENTS.md project structure (skills)', 'docs/zh-CN/AGENTS.md project structure (skills)']) {
+        const check = result.checks.find(entry => entry.source === source);
+        assert.ok(check, `Missing check for ${source}`);
+        assert.strictEqual(check.ok, true, `${source} must preserve explicit lower-bound semantics`);
+      }
     } finally {
       cleanupTestDir(testDir);
     }
@@ -277,6 +337,7 @@ function runTests() {
       assert.ok(readme.includes('Access to 1 agents, 1 skills, and 1 legacy command shims'));
       assert.ok(readme.includes('actual OSS surface: 7 agents, 7 skills, and 7 legacy command shims'));
       assert.ok(readme.includes('|-- agents/           # 1 specialized subagents for delegation'));
+      assert.strictEqual((readme.match(/# 1 specialized subagents for delegation/g) || []).length, 2);
       assert.ok(readme.includes('| Skills | 42 | .agents/skills/ |'));
       assert.ok(agentsDoc.includes('providing 1 specialized agents, 1+ skills, 1 commands'));
       assert.ok(agentsDoc.includes('skills/ - 1+ workflow skills and domain knowledge'));
@@ -287,6 +348,76 @@ function runTests() {
       assert.ok(zhAgentsDoc.includes('skills/ - 1+ 个工作流技能和领域知识'));
       assert.ok(pluginJson.includes('1 agents, 1 skills, 1 legacy command shims'));
       assert.ok(marketplaceJson.includes('1 agents, 1 skills, 1 legacy command shims'));
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('flags a stale count hidden in a second project-tree block', () => {
+    const testDir = createTestDir();
+    try {
+      writeCatalogFixture(testDir, {
+        actualCounts: { agents: 2, skills: 3, commands: 4 },
+        documentedCounts: { agents: 2, skills: 3, commands: 4 },
+        extraTreeBlock: '|-- agents/           # 1 specialized subagents for delegation',
+      });
+
+      const result = runCatalogCheck({ root: testDir });
+      const failing = result.checks.filter(check => !check.ok && check.source.includes('project tree'));
+
+      assert.strictEqual(failing.length, 1);
+      assert.match(failing[0].source, /project tree \(agents\) block \d+/);
+      assert.strictEqual(failing[0].expected, 1);
+      assert.strictEqual(failing[0].actual, 2);
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('write mode repairs every project-tree block, not just the first', () => {
+    const testDir = createTestDir();
+    try {
+      writeCatalogFixture(testDir, {
+        actualCounts: { agents: 2, skills: 3, commands: 4 },
+        documentedCounts: { agents: 2, skills: 3, commands: 4 },
+        extraTreeBlock: [
+          '|-- agents/           # 1 specialized subagents for delegation',
+          '|-- skills/           # 1 reusable workflows loaded on demand',
+        ].join('\n'),
+      });
+
+      const result = runCatalogCheck({ root: testDir, writeMode: true });
+
+      assert.strictEqual(result.checks.filter(check => !check.ok).length, 0);
+
+      const readme = fs.readFileSync(path.join(testDir, 'README.md'), 'utf8');
+      assert.ok(!readme.includes('# 1 specialized subagents for delegation'));
+      assert.ok(!readme.includes('# 1 reusable workflows loaded on demand'));
+      assert.strictEqual(readme.split('# 2 specialized subagents for delegation').length - 1, 2);
+    } finally {
+      cleanupTestDir(testDir);
+    }
+  })) passed++; else failed++;
+
+  if (test('throws when a project-tree count entry is missing entirely', () => {
+    const testDir = createTestDir();
+    try {
+      writeCatalogFixture(testDir, {
+        actualCounts: { agents: 2, skills: 3, commands: 4 },
+        documentedCounts: { agents: 2, skills: 3, commands: 4 },
+      });
+
+      const readmePath = path.join(testDir, 'README.md');
+      const withoutSkills = fs.readFileSync(readmePath, 'utf8')
+        .split('\n')
+        .filter(line => !line.includes('reusable workflows loaded on demand'))
+        .join('\n');
+      fs.writeFileSync(readmePath, withoutSkills);
+
+      assert.throws(
+        () => runCatalogCheck({ root: testDir }),
+        /README\.md project tree \(skills\) is missing the skills count/
+      );
     } finally {
       cleanupTestDir(testDir);
     }
