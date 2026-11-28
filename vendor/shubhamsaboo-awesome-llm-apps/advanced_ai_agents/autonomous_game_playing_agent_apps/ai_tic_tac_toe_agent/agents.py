@@ -56,18 +56,13 @@ def get_model_for_provider(provider: str, model_name: str):
     elif provider == "google":
         return Gemini(id=model_name)
     elif provider == "anthropic":
-        if model_name == "claude-3-5-sonnet":
-            return Claude(id="claude-3-5-sonnet-20241022", max_tokens=8192)
-        elif model_name == "claude-3-7-sonnet":
+        if model_name == "claude-sonnet-5-5":
+            return Claude(id="claude-sonnet-5-5", max_tokens=8192)
+        elif model_name == "claude-sonnet-5-5-thinking":
             return Claude(
-                id="claude-3-7-sonnet-20250219",
+                id="claude-sonnet-5-5",
                 max_tokens=8192,
-            )
-        elif model_name == "claude-3-7-sonnet-thinking":
-            return Claude(
-                id="claude-3-7-sonnet-20250219",
-                max_tokens=8192,
-                thinking={"type": "enabled", "budget_tokens": 4096},
+                thinking={"type": "adaptive"},
             )
         else:
             return Claude(id=model_name)
@@ -79,7 +74,7 @@ def get_model_for_provider(provider: str, model_name: str):
 
 def get_tic_tac_toe_players(
     model_x: str = "openai:gpt-4o",
-    model_o: str = "openai:o3-mini",
+    model_o: str = "openai:gpt-5.6-sol",
     debug_mode: bool = True,
 ) -> Tuple[Agent, Agent]:
     """
